@@ -31,13 +31,6 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: set[float] = Field(description="")
-    frequencies: set[float] = Field(description="")
-
-
 class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
@@ -45,6 +38,13 @@ class KafkaTopicConsumption(AtlanObject):
     topic_partition: Optional[str] = Field(None, description="")
     topic_lag: Optional[int] = Field(None, description="")
     topic_current_offset: Optional[int] = Field(None, description="")
+
+
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: set[float] = Field(description="")
+    frequencies: set[float] = Field(description="")
 
 
 class ColumnValueFrequencyMap(AtlanObject):
@@ -59,21 +59,6 @@ class SourceTagAttachmentValue(AtlanObject):
 
     tag_attachment_key: Optional[str] = Field(None, description="")
     tag_attachment_value: Optional[str] = Field(None, description="")
-
-
-class SourceTagAttachment(AtlanObject):
-    """Description"""
-
-    source_tag_name: Optional[str] = Field(None, description="")
-    source_tag_qualified_name: Optional[str] = Field(None, description="")
-    source_tag_guid: Optional[str] = Field(None, description="")
-    source_tag_connector_name: Optional[str] = Field(None, description="")
-    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
-        None, description=""
-    )
-    is_source_tag_synced: Optional[bool] = Field(None, description="")
-    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
-    source_tag_sync_error: Optional[str] = Field(None, description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -109,11 +94,19 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(None, description="")
 
 
-class StarredDetails(AtlanObject):
+class SourceTagAttachment(AtlanObject):
     """Description"""
 
-    asset_starred_by: Optional[str] = Field(None, description="")
-    asset_starred_at: Optional[datetime] = Field(None, description="")
+    source_tag_name: Optional[str] = Field(None, description="")
+    source_tag_qualified_name: Optional[str] = Field(None, description="")
+    source_tag_guid: Optional[str] = Field(None, description="")
+    source_tag_connector_name: Optional[str] = Field(None, description="")
+    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
+        None, description=""
+    )
+    is_source_tag_synced: Optional[bool] = Field(None, description="")
+    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
+    source_tag_sync_error: Optional[str] = Field(None, description="")
 
 
 class AzureTag(AtlanObject):
@@ -121,6 +114,13 @@ class AzureTag(AtlanObject):
 
     azure_tag_key: str = Field(description="")
     azure_tag_value: str = Field(description="")
+
+
+class StarredDetails(AtlanObject):
+    """Description"""
+
+    asset_starred_by: Optional[str] = Field(None, description="")
+    asset_starred_at: Optional[datetime] = Field(None, description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -208,21 +208,21 @@ MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Histogram.update_forward_refs()
-
 KafkaTopicConsumption.update_forward_refs()
+
+Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
 SourceTagAttachmentValue.update_forward_refs()
 
-SourceTagAttachment.update_forward_refs()
-
 BadgeCondition.update_forward_refs()
 
-StarredDetails.update_forward_refs()
+SourceTagAttachment.update_forward_refs()
 
 AzureTag.update_forward_refs()
+
+StarredDetails.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 

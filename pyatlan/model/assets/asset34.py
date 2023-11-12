@@ -8,18 +8,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import (
-    KeywordField,
-    KeywordTextField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 from pyatlan.model.structs import AzureTag
 
-from .asset00 import AirflowTask, Process
-from .asset30 import Azure
+from .asset16 import ObjectStore
 
 
-class ADLS(Azure):
+class ADLS(ObjectStore):
     """Description"""
 
     type_name: str = Field("ADLS", allow_mutation=False)
@@ -41,52 +36,29 @@ class ADLS(Azure):
         "adlsAccountQualifiedName.text",
     )
     """
-    TBC
+    Unique name of the account for this ADLS asset.
     """
     AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "azureResourceId", "azureResourceId", "azureResourceId.text"
     )
     """
-    TBC
+    Resource identifier of this asset in Azure.
     """
     AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "azureLocation", "azureLocation"
     )
     """
-    TBC
+    Location of this asset in Azure.
     """
     ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
         "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
     )
     """
-    TBC
+    Secondary location of the ADLS account.
     """
     AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
     """
-    TBC
-    """
-
-    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
-    """
-    TBC
-    """
-    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
-        "outputFromAirflowTasks"
-    )
-    """
-    TBC
-    """
-    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
-        "inputToAirflowTasks"
-    )
-    """
-    TBC
-    """
-    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
-        "outputFromProcesses"
-    )
-    """
-    TBC
+    Tags that have been applied to this asset in Azure.
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -95,10 +67,6 @@ class ADLS(Azure):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
-        "input_to_processes",
-        "output_from_airflow_tasks",
-        "input_to_airflow_tasks",
-        "output_from_processes",
     ]
 
     @property
@@ -163,59 +131,7 @@ class ADLS(Azure):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    @property
-    def input_to_processes(self) -> Optional[list[Process]]:
-        return None if self.attributes is None else self.attributes.input_to_processes
-
-    @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_processes = input_to_processes
-
-    @property
-    def output_from_airflow_tasks(self) -> Optional[list[AirflowTask]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.output_from_airflow_tasks
-        )
-
-    @output_from_airflow_tasks.setter
-    def output_from_airflow_tasks(
-        self, output_from_airflow_tasks: Optional[list[AirflowTask]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
-
-    @property
-    def input_to_airflow_tasks(self) -> Optional[list[AirflowTask]]:
-        return (
-            None if self.attributes is None else self.attributes.input_to_airflow_tasks
-        )
-
-    @input_to_airflow_tasks.setter
-    def input_to_airflow_tasks(
-        self, input_to_airflow_tasks: Optional[list[AirflowTask]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
-
-    @property
-    def output_from_processes(self) -> Optional[list[Process]]:
-        return (
-            None if self.attributes is None else self.attributes.output_from_processes
-        )
-
-    @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_processes = output_from_processes
-
-    class Attributes(Azure.Attributes):
+    class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsAccountQualifiedName"
         )
@@ -231,18 +147,6 @@ class ADLS(Azure):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="outputFromAirflowTasks"
-        )  # relationship
-        input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="inputToAirflowTasks"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLS.Attributes" = Field(
         default_factory=lambda: ADLS.Attributes(),

@@ -34,45 +34,45 @@ class AWS(Cloud):
         "awsArn", "awsArn", "awsArn.text"
     )
     """
-    TBC
-    """
+    Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.
+    """  # noqa: E501
     AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
     """
-    TBC
+    Group of AWS region and service objects.
     """
     AWS_SERVICE: ClassVar[KeywordField] = KeywordField("awsService", "awsService")
     """
-    TBC
+    Type of service in which the asset exists.
     """
     AWS_REGION: ClassVar[KeywordField] = KeywordField("awsRegion", "awsRegion")
     """
-    TBC
+    Physical region where the data center in which the asset exists is clustered.
     """
     AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
         "awsAccountId", "awsAccountId"
     )
     """
-    TBC
+    12-digit number that uniquely identifies an AWS account.
     """
     AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
         "awsResourceId", "awsResourceId"
     )
     """
-    TBC
+    Unique resource ID assigned when a new resource is created.
     """
     AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
     )
     """
-    TBC
+    Root user's name.
     """
     AWS_OWNER_ID: ClassVar[KeywordField] = KeywordField("awsOwnerId", "awsOwnerId")
     """
-    TBC
+    Root user's ID.
     """
     AWS_TAGS: ClassVar[KeywordField] = KeywordField("awsTags", "awsTags")
     """
-    TBC
+    List of tags that have been applied to the asset in AWS.
     """
 
     _convenience_properties: ClassVar[list[str]] = [

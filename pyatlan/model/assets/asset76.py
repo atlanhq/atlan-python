@@ -11,639 +11,1658 @@ from pydantic import Field, validator
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
 
-from .asset50 import Qlik
+from .asset49 import PowerBI
 
 
-class QlikApp(Qlik):
+class PowerBIReport(PowerBI):
     """Description"""
 
-    type_name: str = Field("QlikApp", allow_mutation=False)
+    type_name: str = Field("PowerBIReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikApp":
-            raise ValueError("must be QlikApp")
+        if v != "PowerBIReport":
+            raise ValueError("must be PowerBIReport")
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikApp._convenience_properties:
+        if name in PowerBIReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QLIK_HAS_SECTION_ACCESS: ClassVar[BooleanField] = BooleanField(
-        "qlikHasSectionAccess", "qlikHasSectionAccess"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Whether section access/data masking is enabled on source
+    Unique name of the workspace in which this report exists.
     """
-    QLIK_ORIGIN_APP_ID: ClassVar[KeywordField] = KeywordField(
-        "qlikOriginAppId", "qlikOriginAppId"
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    originAppId value for a qlik app
+    Unique name of the dataset used to build this report.
     """
-    QLIK_IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
-        "qlikIsEncrypted", "qlikIsEncrypted"
-    )
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Whether a qlik app is encrypted
+    Deprecated. See 'sourceUrl' instead.
     """
-    QLIK_IS_DIRECT_QUERY_MODE: ClassVar[BooleanField] = BooleanField(
-        "qlikIsDirectQueryMode", "qlikIsDirectQueryMode"
-    )
+    PAGE_COUNT: ClassVar[NumericField] = NumericField("pageCount", "pageCount")
     """
-    Whether a qlik app is in direct query mode
-    """
-    QLIK_APP_STATIC_BYTE_SIZE: ClassVar[NumericField] = NumericField(
-        "qlikAppStaticByteSize", "qlikAppStaticByteSize"
-    )
-    """
-    Static space taken by a qlik app
+    Number of pages in this report.
     """
 
-    QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
     """
     TBC
     """
-    QLIK_SHEETS: ClassVar[RelationField] = RelationField("qlikSheets")
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    PAGES: ClassVar[RelationField] = RelationField("pages")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "qlik_has_section_access",
-        "qlik_origin_app_id",
-        "qlik_is_encrypted",
-        "qlik_is_direct_query_mode",
-        "qlik_app_static_byte_size",
-        "qlik_space",
-        "qlik_sheets",
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "web_url",
+        "page_count",
+        "workspace",
+        "tiles",
+        "pages",
+        "dataset",
     ]
 
     @property
-    def qlik_has_section_access(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.qlik_has_section_access
-        )
-
-    @qlik_has_section_access.setter
-    def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_has_section_access = qlik_has_section_access
-
-    @property
-    def qlik_origin_app_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_origin_app_id
-
-    @qlik_origin_app_id.setter
-    def qlik_origin_app_id(self, qlik_origin_app_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_origin_app_id = qlik_origin_app_id
-
-    @property
-    def qlik_is_encrypted(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.qlik_is_encrypted
-
-    @qlik_is_encrypted.setter
-    def qlik_is_encrypted(self, qlik_is_encrypted: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_is_encrypted = qlik_is_encrypted
-
-    @property
-    def qlik_is_direct_query_mode(self) -> Optional[bool]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.qlik_is_direct_query_mode
+            else self.attributes.workspace_qualified_name
         )
 
-    @qlik_is_direct_query_mode.setter
-    def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_is_direct_query_mode = qlik_is_direct_query_mode
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def qlik_app_static_byte_size(self) -> Optional[int]:
+    def dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def page_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.page_count
+
+    @page_count.setter
+    def page_count(self, page_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.page_count = page_count
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def pages(self) -> Optional[list[PowerBIPage]]:
+        return None if self.attributes is None else self.attributes.pages
+
+    @pages.setter
+    def pages(self, pages: Optional[list[PowerBIPage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.pages = pages
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return None if self.attributes is None else self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        page_count: Optional[int] = Field(None, description="", alias="pageCount")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        pages: Optional[list[PowerBIPage]] = Field(
+            None, description="", alias="pages"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+
+    attributes: "PowerBIReport.Attributes" = Field(
+        default_factory=lambda: PowerBIReport.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIMeasure(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIMeasure":
+            raise ValueError("must be PowerBIMeasure")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIMeasure._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this measure exists.
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    Unique name of the dataset in which this measure exists.
+    """
+    POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField(
+        "powerBIMeasureExpression", "powerBIMeasureExpression"
+    )
+    """
+    DAX expression for this measure.
+    """
+    POWER_BI_IS_EXTERNAL_MEASURE: ClassVar[BooleanField] = BooleanField(
+        "powerBIIsExternalMeasure", "powerBIIsExternalMeasure"
+    )
+    """
+    Whether this measure is external (true) or internal (false).
+    """
+
+    TABLE: ClassVar[RelationField] = RelationField("table")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_measure_expression",
+        "power_b_i_is_external_measure",
+        "table",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.qlik_app_static_byte_size
+            else self.attributes.workspace_qualified_name
         )
 
-    @qlik_app_static_byte_size.setter
-    def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def qlik_space(self) -> Optional[QlikSpace]:
-        return None if self.attributes is None else self.attributes.qlik_space
-
-    @qlik_space.setter
-    def qlik_space(self, qlik_space: Optional[QlikSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space = qlik_space
-
-    @property
-    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
-        return None if self.attributes is None else self.attributes.qlik_sheets
-
-    @qlik_sheets.setter
-    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_sheets = qlik_sheets
-
-    class Attributes(Qlik.Attributes):
-        qlik_has_section_access: Optional[bool] = Field(
-            None, description="", alias="qlikHasSectionAccess"
-        )
-        qlik_origin_app_id: Optional[str] = Field(
-            None, description="", alias="qlikOriginAppId"
-        )
-        qlik_is_encrypted: Optional[bool] = Field(
-            None, description="", alias="qlikIsEncrypted"
-        )
-        qlik_is_direct_query_mode: Optional[bool] = Field(
-            None, description="", alias="qlikIsDirectQueryMode"
-        )
-        qlik_app_static_byte_size: Optional[int] = Field(
-            None, description="", alias="qlikAppStaticByteSize"
-        )
-        qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
-        )  # relationship
-        qlik_sheets: Optional[list[QlikSheet]] = Field(
-            None, description="", alias="qlikSheets"
-        )  # relationship
-
-    attributes: "QlikApp.Attributes" = Field(
-        default_factory=lambda: QlikApp.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QlikChart(Qlik):
-    """Description"""
-
-    type_name: str = Field("QlikChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikChart":
-            raise ValueError("must be QlikChart")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QlikChart._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    QLIK_CHART_SUBTITLE: ClassVar[TextField] = TextField(
-        "qlikChartSubtitle", "qlikChartSubtitle"
-    )
-    """
-    Subtitle of a qlik chart
-    """
-    QLIK_CHART_FOOTNOTE: ClassVar[TextField] = TextField(
-        "qlikChartFootnote", "qlikChartFootnote"
-    )
-    """
-    Footnote of a qlik chart
-    """
-    QLIK_CHART_ORIENTATION: ClassVar[KeywordField] = KeywordField(
-        "qlikChartOrientation", "qlikChartOrientation"
-    )
-    """
-    Orientation of a qlik chart
-    """
-    QLIK_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
-        "qlikChartType", "qlikChartType"
-    )
-    """
-    Subtype of an qlik chart. E.g. bar, graph, pie etc
-    """
-
-    QLIK_SHEET: ClassVar[RelationField] = RelationField("qlikSheet")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "qlik_chart_subtitle",
-        "qlik_chart_footnote",
-        "qlik_chart_orientation",
-        "qlik_chart_type",
-        "qlik_sheet",
-    ]
-
-    @property
-    def qlik_chart_subtitle(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_chart_subtitle
-
-    @qlik_chart_subtitle.setter
-    def qlik_chart_subtitle(self, qlik_chart_subtitle: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_subtitle = qlik_chart_subtitle
-
-    @property
-    def qlik_chart_footnote(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_chart_footnote
-
-    @qlik_chart_footnote.setter
-    def qlik_chart_footnote(self, qlik_chart_footnote: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_footnote = qlik_chart_footnote
-
-    @property
-    def qlik_chart_orientation(self) -> Optional[str]:
+    def dataset_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.qlik_chart_orientation
+            None if self.attributes is None else self.attributes.dataset_qualified_name
         )
 
-    @qlik_chart_orientation.setter
-    def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_chart_orientation = qlik_chart_orientation
+        self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
-    def qlik_chart_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_chart_type
-
-    @qlik_chart_type.setter
-    def qlik_chart_type(self, qlik_chart_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_type = qlik_chart_type
-
-    @property
-    def qlik_sheet(self) -> Optional[QlikSheet]:
-        return None if self.attributes is None else self.attributes.qlik_sheet
-
-    @qlik_sheet.setter
-    def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_sheet = qlik_sheet
-
-    class Attributes(Qlik.Attributes):
-        qlik_chart_subtitle: Optional[str] = Field(
-            None, description="", alias="qlikChartSubtitle"
-        )
-        qlik_chart_footnote: Optional[str] = Field(
-            None, description="", alias="qlikChartFootnote"
-        )
-        qlik_chart_orientation: Optional[str] = Field(
-            None, description="", alias="qlikChartOrientation"
-        )
-        qlik_chart_type: Optional[str] = Field(
-            None, description="", alias="qlikChartType"
-        )
-        qlik_sheet: Optional[QlikSheet] = Field(
-            None, description="", alias="qlikSheet"
-        )  # relationship
-
-    attributes: "QlikChart.Attributes" = Field(
-        default_factory=lambda: QlikChart.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QlikDataset(Qlik):
-    """Description"""
-
-    type_name: str = Field("QlikDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikDataset":
-            raise ValueError("must be QlikDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QlikDataset._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    QLIK_DATASET_TECHNICAL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "qlikDatasetTechnicalName",
-        "qlikDatasetTechnicalName.keyword",
-        "qlikDatasetTechnicalName",
-    )
-    """
-    Technical name of a qlik data asset
-    """
-    QLIK_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
-        "qlikDatasetType", "qlikDatasetType"
-    )
-    """
-    Type of an qlik data asset. E.g. qix-df, snowflake etc
-    """
-    QLIK_DATASET_URI: ClassVar[KeywordTextField] = KeywordTextField(
-        "qlikDatasetUri", "qlikDatasetUri", "qlikDatasetUri.text"
-    )
-    """
-    URI of a qlik dataset
-    """
-    QLIK_DATASET_SUBTYPE: ClassVar[KeywordField] = KeywordField(
-        "qlikDatasetSubtype", "qlikDatasetSubtype"
-    )
-    """
-    Subtype of an qlik dataset asset
-    """
-
-    QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "qlik_dataset_technical_name",
-        "qlik_dataset_type",
-        "qlik_dataset_uri",
-        "qlik_dataset_subtype",
-        "qlik_space",
-    ]
-
-    @property
-    def qlik_dataset_technical_name(self) -> Optional[str]:
+    def power_b_i_measure_expression(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.qlik_dataset_technical_name
+            else self.attributes.power_b_i_measure_expression
         )
 
-    @qlik_dataset_technical_name.setter
-    def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
+    @power_b_i_measure_expression.setter
+    def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_technical_name = qlik_dataset_technical_name
+        self.attributes.power_b_i_measure_expression = power_b_i_measure_expression
 
     @property
-    def qlik_dataset_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_type
-
-    @qlik_dataset_type.setter
-    def qlik_dataset_type(self, qlik_dataset_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_type = qlik_dataset_type
-
-    @property
-    def qlik_dataset_uri(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_uri
-
-    @qlik_dataset_uri.setter
-    def qlik_dataset_uri(self, qlik_dataset_uri: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_uri = qlik_dataset_uri
-
-    @property
-    def qlik_dataset_subtype(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_subtype
-
-    @qlik_dataset_subtype.setter
-    def qlik_dataset_subtype(self, qlik_dataset_subtype: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
-
-    @property
-    def qlik_space(self) -> Optional[QlikSpace]:
-        return None if self.attributes is None else self.attributes.qlik_space
-
-    @qlik_space.setter
-    def qlik_space(self, qlik_space: Optional[QlikSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space = qlik_space
-
-    class Attributes(Qlik.Attributes):
-        qlik_dataset_technical_name: Optional[str] = Field(
-            None, description="", alias="qlikDatasetTechnicalName"
-        )
-        qlik_dataset_type: Optional[str] = Field(
-            None, description="", alias="qlikDatasetType"
-        )
-        qlik_dataset_uri: Optional[str] = Field(
-            None, description="", alias="qlikDatasetUri"
-        )
-        qlik_dataset_subtype: Optional[str] = Field(
-            None, description="", alias="qlikDatasetSubtype"
-        )
-        qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
-        )  # relationship
-
-    attributes: "QlikDataset.Attributes" = Field(
-        default_factory=lambda: QlikDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QlikSheet(Qlik):
-    """Description"""
-
-    type_name: str = Field("QlikSheet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikSheet":
-            raise ValueError("must be QlikSheet")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QlikSheet._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    QLIK_SHEET_IS_APPROVED: ClassVar[BooleanField] = BooleanField(
-        "qlikSheetIsApproved", "qlikSheetIsApproved"
-    )
-    """
-    Whether a qlik sheet is approved
-    """
-
-    QLIK_APP: ClassVar[RelationField] = RelationField("qlikApp")
-    """
-    TBC
-    """
-    QLIK_CHARTS: ClassVar[RelationField] = RelationField("qlikCharts")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "qlik_sheet_is_approved",
-        "qlik_app",
-        "qlik_charts",
-    ]
-
-    @property
-    def qlik_sheet_is_approved(self) -> Optional[bool]:
+    def power_b_i_is_external_measure(self) -> Optional[bool]:
         return (
-            None if self.attributes is None else self.attributes.qlik_sheet_is_approved
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_is_external_measure
         )
 
-    @qlik_sheet_is_approved.setter
-    def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
+    @power_b_i_is_external_measure.setter
+    def power_b_i_is_external_measure(
+        self, power_b_i_is_external_measure: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
+        self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
 
     @property
-    def qlik_app(self) -> Optional[QlikApp]:
-        return None if self.attributes is None else self.attributes.qlik_app
+    def table(self) -> Optional[PowerBITable]:
+        return None if self.attributes is None else self.attributes.table
 
-    @qlik_app.setter
-    def qlik_app(self, qlik_app: Optional[QlikApp]):
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_app = qlik_app
+        self.attributes.table = table
 
-    @property
-    def qlik_charts(self) -> Optional[list[QlikChart]]:
-        return None if self.attributes is None else self.attributes.qlik_charts
-
-    @qlik_charts.setter
-    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_charts = qlik_charts
-
-    class Attributes(Qlik.Attributes):
-        qlik_sheet_is_approved: Optional[bool] = Field(
-            None, description="", alias="qlikSheetIsApproved"
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-        qlik_app: Optional[QlikApp] = Field(
-            None, description="", alias="qlikApp"
-        )  # relationship
-        qlik_charts: Optional[list[QlikChart]] = Field(
-            None, description="", alias="qlikCharts"
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_measure_expression: Optional[str] = Field(
+            None, description="", alias="powerBIMeasureExpression"
+        )
+        power_b_i_is_external_measure: Optional[bool] = Field(
+            None, description="", alias="powerBIIsExternalMeasure"
+        )
+        table: Optional[PowerBITable] = Field(
+            None, description="", alias="table"
         )  # relationship
 
-    attributes: "QlikSheet.Attributes" = Field(
-        default_factory=lambda: QlikSheet.Attributes(),
+    attributes: "PowerBIMeasure.Attributes" = Field(
+        default_factory=lambda: PowerBIMeasure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikSpace(Qlik):
+class PowerBIColumn(PowerBI):
     """Description"""
 
-    type_name: str = Field("QlikSpace", allow_mutation=False)
+    type_name: str = Field("PowerBIColumn", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikSpace":
-            raise ValueError("must be QlikSpace")
+        if v != "PowerBIColumn":
+            raise ValueError("must be PowerBIColumn")
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikSpace._convenience_properties:
+        if name in PowerBIColumn._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QLIK_SPACE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "qlikSpaceType", "qlikSpaceType"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Type of a qlik space. E.g. Private, Shared etc
+    Unique name of the workspace in which this column exists.
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    Unique name of the dataset in which this column exists.
+    """
+    POWER_BI_COLUMN_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnDataCategory", "powerBIColumnDataCategory"
+    )
+    """
+    Data category that describes the data in this column.
+    """
+    POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnDataType", "powerBIColumnDataType"
+    )
+    """
+    Data type of this column.
+    """
+    POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField(
+        "powerBISortByColumn", "powerBISortByColumn"
+    )
+    """
+    Name of a column in the same table to use to order this column.
+    """
+    POWER_BI_COLUMN_SUMMARIZE_BY: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnSummarizeBy", "powerBIColumnSummarizeBy"
+    )
+    """
+    Aggregate function to use for summarizing this column.
     """
 
-    QLIK_DATASETS: ClassVar[RelationField] = RelationField("qlikDatasets")
-    """
-    TBC
-    """
-    QLIK_APPS: ClassVar[RelationField] = RelationField("qlikApps")
+    TABLE: ClassVar[RelationField] = RelationField("table")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "qlik_space_type",
-        "qlik_datasets",
-        "qlik_apps",
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_column_data_category",
+        "power_b_i_column_data_type",
+        "power_b_i_sort_by_column",
+        "power_b_i_column_summarize_by",
+        "table",
     ]
 
     @property
-    def qlik_space_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_space_type
-
-    @qlik_space_type.setter
-    def qlik_space_type(self, qlik_space_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space_type = qlik_space_type
-
-    @property
-    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
-        return None if self.attributes is None else self.attributes.qlik_datasets
-
-    @qlik_datasets.setter
-    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_datasets = qlik_datasets
-
-    @property
-    def qlik_apps(self) -> Optional[list[QlikApp]]:
-        return None if self.attributes is None else self.attributes.qlik_apps
-
-    @qlik_apps.setter
-    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_apps = qlik_apps
-
-    class Attributes(Qlik.Attributes):
-        qlik_space_type: Optional[str] = Field(
-            None, description="", alias="qlikSpaceType"
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
         )
-        qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
-        )  # relationship
-        qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_column_data_category(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_column_data_category
+        )
+
+    @power_b_i_column_data_category.setter
+    def power_b_i_column_data_category(
+        self, power_b_i_column_data_category: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
+
+    @property
+    def power_b_i_column_data_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_column_data_type
+        )
+
+    @power_b_i_column_data_type.setter
+    def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_column_data_type = power_b_i_column_data_type
+
+    @property
+    def power_b_i_sort_by_column(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_sort_by_column
+        )
+
+    @power_b_i_sort_by_column.setter
+    def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_sort_by_column = power_b_i_sort_by_column
+
+    @property
+    def power_b_i_column_summarize_by(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_column_summarize_by
+        )
+
+    @power_b_i_column_summarize_by.setter
+    def power_b_i_column_summarize_by(
+        self, power_b_i_column_summarize_by: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
+
+    @property
+    def table(self) -> Optional[PowerBITable]:
+        return None if self.attributes is None else self.attributes.table
+
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table = table
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_column_data_category: Optional[str] = Field(
+            None, description="", alias="powerBIColumnDataCategory"
+        )
+        power_b_i_column_data_type: Optional[str] = Field(
+            None, description="", alias="powerBIColumnDataType"
+        )
+        power_b_i_sort_by_column: Optional[str] = Field(
+            None, description="", alias="powerBISortByColumn"
+        )
+        power_b_i_column_summarize_by: Optional[str] = Field(
+            None, description="", alias="powerBIColumnSummarizeBy"
+        )
+        table: Optional[PowerBITable] = Field(
+            None, description="", alias="table"
         )  # relationship
 
-    attributes: "QlikSpace.Attributes" = Field(
-        default_factory=lambda: QlikSpace.Attributes(),
+    attributes: "PowerBIColumn.Attributes" = Field(
+        default_factory=lambda: PowerBIColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-QlikApp.Attributes.update_forward_refs()
+class PowerBITable(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBITable", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITable":
+            raise ValueError("must be PowerBITable")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBITable._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this table exists.
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    Unique name of the dataset in which this table exists.
+    """
+    POWER_BI_TABLE_SOURCE_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
+        "powerBITableSourceExpressions", "powerBITableSourceExpressions"
+    )
+    """
+    Power Query M expressions for the table.
+    """
+    POWER_BI_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "powerBITableColumnCount", "powerBITableColumnCount"
+    )
+    """
+    Number of columns in this table.
+    """
+    POWER_BI_TABLE_MEASURE_COUNT: ClassVar[NumericField] = NumericField(
+        "powerBITableMeasureCount", "powerBITableMeasureCount"
+    )
+    """
+    Number of measures in this table.
+    """
+
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    MEASURES: ClassVar[RelationField] = RelationField("measures")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_table_source_expressions",
+        "power_b_i_table_column_count",
+        "power_b_i_table_measure_count",
+        "columns",
+        "measures",
+        "dataset",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_source_expressions
+        )
+
+    @power_b_i_table_source_expressions.setter
+    def power_b_i_table_source_expressions(
+        self, power_b_i_table_source_expressions: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_source_expressions = (
+            power_b_i_table_source_expressions
+        )
+
+    @property
+    def power_b_i_table_column_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_column_count
+        )
+
+    @power_b_i_table_column_count.setter
+    def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_column_count = power_b_i_table_column_count
+
+    @property
+    def power_b_i_table_measure_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_measure_count
+        )
+
+    @power_b_i_table_measure_count.setter
+    def power_b_i_table_measure_count(
+        self, power_b_i_table_measure_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
+
+    @property
+    def columns(self) -> Optional[list[PowerBIColumn]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[PowerBIColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def measures(self) -> Optional[list[PowerBIMeasure]]:
+        return None if self.attributes is None else self.attributes.measures
+
+    @measures.setter
+    def measures(self, measures: Optional[list[PowerBIMeasure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.measures = measures
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return None if self.attributes is None else self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_table_source_expressions: Optional[set[str]] = Field(
+            None, description="", alias="powerBITableSourceExpressions"
+        )
+        power_b_i_table_column_count: Optional[int] = Field(
+            None, description="", alias="powerBITableColumnCount"
+        )
+        power_b_i_table_measure_count: Optional[int] = Field(
+            None, description="", alias="powerBITableMeasureCount"
+        )
+        columns: Optional[list[PowerBIColumn]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        measures: Optional[list[PowerBIMeasure]] = Field(
+            None, description="", alias="measures"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+
+    attributes: "PowerBITable.Attributes" = Field(
+        default_factory=lambda: PowerBITable.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikChart.Attributes.update_forward_refs()
+class PowerBITile(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBITile._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this tile exists.
+    """
+    DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dashboardQualifiedName", "dashboardQualifiedName"
+    )
+    """
+    Unique name of the dashboard in which this tile is pinned.
+    """
+
+    REPORT: ClassVar[RelationField] = RelationField("report")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    """
+    TBC
+    """
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dashboard_qualified_name",
+        "report",
+        "dataset",
+        "dashboard",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dashboard_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dashboard_qualified_name
+        )
+
+    @dashboard_qualified_name.setter
+    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_qualified_name = dashboard_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return None if self.attributes is None else self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return None if self.attributes is None else self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    @property
+    def dashboard(self) -> Optional[PowerBIDashboard]:
+        return None if self.attributes is None else self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="dashboardQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+        dashboard: Optional[PowerBIDashboard] = Field(
+            None, description="", alias="dashboard"
+        )  # relationship
+
+    attributes: "PowerBITile.Attributes" = Field(
+        default_factory=lambda: PowerBITile.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikDataset.Attributes.update_forward_refs()
+class PowerBIDatasource(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDatasource":
+            raise ValueError("must be PowerBIDatasource")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDatasource._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    CONNECTION_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "connectionDetails", "connectionDetails"
+    )
+    """
+    Connection details of the datasource.
+    """
+
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "connection_details",
+        "datasets",
+    ]
+
+    @property
+    def connection_details(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.connection_details
+
+    @connection_details.setter
+    def connection_details(self, connection_details: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_details = connection_details
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return None if self.attributes is None else self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    class Attributes(PowerBI.Attributes):
+        connection_details: Optional[dict[str, str]] = Field(
+            None, description="", alias="connectionDetails"
+        )
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+
+    attributes: "PowerBIDatasource.Attributes" = Field(
+        default_factory=lambda: PowerBIDatasource.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikSheet.Attributes.update_forward_refs()
+class PowerBIWorkspace(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIWorkspace":
+            raise ValueError("must be PowerBIWorkspace")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIWorkspace._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated.
+    """
+    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    """
+    Number of reports in this workspace.
+    """
+    DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "dashboardCount", "dashboardCount"
+    )
+    """
+    Number of dashboards in this workspace.
+    """
+    DATASET_COUNT: ClassVar[NumericField] = NumericField("datasetCount", "datasetCount")
+    """
+    Number of datasets in this workspace.
+    """
+    DATAFLOW_COUNT: ClassVar[NumericField] = NumericField(
+        "dataflowCount", "dataflowCount"
+    )
+    """
+    Number of dataflows in this workspace.
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "web_url",
+        "report_count",
+        "dashboard_count",
+        "dataset_count",
+        "dataflow_count",
+        "reports",
+        "datasets",
+        "dashboards",
+        "dataflows",
+    ]
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def report_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.report_count
+
+    @report_count.setter
+    def report_count(self, report_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_count = report_count
+
+    @property
+    def dashboard_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dashboard_count
+
+    @dashboard_count.setter
+    def dashboard_count(self, dashboard_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_count = dashboard_count
+
+    @property
+    def dataset_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dataset_count
+
+    @dataset_count.setter
+    def dataset_count(self, dataset_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_count = dataset_count
+
+    @property
+    def dataflow_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dataflow_count
+
+    @dataflow_count.setter
+    def dataflow_count(self, dataflow_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflow_count = dataflow_count
+
+    @property
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return None if self.attributes is None else self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return None if self.attributes is None else self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    @property
+    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    class Attributes(PowerBI.Attributes):
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        report_count: Optional[int] = Field(None, description="", alias="reportCount")
+        dashboard_count: Optional[int] = Field(
+            None, description="", alias="dashboardCount"
+        )
+        dataset_count: Optional[int] = Field(None, description="", alias="datasetCount")
+        dataflow_count: Optional[int] = Field(
+            None, description="", alias="dataflowCount"
+        )
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+        dashboards: Optional[list[PowerBIDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+        dataflows: Optional[list[PowerBIDataflow]] = Field(
+            None, description="", alias="dataflows"
+        )  # relationship
+
+    attributes: "PowerBIWorkspace.Attributes" = Field(
+        default_factory=lambda: PowerBIWorkspace.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikSpace.Attributes.update_forward_refs()
+class PowerBIDataset(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataset":
+            raise ValueError("must be PowerBIDataset")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDataset._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this dataset exists.
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated. See 'sourceUrl' instead.
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
+    """
+    TBC
+    """
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "reports",
+        "workspace",
+        "dataflows",
+        "tiles",
+        "tables",
+        "datasources",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return None if self.attributes is None else self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def tables(self) -> Optional[list[PowerBITable]]:
+        return None if self.attributes is None else self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[PowerBITable]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def datasources(self) -> Optional[list[PowerBIDatasource]]:
+        return None if self.attributes is None else self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        dataflows: Optional[list[PowerBIDataflow]] = Field(
+            None, description="", alias="dataflows"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        tables: Optional[list[PowerBITable]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        datasources: Optional[list[PowerBIDatasource]] = Field(
+            None, description="", alias="datasources"
+        )  # relationship
+
+    attributes: "PowerBIDataset.Attributes" = Field(
+        default_factory=lambda: PowerBIDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIDashboard(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDashboard._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this dashboard exists.
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated. See 'sourceUrl' instead.
+    """
+    TILE_COUNT: ClassVar[NumericField] = NumericField("tileCount", "tileCount")
+    """
+    Number of tiles in this table.
+    """
+
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "tile_count",
+        "workspace",
+        "tiles",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def tile_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.tile_count
+
+    @tile_count.setter
+    def tile_count(self, tile_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tile_count = tile_count
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        tile_count: Optional[int] = Field(None, description="", alias="tileCount")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+
+    attributes: "PowerBIDashboard.Attributes" = Field(
+        default_factory=lambda: PowerBIDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIDataflow(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataflow":
+            raise ValueError("must be PowerBIDataflow")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDataflow._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this dataflow exists.
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated. See 'sourceUrl' instead.
+    """
+
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "workspace",
+        "datasets",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return None if self.attributes is None else self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+
+    attributes: "PowerBIDataflow.Attributes" = Field(
+        default_factory=lambda: PowerBIDataflow.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIPage(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIPage._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this page exists.
+    """
+    REPORT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "reportQualifiedName", "reportQualifiedName"
+    )
+    """
+    Unique name of the report in which this page exists.
+    """
+
+    REPORT: ClassVar[RelationField] = RelationField("report")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "report_qualified_name",
+        "report",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def report_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.report_qualified_name
+        )
+
+    @report_qualified_name.setter
+    def report_qualified_name(self, report_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_qualified_name = report_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return None if self.attributes is None else self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        report_qualified_name: Optional[str] = Field(
+            None, description="", alias="reportQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+
+    attributes: "PowerBIPage.Attributes" = Field(
+        default_factory=lambda: PowerBIPage.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+PowerBIReport.Attributes.update_forward_refs()
+
+
+PowerBIMeasure.Attributes.update_forward_refs()
+
+
+PowerBIColumn.Attributes.update_forward_refs()
+
+
+PowerBITable.Attributes.update_forward_refs()
+
+
+PowerBITile.Attributes.update_forward_refs()
+
+
+PowerBIDatasource.Attributes.update_forward_refs()
+
+
+PowerBIWorkspace.Attributes.update_forward_refs()
+
+
+PowerBIDataset.Attributes.update_forward_refs()
+
+
+PowerBIDashboard.Attributes.update_forward_refs()
+
+
+PowerBIDataflow.Attributes.update_forward_refs()
+
+
+PowerBIPage.Attributes.update_forward_refs()
