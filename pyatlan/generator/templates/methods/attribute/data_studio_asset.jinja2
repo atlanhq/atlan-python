@@ -2,7 +2,7 @@
         @classmethod
         # @validate_arguments()
         @init_guid
-        def create(cls, *, name: str, connection_qualified_name: str, data_studio_asset_type: GoogleDatastudioAssetType) -> {{ entity_def.name }}.Attributes:
+        def create(cls, *, name: str, connection_qualified_name: str, data_studio_asset_type: GoogleDatastudioAssetType, gdsid: str) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "data_studio_asset_type"],
                 [name, connection_qualified_name, data_studio_asset_type]
@@ -20,7 +20,8 @@
 
             return {{ entity_def.name }}.Attributes(
                 name=name,
-                qualified_name=f"{connection_qualified_name}/{name}",
+                gdsid=gdsid,
+                qualified_name=f"{connection_qualified_name}/{gdsid}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_type.value,
                 data_studio_asset_type=data_studio_asset_type,
