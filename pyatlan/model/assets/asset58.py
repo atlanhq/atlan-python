@@ -352,7 +352,6 @@ class DataStudioAsset(DataStudio):
 
             return DataStudioAsset.Attributes(
                 name=name,
-                gdsid=gdsid,
                 qualified_name=f"{connection_qualified_name}/{gdsid}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_type.value,
