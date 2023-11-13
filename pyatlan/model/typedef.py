@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import json
 import time
-from typing import Any, Callable, Optional, cast
+from typing import Any, Callable, ClassVar, Optional, cast
 
 from pydantic import Field
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
@@ -17,128 +19,132 @@ from pyatlan.model.enums import (
     TagIconType,
 )
 
-_complete_type_list = (
-    '["ADLSAccount",'
-    '"ADLSAccount",'
-    '"ADLSContainer",'
-    '"ADLSObject",'
-    '"APIPath",'
-    '"APISpec",'
-    '"Collection",'
-    '"Query",'
-    '"BIProcess",'
-    '"Badge",'
-    '"Column",'
-    '"ColumnProcess",'
-    '"Connection",'
-    '"DataStudioAsset",'
-    '"Database",'
-    '"DbtColumnProcess",'
-    '"DbtMetric",'
-    '"DbtModel",'
-    '"DbtModelColumn",'
-    '"DbtProcess",'
-    '"DbtSource",'
-    '"Folder",'
-    '"GCSBucket",'
-    '"GCSObject",'
-    '"AtlasGlossary",'
-    '"AtlasGlossaryCategory",'
-    '"AtlasGlossaryTerm",'
-    '"Insight",'
-    '"KafkaConsumerGroup",'
-    '"KafkaTopic",'
-    '"Process",'
-    '"Link",'
-    '"LookerDashboard",'
-    '"LookerExplore",'
-    '"LookerField",'
-    '"LookerFolder",'
-    '"LookerLook",'
-    '"LookerModel",'
-    '"LookerProject",'
-    '"LookerQuery",'
-    '"LookerTile",'
-    '"LookerView",'
-    '"MCIncident",'
-    '"MCMonitor",'
-    '"MaterialisedView",'
-    '"MetabaseCollection",'
-    '"MetabaseDashboard",'
-    '"MetabaseQuestion",'
-    '"ModeChart",'
-    '"ModeCollection",'
-    '"ModeQuery",'
-    '"ModeReport",'
-    '"ModeWorkspace",'
-    '"PowerBIColumn",'
-    '"PowerBIDashboard",'
-    '"PowerBIDataflow",'
-    '"PowerBIDataset",'
-    '"PowerBIDatasource",'
-    '"PowerBIMeasure",'
-    '"PowerBIPage",'
-    '"PowerBIReport",'
-    '"PowerBITable",'
-    '"PowerBITile",'
-    '"PowerBIWorkspace",'
-    '"PresetChart",'
-    '"PresetDashboard",'
-    '"PresetDataset",'
-    '"PresetWorkspace",'
-    '"Procedure",'
-    '"QlikApp",'
-    '"QlikChart",'
-    '"QlikDataset",'
-    '"QlikSheet",'
-    '"QlikSpace",'
-    '"QlikStream",'
-    '"QuickSightAnalysis",'
-    '"QuickSightAnalysisVisual",'
-    '"QuickSightDashboard",'
-    '"QuickSightDashboardVisual",'
-    '"QuickSightDataset",'
-    '"QuickSightDatasetField",'
-    '"QuickSightFolder",'
-    '"Readme",'
-    '"ReadmeTemplate",'
-    '"RedashDashboard",'
-    '"RedashQuery",'
-    '"RedashVisualization",'
-    '"S3Bucket",'
-    '"S3Object",'
-    '"SalesforceDashboard",'
-    '"SalesforceField",'
-    '"SalesforceObject",'
-    '"SalesforceOrganization",'
-    '"SalesforceReport",'
-    '"Schema",'
-    '"SigmaDataElement",'
-    '"SigmaDataElementField",'
-    '"SigmaDataset",'
-    '"SigmaDatasetColumn",'
-    '"SigmaPage",'
-    '"SigmaWorkbook",'
-    '"SnowflakePipe",'
-    '"SnowflakeStream",'
-    '"SnowflakeTag",'
-    '"Table",'
-    '"TablePartition",'
-    '"TableauCalculatedField",'
-    '"TableauDashboard",'
-    '"TableauDatasource",'
-    '"TableauDatasourceField",'
-    '"TableauFlow",'
-    '"TableauMetric",'
-    '"TableauProject",'
-    '"TableauSite",'
-    '"TableauWorkbook",'
-    '"TableauWorksheet",'
-    '"ThoughtspotAnswer",'
-    '"ThoughtspotDashlet",'
-    '"ThoughtspotLiveboard",'
-    '"View"]'
-)
+_complete_type_list: set[str] = {
+    "ADLSAccount",
+    "ADLSContainer",
+    "ADLSObject",
+    "APIPath",
+    "APISpec",
+    "Collection",
+    "Query",
+    "BIProcess",
+    "Badge",
+    "Column",
+    "ColumnProcess",
+    "Connection",
+    "DataStudioAsset",
+    "Database",
+    "DbtColumnProcess",
+    "DbtMetric",
+    "DbtModel",
+    "DbtModelColumn",
+    "DbtProcess",
+    "DbtSource",
+    "Folder",
+    "GCSBucket",
+    "GCSObject",
+    "Insight",
+    "KafkaConsumerGroup",
+    "KafkaTopic",
+    "Process",
+    "Link",
+    "LookerDashboard",
+    "LookerExplore",
+    "LookerField",
+    "LookerFolder",
+    "LookerLook",
+    "LookerModel",
+    "LookerProject",
+    "LookerQuery",
+    "LookerTile",
+    "LookerView",
+    "MCIncident",
+    "MCMonitor",
+    "MaterialisedView",
+    "MetabaseCollection",
+    "MetabaseDashboard",
+    "MetabaseQuestion",
+    "ModeChart",
+    "ModeCollection",
+    "ModeQuery",
+    "ModeReport",
+    "ModeWorkspace",
+    "PowerBIColumn",
+    "PowerBIDashboard",
+    "PowerBIDataflow",
+    "PowerBIDataset",
+    "PowerBIDatasource",
+    "PowerBIMeasure",
+    "PowerBIPage",
+    "PowerBIReport",
+    "PowerBITable",
+    "PowerBITile",
+    "PowerBIWorkspace",
+    "PresetChart",
+    "PresetDashboard",
+    "PresetDataset",
+    "PresetWorkspace",
+    "Procedure",
+    "QlikApp",
+    "QlikChart",
+    "QlikDataset",
+    "QlikSheet",
+    "QlikSpace",
+    "QlikStream",
+    "QuickSightAnalysis",
+    "QuickSightAnalysisVisual",
+    "QuickSightDashboard",
+    "QuickSightDashboardVisual",
+    "QuickSightDataset",
+    "QuickSightDatasetField",
+    "QuickSightFolder",
+    "Readme",
+    "ReadmeTemplate",
+    "RedashDashboard",
+    "RedashQuery",
+    "RedashVisualization",
+    "S3Bucket",
+    "S3Object",
+    "SalesforceDashboard",
+    "SalesforceField",
+    "SalesforceObject",
+    "SalesforceOrganization",
+    "SalesforceReport",
+    "Schema",
+    "SigmaDataElement",
+    "SigmaDataElementField",
+    "SigmaDataset",
+    "SigmaDatasetColumn",
+    "SigmaPage",
+    "SigmaWorkbook",
+    "SnowflakePipe",
+    "SnowflakeStream",
+    "SnowflakeTag",
+    "Table",
+    "TablePartition",
+    "TableauCalculatedField",
+    "TableauDashboard",
+    "TableauDatasource",
+    "TableauDatasourceField",
+    "TableauFlow",
+    "TableauMetric",
+    "TableauProject",
+    "TableauSite",
+    "TableauWorkbook",
+    "TableauWorksheet",
+    "ThoughtspotAnswer",
+    "ThoughtspotDashlet",
+    "ThoughtspotLiveboard",
+    "View",
+}
+_all_glossary_types: set[str] = {
+    "AtlasGlossary",
+    "AtlasGlossaryCategory",
+    "AtlasGlossaryTerm",
+}
+
+
+_all_other_types: set[str] = {"File"}
 
 
 class TypeDef(AtlanObject):
@@ -233,14 +239,24 @@ class EnumDef(TypeDef):
 
 class AttributeDef(AtlanObject):
     class Options(AtlanObject):
+        custom_metadata_version: str = Field(
+            description="Indicates the version of the custom metadata structure. This determines which other options "
+            "are available and used.",
+            default="v2",
+        )
         description: Optional[str] = Field(
             description="Optional description of the attribute."
         )
         applicable_entity_types: Optional[str] = Field(
-            description="Set of entities on which this attribute can be applied.",
+            description="Set of entities on which this attribute can be applied. "
+            "Note: generally this should be left as-is. Any overrides should instead be applied through "
+            "one or more of applicable_asset_types}, applicable_glossary_types}, or "
+            "applicable_other_asset_types}.",
         )
         custom_applicable_entity_types: Optional[str] = Field(
-            description="Set of entities on which this attribute should appear.",
+            description="Set of entities on which this attribute should appear."
+            "Deprecated: see applicable_asset_types, applicable_glossary_types and "
+            "applicable_other_asset_types",
         )
         allow_search: Optional[bool] = Field(
             description="Whether the attribute should be searchable (true) or not (false).",
@@ -287,6 +303,34 @@ class AttributeDef(AtlanObject):
         is_soft_reference: Optional[str] = Field(description="TBC")
         is_append_on_partial_update: Optional[str] = Field(description="TBC")
         primitive_type: Optional[str] = Field(description="Type of the attribute.")
+        applicable_connections: Optional[str] = Field(
+            description="Qualified names of glossaries to which to restrict the attribute. "
+            "Only glossary assets within one of these glossaries will have this attribute available."
+            "within the glossaries see applicable_asset_types."
+        )
+        applicable_glossaries: Optional[str] = Field(
+            description="Qualified names of glossaries to which to restrict the attribute. Only assets within one of "
+            "these glossary will have this attribute available. To further restrict the types of assets "
+            "To further restrict the types of assets within the glossaries, see applicable_glossary_type."
+        )
+        applicable_asset_types: Optional[str] = Field(
+            alias="assetTypesList",
+            description="Asset type names to which to restrict the attribute. Only assets of one of these types will "
+            "have this attribute available.  To further restrict the assets for this custom metadata by"
+            "connection, see applicable_connections. ",
+        )
+        applicable_glossary_types: Optional[str] = Field(
+            alias="glossaryTypeList",
+            description="Glossary type names to which to restrict the attribute. Only glossary assets of one of these "
+            "types will have this attribute available. To further restrict the glossary content for this "
+            "custom metadata by glossary, see applicable_glossaries.",
+        )
+        applicable_other_asset_types: Optional[str] = Field(
+            alias="otherAssetTypeList",
+            description="Any other asset type names to which to restrict the attribute. These cover any asset type "
+            "that is not managed within a connection or a glossary. Only assets of one of these types will "
+            "have this attribute available.",
+        )
 
         @staticmethod
         def create(
@@ -301,9 +345,9 @@ class AttributeDef(AtlanObject):
             )
             # Explicitly set all defaults to ensure inclusion during pydantic serialization
             options = AttributeDef.Options(
+                custom_metadata_version="v2",
                 primitive_type=attribute_type.value,
                 applicable_entity_types='["Asset"]',
-                custom_applicable_entity_types=_complete_type_list,
                 allow_search=False,
                 max_str_length="100000000",
                 allow_filtering=True,
@@ -390,6 +434,158 @@ class AttributeDef(AtlanObject):
     )
     is_default_value_null: Optional[bool] = Field(description="TBC")
 
+    def __setattr__(self, name, value):
+        if name in AttributeDef._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "applicable_asset_types",
+        "applicable_glossary_types",
+        "applicable_other_asset_types",
+        "applicable_entity_types",
+        "applicable_connections",
+        "applicable_glossaries",
+    ]
+
+    @property
+    def applicable_entity_types(self) -> set[str]:
+        """
+        Set of entities on which this attribute can be applied.
+        Note: generally this should be left as-is. Any overrides should instead be applied through
+        one or more of applicable_asset_types, applicable_glossary_types, or applicable_other_asset_types.
+        """
+        if self.options and self.options.applicable_entity_types:
+            return set(json.loads(self.options.applicable_entity_types))
+        return set()
+
+    @applicable_entity_types.setter
+    def applicable_entity_types(self, entity_types: set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(entity_types, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_entity_types", "set[str]"
+            )
+        self.options.applicable_entity_types = json.dumps(list(entity_types))
+
+    @property
+    def applicable_asset_types(self) -> set[str]:
+        """
+        Asset type names to which to restrict the attribute.
+        Only assets of one of these types will have this attribute available.
+        To further restrict the assets for this custom metadata by connection, see applicable_connections.
+        """
+        if self.options and self.options.applicable_asset_types:
+            return set(json.loads(self.options.applicable_asset_types))
+        return set()
+
+    @applicable_asset_types.setter
+    def applicable_asset_types(self, asset_types: set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(asset_types, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_asset_types", "set[str]"
+            )
+        if not asset_types.issubset(_complete_type_list):
+            raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
+                asset_types, "applicable_asset_types", _complete_type_list
+            )
+        self.options.applicable_asset_types = json.dumps(list(asset_types))
+
+    @property
+    def applicable_glossary_types(self) -> set[str]:
+        """
+        Glossary type names to which to restrict the attribute.
+        Only glossary assets of one of these types will have this attribute available.
+        To further restrict the glossary content for this custom metadata by glossary, see applicable_glossaries.
+        """
+        if self.options and self.options.applicable_glossary_types:
+            return set(json.loads(self.options.applicable_glossary_types))
+        return set()
+
+    @applicable_glossary_types.setter
+    def applicable_glossary_types(self, glossary_types: set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(glossary_types, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_glossary_types", "set[str]"
+            )
+        if not glossary_types.issubset(_all_glossary_types):
+            raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
+                glossary_types, "applicable_glossary_types", _all_glossary_types
+            )
+        self.options.applicable_glossary_types = json.dumps(list(glossary_types))
+
+    @property
+    def applicable_other_asset_types(self) -> set[str]:
+        """
+        Any other asset type names to which to restrict the attribute.
+        These cover any asset type that is not managed within a connection or a glossary.
+        Only assets of one of these types will have this attribute available.
+        """
+        if self.options and self.options.applicable_other_asset_types:
+            return set(json.loads(self.options.applicable_other_asset_types))
+        return set()
+
+    @applicable_other_asset_types.setter
+    def applicable_other_asset_types(self, other_asset_types: set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(other_asset_types, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_other_asset_types", "set[str]"
+            )
+        if not other_asset_types.issubset(_all_other_types):
+            raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
+                other_asset_types, "applicable_other_asset_types", _all_other_types
+            )
+        self.options.applicable_other_asset_types = json.dumps(list(other_asset_types))
+
+    @property
+    def applicable_connections(self) -> set[str]:
+        """
+        Qualified names of connections to which to restrict the attribute.
+        Only assets within one of these connections will have this attribute available.
+        To further restrict the types of assets within the glossaries, see applicable_asset_types}.
+        """
+        if self.options and self.options.applicable_connections:
+            return set(json.loads(self.options.applicable_connections))
+        return set()
+
+    @applicable_connections.setter
+    def applicable_connections(self, connections: set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(connections, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_connections", "set[str]"
+            )
+        self.options.applicable_connections = json.dumps(list(connections))
+
+    @property
+    def applicable_glossaries(self) -> set[str]:
+        """
+        Qualified names of glossaries to which to restrict the attribute.
+        Only glossary assets within one of these glossaries will have this attribute available.
+        To further restrict the types of assets within the glossaries, see applicable_glossary_types}.
+        """
+        if self.options and self.options.applicable_glossaries:
+            return set(json.loads(self.options.applicable_glossaries))
+        return set()
+
+    @applicable_glossaries.setter
+    def applicable_glossaries(self, glossaries: set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(glossaries, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_glossaries", "set[str]"
+            )
+        self.options.applicable_glossaries = json.dumps(list(glossaries))
+
     @staticmethod
     def create(
         display_name: str,
@@ -444,6 +640,9 @@ class AttributeDef(AtlanObject):
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []
+        attr_def.applicable_asset_types = _complete_type_list
+        attr_def.applicable_glossary_types = _all_glossary_types
+        attr_def.applicable_other_asset_types = _all_other_types
         return attr_def
 
     def is_archived(self) -> bool:

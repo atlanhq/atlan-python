@@ -1,14 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import json
+import random
 from pathlib import Path
 
 import pytest
 
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.core import to_camel_case, to_snake_case
-from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
+    AttributeDef,
     CustomMetadataDef,
     EntityDef,
     EnumDef,
@@ -16,7 +19,22 @@ from pyatlan.model.typedef import (
     StructDef,
     TypeDef,
     TypeDefResponse,
+    _all_glossary_types,
+    _all_other_types,
+    _complete_type_list,
 )
+
+APPLICABLE_GLOSSARIES = "applicable_glossaries"
+
+APPLICABLE_CONNECTIONS = "applicable_connections"
+
+APPLICABLE_ENTITY_TYPES = "applicable_entity_types"
+
+APPLICABLE_OTHER_ASSET_TYPES = "applicable_other_asset_types"
+
+APLICABLE_GLOSSARY_TYPES = "applicable_glossary_types"
+
+APPLICABLE_ASSET_TYPES = "applicable_asset_types"
 
 PARENT_DIR = Path(__file__).parent
 TYPEDEFS_JSON = PARENT_DIR / "data" / "typedefs.json"
@@ -250,3 +268,107 @@ def test_business_metadata_def(type_defs):
 def test_type_def_response(type_defs):
     type_def_response = TypeDefResponse(**type_defs)
     assert isinstance(type_def_response, TypeDefResponse)
+
+
+class TestAttributeDef:
+    @pytest.fixture()
+    def sut(self) -> AttributeDef:
+        return AttributeDef.create(
+            display_name="My Count",
+            attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
+        )
+
+    @pytest.mark.parametrize(
+        "attribute, value",
+        [
+            (APPLICABLE_ASSET_TYPES, {"Table"}),
+            (APLICABLE_GLOSSARY_TYPES, {"AtlasGlossary"}),
+            (APPLICABLE_OTHER_ASSET_TYPES, {"File"}),
+            (APPLICABLE_ENTITY_TYPES, {"Asset"}),
+        ],
+    )
+    def test_applicable_types_with_no_options_raises_invalid_request_error(
+        self, attribute, value, sut: AttributeDef
+    ):
+        sut = AttributeDef()
+
+        with pytest.raises(
+            InvalidRequestError,
+            match="ATLAN-PYTHON-400-050 Options is not present in the AttributeDef",
+        ):
+            setattr(sut, attribute, value)
+
+    @pytest.mark.parametrize(
+        "attribute, value, message",
+        [
+            (
+                APPLICABLE_ASSET_TYPES,
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be set\[str\]",
+            ),
+            (
+                APPLICABLE_ASSET_TYPES,
+                {"Bogus"},
+                r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
+            ),
+            (
+                APLICABLE_GLOSSARY_TYPES,
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be set\[str\]",
+            ),
+            (
+                APLICABLE_GLOSSARY_TYPES,
+                {"Bogus"},
+                r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
+            ),
+            (
+                APPLICABLE_OTHER_ASSET_TYPES,
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be set\[str\]",
+            ),
+            (
+                APPLICABLE_OTHER_ASSET_TYPES,
+                {"Bogus"},
+                r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_other_asset_types should be in ",
+            ),
+            (
+                APPLICABLE_ENTITY_TYPES,
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be set\[str\]",
+            ),
+            (
+                APPLICABLE_CONNECTIONS,
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be set\[str\]",
+            ),
+            (
+                APPLICABLE_GLOSSARIES,
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be set\[str\]",
+            ),
+        ],
+    )
+    def test_applicable_types_with_invalid_type_raises_invalid_request_error(
+        self, attribute, value, message, sut: AttributeDef
+    ):
+        with pytest.raises(InvalidRequestError, match=message):
+            setattr(sut, attribute, value)
+
+    @pytest.mark.parametrize(
+        "attribute, value",
+        [
+            (APPLICABLE_ASSET_TYPES, {random.choice(list(_complete_type_list))}),
+            (APLICABLE_GLOSSARY_TYPES, {random.choice(list(_all_glossary_types))}),
+            (APPLICABLE_OTHER_ASSET_TYPES, {random.choice(list(_all_other_types))}),
+            (APPLICABLE_ENTITY_TYPES, {"Asset"}),
+            (APPLICABLE_CONNECTIONS, {"default/snowflake/1699268171"}),
+            (APPLICABLE_GLOSSARIES, {"8Jdg4PdxcURBBNDt2RZD3"}),
+        ],
+    )
+    def test_applicable_types_with_valid_value(
+        self, attribute, value, sut: AttributeDef
+    ):
+        setattr(sut, attribute, value)
+        assert getattr(sut, attribute) == value
+        options = sut.options
+        assert getattr(options, attribute) == json.dumps(list(value))
