@@ -429,11 +429,13 @@
           <h1>Source code for pyatlan.model.typedef</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.atlan_image</span> <span class="kn">import</span> <span class="n">AtlanImage</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
@@ -446,128 +448,132 @@
     <span class="n">TagIconType</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">_complete_type_list</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s1">&#39;[&quot;ADLSAccount&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ADLSAccount&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ADLSContainer&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ADLSObject&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;APIPath&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;APISpec&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Collection&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Query&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;BIProcess&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Badge&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Column&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ColumnProcess&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Connection&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DataStudioAsset&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Database&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DbtColumnProcess&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DbtMetric&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DbtModel&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DbtModelColumn&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DbtProcess&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;DbtSource&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Folder&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;GCSBucket&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;GCSObject&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;AtlasGlossary&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;AtlasGlossaryCategory&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;AtlasGlossaryTerm&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Insight&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;KafkaConsumerGroup&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;KafkaTopic&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Process&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Link&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerExplore&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerField&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerFolder&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerLook&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerModel&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerProject&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerQuery&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerTile&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;LookerView&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;MCIncident&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;MCMonitor&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;MaterialisedView&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;MetabaseCollection&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;MetabaseDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;MetabaseQuestion&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ModeChart&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ModeCollection&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ModeQuery&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ModeReport&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ModeWorkspace&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIColumn&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIDataflow&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIDataset&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIDatasource&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIMeasure&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIPage&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIReport&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBITable&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBITile&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PowerBIWorkspace&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PresetChart&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PresetDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PresetDataset&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;PresetWorkspace&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Procedure&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QlikApp&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QlikChart&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QlikDataset&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QlikSheet&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QlikSpace&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QlikStream&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightAnalysis&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightAnalysisVisual&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightDashboardVisual&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightDataset&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightDatasetField&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;QuickSightFolder&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Readme&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ReadmeTemplate&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;RedashDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;RedashQuery&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;RedashVisualization&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;S3Bucket&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;S3Object&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SalesforceDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SalesforceField&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SalesforceObject&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SalesforceOrganization&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SalesforceReport&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Schema&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SigmaDataElement&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SigmaDataElementField&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SigmaDataset&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SigmaDatasetColumn&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SigmaPage&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SigmaWorkbook&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SnowflakePipe&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SnowflakeStream&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;SnowflakeTag&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;Table&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TablePartition&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauCalculatedField&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauDashboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauDatasource&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauDatasourceField&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauFlow&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauMetric&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauProject&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauSite&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauWorkbook&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;TableauWorksheet&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ThoughtspotAnswer&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ThoughtspotDashlet&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;ThoughtspotLiveboard&quot;,&#39;</span>
-    <span class="s1">&#39;&quot;View&quot;]&#39;</span>
-<span class="p">)</span>
+<span class="n">_complete_type_list</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ADLSAccount&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ADLSContainer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ADLSObject&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;APIPath&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;APISpec&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Collection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Query&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BIProcess&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Badge&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Column&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ColumnProcess&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Connection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DataStudioAsset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Database&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DbtColumnProcess&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DbtMetric&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DbtModel&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DbtModelColumn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DbtProcess&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DbtSource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Folder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GCSBucket&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GCSObject&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Insight&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KafkaConsumerGroup&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KafkaTopic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Process&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerExplore&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerField&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerFolder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerLook&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerModel&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerProject&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerQuery&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerTile&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LookerView&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MCIncident&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MCMonitor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MaterialisedView&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MetabaseCollection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MetabaseDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MetabaseQuestion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ModeChart&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ModeCollection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ModeQuery&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ModeReport&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ModeWorkspace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIColumn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIDataflow&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIDataset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIDatasource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIMeasure&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIPage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIReport&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBITable&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBITile&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PowerBIWorkspace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PresetChart&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PresetDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PresetDataset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PresetWorkspace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Procedure&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QlikApp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QlikChart&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QlikDataset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QlikSheet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QlikSpace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QlikStream&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightAnalysis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightAnalysisVisual&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightDashboardVisual&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightDataset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightDatasetField&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuickSightFolder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Readme&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ReadmeTemplate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RedashDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RedashQuery&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RedashVisualization&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;S3Bucket&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;S3Object&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SalesforceDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SalesforceField&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SalesforceObject&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SalesforceOrganization&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SalesforceReport&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Schema&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SigmaDataElement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SigmaDataElementField&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SigmaDataset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SigmaDatasetColumn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SigmaPage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SigmaWorkbook&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SnowflakePipe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SnowflakeStream&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SnowflakeTag&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Table&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TablePartition&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauCalculatedField&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauDashboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauDatasource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauDatasourceField&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauFlow&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauMetric&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauProject&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauSite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauWorkbook&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableauWorksheet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ThoughtspotAnswer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ThoughtspotDashlet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ThoughtspotLiveboard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;View&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_all_glossary_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;AtlasGlossary&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AtlasGlossaryCategory&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AtlasGlossaryTerm&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="n">_all_other_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;File&quot;</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="TypeDef">
@@ -673,14 +679,24 @@
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.AttributeDef">[docs]</a>
 <span class="k">class</span> <span class="nc">AttributeDef</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+        <span class="n">custom_metadata_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Indicates the version of the custom metadata structure. This determines which other options &quot;</span>
+            <span class="s2">&quot;are available and used.&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s2">&quot;v2&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional description of the attribute.&quot;</span>
         <span class="p">)</span>
         <span class="n">applicable_entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute can be applied.&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute can be applied. &quot;</span>
+            <span class="s2">&quot;Note: generally this should be left as-is. Any overrides should instead be applied through &quot;</span>
+            <span class="s2">&quot;one or more of applicable_asset_types}, applicable_glossary_types}, or &quot;</span>
+            <span class="s2">&quot;applicable_other_asset_types}.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">custom_applicable_entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute should appear.&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute should appear.&quot;</span>
+            <span class="s2">&quot;Deprecated: see applicable_asset_types, applicable_glossary_types and &quot;</span>
+            <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">allow_search</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute should be searchable (true) or not (false).&quot;</span><span class="p">,</span>
@@ -727,6 +743,34 @@
         <span class="n">is_soft_reference</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
         <span class="n">is_append_on_partial_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
         <span class="n">primitive_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the attribute.&quot;</span><span class="p">)</span>
+        <span class="n">applicable_connections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Qualified names of glossaries to which to restrict the attribute. &quot;</span>
+            <span class="s2">&quot;Only glossary assets within one of these glossaries will have this attribute available.&quot;</span>
+            <span class="s2">&quot;within the glossaries see applicable_asset_types.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">applicable_glossaries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Qualified names of glossaries to which to restrict the attribute. Only assets within one of &quot;</span>
+            <span class="s2">&quot;these glossary will have this attribute available. To further restrict the types of assets &quot;</span>
+            <span class="s2">&quot;To further restrict the types of assets within the glossaries, see applicable_glossary_type.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">applicable_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetTypesList&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Asset type names to which to restrict the attribute. Only assets of one of these types will &quot;</span>
+            <span class="s2">&quot;have this attribute available.  To further restrict the assets for this custom metadata by&quot;</span>
+            <span class="s2">&quot;connection, see applicable_connections. &quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">applicable_glossary_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;glossaryTypeList&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Glossary type names to which to restrict the attribute. Only glossary assets of one of these &quot;</span>
+            <span class="s2">&quot;types will have this attribute available. To further restrict the glossary content for this &quot;</span>
+            <span class="s2">&quot;custom metadata by glossary, see applicable_glossaries.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">applicable_other_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;otherAssetTypeList&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Any other asset type names to which to restrict the attribute. These cover any asset type &quot;</span>
+            <span class="s2">&quot;that is not managed within a connection or a glossary. Only assets of one of these types will &quot;</span>
+            <span class="s2">&quot;have this attribute available.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
@@ -741,9 +785,9 @@
             <span class="p">)</span>
             <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
             <span class="n">options</span> <span class="o">=</span> <span class="n">AttributeDef</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span>
+                <span class="n">custom_metadata_version</span><span class="o">=</span><span class="s2">&quot;v2&quot;</span><span class="p">,</span>
                 <span class="n">primitive_type</span><span class="o">=</span><span class="n">attribute_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="n">applicable_entity_types</span><span class="o">=</span><span class="s1">&#39;[&quot;Asset&quot;]&#39;</span><span class="p">,</span>
-                <span class="n">custom_applicable_entity_types</span><span class="o">=</span><span class="n">_complete_type_list</span><span class="p">,</span>
                 <span class="n">allow_search</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">max_str_length</span><span class="o">=</span><span class="s2">&quot;100000000&quot;</span><span class="p">,</span>
                 <span class="n">allow_filtering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -830,6 +874,158 @@
     <span class="p">)</span>
     <span class="n">is_default_value_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">AttributeDef</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;applicable_entity_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;applicable_connections&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;applicable_glossaries&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set of entities on which this attribute can be applied.</span>
+<span class="sd">        Note: generally this should be left as-is. Any overrides should instead be applied through</span>
+<span class="sd">        one or more of applicable_asset_types, applicable_glossary_types, or applicable_other_asset_types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_entity_types</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_entity_types</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@applicable_entity_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;applicable_entity_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_entity_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">entity_types</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asset type names to which to restrict the attribute.</span>
+<span class="sd">        Only assets of one of these types will have this attribute available.</span>
+<span class="sd">        To further restrict the assets for this custom metadata by connection, see applicable_connections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_asset_types</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_asset_types</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@applicable_asset_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asset_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_complete_type_list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="n">asset_types</span><span class="p">,</span> <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span> <span class="n">_complete_type_list</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_asset_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">asset_types</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Glossary type names to which to restrict the attribute.</span>
+<span class="sd">        Only glossary assets of one of these types will have this attribute available.</span>
+<span class="sd">        To further restrict the glossary content for this custom metadata by glossary, see applicable_glossaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossary_types</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossary_types</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@applicable_glossary_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossary_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">glossary_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">glossary_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_glossary_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="n">glossary_types</span><span class="p">,</span> <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span> <span class="n">_all_glossary_types</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossary_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">glossary_types</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Any other asset type names to which to restrict the attribute.</span>
+<span class="sd">        These cover any asset type that is not managed within a connection or a glossary.</span>
+<span class="sd">        Only assets of one of these types will have this attribute available.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_other_asset_types</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_other_asset_types</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@applicable_other_asset_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_asset_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other_asset_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">other_asset_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_other_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="n">other_asset_types</span><span class="p">,</span> <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span> <span class="n">_all_other_types</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_other_asset_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other_asset_types</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">applicable_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Qualified names of connections to which to restrict the attribute.</span>
+<span class="sd">        Only assets within one of these connections will have this attribute available.</span>
+<span class="sd">        To further restrict the types of assets within the glossaries, see applicable_asset_types}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_connections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_connections</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@applicable_connections</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">applicable_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connections</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">connections</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;applicable_connections&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_connections</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">connections</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">applicable_glossaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Qualified names of glossaries to which to restrict the attribute.</span>
+<span class="sd">        Only glossary assets within one of these glossaries will have this attribute available.</span>
+<span class="sd">        To further restrict the types of assets within the glossaries, see applicable_glossary_types}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossaries</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossaries</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@applicable_glossaries</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">applicable_glossaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossaries</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">glossaries</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;applicable_glossaries&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossaries</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">glossaries</span><span class="p">))</span>
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
         <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -884,6 +1080,9 @@
                 <span class="n">attr_def</span><span class="o">.</span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">enum_def</span><span class="o">.</span><span class="n">get_valid_values</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">attr_def</span><span class="o">.</span><span class="n">enum_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">attr_def</span><span class="o">.</span><span class="n">applicable_asset_types</span> <span class="o">=</span> <span class="n">_complete_type_list</span>
+        <span class="n">attr_def</span><span class="o">.</span><span class="n">applicable_glossary_types</span> <span class="o">=</span> <span class="n">_all_glossary_types</span>
+        <span class="n">attr_def</span><span class="o">.</span><span class="n">applicable_other_asset_types</span> <span class="o">=</span> <span class="n">_all_other_types</span>
         <span class="k">return</span> <span class="n">attr_def</span>
 
     <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

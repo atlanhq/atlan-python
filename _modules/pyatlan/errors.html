@@ -901,6 +901,20 @@
         <span class="s2">&quot;Check that the qualified_name is available from the Glossary&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">MISSING_OPTIONS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-050&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Options is not present in the AttributeDef&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Please use the AttributeDef.create function to create the Options&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">INVALID_PARAMETER_VALUE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-051&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is an invalid value for </span><span class="si">{1}</span><span class="s2"> should be in </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Check that value you are using is valid&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
