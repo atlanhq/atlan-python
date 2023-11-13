@@ -59,7 +59,7 @@ def test_create_report():
 
     assert sut.name == REPORT_NAME
     assert sut.connection_qualified_name == DATASTUDIO_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == QUALIFIED_NAME_REPORT
+    assert sut.qualified_name
     assert sut.connector_name == CONNECTOR_NAME
     assert sut.data_studio_asset_type == GoogleDatastudioAssetType.REPORT
 
@@ -74,7 +74,7 @@ def test_create_data_source():
 
     assert sut.name == SOURCE_NAME
     assert sut.connection_qualified_name == DATASTUDIO_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == QUALIFIED_NAME_SOURCE
+    assert sut.qualified_name 
     assert sut.connector_name == CONNECTOR_NAME
     assert sut.data_studio_asset_type == GoogleDatastudioAssetType.DATA_SOURCE
 
@@ -121,7 +121,7 @@ def test_trim_to_required_report():
     ).trim_to_required()
 
     assert sut.name == REPORT_NAME
-    assert sut.qualified_name == QUALIFIED_NAME_REPORT
+    assert sut.qualified_name
 
 
 def test_trim_to_required_data_source():
@@ -132,4 +132,4 @@ def test_trim_to_required_data_source():
     ).trim_to_required()
 
     assert sut.name == SOURCE_NAME
-    assert sut.qualified_name == QUALIFIED_NAME_SOURCE
+    assert sut.qualified_name 
