@@ -442,6 +442,20 @@ class ErrorCode(Enum):
         "Check that the qualified_name is available from the Glossary",
         InvalidRequestError,
     )
+    MISSING_OPTIONS = (
+        400,
+        "ATLAN-PYTHON-400-050",
+        "Options is not present in the AttributeDef",
+        "Please use the AttributeDef.create function to create the Options",
+        InvalidRequestError,
+    )
+    INVALID_PARAMETER_VALUE = (
+        400,
+        "ATLAN-PYTHON-400-051",
+        "{0} is an invalid value for {1} should be in {2}",
+        "Check that value you are using is valid",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

@@ -547,7 +547,10 @@ def test_hierarchy(
 
     root_categories = hierarchy.root_categories
 
+    assert root_categories
     assert len(root_categories) == 2
+    assert root_categories[0].name
+    assert root_categories[1].name
     assert "top" in root_categories[0].name
     assert "top" in root_categories[1].name
 
@@ -567,6 +570,19 @@ def test_hierarchy(
     category_names = [category.name for category in hierarchy.breadth_first]
 
     assert len(category_names) == 12
+    assert category_names
+    assert category_names[0]
+    assert category_names[1]
+    assert category_names[2]
+    assert category_names[3]
+    assert category_names[4]
+    assert category_names[5]
+    assert category_names[6]
+    assert category_names[7]
+    assert category_names[8]
+    assert category_names[9]
+    assert category_names[10]
+    assert category_names[11]
     assert "top" in category_names[0]
     assert "top" in category_names[1]
     assert "mid" in category_names[2]
@@ -583,6 +599,19 @@ def test_hierarchy(
     category_names = [category.name for category in hierarchy.depth_first]
 
     assert len(category_names) == 12
+    assert category_names
+    assert category_names[0]
+    assert category_names[1]
+    assert category_names[2]
+    assert category_names[3]
+    assert category_names[4]
+    assert category_names[5]
+    assert category_names[6]
+    assert category_names[7]
+    assert category_names[8]
+    assert category_names[9]
+    assert category_names[10]
+    assert category_names[11]
     assert "top" in category_names[0]
     assert "mid" in category_names[1]
     assert "leaf" in category_names[2]

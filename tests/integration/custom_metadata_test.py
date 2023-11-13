@@ -679,7 +679,7 @@ def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     assert extra.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
     assert extra.name != CM_ATTR_RACI_EXTRA
     assert extra.type_name == AtlanCustomAttributePrimitiveType.STRING.value
-    assert "Database" in extra.options.custom_applicable_entity_types
+    assert "Database" in extra.applicable_asset_types
     assert not extra.options.multi_value_select
     assert extra.is_archived()
 
@@ -731,7 +731,7 @@ def test_retrieve_structure_without_archived(
     assert extra.display_name == CM_ATTR_RACI_EXTRA
     assert extra.name != CM_ATTR_RACI_EXTRA
     assert extra.type_name == AtlanCustomAttributePrimitiveType.STRING.value
-    assert "Database" in extra.options.custom_applicable_entity_types
+    assert "Database" in extra.applicable_asset_types
     assert not extra.is_archived()
 
 
@@ -752,7 +752,7 @@ def test_retrieve_structure_with_archived(
     assert extra.display_name == CM_ATTR_RACI_EXTRA
     assert extra.name != CM_ATTR_RACI_EXTRA
     assert extra.type_name == AtlanCustomAttributePrimitiveType.STRING.value
-    assert "Database" in extra.options.custom_applicable_entity_types
+    assert "Database" in extra.applicable_asset_types
     assert not extra.is_archived()
 
 
@@ -920,7 +920,7 @@ def _validate_raci_structure(
     assert one.name != CM_ATTR_RACI_RESPONSIBLE
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
-    assert "Database" in str(one.options.custom_applicable_entity_types)
+    assert "Database" in one.applicable_asset_types
     assert not one.is_archived()
     assert one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.USERS.value
@@ -929,7 +929,7 @@ def _validate_raci_structure(
     assert one.name != CM_ATTR_RACI_ACCOUNTABLE
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert one.options
-    assert "Table" in str(one.options.custom_applicable_entity_types)
+    assert "Table" in one.applicable_asset_types
     assert not one.is_archived()
     assert not one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.USERS.value
@@ -938,7 +938,7 @@ def _validate_raci_structure(
     assert one.name != CM_ATTR_RACI_CONSULTED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
-    assert "Column" in str(one.options.custom_applicable_entity_types)
+    assert "Column" in one.applicable_asset_types
     assert not one.is_archived()
     assert one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.GROUPS.value
@@ -947,7 +947,7 @@ def _validate_raci_structure(
     assert not one.name == CM_ATTR_RACI_INFORMED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
-    assert "MaterialisedView" in str(one.options.custom_applicable_entity_types)
+    assert "MaterialisedView" in one.applicable_asset_types
     assert not one.is_archived()
     assert one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.GROUPS.value
@@ -960,7 +960,7 @@ def _validate_raci_structure(
         assert one.name != CM_ATTR_RACI_EXTRA
         assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
         assert one.options
-        assert "AtlasGlossaryTerm" in str(one.options.custom_applicable_entity_types)
+        assert "AtlasGlossaryTerm" in one.applicable_glossary_types
         assert not one.options.multi_value_select
         assert one.is_archived()
     if total_expected > 4:
