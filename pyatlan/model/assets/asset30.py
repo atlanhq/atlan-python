@@ -34,23 +34,23 @@ class Azure(Cloud):
         "azureResourceId", "azureResourceId", "azureResourceId.text"
     )
     """
-    TBC
+    Resource identifier of this asset in Azure.
     """
     AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "azureLocation", "azureLocation"
     )
     """
-    TBC
+    Location of this asset in Azure.
     """
     ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
         "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
     )
     """
-    TBC
+    Secondary location of the ADLS account.
     """
     AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
     """
-    TBC
+    Tags that have been applied to this asset in Azure.
     """
 
     _convenience_properties: ClassVar[list[str]] = [

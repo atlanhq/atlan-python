@@ -38,45 +38,45 @@ class Google(Cloud):
         "googleService", "googleService"
     )
     """
-    TBC
+    Service in Google in which the asset exists.
     """
     GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectName", "googleProjectName", "googleProjectName.text"
     )
     """
-    TBC
+    Name of the project in which the asset exists.
     """
     GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectId", "googleProjectId", "googleProjectId.text"
     )
     """
-    TBC
+    ID of the project in which the asset exists.
     """
     GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
         "googleProjectNumber", "googleProjectNumber"
     )
     """
-    TBC
+    Number of the project in which the asset exists.
     """
     GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "googleLocation", "googleLocation"
     )
     """
-    TBC
+    Location of this asset in Google.
     """
     GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
         "googleLocationType", "googleLocationType"
     )
     """
-    TBC
+    Type of location of this asset in Google.
     """
     GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
     """
-    TBC
+    List of labels that have been applied to the asset in Google.
     """
     GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
     """
-    TBC
+    List of tags that have been applied to the asset in Google.
     """
 
     _convenience_properties: ClassVar[list[str]] = [

@@ -31,25 +31,25 @@ class Mode(BI):
 
     MODE_ID: ClassVar[KeywordField] = KeywordField("modeId", "modeId")
     """
-    TBC
+
     """
     MODE_TOKEN: ClassVar[KeywordTextField] = KeywordTextField(
         "modeToken", "modeToken", "modeToken.text"
     )
     """
-    TBC
+
     """
     MODE_WORKSPACE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeWorkspaceName", "modeWorkspaceName.keyword", "modeWorkspaceName"
     )
     """
-    TBC
+
     """
     MODE_WORKSPACE_USERNAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
     )
     """
-    TBC
+
     """
     MODE_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeWorkspaceQualifiedName",
@@ -57,13 +57,13 @@ class Mode(BI):
         "modeWorkspaceQualifiedName.text",
     )
     """
-    TBC
+
     """
     MODE_REPORT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeReportName", "modeReportName.keyword", "modeReportName"
     )
     """
-    TBC
+
     """
     MODE_REPORT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeReportQualifiedName",
@@ -71,13 +71,13 @@ class Mode(BI):
         "modeReportQualifiedName.text",
     )
     """
-    TBC
+
     """
     MODE_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeQueryName", "modeQueryName.keyword", "modeQueryName"
     )
     """
-    TBC
+
     """
     MODE_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeQueryQualifiedName",
@@ -85,7 +85,7 @@ class Mode(BI):
         "modeQueryQualifiedName.text",
     )
     """
-    TBC
+
     """
 
     _convenience_properties: ClassVar[list[str]] = [

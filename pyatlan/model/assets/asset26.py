@@ -35,37 +35,37 @@ class API(Catalog):
 
     API_SPEC_TYPE: ClassVar[KeywordField] = KeywordField("apiSpecType", "apiSpecType")
     """
-    TBC
+    Type of API, for example: OpenAPI, GraphQL, etc.
     """
     API_SPEC_VERSION: ClassVar[KeywordField] = KeywordField(
         "apiSpecVersion", "apiSpecVersion"
     )
     """
-    TBC
+    Version of the API specification.
     """
     API_SPEC_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecName", "apiSpecName.keyword", "apiSpecName"
     )
     """
-    TBC
+    Simple name of the API spec, if this asset is contained in an API spec.
     """
     API_SPEC_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
     )
     """
-    TBC
+    Unique name of the API spec, if this asset is contained in an API spec.
     """
     API_EXTERNAL_DOCS: ClassVar[KeywordField] = KeywordField(
         "apiExternalDocs", "apiExternalDocs"
     )
     """
-    TBC
+    External documentation of the API.
     """
     API_IS_AUTH_OPTIONAL: ClassVar[BooleanField] = BooleanField(
         "apiIsAuthOptional", "apiIsAuthOptional"
     )
     """
-    TBC
+    Whether authentication is optional (true) or required (false).
     """
 
     _convenience_properties: ClassVar[list[str]] = [
