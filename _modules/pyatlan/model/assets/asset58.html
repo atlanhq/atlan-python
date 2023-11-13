@@ -433,170 +433,27 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span><span class="p">,</span> <span class="n">GoogleDatastudioAssetType</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BooleanField</span><span class="p">,</span>
     <span class="n">KeywordField</span><span class="p">,</span>
     <span class="n">KeywordTextField</span><span class="p">,</span>
+    <span class="n">KeywordTextStemmedField</span><span class="p">,</span>
     <span class="n">NumericField</span><span class="p">,</span>
-    <span class="n">RelationField</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.structs</span> <span class="kn">import</span> <span class="n">GoogleLabel</span><span class="p">,</span> <span class="n">GoogleTag</span>
 <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
-<span class="kn">from</span> <span class="nn">.asset33</span> <span class="kn">import</span> <span class="n">S3</span>
+<span class="kn">from</span> <span class="nn">.asset45</span> <span class="kn">import</span> <span class="n">DataStudio</span>
 
 
-<div class="viewcode-block" id="S3Bucket">
-<a class="viewcode-back" href="../../../../asset/s3bucket.html#pyatlan.model.assets.S3Bucket">[docs]</a>
-<span class="k">class</span> <span class="nc">S3Bucket</span><span class="p">(</span><span class="n">S3</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="c1"># @validate_arguments()</span>
-    <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">aws_arn</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S3Bucket</span><span class="p">:</span>
-        <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;aws_arn&quot;</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">aws_arn</span><span class="p">],</span>
-        <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">S3Bucket</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
-            <span class="n">aws_arn</span><span class="o">=</span><span class="n">aws_arn</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;S3Bucket&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;S3Bucket&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be S3Bucket&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">S3Bucket</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="n">S3OBJECT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectCount&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectCount&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3BUCKET_VERSIONING_ENABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;s3BucketVersioningEnabled&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketVersioningEnabled&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">OBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;objects&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;s3_object_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_bucket_versioning_enabled&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;objects&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_count</span>
-
-    <span class="nd">@s3_object_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_count</span> <span class="o">=</span> <span class="n">s3_object_count</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_bucket_versioning_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_bucket_versioning_enabled</span>
-        <span class="p">)</span>
-
-    <span class="nd">@s3_bucket_versioning_enabled</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_bucket_versioning_enabled</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s3_bucket_versioning_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_bucket_versioning_enabled</span> <span class="o">=</span> <span class="n">s3_bucket_versioning_enabled</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">S3Object</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">objects</span>
-
-    <span class="nd">@objects</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">S3Object</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="n">objects</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">S3</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">s3_object_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectCount&quot;</span>
-        <span class="p">)</span>
-        <span class="n">s3_bucket_versioning_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3BucketVersioningEnabled&quot;</span>
-        <span class="p">)</span>
-        <span class="n">objects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">S3Object</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;objects&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-
-        <span class="nd">@classmethod</span>
-        <span class="c1"># @validate_arguments()</span>
-        <span class="nd">@init_guid</span>
-        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">aws_arn</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S3Bucket</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
-            <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;aws_arn&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">aws_arn</span><span class="p">],</span>
-            <span class="p">)</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">connection_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
-                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-                <span class="k">if</span> <span class="n">connector_type</span> <span class="o">!=</span> <span class="n">AtlanConnectorType</span><span class="o">.</span><span class="n">S3</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Connector type must be s3&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-            <span class="k">return</span> <span class="n">S3Bucket</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">aws_arn</span><span class="o">=</span><span class="n">aws_arn</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">aws_arn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="p">)</span>
-
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;S3Bucket.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">S3Bucket</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="S3Object">
-<a class="viewcode-back" href="../../../../asset/s3object.html#pyatlan.model.assets.S3Object">[docs]</a>
-<span class="k">class</span> <span class="nc">S3Object</span><span class="p">(</span><span class="n">S3</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStudioAsset">
+<a class="viewcode-back" href="../../../../asset/datastudioasset.html#pyatlan.model.assets.DataStudioAsset">[docs]</a>
+<span class="k">class</span> <span class="nc">DataStudioAsset</span><span class="p">(</span><span class="n">DataStudio</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
@@ -607,259 +464,294 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">aws_arn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">s3_bucket_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S3Object</span><span class="p">:</span>
+        <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">GoogleDatastudioAssetType</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataStudioAsset</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;aws_arn&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;s3_bucket_qualified_name&quot;</span><span class="p">,</span>
-            <span class="p">],</span>
-            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">aws_arn</span><span class="p">,</span> <span class="n">s3_bucket_qualified_name</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">S3Object</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
-            <span class="n">aws_arn</span><span class="o">=</span><span class="n">aws_arn</span><span class="p">,</span>
-            <span class="n">s3_bucket_qualified_name</span><span class="o">=</span><span class="n">s3_bucket_qualified_name</span><span class="p">,</span>
+            <span class="n">data_studio_asset_type</span><span class="o">=</span><span class="n">data_studio_asset_type</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;S3Object&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;DataStudioAsset&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;S3Object&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be S3Object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;DataStudioAsset&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be DataStudioAsset&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">S3Object</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">S3OBJECT_LAST_MODIFIED_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectLastModifiedTime&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectLastModifiedTime&quot;</span>
+    <span class="n">DATA_STUDIO_ASSET_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dataStudioAssetType&quot;</span><span class="p">,</span> <span class="s2">&quot;dataStudioAssetType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3BUCKET_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;s3BucketName&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketName&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketName.text&quot;</span>
+    <span class="n">DATA_STUDIO_ASSET_TITLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
+        <span class="n">KeywordTextStemmedField</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextStemmedField</span><span class="p">(</span>
+        <span class="s2">&quot;dataStudioAssetTitle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataStudioAssetTitle.keyword&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataStudioAssetTitle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataStudioAssetTitle.stemmed&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Title of the Google Data Studio asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3BUCKET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;s3BucketQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketQualifiedName&quot;</span>
+    <span class="n">DATA_STUDIO_ASSET_OWNER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dataStudioAssetOwner&quot;</span><span class="p">,</span> <span class="s2">&quot;dataStudioAssetOwner&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Owner of the asset, from Google Data Studio.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3OBJECT_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;s3ObjectSize&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectSize&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3OBJECT_STORAGE_CLASS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectStorageClass&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectStorageClass&quot;</span>
+    <span class="n">IS_TRASHED_DATA_STUDIO_ASSET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;isTrashedDataStudioAsset&quot;</span><span class="p">,</span> <span class="s2">&quot;isTrashedDataStudioAsset&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Whether the Google Data Studio asset has been trashed (true) or not (false).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3OBJECT_KEY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectKey&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectKey&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectKey.text&quot;</span>
+    <span class="n">GOOGLE_SERVICE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;googleService&quot;</span><span class="p">,</span> <span class="s2">&quot;googleService&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Service in Google in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3OBJECT_CONTENT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectContentType&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectContentType&quot;</span>
+    <span class="n">GOOGLE_PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;googleProjectName&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectName&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectName.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Name of the project in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3OBJECT_CONTENT_DISPOSITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectContentDisposition&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectContentDisposition&quot;</span>
+    <span class="n">GOOGLE_PROJECT_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;googleProjectId&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectId&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectId.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    ID of the project in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">S3OBJECT_VERSION_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;s3ObjectVersionId&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectVersionId&quot;</span>
+    <span class="n">GOOGLE_PROJECT_NUMBER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;googleProjectNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectNumber&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of the project in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">BUCKET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;bucket&quot;</span><span class="p">)</span>
+    <span class="n">GOOGLE_LOCATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;googleLocation&quot;</span><span class="p">,</span> <span class="s2">&quot;googleLocation&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Location of this asset in Google.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GOOGLE_LOCATION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;googleLocationType&quot;</span><span class="p">,</span> <span class="s2">&quot;googleLocationType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of location of this asset in Google.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GOOGLE_LABELS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;googleLabels&quot;</span><span class="p">,</span> <span class="s2">&quot;googleLabels&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of labels that have been applied to the asset in Google.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GOOGLE_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;googleTags&quot;</span><span class="p">,</span> <span class="s2">&quot;googleTags&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of tags that have been applied to the asset in Google.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;s3_object_last_modified_time&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_bucket_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_bucket_qualified_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_object_size&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_object_storage_class&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_object_key&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_object_content_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_object_content_disposition&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;s3_object_version_id&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bucket&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_studio_asset_title&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_studio_asset_owner&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_trashed_data_studio_asset&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_service&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_project_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_project_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_project_number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_location&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_location_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_labels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_tags&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_last_modified_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GoogleDatastudioAssetType</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_last_modified_time</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_type</span>
         <span class="p">)</span>
 
-    <span class="nd">@s3_object_last_modified_time</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_last_modified_time</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_last_modified_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="nd">@data_studio_asset_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GoogleDatastudioAssetType</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_last_modified_time</span> <span class="o">=</span> <span class="n">s3_object_last_modified_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_type</span> <span class="o">=</span> <span class="n">data_studio_asset_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_bucket_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_bucket_name</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_title</span>
+        <span class="p">)</span>
 
-    <span class="nd">@s3_bucket_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_bucket_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_bucket_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@data_studio_asset_title</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_studio_asset_title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_bucket_name</span> <span class="o">=</span> <span class="n">s3_bucket_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_title</span> <span class="o">=</span> <span class="n">data_studio_asset_title</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_bucket_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_owner</span>
+        <span class="p">)</span>
+
+    <span class="nd">@data_studio_asset_owner</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_studio_asset_owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_owner</span> <span class="o">=</span> <span class="n">data_studio_asset_owner</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_trashed_data_studio_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_bucket_qualified_name</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_trashed_data_studio_asset</span>
         <span class="p">)</span>
 
-    <span class="nd">@s3_bucket_qualified_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_bucket_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_bucket_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_bucket_qualified_name</span> <span class="o">=</span> <span class="n">s3_bucket_qualified_name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_size</span>
-
-    <span class="nd">@s3_object_size</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_size</span> <span class="o">=</span> <span class="n">s3_object_size</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_storage_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_storage_class</span>
-        <span class="p">)</span>
-
-    <span class="nd">@s3_object_storage_class</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_storage_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_storage_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_storage_class</span> <span class="o">=</span> <span class="n">s3_object_storage_class</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_key</span>
-
-    <span class="nd">@s3_object_key</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_key</span> <span class="o">=</span> <span class="n">s3_object_key</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_content_type</span>
-        <span class="p">)</span>
-
-    <span class="nd">@s3_object_content_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_content_type</span> <span class="o">=</span> <span class="n">s3_object_content_type</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_content_disposition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_content_disposition</span>
-        <span class="p">)</span>
-
-    <span class="nd">@s3_object_content_disposition</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_content_disposition</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_content_disposition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="nd">@is_trashed_data_studio_asset</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_trashed_data_studio_asset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">is_trashed_data_studio_asset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_content_disposition</span> <span class="o">=</span> <span class="n">s3_object_content_disposition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_trashed_data_studio_asset</span> <span class="o">=</span> <span class="n">is_trashed_data_studio_asset</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">s3_object_version_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_version_id</span>
+    <span class="k">def</span> <span class="nf">google_service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_service</span>
 
-    <span class="nd">@s3_object_version_id</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">s3_object_version_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_object_version_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@google_service</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">s3_object_version_id</span> <span class="o">=</span> <span class="n">s3_object_version_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_service</span> <span class="o">=</span> <span class="n">google_service</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">S3Bucket</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">bucket</span>
+    <span class="k">def</span> <span class="nf">google_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_name</span>
 
-    <span class="nd">@bucket</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">S3Bucket</span><span class="p">]):</span>
+    <span class="nd">@google_project_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_name</span> <span class="o">=</span> <span class="n">google_project_name</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">S3</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">s3_object_last_modified_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectLastModifiedTime&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_project_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_id</span>
+
+    <span class="nd">@google_project_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_project_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_project_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_id</span> <span class="o">=</span> <span class="n">google_project_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_project_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_number</span>
         <span class="p">)</span>
-        <span class="n">s3_bucket_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3BucketName&quot;</span>
+
+    <span class="nd">@google_project_number</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_project_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_project_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_number</span> <span class="o">=</span> <span class="n">google_project_number</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location</span>
+
+    <span class="nd">@google_location</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location</span> <span class="o">=</span> <span class="n">google_location</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_location_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location_type</span>
+
+    <span class="nd">@google_location_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_location_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_location_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location_type</span> <span class="o">=</span> <span class="n">google_location_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleLabel</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_labels</span>
+
+    <span class="nd">@google_labels</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleLabel</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_labels</span> <span class="o">=</span> <span class="n">google_labels</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleTag</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_tags</span>
+
+    <span class="nd">@google_tags</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleTag</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_tags</span> <span class="o">=</span> <span class="n">google_tags</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">DataStudio</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GoogleDatastudioAssetType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dataStudioAssetType&quot;</span>
         <span class="p">)</span>
-        <span class="n">s3_bucket_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3BucketQualifiedName&quot;</span>
+        <span class="n">data_studio_asset_title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dataStudioAssetTitle&quot;</span>
         <span class="p">)</span>
-        <span class="n">s3_object_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectSize&quot;</span>
+        <span class="n">data_studio_asset_owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dataStudioAssetOwner&quot;</span>
         <span class="p">)</span>
-        <span class="n">s3_object_storage_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectStorageClass&quot;</span>
+        <span class="n">is_trashed_data_studio_asset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;isTrashedDataStudioAsset&quot;</span>
         <span class="p">)</span>
-        <span class="n">s3_object_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectKey&quot;</span><span class="p">)</span>
-        <span class="n">s3_object_content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectContentType&quot;</span>
+        <span class="n">google_service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleService&quot;</span>
         <span class="p">)</span>
-        <span class="n">s3_object_content_disposition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectContentDisposition&quot;</span>
+        <span class="n">google_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleProjectName&quot;</span>
         <span class="p">)</span>
-        <span class="n">s3_object_version_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;s3ObjectVersionId&quot;</span>
+        <span class="n">google_project_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleProjectId&quot;</span>
         <span class="p">)</span>
-        <span class="n">bucket</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">S3Bucket</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;bucket&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">google_project_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleProjectNumber&quot;</span>
+        <span class="p">)</span>
+        <span class="n">google_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleLocation&quot;</span>
+        <span class="p">)</span>
+        <span class="n">google_location_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleLocationType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">google_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleLabel</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleLabels&quot;</span>
+        <span class="p">)</span>
+        <span class="n">google_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleTag</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleTags&quot;</span>
+        <span class="p">)</span>
 
         <span class="nd">@classmethod</span>
         <span class="c1"># @validate_arguments()</span>
@@ -869,51 +761,40 @@
             <span class="o">*</span><span class="p">,</span>
             <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">aws_arn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">s3_bucket_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S3Object</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+            <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">GoogleDatastudioAssetType</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;aws_arn&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;s3_bucket_qualified_name&quot;</span><span class="p">,</span>
-                <span class="p">],</span>
-                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">aws_arn</span><span class="p">,</span> <span class="n">s3_bucket_qualified_name</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">],</span>
             <span class="p">)</span>
+
+            <span class="c1"># Split the connection_qualified_name to extract necessary information</span>
             <span class="n">fields</span> <span class="o">=</span> <span class="n">connection_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
+
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
                 <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-                <span class="k">if</span> <span class="n">connector_type</span> <span class="o">!=</span> <span class="n">AtlanConnectorType</span><span class="o">.</span><span class="n">S3</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Connector type must be s3&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-            <span class="k">return</span> <span class="n">S3Object</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">aws_arn</span><span class="o">=</span><span class="n">aws_arn</span><span class="p">,</span>
+
+            <span class="k">return</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">aws_arn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="n">s3_bucket_qualified_name</span><span class="o">=</span><span class="n">s3_bucket_qualified_name</span><span class="p">,</span>
-                <span class="n">bucket</span><span class="o">=</span><span class="n">S3Bucket</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span><span class="n">s3_bucket_qualified_name</span><span class="p">),</span>
+                <span class="n">data_studio_asset_type</span><span class="o">=</span><span class="n">data_studio_asset_type</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;S3Object.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">S3Object</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;DataStudioAsset.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">S3Bucket</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
-
-
-<span class="n">S3Object</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

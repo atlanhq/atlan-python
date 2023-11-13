@@ -433,201 +433,616 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">KeywordTextField</span><span class="p">,</span>
+    <span class="n">BooleanField</span><span class="p">,</span>
+    <span class="n">KeywordField</span><span class="p">,</span>
     <span class="n">NumericField</span><span class="p">,</span>
     <span class="n">RelationField</span><span class="p">,</span>
+    <span class="n">TextField</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.asset40</span> <span class="kn">import</span> <span class="n">Sigma</span>
+<span class="kn">from</span> <span class="nn">.asset39</span> <span class="kn">import</span> <span class="n">Mode</span>
 
 
-<div class="viewcode-block" id="SigmaDatasetColumn">
-<a class="viewcode-back" href="../../../../asset/sigmadatasetcolumn.html#pyatlan.model.assets.SigmaDatasetColumn">[docs]</a>
-<span class="k">class</span> <span class="nc">SigmaDatasetColumn</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="ModeReport">
+<a class="viewcode-back" href="../../../../asset/modereport.html#pyatlan.model.assets.ModeReport">[docs]</a>
+<span class="k">class</span> <span class="nc">ModeReport</span><span class="p">(</span><span class="n">Mode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaDatasetColumn&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ModeReport&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaDatasetColumn&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaDatasetColumn&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ModeReport&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ModeReport&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ModeReport</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">SIGMA_DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDatasetQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigmaDatasetQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigmaDatasetQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="n">MODE_COLLECTION_TOKEN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;modeCollectionToken&quot;</span><span class="p">,</span> <span class="s2">&quot;modeCollectionToken&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SIGMA_DATASET_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDatasetName&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDatasetName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDatasetName&quot;</span>
+    <span class="n">MODE_REPORT_PUBLISHED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;modeReportPublishedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;modeReportPublishedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_QUERY_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;modeQueryCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeQueryCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_CHART_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;modeChartCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeChartCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_QUERY_PREVIEW</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
+        <span class="s2">&quot;modeQueryPreview&quot;</span><span class="p">,</span> <span class="s2">&quot;modeQueryPreview&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_IS_PUBLIC</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;modeIsPublic&quot;</span><span class="p">,</span> <span class="s2">&quot;modeIsPublic&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_IS_SHARED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;modeIsShared&quot;</span><span class="p">,</span> <span class="s2">&quot;modeIsShared&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">SIGMA_DATASET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaDataset&quot;</span><span class="p">)</span>
+    <span class="n">MODE_QUERIES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeQueries&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_COLLECTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeCollections&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;sigma_dataset_qualified_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_dataset_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_dataset&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_collection_token&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_report_published_at&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_query_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_chart_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_query_preview&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_is_public&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_is_shared&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_queries&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_collections&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">mode_collection_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_token</span>
+        <span class="p">)</span>
+
+    <span class="nd">@mode_collection_token</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_collection_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_collection_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_token</span> <span class="o">=</span> <span class="n">mode_collection_token</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_report_published_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_qualified_name</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_report_published_at</span>
         <span class="p">)</span>
 
-    <span class="nd">@sigma_dataset_qualified_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@mode_report_published_at</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_report_published_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_report_published_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_qualified_name</span> <span class="o">=</span> <span class="n">sigma_dataset_qualified_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_report_published_at</span> <span class="o">=</span> <span class="n">mode_report_published_at</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_name</span>
+    <span class="k">def</span> <span class="nf">mode_query_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_query_count</span>
 
-    <span class="nd">@sigma_dataset_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@mode_query_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_query_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_query_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_name</span> <span class="o">=</span> <span class="n">sigma_dataset_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_query_count</span> <span class="o">=</span> <span class="n">mode_query_count</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataset</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset</span>
+    <span class="k">def</span> <span class="nf">mode_chart_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_chart_count</span>
 
-    <span class="nd">@sigma_dataset</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataset</span><span class="p">]):</span>
+    <span class="nd">@mode_chart_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_chart_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_chart_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset</span> <span class="o">=</span> <span class="n">sigma_dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_chart_count</span> <span class="o">=</span> <span class="n">mode_chart_count</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sigma</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">sigma_dataset_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetQualifiedName&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_query_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_query_preview</span>
+
+    <span class="nd">@mode_query_preview</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_query_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_query_preview</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_query_preview</span> <span class="o">=</span> <span class="n">mode_query_preview</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_is_public</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_is_public</span>
+
+    <span class="nd">@mode_is_public</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_is_public</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_is_public</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_is_public</span> <span class="o">=</span> <span class="n">mode_is_public</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_is_shared</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_is_shared</span>
+
+    <span class="nd">@mode_is_shared</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_is_shared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_is_shared</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_is_shared</span> <span class="o">=</span> <span class="n">mode_is_shared</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeQuery</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_queries</span>
+
+    <span class="nd">@mode_queries</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_queries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeQuery</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_queries</span> <span class="o">=</span> <span class="n">mode_queries</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeCollection</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collections</span>
+
+    <span class="nd">@mode_collections</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_collections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeCollection</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collections</span> <span class="o">=</span> <span class="n">mode_collections</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Mode</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">mode_collection_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCollectionToken&quot;</span>
         <span class="p">)</span>
-        <span class="n">sigma_dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetName&quot;</span>
+        <span class="n">mode_report_published_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeReportPublishedAt&quot;</span>
         <span class="p">)</span>
-        <span class="n">sigma_dataset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataset</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataset&quot;</span>
+        <span class="n">mode_query_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeQueryCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_chart_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeChartCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_query_preview</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeQueryPreview&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_is_public</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeIsPublic&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_is_shared</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeIsShared&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_queries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeQuery</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeQueries&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">mode_collections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeCollection</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCollections&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDatasetColumn.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ModeReport.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ModeReport</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="SigmaDataset">
-<a class="viewcode-back" href="../../../../asset/sigmadataset.html#pyatlan.model.assets.SigmaDataset">[docs]</a>
-<span class="k">class</span> <span class="nc">SigmaDataset</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="ModeQuery">
+<a class="viewcode-back" href="../../../../asset/modequery.html#pyatlan.model.assets.ModeQuery">[docs]</a>
+<span class="k">class</span> <span class="nc">ModeQuery</span><span class="p">(</span><span class="n">Mode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaDataset&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ModeQuery&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaDataset&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaDataset&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ModeQuery&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ModeQuery&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaDataset</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ModeQuery</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">SIGMA_DATASET_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDatasetColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDatasetColumnCount&quot;</span>
+    <span class="n">MODE_RAW_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s2">&quot;modeRawQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;modeRawQuery&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_REPORT_IMPORT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;modeReportImportCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeReportImportCount&quot;</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MODE_CHARTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeCharts&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">SIGMA_DATASET_COLUMNS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDatasetColumns&quot;</span>
-    <span class="p">)</span>
+    <span class="n">MODE_REPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeReport&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;sigma_dataset_column_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_dataset_columns&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_raw_query&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_report_import_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_charts&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_report&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">mode_raw_query</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_raw_query</span>
+
+    <span class="nd">@mode_raw_query</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_raw_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_raw_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_raw_query</span> <span class="o">=</span> <span class="n">mode_raw_query</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_report_import_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_column_count</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_report_import_count</span>
         <span class="p">)</span>
 
-    <span class="nd">@sigma_dataset_column_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="nd">@mode_report_import_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_report_import_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_report_import_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_column_count</span> <span class="o">=</span> <span class="n">sigma_dataset_column_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_report_import_count</span> <span class="o">=</span> <span class="n">mode_report_import_count</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDatasetColumn</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_columns</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">mode_charts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeChart</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_charts</span>
 
-    <span class="nd">@sigma_dataset_columns</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_dataset_columns</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDatasetColumn</span><span class="p">]]</span>
-    <span class="p">):</span>
+    <span class="nd">@mode_charts</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_charts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_charts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeChart</span><span class="p">]]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_columns</span> <span class="o">=</span> <span class="n">sigma_dataset_columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_charts</span> <span class="o">=</span> <span class="n">mode_charts</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sigma</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">sigma_dataset_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetColumnCount&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_report</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeReport</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_report</span>
+
+    <span class="nd">@mode_report</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_report</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeReport</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_report</span> <span class="o">=</span> <span class="n">mode_report</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Mode</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">mode_raw_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeRawQuery&quot;</span>
         <span class="p">)</span>
-        <span class="n">sigma_dataset_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDatasetColumn</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetColumns&quot;</span>
+        <span class="n">mode_report_import_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeReportImportCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_charts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeChart</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCharts&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">mode_report</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeReport</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeReport&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDataset.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDataset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ModeQuery.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ModeQuery</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<div class="viewcode-block" id="ModeChart">
+<a class="viewcode-back" href="../../../../asset/modechart.html#pyatlan.model.assets.ModeChart">[docs]</a>
+<span class="k">class</span> <span class="nc">ModeChart</span><span class="p">(</span><span class="n">Mode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ModeChart&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ModeChart&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ModeChart&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ModeChart</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">MODE_CHART_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;modeChartType&quot;</span><span class="p">,</span> <span class="s2">&quot;modeChartType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of chart.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MODE_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeQuery&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;mode_chart_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_query&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_chart_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_chart_type</span>
+
+    <span class="nd">@mode_chart_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_chart_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_chart_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_chart_type</span> <span class="o">=</span> <span class="n">mode_chart_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_query</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeQuery</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_query</span>
+
+    <span class="nd">@mode_query</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeQuery</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_query</span> <span class="o">=</span> <span class="n">mode_query</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Mode</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">mode_chart_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeChartType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeQuery</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeQuery&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ModeChart.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ModeChart</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
-<span class="n">SigmaDataset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ModeWorkspace">
+<a class="viewcode-back" href="../../../../asset/modeworkspace.html#pyatlan.model.assets.ModeWorkspace">[docs]</a>
+<span class="k">class</span> <span class="nc">ModeWorkspace</span><span class="p">(</span><span class="n">Mode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ModeWorkspace&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ModeWorkspace&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ModeWorkspace&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ModeWorkspace</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">MODE_COLLECTION_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;modeCollectionCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeCollectionCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of collections in this workspace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MODE_COLLECTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeCollections&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;mode_collection_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_collections&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_collection_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@mode_collection_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_collection_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_collection_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_count</span> <span class="o">=</span> <span class="n">mode_collection_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeCollection</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collections</span>
+
+    <span class="nd">@mode_collections</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_collections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeCollection</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collections</span> <span class="o">=</span> <span class="n">mode_collections</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Mode</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">mode_collection_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCollectionCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_collections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeCollection</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCollections&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ModeWorkspace.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ModeWorkspace</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ModeCollection">
+<a class="viewcode-back" href="../../../../asset/modecollection.html#pyatlan.model.assets.ModeCollection">[docs]</a>
+<span class="k">class</span> <span class="nc">ModeCollection</span><span class="p">(</span><span class="n">Mode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ModeCollection&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ModeCollection&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ModeCollection&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ModeCollection</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">MODE_COLLECTION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;modeCollectionType&quot;</span><span class="p">,</span> <span class="s2">&quot;modeCollectionType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of this collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_COLLECTION_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;modeCollectionState&quot;</span><span class="p">,</span> <span class="s2">&quot;modeCollectionState&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    State of this collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MODE_WORKSPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeWorkspace&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODE_REPORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeReports&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;mode_collection_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_collection_state&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_workspace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode_reports&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_collection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_type</span>
+
+    <span class="nd">@mode_collection_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_collection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_collection_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_type</span> <span class="o">=</span> <span class="n">mode_collection_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_collection_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_state</span>
+        <span class="p">)</span>
+
+    <span class="nd">@mode_collection_state</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_collection_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_collection_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_collection_state</span> <span class="o">=</span> <span class="n">mode_collection_state</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeWorkspace</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_workspace</span>
+
+    <span class="nd">@mode_workspace</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_workspace</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeWorkspace</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_workspace</span> <span class="o">=</span> <span class="n">mode_workspace</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode_reports</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeReport</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_reports</span>
+
+    <span class="nd">@mode_reports</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mode_reports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_reports</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeReport</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mode_reports</span> <span class="o">=</span> <span class="n">mode_reports</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Mode</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">mode_collection_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCollectionType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_collection_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeCollectionState&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mode_workspace</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModeWorkspace</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeWorkspace&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">mode_reports</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ModeReport</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;modeReports&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ModeCollection.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ModeCollection</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="n">ModeReport</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">ModeQuery</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">ModeChart</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">ModeWorkspace</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">ModeCollection</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

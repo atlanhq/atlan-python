@@ -437,86 +437,198 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">KeywordTextField</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BooleanField</span><span class="p">,</span>
+    <span class="n">KeywordField</span><span class="p">,</span>
+    <span class="n">KeywordTextField</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.asset19</span> <span class="kn">import</span> <span class="n">SaaS</span>
+<span class="kn">from</span> <span class="nn">.asset18</span> <span class="kn">import</span> <span class="n">BI</span>
 
 
-<div class="viewcode-block" id="Salesforce">
-<a class="viewcode-back" href="../../../../asset/salesforce.html#pyatlan.model.assets.Salesforce">[docs]</a>
-<span class="k">class</span> <span class="nc">Salesforce</span><span class="p">(</span><span class="n">SaaS</span><span class="p">):</span>
+<div class="viewcode-block" id="Qlik">
+<a class="viewcode-back" href="../../../../asset/qlik.html#pyatlan.model.assets.Qlik">[docs]</a>
+<span class="k">class</span> <span class="nc">Qlik</span><span class="p">(</span><span class="n">BI</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;Salesforce&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;Qlik&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;Salesforce&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be Salesforce&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;Qlik&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be Qlik&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">Salesforce</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">Qlik</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">ORGANIZATION_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;organizationQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;organizationQualifiedName&quot;</span>
-    <span class="p">)</span>
+    <span class="n">QLIK_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;qlikId&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Identifier of this asset, from Qlik.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiName&quot;</span><span class="p">,</span> <span class="s2">&quot;apiName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;apiName&quot;</span>
+    <span class="n">QLIK_QRI</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;qlikQRI&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikQRI&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikQRI.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Unique QRI of this asset, from Qlik.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QLIK_SPACE_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;qlikSpaceId&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikSpaceId&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifier of the space in which this asset exists, from Qlik.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QLIK_SPACE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;qlikSpaceQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlikSpaceQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlikSpaceQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the space in which this asset exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QLIK_APP_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;qlikAppId&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikAppId&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifier of the app in which this asset belongs, from Qlik.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QLIK_APP_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;qlikAppQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikAppQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikAppQualifiedName.text&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the app where this asset belongs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QLIK_OWNER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;qlikOwnerId&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikOwnerId&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifier of the owner of this asset, in Qlik.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QLIK_IS_PUBLISHED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;qlikIsPublished&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikIsPublished&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Whether this asset is published in Qlik (true) or not (false).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;organization_qualified_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_q_r_i&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_space_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_space_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_app_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_app_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_owner_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qlik_is_published&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">organization_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">qlik_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_id</span>
+
+    <span class="nd">@qlik_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_id</span> <span class="o">=</span> <span class="n">qlik_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qlik_q_r_i</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_q_r_i</span>
+
+    <span class="nd">@qlik_q_r_i</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_q_r_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_q_r_i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_q_r_i</span> <span class="o">=</span> <span class="n">qlik_q_r_i</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qlik_space_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_space_id</span>
+
+    <span class="nd">@qlik_space_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_space_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_space_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_space_id</span> <span class="o">=</span> <span class="n">qlik_space_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qlik_space_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">organization_qualified_name</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_space_qualified_name</span>
         <span class="p">)</span>
 
-    <span class="nd">@organization_qualified_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">organization_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">organization_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@qlik_space_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_space_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_space_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">organization_qualified_name</span> <span class="o">=</span> <span class="n">organization_qualified_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_space_qualified_name</span> <span class="o">=</span> <span class="n">qlik_space_qualified_name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_name</span>
+    <span class="k">def</span> <span class="nf">qlik_app_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_app_id</span>
 
-    <span class="nd">@api_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@qlik_app_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_app_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_app_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_name</span> <span class="o">=</span> <span class="n">api_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_app_id</span> <span class="o">=</span> <span class="n">qlik_app_id</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">SaaS</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">organization_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;organizationQualifiedName&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qlik_app_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_app_qualified_name</span>
         <span class="p">)</span>
-        <span class="n">api_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiName&quot;</span><span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;Salesforce.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Salesforce</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="nd">@qlik_app_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_app_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_app_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_app_qualified_name</span> <span class="o">=</span> <span class="n">qlik_app_qualified_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qlik_owner_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_owner_id</span>
+
+    <span class="nd">@qlik_owner_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_owner_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_owner_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_owner_id</span> <span class="o">=</span> <span class="n">qlik_owner_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qlik_is_published</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_is_published</span>
+
+    <span class="nd">@qlik_is_published</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">qlik_is_published</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlik_is_published</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">qlik_is_published</span> <span class="o">=</span> <span class="n">qlik_is_published</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">BI</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">qlik_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikId&quot;</span><span class="p">)</span>
+        <span class="n">qlik_q_r_i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikQRI&quot;</span><span class="p">)</span>
+        <span class="n">qlik_space_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikSpaceId&quot;</span><span class="p">)</span>
+        <span class="n">qlik_space_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikSpaceQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">qlik_app_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikAppId&quot;</span><span class="p">)</span>
+        <span class="n">qlik_app_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikAppQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">qlik_owner_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikOwnerId&quot;</span><span class="p">)</span>
+        <span class="n">qlik_is_published</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;qlikIsPublished&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;Qlik.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Qlik</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">Salesforce</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">Qlik</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

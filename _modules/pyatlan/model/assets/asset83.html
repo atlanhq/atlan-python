@@ -437,24 +437,24 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">.asset80</span> <span class="kn">import</span> <span class="n">KafkaConsumerGroup</span>
+<span class="kn">from</span> <span class="nn">.asset78</span> <span class="kn">import</span> <span class="n">QlikSpace</span>
 
 
-<div class="viewcode-block" id="AzureEventHubConsumerGroup">
-<a class="viewcode-back" href="../../../../asset/azureeventhubconsumergroup.html#pyatlan.model.assets.AzureEventHubConsumerGroup">[docs]</a>
-<span class="k">class</span> <span class="nc">AzureEventHubConsumerGroup</span><span class="p">(</span><span class="n">KafkaConsumerGroup</span><span class="p">):</span>
+<div class="viewcode-block" id="QlikStream">
+<a class="viewcode-back" href="../../../../asset/qlikstream.html#pyatlan.model.assets.QlikStream">[docs]</a>
+<span class="k">class</span> <span class="nc">QlikStream</span><span class="p">(</span><span class="n">QlikSpace</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;AzureEventHubConsumerGroup&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;QlikStream&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;AzureEventHubConsumerGroup&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be AzureEventHubConsumerGroup&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;QlikStream&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be QlikStream&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">AzureEventHubConsumerGroup</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">QlikStream</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -462,7 +462,7 @@
 
 
 
-<span class="n">AzureEventHubConsumerGroup</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">QlikStream</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

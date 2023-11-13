@@ -438,448 +438,196 @@
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BooleanField</span><span class="p">,</span>
-    <span class="n">KeywordField</span><span class="p">,</span>
+    <span class="n">KeywordTextField</span><span class="p">,</span>
     <span class="n">NumericField</span><span class="p">,</span>
     <span class="n">RelationField</span><span class="p">,</span>
-    <span class="n">TextField</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.asset40</span> <span class="kn">import</span> <span class="n">Sigma</span>
 
 
-<div class="viewcode-block" id="SigmaWorkbook">
-<a class="viewcode-back" href="../../../../asset/sigmaworkbook.html#pyatlan.model.assets.SigmaWorkbook">[docs]</a>
-<span class="k">class</span> <span class="nc">SigmaWorkbook</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="SigmaDatasetColumn">
+<a class="viewcode-back" href="../../../../asset/sigmadatasetcolumn.html#pyatlan.model.assets.SigmaDatasetColumn">[docs]</a>
+<span class="k">class</span> <span class="nc">SigmaDatasetColumn</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaWorkbook&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaDatasetColumn&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaWorkbook&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaWorkbook&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaDatasetColumn&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaDatasetColumn&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaWorkbook</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">SIGMA_PAGE_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaPageCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaPageCount&quot;</span>
+    <span class="n">SIGMA_DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sigmaDatasetQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmaDatasetQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmaDatasetQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Unique name of the dataset in which this column exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SIGMA_DATASET_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sigmaDatasetName&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDatasetName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDatasetName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple name of the dataset in which this column exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">SIGMA_PAGES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaPages&quot;</span><span class="p">)</span>
+    <span class="n">SIGMA_DATASET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaDataset&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;sigma_page_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_pages&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigma_dataset_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigma_dataset_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigma_dataset&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_page_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_page_count</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_qualified_name</span>
+        <span class="p">)</span>
 
-    <span class="nd">@sigma_page_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_page_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_page_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="nd">@sigma_dataset_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_page_count</span> <span class="o">=</span> <span class="n">sigma_page_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_qualified_name</span> <span class="o">=</span> <span class="n">sigma_dataset_qualified_name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaPage</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_pages</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_name</span>
 
-    <span class="nd">@sigma_pages</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_pages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaPage</span><span class="p">]]):</span>
+    <span class="nd">@sigma_dataset_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_pages</span> <span class="o">=</span> <span class="n">sigma_pages</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_name</span> <span class="o">=</span> <span class="n">sigma_dataset_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataset</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset</span>
+
+    <span class="nd">@sigma_dataset</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataset</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset</span> <span class="o">=</span> <span class="n">sigma_dataset</span>
 
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sigma</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">sigma_page_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaPageCount&quot;</span>
+        <span class="n">sigma_dataset_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetQualifiedName&quot;</span>
         <span class="p">)</span>
-        <span class="n">sigma_pages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaPage</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaPages&quot;</span>
+        <span class="n">sigma_dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sigma_dataset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataset</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataset&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaWorkbook.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaWorkbook</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDatasetColumn.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="SigmaDataElementField">
-<a class="viewcode-back" href="../../../../asset/sigmadataelementfield.html#pyatlan.model.assets.SigmaDataElementField">[docs]</a>
-<span class="k">class</span> <span class="nc">SigmaDataElementField</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="SigmaDataset">
+<a class="viewcode-back" href="../../../../asset/sigmadataset.html#pyatlan.model.assets.SigmaDataset">[docs]</a>
+<span class="k">class</span> <span class="nc">SigmaDataset</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaDataElementField&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaDataset&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaDataElementField&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaDataElementField&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaDataset&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaDataset&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaDataElementField</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaDataset</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementFieldIsHidden&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDataElementFieldIsHidden&quot;</span>
+    <span class="n">SIGMA_DATASET_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sigmaDatasetColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDatasetColumnCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SIGMA_DATA_ELEMENT_FIELD_FORMULA</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementFieldFormula&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDataElementFieldFormula&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of columns in this dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">SIGMA_DATA_ELEMENT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaDataElement&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;sigma_data_element_field_is_hidden&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_data_element_field_formula&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_data_element&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_field_is_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_field_is_hidden</span>
-        <span class="p">)</span>
-
-    <span class="nd">@sigma_data_element_field_is_hidden</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_field_is_hidden</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_field_is_hidden</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_field_is_hidden</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">sigma_data_element_field_is_hidden</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_field_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_field_formula</span>
-        <span class="p">)</span>
-
-    <span class="nd">@sigma_data_element_field_formula</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_field_formula</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_field_formula</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_field_formula</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">sigma_data_element_field_formula</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataElement</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element</span>
-
-    <span class="nd">@sigma_data_element</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataElement</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element</span> <span class="o">=</span> <span class="n">sigma_data_element</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sigma</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">sigma_data_element_field_is_hidden</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementFieldIsHidden&quot;</span>
-        <span class="p">)</span>
-        <span class="n">sigma_data_element_field_formula</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementFieldFormula&quot;</span>
-        <span class="p">)</span>
-        <span class="n">sigma_data_element</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaDataElement</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElement&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDataElementField.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDataElementField</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="SigmaPage">
-<a class="viewcode-back" href="../../../../asset/sigmapage.html#pyatlan.model.assets.SigmaPage">[docs]</a>
-<span class="k">class</span> <span class="nc">SigmaPage</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaPage&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaPage&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaPage&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaPage</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="n">SIGMA_DATA_ELEMENT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDataElementCount&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">SIGMA_DATA_ELEMENTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaDataElements&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SIGMA_WORKBOOK</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaWorkbook&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;sigma_data_element_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_data_elements&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_workbook&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_count</span>
-        <span class="p">)</span>
-
-    <span class="nd">@sigma_data_element_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_count</span> <span class="o">=</span> <span class="n">sigma_data_element_count</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDataElement</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_elements</span>
-
-    <span class="nd">@sigma_data_elements</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_elements</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_elements</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDataElement</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_elements</span> <span class="o">=</span> <span class="n">sigma_data_elements</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_workbook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaWorkbook</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_workbook</span>
-
-    <span class="nd">@sigma_workbook</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_workbook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_workbook</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaWorkbook</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_workbook</span> <span class="o">=</span> <span class="n">sigma_workbook</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sigma</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">sigma_data_element_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementCount&quot;</span>
-        <span class="p">)</span>
-        <span class="n">sigma_data_elements</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDataElement</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElements&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">sigma_workbook</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaWorkbook</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaWorkbook&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaPage.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaPage</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="SigmaDataElement">
-<a class="viewcode-back" href="../../../../asset/sigmadataelement.html#pyatlan.model.assets.SigmaDataElement">[docs]</a>
-<span class="k">class</span> <span class="nc">SigmaDataElement</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SigmaDataElement&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SigmaDataElement&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SigmaDataElement&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SigmaDataElement</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="n">SIGMA_DATA_ELEMENT_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDataElementQuery&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SIGMA_DATA_ELEMENT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementType&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDataElementType&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SIGMA_DATA_ELEMENT_FIELD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementFieldCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmaDataElementFieldCount&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">SIGMA_PAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sigmaPage&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SIGMA_DATA_ELEMENT_FIELDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
-        <span class="s2">&quot;sigmaDataElementFields&quot;</span>
+    <span class="n">SIGMA_DATASET_COLUMNS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;sigmaDatasetColumns&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;sigma_data_element_query&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_data_element_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_data_element_field_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_page&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sigma_data_element_fields&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigma_dataset_column_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigma_dataset_columns&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_query</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_query</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_column_count</span>
         <span class="p">)</span>
 
-    <span class="nd">@sigma_data_element_query</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@sigma_dataset_column_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_query</span> <span class="o">=</span> <span class="n">sigma_data_element_query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_column_count</span> <span class="o">=</span> <span class="n">sigma_dataset_column_count</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDatasetColumn</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_type</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_columns</span>
         <span class="p">)</span>
 
-    <span class="nd">@sigma_data_element_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_type</span> <span class="o">=</span> <span class="n">sigma_data_element_type</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_field_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_field_count</span>
-        <span class="p">)</span>
-
-    <span class="nd">@sigma_data_element_field_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_field_count</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_field_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="nd">@sigma_dataset_columns</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sigma_dataset_columns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_dataset_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDatasetColumn</span><span class="p">]]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_field_count</span> <span class="o">=</span> <span class="n">sigma_data_element_field_count</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaPage</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_page</span>
-
-    <span class="nd">@sigma_page</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_page</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaPage</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_page</span> <span class="o">=</span> <span class="n">sigma_page</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDataElementField</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_fields</span>
-        <span class="p">)</span>
-
-    <span class="nd">@sigma_data_element_fields</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sigma_data_element_fields</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sigma_data_element_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDataElementField</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_data_element_fields</span> <span class="o">=</span> <span class="n">sigma_data_element_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sigma_dataset_columns</span> <span class="o">=</span> <span class="n">sigma_dataset_columns</span>
 
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sigma</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">sigma_data_element_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementQuery&quot;</span>
+        <span class="n">sigma_dataset_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetColumnCount&quot;</span>
         <span class="p">)</span>
-        <span class="n">sigma_data_element_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementType&quot;</span>
-        <span class="p">)</span>
-        <span class="n">sigma_data_element_field_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementFieldCount&quot;</span>
-        <span class="p">)</span>
-        <span class="n">sigma_page</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SigmaPage</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaPage&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">sigma_data_element_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDataElementField</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDataElementFields&quot;</span>
+        <span class="n">sigma_dataset_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SigmaDatasetColumn</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sigmaDatasetColumns&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDataElement.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDataElement</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDataset.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDataset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">SigmaWorkbook</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 
 
-<span class="n">SigmaDataElementField</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
-
-
-<span class="n">SigmaPage</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
-
-
-<span class="n">SigmaDataElement</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">SigmaDataset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

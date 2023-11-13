@@ -437,77 +437,86 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">IconType</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">KeywordTextField</span>
 
-<span class="kn">from</span> <span class="nn">.asset00</span> <span class="kn">import</span> <span class="n">Resource</span>
+<span class="kn">from</span> <span class="nn">.asset19</span> <span class="kn">import</span> <span class="n">SaaS</span>
 
 
-<div class="viewcode-block" id="ReadmeTemplate">
-<a class="viewcode-back" href="../../../../asset/readmetemplate.html#pyatlan.model.assets.ReadmeTemplate">[docs]</a>
-<span class="k">class</span> <span class="nc">ReadmeTemplate</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+<div class="viewcode-block" id="Salesforce">
+<a class="viewcode-back" href="../../../../asset/salesforce.html#pyatlan.model.assets.Salesforce">[docs]</a>
+<span class="k">class</span> <span class="nc">Salesforce</span><span class="p">(</span><span class="n">SaaS</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ReadmeTemplate&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;Salesforce&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ReadmeTemplate&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ReadmeTemplate&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;Salesforce&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be Salesforce&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ReadmeTemplate</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">Salesforce</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">ICON</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;icon&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">)</span>
+    <span class="n">ORGANIZATION_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;organizationQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;organizationQualifiedName&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Fully-qualified name of the organization in Salesforce.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ICON_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;iconType&quot;</span><span class="p">,</span> <span class="s2">&quot;iconType&quot;</span><span class="p">)</span>
+    <span class="n">API_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;apiName&quot;</span><span class="p">,</span> <span class="s2">&quot;apiName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;apiName&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Name of this asset in the Salesforce API.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;icon&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;icon_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;organization_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;api_name&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">icon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">icon</span>
+    <span class="k">def</span> <span class="nf">organization_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">organization_qualified_name</span>
+        <span class="p">)</span>
 
-    <span class="nd">@icon</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">icon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@organization_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">organization_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">organization_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="n">icon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">organization_qualified_name</span> <span class="o">=</span> <span class="n">organization_qualified_name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">icon_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IconType</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">icon_type</span>
+    <span class="k">def</span> <span class="nf">api_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_name</span>
 
-    <span class="nd">@icon_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">icon_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">icon_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IconType</span><span class="p">]):</span>
+    <span class="nd">@api_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">api_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">icon_type</span> <span class="o">=</span> <span class="n">icon_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_name</span> <span class="o">=</span> <span class="n">api_name</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Resource</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;icon&quot;</span><span class="p">)</span>
-        <span class="n">icon_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IconType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;iconType&quot;</span><span class="p">)</span>
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">SaaS</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">organization_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;organizationQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">api_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiName&quot;</span><span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ReadmeTemplate.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ReadmeTemplate</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;Salesforce.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Salesforce</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">ReadmeTemplate</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">Salesforce</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>
