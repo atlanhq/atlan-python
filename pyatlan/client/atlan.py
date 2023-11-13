@@ -11,7 +11,7 @@ import os
 import uuid
 from importlib.resources import read_text
 from types import SimpleNamespace
-from typing import ClassVar, Generator, Optional, Type, Union
+from typing import ClassVar, Generator, Literal, Optional, Type, Union
 from warnings import warn
 
 import requests
@@ -94,7 +94,7 @@ def get_session():
 
 class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
-    base_url: HttpUrl
+    base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
