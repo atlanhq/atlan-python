@@ -1374,8 +1374,10 @@ class AtlanClient(BaseSettings):
         current_max = adapter.max_retries
         adapter.max_retries = max_retries
         try:
+            LOGGER.debug("Trying in max_retries")
             yield None
         except requests.exceptions.RetryError as err:
+            LOGGER.error("Max Retries Exceeded")
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
             adapter.max_retries = current_max

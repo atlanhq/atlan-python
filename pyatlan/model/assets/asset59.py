@@ -9,618 +9,160 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import (
-    ADLSAccessTier,
-    ADLSAccountStatus,
-    ADLSEncryptionTypes,
-    ADLSLeaseState,
-    ADLSLeaseStatus,
-    ADLSObjectArchiveStatus,
-    ADLSObjectType,
-    ADLSPerformance,
-    ADLSProvisionState,
-    ADLSReplicationType,
-    ADLSStorageKind,
-    AtlanConnectorType,
-)
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
-    TextField,
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset34 import ADLS
+from .asset33 import S3
 
 
-class ADLSAccount(ADLS):
+class S3Bucket(S3):
     """Description"""
 
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
+    def create(
+        cls, *, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Bucket:
         validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
         )
-        attributes = ADLSAccount.Attributes.create(
-            name=name, connection_qualified_name=connection_qualified_name
+        attributes = S3Bucket.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("ADLSAccount", allow_mutation=False)
+    type_name: str = Field("S3Bucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ADLSAccount":
-            raise ValueError("must be ADLSAccount")
+        if v != "S3Bucket":
+            raise ValueError("must be S3Bucket")
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLSAccount._convenience_properties:
+        if name in S3Bucket._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADLS_E_TAG: ClassVar[KeywordField] = KeywordField("adlsETag", "adlsETag")
-    """
-    TBC
-    """
-    ADLS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "adlsEncryptionType", "adlsEncryptionType"
+    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "s3ObjectCount", "s3ObjectCount"
     )
     """
     TBC
     """
-    ADLS_ACCOUNT_RESOURCE_GROUP: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsAccountResourceGroup",
-        "adlsAccountResourceGroup.keyword",
-        "adlsAccountResourceGroup",
-    )
-    """
-    TBC
-    """
-    ADLS_ACCOUNT_SUBSCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsAccountSubscription",
-        "adlsAccountSubscription.keyword",
-        "adlsAccountSubscription",
-    )
-    """
-    TBC
-    """
-    ADLS_ACCOUNT_PERFORMANCE: ClassVar[KeywordField] = KeywordField(
-        "adlsAccountPerformance", "adlsAccountPerformance"
-    )
-    """
-    TBC
-    """
-    ADLS_ACCOUNT_REPLICATION: ClassVar[KeywordField] = KeywordField(
-        "adlsAccountReplication", "adlsAccountReplication"
-    )
-    """
-    TBC
-    """
-    ADLS_ACCOUNT_KIND: ClassVar[KeywordField] = KeywordField(
-        "adlsAccountKind", "adlsAccountKind"
-    )
-    """
-    TBC
-    """
-    ADLS_PRIMARY_DISK_STATE: ClassVar[KeywordField] = KeywordField(
-        "adlsPrimaryDiskState", "adlsPrimaryDiskState"
-    )
-    """
-    TBC
-    """
-    ADLS_ACCOUNT_PROVISION_STATE: ClassVar[KeywordField] = KeywordField(
-        "adlsAccountProvisionState", "adlsAccountProvisionState"
-    )
-    """
-    TBC
-    """
-    ADLS_ACCOUNT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
-        "adlsAccountAccessTier", "adlsAccountAccessTier"
+    S3BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "s3BucketVersioningEnabled", "s3BucketVersioningEnabled"
     )
     """
     TBC
     """
 
-    ADLS_CONTAINERS: ClassVar[RelationField] = RelationField("adlsContainers")
+    OBJECTS: ClassVar[RelationField] = RelationField("objects")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "adls_e_tag",
-        "adls_encryption_type",
-        "adls_account_resource_group",
-        "adls_account_subscription",
-        "adls_account_performance",
-        "adls_account_replication",
-        "adls_account_kind",
-        "adls_primary_disk_state",
-        "adls_account_provision_state",
-        "adls_account_access_tier",
-        "adls_containers",
+        "s3_object_count",
+        "s3_bucket_versioning_enabled",
+        "objects",
     ]
 
     @property
-    def adls_e_tag(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adls_e_tag
+    def s3_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.s3_object_count
 
-    @adls_e_tag.setter
-    def adls_e_tag(self, adls_e_tag: Optional[str]):
+    @s3_object_count.setter
+    def s3_object_count(self, s3_object_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_e_tag = adls_e_tag
+        self.attributes.s3_object_count = s3_object_count
 
     @property
-    def adls_encryption_type(self) -> Optional[ADLSEncryptionTypes]:
-        return None if self.attributes is None else self.attributes.adls_encryption_type
-
-    @adls_encryption_type.setter
-    def adls_encryption_type(self, adls_encryption_type: Optional[ADLSEncryptionTypes]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_encryption_type = adls_encryption_type
-
-    @property
-    def adls_account_resource_group(self) -> Optional[str]:
+    def s3_bucket_versioning_enabled(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.adls_account_resource_group
+            else self.attributes.s3_bucket_versioning_enabled
         )
 
-    @adls_account_resource_group.setter
-    def adls_account_resource_group(self, adls_account_resource_group: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account_resource_group = adls_account_resource_group
-
-    @property
-    def adls_account_subscription(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_subscription
-        )
-
-    @adls_account_subscription.setter
-    def adls_account_subscription(self, adls_account_subscription: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account_subscription = adls_account_subscription
-
-    @property
-    def adls_account_performance(self) -> Optional[ADLSPerformance]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_performance
-        )
-
-    @adls_account_performance.setter
-    def adls_account_performance(
-        self, adls_account_performance: Optional[ADLSPerformance]
+    @s3_bucket_versioning_enabled.setter
+    def s3_bucket_versioning_enabled(
+        self, s3_bucket_versioning_enabled: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_performance = adls_account_performance
+        self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
 
     @property
-    def adls_account_replication(self) -> Optional[ADLSReplicationType]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_replication
-        )
+    def objects(self) -> Optional[list[S3Object]]:
+        return None if self.attributes is None else self.attributes.objects
 
-    @adls_account_replication.setter
-    def adls_account_replication(
-        self, adls_account_replication: Optional[ADLSReplicationType]
-    ):
+    @objects.setter
+    def objects(self, objects: Optional[list[S3Object]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_replication = adls_account_replication
+        self.attributes.objects = objects
 
-    @property
-    def adls_account_kind(self) -> Optional[ADLSStorageKind]:
-        return None if self.attributes is None else self.attributes.adls_account_kind
-
-    @adls_account_kind.setter
-    def adls_account_kind(self, adls_account_kind: Optional[ADLSStorageKind]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account_kind = adls_account_kind
-
-    @property
-    def adls_primary_disk_state(self) -> Optional[ADLSAccountStatus]:
-        return (
-            None if self.attributes is None else self.attributes.adls_primary_disk_state
+    class Attributes(S3.Attributes):
+        s3_object_count: Optional[int] = Field(
+            None, description="", alias="s3ObjectCount"
         )
-
-    @adls_primary_disk_state.setter
-    def adls_primary_disk_state(
-        self, adls_primary_disk_state: Optional[ADLSAccountStatus]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_primary_disk_state = adls_primary_disk_state
-
-    @property
-    def adls_account_provision_state(self) -> Optional[ADLSProvisionState]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_provision_state
+        s3_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="s3BucketVersioningEnabled"
         )
-
-    @adls_account_provision_state.setter
-    def adls_account_provision_state(
-        self, adls_account_provision_state: Optional[ADLSProvisionState]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account_provision_state = adls_account_provision_state
-
-    @property
-    def adls_account_access_tier(self) -> Optional[ADLSAccessTier]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_access_tier
-        )
-
-    @adls_account_access_tier.setter
-    def adls_account_access_tier(
-        self, adls_account_access_tier: Optional[ADLSAccessTier]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account_access_tier = adls_account_access_tier
-
-    @property
-    def adls_containers(self) -> Optional[list[ADLSContainer]]:
-        return None if self.attributes is None else self.attributes.adls_containers
-
-    @adls_containers.setter
-    def adls_containers(self, adls_containers: Optional[list[ADLSContainer]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_containers = adls_containers
-
-    class Attributes(ADLS.Attributes):
-        adls_e_tag: Optional[str] = Field(None, description="", alias="adlsETag")
-        adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
-            None, description="", alias="adlsEncryptionType"
-        )
-        adls_account_resource_group: Optional[str] = Field(
-            None, description="", alias="adlsAccountResourceGroup"
-        )
-        adls_account_subscription: Optional[str] = Field(
-            None, description="", alias="adlsAccountSubscription"
-        )
-        adls_account_performance: Optional[ADLSPerformance] = Field(
-            None, description="", alias="adlsAccountPerformance"
-        )
-        adls_account_replication: Optional[ADLSReplicationType] = Field(
-            None, description="", alias="adlsAccountReplication"
-        )
-        adls_account_kind: Optional[ADLSStorageKind] = Field(
-            None, description="", alias="adlsAccountKind"
-        )
-        adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
-            None, description="", alias="adlsPrimaryDiskState"
-        )
-        adls_account_provision_state: Optional[ADLSProvisionState] = Field(
-            None, description="", alias="adlsAccountProvisionState"
-        )
-        adls_account_access_tier: Optional[ADLSAccessTier] = Field(
-            None, description="", alias="adlsAccountAccessTier"
-        )
-        adls_containers: Optional[list[ADLSContainer]] = Field(
-            None, description="", alias="adlsContainers"
+        objects: Optional[list[S3Object]] = Field(
+            None, description="", alias="objects"
         )  # relationship
 
         @classmethod
         # @validate_arguments()
         @init_guid
         def create(
-            cls, *, name: str, connection_qualified_name: str
-        ) -> ADLSAccount.Attributes:
+            cls, *, name: str, connection_qualified_name: str, aws_arn: str
+        ) -> S3Bucket.Attributes:
             validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
             )
-
-            # Split the connection_qualified_name to extract necessary information
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
                 raise ValueError("Invalid connection_qualified_name")
-
             try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
-
-            return ADLSAccount.Attributes(
+            return S3Bucket.Attributes(
+                aws_arn=aws_arn,
                 name=name,
-                qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
             )
 
-    attributes: "ADLSAccount.Attributes" = Field(
-        default_factory=lambda: ADLSAccount.Attributes(),
+    attributes: "S3Bucket.Attributes" = Field(
+        default_factory=lambda: S3Bucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ADLSContainer(ADLS):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    @init_guid
-    def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
-        validate_required_fields(
-            ["name", "adls_account_qualified_name"], [name, adls_account_qualified_name]
-        )
-        attributes = ADLSContainer.Attributes.create(
-            name=name, adls_account_qualified_name=adls_account_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("ADLSContainer", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ADLSContainer":
-            raise ValueError("must be ADLSContainer")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ADLSContainer._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    ADLS_CONTAINER_URL: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsContainerUrl", "adlsContainerUrl.keyword", "adlsContainerUrl"
-    )
-    """
-    TBC
-    """
-    ADLS_CONTAINER_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
-        "adlsContainerLeaseState", "adlsContainerLeaseState"
-    )
-    """
-    TBC
-    """
-    ADLS_CONTAINER_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
-        "adlsContainerLeaseStatus", "adlsContainerLeaseStatus"
-    )
-    """
-    TBC
-    """
-    ADLS_CONTAINER_ENCRYPTION_SCOPE: ClassVar[KeywordField] = KeywordField(
-        "adlsContainerEncryptionScope", "adlsContainerEncryptionScope"
-    )
-    """
-    TBC
-    """
-    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
-        BooleanField
-    ] = BooleanField(
-        "adlsContainerVersionLevelImmutabilitySupport",
-        "adlsContainerVersionLevelImmutabilitySupport",
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
-        "adlsObjectCount", "adlsObjectCount"
-    )
-    """
-    TBC
-    """
-
-    ADLS_OBJECTS: ClassVar[RelationField] = RelationField("adlsObjects")
-    """
-    TBC
-    """
-    ADLS_ACCOUNT: ClassVar[RelationField] = RelationField("adlsAccount")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "adls_container_url",
-        "adls_container_lease_state",
-        "adls_container_lease_status",
-        "adls_container_encryption_scope",
-        "adls_container_version_level_immutability_support",
-        "adls_object_count",
-        "adls_objects",
-        "adls_account",
-    ]
-
-    @property
-    def adls_container_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adls_container_url
-
-    @adls_container_url.setter
-    def adls_container_url(self, adls_container_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container_url = adls_container_url
-
-    @property
-    def adls_container_lease_state(self) -> Optional[ADLSLeaseState]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_lease_state
-        )
-
-    @adls_container_lease_state.setter
-    def adls_container_lease_state(
-        self, adls_container_lease_state: Optional[ADLSLeaseState]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container_lease_state = adls_container_lease_state
-
-    @property
-    def adls_container_lease_status(self) -> Optional[ADLSLeaseStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_lease_status
-        )
-
-    @adls_container_lease_status.setter
-    def adls_container_lease_status(
-        self, adls_container_lease_status: Optional[ADLSLeaseStatus]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container_lease_status = adls_container_lease_status
-
-    @property
-    def adls_container_encryption_scope(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_encryption_scope
-        )
-
-    @adls_container_encryption_scope.setter
-    def adls_container_encryption_scope(
-        self, adls_container_encryption_scope: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container_encryption_scope = (
-            adls_container_encryption_scope
-        )
-
-    @property
-    def adls_container_version_level_immutability_support(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_version_level_immutability_support
-        )
-
-    @adls_container_version_level_immutability_support.setter
-    def adls_container_version_level_immutability_support(
-        self, adls_container_version_level_immutability_support: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container_version_level_immutability_support = (
-            adls_container_version_level_immutability_support
-        )
-
-    @property
-    def adls_object_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.adls_object_count
-
-    @adls_object_count.setter
-    def adls_object_count(self, adls_object_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_count = adls_object_count
-
-    @property
-    def adls_objects(self) -> Optional[list[ADLSObject]]:
-        return None if self.attributes is None else self.attributes.adls_objects
-
-    @adls_objects.setter
-    def adls_objects(self, adls_objects: Optional[list[ADLSObject]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_objects = adls_objects
-
-    @property
-    def adls_account(self) -> Optional[ADLSAccount]:
-        return None if self.attributes is None else self.attributes.adls_account
-
-    @adls_account.setter
-    def adls_account(self, adls_account: Optional[ADLSAccount]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account = adls_account
-
-    class Attributes(ADLS.Attributes):
-        adls_container_url: Optional[str] = Field(
-            None, description="", alias="adlsContainerUrl"
-        )
-        adls_container_lease_state: Optional[ADLSLeaseState] = Field(
-            None, description="", alias="adlsContainerLeaseState"
-        )
-        adls_container_lease_status: Optional[ADLSLeaseStatus] = Field(
-            None, description="", alias="adlsContainerLeaseStatus"
-        )
-        adls_container_encryption_scope: Optional[str] = Field(
-            None, description="", alias="adlsContainerEncryptionScope"
-        )
-        adls_container_version_level_immutability_support: Optional[bool] = Field(
-            None, description="", alias="adlsContainerVersionLevelImmutabilitySupport"
-        )
-        adls_object_count: Optional[int] = Field(
-            None, description="", alias="adlsObjectCount"
-        )
-        adls_objects: Optional[list[ADLSObject]] = Field(
-            None, description="", alias="adlsObjects"
-        )  # relationship
-        adls_account: Optional[ADLSAccount] = Field(
-            None, description="", alias="adlsAccount"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        @init_guid
-        def create(
-            cls, *, name: str, adls_account_qualified_name: str
-        ) -> ADLSContainer.Attributes:
-            validate_required_fields(
-                ["name", "adls_account_qualified_name"],
-                [name, adls_account_qualified_name],
-            )
-
-            # Split the adls_account_qualified_name to extract necessary information
-            fields = adls_account_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid adls_account_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid adls_account_qualified_name") from e
-
-            return ADLSContainer.Attributes(
-                name=name,
-                adls_account_qualified_name=adls_account_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{adls_account_qualified_name}/{name}",
-                connector_name=connector_type.value,
-                adls_account=ADLSAccount.ref_by_qualified_name(
-                    adls_account_qualified_name
-                ),
-            )
-
-    attributes: "ADLSContainer.Attributes" = Field(
-        default_factory=lambda: ADLSContainer.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ADLSObject(ADLS):
+class S3Object(S3):
     """Description"""
 
     @classmethod
@@ -630,514 +172,310 @@ class ADLSObject(ADLS):
         cls,
         *,
         name: str,
-        adls_container_qualified_name: str,
-    ) -> ADLSObject:
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: str,
+    ) -> S3Object:
         validate_required_fields(
-            ["name", "adls_container_qualified_name"],
-            [name, adls_container_qualified_name],
+            [
+                "name",
+                "connection_qualified_name",
+                "aws_arn",
+                "s3_bucket_qualified_name",
+            ],
+            [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
         )
-        attributes = ADLSObject.Attributes.create(
+        attributes = S3Object.Attributes.create(
             name=name,
-            adls_container_qualified_name=adls_container_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("ADLSObject", allow_mutation=False)
+    type_name: str = Field("S3Object", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ADLSObject":
-            raise ValueError("must be ADLSObject")
+        if v != "S3Object":
+            raise ValueError("must be S3Object")
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLSObject._convenience_properties:
+        if name in S3Object._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADLS_OBJECT_URL: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsObjectUrl", "adlsObjectUrl.keyword", "adlsObjectUrl"
+    S3OBJECT_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime"
     )
     """
     TBC
     """
-    ADLS_OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectVersionId", "adlsObjectVersionId"
+    S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3BucketName", "s3BucketName", "s3BucketName.text"
     )
     """
     TBC
     """
-    ADLS_OBJECT_TYPE: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectType", "adlsObjectType"
+    S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "s3BucketQualifiedName", "s3BucketQualifiedName"
     )
     """
     TBC
     """
-    ADLS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
-        "adlsObjectSize", "adlsObjectSize"
+    S3OBJECT_SIZE: ClassVar[NumericField] = NumericField("s3ObjectSize", "s3ObjectSize")
+    """
+    TBC
+    """
+    S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectStorageClass", "s3ObjectStorageClass"
     )
     """
     TBC
     """
-    ADLS_OBJECT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectAccessTier", "adlsObjectAccessTier"
+    S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
     )
     """
     TBC
     """
-    ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
-        "adlsObjectAccessTierLastModifiedTime", "adlsObjectAccessTierLastModifiedTime"
+    S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectContentType", "s3ObjectContentType"
     )
     """
     TBC
     """
-    ADLS_OBJECT_ARCHIVE_STATUS: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectArchiveStatus", "adlsObjectArchiveStatus"
+    S3OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectContentDisposition", "s3ObjectContentDisposition"
     )
     """
     TBC
     """
-    ADLS_OBJECT_SERVER_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
-        "adlsObjectServerEncrypted", "adlsObjectServerEncrypted"
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
-        BooleanField
-    ] = BooleanField(
-        "adlsObjectVersionLevelImmutabilitySupport",
-        "adlsObjectVersionLevelImmutabilitySupport",
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_CACHE_CONTROL: ClassVar[TextField] = TextField(
-        "adlsObjectCacheControl", "adlsObjectCacheControl"
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_CONTENT_TYPE: ClassVar[TextField] = TextField(
-        "adlsObjectContentType", "adlsObjectContentType"
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_CONTENT_MD5HASH: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectContentMD5Hash", "adlsObjectContentMD5Hash"
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsObjectContentLanguage",
-        "adlsObjectContentLanguage.keyword",
-        "adlsObjectContentLanguage",
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectLeaseStatus", "adlsObjectLeaseStatus"
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectLeaseState", "adlsObjectLeaseState"
-    )
-    """
-    TBC
-    """
-    ADLS_OBJECT_METADATA: ClassVar[KeywordField] = KeywordField(
-        "adlsObjectMetadata", "adlsObjectMetadata"
-    )
-    """
-    TBC
-    """
-    ADLS_CONTAINER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsContainerQualifiedName",
-        "adlsContainerQualifiedName",
-        "adlsContainerQualifiedName.text",
+    S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectVersionId", "s3ObjectVersionId"
     )
     """
     TBC
     """
 
-    ADLS_CONTAINER: ClassVar[RelationField] = RelationField("adlsContainer")
+    BUCKET: ClassVar[RelationField] = RelationField("bucket")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "adls_object_url",
-        "adls_object_version_id",
-        "adls_object_type",
-        "adls_object_size",
-        "adls_object_access_tier",
-        "adls_object_access_tier_last_modified_time",
-        "adls_object_archive_status",
-        "adls_object_server_encrypted",
-        "adls_object_version_level_immutability_support",
-        "adls_object_cache_control",
-        "adls_object_content_type",
-        "adls_object_content_m_d5_hash",
-        "adls_object_content_language",
-        "adls_object_lease_status",
-        "adls_object_lease_state",
-        "adls_object_metadata",
-        "adls_container_qualified_name",
-        "adls_container",
+        "s3_object_last_modified_time",
+        "s3_bucket_name",
+        "s3_bucket_qualified_name",
+        "s3_object_size",
+        "s3_object_storage_class",
+        "s3_object_key",
+        "s3_object_content_type",
+        "s3_object_content_disposition",
+        "s3_object_version_id",
+        "bucket",
     ]
 
     @property
-    def adls_object_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adls_object_url
-
-    @adls_object_url.setter
-    def adls_object_url(self, adls_object_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_url = adls_object_url
-
-    @property
-    def adls_object_version_id(self) -> Optional[str]:
+    def s3_object_last_modified_time(self) -> Optional[datetime]:
         return (
-            None if self.attributes is None else self.attributes.adls_object_version_id
+            None
+            if self.attributes is None
+            else self.attributes.s3_object_last_modified_time
         )
 
-    @adls_object_version_id.setter
-    def adls_object_version_id(self, adls_object_version_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_version_id = adls_object_version_id
-
-    @property
-    def adls_object_type(self) -> Optional[ADLSObjectType]:
-        return None if self.attributes is None else self.attributes.adls_object_type
-
-    @adls_object_type.setter
-    def adls_object_type(self, adls_object_type: Optional[ADLSObjectType]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_type = adls_object_type
-
-    @property
-    def adls_object_size(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.adls_object_size
-
-    @adls_object_size.setter
-    def adls_object_size(self, adls_object_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_size = adls_object_size
-
-    @property
-    def adls_object_access_tier(self) -> Optional[ADLSAccessTier]:
-        return (
-            None if self.attributes is None else self.attributes.adls_object_access_tier
-        )
-
-    @adls_object_access_tier.setter
-    def adls_object_access_tier(
-        self, adls_object_access_tier: Optional[ADLSAccessTier]
+    @s3_object_last_modified_time.setter
+    def s3_object_last_modified_time(
+        self, s3_object_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_object_access_tier = adls_object_access_tier
+        self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
 
     @property
-    def adls_object_access_tier_last_modified_time(self) -> Optional[datetime]:
+    def s3_bucket_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_bucket_name
+
+    @s3_bucket_name.setter
+    def s3_bucket_name(self, s3_bucket_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_bucket_name = s3_bucket_name
+
+    @property
+    def s3_bucket_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.adls_object_access_tier_last_modified_time
+            else self.attributes.s3_bucket_qualified_name
         )
 
-    @adls_object_access_tier_last_modified_time.setter
-    def adls_object_access_tier_last_modified_time(
-        self, adls_object_access_tier_last_modified_time: Optional[datetime]
+    @s3_bucket_qualified_name.setter
+    def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
+
+    @property
+    def s3_object_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.s3_object_size
+
+    @s3_object_size.setter
+    def s3_object_size(self, s3_object_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_size = s3_object_size
+
+    @property
+    def s3_object_storage_class(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.s3_object_storage_class
+        )
+
+    @s3_object_storage_class.setter
+    def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_storage_class = s3_object_storage_class
+
+    @property
+    def s3_object_key(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_object_key
+
+    @s3_object_key.setter
+    def s3_object_key(self, s3_object_key: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_key = s3_object_key
+
+    @property
+    def s3_object_content_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.s3_object_content_type
+        )
+
+    @s3_object_content_type.setter
+    def s3_object_content_type(self, s3_object_content_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_content_type = s3_object_content_type
+
+    @property
+    def s3_object_content_disposition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_object_content_disposition
+        )
+
+    @s3_object_content_disposition.setter
+    def s3_object_content_disposition(
+        self, s3_object_content_disposition: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_object_access_tier_last_modified_time = (
-            adls_object_access_tier_last_modified_time
-        )
+        self.attributes.s3_object_content_disposition = s3_object_content_disposition
 
     @property
-    def adls_object_archive_status(self) -> Optional[ADLSObjectArchiveStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_archive_status
-        )
+    def s3_object_version_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_object_version_id
 
-    @adls_object_archive_status.setter
-    def adls_object_archive_status(
-        self, adls_object_archive_status: Optional[ADLSObjectArchiveStatus]
-    ):
+    @s3_object_version_id.setter
+    def s3_object_version_id(self, s3_object_version_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_object_archive_status = adls_object_archive_status
+        self.attributes.s3_object_version_id = s3_object_version_id
 
     @property
-    def adls_object_server_encrypted(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_server_encrypted
-        )
+    def bucket(self) -> Optional[S3Bucket]:
+        return None if self.attributes is None else self.attributes.bucket
 
-    @adls_object_server_encrypted.setter
-    def adls_object_server_encrypted(
-        self, adls_object_server_encrypted: Optional[bool]
-    ):
+    @bucket.setter
+    def bucket(self, bucket: Optional[S3Bucket]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_object_server_encrypted = adls_object_server_encrypted
+        self.attributes.bucket = bucket
 
-    @property
-    def adls_object_version_level_immutability_support(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_version_level_immutability_support
+    class Attributes(S3.Attributes):
+        s3_object_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="s3ObjectLastModifiedTime"
         )
-
-    @adls_object_version_level_immutability_support.setter
-    def adls_object_version_level_immutability_support(
-        self, adls_object_version_level_immutability_support: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_version_level_immutability_support = (
-            adls_object_version_level_immutability_support
+        s3_bucket_name: Optional[str] = Field(
+            None, description="", alias="s3BucketName"
         )
-
-    @property
-    def adls_object_cache_control(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_cache_control
+        s3_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="s3BucketQualifiedName"
         )
-
-    @adls_object_cache_control.setter
-    def adls_object_cache_control(self, adls_object_cache_control: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_cache_control = adls_object_cache_control
-
-    @property
-    def adls_object_content_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_content_type
+        s3_object_size: Optional[int] = Field(
+            None, description="", alias="s3ObjectSize"
         )
-
-    @adls_object_content_type.setter
-    def adls_object_content_type(self, adls_object_content_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_content_type = adls_object_content_type
-
-    @property
-    def adls_object_content_m_d5_hash(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_content_m_d5_hash
+        s3_object_storage_class: Optional[str] = Field(
+            None, description="", alias="s3ObjectStorageClass"
         )
-
-    @adls_object_content_m_d5_hash.setter
-    def adls_object_content_m_d5_hash(
-        self, adls_object_content_m_d5_hash: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_content_m_d5_hash = adls_object_content_m_d5_hash
-
-    @property
-    def adls_object_content_language(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_content_language
+        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
+        s3_object_content_type: Optional[str] = Field(
+            None, description="", alias="s3ObjectContentType"
         )
-
-    @adls_object_content_language.setter
-    def adls_object_content_language(self, adls_object_content_language: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_content_language = adls_object_content_language
-
-    @property
-    def adls_object_lease_status(self) -> Optional[ADLSLeaseStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_object_lease_status
+        s3_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="s3ObjectContentDisposition"
         )
-
-    @adls_object_lease_status.setter
-    def adls_object_lease_status(
-        self, adls_object_lease_status: Optional[ADLSLeaseStatus]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_lease_status = adls_object_lease_status
-
-    @property
-    def adls_object_lease_state(self) -> Optional[ADLSLeaseState]:
-        return (
-            None if self.attributes is None else self.attributes.adls_object_lease_state
+        s3_object_version_id: Optional[str] = Field(
+            None, description="", alias="s3ObjectVersionId"
         )
-
-    @adls_object_lease_state.setter
-    def adls_object_lease_state(
-        self, adls_object_lease_state: Optional[ADLSLeaseState]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_lease_state = adls_object_lease_state
-
-    @property
-    def adls_object_metadata(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.adls_object_metadata
-
-    @adls_object_metadata.setter
-    def adls_object_metadata(self, adls_object_metadata: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_object_metadata = adls_object_metadata
-
-    @property
-    def adls_container_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_qualified_name
-        )
-
-    @adls_container_qualified_name.setter
-    def adls_container_qualified_name(
-        self, adls_container_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container_qualified_name = adls_container_qualified_name
-
-    @property
-    def adls_container(self) -> Optional[ADLSContainer]:
-        return None if self.attributes is None else self.attributes.adls_container
-
-    @adls_container.setter
-    def adls_container(self, adls_container: Optional[ADLSContainer]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_container = adls_container
-
-    class Attributes(ADLS.Attributes):
-        adls_object_url: Optional[str] = Field(
-            None, description="", alias="adlsObjectUrl"
-        )
-        adls_object_version_id: Optional[str] = Field(
-            None, description="", alias="adlsObjectVersionId"
-        )
-        adls_object_type: Optional[ADLSObjectType] = Field(
-            None, description="", alias="adlsObjectType"
-        )
-        adls_object_size: Optional[int] = Field(
-            None, description="", alias="adlsObjectSize"
-        )
-        adls_object_access_tier: Optional[ADLSAccessTier] = Field(
-            None, description="", alias="adlsObjectAccessTier"
-        )
-        adls_object_access_tier_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="adlsObjectAccessTierLastModifiedTime"
-        )
-        adls_object_archive_status: Optional[ADLSObjectArchiveStatus] = Field(
-            None, description="", alias="adlsObjectArchiveStatus"
-        )
-        adls_object_server_encrypted: Optional[bool] = Field(
-            None, description="", alias="adlsObjectServerEncrypted"
-        )
-        adls_object_version_level_immutability_support: Optional[bool] = Field(
-            None, description="", alias="adlsObjectVersionLevelImmutabilitySupport"
-        )
-        adls_object_cache_control: Optional[str] = Field(
-            None, description="", alias="adlsObjectCacheControl"
-        )
-        adls_object_content_type: Optional[str] = Field(
-            None, description="", alias="adlsObjectContentType"
-        )
-        adls_object_content_m_d5_hash: Optional[str] = Field(
-            None, description="", alias="adlsObjectContentMD5Hash"
-        )
-        adls_object_content_language: Optional[str] = Field(
-            None, description="", alias="adlsObjectContentLanguage"
-        )
-        adls_object_lease_status: Optional[ADLSLeaseStatus] = Field(
-            None, description="", alias="adlsObjectLeaseStatus"
-        )
-        adls_object_lease_state: Optional[ADLSLeaseState] = Field(
-            None, description="", alias="adlsObjectLeaseState"
-        )
-        adls_object_metadata: Optional[dict[str, str]] = Field(
-            None, description="", alias="adlsObjectMetadata"
-        )
-        adls_container_qualified_name: Optional[str] = Field(
-            None, description="", alias="adlsContainerQualifiedName"
-        )
-        adls_container: Optional[ADLSContainer] = Field(
-            None, description="", alias="adlsContainer"
+        bucket: Optional[S3Bucket] = Field(
+            None, description="", alias="bucket"
         )  # relationship
 
         @classmethod
         # @validate_arguments()
         @init_guid
         def create(
-            cls, *, name: str, adls_container_qualified_name: str
-        ) -> ADLSObject.Attributes:
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: str,
+            s3_bucket_qualified_name: str,
+        ) -> S3Object.Attributes:
             validate_required_fields(
-                ["name", "adls_container_qualified_name"],
-                [name, adls_container_qualified_name],
+                [
+                    "name",
+                    "connection_qualified_name",
+                    "aws_arn",
+                    "s3_bucket_qualified_name",
+                ],
+                [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
             )
-
-            # Split the qualified_name to extract necessary information
-            fields = adls_container_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid qualified_name")
-
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
             try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
             except ValueError as e:
-                raise ValueError("Invalid qualified_name") from e
-
-            return ADLSObject.Attributes(
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Object.Attributes(
+                aws_arn=aws_arn,
                 name=name,
-                adls_container_qualified_name=adls_container_qualified_name,
-                qualified_name=f"{adls_container_qualified_name}/{name}",
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
-                adls_container=ADLSContainer.ref_by_qualified_name(
-                    adls_container_qualified_name
-                ),
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
+                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
             )
 
-    attributes: "ADLSObject.Attributes" = Field(
-        default_factory=lambda: ADLSObject.Attributes(),
+    attributes: "S3Object.Attributes" = Field(
+        default_factory=lambda: S3Object.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-ADLSAccount.Attributes.update_forward_refs()
+S3Bucket.Attributes.update_forward_refs()
 
 
-ADLSContainer.Attributes.update_forward_refs()
-
-
-ADLSObject.Attributes.update_forward_refs()
+S3Object.Attributes.update_forward_refs()

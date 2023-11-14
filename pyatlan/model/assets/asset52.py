@@ -8,71 +8,80 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import IconType
-from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 
-from .asset00 import Resource
+from .asset19 import SaaS
 
 
-class ReadmeTemplate(Resource):
+class Salesforce(SaaS):
     """Description"""
 
-    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+    type_name: str = Field("Salesforce", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ReadmeTemplate":
-            raise ValueError("must be ReadmeTemplate")
+        if v != "Salesforce":
+            raise ValueError("must be Salesforce")
         return v
 
     def __setattr__(self, name, value):
-        if name in ReadmeTemplate._convenience_properties:
+        if name in Salesforce._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
+    ORGANIZATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "organizationQualifiedName", "organizationQualifiedName"
+    )
     """
     TBC
     """
-    ICON_TYPE: ClassVar[KeywordField] = KeywordField("iconType", "iconType")
+    API_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiName", "apiName.keyword", "apiName"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "icon",
-        "icon_type",
+        "organization_qualified_name",
+        "api_name",
     ]
 
     @property
-    def icon(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.icon
+    def organization_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.organization_qualified_name
+        )
 
-    @icon.setter
-    def icon(self, icon: Optional[str]):
+    @organization_qualified_name.setter
+    def organization_qualified_name(self, organization_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.icon = icon
+        self.attributes.organization_qualified_name = organization_qualified_name
 
     @property
-    def icon_type(self) -> Optional[IconType]:
-        return None if self.attributes is None else self.attributes.icon_type
+    def api_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_name
 
-    @icon_type.setter
-    def icon_type(self, icon_type: Optional[IconType]):
+    @api_name.setter
+    def api_name(self, api_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.icon_type = icon_type
+        self.attributes.api_name = api_name
 
-    class Attributes(Resource.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+    class Attributes(SaaS.Attributes):
+        organization_qualified_name: Optional[str] = Field(
+            None, description="", alias="organizationQualifiedName"
+        )
+        api_name: Optional[str] = Field(None, description="", alias="apiName")
 
-    attributes: "ReadmeTemplate.Attributes" = Field(
-        default_factory=lambda: ReadmeTemplate.Attributes(),
+    attributes: "Salesforce.Attributes" = Field(
+        default_factory=lambda: Salesforce.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-ReadmeTemplate.Attributes.update_forward_refs()
+Salesforce.Attributes.update_forward_refs()

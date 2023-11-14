@@ -9,873 +9,1524 @@ from typing import ClassVar, Optional
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
-    NumericField,
     RelationField,
-    TextField,
 )
 
-from .asset51 import Salesforce
+from .asset50 import MicroStrategy
 
 
-class SalesforceObject(Salesforce):
+class MicroStrategyReport(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("SalesforceObject", allow_mutation=False)
+    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceObject":
-            raise ValueError("must be SalesforceObject")
+        if v != "MicroStrategyReport":
+            raise ValueError("must be MicroStrategyReport")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceObject._convenience_properties:
+        if name in MicroStrategyReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    IS_CUSTOM: ClassVar[BooleanField] = BooleanField("isCustom", "isCustom")
+    MICRO_STRATEGY_REPORT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "microStrategyReportType", "microStrategyReportType"
+    )
     """
-    isCustom captures whether the object is a custom object or not
-    """
-    IS_MERGABLE: ClassVar[BooleanField] = BooleanField("isMergable", "isMergable")
-    """
-    TBC
-    """
-    IS_QUERYABLE: ClassVar[BooleanField] = BooleanField("isQueryable", "isQueryable")
-    """
-    TBC
-    """
-    FIELD_COUNT: ClassVar[NumericField] = NumericField("fieldCount", "fieldCount")
-    """
-    fieldCount is the number of fields in the object entity
+    Whether the report is a Grid or Chart report
     """
 
-    LOOKUP_FIELDS: ClassVar[RelationField] = RelationField("lookupFields")
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
     """
     TBC
     """
-    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
     """
     TBC
     """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "is_custom",
-        "is_mergable",
-        "is_queryable",
-        "field_count",
-        "lookup_fields",
-        "organization",
-        "fields",
+        "micro_strategy_report_type",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def is_custom(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_custom
-
-    @is_custom.setter
-    def is_custom(self, is_custom: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_custom = is_custom
-
-    @property
-    def is_mergable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_mergable
-
-    @is_mergable.setter
-    def is_mergable(self, is_mergable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_mergable = is_mergable
-
-    @property
-    def is_queryable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_queryable
-
-    @is_queryable.setter
-    def is_queryable(self, is_queryable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_queryable = is_queryable
-
-    @property
-    def field_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.field_count
-
-    @field_count.setter
-    def field_count(self, field_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.field_count = field_count
-
-    @property
-    def lookup_fields(self) -> Optional[list[SalesforceField]]:
-        return None if self.attributes is None else self.attributes.lookup_fields
-
-    @lookup_fields.setter
-    def lookup_fields(self, lookup_fields: Optional[list[SalesforceField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.lookup_fields = lookup_fields
-
-    @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    @property
-    def fields(self) -> Optional[list[SalesforceField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[SalesforceField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Salesforce.Attributes):
-        is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
-        is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
-        is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
-        field_count: Optional[int] = Field(None, description="", alias="fieldCount")
-        lookup_fields: Optional[list[SalesforceField]] = Field(
-            None, description="", alias="lookupFields"
-        )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
-        )  # relationship
-        fields: Optional[list[SalesforceField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-
-    attributes: "SalesforceObject.Attributes" = Field(
-        default_factory=lambda: SalesforceObject.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SalesforceField(Salesforce):
-    """Description"""
-
-    type_name: str = Field("SalesforceField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceField":
-            raise ValueError("must be SalesforceField")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SalesforceField._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "dataType", "dataType", "dataType.text"
-    )
-    """
-    data type of the field
-    """
-    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "objectQualifiedName", "objectQualifiedName"
-    )
-    """
-    TBC
-    """
-    ORDER: ClassVar[NumericField] = NumericField("order", "order")
-    """
-    TBC
-    """
-    INLINE_HELP_TEXT: ClassVar[TextField] = TextField(
-        "inlineHelpText", "inlineHelpText.text"
-    )
-    """
-    TBC
-    """
-    IS_CALCULATED: ClassVar[BooleanField] = BooleanField("isCalculated", "isCalculated")
-    """
-    TBC
-    """
-    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
-    """
-    TBC
-    """
-    IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField(
-        "isCaseSensitive", "isCaseSensitive"
-    )
-    """
-    TBC
-    """
-    IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField("isEncrypted", "isEncrypted")
-    """
-    TBC
-    """
-    MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
-    """
-    TBC
-    """
-    IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
-    """
-    TBC
-    """
-    PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
-    """
-    Total number of digits allowed
-    """
-    NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
-    """
-    TBC
-    """
-    IS_UNIQUE: ClassVar[BooleanField] = BooleanField("isUnique", "isUnique")
-    """
-    TBC
-    """
-    PICKLIST_VALUES: ClassVar[KeywordField] = KeywordField(
-        "picklistValues", "picklistValues"
-    )
-    """
-    picklistValues is a list of values from which a user can pick from while adding a record
-    """
-    IS_POLYMORPHIC_FOREIGN_KEY: ClassVar[BooleanField] = BooleanField(
-        "isPolymorphicForeignKey", "isPolymorphicForeignKey"
-    )
-    """
-    isPolymorphicForeignKey captures whether the field references to record of multiple objects
-    """
-    DEFAULT_VALUE_FORMULA: ClassVar[KeywordField] = KeywordField(
-        "defaultValueFormula", "defaultValueFormula"
-    )
-    """
-    TBC
-    """
-
-    LOOKUP_OBJECTS: ClassVar[RelationField] = RelationField("lookupObjects")
-    """
-    TBC
-    """
-    OBJECT: ClassVar[RelationField] = RelationField("object")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "data_type",
-        "object_qualified_name",
-        "order",
-        "inline_help_text",
-        "is_calculated",
-        "formula",
-        "is_case_sensitive",
-        "is_encrypted",
-        "max_length",
-        "is_nullable",
-        "precision",
-        "numeric_scale",
-        "is_unique",
-        "picklist_values",
-        "is_polymorphic_foreign_key",
-        "default_value_formula",
-        "lookup_objects",
-        "object",
-    ]
-
-    @property
-    def data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_type
-
-    @data_type.setter
-    def data_type(self, data_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_type = data_type
-
-    @property
-    def object_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.object_qualified_name
-        )
-
-    @object_qualified_name.setter
-    def object_qualified_name(self, object_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.object_qualified_name = object_qualified_name
-
-    @property
-    def order(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.order
-
-    @order.setter
-    def order(self, order: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.order = order
-
-    @property
-    def inline_help_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.inline_help_text
-
-    @inline_help_text.setter
-    def inline_help_text(self, inline_help_text: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.inline_help_text = inline_help_text
-
-    @property
-    def is_calculated(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_calculated
-
-    @is_calculated.setter
-    def is_calculated(self, is_calculated: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_calculated = is_calculated
-
-    @property
-    def formula(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.formula
-
-    @formula.setter
-    def formula(self, formula: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.formula = formula
-
-    @property
-    def is_case_sensitive(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_case_sensitive
-
-    @is_case_sensitive.setter
-    def is_case_sensitive(self, is_case_sensitive: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_case_sensitive = is_case_sensitive
-
-    @property
-    def is_encrypted(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_encrypted
-
-    @is_encrypted.setter
-    def is_encrypted(self, is_encrypted: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_encrypted = is_encrypted
-
-    @property
-    def max_length(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.max_length
-
-    @max_length.setter
-    def max_length(self, max_length: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.max_length = max_length
-
-    @property
-    def is_nullable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_nullable
-
-    @is_nullable.setter
-    def is_nullable(self, is_nullable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_nullable = is_nullable
-
-    @property
-    def precision(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.precision
-
-    @precision.setter
-    def precision(self, precision: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.precision = precision
-
-    @property
-    def numeric_scale(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.numeric_scale
-
-    @numeric_scale.setter
-    def numeric_scale(self, numeric_scale: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.numeric_scale = numeric_scale
-
-    @property
-    def is_unique(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_unique
-
-    @is_unique.setter
-    def is_unique(self, is_unique: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_unique = is_unique
-
-    @property
-    def picklist_values(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.picklist_values
-
-    @picklist_values.setter
-    def picklist_values(self, picklist_values: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.picklist_values = picklist_values
-
-    @property
-    def is_polymorphic_foreign_key(self) -> Optional[bool]:
+    def micro_strategy_report_type(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.is_polymorphic_foreign_key
+            else self.attributes.micro_strategy_report_type
         )
 
-    @is_polymorphic_foreign_key.setter
-    def is_polymorphic_foreign_key(self, is_polymorphic_foreign_key: Optional[bool]):
+    @micro_strategy_report_type.setter
+    def micro_strategy_report_type(self, micro_strategy_report_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.is_polymorphic_foreign_key = is_polymorphic_foreign_key
+        self.attributes.micro_strategy_report_type = micro_strategy_report_type
 
     @property
-    def default_value_formula(self) -> Optional[str]:
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
         return (
-            None if self.attributes is None else self.attributes.default_value_formula
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
         )
 
-    @default_value_formula.setter
-    def default_value_formula(self, default_value_formula: Optional[str]):
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.default_value_formula = default_value_formula
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
-    def lookup_objects(self) -> Optional[list[SalesforceObject]]:
-        return None if self.attributes is None else self.attributes.lookup_objects
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
 
-    @lookup_objects.setter
-    def lookup_objects(self, lookup_objects: Optional[list[SalesforceObject]]):
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.lookup_objects = lookup_objects
+        self.attributes.micro_strategy_project = micro_strategy_project
 
     @property
-    def object(self) -> Optional[SalesforceObject]:
-        return None if self.attributes is None else self.attributes.object
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
 
-    @object.setter
-    def object(self, object: Optional[SalesforceObject]):
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.object = object
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
-    class Attributes(Salesforce.Attributes):
-        data_type: Optional[str] = Field(None, description="", alias="dataType")
-        object_qualified_name: Optional[str] = Field(
-            None, description="", alias="objectQualifiedName"
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_report_type: Optional[str] = Field(
+            None, description="", alias="microStrategyReportType"
         )
-        order: Optional[int] = Field(None, description="", alias="order")
-        inline_help_text: Optional[str] = Field(
-            None, description="", alias="inlineHelpText"
-        )
-        is_calculated: Optional[bool] = Field(
-            None, description="", alias="isCalculated"
-        )
-        formula: Optional[str] = Field(None, description="", alias="formula")
-        is_case_sensitive: Optional[bool] = Field(
-            None, description="", alias="isCaseSensitive"
-        )
-        is_encrypted: Optional[bool] = Field(None, description="", alias="isEncrypted")
-        max_length: Optional[int] = Field(None, description="", alias="maxLength")
-        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
-        precision: Optional[int] = Field(None, description="", alias="precision")
-        numeric_scale: Optional[float] = Field(
-            None, description="", alias="numericScale"
-        )
-        is_unique: Optional[bool] = Field(None, description="", alias="isUnique")
-        picklist_values: Optional[set[str]] = Field(
-            None, description="", alias="picklistValues"
-        )
-        is_polymorphic_foreign_key: Optional[bool] = Field(
-            None, description="", alias="isPolymorphicForeignKey"
-        )
-        default_value_formula: Optional[str] = Field(
-            None, description="", alias="defaultValueFormula"
-        )
-        lookup_objects: Optional[list[SalesforceObject]] = Field(
-            None, description="", alias="lookupObjects"
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
         )  # relationship
-        object: Optional[SalesforceObject] = Field(
-            None, description="", alias="object"
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "SalesforceField.Attributes" = Field(
-        default_factory=lambda: SalesforceField.Attributes(),
+    attributes: "MicroStrategyReport.Attributes" = Field(
+        default_factory=lambda: MicroStrategyReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SalesforceOrganization(Salesforce):
+class MicroStrategyProject(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceOrganization":
-            raise ValueError("must be SalesforceOrganization")
+        if v != "MicroStrategyProject":
+            raise ValueError("must be MicroStrategyProject")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceOrganization._convenience_properties:
+        if name in MicroStrategyProject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
-    """
-    sourceId is the Id of the organization entity on salesforce
-    """
-
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
     """
     TBC
     """
-    OBJECTS: ClassVar[RelationField] = RelationField("objects")
+    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
     """
     TBC
     """
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "microStrategyVisualizations"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_DOCUMENTS: ClassVar[RelationField] = RelationField(
+        "microStrategyDocuments"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_DOSSIERS: ClassVar[RelationField] = RelationField(
+        "microStrategyDossiers"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_id",
-        "reports",
-        "objects",
-        "dashboards",
+        "micro_strategy_reports",
+        "micro_strategy_facts",
+        "micro_strategy_metrics",
+        "micro_strategy_visualizations",
+        "micro_strategy_documents",
+        "micro_strategy_cubes",
+        "micro_strategy_dossiers",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def source_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_id
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_reports
+        )
 
-    @source_id.setter
-    def source_id(self, source_id: Optional[str]):
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_id = source_id
+        self.attributes.micro_strategy_reports = micro_strategy_reports
 
     @property
-    def reports(self) -> Optional[list[SalesforceReport]]:
-        return None if self.attributes is None else self.attributes.reports
+    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_facts
 
-    @reports.setter
-    def reports(self, reports: Optional[list[SalesforceReport]]):
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.reports = reports
+        self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
-    def objects(self) -> Optional[list[SalesforceObject]]:
-        return None if self.attributes is None else self.attributes.objects
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
 
-    @objects.setter
-    def objects(self, objects: Optional[list[SalesforceObject]]):
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.objects = objects
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
-    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
+    def micro_strategy_visualizations(
+        self,
+    ) -> Optional[list[MicroStrategyVisualization]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualizations
+        )
 
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+    @micro_strategy_visualizations.setter
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
+        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
-    class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        reports: Optional[list[SalesforceReport]] = Field(
-            None, description="", alias="reports"
+    @property
+    def micro_strategy_documents(self) -> Optional[list[MicroStrategyDocument]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_documents
+        )
+
+    @micro_strategy_documents.setter
+    def micro_strategy_documents(
+        self, micro_strategy_documents: Optional[list[MicroStrategyDocument]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_documents = micro_strategy_documents
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_dossiers(self) -> Optional[list[MicroStrategyDossier]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_dossiers
+        )
+
+    @micro_strategy_dossiers.setter
+    def micro_strategy_dossiers(
+        self, micro_strategy_dossiers: Optional[list[MicroStrategyDossier]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossiers = micro_strategy_dossiers
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
         )  # relationship
-        objects: Optional[list[SalesforceObject]] = Field(
-            None, description="", alias="objects"
+        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
+            None, description="", alias="microStrategyFacts"
         )  # relationship
-        dashboards: Optional[list[SalesforceDashboard]] = Field(
-            None, description="", alias="dashboards"
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_visualizations: Optional[
+            list[MicroStrategyVisualization]
+        ] = Field(
+            None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+        micro_strategy_documents: Optional[list[MicroStrategyDocument]] = Field(
+            None, description="", alias="microStrategyDocuments"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_dossiers: Optional[list[MicroStrategyDossier]] = Field(
+            None, description="", alias="microStrategyDossiers"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "SalesforceOrganization.Attributes" = Field(
-        default_factory=lambda: SalesforceOrganization.Attributes(),
+    attributes: "MicroStrategyProject.Attributes" = Field(
+        default_factory=lambda: MicroStrategyProject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SalesforceDashboard(Salesforce):
+class MicroStrategyMetric(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceDashboard":
-            raise ValueError("must be SalesforceDashboard")
+        if v != "MicroStrategyMetric":
+            raise ValueError("must be MicroStrategyMetric")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceDashboard._convenience_properties:
+        if name in MicroStrategyMetric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
-    """
-    sourceId is the Id of the dashboard entity on salesforce
-    """
-    DASHBOARD_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dashboardType", "dashboardType"
+    MICRO_STRATEGY_METRIC_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "microStrategyMetricExpression", "microStrategyMetricExpression"
     )
     """
-    dashboardType is the type of dashboard in salesforce
+    Metric expression text
     """
-    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyAttributeQualifiedNames",
+        "microStrategyAttributeQualifiedNames",
+        "microStrategyAttributeQualifiedNames.text",
+    )
     """
-    reportCount is the number of reports linked to the dashboard entity on salesforce
+    Related attribute qualified name list
+    """
+    MICRO_STRATEGY_ATTRIBUTE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyAttributeNames",
+        "microStrategyAttributeNames.keyword",
+        "microStrategyAttributeNames",
+    )
+    """
+    Related attribute name list
+    """
+    MICRO_STRATEGY_FACT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyFactQualifiedNames",
+        "microStrategyFactQualifiedNames",
+        "microStrategyFactQualifiedNames.text",
+    )
+    """
+    Related fact qualified name list
+    """
+    MICRO_STRATEGY_FACT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyFactNames",
+        "microStrategyFactNames.keyword",
+        "microStrategyFactNames",
+    )
+    """
+    Related fact name list
+    """
+    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyMetricParentQualifiedNames",
+        "microStrategyMetricParentQualifiedNames",
+        "microStrategyMetricParentQualifiedNames.text",
+    )
+    """
+    Related parent metric qualified name list
+    """
+    MICRO_STRATEGY_METRIC_PARENT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyMetricParentNames",
+        "microStrategyMetricParentNames.keyword",
+        "microStrategyMetricParentNames",
+    )
+    """
+    Related parent metric name list
     """
 
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    MICRO_STRATEGY_METRIC_PARENTS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetricParents"
+    )
     """
     TBC
     """
-    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_METRIC_CHILDREN: ClassVar[RelationField] = RelationField(
+        "microStrategyMetricChildren"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_id",
-        "dashboard_type",
-        "report_count",
-        "reports",
-        "organization",
+        "micro_strategy_metric_expression",
+        "micro_strategy_attribute_qualified_names",
+        "micro_strategy_attribute_names",
+        "micro_strategy_fact_qualified_names",
+        "micro_strategy_fact_names",
+        "micro_strategy_metric_parent_qualified_names",
+        "micro_strategy_metric_parent_names",
+        "micro_strategy_metric_parents",
+        "micro_strategy_facts",
+        "micro_strategy_reports",
+        "micro_strategy_cubes",
+        "micro_strategy_metric_children",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def source_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_id
-
-    @source_id.setter
-    def source_id(self, source_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_id = source_id
-
-    @property
-    def dashboard_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dashboard_type
-
-    @dashboard_type.setter
-    def dashboard_type(self, dashboard_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard_type = dashboard_type
-
-    @property
-    def report_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.report_count
-
-    @report_count.setter
-    def report_count(self, report_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_count = report_count
-
-    @property
-    def reports(self) -> Optional[list[SalesforceReport]]:
-        return None if self.attributes is None else self.attributes.reports
-
-    @reports.setter
-    def reports(self, reports: Optional[list[SalesforceReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reports = reports
-
-    @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        dashboard_type: Optional[str] = Field(
-            None, description="", alias="dashboardType"
+    def micro_strategy_metric_expression(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_expression
         )
-        report_count: Optional[int] = Field(None, description="", alias="reportCount")
-        reports: Optional[list[SalesforceReport]] = Field(
-            None, description="", alias="reports"
+
+    @micro_strategy_metric_expression.setter
+    def micro_strategy_metric_expression(
+        self, micro_strategy_metric_expression: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_expression = (
+            micro_strategy_metric_expression
+        )
+
+    @property
+    def micro_strategy_attribute_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attribute_qualified_names
+        )
+
+    @micro_strategy_attribute_qualified_names.setter
+    def micro_strategy_attribute_qualified_names(
+        self, micro_strategy_attribute_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_qualified_names = (
+            micro_strategy_attribute_qualified_names
+        )
+
+    @property
+    def micro_strategy_attribute_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attribute_names
+        )
+
+    @micro_strategy_attribute_names.setter
+    def micro_strategy_attribute_names(
+        self, micro_strategy_attribute_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_names = micro_strategy_attribute_names
+
+    @property
+    def micro_strategy_fact_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_fact_qualified_names
+        )
+
+    @micro_strategy_fact_qualified_names.setter
+    def micro_strategy_fact_qualified_names(
+        self, micro_strategy_fact_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_qualified_names = (
+            micro_strategy_fact_qualified_names
+        )
+
+    @property
+    def micro_strategy_fact_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_fact_names
+        )
+
+    @micro_strategy_fact_names.setter
+    def micro_strategy_fact_names(self, micro_strategy_fact_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_names = micro_strategy_fact_names
+
+    @property
+    def micro_strategy_metric_parent_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_parent_qualified_names
+        )
+
+    @micro_strategy_metric_parent_qualified_names.setter
+    def micro_strategy_metric_parent_qualified_names(
+        self, micro_strategy_metric_parent_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parent_qualified_names = (
+            micro_strategy_metric_parent_qualified_names
+        )
+
+    @property
+    def micro_strategy_metric_parent_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_parent_names
+        )
+
+    @micro_strategy_metric_parent_names.setter
+    def micro_strategy_metric_parent_names(
+        self, micro_strategy_metric_parent_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parent_names = (
+            micro_strategy_metric_parent_names
+        )
+
+    @property
+    def micro_strategy_metric_parents(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_parents
+        )
+
+    @micro_strategy_metric_parents.setter
+    def micro_strategy_metric_parents(
+        self, micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parents = micro_strategy_metric_parents
+
+    @property
+    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_facts
+
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_facts = micro_strategy_facts
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_reports
+        )
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_metric_children(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_children
+        )
+
+    @micro_strategy_metric_children.setter
+    def micro_strategy_metric_children(
+        self, micro_strategy_metric_children: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_children = micro_strategy_metric_children
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_metric_expression: Optional[str] = Field(
+            None, description="", alias="microStrategyMetricExpression"
+        )
+        micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyAttributeQualifiedNames"
+        )
+        micro_strategy_attribute_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyAttributeNames"
+        )
+        micro_strategy_fact_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactQualifiedNames"
+        )
+        micro_strategy_fact_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactNames"
+        )
+        micro_strategy_metric_parent_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyMetricParentQualifiedNames"
+        )
+        micro_strategy_metric_parent_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyMetricParentNames"
+        )
+        micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetricParents"
         )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
+            None, description="", alias="microStrategyFacts"
+        )  # relationship
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_metric_children: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetricChildren"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "SalesforceDashboard.Attributes" = Field(
-        default_factory=lambda: SalesforceDashboard.Attributes(),
+    attributes: "MicroStrategyMetric.Attributes" = Field(
+        default_factory=lambda: MicroStrategyMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SalesforceReport(Salesforce):
+class MicroStrategyCube(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("SalesforceReport", allow_mutation=False)
+    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceReport":
-            raise ValueError("must be SalesforceReport")
+        if v != "MicroStrategyCube":
+            raise ValueError("must be MicroStrategyCube")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceReport._convenience_properties:
+        if name in MicroStrategyCube._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
-    """
-    sourceId is the Id of the report entity on salesforce
-    """
-    REPORT_TYPE: ClassVar[KeywordField] = KeywordField("reportType", "reportType")
-    """
-    reportType is the type of report in salesforce
-    """
-    DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField(
-        "detailColumns", "detailColumns"
+    MICRO_STRATEGY_CUBE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "microStrategyCubeType", "microStrategyCubeType"
     )
     """
-    detailColumns is a list of column names on the report
+    Whether the cube is an OLAP or MTDI cube
+    """
+    MICRO_STRATEGY_CUBE_QUERY: ClassVar[KeywordField] = KeywordField(
+        "microStrategyCubeQuery", "microStrategyCubeQuery"
+    )
+    """
+    The query used to create the cube
     """
 
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
     """
     TBC
     """
-    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_id",
-        "report_type",
-        "detail_columns",
-        "dashboards",
-        "organization",
+        "micro_strategy_cube_type",
+        "micro_strategy_cube_query",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def source_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_id
-
-    @source_id.setter
-    def source_id(self, source_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_id = source_id
-
-    @property
-    def report_type(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.report_type
-
-    @report_type.setter
-    def report_type(self, report_type: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_type = report_type
-
-    @property
-    def detail_columns(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.detail_columns
-
-    @detail_columns.setter
-    def detail_columns(self, detail_columns: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.detail_columns = detail_columns
-
-    @property
-    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
-
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
-
-    @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        report_type: Optional[dict[str, str]] = Field(
-            None, description="", alias="reportType"
+    def micro_strategy_cube_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_cube_type
         )
-        detail_columns: Optional[set[str]] = Field(
-            None, description="", alias="detailColumns"
+
+    @micro_strategy_cube_type.setter
+    def micro_strategy_cube_type(self, micro_strategy_cube_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_type = micro_strategy_cube_type
+
+    @property
+    def micro_strategy_cube_query(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_cube_query
         )
-        dashboards: Optional[list[SalesforceDashboard]] = Field(
-            None, description="", alias="dashboards"
+
+    @micro_strategy_cube_query.setter
+    def micro_strategy_cube_query(self, micro_strategy_cube_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_query = micro_strategy_cube_query
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_cube_type: Optional[str] = Field(
+            None, description="", alias="microStrategyCubeType"
+        )
+        micro_strategy_cube_query: Optional[str] = Field(
+            None, description="", alias="microStrategyCubeQuery"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
         )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "SalesforceReport.Attributes" = Field(
-        default_factory=lambda: SalesforceReport.Attributes(),
+    attributes: "MicroStrategyCube.Attributes" = Field(
+        default_factory=lambda: MicroStrategyCube.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-SalesforceObject.Attributes.update_forward_refs()
+class MicroStrategyDossier(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDossier":
+            raise ValueError("must be MicroStrategyDossier")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyDossier._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MICRO_STRATEGY_DOSSIER_CHAPTER_NAMES: ClassVar[KeywordField] = KeywordField(
+        "microStrategyDossierChapterNames", "microStrategyDossierChapterNames"
+    )
+    """
+    Dossier chapter name list
+    """
+
+    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "microStrategyVisualizations"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "micro_strategy_dossier_chapter_names",
+        "micro_strategy_visualizations",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_dossier_chapter_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_chapter_names
+        )
+
+    @micro_strategy_dossier_chapter_names.setter
+    def micro_strategy_dossier_chapter_names(
+        self, micro_strategy_dossier_chapter_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_chapter_names = (
+            micro_strategy_dossier_chapter_names
+        )
+
+    @property
+    def micro_strategy_visualizations(
+        self,
+    ) -> Optional[list[MicroStrategyVisualization]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualizations
+        )
+
+    @micro_strategy_visualizations.setter
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyDossierChapterNames"
+        )
+        micro_strategy_visualizations: Optional[
+            list[MicroStrategyVisualization]
+        ] = Field(
+            None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyDossier.Attributes" = Field(
+        default_factory=lambda: MicroStrategyDossier.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-SalesforceField.Attributes.update_forward_refs()
+class MicroStrategyFact(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyFact":
+            raise ValueError("must be MicroStrategyFact")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyFact._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MICRO_STRATEGY_FACT_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
+        "microStrategyFactExpressions", "microStrategyFactExpressions"
+    )
+    """
+    Fact expression list
+    """
+
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "micro_strategy_fact_expressions",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_fact_expressions(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_fact_expressions
+        )
+
+    @micro_strategy_fact_expressions.setter
+    def micro_strategy_fact_expressions(
+        self, micro_strategy_fact_expressions: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_expressions = (
+            micro_strategy_fact_expressions
+        )
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_fact_expressions: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactExpressions"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyFact.Attributes" = Field(
+        default_factory=lambda: MicroStrategyFact.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-SalesforceOrganization.Attributes.update_forward_refs()
+class MicroStrategyDocument(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDocument":
+            raise ValueError("must be MicroStrategyDocument")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyDocument._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyDocument.Attributes" = Field(
+        default_factory=lambda: MicroStrategyDocument.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-SalesforceDashboard.Attributes.update_forward_refs()
+class MicroStrategyAttribute(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyAttribute":
+            raise ValueError("must be MicroStrategyAttribute")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyAttribute._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MICRO_STRATEGY_ATTRIBUTE_FORMS: ClassVar[KeywordField] = KeywordField(
+        "microStrategyAttributeForms", "microStrategyAttributeForms"
+    )
+    """
+    Attribute form name, description, displayFormat and expression as JSON string
+    """
+
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "micro_strategy_attribute_forms",
+        "micro_strategy_reports",
+        "micro_strategy_metrics",
+        "micro_strategy_cubes",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_attribute_forms(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attribute_forms
+        )
+
+    @micro_strategy_attribute_forms.setter
+    def micro_strategy_attribute_forms(
+        self, micro_strategy_attribute_forms: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_forms = micro_strategy_attribute_forms
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_reports
+        )
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_attribute_forms: Optional[str] = Field(
+            None, description="", alias="microStrategyAttributeForms"
+        )
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyAttribute.Attributes" = Field(
+        default_factory=lambda: MicroStrategyAttribute.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-SalesforceReport.Attributes.update_forward_refs()
+class MicroStrategyVisualization(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyVisualization":
+            raise ValueError("must be MicroStrategyVisualization")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyVisualization._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MICRO_STRATEGY_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "microStrategyVisualizationType", "microStrategyVisualizationType"
+    )
+    """
+    Visualization type name
+    """
+    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyDossierQualifiedName",
+        "microStrategyDossierQualifiedName",
+        "microStrategyDossierQualifiedName.text",
+    )
+    """
+    Parent dossier qualified name
+    """
+    MICRO_STRATEGY_DOSSIER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyDossierName",
+        "microStrategyDossierName.keyword",
+        "microStrategyDossierName",
+    )
+    """
+    Parent dossier name
+    """
+
+    MICRO_STRATEGY_DOSSIER: ClassVar[RelationField] = RelationField(
+        "microStrategyDossier"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "micro_strategy_visualization_type",
+        "micro_strategy_dossier_qualified_name",
+        "micro_strategy_dossier_name",
+        "micro_strategy_dossier",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_visualization_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualization_type
+        )
+
+    @micro_strategy_visualization_type.setter
+    def micro_strategy_visualization_type(
+        self, micro_strategy_visualization_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualization_type = (
+            micro_strategy_visualization_type
+        )
+
+    @property
+    def micro_strategy_dossier_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_qualified_name
+        )
+
+    @micro_strategy_dossier_qualified_name.setter
+    def micro_strategy_dossier_qualified_name(
+        self, micro_strategy_dossier_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_qualified_name = (
+            micro_strategy_dossier_qualified_name
+        )
+
+    @property
+    def micro_strategy_dossier_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_name
+        )
+
+    @micro_strategy_dossier_name.setter
+    def micro_strategy_dossier_name(self, micro_strategy_dossier_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_name = micro_strategy_dossier_name
+
+    @property
+    def micro_strategy_dossier(self) -> Optional[MicroStrategyDossier]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_dossier
+        )
+
+    @micro_strategy_dossier.setter
+    def micro_strategy_dossier(
+        self, micro_strategy_dossier: Optional[MicroStrategyDossier]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier = micro_strategy_dossier
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_visualization_type: Optional[str] = Field(
+            None, description="", alias="microStrategyVisualizationType"
+        )
+        micro_strategy_dossier_qualified_name: Optional[str] = Field(
+            None, description="", alias="microStrategyDossierQualifiedName"
+        )
+        micro_strategy_dossier_name: Optional[str] = Field(
+            None, description="", alias="microStrategyDossierName"
+        )
+        micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
+            None, description="", alias="microStrategyDossier"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyVisualization.Attributes" = Field(
+        default_factory=lambda: MicroStrategyVisualization.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+MicroStrategyReport.Attributes.update_forward_refs()
+
+
+MicroStrategyProject.Attributes.update_forward_refs()
+
+
+MicroStrategyMetric.Attributes.update_forward_refs()
+
+
+MicroStrategyCube.Attributes.update_forward_refs()
+
+
+MicroStrategyDossier.Attributes.update_forward_refs()
+
+
+MicroStrategyFact.Attributes.update_forward_refs()
+
+
+MicroStrategyDocument.Attributes.update_forward_refs()
+
+
+MicroStrategyAttribute.Attributes.update_forward_refs()
+
+
+MicroStrategyVisualization.Attributes.update_forward_refs()

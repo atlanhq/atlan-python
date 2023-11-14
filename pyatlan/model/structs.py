@@ -109,18 +109,18 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(None, description="")
 
 
-class StarredDetails(AtlanObject):
-    """Description"""
-
-    asset_starred_by: Optional[str] = Field(None, description="")
-    asset_starred_at: Optional[datetime] = Field(None, description="")
-
-
 class AzureTag(AtlanObject):
     """Description"""
 
     azure_tag_key: str = Field(description="")
     azure_tag_value: str = Field(description="")
+
+
+class StarredDetails(AtlanObject):
+    """Description"""
+
+    asset_starred_by: Optional[str] = Field(None, description="")
+    asset_starred_at: Optional[datetime] = Field(None, description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -137,13 +137,6 @@ class AwsTag(AtlanObject):
     aws_tag_value: str = Field(description="")
 
 
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
-
-
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
@@ -151,6 +144,13 @@ class DbtMetricFilter(AtlanObject):
     dbt_metric_filter_field: Optional[str] = Field(None, description="")
     dbt_metric_filter_operator: Optional[str] = Field(None, description="")
     dbt_metric_filter_value: Optional[str] = Field(None, description="")
+
+
+class GoogleTag(AtlanObject):
+    """Description"""
+
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -220,17 +220,17 @@ SourceTagAttachment.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
-StarredDetails.update_forward_refs()
-
 AzureTag.update_forward_refs()
+
+StarredDetails.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 
 AwsTag.update_forward_refs()
 
-GoogleTag.update_forward_refs()
-
 DbtMetricFilter.update_forward_refs()
+
+GoogleTag.update_forward_refs()
 
 AuthPolicyValiditySchedule.update_forward_refs()
 

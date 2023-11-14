@@ -3520,19 +3520,19 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "shortDescription", "shortDescription"
     )
     """
-    TBC
+    Unused. Brief summary of the category. See 'description' and 'userDescription' instead.
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    TBC
+    Unused. Detailed description of the category. See 'readme' instead.
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    TBC
+    Unused. Arbitrary set of additional attributes associated with the category.
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
@@ -3713,27 +3713,27 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "shortDescription", "shortDescription"
     )
     """
-    TBC
+    Unused. A short definition of the glossary. See 'description' and 'userDescription' instead.
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    TBC
+    Unused. A longer description of the glossary. See 'readme' instead.
     """
     LANGUAGE: ClassVar[KeywordField] = KeywordField("language", "language")
     """
-    TBC
+    Unused. Language of the glossary's contents.
     """
     USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
     """
-    TBC
+    Unused. Inteded usage for the glossary.
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    TBC
+    Unused. Arbitrary set of additional attributes associated with this glossary.
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
@@ -3947,31 +3947,31 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "shortDescription", "shortDescription"
     )
     """
-    TBC
+    Unused. Brief summary of the term. See 'description' and 'userDescription' instead.
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    TBC
+    Unused. Detailed definition of the term. See 'readme' instead.
     """
     EXAMPLES: ClassVar[KeywordField] = KeywordField("examples", "examples")
     """
-    TBC
+    Unused. Exmaples of the term.
     """
     ABBREVIATION: ClassVar[KeywordField] = KeywordField("abbreviation", "abbreviation")
     """
-    TBC
+    Unused. Abbreviation of the term.
     """
     USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
     """
-    TBC
+    Unused. Intended usage for the term.
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    TBC
+    Unused. Arbitrary set of additional attributes for the terrm.
     """
 
     VALID_VALUES_FOR: ClassVar[RelationField] = RelationField("validValuesFor")
@@ -4417,15 +4417,15 @@ class Process(Asset, type_name="Process"):
 
     CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """
-    TBC
+    Code that ran within the process.
     """
     SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
     """
-    TBC
+    SQL query that ran to produce the outputs.
     """
     AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
     """
-    TBC
+    Parsed AST of the code or SQL statements that describe the logic of this process.
     """
 
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
@@ -5025,7 +5025,7 @@ class ColumnProcess(Process):
 
     OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
     """
-    TBC
+    Assets that are outputs from this process.
     """
     PROCESS: ClassVar[RelationField] = RelationField("process")
     """
@@ -5033,7 +5033,7 @@ class ColumnProcess(Process):
     """
     INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
-    TBC
+    Assets that are inputs to this process.
     """
 
     _convenience_properties: ClassVar[list[str]] = [

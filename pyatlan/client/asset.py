@@ -387,6 +387,7 @@ class AssetClient:
         :returns: the asset, without any of its relationships
         :raises NotFoundError: if the asset does not exist
         """
+        LOGGER.debug("Entering retrieve_minimal")
         return self.get_by_guid(
             guid=guid,
             asset_type=asset_type,
@@ -454,7 +455,11 @@ class AssetClient:
         return response
 
     def _wait_for_connections_to_be_created(self, connections_created):
+        LOGGER.debug("_wait_for_connections_to_be_created entered")
+        count = 0
         with self._client.max_retries():
+            count += 1
+            LOGGER.debug("_wait_for_connections_to_be_created attempt: {}", count)
             for connection in connections_created:
                 guid = connection.guid
                 self.retrieve_minimal(guid=guid, asset_type=Connection)
