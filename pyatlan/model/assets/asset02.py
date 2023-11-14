@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
@@ -197,6 +198,12 @@ class Connection(Asset, type_name="Connection"):
     """
     TBC
     """
+    VECTOR_EMBEDDINGS_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
+    )
+    """
+
+    """
 
     _convenience_properties: ClassVar[list[str]] = [
         "category",
@@ -225,6 +232,7 @@ class Connection(Asset, type_name="Connection"):
         "use_object_storage",
         "object_storage_upload_threshold",
         "vector_embeddings_enabled",
+        "vector_embeddings_updated_at",
     ]
 
     @property
@@ -537,6 +545,22 @@ class Connection(Asset, type_name="Connection"):
             self.attributes = self.Attributes()
         self.attributes.vector_embeddings_enabled = vector_embeddings_enabled
 
+    @property
+    def vector_embeddings_updated_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.vector_embeddings_updated_at
+        )
+
+    @vector_embeddings_updated_at.setter
+    def vector_embeddings_updated_at(
+        self, vector_embeddings_updated_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.vector_embeddings_updated_at = vector_embeddings_updated_at
+
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
         sub_category: Optional[str] = Field(None, description="", alias="subCategory")
@@ -597,6 +621,9 @@ class Connection(Asset, type_name="Connection"):
         )
         vector_embeddings_enabled: Optional[bool] = Field(
             None, description="", alias="vectorEmbeddingsEnabled"
+        )
+        vector_embeddings_updated_at: Optional[datetime] = Field(
+            None, description="", alias="vectorEmbeddingsUpdatedAt"
         )
 
         is_loaded: bool = Field(default=True)
