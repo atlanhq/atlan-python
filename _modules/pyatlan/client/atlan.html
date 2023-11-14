@@ -436,11 +436,11 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">read_text</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -458,7 +458,7 @@
 <span class="kn">from</span> <span class="nn">pyatlan.client.admin</span> <span class="kn">import</span> <span class="n">AdminClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.asset</span> <span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">AssetClient</span><span class="p">,</span> <span class="n">IndexSearchResults</span><span class="p">,</span> <span class="n">LineageListResults</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.audit</span> <span class="kn">import</span> <span class="n">AuditClient</span>
-<span class="kn">from</span> <span class="nn">pyatlan.client.common</span> <span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">HTTPS_PREFIX</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.common</span> <span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">HTTP_PREFIX</span><span class="p">,</span> <span class="n">HTTPS_PREFIX</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.constants</span> <span class="kn">import</span> <span class="n">PARSE_QUERY</span><span class="p">,</span> <span class="n">UPLOAD_IMAGE</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.group</span> <span class="kn">import</span> <span class="n">GroupClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.role</span> <span class="kn">import</span> <span class="n">RoleClient</span>
@@ -490,7 +490,7 @@
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">TypeDef</span><span class="p">,</span> <span class="n">TypeDefResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.user</span> <span class="kn">import</span> <span class="n">AtlanUser</span><span class="p">,</span> <span class="n">UserMinimalResponse</span><span class="p">,</span> <span class="n">UserResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.multipart_data_generator</span> <span class="kn">import</span> <span class="n">MultipartDataGenerator</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">AuthorizationFilter</span><span class="p">,</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">API</span><span class="p">,</span> <span class="n">AuthorizationFilter</span><span class="p">,</span> <span class="n">HTTPStatus</span>
 
 <span class="n">SERVICE_ACCOUNT_</span> <span class="o">=</span> <span class="s2">&quot;service-account-&quot;</span>
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -511,6 +511,7 @@
     <span class="n">adapter</span> <span class="o">=</span> <span class="n">HTTPAdapter</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="n">retry_strategy</span><span class="p">)</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
     <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">HTTPS_PREFIX</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">HTTP_PREFIX</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s2">&quot;x-atlan-agent&quot;</span><span class="p">:</span> <span class="s2">&quot;sdk&quot;</span><span class="p">,</span>
@@ -525,7 +526,7 @@
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlanClient</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
     <span class="n">_default_client</span><span class="p">:</span> <span class="s2">&quot;ClassVar[Optional[AtlanClient]]&quot;</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">base_url</span><span class="p">:</span> <span class="n">HttpUrl</span>
+    <span class="n">base_url</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;INTERNAL&quot;</span><span class="p">],</span> <span class="n">HttpUrl</span><span class="p">]</span>
     <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">_session</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_session</span><span class="p">)</span>
     <span class="n">_request_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
@@ -699,26 +700,45 @@
     <span class="k">def</span> <span class="nf">_call_api</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
-        <span class="n">params</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_path</span><span class="p">(</span><span class="n">api</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">,</span> <span class="n">request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
             <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------------&quot;</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Call         : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Content-type_ : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Accept       : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Request ID   : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api_internal</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">API</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">==</span> <span class="s2">&quot;INTERNAL&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">prefix</span><span class="p">),</span> <span class="n">api</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">generator</span> <span class="o">=</span> <span class="n">MultipartDataGenerator</span><span class="p">()</span>
         <span class="n">generator</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">post_data</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">get_post_data</span><span class="p">()</span>
         <span class="n">api</span><span class="o">.</span><span class="n">produces</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;multipart/form-data; boundary=</span><span class="si">{</span><span class="n">generator</span><span class="o">.</span><span class="n">boundary</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">params</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_path</span><span class="p">(</span><span class="n">api</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">,</span> <span class="n">request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
             <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------------&quot;</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Call         : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Content-type_ : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Accept       : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Request ID   : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api_internal</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">binary_data</span><span class="o">=</span><span class="n">post_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_params</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">API</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_params</span><span class="p">)</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="n">request_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;Accept&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span>
@@ -732,13 +752,7 @@
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">params</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">request_obj</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------------&quot;</span><span class="p">)</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Call         : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Content-type_ : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span><span class="p">)</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Accept       : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span><span class="p">)</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Request ID   : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">path</span>
+        <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">request_id</span>
 
 <div class="viewcode-block" id="AtlanClient.upload_image">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upload_image">[docs]</a>
@@ -2031,15 +2045,31 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a context manger that can used to temporarily change parameters used for retrying connnections.</span>
 <span class="sd">        The original Retry information will be restored when the context is exited.&quot;&quot;&quot;</span>
-        <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTPS_PREFIX</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">==</span> <span class="s2">&quot;INTERNAL&quot;</span><span class="p">:</span>
+            <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTP_PREFIX</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTPS_PREFIX</span><span class="p">]</span>
         <span class="n">current_max</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span>
         <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;max_retries set to total: </span><span class="si">%s</span><span class="s2"> force_list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">max_retries</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
+            <span class="n">max_retries</span><span class="o">.</span><span class="n">status_forcelist</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Entering max_retries&quot;</span><span class="p">)</span>
             <span class="k">yield</span> <span class="kc">None</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Exiting max_retries&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RetryError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Exception in max retries&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">RETRY_OVERRUN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">current_max</span></div>
+            <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">current_max</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="s2">&quot;max_retries restored to total: </span><span class="si">%s</span><span class="s2"> force_list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
+                <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span><span class="o">.</span><span class="n">status_forcelist</span><span class="p">,</span>
+            <span class="p">)</span></div>
 </div>
 
 
