@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -468,7 +474,7 @@
         <span class="s2">&quot;microStrategyReportType&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyReportType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of report, for example: Grid or Chart.</span>
+<span class="sd">    Whether the report is a Grid or Chart report</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_METRICS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -825,7 +831,7 @@
         <span class="s2">&quot;microStrategyMetricExpression&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyMetricExpression&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Text specifiying this metric&#39;s expression.</span>
+<span class="sd">    Metric expression text</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">KeywordTextField</span>
@@ -835,7 +841,7 @@
         <span class="s2">&quot;microStrategyAttributeQualifiedNames.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of unique names of attributes related to this metric.</span>
+<span class="sd">    Related attribute qualified name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_ATTRIBUTE_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyAttributeNames&quot;</span><span class="p">,</span>
@@ -843,7 +849,7 @@
         <span class="s2">&quot;microStrategyAttributeNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of simple names of attributes related to this metric.</span>
+<span class="sd">    Related attribute name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_FACT_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyFactQualifiedNames&quot;</span><span class="p">,</span>
@@ -851,7 +857,7 @@
         <span class="s2">&quot;microStrategyFactQualifiedNames.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of unique names of facts related to this metric.</span>
+<span class="sd">    Related fact qualified name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_FACT_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyFactNames&quot;</span><span class="p">,</span>
@@ -859,7 +865,7 @@
         <span class="s2">&quot;microStrategyFactNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of simple names of facts related to this metric.</span>
+<span class="sd">    Related fact name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">KeywordTextField</span>
@@ -869,7 +875,7 @@
         <span class="s2">&quot;microStrategyMetricParentQualifiedNames.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of unique names of parent metrics of this metric.</span>
+<span class="sd">    Related parent metric qualified name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_METRIC_PARENT_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyMetricParentNames&quot;</span><span class="p">,</span>
@@ -877,7 +883,7 @@
         <span class="s2">&quot;microStrategyMetricParentNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of simple names of parent metrics of this metric.</span>
+<span class="sd">    Related parent metric name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_METRIC_PARENTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1230,13 +1236,13 @@
         <span class="s2">&quot;microStrategyCubeType&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyCubeType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of cube, for example: OLAP or MTDI.</span>
+<span class="sd">    Whether the cube is an OLAP or MTDI cube</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_CUBE_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyCubeQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyCubeQuery&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Query used to create the cube.</span>
+<span class="sd">    The query used to create the cube</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_METRICS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1385,7 +1391,7 @@
         <span class="s2">&quot;microStrategyDossierChapterNames&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyDossierChapterNames&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of chapter names in this dossier.</span>
+<span class="sd">    Dossier chapter name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_VISUALIZATIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1500,7 +1506,7 @@
         <span class="s2">&quot;microStrategyFactExpressions&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyFactExpressions&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of expressions for this fact.</span>
+<span class="sd">    Fact expression list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_METRICS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1665,7 +1671,7 @@
         <span class="s2">&quot;microStrategyAttributeForms&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyAttributeForms&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    JSON string specifying the attribute&#39;s name, description, displayFormat, etc.</span>
+<span class="sd">    Attribute form name, description, displayFormat and expression as JSON string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_REPORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1816,7 +1822,7 @@
         <span class="s2">&quot;microStrategyVisualizationType&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyVisualizationType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of visualization.</span>
+<span class="sd">    Visualization type name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">KeywordTextField</span>
@@ -1826,7 +1832,7 @@
         <span class="s2">&quot;microStrategyDossierQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dossier in which this visualization exists.</span>
+<span class="sd">    Parent dossier qualified name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_DOSSIER_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyDossierName&quot;</span><span class="p">,</span>
@@ -1834,7 +1840,7 @@
         <span class="s2">&quot;microStrategyDossierName&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the dossier in which this visualization exists.</span>
+<span class="sd">    Parent dossier name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MICRO_STRATEGY_DOSSIER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>

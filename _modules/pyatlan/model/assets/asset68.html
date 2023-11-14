@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -468,53 +474,53 @@
 
     <span class="n">FOLDER_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;folderName&quot;</span><span class="p">,</span> <span class="s2">&quot;folderName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the folder in which the Look is organized.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_USER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceUserId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceUserId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the user who created the Look, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_VIEW_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceViewCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceViewCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of times the look has been viewed in the Looker web UI.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCELAST_UPDATER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourcelastUpdaterId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourcelastUpdaterId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the user that last updated the Look, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_LAST_ACCESSED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceLastAccessedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceLastAccessedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) when the Look was last accessed by a user, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_LAST_VIEWED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceLastViewedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceLastViewedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) when the Look was last viewed by a user, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_CONTENT_METADATA_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceContentMetadataId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceContentMetadataId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the Look&#39;s content metadata, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_QUERY_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceQueryId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceQueryId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the query for the Look, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODEL_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;modelName&quot;</span><span class="p">,</span> <span class="s2">&quot;modelName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the model in which this Look exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;query&quot;</span><span class="p">)</span>
@@ -773,43 +779,43 @@
 
     <span class="n">FOLDER_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;folderName&quot;</span><span class="p">,</span> <span class="s2">&quot;folderName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the parent folder in Looker that contains this dashboard.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_USER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceUserId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceUserId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the user who created this dashboard, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_VIEW_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceViewCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceViewCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of times the dashboard has been viewed through the Looker web UI.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_METADATA_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceMetadataId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceMetadataId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the dashboard&#39;s content metadata, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCELAST_UPDATER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourcelastUpdaterId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourcelastUpdaterId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the user who last updated the dashboard, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_LAST_ACCESSED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceLastAccessedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceLastAccessedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Timestamp (epoch) when the dashboard was last accessed by a user, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_LAST_VIEWED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceLastViewedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceLastViewedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Timestamp (epoch) when the dashboard was last viewed by a user.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">TILES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;tiles&quot;</span><span class="p">)</span>
@@ -1004,25 +1010,25 @@
         <span class="s2">&quot;sourceContentMetadataId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceContentMetadataId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier for the folder&#39;s content metadata in Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_CREATOR_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceCreatorId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceCreatorId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the user who created the folder, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_CHILD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceChildCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceChildCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of subfolders in this folder.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_PARENT_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sourceParentID&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceParentID&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the parent folder of this folder, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">LOOKER_SUB_FOLDERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;lookerSubFolders&quot;</span><span class="p">)</span>
@@ -1193,35 +1199,35 @@
         <span class="s2">&quot;lookmlLinkId&quot;</span><span class="p">,</span> <span class="s2">&quot;lookmlLinkId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier for the LoomML link.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MERGE_RESULT_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;mergeResultId&quot;</span><span class="p">,</span> <span class="s2">&quot;mergeResultId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier for the merge result.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">NOTE_TEXT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;noteText&quot;</span><span class="p">,</span> <span class="s2">&quot;noteText&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Text of notes added to the tile.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;queryID&quot;</span><span class="p">,</span> <span class="s2">&quot;queryID&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier for the query used to build this tile, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">RESULT_MAKER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;resultMakerID&quot;</span><span class="p">,</span> <span class="s2">&quot;resultMakerID&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the ResultMarkerLookup entry, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SUBTITLE_TEXT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;subtitleText&quot;</span><span class="p">,</span> <span class="s2">&quot;subtitleText&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Text for the subtitle for text tiles.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOK_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;lookId&quot;</span><span class="p">,</span> <span class="s2">&quot;lookId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the Look used to create this tile, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;query&quot;</span><span class="p">)</span>
@@ -1402,7 +1408,7 @@
 
     <span class="n">PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;projectName&quot;</span><span class="p">,</span> <span class="s2">&quot;projectName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the project in which the model exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">EXPLORES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;explores&quot;</span><span class="p">)</span>
@@ -1541,29 +1547,29 @@
 
     <span class="n">PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;projectName&quot;</span><span class="p">,</span> <span class="s2">&quot;projectName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the parent project of this Explore.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODEL_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;modelName&quot;</span><span class="p">,</span> <span class="s2">&quot;modelName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the parent model of this Explore.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_CONNECTION_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sourceConnectionName&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceConnectionName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Connection name for the Explore, from Looker.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VIEW_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;viewName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the view for the Explore.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SQL_TABLE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sqlTableName&quot;</span><span class="p">,</span> <span class="s2">&quot;sqlTableName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the SQL table used to declare the Explore.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">PROJECT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;project&quot;</span><span class="p">)</span>
@@ -1826,23 +1832,23 @@
         <span class="s2">&quot;sourceDefinition&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceDefinition&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_DEFINITION_DATABASE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sourceDefinitionDatabase&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceDefinitionDatabase&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_DEFINITION_SCHEMA</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sourceDefinitionSchema&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceDefinitionSchema&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">FIELDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">,</span> <span class="s2">&quot;fields&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">TILES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;tiles&quot;</span><span class="p">)</span>
@@ -1995,7 +2001,7 @@
 
     <span class="n">PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;projectName&quot;</span><span class="p">,</span> <span class="s2">&quot;projectName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the project in which this field exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOKER_EXPLORE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;lookerExploreQualifiedName&quot;</span><span class="p">,</span>
@@ -2003,7 +2009,7 @@
         <span class="s2">&quot;lookerExploreQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the Explore in which this field exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOKER_VIEW_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;lookerViewQualifiedName&quot;</span><span class="p">,</span>
@@ -2011,29 +2017,29 @@
         <span class="s2">&quot;lookerViewQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the view in which this field exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODEL_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;modelName&quot;</span><span class="p">,</span> <span class="s2">&quot;modelName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the model in which this field exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_DEFINITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sourceDefinition&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceDefinition&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOKER_FIELD_DATA_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;lookerFieldDataType&quot;</span><span class="p">,</span> <span class="s2">&quot;lookerFieldDataType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOKER_TIMES_USED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;lookerTimesUsed&quot;</span><span class="p">,</span> <span class="s2">&quot;lookerTimesUsed&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">EXPLORE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;explore&quot;</span><span class="p">)</span>
@@ -2248,19 +2254,19 @@
 
     <span class="n">PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;projectName&quot;</span><span class="p">,</span> <span class="s2">&quot;projectName&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the project in which this view exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOKER_VIEW_FILE_PATH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;lookerViewFilePath&quot;</span><span class="p">,</span> <span class="s2">&quot;lookerViewFilePath&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    File path of this view within the project.</span>
+<span class="sd">    File path of the looker view in the project</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOOKER_VIEW_FILE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;lookerViewFileName&quot;</span><span class="p">,</span> <span class="s2">&quot;lookerViewFileName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    File name of this view.</span>
+<span class="sd">    File name of the looker view in the project</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">PROJECT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;project&quot;</span><span class="p">)</span>

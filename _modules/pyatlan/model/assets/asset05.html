@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -461,6 +467,21 @@
         <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">_Attributes__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_for_modification</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Asset</span><span class="o">.</span><span class="n">SelfAsset</span><span class="p">],</span>
+        <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is not available for AuthPolicy. Please retrieve the existing policy and then update it in its</span>
+<span class="sd">        entirety.</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Asset</span><span class="o">.</span><span class="n">SelfAsset</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;This method is not available for AuthPolicy. Please retrieve the existing policy&quot;</span>
+            <span class="s2">&quot; and then update it in its entirety.&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;AuthPolicy&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 

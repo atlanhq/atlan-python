@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -493,141 +499,141 @@
 
     <span class="n">CATEGORY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of connection, for example WAREHOUSE, RDBMS, etc.</span>
+<span class="sd">    WAREHOUSE, RDBMS, LAKE, BI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SUB_CATEGORY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;subCategory&quot;</span><span class="p">,</span> <span class="s2">&quot;subCategory&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subcategory of this connection.</span>
+<span class="sd">    WAREHOUSE, RDBMS, LAKE, BI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">HOST</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Host name of this connection&#39;s source.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;port&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Port number to this connection&#39;s source.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ALLOW_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;allowQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;allowQuery&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether using this connection to run queries on the source is allowed (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ALLOW_QUERY_PREVIEW</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;allowQueryPreview&quot;</span><span class="p">,</span> <span class="s2">&quot;allowQueryPreview&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether using this connection to run preview queries on the source is allowed (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_PREVIEW_CONFIG</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;queryPreviewConfig&quot;</span><span class="p">,</span> <span class="s2">&quot;queryPreviewConfig&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Configuration for preview queries.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_CONFIG</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;queryConfig&quot;</span><span class="p">,</span> <span class="s2">&quot;queryConfig&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Query config for this connection.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CREDENTIAL_STRATEGY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;credentialStrategy&quot;</span><span class="p">,</span> <span class="s2">&quot;credentialStrategy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Credential strategy to use for this connection for queries.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PREVIEW_CREDENTIAL_STRATEGY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;previewCredentialStrategy&quot;</span><span class="p">,</span> <span class="s2">&quot;previewCredentialStrategy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Credential strategy to use for this connection for preview queries.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POLICY_STRATEGY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;policyStrategy&quot;</span><span class="p">,</span> <span class="s2">&quot;policyStrategy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Policy strategy to use for this connection.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_USERNAME_STRATEGY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;queryUsernameStrategy&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUsernameStrategy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Username strategy to use for this connection for queries.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ROW_LIMIT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;rowLimit&quot;</span><span class="p">,</span> <span class="s2">&quot;rowLimit&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maximum number of rows that can be returned for the source.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_TIMEOUT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;queryTimeout&quot;</span><span class="p">,</span> <span class="s2">&quot;queryTimeout&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maximum time a query should be allowed to run before timing out.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DEFAULT_CREDENTIAL_GUID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;defaultCredentialGuid&quot;</span><span class="p">,</span> <span class="s2">&quot;defaultCredentialGuid&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique identifier (GUID) for the default credentials to use for this connection.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CONNECTOR_ICON</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;connectorIcon&quot;</span><span class="p">,</span> <span class="s2">&quot;connectorIcon&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unused. Only the value of connectorType impacts icons.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CONNECTOR_IMAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;connectorImage&quot;</span><span class="p">,</span> <span class="s2">&quot;connectorImage&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unused. Only the value of connectorType impacts icons.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SOURCE_LOGO</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;sourceLogo&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceLogo&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unused. Only the value of connectorType impacts icons.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_SAMPLE_DATA_PREVIEW_ENABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;isSampleDataPreviewEnabled&quot;</span><span class="p">,</span> <span class="s2">&quot;isSampleDataPreviewEnabled&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether sample data can be previewed for this connection (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POPULARITY_INSIGHTS_TIMEFRAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;popularityInsightsTimeframe&quot;</span><span class="p">,</span> <span class="s2">&quot;popularityInsightsTimeframe&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of days over which popularity is calculated, for example 30 days.</span>
+<span class="sd">    Number of days we are calculating popularity for, eg: 30 days</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">HAS_POPULARITY_INSIGHTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;hasPopularityInsights&quot;</span><span class="p">,</span> <span class="s2">&quot;hasPopularityInsights&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this connection has popularity insights (true) or not (false).</span>
+<span class="sd">    Boolean flag to tell if connection has popularity insights or not</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CONNECTION_DBT_ENVIRONMENTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;connectionDbtEnvironments&quot;</span><span class="p">,</span> <span class="s2">&quot;connectionDbtEnvironments&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CONNECTION_SSO_CREDENTIAL_GUID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;connectionSSOCredentialGuid&quot;</span><span class="p">,</span> <span class="s2">&quot;connectionSSOCredentialGuid&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique identifier (GUID) for the SSO credentials to use for this connection.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">USE_OBJECT_STORAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;useObjectStorage&quot;</span><span class="p">,</span> <span class="s2">&quot;useObjectStorage&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether to upload to S3, GCP, or another storage location (true) or not (false).</span>
+<span class="sd">    A Boolean flag indicating whether to upload to S3, GCP, or another storage location</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">OBJECT_STORAGE_UPLOAD_THRESHOLD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;objectStorageUploadThreshold&quot;</span><span class="p">,</span> <span class="s2">&quot;objectStorageUploadThreshold&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of rows after which results should be uploaded to storage.</span>
+<span class="sd">    A long integer indicating after how many rows heka should start uploading result to storage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VECTOR_EMBEDDINGS_ENABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;vectorEmbeddingsEnabled&quot;</span><span class="p">,</span> <span class="s2">&quot;vectorEmbeddingsEnabled&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VECTOR_EMBEDDINGS_UPDATED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;vectorEmbeddingsUpdatedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;vectorEmbeddingsUpdatedAt&quot;</span>

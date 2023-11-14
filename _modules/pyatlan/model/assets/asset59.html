@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -490,13 +496,13 @@
         <span class="s2">&quot;s3ObjectCount&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of objects within the bucket.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3BUCKET_VERSIONING_ENABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;s3BucketVersioningEnabled&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketVersioningEnabled&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether versioning is enabled for the bucket (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">OBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;objects&quot;</span><span class="p">)</span>
@@ -644,54 +650,54 @@
         <span class="s2">&quot;s3ObjectLastModifiedTime&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectLastModifiedTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3BUCKET_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;s3BucketName&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketName&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketName.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the bucket in which this object exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3BUCKET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;s3BucketQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;s3BucketQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the bucket in which this object exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3OBJECT_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;s3ObjectSize&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectSize&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Object size in bytes.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3OBJECT_STORAGE_CLASS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;s3ObjectStorageClass&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectStorageClass&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Storage class used for storing this object, for example: standard, intelligent-tiering, glacier, etc.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3OBJECT_KEY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;s3ObjectKey&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectKey&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectKey.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique identity of this object in an S3 bucket. This is usually the concatenation of any prefix (folder) in the S3 bucket with the name of the object (file) itself.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3OBJECT_CONTENT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;s3ObjectContentType&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectContentType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of content in this object, for example: text/plain, application/json, etc.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3OBJECT_CONTENT_DISPOSITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;s3ObjectContentDisposition&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectContentDisposition&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Information about how this object&#39;s content should be presented.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3OBJECT_VERSION_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;s3ObjectVersionId&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ObjectVersionId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Version of this object. This is only applicable when versioning is enabled on the bucket in which this object exists.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">BUCKET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;bucket&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

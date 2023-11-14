@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -470,21 +476,21 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this report exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;datasetQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;datasetQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dataset used to build this report.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">WEB_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;webUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;webUrl&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated. See &#39;sourceUrl&#39; instead.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PAGE_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;pageCount&quot;</span><span class="p">,</span> <span class="s2">&quot;pageCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of pages in this report.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">WORKSPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;workspace&quot;</span><span class="p">)</span>
@@ -653,25 +659,25 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this measure exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;datasetQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;datasetQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dataset in which this measure exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_MEASURE_EXPRESSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;powerBIMeasureExpression&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIMeasureExpression&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    DAX expression for this measure.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_IS_EXTERNAL_MEASURE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;powerBIIsExternalMeasure&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIIsExternalMeasure&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this measure is external (true) or internal (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">TABLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
@@ -800,37 +806,37 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this column exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;datasetQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;datasetQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dataset in which this column exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_COLUMN_DATA_CATEGORY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;powerBIColumnDataCategory&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIColumnDataCategory&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Data category that describes the data in this column.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_COLUMN_DATA_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;powerBIColumnDataType&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIColumnDataType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Data type of this column.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_SORT_BY_COLUMN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;powerBISortByColumn&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBISortByColumn&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of a column in the same table to use to order this column.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_COLUMN_SUMMARIZE_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;powerBIColumnSummarizeBy&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIColumnSummarizeBy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Aggregate function to use for summarizing this column.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">TABLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
@@ -997,31 +1003,31 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this table exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;datasetQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;datasetQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dataset in which this table exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_TABLE_SOURCE_EXPRESSIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;powerBITableSourceExpressions&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBITableSourceExpressions&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Power Query M expressions for the table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_TABLE_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;powerBITableColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBITableColumnCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of columns in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">POWER_BI_TABLE_MEASURE_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;powerBITableMeasureCount&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBITableMeasureCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of measures in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">COLUMNS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
@@ -1208,13 +1214,13 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this tile exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DASHBOARD_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;dashboardQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboardQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dashboard in which this tile is pinned.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">REPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;report&quot;</span><span class="p">)</span>
@@ -1343,7 +1349,7 @@
         <span class="s2">&quot;connectionDetails&quot;</span><span class="p">,</span> <span class="s2">&quot;connectionDetails&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Connection details of the datasource.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">DATASETS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;datasets&quot;</span><span class="p">)</span>
@@ -1412,27 +1418,27 @@
 
     <span class="n">WEB_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;webUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;webUrl&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">REPORT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;reportCount&quot;</span><span class="p">,</span> <span class="s2">&quot;reportCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of reports in this workspace.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DASHBOARD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;dashboardCount&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboardCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of dashboards in this workspace.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATASET_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;datasetCount&quot;</span><span class="p">,</span> <span class="s2">&quot;datasetCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of datasets in this workspace.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATAFLOW_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;dataflowCount&quot;</span><span class="p">,</span> <span class="s2">&quot;dataflowCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of dataflows in this workspace.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">REPORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;reports&quot;</span><span class="p">)</span>
@@ -1607,11 +1613,11 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this dataset exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">WEB_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;webUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;webUrl&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated. See &#39;sourceUrl&#39; instead.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">REPORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;reports&quot;</span><span class="p">)</span>
@@ -1788,15 +1794,15 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this dashboard exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">WEB_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;webUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;webUrl&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated. See &#39;sourceUrl&#39; instead.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">TILE_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;tileCount&quot;</span><span class="p">,</span> <span class="s2">&quot;tileCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of tiles in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">WORKSPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;workspace&quot;</span><span class="p">)</span>
@@ -1913,11 +1919,11 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this dataflow exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">WEB_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;webUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;webUrl&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deprecated. See &#39;sourceUrl&#39; instead.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">WORKSPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;workspace&quot;</span><span class="p">)</span>
@@ -2022,13 +2028,13 @@
         <span class="s2">&quot;workspaceQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;workspaceQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the workspace in which this page exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">REPORT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;reportQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;reportQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the report in which this page exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">REPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;report&quot;</span><span class="p">)</span>

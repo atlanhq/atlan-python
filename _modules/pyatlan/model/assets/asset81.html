@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -474,67 +480,67 @@
         <span class="s2">&quot;mongoDBCollectionSubtype.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subtype of a MongoDB collection, for example: Capped, Time Series, etc.</span>
+<span class="sd">    Subtype of a MongoDB collection (e.g. Capped, Time Series etc.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_IS_CAPPED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionIsCapped&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionIsCapped&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether the collection is capped (true) or not (false).</span>
+<span class="sd">    If the collection is a capped collection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_TIME_FIELD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionTimeField&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionTimeField&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the field containing the date in each time series document.</span>
+<span class="sd">    The name of the field which contains the date in each time series document</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_TIME_GRANULARITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionTimeGranularity&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionTimeGranularity&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Closest match to the time span between consecutive incoming measurements.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    Set the granularity to the value that is the closest match to the time span between consecutive incoming measurements</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
     <span class="n">MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionExpireAfterSeconds&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionExpireAfterSeconds&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Seconds after which documents in a time series collection or clustered collection expire.</span>
+<span class="sd">    Specifies the seconds after which documents in a time series collection or clustered collection expire</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionMaximumDocumentCount&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionMaximumDocumentCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maximum number of documents allowed in a capped collection.</span>
+<span class="sd">    The maximum number of documents allowed in the capped collection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_MAX_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionMaxSize&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionMaxSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maximum size allowed in a capped collection.</span>
+<span class="sd">    The maximum size allowed in the capped collection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionNumOrphanDocs&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionNumOrphanDocs&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of orphaned documents in the collection.</span>
+<span class="sd">    The number of orphaned documents in the collection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_NUM_INDEXES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionNumIndexes&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionNumIndexes&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of indexes on the collection.</span>
+<span class="sd">    The number of indexes on the collection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionTotalIndexSize&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionTotalIndexSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Total size of all indexes.</span>
+<span class="sd">    The total size of all indexes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionAverageObjectSize&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionAverageObjectSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Average size of an object in the collection.</span>
+<span class="sd">    The average size of an object in the collection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MONGO_DB_COLLECTION_SCHEMA_DEFINITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;mongoDBCollectionSchemaDefinition&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBCollectionSchemaDefinition&quot;</span>
@@ -544,157 +550,157 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;columnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;columnCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of columns in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ROW_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;rowCount&quot;</span><span class="p">,</span> <span class="s2">&quot;rowCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of rows in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SIZE_BYTES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;sizeBytes&quot;</span><span class="p">,</span> <span class="s2">&quot;sizeBytes&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Size of this table, in bytes.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ALIAS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;alias&quot;</span><span class="p">,</span> <span class="s2">&quot;alias&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Alias for this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_TEMPORARY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isTemporary&quot;</span><span class="p">,</span> <span class="s2">&quot;isTemporary&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this table is temporary (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_QUERY_PREVIEW</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;isQueryPreview&quot;</span><span class="p">,</span> <span class="s2">&quot;isQueryPreview&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether preview queries are allowed for this table (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_PREVIEW_CONFIG</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;queryPreviewConfig&quot;</span><span class="p">,</span> <span class="s2">&quot;queryPreviewConfig&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Configuration for preview queries.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">EXTERNAL_LOCATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;externalLocation&quot;</span><span class="p">,</span> <span class="s2">&quot;externalLocation&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    External location of this table, for example: an S3 object location.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">EXTERNAL_LOCATION_REGION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;externalLocationRegion&quot;</span><span class="p">,</span> <span class="s2">&quot;externalLocationRegion&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Region of the external location of this table, for example: S3 region.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">EXTERNAL_LOCATION_FORMAT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;externalLocationFormat&quot;</span><span class="p">,</span> <span class="s2">&quot;externalLocationFormat&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_PARTITIONED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;isPartitioned&quot;</span><span class="p">,</span> <span class="s2">&quot;isPartitioned&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this table is partitioned (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PARTITION_STRATEGY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;partitionStrategy&quot;</span><span class="p">,</span> <span class="s2">&quot;partitionStrategy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Partition strategy for this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PARTITION_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;partitionCount&quot;</span><span class="p">,</span> <span class="s2">&quot;partitionCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of partitions in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PARTITION_LIST</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;partitionList&quot;</span><span class="p">,</span> <span class="s2">&quot;partitionList&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of partitions in this table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;queryCount&quot;</span><span class="p">,</span> <span class="s2">&quot;queryCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of times this asset has been queried.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_USER_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;queryUserCount&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUserCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of unique users who have queried this asset.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_USER_MAP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;queryUserMap&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUserMap&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Map of unique users who have queried this asset to the number of times they have queried it.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_COUNT_UPDATED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;queryCountUpdatedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;queryCountUpdatedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which the query count was last updated, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATABASE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;databaseName&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATABASE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;databaseQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;schemaName&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;schemaQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">TABLE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;tableName&quot;</span><span class="p">,</span> <span class="s2">&quot;tableName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;tableName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">TABLE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;tableQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;tableQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VIEW_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;viewName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VIEW_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;viewQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_PROFILED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isProfiled&quot;</span><span class="p">,</span> <span class="s2">&quot;isProfiled&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this asset has been profiled (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LAST_PROFILED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;lastProfiledAt&quot;</span><span class="p">,</span> <span class="s2">&quot;lastProfiledAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which this asset was last profiled, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MONGO_DB_DATABASE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;mongoDBDatabase&quot;</span><span class="p">)</span>
@@ -1391,91 +1397,91 @@
         <span class="s2">&quot;mongoDBDatabaseCollectionCount&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBDatabaseCollectionCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of collections in the database.</span>
+<span class="sd">    The number of collection in a MongoDB Database</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;schemaCount&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of schemas in this database.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;queryCount&quot;</span><span class="p">,</span> <span class="s2">&quot;queryCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of times this asset has been queried.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_USER_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;queryUserCount&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUserCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of unique users who have queried this asset.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_USER_MAP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;queryUserMap&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUserMap&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Map of unique users who have queried this asset to the number of times they have queried it.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUERY_COUNT_UPDATED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;queryCountUpdatedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;queryCountUpdatedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which the query count was last updated, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATABASE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;databaseName&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATABASE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;databaseQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;schemaName&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;schemaQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">TABLE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;tableName&quot;</span><span class="p">,</span> <span class="s2">&quot;tableName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;tableName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">TABLE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;tableQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;tableQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VIEW_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;viewName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VIEW_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;viewQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_PROFILED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isProfiled&quot;</span><span class="p">,</span> <span class="s2">&quot;isProfiled&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this asset has been profiled (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LAST_PROFILED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;lastProfiledAt&quot;</span><span class="p">,</span> <span class="s2">&quot;lastProfiledAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which this asset was last profiled, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MONGO_DB_COLLECTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;mongoDBCollections&quot;</span><span class="p">)</span>

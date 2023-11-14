@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -497,13 +503,13 @@
 
     <span class="n">ADLS_E_TAG</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;adlsETag&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsETag&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ENCRYPTION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsEncryptionType&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsEncryptionType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of encryption for this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_RESOURCE_GROUP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountResourceGroup&quot;</span><span class="p">,</span>
@@ -511,7 +517,7 @@
         <span class="s2">&quot;adlsAccountResourceGroup&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Resource group for this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_SUBSCRIPTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountSubscription&quot;</span><span class="p">,</span>
@@ -519,43 +525,43 @@
         <span class="s2">&quot;adlsAccountSubscription&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subscription for this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_PERFORMANCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountPerformance&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountPerformance&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Performance of this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_REPLICATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountReplication&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountReplication&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Replication of this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_KIND</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountKind&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountKind&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Kind of this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_PRIMARY_DISK_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsPrimaryDiskState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsPrimaryDiskState&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Primary disk state of this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_PROVISION_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountProvisionState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountProvisionState&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provision state of this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_ACCOUNT_ACCESS_TIER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsAccountAccessTier&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountAccessTier&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Access tier of this account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ADLS_CONTAINERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsContainers&quot;</span><span class="p">)</span>
@@ -825,25 +831,25 @@
         <span class="s2">&quot;adlsContainerUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerUrl.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerUrl&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    URL of this container.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_CONTAINER_LEASE_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsContainerLeaseState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerLeaseState&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Lease state of this container.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_CONTAINER_LEASE_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsContainerLeaseStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerLeaseStatus&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Lease status of this container.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_CONTAINER_ENCRYPTION_SCOPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsContainerEncryptionScope&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerEncryptionScope&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Encryption scope of this container.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">BooleanField</span>
@@ -852,13 +858,13 @@
         <span class="s2">&quot;adlsContainerVersionLevelImmutabilitySupport&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this container supports version-level immutability (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectCount&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of objects that exist within this container.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ADLS_OBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsObjects&quot;</span><span class="p">)</span>
@@ -1096,49 +1102,49 @@
         <span class="s2">&quot;adlsObjectUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectUrl.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectUrl&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    URL of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_VERSION_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectVersionId&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectVersionId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the version of this object, from ADLS.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectType&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectSize&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Size of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_ACCESS_TIER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectAccessTier&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectAccessTier&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Access tier of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectAccessTierLastModifiedTime&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectAccessTierLastModifiedTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) when the acccess tier for this object was last modified, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_ARCHIVE_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectArchiveStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectArchiveStatus&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Archive status of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_SERVER_ENCRYPTED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectServerEncrypted&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectServerEncrypted&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this object is server encrypted (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">BooleanField</span>
@@ -1147,25 +1153,25 @@
         <span class="s2">&quot;adlsObjectVersionLevelImmutabilitySupport&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this object supports version-level immutability (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_CACHE_CONTROL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectCacheControl&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectCacheControl&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Cache control of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_CONTENT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectContentType&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectContentType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Content type of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_CONTENT_MD5HASH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectContentMD5Hash&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectContentMD5Hash&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    MD5 hash of this object&#39;s contents.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_CONTENT_LANGUAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectContentLanguage&quot;</span><span class="p">,</span>
@@ -1173,25 +1179,25 @@
         <span class="s2">&quot;adlsObjectContentLanguage&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Language of this object&#39;s contents.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_LEASE_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectLeaseStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectLeaseStatus&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Status of this object&#39;s lease.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_LEASE_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectLeaseState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectLeaseState&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    State of this object&#39;s lease.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_OBJECT_METADATA</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;adlsObjectMetadata&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectMetadata&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Metadata associated with this object, from ADLS.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ADLS_CONTAINER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;adlsContainerQualifiedName&quot;</span><span class="p">,</span>
@@ -1199,7 +1205,7 @@
         <span class="s2">&quot;adlsContainerQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the container this object exists within.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ADLS_CONTAINER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsContainer&quot;</span><span class="p">)</span>

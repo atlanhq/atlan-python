@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -469,19 +475,19 @@
 
     <span class="n">IS_CUSTOM</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isCustom&quot;</span><span class="p">,</span> <span class="s2">&quot;isCustom&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this object is a custom object (true) or not (false).</span>
+<span class="sd">    isCustom captures whether the object is a custom object or not</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_MERGABLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isMergable&quot;</span><span class="p">,</span> <span class="s2">&quot;isMergable&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this object is mergable (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_QUERYABLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isQueryable&quot;</span><span class="p">,</span> <span class="s2">&quot;isQueryable&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this object is queryable (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">FIELD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;fieldCount&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of fields in this object.</span>
+<span class="sd">    fieldCount is the number of fields in the object entity</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">LOOKUP_FIELDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;lookupFields&quot;</span><span class="p">)</span>
@@ -622,49 +628,49 @@
         <span class="s2">&quot;dataType&quot;</span><span class="p">,</span> <span class="s2">&quot;dataType&quot;</span><span class="p">,</span> <span class="s2">&quot;dataType.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Data type of values in this field.</span>
+<span class="sd">    data type of the field</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">OBJECT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;objectQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;objectQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the object in which this field exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ORDER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="s2">&quot;order&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Order (position) of this field within the object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">INLINE_HELP_TEXT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;inlineHelpText&quot;</span><span class="p">,</span> <span class="s2">&quot;inlineHelpText.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Help text for this field.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_CALCULATED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isCalculated&quot;</span><span class="p">,</span> <span class="s2">&quot;isCalculated&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this field is calculated (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">FORMULA</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;formula&quot;</span><span class="p">,</span> <span class="s2">&quot;formula&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Formula for this field, if it is a calculated field.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_CASE_SENSITIVE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;isCaseSensitive&quot;</span><span class="p">,</span> <span class="s2">&quot;isCaseSensitive&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this field is case sensitive (true) or in-sensitive (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_ENCRYPTED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isEncrypted&quot;</span><span class="p">,</span> <span class="s2">&quot;isEncrypted&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this field is encrypted (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MAX_LENGTH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;maxLength&quot;</span><span class="p">,</span> <span class="s2">&quot;maxLength&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maximum length of this field.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_NULLABLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isNullable&quot;</span><span class="p">,</span> <span class="s2">&quot;isNullable&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this field allows null values (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PRECISION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;precision&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -672,29 +678,29 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">NUMERIC_SCALE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;numericScale&quot;</span><span class="p">,</span> <span class="s2">&quot;numericScale&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of digits allowed to the right of the decimal point.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_UNIQUE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isUnique&quot;</span><span class="p">,</span> <span class="s2">&quot;isUnique&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this field must have unique values (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PICKLIST_VALUES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;picklistValues&quot;</span><span class="p">,</span> <span class="s2">&quot;picklistValues&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of values from which a user can pick while adding a record.</span>
+<span class="sd">    picklistValues is a list of values from which a user can pick from while adding a record</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_POLYMORPHIC_FOREIGN_KEY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;isPolymorphicForeignKey&quot;</span><span class="p">,</span> <span class="s2">&quot;isPolymorphicForeignKey&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this field references a record of multiple objects (true) or not (false).</span>
+<span class="sd">    isPolymorphicForeignKey captures whether the field references to record of multiple objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DEFAULT_VALUE_FORMULA</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;defaultValueFormula&quot;</span><span class="p">,</span> <span class="s2">&quot;defaultValueFormula&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Formula for the default value for this field.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">LOOKUP_OBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;lookupObjects&quot;</span><span class="p">)</span>
@@ -983,7 +989,7 @@
 
     <span class="n">SOURCE_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;sourceId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the organization in Salesforce.</span>
+<span class="sd">    sourceId is the Id of the organization entity on salesforce</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">REPORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;reports&quot;</span><span class="p">)</span>
@@ -1086,17 +1092,17 @@
 
     <span class="n">SOURCE_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;sourceId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the dashboard in Salesforce.</span>
+<span class="sd">    sourceId is the Id of the dashboard entity on salesforce</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DASHBOARD_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;dashboardType&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboardType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of dashboard in Salesforce.</span>
+<span class="sd">    dashboardType is the type of dashboard in salesforce</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">REPORT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;reportCount&quot;</span><span class="p">,</span> <span class="s2">&quot;reportCount&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of reports linked to the dashboard in Salesforce.</span>
+<span class="sd">    reportCount is the number of reports linked to the dashboard entity on salesforce</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">REPORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;reports&quot;</span><span class="p">)</span>
@@ -1207,17 +1213,17 @@
 
     <span class="n">SOURCE_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;sourceId&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifier of the report in Salesforce.</span>
+<span class="sd">    sourceId is the Id of the report entity on salesforce</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">REPORT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;reportType&quot;</span><span class="p">,</span> <span class="s2">&quot;reportType&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of report in Salesforce.</span>
+<span class="sd">    reportType is the type of report in salesforce</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DETAIL_COLUMNS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;detailColumns&quot;</span><span class="p">,</span> <span class="s2">&quot;detailColumns&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of column names on the report.</span>
+<span class="sd">    detailColumns is a list of column names on the report</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">DASHBOARDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;dashboards&quot;</span><span class="p">)</span>

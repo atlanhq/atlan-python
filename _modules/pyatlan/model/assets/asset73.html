@@ -328,6 +328,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
@@ -476,13 +482,13 @@
         <span class="s2">&quot;quickSightFolderType&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightFolderType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of this folder, for example: SHARED.</span>
+<span class="sd">    Shared or private type of folder</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_FOLDER_HIERARCHY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightFolderHierarchy&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightFolderHierarchy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Detailed path of this folder.</span>
+<span class="sd">    Detailed path of the folder</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_DASHBOARDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -625,7 +631,7 @@
         <span class="s2">&quot;quickSightDashboardQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dashboard in which this visual exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_DASHBOARD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -712,7 +718,7 @@
         <span class="s2">&quot;quickSightAnalysisQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the QuickSight analysis in which this visual exists.</span>
+<span class="sd">    Qualified name of the QuickSight Analysis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_ANALYSIS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;quickSightAnalysis&quot;</span><span class="p">)</span>
@@ -791,7 +797,7 @@
         <span class="s2">&quot;quickSightDatasetFieldType&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightDatasetFieldType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Datatype of this field, for example: STRING, INTEGER, etc.</span>
+<span class="sd">    Datatype of column in the dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_DATASET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightDatasetQualifiedName&quot;</span><span class="p">,</span>
@@ -799,7 +805,7 @@
         <span class="s2">&quot;quickSightDatasetQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dataset in which this field exists.</span>
+<span class="sd">    Qualified name of the parent dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_DATASET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;quickSightDataset&quot;</span><span class="p">)</span>
@@ -898,26 +904,26 @@
         <span class="s2">&quot;quickSightAnalysisStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightAnalysisStatus&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc.</span>
+<span class="sd">    Status of quicksight analysis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightAnalysisCalculatedFields&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightAnalysisCalculatedFields&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of field names calculated by this analysis.</span>
+<span class="sd">    Calculated fields of quicksight analysis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightAnalysisParameterDeclarations&quot;</span><span class="p">,</span>
         <span class="s2">&quot;quickSightAnalysisParameterDeclarations&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of parameters used for this analysis.</span>
+<span class="sd">    parameters used for quicksight analysis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_ANALYSIS_FILTER_GROUPS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightAnalysisFilterGroups&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightAnalysisFilterGroups&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of filter groups used for this analysis.</span>
+<span class="sd">    Filter groups used for quicksight analysis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_ANALYSIS_VISUALS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1097,13 +1103,13 @@
         <span class="s2">&quot;quickSightDashboardPublishedVersionNumber&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Version number of the published dashboard.</span>
+<span class="sd">    Version number of the dashboard published</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightDashboardLastPublishedTime&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightDashboardLastPublishedTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which this dashboard was last published, in milliseconds.</span>
+<span class="sd">    Last published time of dashboard</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_DASHBOARD_FOLDERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1242,13 +1248,13 @@
         <span class="s2">&quot;quickSightDatasetImportMode&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightDatasetImportMode&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Import mode for this dataset, for example: SPICE or DIRECT_QUERY.</span>
+<span class="sd">    Quicksight dataset importMode indicates a value that indicates whether you want to import the data into SPICE</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QUICK_SIGHT_DATASET_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;quickSightDatasetColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;quickSightDatasetColumnCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of columns present in this dataset.</span>
+<span class="sd">    Quicksight dataset column count indicates number of columns present in the dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QUICK_SIGHT_DATASET_FOLDERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
