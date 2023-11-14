@@ -1386,12 +1386,25 @@ class AtlanClient(BaseSettings):
         adapter = self._session.adapters[HTTPS_PREFIX]
         current_max = adapter.max_retries
         adapter.max_retries = max_retries
+        LOGGER.debug(
+            "max_retries set to total: %s force_list: %s",
+            max_retries.total,
+            max_retries.status_forcelist,
+        )
         try:
+            LOGGER.debug("Entering max_retries")
             yield None
+            LOGGER.debug("Exiting max_retries")
         except requests.exceptions.RetryError as err:
+            LOGGER.exception("Exception in max retries")
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
             adapter.max_retries = current_max
+            LOGGER.exception(
+                "max_retries restored to total: %s force_list: %s",
+                adapter.max_retries.total,
+                adapter.max_retries.status_forcelist,
+            )
 
 
 @contextlib.contextmanager

@@ -2,7 +2,6 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-import contextlib
 from typing import Generator, Protocol, runtime_checkable
 
 from urllib3.util.retry import Retry
@@ -23,7 +22,6 @@ class ApiCaller(Protocol):
     ):
         pass
 
-    @contextlib.contextmanager
     def max_retries(
         self, max_retries: Retry = CONNECTION_RETRY
     ) -> Generator[None, None, None]:
