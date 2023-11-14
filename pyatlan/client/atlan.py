@@ -29,7 +29,7 @@ from urllib3.util.retry import Retry
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
-from pyatlan.client.common import CONNECTION_RETRY, HTTPS_PREFIX
+from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
@@ -82,6 +82,7 @@ def get_session():
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
     session.mount(HTTPS_PREFIX, adapter)
+    session.mount(HTTP_PREFIX, adapter)
     session.headers.update(
         {
             "x-atlan-agent": "sdk",
@@ -1383,7 +1384,10 @@ class AtlanClient(BaseSettings):
     ) -> Generator[None, None, None]:
         """Creates a context manger that can used to temporarily change parameters used for retrying connnections.
         The original Retry information will be restored when the context is exited."""
-        adapter = self._session.adapters[HTTPS_PREFIX]
+        if self.base_url == "INTERNAL":
+            adapter = self._session.adapters[HTTP_PREFIX]
+        else:
+            adapter = self._session.adapters[HTTPS_PREFIX]
         current_max = adapter.max_retries
         adapter.max_retries = max_retries
         LOGGER.debug(

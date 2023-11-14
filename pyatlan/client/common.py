@@ -7,6 +7,7 @@ from typing import Generator, Protocol, runtime_checkable
 from urllib3.util.retry import Retry
 
 HTTPS_PREFIX = "https://"
+HTTP_PREFIX = "http://"
 CONNECTION_RETRY = Retry(
     total=10,
     backoff_factor=1,
