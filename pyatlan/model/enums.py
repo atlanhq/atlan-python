@@ -2060,12 +2060,3 @@ class SourceCostUnitType(str, Enum):
     CREDITS = "Credits"
     BYTES = "bytes"
     SLOT_MS = "slot-ms"
-
-
-class jsdk_DataQualityType_RVUuI(str, Enum):
-    ACCURACY = "Accuracy"
-    COMPLETENESS = "Completeness"
-    CONSISTENCY = "Consistency"
-    TIMELINESS = "Timeliness"
-    VALIDITY = "Validity"
-    UNIQUENESS = "Uniqueness"
