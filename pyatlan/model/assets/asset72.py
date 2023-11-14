@@ -39,19 +39,19 @@ class MetabaseQuestion(Metabase):
         "metabaseDashboardCount", "metabaseDashboardCount"
     )
     """
-
+    TBC
     """
     METABASE_QUERY_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
     )
     """
-
+    TBC
     """
     METABASE_QUERY: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseQuery", "metabaseQuery.keyword", "metabaseQuery"
     )
     """
-
+    TBC
     """
 
     METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
@@ -171,25 +171,25 @@ class MetabaseCollection(Metabase):
         "metabaseSlug", "metabaseSlug", "metabaseSlug.text"
     )
     """
-
+    TBC
     """
     METABASE_COLOR: ClassVar[KeywordField] = KeywordField(
         "metabaseColor", "metabaseColor"
     )
     """
-
+    TBC
     """
     METABASE_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseNamespace", "metabaseNamespace", "metabaseNamespace.text"
     )
     """
-
+    TBC
     """
     METABASE_IS_PERSONAL_COLLECTION: ClassVar[BooleanField] = BooleanField(
         "metabaseIsPersonalCollection", "metabaseIsPersonalCollection"
     )
     """
-
+    TBC
     """
 
     METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
@@ -325,7 +325,7 @@ class MetabaseDashboard(Metabase):
         "metabaseQuestionCount", "metabaseQuestionCount"
     )
     """
-
+    TBC
     """
 
     METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")

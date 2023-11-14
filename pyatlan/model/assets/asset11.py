@@ -45,53 +45,53 @@ class DbtProcess(Dbt):
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    TBC
     """
     DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
     """
-
+    TBC
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    TBC
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    TBC
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    TBC
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    TBC
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    TBC
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -99,19 +99,19 @@ class DbtProcess(Dbt):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    TBC
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -119,13 +119,13 @@ class DbtProcess(Dbt):
         "dbtJobNextRunHumanized",
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -133,23 +133,23 @@ class DbtProcess(Dbt):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    TBC
     """
     DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
     """
-
+    TBC
     """
     DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    TBC
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    TBC
     """
     CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """

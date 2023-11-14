@@ -33,7 +33,7 @@ class Preset(BI):
         "presetWorkspaceId", "presetWorkspaceId"
     )
     """
-    Identifier of the workspace in which this asset exists, in Preset.
+    TBC
     """
     PRESET_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "presetWorkspaceQualifiedName",
@@ -41,13 +41,13 @@ class Preset(BI):
         "presetWorkspaceQualifiedName.text",
     )
     """
-    Unique name of the workspace in which this asset exists.
+    TBC
     """
     PRESET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
         "presetDashboardId", "presetDashboardId"
     )
     """
-    Identifier of the dashboard in which this asset exists, in Preset.
+    TBC
     """
     PRESET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "presetDashboardQualifiedName",
@@ -55,7 +55,7 @@ class Preset(BI):
         "presetDashboardQualifiedName.text",
     )
     """
-    Unique name of the dashboard in which this asset exists.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

@@ -55,49 +55,49 @@ class APISpec(API):
         "apiSpecTermsOfServiceURL.text",
     )
     """
-    URL to the terms of service for the API specification.
+    TBC
     """
     API_SPEC_CONTACT_EMAIL: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecContactEmail", "apiSpecContactEmail", "apiSpecContactEmail.text"
     )
     """
-    Email address for a contact responsible for the API specification.
+    TBC
     """
     API_SPEC_CONTACT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecContactName", "apiSpecContactName.keyword", "apiSpecContactName"
     )
     """
-    Name of the contact responsible for the API specification.
+    TBC
     """
     API_SPEC_CONTACT_URL: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecContactURL", "apiSpecContactURL", "apiSpecContactURL.text"
     )
     """
-    URL pointing to the contact information.
+    TBC
     """
     API_SPEC_LICENSE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecLicenseName", "apiSpecLicenseName.keyword", "apiSpecLicenseName"
     )
     """
-    Name of the license under which the API specification is available.
+    TBC
     """
     API_SPEC_LICENSE_URL: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecLicenseURL", "apiSpecLicenseURL", "apiSpecLicenseURL.text"
     )
     """
-    URL to the license under which the API specification is available.
+    TBC
     """
     API_SPEC_CONTRACT_VERSION: ClassVar[KeywordField] = KeywordField(
         "apiSpecContractVersion", "apiSpecContractVersion"
     )
     """
-    Version of the contract for the API specification.
+    TBC
     """
     API_SPEC_SERVICE_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "apiSpecServiceAlias", "apiSpecServiceAlias", "apiSpecServiceAlias.text"
     )
     """
-    Service alias for the API specification.
+    TBC
     """
 
     API_PATHS: ClassVar[RelationField] = RelationField("apiPaths")
@@ -320,37 +320,37 @@ class APIPath(API):
         "apiPathSummary", "apiPathSummary"
     )
     """
-    Descriptive summary intended to apply to all operations in this path.
+    TBC
     """
     API_PATH_RAW_URI: ClassVar[KeywordTextField] = KeywordTextField(
         "apiPathRawURI", "apiPathRawURI", "apiPathRawURI.text"
     )
     """
-    Absolute path to an individual endpoint.
+    TBC
     """
     API_PATH_IS_TEMPLATED: ClassVar[BooleanField] = BooleanField(
         "apiPathIsTemplated", "apiPathIsTemplated"
     )
     """
-    Whether the endpoint's path contains replaceable parameters (true) or not (false).
+    TBC
     """
     API_PATH_AVAILABLE_OPERATIONS: ClassVar[KeywordField] = KeywordField(
         "apiPathAvailableOperations", "apiPathAvailableOperations"
     )
     """
-    List of the operations available on the endpoint.
+    TBC
     """
     API_PATH_AVAILABLE_RESPONSE_CODES: ClassVar[KeywordField] = KeywordField(
         "apiPathAvailableResponseCodes", "apiPathAvailableResponseCodes"
     )
     """
-    Response codes available on the path across all operations.
+    TBC
     """
     API_PATH_IS_INGRESS_EXPOSED: ClassVar[BooleanField] = BooleanField(
         "apiPathIsIngressExposed", "apiPathIsIngressExposed"
     )
     """
-    Whether the path is exposed as an ingress (true) or not (false).
+    TBC
     """
 
     API_SPEC: ClassVar[RelationField] = RelationField("apiSpec")

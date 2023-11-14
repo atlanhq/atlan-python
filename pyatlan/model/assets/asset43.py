@@ -33,7 +33,7 @@ class Redash(BI):
         "redashIsPublished", "redashIsPublished"
     )
     """
-    Whether this asset is published in Redash (true) or not (false).
+    Status whether the asset is published or not on source
     """
 
     _convenience_properties: ClassVar[list[str]] = [

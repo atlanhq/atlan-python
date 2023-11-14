@@ -39,31 +39,31 @@ class RedashQuery(Redash):
         "redashQuerySQL", "redashQuerySQL"
     )
     """
-    SQL code of this query.
+    SQL code of Redash Query
     """
     REDASH_QUERY_PARAMETERS: ClassVar[KeywordField] = KeywordField(
         "redashQueryParameters", "redashQueryParameters"
     )
     """
-    Parameters of this query.
+    Parameters of Redash Query
     """
     REDASH_QUERY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "redashQuerySchedule", "redashQuerySchedule"
     )
     """
-    Schedule for this query.
+    Schedule of Redash Query
     """
     REDASH_QUERY_LAST_EXECUTION_RUNTIME: ClassVar[NumericField] = NumericField(
         "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
     )
     """
-    Elapsed time of the last execution of this query.
+    Runtime of Redash Query
     """
     REDASH_QUERY_LAST_EXECUTED_AT: ClassVar[NumericField] = NumericField(
         "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
     )
     """
-    Time (epoch) when this query was last executed, in milliseconds.
+    Time when the Redash Query was last executed
     """
     REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "redashQueryScheduleHumanized",
@@ -71,7 +71,7 @@ class RedashQuery(Redash):
         "redashQueryScheduleHumanized.text",
     )
     """
-    Schdule for this query in readable text for overview tab and filtering.
+    Query schedule for overview tab and filtering.
     """
 
     REDASH_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
@@ -241,13 +241,13 @@ class RedashVisualization(Redash):
         "redashVisualizationType", "redashVisualizationType"
     )
     """
-    Type of this visualization.
+    Redash Visualization Type
     """
     REDASH_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "redashQueryName", "redashQueryName.keyword", "redashQueryName"
     )
     """
-    Simple name of the query from which this visualization is created.
+    Redash Query from which visualization is created
     """
     REDASH_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "redashQueryQualifiedName",
@@ -255,7 +255,7 @@ class RedashVisualization(Redash):
         "redashQueryQualifiedName.text",
     )
     """
-    Unique name of the query from which this visualization is created.
+    Qualified name of the Redash Query from which visualization is created
     """
 
     REDASH_QUERY: ClassVar[RelationField] = RelationField("redashQuery")
