@@ -7,11 +7,11 @@ import contextlib
 import copy
 import json
 import logging
-import os
 import uuid
 from importlib.resources import read_text
 from types import SimpleNamespace
 from typing import ClassVar, Generator, Literal, Optional, Type, Union
+from urllib.parse import urljoin
 from warnings import warn
 
 import requests
@@ -276,9 +276,9 @@ class AtlanClient(BaseSettings):
 
     def _create_path(self, api: API):
         if self.base_url == "INTERNAL":
-            return os.path.join(api.endpoint.service, api.path)
+            return urljoin(api.endpoint.service, api.path)
         else:
-            return os.path.join(self.base_url, api.endpoint.prefix, api.path)
+            return urljoin(urljoin(self.base_url, api.endpoint.prefix), api.path)
 
     def _upload_file(self, api, file=None, filename=None):
         generator = MultipartDataGenerator()
