@@ -35,17 +35,17 @@ class Qlik(BI):
 
     QLIK_ID: ClassVar[KeywordField] = KeywordField("qlikId", "qlikId")
     """
-    Identifier of this asset, from Qlik.
+    qID/guid of the qlik object
     """
     QLIK_QRI: ClassVar[KeywordTextField] = KeywordTextField(
         "qlikQRI", "qlikQRI", "qlikQRI.text"
     )
     """
-    Unique QRI of this asset, from Qlik.
+    QRI of the qlik object, kind of like qualifiedName on Atlan
     """
     QLIK_SPACE_ID: ClassVar[KeywordField] = KeywordField("qlikSpaceId", "qlikSpaceId")
     """
-    Identifier of the space in which this asset exists, from Qlik.
+    qID of a space where the qlik object belongs to
     """
     QLIK_SPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "qlikSpaceQualifiedName",
@@ -53,27 +53,27 @@ class Qlik(BI):
         "qlikSpaceQualifiedName.text",
     )
     """
-    Unique name of the space in which this asset exists.
+    qualifiedName of a space where the qlik object belongs to
     """
     QLIK_APP_ID: ClassVar[KeywordField] = KeywordField("qlikAppId", "qlikAppId")
     """
-    Identifier of the app in which this asset belongs, from Qlik.
+    qID of a app where the qlik object belongs
     """
     QLIK_APP_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text"
     )
     """
-    Unique name of the app where this asset belongs.
+    qualifiedName of an app where the qlik object belongs to
     """
     QLIK_OWNER_ID: ClassVar[KeywordField] = KeywordField("qlikOwnerId", "qlikOwnerId")
     """
-    Identifier of the owner of this asset, in Qlik.
+    Owner's guid of the qlik object
     """
     QLIK_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
         "qlikIsPublished", "qlikIsPublished"
     )
     """
-    Whether this asset is published in Qlik (true) or not (false).
+    If the qlik object is published
     """
 
     _convenience_properties: ClassVar[list[str]] = [

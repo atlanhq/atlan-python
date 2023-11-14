@@ -40,55 +40,55 @@ class KafkaTopic(Kafka):
         "kafkaTopicIsInternal", "kafkaTopicIsInternal"
     )
     """
-    Whether this topic is an internal topic (true) or not (false).
+    TBC
     """
     KAFKA_TOPIC_COMPRESSION_TYPE: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicCompressionType", "kafkaTopicCompressionType"
     )
     """
-    Type of compression used for this topic.
+    TBC
     """
     KAFKA_TOPIC_REPLICATION_FACTOR: ClassVar[NumericField] = NumericField(
         "kafkaTopicReplicationFactor", "kafkaTopicReplicationFactor"
     )
     """
-    Replication factor for this topic.
+    TBC
     """
     KAFKA_TOPIC_SEGMENT_BYTES: ClassVar[NumericField] = NumericField(
         "kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes"
     )
     """
-    Segment size for this topic.
+    TBC
     """
     KAFKA_TOPIC_RETENTION_TIME_IN_MS: ClassVar[NumericField] = NumericField(
         "kafkaTopicRetentionTimeInMs", "kafkaTopicRetentionTimeInMs"
     )
     """
-    Amount of time messages will be retained in this topic, in milliseconds.
+    TBC
     """
     KAFKA_TOPIC_PARTITIONS_COUNT: ClassVar[NumericField] = NumericField(
         "kafkaTopicPartitionsCount", "kafkaTopicPartitionsCount"
     )
     """
-    Number of partitions for this topic.
+    TBC
     """
     KAFKA_TOPIC_SIZE_IN_BYTES: ClassVar[NumericField] = NumericField(
         "kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes"
     )
     """
-    Size of this topic, in bytes.
+    TBC
     """
     KAFKA_TOPIC_RECORD_COUNT: ClassVar[NumericField] = NumericField(
         "kafkaTopicRecordCount", "kafkaTopicRecordCount"
     )
     """
-    Number of (unexpired) messages in this topic.
+    TBC
     """
     KAFKA_TOPIC_CLEANUP_POLICY: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicCleanupPolicy", "kafkaTopicCleanupPolicy"
     )
     """
-    Cleanup policy for this topic.
+    TBC
     """
 
     KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField(
@@ -321,25 +321,25 @@ class KafkaConsumerGroup(Kafka):
         "kafkaConsumerGroupTopicConsumptionProperties",
     )
     """
-    List of consumption properties for Kafka topics, for this consumer group.
+    TBC
     """
     KAFKA_CONSUMER_GROUP_MEMBER_COUNT: ClassVar[NumericField] = NumericField(
         "kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount"
     )
     """
-    Number of members in this consumer group.
+    TBC
     """
     KAFKA_TOPIC_NAMES: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicNames", "kafkaTopicNames"
     )
     """
-    Simple names of the topics consumed by this consumer group.
+    TBC
     """
     KAFKA_TOPIC_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames"
     )
     """
-    Unique names of the topics consumed by this consumer group.
+    TBC
     """
 
     KAFKA_TOPICS: ClassVar[RelationField] = RelationField("kafkaTopics")

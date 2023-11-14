@@ -65,7 +65,7 @@ class DataStudioAsset(DataStudio):
         "dataStudioAssetType", "dataStudioAssetType"
     )
     """
-    Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE.
+    TBC
     """
     DATA_STUDIO_ASSET_TITLE: ClassVar[
         KeywordTextStemmedField
@@ -76,63 +76,63 @@ class DataStudioAsset(DataStudio):
         "dataStudioAssetTitle.stemmed",
     )
     """
-    Title of the Google Data Studio asset.
+    TBC
     """
     DATA_STUDIO_ASSET_OWNER: ClassVar[KeywordField] = KeywordField(
         "dataStudioAssetOwner", "dataStudioAssetOwner"
     )
     """
-    Owner of the asset, from Google Data Studio.
+    TBC
     """
     IS_TRASHED_DATA_STUDIO_ASSET: ClassVar[BooleanField] = BooleanField(
         "isTrashedDataStudioAsset", "isTrashedDataStudioAsset"
     )
     """
-    Whether the Google Data Studio asset has been trashed (true) or not (false).
+    TBC
     """
     GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
         "googleService", "googleService"
     )
     """
-    Service in Google in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectName", "googleProjectName", "googleProjectName.text"
     )
     """
-    Name of the project in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectId", "googleProjectId", "googleProjectId.text"
     )
     """
-    ID of the project in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
         "googleProjectNumber", "googleProjectNumber"
     )
     """
-    Number of the project in which the asset exists.
+    TBC
     """
     GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "googleLocation", "googleLocation"
     )
     """
-    Location of this asset in Google.
+    TBC
     """
     GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
         "googleLocationType", "googleLocationType"
     )
     """
-    Type of location of this asset in Google.
+    TBC
     """
     GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
     """
-    List of labels that have been applied to the asset in Google.
+    TBC
     """
     GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
     """
-    List of tags that have been applied to the asset in Google.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

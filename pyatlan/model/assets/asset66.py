@@ -38,31 +38,31 @@ class TableauWorkbook(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this workbook exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this workbook exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectName", "topLevelProjectName"
     )
     """
-    Simple name of the top-level project in which this workbook exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this workbook exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects with their nested child projects.
+    TBC
     """
 
     PROJECT: ClassVar[RelationField] = RelationField("project")
@@ -252,55 +252,55 @@ class TableauDatasourceField(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this datasource field exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this datasource field exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this datasource field exists.
+    TBC
     """
     WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
-    Unique name of the workbook in which this datasource field exists.
+    TBC
     """
     DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "datasourceQualifiedName", "datasourceQualifiedName"
     )
     """
-    Unique name of the datasource in which this datasource field exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects and their nested child projects.
+    TBC
     """
     FULLY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "fullyQualifiedName", "fullyQualifiedName"
     )
     """
-    Name used internally in Tableau to uniquely identify this field.
+    TBC
     """
     TABLEAU_DATASOURCE_FIELD_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
         "tableauDatasourceFieldDataCategory", "tableauDatasourceFieldDataCategory"
     )
     """
-    Data category of this field.
+    TBC
     """
     TABLEAU_DATASOURCE_FIELD_ROLE: ClassVar[KeywordField] = KeywordField(
         "tableauDatasourceFieldRole", "tableauDatasourceFieldRole"
     )
     """
-    Role of this field, for example: 'dimension', 'measure', or 'unknown'.
+    TBC
     """
     TABLEAU_DATASOURCE_FIELD_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "tableauDatasourceFieldDataType",
@@ -308,43 +308,43 @@ class TableauDatasourceField(Tableau):
         "tableauDatasourceFieldDataType.text",
     )
     """
-    Data type of this field.
+    TBC
     """
     UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
         "upstreamTables", "upstreamTables"
     )
     """
-    Tables upstream to this datasource field.
+    TBC
     """
     TABLEAU_DATASOURCE_FIELD_FORMULA: ClassVar[KeywordField] = KeywordField(
         "tableauDatasourceFieldFormula", "tableauDatasourceFieldFormula"
     )
     """
-    Formula for this field.
+    TBC
     """
     TABLEAU_DATASOURCE_FIELD_BIN_SIZE: ClassVar[KeywordField] = KeywordField(
         "tableauDatasourceFieldBinSize", "tableauDatasourceFieldBinSize"
     )
     """
-    Bin size of this field.
+    TBC
     """
     UPSTREAM_COLUMNS: ClassVar[KeywordField] = KeywordField(
         "upstreamColumns", "upstreamColumns"
     )
     """
-    Columns upstream to this field.
+    TBC
     """
     UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
         "upstreamFields", "upstreamFields"
     )
     """
-    Fields upstream to this field.
+    TBC
     """
     DATASOURCE_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
         "datasourceFieldType", "datasourceFieldType"
     )
     """
-    Type of this datasource field.
+    TBC
     """
 
     WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
@@ -696,61 +696,61 @@ class TableauCalculatedField(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this calculated field exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this calculated field exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this calculated field exists.
+    TBC
     """
     WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
-    Unique name of the workbook in which this calculated field exists.
+    TBC
     """
     DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "datasourceQualifiedName", "datasourceQualifiedName"
     )
     """
-    Unique name of the datasource in which this calculated field exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects and their nested projects.
+    TBC
     """
     DATA_CATEGORY: ClassVar[KeywordField] = KeywordField("dataCategory", "dataCategory")
     """
-    Data category of this field.
+    TBC
     """
     ROLE: ClassVar[KeywordField] = KeywordField("role", "role")
     """
-    Role of this field, for example: 'dimension', 'measure', or 'unknown'.
+    TBC
     """
     TABLEAU_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "tableauDataType", "tableauDataType", "tableauDataType.text"
     )
     """
-    Data type of the field, from Tableau.
+    TBC
     """
     FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
     """
-    Formula for this calculated field.
+    TBC
     """
     UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
         "upstreamFields", "upstreamFields"
     )
     """
-    List of fields that are upstream to this calculated field.
+    TBC
     """
 
     WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
@@ -986,25 +986,25 @@ class TableauProject(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this project exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this project exists, if this is a nested project.
+    TBC
     """
     IS_TOP_LEVEL_PROJECT: ClassVar[BooleanField] = BooleanField(
         "isTopLevelProject", "isTopLevelProject"
     )
     """
-    Whether this project is a top-level project (true) or not (false).
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects with their nested child projects.
+    TBC
     """
 
     PARENT_PROJECT: ClassVar[RelationField] = RelationField("parentProject")
@@ -1259,71 +1259,71 @@ class TableauDatasource(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this datasource exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this datasource exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this datasource exists.
+    TBC
     """
     WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
-    Unique name of the workbook in which this datasource exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects with their nested child projects.
+    TBC
     """
     IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("isPublished", "isPublished")
     """
-    Whether this datasource is published (true) or embedded (false).
+    TBC
     """
     HAS_EXTRACTS: ClassVar[BooleanField] = BooleanField("hasExtracts", "hasExtracts")
     """
-    Whether this datasource has extracts (true) or not (false).
+    TBC
     """
     IS_CERTIFIED: ClassVar[BooleanField] = BooleanField("isCertified", "isCertified")
     """
-    Whether this datasource is certified in Tableau (true) or not (false).
+    TBC
     """
     CERTIFIER: ClassVar[KeywordField] = KeywordField("certifier", "certifier")
     """
-    Users that have marked this datasource as cerified, in Tableau.
+    TBC
     """
     CERTIFICATION_NOTE: ClassVar[KeywordField] = KeywordField(
         "certificationNote", "certificationNote"
     )
     """
-    Notes related to this datasource being cerfified, in Tableau.
+    TBC
     """
     CERTIFIER_DISPLAY_NAME: ClassVar[KeywordField] = KeywordField(
         "certifierDisplayName", "certifierDisplayName"
     )
     """
-    Name of the user who cerified this datasource, in Tableau.
+    TBC
     """
     UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
         "upstreamTables", "upstreamTables"
     )
     """
-    List of tables that are upstream of this datasource.
+    TBC
     """
     UPSTREAM_DATASOURCES: ClassVar[KeywordField] = KeywordField(
         "upstreamDatasources", "upstreamDatasources"
     )
     """
-    List of datasources that are upstream of this datasource.
+    TBC
     """
 
     WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
@@ -1605,31 +1605,31 @@ class TableauDashboard(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this dashboard exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this dashboard exists.
+    TBC
     """
     WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
-    Unique name of the workbook in which this dashboard exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this dashboard exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects and their nested child projects.
+    TBC
     """
 
     WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
@@ -1783,37 +1783,37 @@ class TableauFlow(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this flow exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this flow exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this flow exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects with their nested child projects.
+    TBC
     """
     INPUT_FIELDS: ClassVar[KeywordField] = KeywordField("inputFields", "inputFields")
     """
-    List of fields that are inputs to this flow.
+    TBC
     """
     OUTPUT_FIELDS: ClassVar[KeywordField] = KeywordField("outputFields", "outputFields")
     """
-    List of fields that are outputs from this flow.
+    TBC
     """
     OUTPUT_STEPS: ClassVar[KeywordField] = KeywordField("outputSteps", "outputSteps")
     """
-    List of steps that are outputs from this flow.
+    TBC
     """
 
     PROJECT: ClassVar[RelationField] = RelationField("project")
@@ -1975,31 +1975,31 @@ class TableauWorksheet(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this worksheet exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this worksheet exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this worksheet exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects with their nested child projects.
+    TBC
     """
     WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
-    Unique name of the workbook in which this worksheet exists.
+    TBC
     """
 
     WORKBOOK: ClassVar[RelationField] = RelationField("workbook")

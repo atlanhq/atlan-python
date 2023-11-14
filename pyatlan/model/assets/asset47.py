@@ -33,19 +33,19 @@ class QuickSight(BI):
         "quickSightId", "quickSightId"
     )
     """
-
+    TBC
     """
     QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField(
         "quickSightSheetId", "quickSightSheetId"
     )
     """
-
+    TBC
     """
     QUICK_SIGHT_SHEET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "quickSightSheetName", "quickSightSheetName.keyword", "quickSightSheetName"
     )
     """
-
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

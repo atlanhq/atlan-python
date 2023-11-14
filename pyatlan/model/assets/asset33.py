@@ -34,55 +34,55 @@ class S3(ObjectStore):
         "s3ETag", "s3ETag", "s3ETag.text"
     )
     """
-    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.
-    """  # noqa: E501
+    TBC
+    """
     S3ENCRYPTION: ClassVar[KeywordField] = KeywordField("s3Encryption", "s3Encryption")
     """
-
+    TBC
     """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
     )
     """
-    Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.
-    """  # noqa: E501
+    TBC
+    """
     AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
     """
-    Group of AWS region and service objects.
+    TBC
     """
     AWS_SERVICE: ClassVar[KeywordField] = KeywordField("awsService", "awsService")
     """
-    Type of service in which the asset exists.
+    TBC
     """
     AWS_REGION: ClassVar[KeywordField] = KeywordField("awsRegion", "awsRegion")
     """
-    Physical region where the data center in which the asset exists is clustered.
+    TBC
     """
     AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
         "awsAccountId", "awsAccountId"
     )
     """
-    12-digit number that uniquely identifies an AWS account.
+    TBC
     """
     AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
         "awsResourceId", "awsResourceId"
     )
     """
-    Unique resource ID assigned when a new resource is created.
+    TBC
     """
     AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
     )
     """
-    Root user's name.
+    TBC
     """
     AWS_OWNER_ID: ClassVar[KeywordField] = KeywordField("awsOwnerId", "awsOwnerId")
     """
-    Root user's ID.
+    TBC
     """
     AWS_TAGS: ClassVar[KeywordField] = KeywordField("awsTags", "awsTags")
     """
-    List of tags that have been applied to the asset in AWS.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

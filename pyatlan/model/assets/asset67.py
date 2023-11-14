@@ -34,25 +34,25 @@ class TableauMetric(Tableau):
         "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the site in which this metric exists.
+    TBC
     """
     PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Unique name of the project in which this metric exists.
+    TBC
     """
     TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the top-level project in which this metric exists.
+    TBC
     """
     PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "projectHierarchy", "projectHierarchy"
     )
     """
-    List of top-level projects with their nested child projects.
+    TBC
     """
 
     PROJECT: ClassVar[RelationField] = RelationField("project")

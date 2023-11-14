@@ -180,6 +180,12 @@ You can interact with all of the following different kinds of assets:
     asset/sigmadatasetcolumn
     asset/sigmapage
     asset/sigmaworkbook
+    asset/sisense
+    asset/sisensedashboard
+    asset/sisensedatamodel
+    asset/sisensedatamodeltable
+    asset/sisensefolder
+    asset/sisensewidget
     asset/snowflakedynamictable
     asset/snowflakepipe
     asset/snowflakestream
