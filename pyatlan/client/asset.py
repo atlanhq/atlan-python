@@ -455,9 +455,12 @@ class AssetClient:
 
     def _wait_for_connections_to_be_created(self, connections_created):
         with self._client.max_retries():
+            LOGGER.debug("Waiting for connections")
             for connection in connections_created:
                 guid = connection.guid
+                LOGGER.debug("Attempting to retrieve connection with guid: %s", guid)
                 self.retrieve_minimal(guid=guid, asset_type=Connection)
+            LOGGER.debug("Finished waiting for connections")
 
     def upsert_merging_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False

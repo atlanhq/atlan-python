@@ -7,11 +7,11 @@ import contextlib
 import copy
 import json
 import logging
-import os
 import uuid
 from importlib.resources import read_text
 from types import SimpleNamespace
-from typing import ClassVar, Generator, Optional, Type, Union
+from typing import ClassVar, Generator, Literal, Optional, Type, Union
+from urllib.parse import urljoin
 from warnings import warn
 
 import requests
@@ -29,7 +29,7 @@ from urllib3.util.retry import Retry
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
-from pyatlan.client.common import CONNECTION_RETRY, HTTPS_PREFIX
+from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
@@ -61,7 +61,7 @@ from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import AuthorizationFilter, HTTPStatus
+from pyatlan.utils import API, AuthorizationFilter, HTTPStatus
 
 SERVICE_ACCOUNT_ = "service-account-"
 LOGGER = logging.getLogger(__name__)
@@ -82,6 +82,7 @@ def get_session():
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
     session.mount(HTTPS_PREFIX, adapter)
+    session.mount(HTTP_PREFIX, adapter)
     session.headers.update(
         {
             "x-atlan-agent": "sdk",
@@ -94,7 +95,7 @@ def get_session():
 
 class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
-    base_url: HttpUrl
+    base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
@@ -262,26 +263,45 @@ class AtlanClient(BaseSettings):
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
     ):
-        params, path = self._create_params(
+        path = self._create_path(api)
+        params, request_id = self._create_params(
             api, query_params, request_obj, exclude_unset
         )
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug("------------------------------------------------------")
+            LOGGER.debug("Call         : %s %s", api.method, path)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
+            LOGGER.debug("Accept       : %s", api.produces)
+            LOGGER.debug("Request ID   : %s", request_id)
         return self._call_api_internal(api, path, params)
+
+    def _create_path(self, api: API):
+        if self.base_url == "INTERNAL":
+            return urljoin(api.endpoint.service, api.path)
+        else:
+            return urljoin(urljoin(self.base_url, api.endpoint.prefix), api.path)
 
     def _upload_file(self, api, file=None, filename=None):
         generator = MultipartDataGenerator()
         generator.add_file(file=file, filename=filename)
         post_data = generator.get_post_data()
         api.produces = f"multipart/form-data; boundary={generator.boundary}"
-        params, path = self._create_params(
+        path = self._create_path(api)
+        params, request_id = self._create_params(
             api, query_params=None, request_obj=None, exclude_unset=True
         )
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug("------------------------------------------------------")
+            LOGGER.debug("Call         : %s %s", api.method, path)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
+            LOGGER.debug("Accept       : %s", api.produces)
+            LOGGER.debug("Request ID   : %s", request_id)
         return self._call_api_internal(api, path, params, binary_data=post_data)
 
     def _create_params(
-        self, api, query_params, request_obj, exclude_unset: bool = True
+        self, api: API, query_params, request_obj, exclude_unset: bool = True
     ):
         params = copy.deepcopy(self._request_params)
-        path = os.path.join(self.base_url, api.path)
         request_id = str(uuid.uuid4())
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
@@ -295,13 +315,7 @@ class AtlanClient(BaseSettings):
                 )
             else:
                 params["data"] = json.dumps(request_obj)
-        if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug("------------------------------------------------------")
-            LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type_ : %s", api.consumes)
-            LOGGER.debug("Accept       : %s", api.produces)
-            LOGGER.debug("Request ID   : %s", request_id)
-        return params, path
+        return params, request_id
 
     def upload_image(self, file, filename: str) -> AtlanImage:
         """
@@ -1370,15 +1384,31 @@ class AtlanClient(BaseSettings):
     ) -> Generator[None, None, None]:
         """Creates a context manger that can used to temporarily change parameters used for retrying connnections.
         The original Retry information will be restored when the context is exited."""
-        adapter = self._session.adapters[HTTPS_PREFIX]
+        if self.base_url == "INTERNAL":
+            adapter = self._session.adapters[HTTP_PREFIX]
+        else:
+            adapter = self._session.adapters[HTTPS_PREFIX]
         current_max = adapter.max_retries
         adapter.max_retries = max_retries
+        LOGGER.debug(
+            "max_retries set to total: %s force_list: %s",
+            max_retries.total,
+            max_retries.status_forcelist,
+        )
         try:
+            LOGGER.debug("Entering max_retries")
             yield None
+            LOGGER.debug("Exiting max_retries")
         except requests.exceptions.RetryError as err:
+            LOGGER.exception("Exception in max retries")
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
             adapter.max_retries = current_max
+            LOGGER.exception(
+                "max_retries restored to total: %s force_list: %s",
+                adapter.max_retries.total,
+                adapter.max_retries.status_forcelist,
+            )
 
 
 @contextlib.contextmanager
