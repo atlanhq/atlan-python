@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import uuid
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
@@ -43,6 +44,7 @@ class DataStudioAsset(DataStudio):
             name=name,
             connection_qualified_name=connection_qualified_name,
             data_studio_asset_type=data_studio_asset_type,
+            gdsid=str(uuid.uuid4()),
         )
         return cls(attributes=attributes)
 
@@ -331,6 +333,7 @@ class DataStudioAsset(DataStudio):
             name: str,
             connection_qualified_name: str,
             data_studio_asset_type: GoogleDatastudioAssetType,
+            gdsid: str,
         ) -> DataStudioAsset.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "data_studio_asset_type"],
@@ -349,7 +352,7 @@ class DataStudioAsset(DataStudio):
 
             return DataStudioAsset.Attributes(
                 name=name,
-                qualified_name=f"{connection_qualified_name}/{name}",
+                qualified_name=f"{connection_qualified_name}/{gdsid}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_type.value,
                 data_studio_asset_type=data_studio_asset_type,
