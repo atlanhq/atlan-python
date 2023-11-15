@@ -182,7 +182,11 @@ class EntityAudit(AtlanObject):
     entity: Optional[Any] = Field(description="Unused.")
     type: Optional[Any] = Field(description="Unused.")
     detail: Optional[
-        Union[CustomMetadataAttributesAuditDetail, AtlanTag, Asset]
+        Union[
+            CustomMetadataAttributesAuditDetail,
+            AtlanTag,
+            Asset,
+        ]
     ] = Field(
         description="Details of the activity.In practice this will either be details about an Atlan tag "
         "(for Atlan tag-related actions) or an asset (for other actions)."

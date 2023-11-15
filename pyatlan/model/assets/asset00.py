@@ -201,6 +201,7 @@ class Referenceable(AtlanObject):
     type_name: str = Field(
         "Referenceable",
         description="Name of the type definition that defines this instance.\n",
+        regex=r"^([A-Z][a-z])+$",
     )
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
     attributes: Referenceable.Attributes = Field(
