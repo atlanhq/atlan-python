@@ -33,13 +33,13 @@ class Salesforce(SaaS):
         "organizationQualifiedName", "organizationQualifiedName"
     )
     """
-    Fully-qualified name of the organization in Salesforce.
+    TBC
     """
     API_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "apiName", "apiName.keyword", "apiName"
     )
     """
-    Name of this asset in the Salesforce API.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

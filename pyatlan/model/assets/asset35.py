@@ -41,79 +41,79 @@ class GCS(Google):
         "gcsStorageClass", "gcsStorageClass"
     )
     """
-    Storage class of this asset.
+    TBC
     """
     GCS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
         "gcsEncryptionType", "gcsEncryptionType"
     )
     """
-    Encryption algorithm used to encrypt this asset.
+    TBC
     """
     GCS_E_TAG: ClassVar[KeywordField] = KeywordField("gcsETag", "gcsETag")
     """
-    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.
-    """  # noqa: E501
+    TBC
+    """
     GCS_REQUESTER_PAYS: ClassVar[BooleanField] = BooleanField(
         "gcsRequesterPays", "gcsRequesterPays"
     )
     """
-    Whether the requester pays header was sent when this asset was created (true) or not (false).
+    TBC
     """
     GCS_ACCESS_CONTROL: ClassVar[KeywordField] = KeywordField(
         "gcsAccessControl", "gcsAccessControl"
     )
     """
-    Access control list for this asset.
+    TBC
     """
     GCS_META_GENERATION_ID: ClassVar[NumericField] = NumericField(
         "gcsMetaGenerationId", "gcsMetaGenerationId"
     )
     """
-    Version of metadata for this asset at this generation. Used for preconditions and detecting changes in metadata. A metageneration number is only meaningful in the context of a particular generation of a particular asset.
-    """  # noqa: E501
+    TBC
+    """
     GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
         "googleService", "googleService"
     )
     """
-    Service in Google in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectName", "googleProjectName", "googleProjectName.text"
     )
     """
-    Name of the project in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectId", "googleProjectId", "googleProjectId.text"
     )
     """
-    ID of the project in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
         "googleProjectNumber", "googleProjectNumber"
     )
     """
-    Number of the project in which the asset exists.
+    TBC
     """
     GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "googleLocation", "googleLocation"
     )
     """
-    Location of this asset in Google.
+    TBC
     """
     GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
         "googleLocationType", "googleLocationType"
     )
     """
-    Type of location of this asset in Google.
+    TBC
     """
     GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
     """
-    List of labels that have been applied to the asset in Google.
+    TBC
     """
     GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
     """
-    List of tags that have been applied to the asset in Google.
+    TBC
     """
 
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")

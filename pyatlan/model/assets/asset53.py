@@ -32,11 +32,11 @@ class ReadmeTemplate(Resource):
 
     ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
     """
-    Icon to use for the README template.
+    TBC
     """
     ICON_TYPE: ClassVar[KeywordField] = KeywordField("iconType", "iconType")
     """
-    Type of icon, for example: image or emoji.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

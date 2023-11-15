@@ -39,13 +39,13 @@ class SigmaDatasetColumn(Sigma):
         "sigmaDatasetQualifiedName.text",
     )
     """
-    Unique name of the dataset in which this column exists.
+    TBC
     """
     SIGMA_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sigmaDatasetName", "sigmaDatasetName.keyword", "sigmaDatasetName"
     )
     """
-    Simple name of the dataset in which this column exists.
+    TBC
     """
 
     SIGMA_DATASET: ClassVar[RelationField] = RelationField("sigmaDataset")
@@ -131,7 +131,7 @@ class SigmaDataset(Sigma):
         "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
     )
     """
-    Number of columns in this dataset.
+    TBC
     """
 
     SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField(

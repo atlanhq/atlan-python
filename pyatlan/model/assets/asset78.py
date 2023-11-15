@@ -40,31 +40,31 @@ class QlikApp(Qlik):
         "qlikHasSectionAccess", "qlikHasSectionAccess"
     )
     """
-    Whether section access or data masking is enabled on the source (true) or not (false).
+    Whether section access/data masking is enabled on source
     """
     QLIK_ORIGIN_APP_ID: ClassVar[KeywordField] = KeywordField(
         "qlikOriginAppId", "qlikOriginAppId"
     )
     """
-    Value of originAppId for this app.
+    originAppId value for a qlik app
     """
     QLIK_IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
         "qlikIsEncrypted", "qlikIsEncrypted"
     )
     """
-    Whether this app is encrypted (true) or not (false).
+    Whether a qlik app is encrypted
     """
     QLIK_IS_DIRECT_QUERY_MODE: ClassVar[BooleanField] = BooleanField(
         "qlikIsDirectQueryMode", "qlikIsDirectQueryMode"
     )
     """
-    Whether this app is in direct query mode (true) or not (false).
+    Whether a qlik app is in direct query mode
     """
     QLIK_APP_STATIC_BYTE_SIZE: ClassVar[NumericField] = NumericField(
         "qlikAppStaticByteSize", "qlikAppStaticByteSize"
     )
     """
-    Static space used by this app, in bytes.
+    Static space taken by a qlik app
     """
 
     QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
@@ -216,25 +216,25 @@ class QlikChart(Qlik):
         "qlikChartSubtitle", "qlikChartSubtitle"
     )
     """
-    Subtitle of this chart.
+    Subtitle of a qlik chart
     """
     QLIK_CHART_FOOTNOTE: ClassVar[TextField] = TextField(
         "qlikChartFootnote", "qlikChartFootnote"
     )
     """
-    Footnote of this chart.
+    Footnote of a qlik chart
     """
     QLIK_CHART_ORIENTATION: ClassVar[KeywordField] = KeywordField(
         "qlikChartOrientation", "qlikChartOrientation"
     )
     """
-    Orientation of this chart.
+    Orientation of a qlik chart
     """
     QLIK_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
         "qlikChartType", "qlikChartType"
     )
     """
-    Subtype of this chart, for example: bar, graph, pie, etc.
+    Subtype of an qlik chart. E.g. bar, graph, pie etc
     """
 
     QLIK_SHEET: ClassVar[RelationField] = RelationField("qlikSheet")
@@ -348,25 +348,25 @@ class QlikDataset(Qlik):
         "qlikDatasetTechnicalName",
     )
     """
-    Technical name of this asset.
+    Technical name of a qlik data asset
     """
     QLIK_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
         "qlikDatasetType", "qlikDatasetType"
     )
     """
-    Type of this data asset, for example: qix-df, snowflake, etc.
+    Type of an qlik data asset. E.g. qix-df, snowflake etc
     """
     QLIK_DATASET_URI: ClassVar[KeywordTextField] = KeywordTextField(
         "qlikDatasetUri", "qlikDatasetUri", "qlikDatasetUri.text"
     )
     """
-    URI of this dataset.
+    URI of a qlik dataset
     """
     QLIK_DATASET_SUBTYPE: ClassVar[KeywordField] = KeywordField(
         "qlikDatasetSubtype", "qlikDatasetSubtype"
     )
     """
-    Subtype this dataset asset.
+    Subtype of an qlik dataset asset
     """
 
     QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
@@ -480,7 +480,7 @@ class QlikSheet(Qlik):
         "qlikSheetIsApproved", "qlikSheetIsApproved"
     )
     """
-    Whether this is approved (true) or not (false).
+    Whether a qlik sheet is approved
     """
 
     QLIK_APP: ClassVar[RelationField] = RelationField("qlikApp")
@@ -568,7 +568,7 @@ class QlikSpace(Qlik):
         "qlikSpaceType", "qlikSpaceType"
     )
     """
-    Type of this space, for exmaple: Private, Shared, etc.
+    Type of a qlik space. E.g. Private, Shared etc
     """
 
     QLIK_DATASETS: ClassVar[RelationField] = RelationField("qlikDatasets")

@@ -32,11 +32,11 @@ class Collection(Namespace):
 
     ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
     """
-    Image used to represent this collection.
+    TBC
     """
     ICON_TYPE: ClassVar[KeywordField] = KeywordField("iconType", "iconType")
     """
-    Type of image used to represent the collection (for example, an emoji).
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

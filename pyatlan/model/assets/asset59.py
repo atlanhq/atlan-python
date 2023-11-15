@@ -59,13 +59,13 @@ class S3Bucket(S3):
         "s3ObjectCount", "s3ObjectCount"
     )
     """
-    Number of objects within the bucket.
+    TBC
     """
     S3BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
         "s3BucketVersioningEnabled", "s3BucketVersioningEnabled"
     )
     """
-    Whether versioning is enabled for the bucket (true) or not (false).
+    TBC
     """
 
     OBJECTS: ClassVar[RelationField] = RelationField("objects")
@@ -210,54 +210,54 @@ class S3Object(S3):
         "s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime"
     )
     """
-    Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified.
-    """  # noqa: E501
+    TBC
+    """
     S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "s3BucketName", "s3BucketName", "s3BucketName.text"
     )
     """
-    Simple name of the bucket in which this object exists.
+    TBC
     """
     S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "s3BucketQualifiedName", "s3BucketQualifiedName"
     )
     """
-    Unique name of the bucket in which this object exists.
+    TBC
     """
     S3OBJECT_SIZE: ClassVar[NumericField] = NumericField("s3ObjectSize", "s3ObjectSize")
     """
-    Object size in bytes.
+    TBC
     """
     S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
         "s3ObjectStorageClass", "s3ObjectStorageClass"
     )
     """
-    Storage class used for storing this object, for example: standard, intelligent-tiering, glacier, etc.
+    TBC
     """
     S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
         "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
     )
     """
-    Unique identity of this object in an S3 bucket. This is usually the concatenation of any prefix (folder) in the S3 bucket with the name of the object (file) itself.
-    """  # noqa: E501
+    TBC
+    """
     S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
         "s3ObjectContentType", "s3ObjectContentType"
     )
     """
-    Type of content in this object, for example: text/plain, application/json, etc.
+    TBC
     """
     S3OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
         "s3ObjectContentDisposition", "s3ObjectContentDisposition"
     )
     """
-    Information about how this object's content should be presented.
+    TBC
     """
     S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
         "s3ObjectVersionId", "s3ObjectVersionId"
     )
     """
-    Version of this object. This is only applicable when versioning is enabled on the bucket in which this object exists.
-    """  # noqa: E501
+    TBC
+    """
 
     BUCKET: ClassVar[RelationField] = RelationField("bucket")
     """

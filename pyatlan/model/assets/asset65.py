@@ -39,7 +39,7 @@ class SigmaWorkbook(Sigma):
         "sigmaPageCount", "sigmaPageCount"
     )
     """
-    Number of pages in this workbook.
+    TBC
     """
 
     SIGMA_PAGES: ClassVar[RelationField] = RelationField("sigmaPages")
@@ -107,13 +107,13 @@ class SigmaDataElementField(Sigma):
         "sigmaDataElementFieldIsHidden", "sigmaDataElementFieldIsHidden"
     )
     """
-    Whether this field is hidden (true) or not (false).
+    TBC
     """
     SIGMA_DATA_ELEMENT_FIELD_FORMULA: ClassVar[TextField] = TextField(
         "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
     )
     """
-
+    TBC
     """
 
     SIGMA_DATA_ELEMENT: ClassVar[RelationField] = RelationField("sigmaDataElement")
@@ -211,7 +211,7 @@ class SigmaPage(Sigma):
         "sigmaDataElementCount", "sigmaDataElementCount"
     )
     """
-    Number of data elements on this page.
+    TBC
     """
 
     SIGMA_DATA_ELEMENTS: ClassVar[RelationField] = RelationField("sigmaDataElements")
@@ -303,19 +303,19 @@ class SigmaDataElement(Sigma):
         "sigmaDataElementQuery", "sigmaDataElementQuery"
     )
     """
-
+    TBC
     """
     SIGMA_DATA_ELEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
         "sigmaDataElementType", "sigmaDataElementType"
     )
     """
-
+    TBC
     """
     SIGMA_DATA_ELEMENT_FIELD_COUNT: ClassVar[NumericField] = NumericField(
         "sigmaDataElementFieldCount", "sigmaDataElementFieldCount"
     )
     """
-    Number of fields in this data element.
+    TBC
     """
 
     SIGMA_PAGE: ClassVar[RelationField] = RelationField("sigmaPage")

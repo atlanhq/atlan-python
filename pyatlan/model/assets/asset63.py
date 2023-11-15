@@ -40,43 +40,43 @@ class ModeReport(Mode):
         "modeCollectionToken", "modeCollectionToken"
     )
     """
-
+    TBC
     """
     MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField(
         "modeReportPublishedAt", "modeReportPublishedAt"
     )
     """
-
+    TBC
     """
     MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField(
         "modeQueryCount", "modeQueryCount"
     )
     """
-
+    TBC
     """
     MODE_CHART_COUNT: ClassVar[NumericField] = NumericField(
         "modeChartCount", "modeChartCount"
     )
     """
-
+    TBC
     """
     MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField(
         "modeQueryPreview", "modeQueryPreview"
     )
     """
-
+    TBC
     """
     MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField(
         "modeIsPublic", "modeIsPublic"
     )
     """
-
+    TBC
     """
     MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField(
         "modeIsShared", "modeIsShared"
     )
     """
-
+    TBC
     """
 
     MODE_QUERIES: ClassVar[RelationField] = RelationField("modeQueries")
@@ -250,13 +250,13 @@ class ModeQuery(Mode):
 
     MODE_RAW_QUERY: ClassVar[TextField] = TextField("modeRawQuery", "modeRawQuery")
     """
-
+    TBC
     """
     MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField(
         "modeReportImportCount", "modeReportImportCount"
     )
     """
-
+    TBC
     """
 
     MODE_CHARTS: ClassVar[RelationField] = RelationField("modeCharts")
@@ -360,7 +360,7 @@ class ModeChart(Mode):
         "modeChartType", "modeChartType"
     )
     """
-    Type of chart.
+    TBC
     """
 
     MODE_QUERY: ClassVar[RelationField] = RelationField("modeQuery")
@@ -428,7 +428,7 @@ class ModeWorkspace(Mode):
         "modeCollectionCount", "modeCollectionCount"
     )
     """
-    Number of collections in this workspace.
+    TBC
     """
 
     MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
@@ -498,13 +498,13 @@ class ModeCollection(Mode):
         "modeCollectionType", "modeCollectionType"
     )
     """
-    Type of this collection.
+    TBC
     """
     MODE_COLLECTION_STATE: ClassVar[KeywordField] = KeywordField(
         "modeCollectionState", "modeCollectionState"
     )
     """
-    State of this collection.
+    TBC
     """
 
     MODE_WORKSPACE: ClassVar[RelationField] = RelationField("modeWorkspace")

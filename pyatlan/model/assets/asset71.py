@@ -44,7 +44,7 @@ class SisenseFolder(Sisense):
         "sisenseFolderParentFolderQualifiedName.text",
     )
     """
-    Unique name of the parent folder in which this folder exists.
+    Qualified name of the parent folder
     """
 
     SISENSE_CHILD_FOLDERS: ClassVar[RelationField] = RelationField(
@@ -184,19 +184,19 @@ class SisenseWidget(Sisense):
         "sisenseWidgetColumnCount", "sisenseWidgetColumnCount"
     )
     """
-    Number of columns used in this widget.
+    Numbers of columns used in the widget
     """
     SISENSE_WIDGET_SUB_TYPE: ClassVar[KeywordField] = KeywordField(
         "sisenseWidgetSubType", "sisenseWidgetSubType"
     )
     """
-    Subtype of this widget.
+    Sub type of the widget
     """
     SISENSE_WIDGET_SIZE: ClassVar[KeywordField] = KeywordField(
         "sisenseWidgetSize", "sisenseWidgetSize"
     )
     """
-    Size of this widget.
+    Size of the widget
     """
     SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[
         KeywordTextField
@@ -206,7 +206,7 @@ class SisenseWidget(Sisense):
         "sisenseWidgetDashboardQualifiedName.text",
     )
     """
-    Unique name of the dashboard in which this widget exists.
+    Qualified name of the dashboard under which this widget is present
     """
     SISENSE_WIDGET_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sisenseWidgetFolderQualifiedName",
@@ -214,7 +214,7 @@ class SisenseWidget(Sisense):
         "sisenseWidgetFolderQualifiedName.text",
     )
     """
-    Unique name of the folder in which this widget exists.
+    Qualified name of the folder under which this widget is present
     """
 
     SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
@@ -404,50 +404,50 @@ class SisenseDatamodel(Sisense):
         "sisenseDatamodelTableCount", "sisenseDatamodelTableCount"
     )
     """
-    Number of tables in this datamodel.
+    Number of tables present in the datamodel
     """
     SISENSE_DATAMODEL_SERVER: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelServer", "sisenseDatamodelServer"
     )
     """
-    Hostname of the server on which this datamodel was created.
+    Hostname of server on which the Datamodel is created
     """
     SISENSE_DATAMODEL_REVISION: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelRevision", "sisenseDatamodelRevision"
     )
     """
-    Revision of this datamodel.
+    Revision of the datamodel
     """
     SISENSE_DATAMODEL_LAST_BUILD_TIME: ClassVar[NumericField] = NumericField(
         "sisenseDatamodelLastBuildTime", "sisenseDatamodelLastBuildTime"
     )
     """
-    Time (epoch) when this datamodel was last built, in milliseconds.
+    Timestamp of when the datamodel was last built
     """
     SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[NumericField] = NumericField(
         "sisenseDatamodelLastSuccessfulBuildTime",
         "sisenseDatamodelLastSuccessfulBuildTime",
     )
     """
-    Time (epoch) when this datamodel was last built successfully, in milliseconds.
+    Timestamp of when the datamodel was last built successfully
     """
     SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[NumericField] = NumericField(
         "sisenseDatamodelLastPublishTime", "sisenseDatamodelLastPublishTime"
     )
     """
-    Time (epoch) when this datamodel was last published, in milliseconds.
+    Timestamp of when the datamodel was last published
     """
     SISENSE_DATAMODEL_TYPE: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelType", "sisenseDatamodelType"
     )
     """
-    Type of this datamodel, for example: 'extract' or 'custom'.
+    Type of the datamodel. It has values 'extract' or 'custom'
     """
     SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelRelationType", "sisenseDatamodelRelationType"
     )
     """
-    Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default.
+    Default relation type for the Datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default.
     """  # noqa: E501
 
     SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
@@ -689,50 +689,50 @@ class SisenseDatamodelTable(Sisense):
         "sisenseDatamodelQualifiedName.text",
     )
     """
-    Unique name of the datamodel in which this datamodel table exists.
+    Qualified name of the datamodel in which this datamodel table is present
     """
     SISENSE_DATAMODEL_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
         "sisenseDatamodelTableColumnCount", "sisenseDatamodelTableColumnCount"
     )
     """
-    Number of columns present in this datamodel table.
+    Number of columns present in the datamodel table
     """
     SISENSE_DATAMODEL_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelTableType", "sisenseDatamodelTableType"
     )
     """
-    Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables.
+    Type of the datamodel table. 'base' for regular tables, 'custom' for SQL expression-based tables
     """
     SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
     )
     """
-    SQL expression of this datamodel table.
+    Actual SQL expression of the datamodel table
     """
     SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED: ClassVar[BooleanField] = BooleanField(
         "sisenseDatamodelTableIsMaterialized", "sisenseDatamodelTableIsMaterialized"
     )
     """
-    Whether this datamodel table is materialised (true) or not (false).
+    Boolean indicating if the datamodel table is materialised
     """
     SISENSE_DATAMODEL_TABLE_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
         "sisenseDatamodelTableIsHidden", "sisenseDatamodelTableIsHidden"
     )
     """
-    Whether this datamodel table is hidden in Sisense (true) or not (false).
+    Boolean indicating if the datamodel table is hidden on sisense
     """
     SISENSE_DATAMODEL_TABLE_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelTableSchedule", "sisenseDatamodelTableSchedule"
     )
     """
-    JSON specifying the refresh schedule of this datamodel table.
+    Refresh schedule of the datamodel table (JSON Object)
     """
     SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS: ClassVar[KeywordField] = KeywordField(
         "sisenseDatamodelTableLiveQuerySettings",
         "sisenseDatamodelTableLiveQuerySettings",
     )
     """
-    JSON specifying the LiveQuery settings of this datamodel table.
+    LiveQuery settings of the datamodel table (JSON Object)
     """
 
     SISENSE_DATAMODEL: ClassVar[RelationField] = RelationField("sisenseDatamodel")
@@ -980,13 +980,13 @@ class SisenseDashboard(Sisense):
         "sisenseDashboardFolderQualifiedName.text",
     )
     """
-    Unique name of the folder in which this dashboard exists.
+    Qualified name of the folder in which this dashboard exists
     """
     SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[NumericField] = NumericField(
         "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
     )
     """
-    Number of widgets in this dashboard.
+    Number of widgets that are present in this dashboard
     """
 
     SISENSE_DATAMODELS: ClassVar[RelationField] = RelationField("sisenseDatamodels")

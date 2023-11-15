@@ -40,45 +40,45 @@ class DataStudio(Google):
         "googleService", "googleService"
     )
     """
-    Service in Google in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectName", "googleProjectName", "googleProjectName.text"
     )
     """
-    Name of the project in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "googleProjectId", "googleProjectId", "googleProjectId.text"
     )
     """
-    ID of the project in which the asset exists.
+    TBC
     """
     GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
         "googleProjectNumber", "googleProjectNumber"
     )
     """
-    Number of the project in which the asset exists.
+    TBC
     """
     GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "googleLocation", "googleLocation"
     )
     """
-    Location of this asset in Google.
+    TBC
     """
     GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
         "googleLocationType", "googleLocationType"
     )
     """
-    Type of location of this asset in Google.
+    TBC
     """
     GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
     """
-    List of labels that have been applied to the asset in Google.
+    TBC
     """
     GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
     """
-    List of tags that have been applied to the asset in Google.
+    TBC
     """
 
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")

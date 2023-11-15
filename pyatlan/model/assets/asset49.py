@@ -38,7 +38,7 @@ class PowerBI(BI):
         "powerBIIsHidden", "powerBIIsHidden"
     )
     """
-    Whether this asset is hidden in Power BI (true) or not (false).
+    TBC
     """
     POWER_BI_TABLE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "powerBITableQualifiedName",
@@ -46,19 +46,19 @@ class PowerBI(BI):
         "powerBITableQualifiedName.text",
     )
     """
-    Unique name of the Power BI table in which this asset exists.
+    TBC
     """
     POWER_BI_FORMAT_STRING: ClassVar[KeywordField] = KeywordField(
         "powerBIFormatString", "powerBIFormatString"
     )
     """
-    Format of this asset, as specified in the FORMAT_STRING of the MDX cell property.
+    TBC
     """
     POWER_BI_ENDORSEMENT: ClassVar[KeywordField] = KeywordField(
         "powerBIEndorsement", "powerBIEndorsement"
     )
     """
-    Endorsement status of this asset, in Power BI.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

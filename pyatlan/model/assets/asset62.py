@@ -56,13 +56,13 @@ class PresetChart(Preset):
         "presetChartDescriptionMarkdown", "presetChartDescriptionMarkdown"
     )
     """
-
+    TBC
     """
     PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
         "presetChartFormData", "presetChartFormData"
     )
     """
-
+    TBC
     """
 
     PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
@@ -206,19 +206,19 @@ class PresetDataset(Preset):
         "presetDatasetDatasourceName.stemmed",
     )
     """
-
+    TBC
     """
     PRESET_DATASET_ID: ClassVar[NumericField] = NumericField(
         "presetDatasetId", "presetDatasetId"
     )
     """
-
+    TBC
     """
     PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
         "presetDatasetType", "presetDatasetType"
     )
     """
-
+    TBC
     """
 
     PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
@@ -372,37 +372,37 @@ class PresetDashboard(Preset):
         "presetDashboardChangedByName.stemmed",
     )
     """
-
+    TBC
     """
     PRESET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
         "presetDashboardChangedByURL", "presetDashboardChangedByURL"
     )
     """
-
+    TBC
     """
     PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY: ClassVar[BooleanField] = BooleanField(
         "presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally"
     )
     """
-
+    TBC
     """
     PRESET_DASHBOARD_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
         "presetDashboardIsPublished", "presetDashboardIsPublished"
     )
     """
-
+    TBC
     """
     PRESET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
         "presetDashboardThumbnailURL", "presetDashboardThumbnailURL"
     )
     """
-
+    TBC
     """
     PRESET_DASHBOARD_CHART_COUNT: ClassVar[NumericField] = NumericField(
         "presetDashboardChartCount", "presetDashboardChartCount"
     )
     """
-
+    TBC
     """
 
     PRESET_DATASETS: ClassVar[RelationField] = RelationField("presetDatasets")
@@ -661,13 +661,13 @@ class PresetWorkspace(Preset):
         "presetWorkspacePublicDashboardsAllowed",
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_CLUSTER_ID: ClassVar[NumericField] = NumericField(
         "presetWorkspaceClusterId", "presetWorkspaceClusterId"
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_HOSTNAME: ClassVar[KeywordTextField] = KeywordTextField(
         "presetWorkspaceHostname",
@@ -675,43 +675,43 @@ class PresetWorkspace(Preset):
         "presetWorkspaceHostname.text",
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE: ClassVar[BooleanField] = BooleanField(
         "presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode"
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_REGION: ClassVar[KeywordTextField] = KeywordTextField(
         "presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text"
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField(
         "presetWorkspaceStatus", "presetWorkspaceStatus"
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
     )
     """
-
+    TBC
     """
     PRESET_WORKSPACE_DATASET_COUNT: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount"
     )
     """
-
+    TBC
     """
 
     PRESET_DASHBOARDS: ClassVar[RelationField] = RelationField("presetDashboards")
