@@ -1,3 +1,10 @@
+## 1.6.3 (November 14, 2023)
+
+* Changed to support new custom metadata payload
+* Add methods to manage Preset Assets
+* Add in-cluster optimisation to use services URLs directly
+* Changes the logic for generating Google Data Studio asset qualifiedNames
+
 ## 1.6.2 (November 7, 2023)
 
 * Add filter to redact HTTP authorization header

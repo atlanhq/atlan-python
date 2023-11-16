@@ -31,6 +31,21 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore
         return cls(attributes=attributes)
 
+    @classmethod
+    def create_for_modification(
+        cls: type[Asset.SelfAsset],
+        qualified_name: str = "",
+        name: str = ""
+        """
+        This method is not available for AuthPolicy. Please retrieve the existing policy and then update it in its
+        entirety.
+        """,
+    ) -> Asset.SelfAsset:
+        raise NotImplementedError(
+            "This method is not available for AuthPolicy. Please retrieve the existing policy"
+            " and then update it in its entirety."
+        )
+
     type_name: str = Field("AuthPolicy", allow_mutation=False)
 
     @validator("type_name")

@@ -10,5 +10,4 @@
     @init_guid
     def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None)->{{ entity_def.name }}:
         validate_required_fields(["name"], [name])
-        icon_str = icon.value if icon is not None else None
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name, icon=icon_str))
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name, icon=icon))

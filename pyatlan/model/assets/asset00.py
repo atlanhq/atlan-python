@@ -3698,9 +3698,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
     ) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
-        icon_str = icon.value if icon is not None else None
         return AtlasGlossary(
-            attributes=AtlasGlossary.Attributes.create(name=name, icon=icon_str)
+            attributes=AtlasGlossary.Attributes.create(name=name, icon=icon)
         )
 
     type_name: str = Field("AtlasGlossary", allow_mutation=False)

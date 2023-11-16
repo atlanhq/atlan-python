@@ -10,11 +10,11 @@ from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Optional
 
+from pydantic import HttpUrl
+from pydantic.dataclasses import dataclass
+
 from pyatlan.errors import ErrorCode
 
-ADMIN_URI = "api/service/"
-BASE_URI = "api/meta/"
-SQL_URI = "api/sql/"
 APPLICATION_JSON = "application/json"
 APPLICATION_OCTET_STREAM = "application/octet-stream"
 MULTIPART_FORM_DATA = "multipart/form-data"
@@ -111,20 +111,38 @@ def validate_required_fields(field_names: list[str], values: list[Any]):
             raise ValueError(f"{field_name} cannot be an empty list")
 
 
+@dataclass
+class EndpointMixin:
+    prefix: str
+    service: HttpUrl
+
+
+class EndPoint(EndpointMixin, Enum):
+    ATLAS = (
+        "api/meta/",
+        "http://atlas-service-atlas.atlas.svc.cluster.local/api/atlas/v2/",
+    )
+    HEKA = "api/sql/", "http://heka-service.heka.svc.cluster.local/"
+    IMPERSONATION = "", "http://keycloak-http.keycloak.svc.cluster.local/"
+    HERACLES = "api/service/", "http://heracles-service.heracles.svc.cluster.local/"
+
+
 class API:
     def __init__(
         self,
-        path,
-        method,
-        expected_status,
-        consumes=APPLICATION_JSON,
-        produces=APPLICATION_JSON,
+        path: str,
+        method: "HTTPMethod",
+        expected_status: int,
+        endpoint: EndPoint,
+        consumes: str = APPLICATION_JSON,
+        produces: str = APPLICATION_JSON,
     ):
         self.path = path
         self.method = method
         self.expected_status = expected_status
         self.consumes = consumes
         self.produces = produces
+        self.endpoint: EndPoint = endpoint
 
     @staticmethod
     def multipart_urljoin(base_path, *path_elems):
@@ -149,8 +167,9 @@ class API:
             self.path.format(**params),
             self.method,
             self.expected_status,
-            self.consumes,
-            self.produces,
+            endpoint=self.endpoint,
+            consumes=self.consumes,
+            produces=self.produces,
         )
 
     def format_path_with_params(self, *params):
@@ -159,8 +178,9 @@ class API:
             request_path,
             self.method,
             self.expected_status,
-            self.consumes,
-            self.produces,
+            endpoint=self.endpoint,
+            consumes=self.consumes,
+            produces=self.produces,
         )
 
 

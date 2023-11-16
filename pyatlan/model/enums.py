@@ -54,17 +54,23 @@ class AnnouncementType(str, Enum):
 
 
 class AssetSidebarTab(str, Enum):
-    INCIDENTS = "Incidents"
-    VISUALS = "Visuals"
+    OVERVIEW = "overview"
     COLUMNS = "Columns"
     RUNS = "Runs"
     TASKS = "Tasks"
+    COMPONENTS = "Components"
+    PROJECTS = "Projects"
+    COLLECTIONS = "Collections"
     USAGE = "Usage"
     OBJECTS = "Objects"
     LINEAGE = "Lineage"
+    INCIDENTS = "Incidents"
     FIELDS = "Fields"
+    VISUALS = "Visuals"
     VISUALIZATIONS = "Visualizations"
+    SCHEMA_OBJECTS = "Schema Objects"
     RELATIONS = "Relations"
+    FACT_DIM_RELATIONS = "Fact-Dim Relations"
     PROFILE = "Profile"
     ASSETS = "Assets"
     ACTIVITY = "Activity"
@@ -74,6 +80,8 @@ class AssetSidebarTab(str, Enum):
     REQUESTS = "Requests"
     PROPERTIES = "Properties"
     MONTE_CARLO = "Monte Carlo"
+    DBT_TEST = "dbt Test"
+    SODA = "Soda"
 
 
 class AtlanComparisonOperator(str, Enum):
