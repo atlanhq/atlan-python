@@ -4,8 +4,8 @@ ARG VERSION
 
 WORKDIR /app
 
-RUN pip3 install pyatlan==${VERSION}
+COPY base /app/
 
-COPY ../pyatlan/logging.conf .
+RUN pip3 install pyatlan==${VERSION}
 
 CMD ["python"]
