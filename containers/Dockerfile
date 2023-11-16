@@ -6,4 +6,6 @@ WORKDIR /app
 
 RUN pip3 install pyatlan==${VERSION}
 
+COPY pyatlan/logging.conf .
+
 CMD ["python"]
