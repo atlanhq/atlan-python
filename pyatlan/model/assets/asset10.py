@@ -31,11 +31,11 @@ class BIProcess(Process):
 
     OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
     """
-    Assets that are outputs from this process.
+    TBC
     """
     INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
-    Assets that are inputs to this process.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

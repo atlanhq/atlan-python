@@ -74,7 +74,7 @@ def test_create_data_source():
 
     assert sut.name == SOURCE_NAME
     assert sut.connection_qualified_name == DATASTUDIO_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name 
+    assert sut.qualified_name
     assert sut.connector_name == CONNECTOR_NAME
     assert sut.data_studio_asset_type == GoogleDatastudioAssetType.DATA_SOURCE
 
@@ -132,4 +132,4 @@ def test_trim_to_required_data_source():
     ).trim_to_required()
 
     assert sut.name == SOURCE_NAME
-    assert sut.qualified_name 
+    assert sut.qualified_name
