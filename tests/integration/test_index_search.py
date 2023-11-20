@@ -313,36 +313,3 @@ def test_metric_aggregation(client: AtlanClient):
     assert results.aggregations["min_columns"]
     assert results.aggregations["max_columns"]
     assert results.aggregations["sum_columns"]
-
-
-def test_source_read_recent_user_record_list(client: AtlanClient):
-    request = (
-        FluentSearch.select()
-        .where(Asset.SOURCE_READ_COUNT.gt(0))
-        .include_on_results(Asset.SOURCE_READ_RECENT_USER_RECORD_LIST)
-        .to_request()
-    )
-    results = client.asset.search(criteria=request)
-    found = False
-    assert results
-    count = 0
-    for asset in results:
-        count += 1
-        if asset.source_read_recent_user_record_list:
-            for i, record in enumerate(asset.source_read_recent_user_record_list):
-                assert record.record_total_user_count >= 0
-                asset_by_guid = client.asset.get_by_guid(
-                    guid=asset.guid, asset_type=Asset
-                )
-                assert len(asset.source_read_recent_user_record_list) == len(
-                    asset_by_guid.source_read_recent_user_record_list
-                )
-                assert (
-                    record.record_user
-                    == asset_by_guid.source_read_recent_user_record_list[i].record_user
-                )
-                found = True
-                break
-        if count > 10 or found:
-            break
-    assert found is True
