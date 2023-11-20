@@ -61,6 +61,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Copy logging.conf
+        run: |
+          mkdir -p ./containers/base
+          cp ./pyatlan/logging.conf ./containers/base/
       - name: Set image tag from file
         id: set-image-tag
         run: |
