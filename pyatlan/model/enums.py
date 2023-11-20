@@ -116,6 +116,8 @@ class AtlanConnectionCategory(str, Enum):
     DATABASE = "database"
     API = "API"
     EVENT_BUS = "eventbus"
+    DATA_QUALITY = "data-quality"
+    SCHEMA_REGISTRY = "schema-registry"
 
 
 class AtlanConnectorType(str, Enum):
@@ -226,7 +228,27 @@ class AtlanConnectorType(str, Enum):
     STARBURST_GALAXY = ("starburst-galaxy", AtlanConnectionCategory.WAREHOUSE)
     REDIS = ("redis", AtlanConnectionCategory.DATABASE)
     GRAPHQL = ("graphql", AtlanConnectionCategory.DATABASE)
-    ALTERYX = ("alteryx", AtlanConnectionCategory.API)
+    ALTERYX = ("alteryx", AtlanConnectionCategory.BI)
+    REDASH = ("redash", AtlanConnectionCategory.BI)
+    SISENSE = ("sisense", AtlanConnectionCategory.BI)
+    MONTE_CARLO = ("monte-carlo", AtlanConnectionCategory.DATA_QUALITY)
+    SODA = ("soda", AtlanConnectionCategory.DATA_QUALITY)
+    MATILLION = ("matillion", AtlanConnectionCategory.ELT)
+    AIVEN_KAFKA = ("aiven-kafka", AtlanConnectionCategory.EVENT_BUS)
+    APACHE_KAFKA = ("apache-kafka", AtlanConnectionCategory.EVENT_BUS)
+    AZURE_EVENT_HUB = ("azure-event-hub", AtlanConnectionCategory.EVENT_BUS)
+    CONFLUENT_KAFKA = ("confluent-kafka", AtlanConnectionCategory.EVENT_BUS)
+    REDPANDA_KAFKA = ("redpanda-kafka", AtlanConnectionCategory.EVENT_BUS)
+    CONFLUENT_SCHEMA_REGISTRY = (
+        "confluent-schema-registry",
+        AtlanConnectionCategory.SCHEMA_REGISTRY,
+    )
+    GAINSIGHT = ("gainsight", AtlanConnectionCategory.DATABASE)
+    AIRFLOW_ASTRONOMER = ("airflow-astronomer", AtlanConnectionCategory.ELT)
+    AIRFLOW_MWAA = ("airflow-mwaa", AtlanConnectionCategory.ELT)
+    AIRFLOW_CLOUD_COMPOSER = ("airflow-cloud-composer", AtlanConnectionCategory.ELT)
+    SPARK = ("spark", AtlanConnectionCategory.ELT)
+    MPARTICLE = ("mparticle", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
