@@ -35,16 +35,19 @@ class DataStudioAsset(DataStudio):
         name: str,
         connection_qualified_name: str,
         data_studio_asset_type: GoogleDatastudioAssetType,
+        gdsid: Optional[str] = None,
     ) -> DataStudioAsset:
         validate_required_fields(
             ["name", "connection_qualified_name", "data_studio_asset_type"],
             [name, connection_qualified_name, data_studio_asset_type],
         )
+        if gdsid is None:
+            gdsid = str(uuid.uuid4())
         attributes = DataStudioAsset.Attributes.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
             data_studio_asset_type=data_studio_asset_type,
-            gdsid=str(uuid.uuid4()),
+            gdsid=gdsid,
         )
         return cls(attributes=attributes)
 
