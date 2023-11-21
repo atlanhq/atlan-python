@@ -689,6 +689,34 @@ class AssetClient:
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
 
+    def _modify_tags(
+        self,
+        api: API,
+        asset_type: Type[A],
+        qualified_name: str,
+        atlan_tag_names: list[str],
+        propagate: bool = True,
+        remove_propagation_on_delete: bool = True,
+        restrict_lineage_propagation: bool = True,
+    ) -> None:
+        atlan_tags = AtlanTags(
+            __root__=[
+                AtlanTag(
+                    type_name=AtlanTagName(display_text=name),
+                    propagate=propagate,
+                    remove_propagations_on_entity_delete=remove_propagation_on_delete,
+                    restrict_propagation_through_lineage=restrict_lineage_propagation,
+                )
+                for name in atlan_tag_names
+            ]
+        )
+        query_params = {"attr:qualifiedName": qualified_name}
+        self._client._call_api(
+            api.format_path_with_params(asset_type.__name__, "classifications"),
+            query_params,
+            atlan_tags,
+        )
+
     @validate_arguments()
     def add_atlan_tags(
         self,
@@ -714,24 +742,49 @@ class AssetClient:
                                              through lineage (False)
         :raises AtlanError: on any API communication issue
         """
-        atlan_tags = AtlanTags(
-            __root__=[
-                AtlanTag(
-                    type_name=AtlanTagName(display_text=name),
-                    propagate=propagate,
-                    remove_propagations_on_entity_delete=remove_propagation_on_delete,
-                    restrict_propagation_through_lineage=restrict_lineage_propagation,
-                )
-                for name in atlan_tag_names
-            ]
+        self._modify_tags(
+            UPDATE_ENTITY_BY_ATTRIBUTE,
+            asset_type,
+            qualified_name,
+            atlan_tag_names,
+            propagate,
+            remove_propagation_on_delete,
+            restrict_lineage_propagation,
         )
-        query_params = {"attr:qualifiedName": qualified_name}
-        self._client._call_api(
-            UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
-                asset_type.__name__, "classifications"
-            ),
-            query_params,
-            atlan_tags,
+
+    @validate_arguments()
+    def update_atlan_tags(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        atlan_tag_names: list[str],
+        propagate: bool = True,
+        remove_propagation_on_delete: bool = True,
+        restrict_lineage_propagation: bool = True,
+    ) -> None:
+        """
+        Update one or more Atlan tags to the provided asset.
+        Note: if one or more of the provided Atlan tags already exist on the asset, an error
+        will be raised. (In other words, this operation is NOT idempotent.)
+
+        :param asset_type: type of asset to which to update the Atlan tags
+        :param qualified_name: qualified_name of the asset to which to update the Atlan tags
+        :param atlan_tag_names: human-readable names of the Atlan tags to update to the asset
+        :param propagate: whether to propagate the Atlan tag (True) or not (False)
+        :param remove_propagation_on_delete: whether to remove the propagated Atlan tags when the Atlan tag is removed
+                                             from this asset (True) or not (False)
+        :param restrict_lineage_propagation: whether to avoid propagating through lineage (True) or do propagate
+                                             through lineage (False)
+        :raises AtlanError: on any API communication issue
+        """
+        self._modify_tags(
+            PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
+            asset_type,
+            qualified_name,
+            atlan_tag_names,
+            propagate,
+            remove_propagation_on_delete,
+            restrict_lineage_propagation,
         )
 
     @validate_arguments()
