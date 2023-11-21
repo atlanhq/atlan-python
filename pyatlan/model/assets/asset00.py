@@ -201,7 +201,6 @@ class Referenceable(AtlanObject):
     type_name: str = Field(
         "Referenceable",
         description="Name of the type definition that defines this instance.\n",
-        regex=r"^([A-Z][a-z])+$",
     )
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
     attributes: Referenceable.Attributes = Field(
@@ -349,6 +348,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -3521,19 +3521,19 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "shortDescription", "shortDescription"
     )
     """
-    Unused. Brief summary of the category. See 'description' and 'userDescription' instead.
+    TBC
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    Unused. Detailed description of the category. See 'readme' instead.
+    TBC
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    Unused. Arbitrary set of additional attributes associated with the category.
+    TBC
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
@@ -3714,27 +3714,27 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "shortDescription", "shortDescription"
     )
     """
-    Unused. A short definition of the glossary. See 'description' and 'userDescription' instead.
+    TBC
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    Unused. A longer description of the glossary. See 'readme' instead.
+    TBC
     """
     LANGUAGE: ClassVar[KeywordField] = KeywordField("language", "language")
     """
-    Unused. Language of the glossary's contents.
+    TBC
     """
     USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
     """
-    Unused. Inteded usage for the glossary.
+    TBC
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    Unused. Arbitrary set of additional attributes associated with this glossary.
+    TBC
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
@@ -3948,31 +3948,31 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "shortDescription", "shortDescription"
     )
     """
-    Unused. Brief summary of the term. See 'description' and 'userDescription' instead.
+    TBC
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    Unused. Detailed definition of the term. See 'readme' instead.
+    TBC
     """
     EXAMPLES: ClassVar[KeywordField] = KeywordField("examples", "examples")
     """
-    Unused. Exmaples of the term.
+    TBC
     """
     ABBREVIATION: ClassVar[KeywordField] = KeywordField("abbreviation", "abbreviation")
     """
-    Unused. Abbreviation of the term.
+    TBC
     """
     USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
     """
-    Unused. Intended usage for the term.
+    TBC
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    Unused. Arbitrary set of additional attributes for the terrm.
+    TBC
     """
 
     VALID_VALUES_FOR: ClassVar[RelationField] = RelationField("validValuesFor")
@@ -4418,15 +4418,15 @@ class Process(Asset, type_name="Process"):
 
     CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """
-    Code that ran within the process.
+    TBC
     """
     SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
     """
-    SQL query that ran to produce the outputs.
+    TBC
     """
     AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
     """
-    Parsed AST of the code or SQL statements that describe the logic of this process.
+    TBC
     """
 
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
@@ -5026,7 +5026,7 @@ class ColumnProcess(Process):
 
     OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
     """
-    Assets that are outputs from this process.
+    TBC
     """
     PROCESS: ClassVar[RelationField] = RelationField("process")
     """
@@ -5034,7 +5034,7 @@ class ColumnProcess(Process):
     """
     INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
-    Assets that are inputs to this process.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

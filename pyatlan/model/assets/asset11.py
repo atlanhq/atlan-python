@@ -39,7 +39,7 @@ class DbtProcess(Dbt):
         "dbtProcessJobStatus", "dbtProcessJobStatus"
     )
     """
-
+    TBC
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
@@ -153,15 +153,15 @@ class DbtProcess(Dbt):
     """
     CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """
-    Code that ran within the process.
+    TBC
     """
     SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
     """
-    SQL query that ran to produce the outputs.
+    TBC
     """
     AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
     """
-    Parsed AST of the code or SQL statements that describe the logic of this process.
+    TBC
     """
 
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
