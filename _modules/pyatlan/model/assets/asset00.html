@@ -454,6 +454,7 @@
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AnnouncementType</span><span class="p">,</span>
     <span class="n">AtlanConnectorType</span><span class="p">,</span>
+    <span class="n">AtlanIcon</span><span class="p">,</span>
     <span class="n">CertificateStatus</span><span class="p">,</span>
     <span class="n">EntityStatus</span><span class="p">,</span>
     <span class="n">FileType</span><span class="p">,</span>
@@ -4145,9 +4146,13 @@
     <span class="nd">@classmethod</span>
     <span class="c1"># @validate_arguments()</span>
     <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossary</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossary</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">AtlasGlossary</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">AtlasGlossary</span><span class="p">(</span>
+            <span class="n">attributes</span><span class="o">=</span><span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;AtlasGlossary&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -4302,9 +4307,14 @@
         <span class="nd">@classmethod</span>
         <span class="c1"># @validate_arguments()</span>
         <span class="nd">@init_guid</span>
-        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">next_id</span><span class="p">())</span>
+            <span class="n">icon_str</span> <span class="o">=</span> <span class="n">icon</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">icon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">next_id</span><span class="p">(),</span> <span class="n">icon</span><span class="o">=</span><span class="n">icon_str</span>
+            <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;AtlasGlossary.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
