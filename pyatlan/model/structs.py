@@ -54,13 +54,6 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(None, description="")
 
 
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(None, description="")
-    tag_attachment_value: Optional[str] = Field(None, description="")
-
-
 class SourceTagAttachment(AtlanObject):
     """Description"""
 
@@ -109,11 +102,11 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(None, description="")
 
 
-class AzureTag(AtlanObject):
+class SourceTagAttachmentValue(AtlanObject):
     """Description"""
 
-    azure_tag_key: str = Field(description="")
-    azure_tag_value: str = Field(description="")
+    tag_attachment_key: Optional[str] = Field(None, description="")
+    tag_attachment_value: Optional[str] = Field(None, description="")
 
 
 class StarredDetails(AtlanObject):
@@ -121,6 +114,13 @@ class StarredDetails(AtlanObject):
 
     asset_starred_by: Optional[str] = Field(None, description="")
     asset_starred_at: Optional[datetime] = Field(None, description="")
+
+
+class AzureTag(AtlanObject):
+    """Description"""
+
+    azure_tag_key: str = Field(description="")
+    azure_tag_value: str = Field(description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -214,15 +214,15 @@ KafkaTopicConsumption.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachmentValue.update_forward_refs()
-
 SourceTagAttachment.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
-AzureTag.update_forward_refs()
+SourceTagAttachmentValue.update_forward_refs()
 
 StarredDetails.update_forward_refs()
+
+AzureTag.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 

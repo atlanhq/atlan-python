@@ -202,7 +202,7 @@ class Connection(Asset, type_name="Connection"):
         "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
     )
     """
-
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Callable, Optional, Type
 
@@ -15,8 +16,10 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectorType, SourceCostUnitType
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.response import A, AssetMutationResponse
+from pyatlan.model.structs import PopularityInsights
 from tests.integration.client import TestId
 
 LOGGER = logging.getLogger(__name__)
@@ -231,6 +234,20 @@ class TestSchema:
 class TestTable:
     table: Optional[Table] = None
 
+    @pytest.fixture(scope="module")
+    def popularity_insight(self):
+        popularity = PopularityInsights()
+        popularity.record_user = "ernest"
+        popularity.record_query_count = 1
+        popularity.record_compute_cost = 1.00
+        popularity.record_query_count = 2
+        popularity.record_total_user_count = 3
+        popularity.record_compute_cost_unit = SourceCostUnitType.BYTES
+        popularity.record_last_timestamp = datetime.datetime.now()
+        popularity.record_query_duration = 4
+        popularity.record_warehouse = "there"
+        return popularity
+
     def test_create(
         self,
         client: AtlanClient,
@@ -280,6 +297,81 @@ class TestTable:
         table = TestTable.table.trim_to_required()
         response = upsert(table)
         assert response.mutated_entities is None
+
+    @pytest.mark.order(after="test_trim_to_required")
+    def test_update_source_read_recent_user_record_list(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+        popularity_insight: PopularityInsights,
+    ):
+        assert TestTable.table
+        table = TestTable.table.trim_to_required()
+        self.time = popularity_insight.record_last_timestamp
+        table.source_read_recent_user_record_list = [popularity_insight]
+        response = upsert(table)
+        verify_asset_updated(response, Table)
+
+    @pytest.mark.order(after="test_update_source_read_recent_user_record_list")
+    def test_source_read_recent_user_record_list_readable(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+        popularity_insight: PopularityInsights,
+    ):
+        assert TestTable.table
+        asset = client.asset.get_by_guid(guid=TestTable.table.guid, asset_type=Table)
+        assert asset.source_read_recent_user_record_list
+        asset_popularity = asset.source_read_recent_user_record_list[0]
+        self.verify_popularity(asset_popularity, popularity_insight)
+
+    @pytest.mark.order(after="test_update_source_read_recent_user_record_list")
+    def test_source_read_recent_user_record_list_readable_with_fluent_search(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+        popularity_insight: PopularityInsights,
+    ):
+        assert TestTable.table
+        assert TestTable.table.qualified_name
+        request = (
+            FluentSearch.select()
+            .where(Asset.QUALIFIED_NAME.eq(TestTable.table.qualified_name))
+            .include_on_results(Asset.SOURCE_READ_RECENT_USER_RECORD_LIST)
+            .to_request()
+        )
+        results = client.asset.search(request)
+        assert results.count == 1
+        for result in results:
+            assert result.source_read_recent_user_record_list
+            asset_popularity = result.source_read_recent_user_record_list[0]
+            self.verify_popularity(asset_popularity, popularity_insight)
+
+    def verify_popularity(self, asset_popularity, popularity_insight):
+        assert popularity_insight.record_user == asset_popularity.record_user
+        assert (
+            popularity_insight.record_query_count == asset_popularity.record_query_count
+        )
+        assert (
+            popularity_insight.record_compute_cost
+            == asset_popularity.record_compute_cost
+        )
+        assert (
+            popularity_insight.record_query_count == asset_popularity.record_query_count
+        )
+        assert (
+            popularity_insight.record_total_user_count
+            == asset_popularity.record_total_user_count
+        )
+        assert (
+            popularity_insight.record_compute_cost_unit
+            == asset_popularity.record_compute_cost_unit
+        )
+        assert (
+            popularity_insight.record_query_duration
+            == asset_popularity.record_query_duration
+        )
+        assert popularity_insight.record_warehouse == asset_popularity.record_warehouse
 
 
 @pytest.mark.order(after="TestTable")
