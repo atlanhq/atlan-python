@@ -19,6 +19,7 @@ from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProx
 from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
+    AtlanIcon,
     CertificateStatus,
     EntityStatus,
     FileType,
@@ -3693,9 +3694,13 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, name: StrictStr) -> AtlasGlossary:
+    def create(
+        cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+    ) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
+        return AtlasGlossary(
+            attributes=AtlasGlossary.Attributes.create(name=name, icon=icon)
+        )
 
     type_name: str = Field("AtlasGlossary", allow_mutation=False)
 
@@ -3850,9 +3855,14 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         @classmethod
         # @validate_arguments()
         @init_guid
-        def create(cls, *, name: StrictStr) -> AtlasGlossary.Attributes:
+        def create(
+            cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+        ) -> AtlasGlossary.Attributes:
             validate_required_fields(["name"], [name])
-            return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
+            icon_str = icon.value if icon is not None else None
+            return AtlasGlossary.Attributes(
+                name=name, qualified_name=next_id(), icon=icon_str
+            )
 
     attributes: "AtlasGlossary.Attributes" = Field(
         default_factory=lambda: AtlasGlossary.Attributes(),
