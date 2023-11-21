@@ -472,16 +472,19 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">GoogleDatastudioAssetType</span><span class="p">,</span>
+        <span class="n">gdsid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataStudioAsset</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">],</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">gdsid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gdsid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
             <span class="n">data_studio_asset_type</span><span class="o">=</span><span class="n">data_studio_asset_type</span><span class="p">,</span>
-            <span class="n">gdsid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">gdsid</span><span class="o">=</span><span class="n">gdsid</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
