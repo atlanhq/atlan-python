@@ -50,7 +50,7 @@ from pyatlan.model.structs import (
     SourceTagAttribute,
     StarredDetails,
 )
-from pyatlan.utils import init_guid, next_id, validate_required_fields
+from pyatlan.utils import init_guid, move_struct, next_id, validate_required_fields
 
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
@@ -369,6 +369,7 @@ class Asset(Referenceable):
         if sub is None:
             raise TypeError(f"Unsupport sub-type: {data_type}")
 
+        move_struct(data)
         return sub(**data)
 
     if TYPE_CHECKING:

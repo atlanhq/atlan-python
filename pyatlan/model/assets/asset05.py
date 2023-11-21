@@ -18,7 +18,7 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.model.structs import AuthPolicyCondition, AuthPolicyValiditySchedule
 from pyatlan.utils import validate_required_fields
 
-from .asset00 import Asset
+from .asset00 import Asset, SelfAsset
 
 
 class AuthPolicy(Asset, type_name="AuthPolicy"):
@@ -33,14 +33,14 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @classmethod
     def create_for_modification(
-        cls: type[Asset.SelfAsset],
+        cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = ""
         """
         This method is not available for AuthPolicy. Please retrieve the existing policy and then update it in its
         entirety.
         """,
-    ) -> Asset.SelfAsset:
+    ) -> SelfAsset:
         raise NotImplementedError(
             "This method is not available for AuthPolicy. Please retrieve the existing policy"
             " and then update it in its entirety."
