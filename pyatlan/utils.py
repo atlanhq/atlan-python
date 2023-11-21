@@ -289,6 +289,39 @@ def validate_type(name: str, _type: type, value):
     )
 
 
+def move_struct(data):
+    struct_names = {
+        "sourceQueryComputeCostRecordList",
+        "sourceReadExpensiveQueryRecordList",
+        "sourceReadPopularQueryRecordList",
+        "sourceReadRecentUserRecordList",
+        "sourceReadSlowQueryRecordList",
+        "sourceReadTopUserRecordList",
+        "mcMonitorRuleScheduleConfig",
+        "columnHistogram",
+        "kafkaConsumerGroupTopicConsumptionProperties",
+        "columnTopValues",
+        "badgeConditions",
+        "azureTags",
+        "starredDetailsList",
+        "policyConditions",
+        "awsTags",
+        "dbtMetricFilters",
+        "google_tags",
+        "policyValiditySchedule",
+        "mcMonitorRuleComparisons",
+        "googleLabels",
+        "tagAttributes",
+    }
+    for struct_name in struct_names:
+        if (a := data.get("attributes", None)) and (s := a.get(struct_name, None)):
+            records = [
+                record if "attributes" not in record else record["attributes"]
+                for record in s
+            ]
+            a[struct_name] = records
+
+
 class AuthorizationFilter(logging.Filter):
     """
     A Filter that will replace the authorization header with the text '***REDACTED***'

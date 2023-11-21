@@ -1,3 +1,15 @@
+## 1.6.4 (November 21, 2023)
+
+### Deprecations
+* None
+### Bug Fixes
+* Fix problem with source_read_top_user_record_list not being read correctly in index search
+* Correct problem with AuditSearch mis-identifying asset as deleted tag
+### QOL Improvm
+* Update enums with latest changes to persona preferences
+* Bundle logging.conf file in Docker image
+* Add ability to set icon during glossary creation
+
 ## 1.6.3 (November 14, 2023)
 
 * Changed to support new custom metadata payload
