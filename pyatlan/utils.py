@@ -343,19 +343,20 @@ class AuthorizationFilter(logging.Filter):
 
 class JsonFormatter(logging.Formatter):
     """
-    A custom log formatter that converts dictionary messages to JSON format.
+    A custom JSON log formatter
     """
 
     def format(self, record: logging.LogRecord) -> str:
         """
-        Format the log record.
+        Format the log record
 
-        Args:
-            record (logging.LogRecord): The log record to be formatted.
-
-        Returns:
-            str: The formatted log message.
+        :param record: The log record to be formatted
+        :returns: The formatted log message
         """
-        if isinstance(record.msg, dict):
-            record.msg = json.dumps(record.msg, ensure_ascii=False)
-        return super(JsonFormatter, self).format(record)
+        log_record = {
+            "asctime": self.formatTime(record, self.datefmt),
+            "name": record.name,
+            "levelname": record.levelname,
+            "message": record.msg if isinstance(record.msg, dict) else record.getMessage(),
+        }
+        return json.dumps(log_record, ensure_ascii=False)
