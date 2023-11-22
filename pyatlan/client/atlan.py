@@ -1404,7 +1404,7 @@ class AtlanClient(BaseSettings):
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
             adapter.max_retries = current_max
-            LOGGER.exception(
+            LOGGER.debug(
                 "max_retries restored to total: %s force_list: %s",
                 adapter.max_retries.total,
                 adapter.max_retries.status_forcelist,

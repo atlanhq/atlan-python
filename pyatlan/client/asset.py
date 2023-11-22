@@ -618,12 +618,19 @@ class AssetClient:
         :returns: details of the soft-deleted asset(s)
         :raises AtlanError: on any API communication issue
         :raises ApiError: if the retry limit is overrun waiting for confirmation the asset is deleted
+        :raises InvalidRequestError: if an asset does not support archiving
         """
         guids: list[str] = []
         if isinstance(guid, list):
             guids.extend(guid)
         else:
             guids.append(guid)
+        for guid in guids:
+            asset = self.retrieve_minimal(guid=guid, asset_type=Asset)
+            if not asset.can_be_archived():
+                raise ErrorCode.ASSET_CAN_NOT_BE_ARCHIVED.exception_with_parameters(
+                    guid, asset.type_name
+                )
         query_params = {"deleteType": AtlanDeleteType.SOFT.value, "guid": guids}
         raw_json = self._client._call_api(
             DELETE_ENTITIES_BY_GUIDS, query_params=query_params
@@ -659,6 +666,8 @@ class AssetClient:
         return self._restore(asset_type, qualified_name, 0)
 
     def _restore(self, asset_type: Type[A], qualified_name: str, retries: int) -> bool:
+        if not asset_type.can_be_archived():
+            return False
         existing = self.get_by_qualified_name(
             asset_type=asset_type, qualified_name=qualified_name
         )

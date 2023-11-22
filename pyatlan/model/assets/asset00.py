@@ -96,6 +96,14 @@ class Referenceable(AtlanObject):
     def flush_custom_metadata(self):
         self.business_attributes = self._metadata_proxy.business_attributes
 
+    @classmethod
+    def can_be_archived(self) -> bool:
+        """
+        Indicates if an asset can be archived via the delete asset.delete_by_guid method.
+        :returns: True is archiving is supported
+        """
+        return True
+
     @property
     def atlan_tag_names(self) -> list[str]:
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
@@ -3442,6 +3450,14 @@ class Asset(Referenceable):
 
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
+
+    @classmethod
+    def can_be_archived(self) -> bool:
+        """
+        Indicates if an asset can be archived via the delete asset.delete_by_guid method.
+        :returns: True is archiving is supported
+        """
+        return False
 
     @root_validator()
     def _set_qualified_name_fallback(cls, values):

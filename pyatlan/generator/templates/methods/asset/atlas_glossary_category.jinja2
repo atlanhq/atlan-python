@@ -1,4 +1,12 @@
 
+    @classmethod
+    def can_be_archived(self) -> bool:
+        """
+        Indicates if an asset can be archived via the delete asset.delete_by_guid method.
+        :returns: True is archiving is supported
+        """
+        return False
+
     @root_validator()
     def _set_qualified_name_fallback(cls, values):
         if "attributes" in values  and values["attributes"] and not values["attributes"].qualified_name:
