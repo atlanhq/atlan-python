@@ -100,7 +100,7 @@ class Referenceable(AtlanObject):
     def can_be_archived(self) -> bool:
         """
         Indicates if an asset can be archived via the asset.delete_by_guid method.
-        :returns: True is archiving is supported
+        :returns: True if archiving is supported
         """
         return True
 
@@ -357,6 +357,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -3454,7 +3455,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     def can_be_archived(self) -> bool:
         """
         Indicates if an asset can be archived via the asset.delete_by_guid method.
-        :returns: True is archiving is supported
+        :returns: True if archiving is supported
         """
         return False
 
