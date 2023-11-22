@@ -3,6 +3,7 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 import datetime
 import enum
+import json
 import logging
 import re
 import time
@@ -338,3 +339,23 @@ class AuthorizationFilter(logging.Filter):
                     arg["headers"]["authorization"] = "***REDACTED***"
 
         return True
+
+
+class JsonFormatter(logging.Formatter):
+    """
+    A custom log formatter that converts dictionary messages to JSON format.
+    """
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record.
+
+        Args:
+            record (logging.LogRecord): The log record to be formatted.
+
+        Returns:
+            str: The formatted log message.
+        """
+        if isinstance(record.msg, dict):
+            record.msg = json.dumps(record.msg, ensure_ascii=False)
+        return super(JsonFormatter, self).format(record)
