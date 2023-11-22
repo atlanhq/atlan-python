@@ -2071,7 +2071,7 @@
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">RETRY_OVERRUN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">current_max</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s2">&quot;max_retries restored to total: </span><span class="si">%s</span><span class="s2"> force_list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
                 <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span><span class="o">.</span><span class="n">status_forcelist</span><span class="p">,</span>

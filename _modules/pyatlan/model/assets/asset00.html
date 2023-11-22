@@ -536,6 +536,17 @@
     <span class="k">def</span> <span class="nf">flush_custom_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">business_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_proxy</span><span class="o">.</span><span class="n">business_attributes</span>
 
+<div class="viewcode-block" id="Referenceable.can_be_archived">
+<a class="viewcode-back" href="../../../../asset/referenceable.html#pyatlan.model.assets.Referenceable.can_be_archived">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">can_be_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicates if an asset can be archived via the asset.delete_by_guid method.</span>
+<span class="sd">        :returns: True if archiving is supported</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atlan_tag_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="kn">from</span> <span class="nn">pyatlan.cache.atlan_tag_cache</span> <span class="kn">import</span> <span class="n">AtlanTagCache</span>
@@ -3891,6 +3902,17 @@
 <a class="viewcode-back" href="../../../../asset/atlasglossarycategory.html#pyatlan.model.assets.AtlasGlossaryCategory">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlasGlossaryCategory</span><span class="p">(</span><span class="n">Asset</span><span class="p">,</span> <span class="n">type_name</span><span class="o">=</span><span class="s2">&quot;AtlasGlossaryCategory&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AtlasGlossaryCategory.can_be_archived">
+<a class="viewcode-back" href="../../../../asset/atlasglossarycategory.html#pyatlan.model.assets.AtlasGlossaryCategory.can_be_archived">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">can_be_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicates if an asset can be archived via the asset.delete_by_guid method.</span>
+<span class="sd">        :returns: True if archiving is supported</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
 
     <span class="nd">@root_validator</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">_set_qualified_name_fallback</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
