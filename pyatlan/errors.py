@@ -459,7 +459,7 @@ class ErrorCode(Enum):
     ASSET_CAN_NOT_BE_ARCHIVED = (
         400,
         "ATLAN-PYTHON-400-052",
-        "Asset with guid: {0} is an asset of type {1} which does not support archiving ",
+        "Asset with guid: {0} is an asset of type {1} which does not support archiving",
         "Please use purge if you wish to remove assets of this type",
         InvalidRequestError,
     )
