@@ -10,7 +10,7 @@ from pydantic import StrictStr
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.errors import NotFoundError
+from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, IndexSearchRequest
@@ -494,6 +494,17 @@ def test_find_category_by_name(
             name=category.name, glossary_name=glossary.name
         )[0].guid
     )
+
+
+def test_category_delete_by_guid_raises_error_invalid_request_error(
+    client: AtlanClient, category: AtlasGlossaryCategory
+):
+    with pytest.raises(
+        InvalidRequestError,
+        match=f"ATLAN-PYTHON-400-052 Asset with guid: {category.guid} is an asset "
+        f"of type AtlasGlossaryCategory which does not support archiving",
+    ):
+        client.asset.delete_by_guid(guid=category.guid)
 
 
 def test_find_term_fast_by_name(
