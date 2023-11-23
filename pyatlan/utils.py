@@ -3,6 +3,7 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 import datetime
 import enum
+import json
 import logging
 import re
 import time
@@ -338,3 +339,24 @@ class AuthorizationFilter(logging.Filter):
                     arg["headers"]["authorization"] = "***REDACTED***"
 
         return True
+
+
+class JsonFormatter(logging.Formatter):
+    """
+    A custom JSON log formatter
+    """
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record
+
+        :param record: The log record to be formatted
+        :returns: The formatted log message
+        """
+        log_record = {
+            "asctime": self.formatTime(record, self.datefmt),
+            "name": record.name,
+            "levelname": record.levelname,
+            "message": record.msg if isinstance(record.msg, dict) else record.getMessage(),
+        }
+        return json.dumps(log_record, ensure_ascii=False)
