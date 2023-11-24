@@ -25,6 +25,11 @@ PREFIX_ATTR_ = "attr_"
 s_nextId = milliseconds = int(round(time.time() * 1000)) + 1
 
 
+def to_camel_case(s: str) -> str:
+    s = re.sub(r"(_|-)+", " ", s).title().replace(" ", "")
+    return "".join([s[0].lower(), s[1:]])
+
+
 def next_id() -> str:
     global s_nextId
 

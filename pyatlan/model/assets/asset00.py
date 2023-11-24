@@ -53,7 +53,13 @@ from pyatlan.model.structs import (
     SourceTagAttribute,
     StarredDetails,
 )
-from pyatlan.utils import init_guid, move_struct, next_id, validate_required_fields
+from pyatlan.utils import (
+    init_guid,
+    move_struct,
+    next_id,
+    to_camel_case,
+    validate_required_fields,
+)
 
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
@@ -6569,6 +6575,23 @@ class DataContract(DataMesh):
 class DataDomain(DataMesh):
     """Description"""
 
+    @root_validator()
+    def _set_qualified_name_fallback(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None) -> DataDomain:
+        validate_required_fields(["name"], [name])
+        return DataDomain(attributes=DataDomain.Attributes.create(name=name, icon=icon))
+
     type_name: str = Field("DataDomain", allow_mutation=False)
 
     @validator("type_name")
@@ -6662,6 +6685,21 @@ class DataDomain(DataMesh):
         sub_domains: Optional[list[DataDomain]] = Field(
             None, description="", alias="subDomains"
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+        ) -> DataDomain.Attributes:
+            validate_required_fields(["name"], [name])
+            icon_str = icon.value if icon is not None else None
+            return DataDomain.Attributes(
+                name=name,
+                mesh_slug=to_camel_case(name),
+                mesh_abbreviation=to_camel_case(name),
+                qualified_name=next_id(),
+                icon=icon_str,
+            )
 
     attributes: "DataDomain.Attributes" = Field(
         default_factory=lambda: DataDomain.Attributes(),

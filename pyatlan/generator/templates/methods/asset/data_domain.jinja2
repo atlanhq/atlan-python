@@ -1,0 +1,13 @@
+
+    @root_validator()
+    def _set_qualified_name_fallback(cls, values):
+        if "attributes" in values  and values["attributes"] and not values["attributes"].qualified_name:
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None)->{{ entity_def.name }}:
+        validate_required_fields(["name"], [name])
+        return DataDomain(attributes=DataDomain.Attributes.create(name=name, icon=icon))
