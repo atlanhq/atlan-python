@@ -21,6 +21,9 @@ from pyatlan.model.enums import (
     AtlanConnectorType,
     AtlanIcon,
     CertificateStatus,
+    DataProductCriticality,
+    DataProductSensitivity,
+    DataProductStatus,
     EntityStatus,
     FileType,
     IconType,
@@ -1176,6 +1179,10 @@ class Asset(Referenceable):
     """
     TBC
     """
+    ASSET_BANNER: ClassVar[KeywordField] = KeywordField("assetBanner", "assetBanner")
+    """
+    TBC
+    """
     IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField(
         "isAIGenerated", "isAIGenerated"
     )
@@ -1190,6 +1197,12 @@ class Asset(Referenceable):
     TBC
     """
     MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
+    """
+    TBC
+    """
+    OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
+        "outputPortDataProducts"
+    )
     """
     TBC
     """
@@ -1340,9 +1353,11 @@ class Asset(Referenceable):
         "asset_soda_check_statuses",
         "asset_soda_source_url",
         "asset_icon",
+        "asset_banner",
         "is_a_i_generated",
         "schema_registry_subjects",
         "mc_monitors",
+        "output_port_data_products",
         "files",
         "mc_incidents",
         "links",
@@ -2952,6 +2967,16 @@ class Asset(Referenceable):
         self.attributes.asset_icon = asset_icon
 
     @property
+    def asset_banner(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.asset_banner
+
+    @asset_banner.setter
+    def asset_banner(self, asset_banner: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_banner = asset_banner
+
+    @property
     def is_a_i_generated(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_a_i_generated
 
@@ -2986,6 +3011,22 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_monitors = mc_monitors
+
+    @property
+    def output_port_data_products(self) -> Optional[list[DataProduct]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.output_port_data_products
+        )
+
+    @output_port_data_products.setter
+    def output_port_data_products(
+        self, output_port_data_products: Optional[list[DataProduct]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_port_data_products = output_port_data_products
 
     @property
     def files(self) -> Optional[list[File]]:
@@ -3391,6 +3432,7 @@ class Asset(Referenceable):
             None, description="", alias="assetSodaSourceURL"
         )
         asset_icon: Optional[str] = Field(None, description="", alias="assetIcon")
+        asset_banner: Optional[str] = Field(None, description="", alias="assetBanner")
         is_a_i_generated: Optional[bool] = Field(
             None, description="", alias="isAIGenerated"
         )
@@ -3399,6 +3441,9 @@ class Asset(Referenceable):
         )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
+        )  # relationship
+        output_port_data_products: Optional[list[DataProduct]] = Field(
+            None, description="", alias="outputPortDataProducts"
         )  # relationship
         files: Optional[list[File]] = Field(
             None, description="", alias="files"
@@ -6368,6 +6413,486 @@ class Link(Resource):
 
     attributes: "Link.Attributes" = Field(
         default_factory=lambda: Link.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DataMesh(Catalog):
+    """Description"""
+
+    type_name: str = Field("DataMesh", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataMesh":
+            raise ValueError("must be DataMesh")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DataMesh._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MESH_COVER_IMAGE_URL: ClassVar[KeywordField] = KeywordField(
+        "meshCoverImageUrl", "meshCoverImageUrl"
+    )
+    """
+    TBC
+    """
+    MESH_SLUG: ClassVar[KeywordField] = KeywordField("meshSlug", "meshSlug")
+    """
+    TBC
+    """
+    MESH_ABBREVIATION: ClassVar[KeywordField] = KeywordField(
+        "meshAbbreviation", "meshAbbreviation"
+    )
+    """
+    TBC
+    """
+    IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("isPublished", "isPublished")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "mesh_cover_image_url",
+        "mesh_slug",
+        "mesh_abbreviation",
+        "is_published",
+    ]
+
+    @property
+    def mesh_cover_image_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mesh_cover_image_url
+
+    @mesh_cover_image_url.setter
+    def mesh_cover_image_url(self, mesh_cover_image_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mesh_cover_image_url = mesh_cover_image_url
+
+    @property
+    def mesh_slug(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mesh_slug
+
+    @mesh_slug.setter
+    def mesh_slug(self, mesh_slug: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mesh_slug = mesh_slug
+
+    @property
+    def mesh_abbreviation(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mesh_abbreviation
+
+    @mesh_abbreviation.setter
+    def mesh_abbreviation(self, mesh_abbreviation: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mesh_abbreviation = mesh_abbreviation
+
+    @property
+    def is_published(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_published
+
+    @is_published.setter
+    def is_published(self, is_published: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_published = is_published
+
+    class Attributes(Catalog.Attributes):
+        mesh_cover_image_url: Optional[str] = Field(
+            None, description="", alias="meshCoverImageUrl"
+        )
+        mesh_slug: Optional[str] = Field(None, description="", alias="meshSlug")
+        mesh_abbreviation: Optional[str] = Field(
+            None, description="", alias="meshAbbreviation"
+        )
+        is_published: Optional[bool] = Field(None, description="", alias="isPublished")
+
+    attributes: "DataMesh.Attributes" = Field(
+        default_factory=lambda: DataMesh.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DataContract(DataMesh):
+    """Description"""
+
+    type_name: str = Field("DataContract", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataContract":
+            raise ValueError("must be DataContract")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DataContract._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    DATA_PRODUCT: ClassVar[RelationField] = RelationField("dataProduct")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "data_product",
+    ]
+
+    @property
+    def data_product(self) -> Optional[DataProduct]:
+        return None if self.attributes is None else self.attributes.data_product
+
+    @data_product.setter
+    def data_product(self, data_product: Optional[DataProduct]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product = data_product
+
+    class Attributes(DataMesh.Attributes):
+        data_product: Optional[DataProduct] = Field(
+            None, description="", alias="dataProduct"
+        )  # relationship
+
+    attributes: "DataContract.Attributes" = Field(
+        default_factory=lambda: DataContract.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DataDomain(DataMesh):
+    """Description"""
+
+    type_name: str = Field("DataDomain", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataDomain":
+            raise ValueError("must be DataDomain")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DataDomain._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    DOMAIN_THEME_HEX: ClassVar[KeywordField] = KeywordField(
+        "domainThemeHex", "domainThemeHex"
+    )
+    """
+    TBC
+    """
+
+    DATA_PRODUCTS: ClassVar[RelationField] = RelationField("dataProducts")
+    """
+    TBC
+    """
+    PARENT_DOMAIN: ClassVar[RelationField] = RelationField("parentDomain")
+    """
+    TBC
+    """
+    SUB_DOMAINS: ClassVar[RelationField] = RelationField("subDomains")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "domain_theme_hex",
+        "data_products",
+        "parent_domain",
+        "sub_domains",
+    ]
+
+    @property
+    def domain_theme_hex(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.domain_theme_hex
+
+    @domain_theme_hex.setter
+    def domain_theme_hex(self, domain_theme_hex: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domain_theme_hex = domain_theme_hex
+
+    @property
+    def data_products(self) -> Optional[list[DataProduct]]:
+        return None if self.attributes is None else self.attributes.data_products
+
+    @data_products.setter
+    def data_products(self, data_products: Optional[list[DataProduct]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_products = data_products
+
+    @property
+    def parent_domain(self) -> Optional[DataDomain]:
+        return None if self.attributes is None else self.attributes.parent_domain
+
+    @parent_domain.setter
+    def parent_domain(self, parent_domain: Optional[DataDomain]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_domain = parent_domain
+
+    @property
+    def sub_domains(self) -> Optional[list[DataDomain]]:
+        return None if self.attributes is None else self.attributes.sub_domains
+
+    @sub_domains.setter
+    def sub_domains(self, sub_domains: Optional[list[DataDomain]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sub_domains = sub_domains
+
+    class Attributes(DataMesh.Attributes):
+        domain_theme_hex: Optional[str] = Field(
+            None, description="", alias="domainThemeHex"
+        )
+        data_products: Optional[list[DataProduct]] = Field(
+            None, description="", alias="dataProducts"
+        )  # relationship
+        parent_domain: Optional[DataDomain] = Field(
+            None, description="", alias="parentDomain"
+        )  # relationship
+        sub_domains: Optional[list[DataDomain]] = Field(
+            None, description="", alias="subDomains"
+        )  # relationship
+
+    attributes: "DataDomain.Attributes" = Field(
+        default_factory=lambda: DataDomain.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DataProduct(DataMesh):
+    """Description"""
+
+    type_name: str = Field("DataProduct", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataProduct":
+            raise ValueError("must be DataProduct")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DataProduct._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    DATA_PRODUCT_THEME: ClassVar[KeywordField] = KeywordField(
+        "dataProductTheme", "dataProductTheme"
+    )
+    """
+    TBC
+    """
+    DATA_PRODUCT_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dataProductStatus", "dataProductStatus"
+    )
+    """
+    TBC
+    """
+    DATA_PRODUCT_CRITICALITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductCriticality", "dataProductCriticality"
+    )
+    """
+    TBC
+    """
+    DATA_PRODUCT_SENSITIVITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductSensitivity", "dataProductSensitivity"
+    )
+    """
+    TBC
+    """
+    DATA_PRODUCT_ASSETS_DSL: ClassVar[KeywordField] = KeywordField(
+        "dataProductAssetsDSL", "dataProductAssetsDSL"
+    )
+    """
+    TBC
+    """
+    DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[KeywordField] = KeywordField(
+        "dataProductAssetsPlaybookFilter", "dataProductAssetsPlaybookFilter"
+    )
+    """
+    TBC
+    """
+
+    DATA_CONTRACTS: ClassVar[RelationField] = RelationField("dataContracts")
+    """
+    TBC
+    """
+    DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
+    """
+    TBC
+    """
+    OUTPUT_PORTS: ClassVar[RelationField] = RelationField("outputPorts")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "data_product_theme",
+        "data_product_status",
+        "data_product_criticality",
+        "data_product_sensitivity",
+        "data_product_assets_d_s_l",
+        "data_product_assets_playbook_filter",
+        "data_contracts",
+        "data_domain",
+        "output_ports",
+    ]
+
+    @property
+    def data_product_theme(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_product_theme
+
+    @data_product_theme.setter
+    def data_product_theme(self, data_product_theme: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_theme = data_product_theme
+
+    @property
+    def data_product_status(self) -> Optional[DataProductStatus]:
+        return None if self.attributes is None else self.attributes.data_product_status
+
+    @data_product_status.setter
+    def data_product_status(self, data_product_status: Optional[DataProductStatus]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_status = data_product_status
+
+    @property
+    def data_product_criticality(self) -> Optional[DataProductCriticality]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_criticality
+        )
+
+    @data_product_criticality.setter
+    def data_product_criticality(
+        self, data_product_criticality: Optional[DataProductCriticality]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_criticality = data_product_criticality
+
+    @property
+    def data_product_sensitivity(self) -> Optional[DataProductSensitivity]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_sensitivity
+        )
+
+    @data_product_sensitivity.setter
+    def data_product_sensitivity(
+        self, data_product_sensitivity: Optional[DataProductSensitivity]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_sensitivity = data_product_sensitivity
+
+    @property
+    def data_product_assets_d_s_l(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_assets_d_s_l
+        )
+
+    @data_product_assets_d_s_l.setter
+    def data_product_assets_d_s_l(self, data_product_assets_d_s_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_assets_d_s_l = data_product_assets_d_s_l
+
+    @property
+    def data_product_assets_playbook_filter(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_assets_playbook_filter
+        )
+
+    @data_product_assets_playbook_filter.setter
+    def data_product_assets_playbook_filter(
+        self, data_product_assets_playbook_filter: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_assets_playbook_filter = (
+            data_product_assets_playbook_filter
+        )
+
+    @property
+    def data_contracts(self) -> Optional[list[DataContract]]:
+        return None if self.attributes is None else self.attributes.data_contracts
+
+    @data_contracts.setter
+    def data_contracts(self, data_contracts: Optional[list[DataContract]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contracts = data_contracts
+
+    @property
+    def data_domain(self) -> Optional[DataDomain]:
+        return None if self.attributes is None else self.attributes.data_domain
+
+    @data_domain.setter
+    def data_domain(self, data_domain: Optional[DataDomain]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_domain = data_domain
+
+    @property
+    def output_ports(self) -> Optional[list[Asset]]:
+        return None if self.attributes is None else self.attributes.output_ports
+
+    @output_ports.setter
+    def output_ports(self, output_ports: Optional[list[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_ports = output_ports
+
+    class Attributes(DataMesh.Attributes):
+        data_product_theme: Optional[str] = Field(
+            None, description="", alias="dataProductTheme"
+        )
+        data_product_status: Optional[DataProductStatus] = Field(
+            None, description="", alias="dataProductStatus"
+        )
+        data_product_criticality: Optional[DataProductCriticality] = Field(
+            None, description="", alias="dataProductCriticality"
+        )
+        data_product_sensitivity: Optional[DataProductSensitivity] = Field(
+            None, description="", alias="dataProductSensitivity"
+        )
+        data_product_assets_d_s_l: Optional[str] = Field(
+            None, description="", alias="dataProductAssetsDSL"
+        )
+        data_product_assets_playbook_filter: Optional[str] = Field(
+            None, description="", alias="dataProductAssetsPlaybookFilter"
+        )
+        data_contracts: Optional[list[DataContract]] = Field(
+            None, description="", alias="dataContracts"
+        )  # relationship
+        data_domain: Optional[DataDomain] = Field(
+            None, description="", alias="dataDomain"
+        )  # relationship
+        output_ports: Optional[list[Asset]] = Field(
+            None, description="", alias="outputPorts"
+        )  # relationship
+
+    attributes: "DataProduct.Attributes" = Field(
+        default_factory=lambda: DataProduct.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15439,6 +15964,18 @@ File.Attributes.update_forward_refs()
 
 
 Link.Attributes.update_forward_refs()
+
+
+DataMesh.Attributes.update_forward_refs()
+
+
+DataContract.Attributes.update_forward_refs()
+
+
+DataDomain.Attributes.update_forward_refs()
+
+
+DataProduct.Attributes.update_forward_refs()
 
 
 SQL.Attributes.update_forward_refs()
