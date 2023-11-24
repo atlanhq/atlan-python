@@ -1974,6 +1974,30 @@ class CertificateStatus(str, Enum):
     VERIFIED = "VERIFIED"
 
 
+class DataProductCriticality(str, Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
+
+class DataProductSensitivity(str, Enum):
+    PUBLIC = "Public"
+    INTERNAL = "Internal"
+    CONFIDENTIAL = "Confidential"
+
+
+class DataProductSenstivity(str, Enum):
+    PUBLIC = "Public"
+    INTERNAL = "Internal"
+    CONFIDENTIAL = "Confidential"
+
+
+class DataProductStatus(str, Enum):
+    ACTIVE = "Active"
+    SUNSET = "Sunset"
+    ARCHIVED = "Archived"
+
+
 class FileType(str, Enum):
     PDF = "pdf"
     DOC = "doc"
