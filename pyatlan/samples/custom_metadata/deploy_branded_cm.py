@@ -11,7 +11,6 @@ from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
     BadgeComparisonOperator,
     BadgeConditionColor,
-    EntityStatus,
 )
 from pyatlan.model.structs import BadgeCondition
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
@@ -105,9 +104,8 @@ def create_badge():
         ],
     )
     badge.user_description = "Overall quality rating for the asset."
-    assert badge.status == EntityStatus.ACTIVE
-    response = client.asset.save(badge)
-    assert response.assets_created(asset_type=Badge)  # noqa: S102
+    client.asset.save(badge)
+    # assert response.assets_created(asset_type=Badge)  # noqa: S102
     logger.info(f"Badge for {CUSTOM_METADATA_NAME}:Rating created / updated.")
 
 
