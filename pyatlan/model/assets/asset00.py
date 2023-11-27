@@ -6578,9 +6578,22 @@ class DataDomain(DataMesh):
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None) -> DataDomain:
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        icon: Optional[AtlanIcon] = None,
+        parent_domain: Optional[DataDomain] = None,
+        parent_domain_guid: Optional[StrictStr] = None,
+    ) -> DataDomain:
         validate_required_fields(["name"], [name])
-        return DataDomain(attributes=DataDomain.Attributes.create(name=name, icon=icon))
+        attributes = DataDomain.Attributes.create(
+            name=name,
+            icon=icon,
+            parent_domain=parent_domain,
+            parent_domain_guid=parent_domain_guid,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("DataDomain", allow_mutation=False)
 
@@ -6679,13 +6692,23 @@ class DataDomain(DataMesh):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+            cls,
+            *,
+            name: StrictStr,
+            icon: Optional[AtlanIcon] = None,
+            parent_domain: Optional[DataDomain] = None,
+            parent_domain_guid: Optional[StrictStr] = None,
         ) -> DataDomain.Attributes:
             validate_required_fields(["name"], [name])
+            # If "guid" of the parent domain is specified
+            if parent_domain_guid:
+                parent_domain = DataDomain()
+                parent_domain.guid = parent_domain_guid
             icon_str = icon.value if icon is not None else None
             camel_case_name = to_camel_case(name)
             return DataDomain.Attributes(
                 name=name,
+                parent_domain=parent_domain,
                 mesh_slug=camel_case_name,
                 mesh_abbreviation=camel_case_name,
                 qualified_name=f"default/domain/{camel_case_name}",
