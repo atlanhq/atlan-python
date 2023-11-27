@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
 from typing import Optional
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
@@ -7,7 +8,6 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fluent_search import FluentSearch
-import logging
 
 CUSTOM_METADATA_NAME = "Quality Data"
 client = AtlanClient()

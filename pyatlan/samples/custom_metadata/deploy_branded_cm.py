@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
+
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.client.atlan import AtlanClient
@@ -13,7 +15,6 @@ from pyatlan.model.enums import (
 )
 from pyatlan.model.structs import BadgeCondition
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
-import logging
 
 ENUM_NAME = "QDRating"
 CUSTOM_METADATA_NAME = "Quality Data"
@@ -106,8 +107,7 @@ def create_badge():
     badge.user_description = "Overall quality rating for the asset."
     assert badge.status == EntityStatus.ACTIVE
     response = client.asset.save(badge)
-    assets = response.assets_created(asset_type=Badge) # noqa: S101
-    assert assets
+    assert response.assets_created(asset_type=Badge)  # noqa: S102
     logger.info(f"Badge for {CUSTOM_METADATA_NAME}:Rating created / updated.")
 
 

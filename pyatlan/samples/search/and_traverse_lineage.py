@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
+
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, SigmaWorkbook
 from pyatlan.model.enums import (
@@ -9,7 +11,6 @@ from pyatlan.model.enums import (
 )
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.lineage import EntityFilter, FilterList, LineageListRequest
-import logging
 
 client = AtlanClient()
 logger = logging.getLogger(__name__)

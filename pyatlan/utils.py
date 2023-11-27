@@ -357,6 +357,8 @@ class JsonFormatter(logging.Formatter):
             "asctime": self.formatTime(record, self.datefmt),
             "name": record.name,
             "levelname": record.levelname,
-            "message": record.msg if isinstance(record.msg, dict) else record.getMessage(),
+            "message": record.msg
+            if isinstance(record.msg, dict)
+            else record.getMessage(),
         }
         return json.dumps(log_record, ensure_ascii=False)

@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
 import time
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, AtlasGlossaryTerm
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.structs import StarredDetails
-import logging
 
 client = AtlanClient()
 logger = logging.getLogger(__name__)
