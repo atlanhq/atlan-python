@@ -91,9 +91,9 @@ def _create_cm_if_not_exists() -> Optional[str]:
                 ],
             )
             try:
-                client.upsert(badge)
+                client.asset.save(badge)
                 print("Created DaaP completeness score badge.")
-            except AtlanException:
+            except Exception:
                 print("Unable to create badge over DaaP score.")
             return CustomMetadataCache.get_id_for_name(CM_DAAP)
         except ConflictError:
@@ -101,14 +101,14 @@ def _create_cm_if_not_exists() -> Optional[str]:
             # been created
             try:
                 return CustomMetadataCache.get_id_for_name(CM_DAAP)
-            except AtlanException:
+            except Exception:
                 print(
                     "Unable to look up DaaP custom metadata, even though it"
                     "should already exist."
                 )
-        except AtlanException:
+        except Exception:
             print("Unable to create DaaP custom metadata structure.")
-    except AtlanException:
+    except Exception:
         print("Unable to look up DaaP custom metadata.")
     return None
 
