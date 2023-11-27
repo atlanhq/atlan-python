@@ -6575,16 +6575,6 @@ class DataContract(DataMesh):
 class DataDomain(DataMesh):
     """Description"""
 
-    @root_validator()
-    def _set_qualified_name_fallback(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
-        return values
-
     @classmethod
     # @validate_arguments()
     @init_guid
@@ -6693,11 +6683,12 @@ class DataDomain(DataMesh):
         ) -> DataDomain.Attributes:
             validate_required_fields(["name"], [name])
             icon_str = icon.value if icon is not None else None
+            camel_case_name = to_camel_case(name)
             return DataDomain.Attributes(
                 name=name,
-                mesh_slug=to_camel_case(name),
-                mesh_abbreviation=to_camel_case(name),
-                qualified_name=next_id(),
+                mesh_slug=camel_case_name,
+                mesh_abbreviation=camel_case_name,
+                qualified_name=f"default/domain/{camel_case_name}",
                 icon=icon_str,
             )
 
