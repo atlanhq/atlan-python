@@ -6595,6 +6595,41 @@ class DataDomain(DataMesh):
         )
         return cls(attributes=attributes)
 
+    def trim_to_required(self) -> DataDomain:
+        return self.create_for_modification(
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
+            parent_domain_guid=self.parent_domain and self.parent_domain.guid or "",
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        parent_domain: Optional[DataDomain] = None,
+        parent_domain_guid: Optional[StrictStr] = None,
+    ) -> SelfAsset:
+        validate_required_fields(["name", "qualified_name"], [name, qualified_name])
+        # Split the data domain qualified_name to extract data mesh info
+        fields = qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
+        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
+        # If "guid" of the parent domain is specified
+        if parent_domain_guid:
+            parent_domain = DataDomain()
+            parent_domain.guid = parent_domain_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                parent_domain=parent_domain,
+                mesh_slug=mesh_slug,
+                mesh_abbreviation=mesh_abbreviation,
+            )
+        )
+
     type_name: str = Field("DataDomain", allow_mutation=False)
 
     @validator("type_name")
