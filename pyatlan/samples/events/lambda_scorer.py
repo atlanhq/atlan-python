@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
 from typing import List, Optional
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.errors import ConflictError, NotFoundError
+from pyatlan.errors import AtlanError, ConflictError, NotFoundError
 from pyatlan.events.atlan_event_handler import (
     AtlanEventHandler,
     get_current_view_of_asset,
@@ -23,6 +24,8 @@ from pyatlan.model.enums import (
 from pyatlan.model.events import AtlanEvent, AtlanEventPayload
 from pyatlan.model.structs import BadgeCondition
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
+
+logger = logging.getLogger(__name__)
 
 CM_DAAP = "DaaP"
 CM_ATTR_DAAP_SCORE = "Score"
@@ -67,7 +70,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
             ]
             cm_def.options = CustomMetadataDef.Options.with_logo_as_emoji("🔖")
             client.create_typedef(cm_def)
-            print("Created DaaP custom metadata structure.")
+            logger.info("Created DaaP custom metadata structure.")
             badge = Badge.create(
                 name=CM_ATTR_DAAP_SCORE,
                 cm_name=CM_DAAP,
@@ -92,24 +95,25 @@ def _create_cm_if_not_exists() -> Optional[str]:
             )
             try:
                 client.asset.save(badge)
-                print("Created DaaP completeness score badge.")
-            except Exception:
-                print("Unable to create badge over DaaP score.")
-            return CustomMetadataCache.get_id_for_name(CM_DAAP)
+                logger.info("Created DaaP completeness score badge.")
+                return CustomMetadataCache.get_id_for_name(CM_DAAP)
+            except AtlanError:
+                logger.info("Unable to create badge over DaaP score.")
+            return None
         except ConflictError:
             # Handle cross-thread race condition that the typedef has since
             # been created
             try:
                 return CustomMetadataCache.get_id_for_name(CM_DAAP)
-            except Exception:
-                print(
+            except NotFoundError:
+                logger.error(
                     "Unable to look up DaaP custom metadata, even though it"
                     "should already exist."
                 )
-        except Exception:
-            print("Unable to create DaaP custom metadata structure.")
-    except Exception:
-        print("Unable to look up DaaP custom metadata.")
+        except AtlanError:
+            logger.error("Unable to create DaaP custom metadata structure.")
+    except AtlanError:
+        logger.error("Unable to look up DaaP custom metadata.")
     return None
 
 
@@ -140,10 +144,14 @@ class LambdaScorer(AtlanEventHandler):
         """
 
         search_attrs = SCORED_ATTRS
-        search_attrs.extend(
-            CustomMetadataCache.get_attributes_for_search_results(CM_DAAP)
+        custom_metadata_attrs = CustomMetadataCache.get_attributes_for_search_results(
+            CM_DAAP
         )
-        print(f"Searching with: {search_attrs}")
+
+        if custom_metadata_attrs is not None:
+            search_attrs.extend(custom_metadata_attrs)
+
+        logger.info(f"Searching with: {search_attrs}")
         return get_current_view_of_asset(
             self.client,
             from_event,
@@ -163,13 +171,15 @@ class LambdaScorer(AtlanEventHandler):
             processing
         """
 
-        score_original = -1.0
-        score_modified = -1.0
+        score_original: Optional[float] = -1.0
+        score_modified: Optional[float] = -1.0
         if cm_original := original.get_custom_metadata(CM_DAAP):
             score_original = cm_original.get(CM_ATTR_DAAP_SCORE)
         if cm_modified := modified.get_custom_metadata(CM_DAAP):
             score_modified = cm_modified.get(CM_ATTR_DAAP_SCORE)
-        print(f"Existing score = {score_original}, new score = {score_modified}")
+        logger.info(
+            "Existing score = %s, new score = %s", score_original, score_modified
+        )
         return score_original != score_modified
 
     def calculate_changes(self, asset: Asset) -> List[Asset]:

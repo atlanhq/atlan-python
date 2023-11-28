@@ -36,9 +36,9 @@ def find_asset(
     connections = client.asset.find_connections_by_name(
         name=connection_name, connector_type=connector_type
     )
-    qualified_names = []
-    for connection in connections:
-        qualified_names.append(f"{connection.qualified_name}/{asset_name}")
+    qualified_names = [
+        f"{connection.qualified_name}/{asset_name}" for connection in connections
+    ]
     search_request = (
         FluentSearch(_includes_on_results=attributes).where(
             Asset.QUALIFIED_NAME.within(qualified_names)
@@ -55,7 +55,7 @@ def update_custom_metadata(
     passed: int = 0,
     failed: int = 0,
     reports: Optional[list[str]] = None,
-) -> Asset:
+) -> Optional[Asset]:
     """
     Update the custom metadata on the provided asset.
 
@@ -88,7 +88,7 @@ def main():
             CUSTOM_METADATA_NAME
         ),
     ):
-        logger.info(f"Found asset: {asset}")
+        logger.info("Found asset: %s", asset)
         updated = update_custom_metadata(
             asset=asset,
             rating="OK",
@@ -102,7 +102,7 @@ def main():
         result = client.asset.get_by_guid(
             guid=updated.guid, asset_type=type(updated), ignore_relationships=True
         )
-        logger.info(f"Asset's custom metadata was updated: {result}")
+        logger.info("Asset's custom metadata was updated: %s", result)
     else:
         logger.warn(
             "Unable to find asset: (development)/RAW/WIDEWORLDIMPORTERS_PURCHASING/SUPPLIERS"

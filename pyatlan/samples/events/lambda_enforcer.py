@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
 from typing import List, Optional
 
 from pyatlan.client.atlan import AtlanClient
@@ -28,6 +29,8 @@ ENFORCEMENT_MESSAGE = (
     "To be verified, an asset must have a description, at least one owner, "
     "and lineage."
 )
+logger = logging.getLogger(__name__)
+
 client = AtlanClient()
 
 
@@ -66,14 +69,15 @@ class LambdaEnforcer(AtlanEventHandler):
                 trimmed.certificate_status_message = ENFORCEMENT_MESSAGE
                 return [trimmed]
             else:
-                print(
-                    f"Asset has all required information present to be "
-                    f"verified, no enforcement required: {asset.qualified_name}"
+                logger.info(
+                    "Asset has all required information present to be "
+                    "verified, no enforcement required: %s",
+                    asset.qualified_name,
                 )
         else:
-            print(
-                f"Asset is no longer verified, no enforcement action to "
-                f"consider: {asset.qualified_name}"
+            logger.info(
+                "Asset is no longer verified, no enforcement action to " "consider: %s",
+                asset.qualified_name,
             )
         return []
 

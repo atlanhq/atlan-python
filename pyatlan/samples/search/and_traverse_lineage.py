@@ -2,6 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 import logging
 
+from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, SigmaWorkbook
 from pyatlan.model.enums import (
@@ -16,7 +17,7 @@ client = AtlanClient()
 logger = logging.getLogger(__name__)
 
 
-def find_all(asset_type: type) -> client.search:
+def find_all(asset_type: type) -> IndexSearchResults:
     """
     This query will find all assets of the specified type
     that are active (not archived or soft-deleted).
@@ -63,10 +64,11 @@ def upstream_certified_sources(guid: str) -> list[Asset]:
         ],
     )
     response = client.asset.get_lineage_list(request)
-    verified_assets: list[Asset] = []
-    for asset in response:
-        if asset.type_name in {"Table", "View", "MaterialisedView"}:
-            verified_assets.append(asset)
+    verified_assets: list[Asset] = [
+        asset
+        for asset in response
+        if asset.type_name in {"Table", "View", "MaterialisedView"}
+    ]
     return verified_assets
 
 
@@ -74,19 +76,21 @@ def main():
     results = find_all(SigmaWorkbook)
     for workbook in results:
         if isinstance(workbook, SigmaWorkbook):
-            verified_sources = upstream_certified_sources(workbook.guid)
-            if verified_sources:
-                logger.info(
-                    f"Workbook '{workbook.name}' ({workbook.guid}) "
-                    f"has upstream verified sources: "
-                )
-                for asset in verified_sources:
-                    logger.info(f" . {asset.type_name}: {asset.qualified_name}")
-            else:
-                logger.info(
-                    f"Workbook '{workbook.name}' ({workbook.guid}) does "
-                    f"NOT have any upstream verified sources."
-                )
+            if verified_sources := upstream_certified_sources(workbook.guid):
+                if verified_sources:
+                    logger.info(
+                        "Workbook '%s' (%s) has upstream verified sources: ",
+                        workbook.name,
+                        workbook.guid,
+                    )
+                    for asset in verified_sources:
+                        logger.info(" . %s: %s", asset.type_name, asset.qualified_name)
+                else:
+                    logger.info(
+                        "Workbook '%s' (%s) does NOT have any upstream verified sources.",
+                        workbook.name,
+                        workbook.guid,
+                    )
 
 
 if __name__ == "__main__":
