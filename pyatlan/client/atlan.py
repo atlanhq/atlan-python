@@ -86,6 +86,7 @@ DEFAULT_RETRY = Retry(
     backoff_factor=1,
     status_forcelist=[403, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
+    raise_on_status=False,
 )
 
 VERSION = read_text("pyatlan", "version.txt").strip()
