@@ -443,6 +443,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">contextvars</span> <span class="kn">import</span> <span class="n">ContextVar</span>
 <span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">read_text</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
@@ -496,11 +497,24 @@
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">TypeDef</span><span class="p">,</span> <span class="n">TypeDefResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.user</span> <span class="kn">import</span> <span class="n">AtlanUser</span><span class="p">,</span> <span class="n">UserMinimalResponse</span><span class="p">,</span> <span class="n">UserResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.multipart_data_generator</span> <span class="kn">import</span> <span class="n">MultipartDataGenerator</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">API</span><span class="p">,</span> <span class="n">AuthorizationFilter</span><span class="p">,</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">API</span><span class="p">,</span> <span class="n">AuthorizationFilter</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="p">,</span> <span class="n">RequestIdAdapter</span>
+
+<span class="n">request_id_var</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;request_id&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="n">SERVICE_ACCOUNT_</span> <span class="o">=</span> <span class="s2">&quot;service-account-&quot;</span>
-<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">LOGGER</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">AuthorizationFilter</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">get_adapter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">LoggerAdapter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function creates a LoggerAdapter that will provide the requestid from the ContextVar request_id_var</span>
+<span class="sd">    :returns: the LogAdapter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">AuthorizationFilter</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">RequestIdAdapter</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">contextvar</span><span class="o">=</span><span class="n">request_id_var</span><span class="p">)</span>
+
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_adapter</span><span class="p">()</span>
 
 <span class="n">DEFAULT_RETRY</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
     <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
@@ -511,6 +525,11 @@
 <span class="p">)</span>
 
 <span class="n">VERSION</span> <span class="o">=</span> <span class="n">read_text</span><span class="p">(</span><span class="s2">&quot;pyatlan&quot;</span><span class="p">,</span> <span class="s2">&quot;version.txt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">log_response</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HTTP Status: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;URL: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_session</span><span class="p">():</span>
@@ -526,6 +545,7 @@
             <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Atlan-PythonSDK/</span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">}</span>
     <span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">log_response</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">session</span>
 
 
@@ -644,79 +664,83 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_client</span>
 
     <span class="k">def</span> <span class="nf">_call_api_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">binary_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">binary_data</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-                <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">binary_data</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HTTP Status: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">api</span><span class="o">.</span><span class="n">expected_status</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">response</span><span class="o">.</span><span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span>
-                    <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span>
-                    <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
-                    <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span>
-                <span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s2">&quot;&lt;== __call_api(</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">), result = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="nb">vars</span><span class="p">(</span><span class="n">api</span><span class="p">),</span>
-                        <span class="n">params</span><span class="p">,</span>
-                        <span class="n">response</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-        <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">SERVICE_UNAVAILABLE</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;Atlas Service unavailable. HTTP Status: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">SERVICE_UNAVAILABLE</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">request_id_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;X-Atlan-Request-Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request_id_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">binary_data</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                    <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">binary_data</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HTTP Status: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">api</span><span class="o">.</span><span class="n">expected_status</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span>
+                        <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span>
+                        <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span>
+                    <span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;&lt;== __call_api(</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">), result = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="nb">vars</span><span class="p">(</span><span class="n">api</span><span class="p">),</span>
+                            <span class="n">params</span><span class="p">,</span>
+                            <span class="n">response</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+                    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">SERVICE_UNAVAILABLE</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Atlas Service unavailable. HTTP Status: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">SERVICE_UNAVAILABLE</span><span class="p">,</span>
+                <span class="p">)</span>
 
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
-                <span class="n">error_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="n">error_code</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                <span class="n">error_message</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">error_code</span> <span class="ow">and</span> <span class="n">error_message</span><span class="p">:</span>
-                    <span class="n">error</span> <span class="o">=</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ERROR_PASSTHROUGH</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+                    <span class="n">error_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                    <span class="n">error_code</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="mi">0</span>
                     <span class="p">)</span>
-                    <span class="k">raise</span> <span class="n">error</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span><span class="n">error_code</span><span class="p">,</span> <span class="n">error_message</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">AtlanError</span><span class="p">(</span>
-                <span class="n">SimpleNamespace</span><span class="p">(</span>
-                    <span class="n">http_error_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
-                    <span class="n">error_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;ATLAN-PYTHON-</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">-000&quot;</span><span class="p">,</span>
-                    <span class="n">error_message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-                    <span class="n">user_action</span><span class="o">=</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">ERROR_PASSTHROUGH</span><span class="o">.</span><span class="n">user_action</span><span class="p">,</span>
+                    <span class="n">error_message</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                    <span class="p">)</span> <span class="ow">or</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">error_code</span> <span class="ow">and</span> <span class="n">error_message</span><span class="p">:</span>
+                        <span class="n">error</span> <span class="o">=</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ERROR_PASSTHROUGH</span>
+                        <span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">error</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span><span class="n">error_code</span><span class="p">,</span> <span class="n">error_message</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">AtlanError</span><span class="p">(</span>
+                    <span class="n">SimpleNamespace</span><span class="p">(</span>
+                        <span class="n">http_error_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                        <span class="n">error_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;ATLAN-PYTHON-</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">-000&quot;</span><span class="p">,</span>
+                        <span class="n">error_message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="n">user_action</span><span class="o">=</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">ERROR_PASSTHROUGH</span><span class="o">.</span><span class="n">user_action</span><span class="p">,</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">request_id_var</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_call_api</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_path</span><span class="p">(</span><span class="n">api</span><span class="p">)</span>
-        <span class="n">params</span><span class="p">,</span> <span class="n">request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
-            <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span>
-        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------------&quot;</span><span class="p">)</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Call         : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Content-type_ : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span><span class="p">)</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Accept       : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span><span class="p">)</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Request ID   : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api_internal</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">API</span><span class="p">):</span>
@@ -731,7 +755,7 @@
         <span class="n">post_data</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">get_post_data</span><span class="p">()</span>
         <span class="n">api</span><span class="o">.</span><span class="n">produces</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;multipart/form-data; boundary=</span><span class="si">{</span><span class="n">generator</span><span class="o">.</span><span class="n">boundary</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_path</span><span class="p">(</span><span class="n">api</span><span class="p">)</span>
-        <span class="n">params</span><span class="p">,</span> <span class="n">request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_params</span><span class="p">(</span>
             <span class="n">api</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">LOGGER</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
@@ -739,17 +763,14 @@
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Call         : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Content-type_ : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span><span class="p">)</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Accept       : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span><span class="p">)</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Request ID   : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api_internal</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">binary_data</span><span class="o">=</span><span class="n">post_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_params</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">API</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_params</span><span class="p">)</span>
-        <span class="n">request_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;Accept&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span>
-        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;X-Atlan-Request-Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request_id</span>
         <span class="k">if</span> <span class="n">query_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query_params</span>
         <span class="k">if</span> <span class="n">request_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -759,7 +780,7 @@
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">params</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">request_obj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">request_id</span>
+        <span class="k">return</span> <span class="n">params</span>
 
 <div class="viewcode-block" id="AtlanClient.upload_image">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upload_image">[docs]</a>
