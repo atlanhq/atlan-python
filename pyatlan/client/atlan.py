@@ -8,6 +8,7 @@ import copy
 import json
 import logging
 import uuid
+from contextvars import ContextVar
 from importlib.resources import read_text
 from types import SimpleNamespace
 from typing import ClassVar, Generator, Literal, Optional, Type, Union
@@ -61,11 +62,24 @@ from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import API, AuthorizationFilter, HTTPStatus
+from pyatlan.utils import API, AuthorizationFilter, HTTPStatus, RequestIdAdapter
+
+request_id_var = ContextVar("request_id", default=None)
 
 SERVICE_ACCOUNT_ = "service-account-"
-LOGGER = logging.getLogger(__name__)
-LOGGER.addFilter(AuthorizationFilter())
+
+
+def get_adapter() -> logging.LoggerAdapter:
+    """
+    This function creates a LoggerAdapter that will provide the requestid from the ContextVar request_id_var
+    :returns: the LogAdapter
+    """
+    logger = logging.getLogger(__name__)
+    logger.addFilter(AuthorizationFilter())
+    return RequestIdAdapter(logger=logger, contextvar=request_id_var)
+
+
+LOGGER = get_adapter()
 
 DEFAULT_RETRY = Retry(
     total=3,
@@ -75,6 +89,11 @@ DEFAULT_RETRY = Retry(
 )
 
 VERSION = read_text("pyatlan", "version.txt").strip()
+
+
+def log_response(response, *args, **kwargs):
+    LOGGER.debug("HTTP Status: %s", response.status_code)
+    LOGGER.debug("URL: %s", response.request.url)
 
 
 def get_session():
@@ -90,6 +109,7 @@ def get_session():
             "User-Agent": f"Atlan-PythonSDK/{VERSION}",
         }
     )
+    session.hooks["response"].append(log_response)
     return session
 
 
@@ -200,79 +220,83 @@ class AtlanClient(BaseSettings):
         return self._user_client
 
     def _call_api_internal(self, api, path, params, binary_data=None):
-        if binary_data:
-            response = self._session.request(
-                api.method.value, path, data=binary_data, **params
-            )
-        else:
-            response = self._session.request(api.method.value, path, **params)
-        if response is not None:
-            LOGGER.debug("HTTP Status: %s", response.status_code)
-        if response is None:
-            return None
-        if response.status_code == api.expected_status:
-            try:
-                if (
-                    response.content is None
-                    or response.content == "null"
-                    or len(response.content) == 0
-                    or response.status_code == HTTPStatus.NO_CONTENT
-                ):
-                    return None
-                if LOGGER.isEnabledFor(logging.DEBUG):
-                    LOGGER.debug(
-                        "<== __call_api(%s,%s), result = %s",
-                        vars(api),
-                        params,
-                        response,
-                    )
-                    LOGGER.debug(response.json())
-                return response.json()
-            except requests.exceptions.JSONDecodeError as e:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    response.text, response.status_code, str(e)
-                ) from e
-        elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
-            LOGGER.error(
-                "Atlas Service unavailable. HTTP Status: %s",
-                HTTPStatus.SERVICE_UNAVAILABLE,
-            )
+        token = request_id_var.set(str(uuid.uuid4()))
+        try:
+            params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
+            if binary_data:
+                response = self._session.request(
+                    api.method.value, path, data=binary_data, **params
+                )
+            else:
+                response = self._session.request(api.method.value, path, **params)
+            if response is not None:
+                LOGGER.debug("HTTP Status: %s", response.status_code)
+            if response is None:
+                return None
+            if response.status_code == api.expected_status:
+                try:
+                    if (
+                        response.content is None
+                        or response.content == "null"
+                        or len(response.content) == 0
+                        or response.status_code == HTTPStatus.NO_CONTENT
+                    ):
+                        return None
+                    if LOGGER.isEnabledFor(logging.DEBUG):
+                        LOGGER.debug(
+                            "<== __call_api(%s,%s), result = %s",
+                            vars(api),
+                            params,
+                            response,
+                        )
+                        LOGGER.debug(response.json())
+                    return response.json()
+                except requests.exceptions.JSONDecodeError as e:
+                    raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                        response.text, response.status_code, str(e)
+                    ) from e
+            elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
+                LOGGER.error(
+                    "Atlas Service unavailable. HTTP Status: %s",
+                    HTTPStatus.SERVICE_UNAVAILABLE,
+                )
 
-            return None
-        else:
-            with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
-                error_info = json.loads(response.text)
-                error_code = error_info.get("errorCode", 0) or error_info.get("code", 0)
-                error_message = error_info.get("errorMessage", "") or error_info.get(
-                    "message", ""
-                )
-                if error_code and error_message:
-                    error = ERROR_CODE_FOR_HTTP_STATUS.get(
-                        response.status_code, ErrorCode.ERROR_PASSTHROUGH
+                return None
+            else:
+                with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
+                    error_info = json.loads(response.text)
+                    error_code = error_info.get("errorCode", 0) or error_info.get(
+                        "code", 0
                     )
-                    raise error.exception_with_parameters(error_code, error_message)
-            raise AtlanError(
-                SimpleNamespace(
-                    http_error_code=response.status_code,
-                    error_id=f"ATLAN-PYTHON-{response.status_code}-000",
-                    error_message="",
-                    user_action=ErrorCode.ERROR_PASSTHROUGH.user_action,
+                    error_message = error_info.get(
+                        "errorMessage", ""
+                    ) or error_info.get("message", "")
+                    if error_code and error_message:
+                        error = ERROR_CODE_FOR_HTTP_STATUS.get(
+                            response.status_code, ErrorCode.ERROR_PASSTHROUGH
+                        )
+                        raise error.exception_with_parameters(error_code, error_message)
+                raise AtlanError(
+                    SimpleNamespace(
+                        http_error_code=response.status_code,
+                        error_id=f"ATLAN-PYTHON-{response.status_code}-000",
+                        error_message="",
+                        user_action=ErrorCode.ERROR_PASSTHROUGH.user_action,
+                    )
                 )
-            )
+        finally:
+            request_id_var.reset(token)
 
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
     ):
         path = self._create_path(api)
-        params, request_id = self._create_params(
-            api, query_params, request_obj, exclude_unset
-        )
+        params = self._create_params(api, query_params, request_obj, exclude_unset)
         if LOGGER.isEnabledFor(logging.DEBUG):
             LOGGER.debug("------------------------------------------------------")
             LOGGER.debug("Call         : %s %s", api.method, path)
             LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
-            LOGGER.debug("Request ID   : %s", request_id)
         return self._call_api_internal(api, path, params)
 
     def _create_path(self, api: API):
@@ -287,7 +311,7 @@ class AtlanClient(BaseSettings):
         post_data = generator.get_post_data()
         api.produces = f"multipart/form-data; boundary={generator.boundary}"
         path = self._create_path(api)
-        params, request_id = self._create_params(
+        params = self._create_params(
             api, query_params=None, request_obj=None, exclude_unset=True
         )
         if LOGGER.isEnabledFor(logging.DEBUG):
@@ -295,17 +319,14 @@ class AtlanClient(BaseSettings):
             LOGGER.debug("Call         : %s %s", api.method, path)
             LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
-            LOGGER.debug("Request ID   : %s", request_id)
         return self._call_api_internal(api, path, params, binary_data=post_data)
 
     def _create_params(
         self, api: API, query_params, request_obj, exclude_unset: bool = True
     ):
         params = copy.deepcopy(self._request_params)
-        request_id = str(uuid.uuid4())
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
-        params["headers"]["X-Atlan-Request-Id"] = request_id
         if query_params is not None:
             params["params"] = query_params
         if request_obj is not None:
@@ -315,7 +336,7 @@ class AtlanClient(BaseSettings):
                 )
             else:
                 params["data"] = json.dumps(request_obj)
-        return params, request_id
+        return params
 
     def upload_image(self, file, filename: str) -> AtlanImage:
         """

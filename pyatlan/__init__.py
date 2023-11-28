@@ -4,14 +4,11 @@ import logging.config
 import os
 from logging import NullHandler
 
-# r_log = logging.getLogger('urllib3')
-# r_log.setLevel(logging.DEBUG)
-#
-# # logging from urllib3 to console
-# ch = logging.FileHandler("/tmp/requests.log")
-# ch.setLevel(logging.DEBUG)
-# r_log.addHandler(ch)
+from pyatlan.utils import REQUEST_ID_FILTER
 
-logging.getLogger(__name__).addHandler(NullHandler())
+LOGGER = logging.getLogger(__name__)
+LOGGER.addHandler(NullHandler())
 if os.path.exists("logging.conf"):
     logging.config.fileConfig("logging.conf")
+for handler in LOGGER.handlers:
+    handler.addFilter(REQUEST_ID_FILTER)
