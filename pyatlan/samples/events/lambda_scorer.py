@@ -69,7 +69,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
                 )
             ]
             cm_def.options = CustomMetadataDef.Options.with_logo_as_emoji("🔖")
-            client.create_typedef(cm_def)
+            client.typedef.create(cm_def)
             logger.info("Created DaaP custom metadata structure.")
             badge = Badge.create(
                 name=CM_ATTR_DAAP_SCORE,
@@ -209,7 +209,7 @@ class LambdaScorer(AtlanEventHandler):
             s_readme = 0
             readme = asset.readme
             if readme and readme.guid:
-                readme = client.get_asset_by_guid(readme.guid, asset_type=Readme)
+                readme = client.asset.get_by_guid(readme.guid, asset_type=Readme)
                 if description := readme.description:
                     if len(description) > 1000:
                         s_readme = 20

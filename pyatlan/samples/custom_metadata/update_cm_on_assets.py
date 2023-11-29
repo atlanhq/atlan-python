@@ -104,7 +104,7 @@ def main():
         )
         logger.info("Asset's custom metadata was updated: %s", result)
     else:
-        logger.warn(
+        logger.warning(
             "Unable to find asset: (development)/RAW/WIDEWORLDIMPORTERS_PURCHASING/SUPPLIERS"
         )
 

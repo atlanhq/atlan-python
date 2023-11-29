@@ -77,20 +77,19 @@ def main():
     for workbook in results:
         if isinstance(workbook, SigmaWorkbook):
             if verified_sources := upstream_certified_sources(workbook.guid):
-                if verified_sources:
-                    logger.info(
-                        "Workbook '%s' (%s) has upstream verified sources: ",
-                        workbook.name,
-                        workbook.guid,
-                    )
-                    for asset in verified_sources:
-                        logger.info(" . %s: %s", asset.type_name, asset.qualified_name)
-                else:
-                    logger.info(
-                        "Workbook '%s' (%s) does NOT have any upstream verified sources.",
-                        workbook.name,
-                        workbook.guid,
-                    )
+                logger.info(
+                    "Workbook '%s' (%s) has upstream verified sources: ",
+                    workbook.name,
+                    workbook.guid,
+                )
+                for asset in verified_sources:
+                    logger.info(" . %s: %s", asset.type_name, asset.qualified_name)
+            else:
+                logger.info(
+                    "Workbook '%s' (%s) does NOT have any upstream verified sources.",
+                    workbook.name,
+                    workbook.guid,
+                )
 
 
 if __name__ == "__main__":

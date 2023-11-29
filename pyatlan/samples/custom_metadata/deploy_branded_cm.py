@@ -32,7 +32,6 @@ def create_custom_metadata_options():
 
     enum_def = EnumDef.create(name=ENUM_NAME, values=["Poor", "OK", "Great"])
     client.typedef.create(enum_def)
-    # assert response  # noqa: S101
     logger.info(f"{ENUM_NAME} enumeration created.")
 
 
@@ -72,7 +71,6 @@ def create_custom_metadata_structure():
             url="http://assets.atlan.com/assets/atlan-a-logo-blue-background.png"
         )
         client.typedef.create(cm_def)
-        # assert result  # noqa: S101
         logger.info("%s custom metadata structure created.", CUSTOM_METADATA_NAME)
 
 
@@ -105,7 +103,6 @@ def create_badge():
     )
     badge.user_description = "Overall quality rating for the asset."
     client.asset.save(badge)
-    # assert response.assets_created(asset_type=Badge)  # noqa: S102
     logger.info("Badge for %s:Rating created / updated.", CUSTOM_METADATA_NAME)
 
 
