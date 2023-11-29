@@ -1,20 +1,25 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+from __future__ import annotations
+
 import datetime
 import enum
 import json
 import logging
 import re
 import time
+from contextvars import ContextVar
 from enum import Enum
 from functools import reduce, wraps
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 
 from pydantic import HttpUrl
 from pydantic.dataclasses import dataclass
 
 from pyatlan.errors import ErrorCode
+
+REQUESTID = "requestid"
 
 APPLICATION_JSON = "application/json"
 APPLICATION_OCTET_STREAM = "application/octet-stream"
@@ -367,3 +372,67 @@ class JsonFormatter(logging.Formatter):
             else record.getMessage(),
         }
         return json.dumps(log_record, ensure_ascii=False)
+
+
+class RequestIdFilter(logging.Filter):
+    """
+    A filter that will add requestid to the LogRecord if it is not already present. This is to support adding
+    the requestid to the logging formatter
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if hasattr(record, REQUESTID):
+            return True
+        record.requestid = None
+        return True
+
+
+REQUEST_ID_FILTER = RequestIdFilter()
+
+
+class ContextVarWrapper(Mapping):
+    """
+    This class implements the Mapping protocol on a ContextVar. This allows 'extra' information needed for a
+    LogAdaptor to be obtained from a ContextVar.
+    """
+
+    def __init__(self, contextvar: ContextVar, key_name: str):
+        """
+        Create the ContextVarWrapper
+        :param contextvar: the ContextVar that will provide the data
+        :param key_name: the name that should be used to obtain a value from the contextvar
+        """
+        self.contextvar = contextvar
+        self.key_name = key_name
+
+    def __getitem__(self, item):
+        if item == self.key_name:
+            return self.contextvar.get()
+        else:
+            raise KeyError(f"Key must by '{self.key_name}' but was {item}")
+
+    def __iter__(self):
+        yield self.contextvar.get()
+
+    def __len__(self):
+        return 1
+
+
+class RequestIdAdapter(logging.LoggerAdapter):
+    """
+    This is a LoggerAdapter that can be used to provide a reqquestid from a ContextVar
+    """
+
+    def __init__(self, logger: logging.Logger, contextvar: ContextVar):
+        """
+        Create the LoggerAdapter the will get the value to be used for 'requestid'  from the given ContextVar
+        :param logger: the Logger to wrap
+        :param contextvar: the ContextVar from which to obtain the value to be used for 'requestid'
+
+        """
+        super().__init__(
+            logger, ContextVarWrapper(contextvar=contextvar, key_name=REQUESTID)
+        )
+
+    def process(self, msg, kwargs):
+        return f"[{self.extra['requestid']}] {msg}", kwargs
