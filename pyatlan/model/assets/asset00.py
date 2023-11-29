@@ -6760,6 +6760,65 @@ class DataDomain(DataMesh):
 class DataProduct(DataMesh):
     """Description"""
 
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        assets_dsl: StrictStr,
+        icon: Optional[AtlanIcon] = None,
+        domain: Optional[DataDomain] = None,
+        domain_guid: Optional[StrictStr] = None,
+    ) -> DataProduct:
+        validate_required_fields(["name", "assets_dsl"], [name, assets_dsl])
+        attributes = DataProduct.Attributes.create(
+            name=name,
+            assets_dsl=assets_dsl,
+            icon=icon,
+            domain=domain,
+            domain_guid=domain_guid,
+        )
+        return cls(attributes=attributes)
+
+    def trim_to_required(self) -> DataProduct:
+        if self.data_domain is None or not self.data_domain.guid:
+            raise ValueError("domain.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
+            domain_guid=self.data_domain.guid,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        domain_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "domain_guid"],
+            [name, qualified_name, domain_guid],
+        )
+        # Split the data domain qualified_name to extract data mesh info
+        fields = qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
+        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
+        domain = DataDomain()
+        domain.guid = domain_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                data_domain=domain,
+                mesh_slug=mesh_slug,
+                mesh_abbreviation=mesh_abbreviation,
+            )
+        )
+
     type_name: str = Field("DataProduct", allow_mutation=False)
 
     @validator("type_name")
@@ -6977,6 +7036,38 @@ class DataProduct(DataMesh):
         output_ports: Optional[list[Asset]] = Field(
             None, description="", alias="outputPorts"
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: StrictStr,
+            assets_dsl: StrictStr,
+            icon: Optional[AtlanIcon] = None,
+            domain: Optional[DataDomain] = None,
+            domain_guid: Optional[StrictStr] = None,
+        ) -> DataDomain.Attributes:
+            validate_required_fields(["name", "assets_dsl"], [name, assets_dsl])
+            validate_single_required_field(
+                ["domain", "domain_guid"],
+                [domain, domain_guid],
+            )
+            # If "guid" of the domain is specified
+            if domain_guid:
+                domain = DataDomain()
+                domain.guid = domain_guid
+            icon_str = icon.value if icon is not None else None
+            camel_case_name = to_camel_case(name)
+            return DataProduct.Attributes(
+                name=name,
+                data_product_assets_d_s_l=assets_dsl,
+                data_domain=domain,
+                mesh_slug=camel_case_name,
+                mesh_abbreviation=camel_case_name,
+                qualified_name=f"default/product/{camel_case_name}",
+                icon=icon_str,
+            )
 
     attributes: "DataProduct.Attributes" = Field(
         default_factory=lambda: DataProduct.Attributes(),
