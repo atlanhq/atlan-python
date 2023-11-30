@@ -6604,9 +6604,6 @@ class DataDomain(DataMesh):
         validate_required_fields(["name", "qualified_name"], [name, qualified_name])
         # Split the data domain qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        # for domain and subdomain
-        if len(fields) not in (3, 5):
-            raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
         mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
@@ -6786,8 +6783,6 @@ class DataProduct(DataMesh):
         )
         # Split the data product qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
         mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(

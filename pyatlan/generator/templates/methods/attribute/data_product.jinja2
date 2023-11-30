@@ -1,0 +1,31 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: StrictStr,
+            assets_dsl: StrictStr,
+            icon: Optional[AtlanIcon] = None,
+            domain: Optional[DataDomain] = None,
+            domain_qualified_name: Optional[StrictStr] = None,
+        ) -> DataDomain.Attributes:
+            validate_required_fields(["name"], [name])
+            validate_single_required_field(
+                ["domain", "domain_qualified_name"],
+                [domain, domain_qualified_name],
+            )
+            if domain_qualified_name:
+                domain = DataDomain()
+                domain.unique_attributes = {"qualifiedName": domain_qualified_name}
+            icon_str = icon.value if icon is not None else None
+            camel_case_name = to_camel_case(name)
+            return DataProduct.Attributes(
+                name=name,
+                data_product_assets_d_s_l=assets_dsl,
+                data_domain=domain,
+                mesh_slug=camel_case_name,
+                mesh_abbreviation=camel_case_name,
+                qualified_name=f"default/product/{camel_case_name}",
+                icon=icon_str,
+            )

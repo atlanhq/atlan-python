@@ -31,6 +31,9 @@ from pyatlan.model.enums import (
     AuthPolicyResourceCategory,
     AuthPolicyType,
     CertificateStatus,
+    DataProductCriticality,
+    DataProductSensitivity,
+    DataProductStatus,
     DataAction,
     EntityStatus,
     FileType,
@@ -64,6 +67,7 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 from pyatlan.model.internal import AtlasServer, Internal
+from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.structs import (
     AuthPolicyCondition,
     AuthPolicyValiditySchedule,
@@ -82,4 +86,10 @@ from pyatlan.model.structs import (
     SourceTagAttribute,
     StarredDetails,
 )
-from pyatlan.utils import init_guid, next_id, move_struct, validate_required_fields
+from pyatlan.utils import (
+    init_guid,
+    move_struct,
+    next_id,
+    to_camel_case,
+    validate_required_fields,
+)

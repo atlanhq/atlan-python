@@ -1986,12 +1986,6 @@ class DataProductSensitivity(str, Enum):
     CONFIDENTIAL = "Confidential"
 
 
-class DataProductSenstivity(str, Enum):
-    PUBLIC = "Public"
-    INTERNAL = "Internal"
-    CONFIDENTIAL = "Confidential"
-
-
 class DataProductStatus(str, Enum):
     ACTIVE = "Active"
     SUNSET = "Sunset"
