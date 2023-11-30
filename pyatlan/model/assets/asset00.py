@@ -9,7 +9,6 @@ import sys
 import uuid
 from datetime import datetime
 from io import StringIO
-from pyatlan.model.search import IndexSearchRequest
 from typing import TYPE_CHECKING, Any, ClassVar, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
@@ -44,6 +43,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.structs import (
     ColumnValueFrequencyMap,
     DbtMetricFilter,
@@ -6727,7 +6727,9 @@ class DataDomain(DataMesh):
             # If "qualified name" of the parent domain is specified
             if parent_domain_qualified_name:
                 parent_domain = DataDomain()
-                parent_domain.unique_attributes = {"qualifiedName": parent_domain_qualified_name}
+                parent_domain.unique_attributes = {
+                    "qualifiedName": parent_domain_qualified_name
+                }
                 qualified_name = f"{parent_domain_qualified_name}/domain/{mesh_name}"
             icon_str = icon.value if icon is not None else None
             return DataDomain.Attributes(

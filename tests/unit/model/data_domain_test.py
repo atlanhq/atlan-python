@@ -7,6 +7,7 @@ from tests.unit.model.constants import (
     DATA_DOMAIN_NAME,
     DATA_DOMAIN_QUALIFIED_NAME,
     DATA_SUB_DOMAIN_NAME,
+    DATA_SUB_DOMAIN_QUALIFIED_NAME,
 )
 
 
@@ -27,38 +28,41 @@ def test_create_with_missing_parameters_raise_value_error(name: str, message: st
 
 
 @pytest.mark.parametrize(
-    "name, parent_domain, parent_domain_guid",
+    "name, parent_domain, parent_domain_qualified_name",
     [
         ("DataDomain", None, None),
         ("DataDomain", DataDomain(), None),
-        ("DataDomain", None, "parent-domain-guid-1-2-3"),
+        ("DataDomain", None, DATA_DOMAIN_QUALIFIED_NAME),
     ],
 )
 def test_create_atttributes_with_required_parameters(
-    name: str, parent_domain: DataDomain, parent_domain_guid: str
+    name: str, parent_domain: DataDomain, parent_domain_qualified_name: str
 ):
     test_domain = DataDomain.Attributes.create(
         name=name,
         parent_domain=parent_domain,
-        parent_domain_guid=parent_domain_guid,
+        parent_domain_qualified_name=parent_domain_qualified_name,
     )
 
     if parent_domain:
         assert parent_domain == test_domain.parent_domain
-    if parent_domain_guid:
-        assert parent_domain_guid == test_domain.parent_domain.guid
+    if parent_domain_qualified_name:
+        assert test_domain.parent_domain.unique_attributes == {
+            "qualifiedName": parent_domain_qualified_name
+        }
 
 
 def test_create():
     test_domain = DataDomain.create(name=DATA_DOMAIN_NAME)
-    test_domain.guid = "parent-domain-guid-1-2-3"
+    test_domain.qualified_name = DATA_DOMAIN_QUALIFIED_NAME
     _assert_domain(test_domain)
 
     test_sub_domain = DataDomain.create(
-        name=DATA_SUB_DOMAIN_NAME, parent_domain_guid=test_domain.guid
+        name=DATA_SUB_DOMAIN_NAME,
+        parent_domain_qualified_name=test_domain.qualified_name,
     )
     assert test_sub_domain.name == DATA_SUB_DOMAIN_NAME
-    assert test_sub_domain.parent_domain.guid == test_domain.guid
+    assert test_sub_domain.qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
 
 
 def test_create_for_modification():

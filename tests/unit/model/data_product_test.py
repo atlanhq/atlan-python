@@ -1,12 +1,21 @@
 import pytest
 
 from pyatlan.model.assets import DataDomain, DataProduct
+from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from tests.unit.model.constants import (
+    DATA_DOMAIN_QUALIFIED_NAME,
     DATA_PRODUCT_MESH_ABBREVIATION,
     DATA_PRODUCT_MESH_SLUG,
     DATA_PRODUCT_NAME,
     DATA_PRODUCT_QUALIFIED_NAME,
 )
+
+dsl = DSL(
+    query=Term(field="__typeName.keyword", value="Schema"),
+    post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+)
+assets = IndexSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
+assets_dsl = assets.get_dsl_str()
 
 
 def _assert_product(product: DataProduct) -> None:
@@ -17,45 +26,66 @@ def _assert_product(product: DataProduct) -> None:
 
 
 @pytest.mark.parametrize(
-    "name, assets_dsl, domain, domain_guid, message",
+    "name, assets, domain, domain_qualified_name, message",
     [
-        (None, "test_dsl", None, "domain-guid-1-2-3", "name is required"),
-        (DATA_PRODUCT_NAME, None, None, "domain-guid-1-2-3", "assets_dsl is required"),
+        (None, assets, None, DATA_DOMAIN_QUALIFIED_NAME, "name is required"),
         (
             DATA_PRODUCT_NAME,
-            "test_dsl",
             None,
             None,
-            "One of the following parameters are required: domain, domain_guid",
+            DATA_DOMAIN_QUALIFIED_NAME,
+            "assets is required",
+        ),
+        (
+            DATA_PRODUCT_NAME,
+            assets,
+            None,
+            None,
+            "One of the following parameters are required: domain, domain_qualified_name",
         ),
     ],
 )
 def test_create_with_missing_parameters_raise_value_error(
-    name: str, assets_dsl: str, domain: DataDomain, domain_guid: str, message: str
+    name: str,
+    assets: IndexSearchRequest,
+    domain: DataDomain,
+    domain_qualified_name: str,
+    message: str,
 ):
     with pytest.raises(ValueError, match=message):
         DataProduct.create(
-            name=name, assets_dsl=assets_dsl, domain=domain, domain_guid=domain_guid
+            name=name,
+            assets=assets,
+            domain=domain,
+            domain_qualified_name=domain_qualified_name,
         )
 
 
 @pytest.mark.parametrize(
-    "name, assets_dsl, domain, domain_guid",
+    "name, assets, domain, domain_qualified_name",
     [
-        (DATA_PRODUCT_NAME, "test_dsl", None, "domain-guid-1-2-3"),
-        (DATA_PRODUCT_NAME, "test_dsl", DataDomain(), None),
+        (DATA_PRODUCT_NAME, assets, DataDomain(), None),
+        (DATA_PRODUCT_NAME, assets, None, DATA_DOMAIN_QUALIFIED_NAME),
     ],
 )
 def test_create_atttributes_with_required_parameters(
-    name: str, assets_dsl: str, domain: DataDomain, domain_guid: str
+    name: str,
+    assets: IndexSearchRequest,
+    domain: DataDomain,
+    domain_qualified_name: str,
 ):
     test_product = DataProduct.Attributes.create(
-        name=name, assets_dsl=assets_dsl, domain=domain, domain_guid=domain_guid
+        name=name,
+        assets_dsl=assets_dsl,
+        domain=domain,
+        domain_qualified_name=domain_qualified_name,
     )
     if domain:
         assert domain == test_product.data_domain
-    if domain_guid:
-        assert domain_guid == test_product.data_domain.guid
+    if domain_qualified_name:
+        assert test_product.data_domain.unique_attributes == {
+            "qualifiedName": domain_qualified_name
+        }
     assert test_product.data_product_assets_d_s_l == assets_dsl
     _assert_product(test_product)
 
@@ -64,7 +94,6 @@ def test_create_for_modification():
     test_product = DataProduct.create_for_modification(
         name=DATA_PRODUCT_NAME,
         qualified_name=DATA_PRODUCT_QUALIFIED_NAME,
-        domain_guid="domain-guid-1-2-3",
     )
     _assert_product(test_product)
 
@@ -73,6 +102,5 @@ def test_trim_to_required():
     test_product = DataProduct.create_for_modification(
         qualified_name=DATA_PRODUCT_QUALIFIED_NAME,
         name=DATA_PRODUCT_NAME,
-        domain_guid="domain-guid-1-2-3",
     ).trim_to_required()
     _assert_product(test_product)

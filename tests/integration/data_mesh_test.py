@@ -3,17 +3,12 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import DataDomain, DataProduct, AtlasGlossaryTerm
-from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+from pyatlan.model.assets import AtlasGlossaryTerm, DataDomain, DataProduct
 from pyatlan.model.core import Announcement
-from pyatlan.model.enums import (
-    AnnouncementType,
-    CertificateStatus,
-    EntityStatus,
-)
+from pyatlan.model.enums import AnnouncementType, CertificateStatus, EntityStatus
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
-from tests.integration.connection_test import create_connection
 from tests.integration.utils import block
 
 MODULE_NAME = TestId.make_unique("DM")
@@ -41,9 +36,7 @@ response = block(AtlanClient(), AssetMutationResponse())
 
 
 @pytest.fixture(scope="module")
-def domain(
-    client: AtlanClient
-) -> Generator[DataDomain, None, None]:
+def domain(client: AtlanClient) -> Generator[DataDomain, None, None]:
     to_create = DataDomain.create(name=DATA_DOMAIN_NAME)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataDomain)[0]
@@ -58,13 +51,16 @@ def test_data_domain(client: AtlanClient, domain: DataDomain):
     assert domain.name == DATA_DOMAIN_NAME
     assert domain.qualified_name == DATA_DOMAIN_QUALIFIED_NAME
 
+
 @pytest.fixture(scope="module")
 def sub_domain(
     client: AtlanClient,
     domain: DataDomain,
 ) -> Generator[DataDomain, None, None]:
     assert domain.guid
-    to_create = DataDomain.create(name=DATA_SUB_DOMAIN_NAME, parent_domain_guid=domain.guid)
+    to_create = DataDomain.create(
+        name=DATA_SUB_DOMAIN_NAME, parent_domain_guid=domain.guid
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataDomain)[0]
     yield result
@@ -78,9 +74,8 @@ def test_data_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     assert sub_domain.name == DATA_SUB_DOMAIN_NAME
     assert sub_domain.qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
 
-def test_update_domain(
-    client: AtlanClient, domain: DataDomain
-):
+
+def test_update_domain(client: AtlanClient, domain: DataDomain):
     assert domain.qualified_name
     assert domain.name
     updated = client.asset.update_certificate(
@@ -109,10 +104,9 @@ def test_update_domain(
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
+
 @pytest.mark.order(after="test_update_domain")
-def test_retrieve_domain(
-    client: AtlanClient, domain: DataDomain
-):
+def test_retrieve_domain(client: AtlanClient, domain: DataDomain):
     test_domain = client.asset.get_by_guid(domain.guid, asset_type=DataDomain)
     assert test_domain
     assert test_domain.guid == domain.guid
@@ -121,9 +115,8 @@ def test_retrieve_domain(
     assert test_domain.certificate_status == CERTIFICATE_STATUS
     assert test_domain.certificate_status_message == CERTIFICATE_MESSAGE
 
-def test_update_sub_domain(
-    client: AtlanClient, sub_domain: DataDomain
-):
+
+def test_update_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     assert sub_domain.qualified_name
     assert sub_domain.name
     updated = client.asset.update_certificate(
@@ -154,9 +147,7 @@ def test_update_sub_domain(
 
 
 @pytest.mark.order(after="test_update_sub_domain")
-def test_retrieve_sub_domain(
-    client: AtlanClient, sub_domain: DataDomain
-):
+def test_retrieve_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     test_sub_domain = client.asset.get_by_guid(sub_domain.guid, asset_type=DataDomain)
     assert test_sub_domain
     assert test_sub_domain.guid == sub_domain.guid
@@ -165,6 +156,7 @@ def test_retrieve_sub_domain(
     assert test_sub_domain.certificate_status == CERTIFICATE_STATUS
     assert test_sub_domain.certificate_status_message == CERTIFICATE_MESSAGE
 
+
 @pytest.fixture(scope="module")
 def product(
     client: AtlanClient,
@@ -172,16 +164,19 @@ def product(
 ) -> Generator[DataDomain, None, None]:
     assert domain.guid
     index = (
-    FluentSearch()
-    .where(CompoundQuery.active_assets())
-    .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
     ).to_request()
     assets_dsl = index.get_dsl_str()
-    to_create = DataProduct.create(name=DATA_PRODUCT_NAME, assets_dsl=assets_dsl,  domain_guid=domain.guid)
+    to_create = DataProduct.create(
+        name=DATA_PRODUCT_NAME, assets_dsl=assets_dsl, domain_guid=domain.guid
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataProduct)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=DataProduct)
+
 
 def test_product(client: AtlanClient, product: DataProduct):
     assert product
@@ -190,9 +185,8 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert product.name == DATA_PRODUCT_NAME
     assert product.qualified_name == DATA_PRODUCT_QUALIFIED_NAME
 
-def test_update_product(
-    client: AtlanClient, product: DataProduct
-):
+
+def test_update_product(client: AtlanClient, product: DataProduct):
     assert product.qualified_name
     assert product.name
     updated = client.asset.update_certificate(
@@ -223,10 +217,9 @@ def test_update_product(
     assert product.qualified_name
     assert product.name
 
+
 @pytest.mark.order(after="test_update_product")
-def test_retrieve_product(
-    client: AtlanClient, product: DataProduct
-):
+def test_retrieve_product(client: AtlanClient, product: DataProduct):
     test_product = client.asset.get_by_guid(product.guid, asset_type=DataProduct)
     assert test_product
     assert test_product.guid == product.guid
@@ -235,10 +228,9 @@ def test_retrieve_product(
     assert test_product.certificate_status == CERTIFICATE_STATUS
     assert test_product.certificate_status_message == CERTIFICATE_MESSAGE
 
+
 @pytest.mark.order(after="test_retrieve_product")
-def test_delete_product(
-    client: AtlanClient, product: DataProduct
-):
+def test_delete_product(client: AtlanClient, product: DataProduct):
     response = client.asset.purge_by_guid(product.guid)
     assert response
     assert not response.assets_created(asset_type=DataProduct)
@@ -251,10 +243,9 @@ def test_delete_product(
     assert deleted[0].delete_handler == "PURGE"
     assert deleted[0].status == EntityStatus.DELETED
 
+
 @pytest.mark.order(after="test_delete_product")
-def test_delete_sub_domain(
-    client: AtlanClient, sub_domain: DataDomain
-):
+def test_delete_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     response = client.asset.purge_by_guid(sub_domain.guid)
     assert response
     assert not response.assets_created(asset_type=DataDomain)
@@ -267,10 +258,9 @@ def test_delete_sub_domain(
     assert deleted[0].delete_handler == "PURGE"
     assert deleted[0].status == EntityStatus.DELETED
 
+
 @pytest.mark.order(after="test_delete_sub_domain")
-def test_delete_domain(
-    client: AtlanClient, domain: DataDomain
-):
+def test_delete_domain(client: AtlanClient, domain: DataDomain):
     response = client.asset.purge_by_guid(domain.guid)
     assert response
     assert not response.assets_created(asset_type=DataDomain)
