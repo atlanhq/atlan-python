@@ -57,13 +57,13 @@ class Badge(Asset, type_name="Badge"):
         "badgeConditions", "badgeConditions"
     )
     """
-    TBC
+    List of conditions that determine the colors to diplay for various values.
     """
     BADGE_METADATA_ATTRIBUTE: ClassVar[KeywordField] = KeywordField(
         "badgeMetadataAttribute", "badgeMetadataAttribute"
     )
     """
-    TBC
+    Custom metadata attribute for which to show the badge.
     """
 
     _convenience_properties: ClassVar[list[str]] = [

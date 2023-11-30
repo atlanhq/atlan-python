@@ -62,147 +62,147 @@ class Connection(Asset, type_name="Connection"):
 
     CATEGORY: ClassVar[KeywordField] = KeywordField("category", "category")
     """
-    WAREHOUSE, RDBMS, LAKE, BI
+    Type of connection, for example WAREHOUSE, RDBMS, etc.
     """
     SUB_CATEGORY: ClassVar[KeywordField] = KeywordField("subCategory", "subCategory")
     """
-    WAREHOUSE, RDBMS, LAKE, BI
+    Subcategory of this connection.
     """
     HOST: ClassVar[KeywordField] = KeywordField("host", "host")
     """
-    TBC
+    Host name of this connection's source.
     """
     PORT: ClassVar[NumericField] = NumericField("port", "port")
     """
-    TBC
+    Port number to this connection's source.
     """
     ALLOW_QUERY: ClassVar[BooleanField] = BooleanField("allowQuery", "allowQuery")
     """
-    TBC
+    Whether using this connection to run queries on the source is allowed (true) or not (false).
     """
     ALLOW_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "allowQueryPreview", "allowQueryPreview"
     )
     """
-    TBC
+    Whether using this connection to run preview queries on the source is allowed (true) or not (false).
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    TBC
+    Configuration for preview queries.
     """
     QUERY_CONFIG: ClassVar[KeywordField] = KeywordField("queryConfig", "queryConfig")
     """
-    TBC
+    Query config for this connection.
     """
     CREDENTIAL_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "credentialStrategy", "credentialStrategy"
     )
     """
-    TBC
+    Credential strategy to use for this connection for queries.
     """
     PREVIEW_CREDENTIAL_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "previewCredentialStrategy", "previewCredentialStrategy"
     )
     """
-    TBC
+    Credential strategy to use for this connection for preview queries.
     """
     POLICY_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "policyStrategy", "policyStrategy"
     )
     """
-    TBC
+    Policy strategy to use for this connection.
     """
     QUERY_USERNAME_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "queryUsernameStrategy", "queryUsernameStrategy"
     )
     """
-    TBC
+    Username strategy to use for this connection for queries.
     """
     ROW_LIMIT: ClassVar[NumericField] = NumericField("rowLimit", "rowLimit")
     """
-    TBC
+    Maximum number of rows that can be returned for the source.
     """
     QUERY_TIMEOUT: ClassVar[NumericField] = NumericField("queryTimeout", "queryTimeout")
     """
-    TBC
+    Maximum time a query should be allowed to run before timing out.
     """
     DEFAULT_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
         "defaultCredentialGuid", "defaultCredentialGuid"
     )
     """
-    TBC
+    Unique identifier (GUID) for the default credentials to use for this connection.
     """
     CONNECTOR_ICON: ClassVar[KeywordField] = KeywordField(
         "connectorIcon", "connectorIcon"
     )
     """
-    TBC
+    Unused. Only the value of connectorType impacts icons.
     """
     CONNECTOR_IMAGE: ClassVar[KeywordField] = KeywordField(
         "connectorImage", "connectorImage"
     )
     """
-    TBC
+    Unused. Only the value of connectorType impacts icons.
     """
     SOURCE_LOGO: ClassVar[KeywordField] = KeywordField("sourceLogo", "sourceLogo")
     """
-    TBC
+    Unused. Only the value of connectorType impacts icons.
     """
     IS_SAMPLE_DATA_PREVIEW_ENABLED: ClassVar[BooleanField] = BooleanField(
         "isSampleDataPreviewEnabled", "isSampleDataPreviewEnabled"
     )
     """
-    TBC
+    Whether sample data can be previewed for this connection (true) or not (false).
     """
     POPULARITY_INSIGHTS_TIMEFRAME: ClassVar[NumericField] = NumericField(
         "popularityInsightsTimeframe", "popularityInsightsTimeframe"
     )
     """
-    Number of days we are calculating popularity for, eg: 30 days
+    Number of days over which popularity is calculated, for example 30 days.
     """
     HAS_POPULARITY_INSIGHTS: ClassVar[BooleanField] = BooleanField(
         "hasPopularityInsights", "hasPopularityInsights"
     )
     """
-    Boolean flag to tell if connection has popularity insights or not
+    Whether this connection has popularity insights (true) or not (false).
     """
     CONNECTION_DBT_ENVIRONMENTS: ClassVar[KeywordField] = KeywordField(
         "connectionDbtEnvironments", "connectionDbtEnvironments"
     )
     """
-    TBC
+
     """
     CONNECTION_SSO_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
         "connectionSSOCredentialGuid", "connectionSSOCredentialGuid"
     )
     """
-    TBC
+    Unique identifier (GUID) for the SSO credentials to use for this connection.
     """
     USE_OBJECT_STORAGE: ClassVar[BooleanField] = BooleanField(
         "useObjectStorage", "useObjectStorage"
     )
     """
-    A Boolean flag indicating whether to upload to S3, GCP, or another storage location
+    Whether to upload to S3, GCP, or another storage location (true) or not (false).
     """
     OBJECT_STORAGE_UPLOAD_THRESHOLD: ClassVar[NumericField] = NumericField(
         "objectStorageUploadThreshold", "objectStorageUploadThreshold"
     )
     """
-    A long integer indicating after how many rows heka should start uploading result to storage
+    Number of rows after which results should be uploaded to storage.
     """
     VECTOR_EMBEDDINGS_ENABLED: ClassVar[BooleanField] = BooleanField(
         "vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled"
     )
     """
-    TBC
+
     """
     VECTOR_EMBEDDINGS_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
     )
     """
-    TBC
+
     """
 
     _convenience_properties: ClassVar[list[str]] = [

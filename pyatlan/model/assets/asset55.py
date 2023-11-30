@@ -8,26 +8,26 @@ from typing import ClassVar
 
 from pydantic import Field, validator
 
-from .asset22 import NoSQL
+from .asset22 import EventStore
 
 
-class MongoDB(NoSQL):
+class Kafka(EventStore):
     """Description"""
 
-    type_name: str = Field("MongoDB", allow_mutation=False)
+    type_name: str = Field("Kafka", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MongoDB":
-            raise ValueError("must be MongoDB")
+        if v != "Kafka":
+            raise ValueError("must be Kafka")
         return v
 
     def __setattr__(self, name, value):
-        if name in MongoDB._convenience_properties:
+        if name in Kafka._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
 
 
-MongoDB.Attributes.update_forward_refs()
+Kafka.Attributes.update_forward_refs()
