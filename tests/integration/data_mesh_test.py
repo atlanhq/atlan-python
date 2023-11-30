@@ -8,24 +8,22 @@ from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType, CertificateStatus, EntityStatus
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.response import AssetMutationResponse
+from pyatlan.utils import to_camel_case
 from tests.integration.client import TestId, delete_asset
 from tests.integration.utils import block
 
 MODULE_NAME = TestId.make_unique("DM")
 
-DATA_DOMAIN_NAME = "data-domain"
-DATA_DOMAIN_MESH_SLUG = "dataDomain"
-DATA_DOMAIN_MESH_ABBREVIATION = "dataDomain"
+DATA_DOMAIN_NAME = f"{MODULE_NAME}-data-domain"
+DATA_DOMAIN_MESH_SLUG = to_camel_case(DATA_DOMAIN_NAME)
 DATA_DOMAIN_QUALIFIED_NAME = f"default/domain/{DATA_DOMAIN_MESH_SLUG}"
-DATA_SUB_DOMAIN_NAME = "data-sub-domain"
-DATA_SUB_DOMAIN_MESH_SLUG = "dataSubDomain"
-DATA_SUB_DOMAIN_MESH_ABBREVIATION = "dataSubDomain"
+DATA_SUB_DOMAIN_NAME = f"{MODULE_NAME}-data-sub-domain"
+DATA_SUB_DOMAIN_MESH_SLUG = to_camel_case(DATA_SUB_DOMAIN_NAME)
 DATA_SUB_DOMAIN_QUALIFIED_NAME = (
     f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/{DATA_SUB_DOMAIN_MESH_SLUG}"
 )
-DATA_PRODUCT_MESH_SLUG = "dataProduct"
-DATA_PRODUCT_MESH_ABBREVIATION = "dataProduct"
-DATA_PRODUCT_NAME = "data-product"
+DATA_PRODUCT_NAME = f"{MODULE_NAME}-data-product"
+DATA_PRODUCT_MESH_SLUG = to_camel_case(DATA_PRODUCT_NAME)
 DATA_PRODUCT_QUALIFIED_NAME = f"default/product/{DATA_PRODUCT_MESH_SLUG}"
 
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
