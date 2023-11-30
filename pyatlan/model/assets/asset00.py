@@ -9,6 +9,7 @@ import sys
 import uuid
 from datetime import datetime
 from io import StringIO
+from pyatlan.model.search import IndexSearchRequest
 from typing import TYPE_CHECKING, Any, ClassVar, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
@@ -6583,47 +6584,34 @@ class DataDomain(DataMesh):
         name: StrictStr,
         icon: Optional[AtlanIcon] = None,
         parent_domain: Optional[DataDomain] = None,
-        parent_domain_guid: Optional[StrictStr] = None,
+        parent_domain_qualified_name: Optional[StrictStr] = None,
     ) -> DataDomain:
         validate_required_fields(["name"], [name])
         attributes = DataDomain.Attributes.create(
             name=name,
             icon=icon,
             parent_domain=parent_domain,
-            parent_domain_guid=parent_domain_guid,
+            parent_domain_qualified_name=parent_domain_qualified_name,
         )
         return cls(attributes=attributes)
-
-    def trim_to_required(self) -> DataDomain:
-        return self.create_for_modification(
-            qualified_name=self.qualified_name or "",
-            name=self.name or "",
-            parent_domain_guid=self.parent_domain and self.parent_domain.guid or "",
-        )
 
     @classmethod
     def create_for_modification(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
-        parent_domain: Optional[DataDomain] = None,
-        parent_domain_guid: Optional[StrictStr] = None,
     ) -> SelfAsset:
         validate_required_fields(["name", "qualified_name"], [name, qualified_name])
         # Split the data domain qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        if len(fields) != 3:
+        # for domain and subdomain
+        if len(fields) not in (3, 5):
             raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
         mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
-        # If "guid" of the parent domain is specified
-        if parent_domain_guid:
-            parent_domain = DataDomain()
-            parent_domain.guid = parent_domain_guid
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                parent_domain=parent_domain,
                 mesh_slug=mesh_slug,
                 mesh_abbreviation=mesh_abbreviation,
             )
@@ -6731,21 +6719,23 @@ class DataDomain(DataMesh):
             name: StrictStr,
             icon: Optional[AtlanIcon] = None,
             parent_domain: Optional[DataDomain] = None,
-            parent_domain_guid: Optional[StrictStr] = None,
+            parent_domain_qualified_name: Optional[StrictStr] = None,
         ) -> DataDomain.Attributes:
             validate_required_fields(["name"], [name])
-            # If "guid" of the parent domain is specified
-            if parent_domain_guid:
+            mesh_name = to_camel_case(name)
+            qualified_name = f"default/domain/{mesh_name}"
+            # If "qualified name" of the parent domain is specified
+            if parent_domain_qualified_name:
                 parent_domain = DataDomain()
-                parent_domain.guid = parent_domain_guid
+                parent_domain.unique_attributes = {"qualifiedName": parent_domain_qualified_name}
+                qualified_name = f"{parent_domain_qualified_name}/domain/{mesh_name}"
             icon_str = icon.value if icon is not None else None
-            camel_case_name = to_camel_case(name)
             return DataDomain.Attributes(
                 name=name,
                 parent_domain=parent_domain,
-                mesh_slug=camel_case_name,
-                mesh_abbreviation=camel_case_name,
-                qualified_name=f"default/domain/{camel_case_name}",
+                mesh_slug=mesh_name,
+                mesh_abbreviation=mesh_name,
+                qualified_name=qualified_name,
                 icon=icon_str,
             )
 
@@ -6766,53 +6756,41 @@ class DataProduct(DataMesh):
         cls,
         *,
         name: StrictStr,
-        assets_dsl: StrictStr,
+        assets: IndexSearchRequest,
         icon: Optional[AtlanIcon] = None,
         domain: Optional[DataDomain] = None,
-        domain_guid: Optional[StrictStr] = None,
+        domain_qualified_name: Optional[StrictStr] = None,
     ) -> DataProduct:
-        validate_required_fields(["name", "assets_dsl"], [name, assets_dsl])
+        validate_required_fields(["name", "assets"], [name, assets])
+        assets_dsl = assets.get_dsl_str()
         attributes = DataProduct.Attributes.create(
             name=name,
             assets_dsl=assets_dsl,
             icon=icon,
             domain=domain,
-            domain_guid=domain_guid,
+            domain_qualified_name=domain_qualified_name,
         )
         return cls(attributes=attributes)
-
-    def trim_to_required(self) -> DataProduct:
-        if self.data_domain is None or not self.data_domain.guid:
-            raise ValueError("domain.guid must be available")
-        return self.create_for_modification(
-            qualified_name=self.qualified_name or "",
-            name=self.name or "",
-            domain_guid=self.data_domain.guid,
-        )
 
     @classmethod
     def create_for_modification(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
-        domain_guid: str = "",
     ) -> SelfAsset:
         validate_required_fields(
-            ["name", "qualified_name", "domain_guid"],
-            [name, qualified_name, domain_guid],
+            ["name", "qualified_name"],
+            [name, qualified_name],
         )
-        # Split the data domain qualified_name to extract data mesh info
+        # Split the data product qualified_name to extract data mesh info
         fields = qualified_name.split("/")
         if len(fields) != 3:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
         mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
-        domain = DataDomain()
-        domain.guid = domain_guid
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                data_domain=domain,
                 mesh_slug=mesh_slug,
                 mesh_abbreviation=mesh_abbreviation,
             )
@@ -7045,17 +7023,16 @@ class DataProduct(DataMesh):
             assets_dsl: StrictStr,
             icon: Optional[AtlanIcon] = None,
             domain: Optional[DataDomain] = None,
-            domain_guid: Optional[StrictStr] = None,
+            domain_qualified_name: Optional[StrictStr] = None,
         ) -> DataDomain.Attributes:
-            validate_required_fields(["name", "assets_dsl"], [name, assets_dsl])
+            validate_required_fields(["name"], [name])
             validate_single_required_field(
-                ["domain", "domain_guid"],
-                [domain, domain_guid],
+                ["domain", "domain_qualified_name"],
+                [domain, domain_qualified_name],
             )
-            # If "guid" of the domain is specified
-            if domain_guid:
+            if domain_qualified_name:
                 domain = DataDomain()
-                domain.guid = domain_guid
+                domain.unique_attributes = {"qualifiedName": domain_qualified_name}
             icon_str = icon.value if icon is not None else None
             camel_case_name = to_camel_case(name)
             return DataProduct.Attributes(
