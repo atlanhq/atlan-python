@@ -9,1524 +9,1660 @@ from typing import ClassVar, Optional
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
-    KeywordTextField,
+    NumericField,
     RelationField,
+    TextField,
 )
 
-from .asset50 import MicroStrategy
+from .asset50 import PowerBI
 
 
-class MicroStrategyReport(MicroStrategy):
+class PowerBIReport(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
+    type_name: str = Field("PowerBIReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyReport":
-            raise ValueError("must be MicroStrategyReport")
+        if v != "PowerBIReport":
+            raise ValueError("must be PowerBIReport")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyReport._convenience_properties:
+        if name in PowerBIReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_REPORT_TYPE: ClassVar[KeywordField] = KeywordField(
-        "microStrategyReportType", "microStrategyReportType"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Whether the report is a Grid or Chart report
+    Unique name of the workspace in which this report exists.
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    Unique name of the dataset used to build this report.
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated. See 'sourceUrl' instead.
+    """
+    PAGE_COUNT: ClassVar[NumericField] = NumericField("pageCount", "pageCount")
+    """
+    Number of pages in this report.
     """
 
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetrics"
-    )
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    TILES: ClassVar[RelationField] = RelationField("tiles")
     """
     TBC
     """
-    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "microStrategyAttributes"
-    )
+    PAGES: ClassVar[RelationField] = RelationField("pages")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_report_type",
-        "micro_strategy_metrics",
-        "micro_strategy_project",
-        "micro_strategy_attributes",
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "web_url",
+        "page_count",
+        "workspace",
+        "tiles",
+        "pages",
+        "dataset",
     ]
 
     @property
-    def micro_strategy_report_type(self) -> Optional[str]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_report_type
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_report_type.setter
-    def micro_strategy_report_type(self, micro_strategy_report_type: Optional[str]):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_report_type = micro_strategy_report_type
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+    def dataset_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.micro_strategy_metrics
+            None if self.attributes is None else self.attributes.dataset_qualified_name
         )
 
-    @micro_strategy_metrics.setter
-    def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
-    ):
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+        self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
 
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
+        self.attributes.web_url = web_url
 
     @property
-    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_attributes
-        )
+    def page_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.page_count
 
-    @micro_strategy_attributes.setter
-    def micro_strategy_attributes(
-        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
-    ):
+    @page_count.setter
+    def page_count(self, page_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+        self.attributes.page_count = page_count
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_report_type: Optional[str] = Field(
-            None, description="", alias="microStrategyReportType"
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def pages(self) -> Optional[list[PowerBIPage]]:
+        return None if self.attributes is None else self.attributes.pages
+
+    @pages.setter
+    def pages(self, pages: Optional[list[PowerBIPage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.pages = pages
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return None if self.attributes is None else self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        page_count: Optional[int] = Field(None, description="", alias="pageCount")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
         )  # relationship
-        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+        pages: Optional[list[PowerBIPage]] = Field(
+            None, description="", alias="pages"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
         )  # relationship
 
-    attributes: "MicroStrategyReport.Attributes" = Field(
-        default_factory=lambda: MicroStrategyReport.Attributes(),
+    attributes: "PowerBIReport.Attributes" = Field(
+        default_factory=lambda: PowerBIReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyProject(MicroStrategy):
+class PowerBIMeasure(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
+    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyProject":
-            raise ValueError("must be MicroStrategyProject")
+        if v != "PowerBIMeasure":
+            raise ValueError("must be PowerBIMeasure")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyProject._convenience_properties:
+        if name in PowerBIMeasure._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
-        "microStrategyReports"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    TBC
+    Unique name of the workspace in which this measure exists.
     """
-    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
-    """
-    TBC
-    """
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetrics"
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    TBC
+    Unique name of the dataset in which this measure exists.
     """
-    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
-        "microStrategyVisualizations"
+    POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField(
+        "powerBIMeasureExpression", "powerBIMeasureExpression"
     )
     """
-    TBC
+    DAX expression for this measure.
     """
-    MICRO_STRATEGY_DOCUMENTS: ClassVar[RelationField] = RelationField(
-        "microStrategyDocuments"
+    POWER_BI_IS_EXTERNAL_MEASURE: ClassVar[BooleanField] = BooleanField(
+        "powerBIIsExternalMeasure", "powerBIIsExternalMeasure"
     )
     """
-    TBC
+    Whether this measure is external (true) or internal (false).
     """
-    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
-    """
-    TBC
-    """
-    MICRO_STRATEGY_DOSSIERS: ClassVar[RelationField] = RelationField(
-        "microStrategyDossiers"
-    )
-    """
-    TBC
-    """
-    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "microStrategyAttributes"
-    )
+
+    TABLE: ClassVar[RelationField] = RelationField("table")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_reports",
-        "micro_strategy_facts",
-        "micro_strategy_metrics",
-        "micro_strategy_visualizations",
-        "micro_strategy_documents",
-        "micro_strategy_cubes",
-        "micro_strategy_dossiers",
-        "micro_strategy_attributes",
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_measure_expression",
+        "power_b_i_is_external_measure",
+        "table",
     ]
 
     @property
-    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_reports
-        )
-
-    @micro_strategy_reports.setter
-    def micro_strategy_reports(
-        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_reports = micro_strategy_reports
-
-    @property
-    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_facts
-
-    @micro_strategy_facts.setter
-    def micro_strategy_facts(
-        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_facts = micro_strategy_facts
-
-    @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_metrics
-        )
-
-    @micro_strategy_metrics.setter
-    def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metrics = micro_strategy_metrics
-
-    @property
-    def micro_strategy_visualizations(
-        self,
-    ) -> Optional[list[MicroStrategyVisualization]]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_visualizations
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_visualizations.setter
-    def micro_strategy_visualizations(
-        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
-    ):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_documents(self) -> Optional[list[MicroStrategyDocument]]:
+    def dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_measure_expression(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_documents
+            else self.attributes.power_b_i_measure_expression
         )
 
-    @micro_strategy_documents.setter
-    def micro_strategy_documents(
-        self, micro_strategy_documents: Optional[list[MicroStrategyDocument]]
-    ):
+    @power_b_i_measure_expression.setter
+    def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_documents = micro_strategy_documents
+        self.attributes.power_b_i_measure_expression = power_b_i_measure_expression
 
     @property
-    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_cubes
-
-    @micro_strategy_cubes.setter
-    def micro_strategy_cubes(
-        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cubes = micro_strategy_cubes
-
-    @property
-    def micro_strategy_dossiers(self) -> Optional[list[MicroStrategyDossier]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_dossiers
-        )
-
-    @micro_strategy_dossiers.setter
-    def micro_strategy_dossiers(
-        self, micro_strategy_dossiers: Optional[list[MicroStrategyDossier]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossiers = micro_strategy_dossiers
-
-    @property
-    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+    def power_b_i_is_external_measure(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_attributes
+            else self.attributes.power_b_i_is_external_measure
         )
 
-    @micro_strategy_attributes.setter
-    def micro_strategy_attributes(
-        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    @power_b_i_is_external_measure.setter
+    def power_b_i_is_external_measure(
+        self, power_b_i_is_external_measure: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+        self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
-        )  # relationship
-        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
-            None, description="", alias="microStrategyFacts"
-        )  # relationship
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
-        )  # relationship
-        micro_strategy_visualizations: Optional[
-            list[MicroStrategyVisualization]
-        ] = Field(
-            None, description="", alias="microStrategyVisualizations"
-        )  # relationship
-        micro_strategy_documents: Optional[list[MicroStrategyDocument]] = Field(
-            None, description="", alias="microStrategyDocuments"
-        )  # relationship
-        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
-        )  # relationship
-        micro_strategy_dossiers: Optional[list[MicroStrategyDossier]] = Field(
-            None, description="", alias="microStrategyDossiers"
-        )  # relationship
-        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+    @property
+    def table(self) -> Optional[PowerBITable]:
+        return None if self.attributes is None else self.attributes.table
+
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table = table
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_measure_expression: Optional[str] = Field(
+            None, description="", alias="powerBIMeasureExpression"
+        )
+        power_b_i_is_external_measure: Optional[bool] = Field(
+            None, description="", alias="powerBIIsExternalMeasure"
+        )
+        table: Optional[PowerBITable] = Field(
+            None, description="", alias="table"
         )  # relationship
 
-    attributes: "MicroStrategyProject.Attributes" = Field(
-        default_factory=lambda: MicroStrategyProject.Attributes(),
+    attributes: "PowerBIMeasure.Attributes" = Field(
+        default_factory=lambda: PowerBIMeasure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyMetric(MicroStrategy):
+class PowerBIColumn(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
+    type_name: str = Field("PowerBIColumn", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyMetric":
-            raise ValueError("must be MicroStrategyMetric")
+        if v != "PowerBIColumn":
+            raise ValueError("must be PowerBIColumn")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyMetric._convenience_properties:
+        if name in PowerBIColumn._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_METRIC_EXPRESSION: ClassVar[KeywordField] = KeywordField(
-        "microStrategyMetricExpression", "microStrategyMetricExpression"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Metric expression text
+    Unique name of the workspace in which this column exists.
     """
-    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyAttributeQualifiedNames",
-        "microStrategyAttributeQualifiedNames",
-        "microStrategyAttributeQualifiedNames.text",
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    Related attribute qualified name list
+    Unique name of the dataset in which this column exists.
     """
-    MICRO_STRATEGY_ATTRIBUTE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyAttributeNames",
-        "microStrategyAttributeNames.keyword",
-        "microStrategyAttributeNames",
+    POWER_BI_COLUMN_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnDataCategory", "powerBIColumnDataCategory"
     )
     """
-    Related attribute name list
+    Data category that describes the data in this column.
     """
-    MICRO_STRATEGY_FACT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyFactQualifiedNames",
-        "microStrategyFactQualifiedNames",
-        "microStrategyFactQualifiedNames.text",
+    POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnDataType", "powerBIColumnDataType"
     )
     """
-    Related fact qualified name list
+    Data type of this column.
     """
-    MICRO_STRATEGY_FACT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyFactNames",
-        "microStrategyFactNames.keyword",
-        "microStrategyFactNames",
+    POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField(
+        "powerBISortByColumn", "powerBISortByColumn"
     )
     """
-    Related fact name list
+    Name of a column in the same table to use to order this column.
     """
-    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyMetricParentQualifiedNames",
-        "microStrategyMetricParentQualifiedNames",
-        "microStrategyMetricParentQualifiedNames.text",
+    POWER_BI_COLUMN_SUMMARIZE_BY: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnSummarizeBy", "powerBIColumnSummarizeBy"
     )
     """
-    Related parent metric qualified name list
-    """
-    MICRO_STRATEGY_METRIC_PARENT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyMetricParentNames",
-        "microStrategyMetricParentNames.keyword",
-        "microStrategyMetricParentNames",
-    )
-    """
-    Related parent metric name list
+    Aggregate function to use for summarizing this column.
     """
 
-    MICRO_STRATEGY_METRIC_PARENTS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetricParents"
-    )
-    """
-    TBC
-    """
-    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
-    """
-    TBC
-    """
-    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
-        "microStrategyReports"
-    )
-    """
-    TBC
-    """
-    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
-    """
-    TBC
-    """
-    MICRO_STRATEGY_METRIC_CHILDREN: ClassVar[RelationField] = RelationField(
-        "microStrategyMetricChildren"
-    )
-    """
-    TBC
-    """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
-    """
-    TBC
-    """
-    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "microStrategyAttributes"
-    )
+    TABLE: ClassVar[RelationField] = RelationField("table")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_metric_expression",
-        "micro_strategy_attribute_qualified_names",
-        "micro_strategy_attribute_names",
-        "micro_strategy_fact_qualified_names",
-        "micro_strategy_fact_names",
-        "micro_strategy_metric_parent_qualified_names",
-        "micro_strategy_metric_parent_names",
-        "micro_strategy_metric_parents",
-        "micro_strategy_facts",
-        "micro_strategy_reports",
-        "micro_strategy_cubes",
-        "micro_strategy_metric_children",
-        "micro_strategy_project",
-        "micro_strategy_attributes",
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_column_data_category",
+        "power_b_i_column_data_type",
+        "power_b_i_sort_by_column",
+        "power_b_i_column_summarize_by",
+        "table",
     ]
 
     @property
-    def micro_strategy_metric_expression(self) -> Optional[str]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_metric_expression
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_metric_expression.setter
-    def micro_strategy_metric_expression(
-        self, micro_strategy_metric_expression: Optional[str]
-    ):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_expression = (
-            micro_strategy_metric_expression
-        )
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_attribute_qualified_names(self) -> Optional[set[str]]:
+    def dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_column_data_category(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_attribute_qualified_names
+            else self.attributes.power_b_i_column_data_category
         )
 
-    @micro_strategy_attribute_qualified_names.setter
-    def micro_strategy_attribute_qualified_names(
-        self, micro_strategy_attribute_qualified_names: Optional[set[str]]
+    @power_b_i_column_data_category.setter
+    def power_b_i_column_data_category(
+        self, power_b_i_column_data_category: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attribute_qualified_names = (
-            micro_strategy_attribute_qualified_names
-        )
+        self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
 
     @property
-    def micro_strategy_attribute_names(self) -> Optional[set[str]]:
+    def power_b_i_column_data_type(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_attribute_names
+            else self.attributes.power_b_i_column_data_type
         )
 
-    @micro_strategy_attribute_names.setter
-    def micro_strategy_attribute_names(
-        self, micro_strategy_attribute_names: Optional[set[str]]
-    ):
+    @power_b_i_column_data_type.setter
+    def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attribute_names = micro_strategy_attribute_names
+        self.attributes.power_b_i_column_data_type = power_b_i_column_data_type
 
     @property
-    def micro_strategy_fact_qualified_names(self) -> Optional[set[str]]:
+    def power_b_i_sort_by_column(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_fact_qualified_names
+            else self.attributes.power_b_i_sort_by_column
         )
 
-    @micro_strategy_fact_qualified_names.setter
-    def micro_strategy_fact_qualified_names(
-        self, micro_strategy_fact_qualified_names: Optional[set[str]]
-    ):
+    @power_b_i_sort_by_column.setter
+    def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_fact_qualified_names = (
-            micro_strategy_fact_qualified_names
-        )
+        self.attributes.power_b_i_sort_by_column = power_b_i_sort_by_column
 
     @property
-    def micro_strategy_fact_names(self) -> Optional[set[str]]:
+    def power_b_i_column_summarize_by(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_fact_names
+            else self.attributes.power_b_i_column_summarize_by
         )
 
-    @micro_strategy_fact_names.setter
-    def micro_strategy_fact_names(self, micro_strategy_fact_names: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_fact_names = micro_strategy_fact_names
-
-    @property
-    def micro_strategy_metric_parent_qualified_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_parent_qualified_names
-        )
-
-    @micro_strategy_metric_parent_qualified_names.setter
-    def micro_strategy_metric_parent_qualified_names(
-        self, micro_strategy_metric_parent_qualified_names: Optional[set[str]]
+    @power_b_i_column_summarize_by.setter
+    def power_b_i_column_summarize_by(
+        self, power_b_i_column_summarize_by: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_parent_qualified_names = (
-            micro_strategy_metric_parent_qualified_names
-        )
+        self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
 
     @property
-    def micro_strategy_metric_parent_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_parent_names
-        )
+    def table(self) -> Optional[PowerBITable]:
+        return None if self.attributes is None else self.attributes.table
 
-    @micro_strategy_metric_parent_names.setter
-    def micro_strategy_metric_parent_names(
-        self, micro_strategy_metric_parent_names: Optional[set[str]]
-    ):
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_parent_names = (
-            micro_strategy_metric_parent_names
+        self.attributes.table = table
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-
-    @property
-    def micro_strategy_metric_parents(self) -> Optional[list[MicroStrategyMetric]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_parents
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
         )
-
-    @micro_strategy_metric_parents.setter
-    def micro_strategy_metric_parents(
-        self, micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_parents = micro_strategy_metric_parents
-
-    @property
-    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_facts
-
-    @micro_strategy_facts.setter
-    def micro_strategy_facts(
-        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_facts = micro_strategy_facts
-
-    @property
-    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_reports
+        power_b_i_column_data_category: Optional[str] = Field(
+            None, description="", alias="powerBIColumnDataCategory"
         )
-
-    @micro_strategy_reports.setter
-    def micro_strategy_reports(
-        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_reports = micro_strategy_reports
-
-    @property
-    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_cubes
-
-    @micro_strategy_cubes.setter
-    def micro_strategy_cubes(
-        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cubes = micro_strategy_cubes
-
-    @property
-    def micro_strategy_metric_children(self) -> Optional[list[MicroStrategyMetric]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_children
+        power_b_i_column_data_type: Optional[str] = Field(
+            None, description="", alias="powerBIColumnDataType"
         )
-
-    @micro_strategy_metric_children.setter
-    def micro_strategy_metric_children(
-        self, micro_strategy_metric_children: Optional[list[MicroStrategyMetric]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_children = micro_strategy_metric_children
-
-    @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
+        power_b_i_sort_by_column: Optional[str] = Field(
+            None, description="", alias="powerBISortByColumn"
         )
-
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
-
-    @property
-    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_attributes
+        power_b_i_column_summarize_by: Optional[str] = Field(
+            None, description="", alias="powerBIColumnSummarizeBy"
         )
-
-    @micro_strategy_attributes.setter
-    def micro_strategy_attributes(
-        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attributes = micro_strategy_attributes
-
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_metric_expression: Optional[str] = Field(
-            None, description="", alias="microStrategyMetricExpression"
-        )
-        micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyAttributeQualifiedNames"
-        )
-        micro_strategy_attribute_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyAttributeNames"
-        )
-        micro_strategy_fact_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactQualifiedNames"
-        )
-        micro_strategy_fact_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactNames"
-        )
-        micro_strategy_metric_parent_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyMetricParentQualifiedNames"
-        )
-        micro_strategy_metric_parent_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyMetricParentNames"
-        )
-        micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetricParents"
-        )  # relationship
-        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
-            None, description="", alias="microStrategyFacts"
-        )  # relationship
-        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
-        )  # relationship
-        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
-        )  # relationship
-        micro_strategy_metric_children: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetricChildren"
-        )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
-        )  # relationship
-        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+        table: Optional[PowerBITable] = Field(
+            None, description="", alias="table"
         )  # relationship
 
-    attributes: "MicroStrategyMetric.Attributes" = Field(
-        default_factory=lambda: MicroStrategyMetric.Attributes(),
+    attributes: "PowerBIColumn.Attributes" = Field(
+        default_factory=lambda: PowerBIColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyCube(MicroStrategy):
+class PowerBITable(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
+    type_name: str = Field("PowerBITable", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyCube":
-            raise ValueError("must be MicroStrategyCube")
+        if v != "PowerBITable":
+            raise ValueError("must be PowerBITable")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyCube._convenience_properties:
+        if name in PowerBITable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_CUBE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "microStrategyCubeType", "microStrategyCubeType"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Whether the cube is an OLAP or MTDI cube
+    Unique name of the workspace in which this table exists.
     """
-    MICRO_STRATEGY_CUBE_QUERY: ClassVar[KeywordField] = KeywordField(
-        "microStrategyCubeQuery", "microStrategyCubeQuery"
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    The query used to create the cube
+    Unique name of the dataset in which this table exists.
+    """
+    POWER_BI_TABLE_SOURCE_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
+        "powerBITableSourceExpressions", "powerBITableSourceExpressions"
+    )
+    """
+    Power Query M expressions for the table.
+    """
+    POWER_BI_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "powerBITableColumnCount", "powerBITableColumnCount"
+    )
+    """
+    Number of columns in this table.
+    """
+    POWER_BI_TABLE_MEASURE_COUNT: ClassVar[NumericField] = NumericField(
+        "powerBITableMeasureCount", "powerBITableMeasureCount"
+    )
+    """
+    Number of measures in this table.
     """
 
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetrics"
-    )
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    MEASURES: ClassVar[RelationField] = RelationField("measures")
     """
     TBC
     """
-    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "microStrategyAttributes"
-    )
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_cube_type",
-        "micro_strategy_cube_query",
-        "micro_strategy_metrics",
-        "micro_strategy_project",
-        "micro_strategy_attributes",
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_table_source_expressions",
+        "power_b_i_table_column_count",
+        "power_b_i_table_measure_count",
+        "columns",
+        "measures",
+        "dataset",
     ]
 
     @property
-    def micro_strategy_cube_type(self) -> Optional[str]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_cube_type
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_cube_type.setter
-    def micro_strategy_cube_type(self, micro_strategy_cube_type: Optional[str]):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cube_type = micro_strategy_cube_type
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_cube_query(self) -> Optional[str]:
+    def dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_cube_query
+            else self.attributes.power_b_i_table_source_expressions
         )
 
-    @micro_strategy_cube_query.setter
-    def micro_strategy_cube_query(self, micro_strategy_cube_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cube_query = micro_strategy_cube_query
-
-    @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_metrics
-        )
-
-    @micro_strategy_metrics.setter
-    def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    @power_b_i_table_source_expressions.setter
+    def power_b_i_table_source_expressions(
+        self, power_b_i_table_source_expressions: Optional[set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metrics = micro_strategy_metrics
-
-    @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
+        self.attributes.power_b_i_table_source_expressions = (
+            power_b_i_table_source_expressions
         )
 
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
-
     @property
-    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+    def power_b_i_table_column_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_attributes
+            else self.attributes.power_b_i_table_column_count
         )
 
-    @micro_strategy_attributes.setter
-    def micro_strategy_attributes(
-        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    @power_b_i_table_column_count.setter
+    def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_column_count = power_b_i_table_column_count
+
+    @property
+    def power_b_i_table_measure_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_measure_count
+        )
+
+    @power_b_i_table_measure_count.setter
+    def power_b_i_table_measure_count(
+        self, power_b_i_table_measure_count: Optional[int]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+        self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_cube_type: Optional[str] = Field(
-            None, description="", alias="microStrategyCubeType"
+    @property
+    def columns(self) -> Optional[list[PowerBIColumn]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[PowerBIColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def measures(self) -> Optional[list[PowerBIMeasure]]:
+        return None if self.attributes is None else self.attributes.measures
+
+    @measures.setter
+    def measures(self, measures: Optional[list[PowerBIMeasure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.measures = measures
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return None if self.attributes is None else self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-        micro_strategy_cube_query: Optional[str] = Field(
-            None, description="", alias="microStrategyCubeQuery"
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
         )
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+        power_b_i_table_source_expressions: Optional[set[str]] = Field(
+            None, description="", alias="powerBITableSourceExpressions"
+        )
+        power_b_i_table_column_count: Optional[int] = Field(
+            None, description="", alias="powerBITableColumnCount"
+        )
+        power_b_i_table_measure_count: Optional[int] = Field(
+            None, description="", alias="powerBITableMeasureCount"
+        )
+        columns: Optional[list[PowerBIColumn]] = Field(
+            None, description="", alias="columns"
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+        measures: Optional[list[PowerBIMeasure]] = Field(
+            None, description="", alias="measures"
         )  # relationship
-        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
         )  # relationship
 
-    attributes: "MicroStrategyCube.Attributes" = Field(
-        default_factory=lambda: MicroStrategyCube.Attributes(),
+    attributes: "PowerBITable.Attributes" = Field(
+        default_factory=lambda: PowerBITable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyDossier(MicroStrategy):
+class PowerBITile(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+    type_name: str = Field("PowerBITile", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyDossier":
-            raise ValueError("must be MicroStrategyDossier")
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyDossier._convenience_properties:
+        if name in PowerBITile._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_DOSSIER_CHAPTER_NAMES: ClassVar[KeywordField] = KeywordField(
-        "microStrategyDossierChapterNames", "microStrategyDossierChapterNames"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Dossier chapter name list
+    Unique name of the workspace in which this tile exists.
+    """
+    DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dashboardQualifiedName", "dashboardQualifiedName"
+    )
+    """
+    Unique name of the dashboard in which this tile is pinned.
     """
 
-    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
-        "microStrategyVisualizations"
-    )
+    REPORT: ClassVar[RelationField] = RelationField("report")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    """
+    TBC
+    """
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_dossier_chapter_names",
-        "micro_strategy_visualizations",
-        "micro_strategy_project",
+        "workspace_qualified_name",
+        "dashboard_qualified_name",
+        "report",
+        "dataset",
+        "dashboard",
     ]
 
     @property
-    def micro_strategy_dossier_chapter_names(self) -> Optional[set[str]]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_dossier_chapter_names
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_dossier_chapter_names.setter
-    def micro_strategy_dossier_chapter_names(
-        self, micro_strategy_dossier_chapter_names: Optional[set[str]]
-    ):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossier_chapter_names = (
-            micro_strategy_dossier_chapter_names
-        )
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_visualizations(
-        self,
-    ) -> Optional[list[MicroStrategyVisualization]]:
+    def dashboard_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_visualizations
+            else self.attributes.dashboard_qualified_name
         )
 
-    @micro_strategy_visualizations.setter
-    def micro_strategy_visualizations(
-        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
-    ):
+    @dashboard_qualified_name.setter
+    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
+        self.attributes.dashboard_qualified_name = dashboard_qualified_name
 
     @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+    def report(self) -> Optional[PowerBIReport]:
+        return None if self.attributes is None else self.attributes.report
 
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
+        self.attributes.report = report
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyDossierChapterNames"
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return None if self.attributes is None else self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    @property
+    def dashboard(self) -> Optional[PowerBIDashboard]:
+        return None if self.attributes is None else self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-        micro_strategy_visualizations: Optional[
-            list[MicroStrategyVisualization]
-        ] = Field(
-            None, description="", alias="microStrategyVisualizations"
+        dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="dashboardQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+        dashboard: Optional[PowerBIDashboard] = Field(
+            None, description="", alias="dashboard"
         )  # relationship
 
-    attributes: "MicroStrategyDossier.Attributes" = Field(
-        default_factory=lambda: MicroStrategyDossier.Attributes(),
+    attributes: "PowerBITile.Attributes" = Field(
+        default_factory=lambda: PowerBITile.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyFact(MicroStrategy):
+class PowerBIDatasource(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyFact":
-            raise ValueError("must be MicroStrategyFact")
+        if v != "PowerBIDatasource":
+            raise ValueError("must be PowerBIDatasource")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyFact._convenience_properties:
+        if name in PowerBIDatasource._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_FACT_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
-        "microStrategyFactExpressions", "microStrategyFactExpressions"
+    CONNECTION_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "connectionDetails", "connectionDetails"
     )
     """
-    Fact expression list
+    Connection details of the datasource.
     """
 
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetrics"
-    )
-    """
-    TBC
-    """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_fact_expressions",
-        "micro_strategy_metrics",
-        "micro_strategy_project",
+        "connection_details",
+        "datasets",
     ]
 
     @property
-    def micro_strategy_fact_expressions(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_fact_expressions
-        )
+    def connection_details(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.connection_details
 
-    @micro_strategy_fact_expressions.setter
-    def micro_strategy_fact_expressions(
-        self, micro_strategy_fact_expressions: Optional[set[str]]
-    ):
+    @connection_details.setter
+    def connection_details(self, connection_details: Optional[dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_fact_expressions = (
-            micro_strategy_fact_expressions
-        )
+        self.attributes.connection_details = connection_details
 
     @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_metrics
-        )
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return None if self.attributes is None else self.attributes.datasets
 
-    @micro_strategy_metrics.setter
-    def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
-    ):
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+        self.attributes.datasets = datasets
 
-    @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
+    class Attributes(PowerBI.Attributes):
+        connection_details: Optional[dict[str, str]] = Field(
+            None, description="", alias="connectionDetails"
         )
-
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
-
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_fact_expressions: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactExpressions"
-        )
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
-        )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
         )  # relationship
 
-    attributes: "MicroStrategyFact.Attributes" = Field(
-        default_factory=lambda: MicroStrategyFact.Attributes(),
+    attributes: "PowerBIDatasource.Attributes" = Field(
+        default_factory=lambda: PowerBIDatasource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyDocument(MicroStrategy):
+class PowerBIWorkspace(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyDocument":
-            raise ValueError("must be MicroStrategyDocument")
+        if v != "PowerBIWorkspace":
+            raise ValueError("must be PowerBIWorkspace")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyDocument._convenience_properties:
+        if name in PowerBIWorkspace._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated.
+    """
+    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    """
+    Number of reports in this workspace.
+    """
+    DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "dashboardCount", "dashboardCount"
     )
+    """
+    Number of dashboards in this workspace.
+    """
+    DATASET_COUNT: ClassVar[NumericField] = NumericField("datasetCount", "datasetCount")
+    """
+    Number of datasets in this workspace.
+    """
+    DATAFLOW_COUNT: ClassVar[NumericField] = NumericField(
+        "dataflowCount", "dataflowCount"
+    )
+    """
+    Number of dataflows in this workspace.
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_project",
+        "web_url",
+        "report_count",
+        "dashboard_count",
+        "dataset_count",
+        "dataflow_count",
+        "reports",
+        "datasets",
+        "dashboards",
+        "dataflows",
     ]
 
     @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
 
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
+        self.attributes.web_url = web_url
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+    @property
+    def report_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.report_count
+
+    @report_count.setter
+    def report_count(self, report_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_count = report_count
+
+    @property
+    def dashboard_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dashboard_count
+
+    @dashboard_count.setter
+    def dashboard_count(self, dashboard_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_count = dashboard_count
+
+    @property
+    def dataset_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dataset_count
+
+    @dataset_count.setter
+    def dataset_count(self, dataset_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_count = dataset_count
+
+    @property
+    def dataflow_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dataflow_count
+
+    @dataflow_count.setter
+    def dataflow_count(self, dataflow_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflow_count = dataflow_count
+
+    @property
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return None if self.attributes is None else self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return None if self.attributes is None else self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    @property
+    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    class Attributes(PowerBI.Attributes):
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        report_count: Optional[int] = Field(None, description="", alias="reportCount")
+        dashboard_count: Optional[int] = Field(
+            None, description="", alias="dashboardCount"
+        )
+        dataset_count: Optional[int] = Field(None, description="", alias="datasetCount")
+        dataflow_count: Optional[int] = Field(
+            None, description="", alias="dataflowCount"
+        )
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+        dashboards: Optional[list[PowerBIDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+        dataflows: Optional[list[PowerBIDataflow]] = Field(
+            None, description="", alias="dataflows"
         )  # relationship
 
-    attributes: "MicroStrategyDocument.Attributes" = Field(
-        default_factory=lambda: MicroStrategyDocument.Attributes(),
+    attributes: "PowerBIWorkspace.Attributes" = Field(
+        default_factory=lambda: PowerBIWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyAttribute(MicroStrategy):
+class PowerBIDataset(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+    type_name: str = Field("PowerBIDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyAttribute":
-            raise ValueError("must be MicroStrategyAttribute")
+        if v != "PowerBIDataset":
+            raise ValueError("must be PowerBIDataset")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyAttribute._convenience_properties:
+        if name in PowerBIDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_ATTRIBUTE_FORMS: ClassVar[KeywordField] = KeywordField(
-        "microStrategyAttributeForms", "microStrategyAttributeForms"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Attribute form name, description, displayFormat and expression as JSON string
+    Unique name of the workspace in which this dataset exists.
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated. See 'sourceUrl' instead.
     """
 
-    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
-        "microStrategyReports"
-    )
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
     """
     TBC
     """
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetrics"
-    )
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
     """
     TBC
     """
-    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_attribute_forms",
-        "micro_strategy_reports",
-        "micro_strategy_metrics",
-        "micro_strategy_cubes",
-        "micro_strategy_project",
+        "workspace_qualified_name",
+        "web_url",
+        "reports",
+        "workspace",
+        "dataflows",
+        "tiles",
+        "tables",
+        "datasources",
     ]
 
     @property
-    def micro_strategy_attribute_forms(self) -> Optional[str]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_attribute_forms
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_attribute_forms.setter
-    def micro_strategy_attribute_forms(
-        self, micro_strategy_attribute_forms: Optional[str]
-    ):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attribute_forms = micro_strategy_attribute_forms
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_reports
-        )
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
 
-    @micro_strategy_reports.setter
-    def micro_strategy_reports(
-        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
-    ):
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_reports = micro_strategy_reports
+        self.attributes.web_url = web_url
 
     @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_metrics
-        )
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return None if self.attributes is None else self.attributes.reports
 
-    @micro_strategy_metrics.setter
-    def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
-    ):
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+        self.attributes.reports = reports
 
     @property
-    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_cubes
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
 
-    @micro_strategy_cubes.setter
-    def micro_strategy_cubes(
-        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
-    ):
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+        self.attributes.workspace = workspace
 
     @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.dataflows
 
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
+        self.attributes.dataflows = dataflows
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_attribute_forms: Optional[str] = Field(
-            None, description="", alias="microStrategyAttributeForms"
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def tables(self) -> Optional[list[PowerBITable]]:
+        return None if self.attributes is None else self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[PowerBITable]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def datasources(self) -> Optional[list[PowerBIDatasource]]:
+        return None if self.attributes is None else self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
         )  # relationship
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
         )  # relationship
-        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+        dataflows: Optional[list[PowerBIDataflow]] = Field(
+            None, description="", alias="dataflows"
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        tables: Optional[list[PowerBITable]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        datasources: Optional[list[PowerBIDatasource]] = Field(
+            None, description="", alias="datasources"
         )  # relationship
 
-    attributes: "MicroStrategyAttribute.Attributes" = Field(
-        default_factory=lambda: MicroStrategyAttribute.Attributes(),
+    attributes: "PowerBIDataset.Attributes" = Field(
+        default_factory=lambda: PowerBIDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MicroStrategyVisualization(MicroStrategy):
+class PowerBIDashboard(PowerBI):
     """Description"""
 
-    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategyVisualization":
-            raise ValueError("must be MicroStrategyVisualization")
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyVisualization._convenience_properties:
+        if name in PowerBIDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "microStrategyVisualizationType", "microStrategyVisualizationType"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Visualization type name
+    Unique name of the workspace in which this dashboard exists.
     """
-    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyDossierQualifiedName",
-        "microStrategyDossierQualifiedName",
-        "microStrategyDossierQualifiedName.text",
-    )
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Parent dossier qualified name
+    Deprecated. See 'sourceUrl' instead.
     """
-    MICRO_STRATEGY_DOSSIER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyDossierName",
-        "microStrategyDossierName.keyword",
-        "microStrategyDossierName",
-    )
+    TILE_COUNT: ClassVar[NumericField] = NumericField("tileCount", "tileCount")
     """
-    Parent dossier name
+    Number of tiles in this table.
     """
 
-    MICRO_STRATEGY_DOSSIER: ClassVar[RelationField] = RelationField(
-        "microStrategyDossier"
-    )
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    TILES: ClassVar[RelationField] = RelationField("tiles")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_visualization_type",
-        "micro_strategy_dossier_qualified_name",
-        "micro_strategy_dossier_name",
-        "micro_strategy_dossier",
-        "micro_strategy_project",
+        "workspace_qualified_name",
+        "web_url",
+        "tile_count",
+        "workspace",
+        "tiles",
     ]
 
     @property
-    def micro_strategy_visualization_type(self) -> Optional[str]:
+    def workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_visualization_type
+            else self.attributes.workspace_qualified_name
         )
 
-    @micro_strategy_visualization_type.setter
-    def micro_strategy_visualization_type(
-        self, micro_strategy_visualization_type: Optional[str]
-    ):
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_visualization_type = (
-            micro_strategy_visualization_type
-        )
+        self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
-    def micro_strategy_dossier_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_dossier_qualified_name
-        )
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
 
-    @micro_strategy_dossier_qualified_name.setter
-    def micro_strategy_dossier_qualified_name(
-        self, micro_strategy_dossier_qualified_name: Optional[str]
-    ):
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossier_qualified_name = (
-            micro_strategy_dossier_qualified_name
-        )
+        self.attributes.web_url = web_url
 
     @property
-    def micro_strategy_dossier_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_dossier_name
-        )
+    def tile_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.tile_count
 
-    @micro_strategy_dossier_name.setter
-    def micro_strategy_dossier_name(self, micro_strategy_dossier_name: Optional[str]):
+    @tile_count.setter
+    def tile_count(self, tile_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossier_name = micro_strategy_dossier_name
+        self.attributes.tile_count = tile_count
 
     @property
-    def micro_strategy_dossier(self) -> Optional[MicroStrategyDossier]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_dossier
-        )
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
 
-    @micro_strategy_dossier.setter
-    def micro_strategy_dossier(
-        self, micro_strategy_dossier: Optional[MicroStrategyDossier]
-    ):
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossier = micro_strategy_dossier
+        self.attributes.workspace = workspace
 
     @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
 
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
+        self.attributes.tiles = tiles
 
-    class Attributes(MicroStrategy.Attributes):
-        micro_strategy_visualization_type: Optional[str] = Field(
-            None, description="", alias="microStrategyVisualizationType"
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
         )
-        micro_strategy_dossier_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyDossierQualifiedName"
-        )
-        micro_strategy_dossier_name: Optional[str] = Field(
-            None, description="", alias="microStrategyDossierName"
-        )
-        micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
-            None, description="", alias="microStrategyDossier"
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        tile_count: Optional[int] = Field(None, description="", alias="tileCount")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
         )  # relationship
 
-    attributes: "MicroStrategyVisualization.Attributes" = Field(
-        default_factory=lambda: MicroStrategyVisualization.Attributes(),
+    attributes: "PowerBIDashboard.Attributes" = Field(
+        default_factory=lambda: PowerBIDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MicroStrategyReport.Attributes.update_forward_refs()
+class PowerBIDataflow(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataflow":
+            raise ValueError("must be PowerBIDataflow")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDataflow._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this dataflow exists.
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    Deprecated. See 'sourceUrl' instead.
+    """
+
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "workspace",
+        "datasets",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return None if self.attributes is None else self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return None if self.attributes is None else self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+
+    attributes: "PowerBIDataflow.Attributes" = Field(
+        default_factory=lambda: PowerBIDataflow.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-MicroStrategyProject.Attributes.update_forward_refs()
+class PowerBIPage(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in PowerBIPage._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    Unique name of the workspace in which this page exists.
+    """
+    REPORT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "reportQualifiedName", "reportQualifiedName"
+    )
+    """
+    Unique name of the report in which this page exists.
+    """
+
+    REPORT: ClassVar[RelationField] = RelationField("report")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "report_qualified_name",
+        "report",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def report_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.report_qualified_name
+        )
+
+    @report_qualified_name.setter
+    def report_qualified_name(self, report_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_qualified_name = report_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return None if self.attributes is None else self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        report_qualified_name: Optional[str] = Field(
+            None, description="", alias="reportQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+
+    attributes: "PowerBIPage.Attributes" = Field(
+        default_factory=lambda: PowerBIPage.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-MicroStrategyMetric.Attributes.update_forward_refs()
+PowerBIReport.Attributes.update_forward_refs()
 
 
-MicroStrategyCube.Attributes.update_forward_refs()
+PowerBIMeasure.Attributes.update_forward_refs()
 
 
-MicroStrategyDossier.Attributes.update_forward_refs()
+PowerBIColumn.Attributes.update_forward_refs()
 
 
-MicroStrategyFact.Attributes.update_forward_refs()
+PowerBITable.Attributes.update_forward_refs()
 
 
-MicroStrategyDocument.Attributes.update_forward_refs()
+PowerBITile.Attributes.update_forward_refs()
 
 
-MicroStrategyAttribute.Attributes.update_forward_refs()
+PowerBIDatasource.Attributes.update_forward_refs()
 
 
-MicroStrategyVisualization.Attributes.update_forward_refs()
+PowerBIWorkspace.Attributes.update_forward_refs()
+
+
+PowerBIDataset.Attributes.update_forward_refs()
+
+
+PowerBIDashboard.Attributes.update_forward_refs()
+
+
+PowerBIDataflow.Attributes.update_forward_refs()
+
+
+PowerBIPage.Attributes.update_forward_refs()

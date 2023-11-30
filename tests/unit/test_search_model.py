@@ -287,6 +287,22 @@ def test_index_search_request():
     )
 
 
+def test_index_search_request_get_dsl_str():
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+    request = IndexSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
+    assert (
+        request.get_dsl_str()
+        == '{"query": {"attributes": ["schemaName", "databaseName"],'
+        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true,'
+        ' "post_filter": {"term": {"databaseName.keyword": {"value": "ATLAN_SAMPLE_DATA"}}},'
+        ' "query": {"term": {"__typeName.keyword": {"value": "Schema"}}},'
+        ' "sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": []}}'
+    )
+
+
 def test_adding_terms_results_in_must_bool():
     term_1 = Term(field="name", value="Bob")
     term_2 = Term(field="name", value="Dave")

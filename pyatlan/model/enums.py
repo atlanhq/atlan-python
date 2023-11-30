@@ -1725,6 +1725,21 @@ class PersonaMetadataAction(str, Enum):
     DETACH_TERMS = "persona-remove-terms"
 
 
+class PersonaDomainAction(str, Enum):
+    CREATE_DOMAIN = "persona-domain-create"
+    READ_DOMAIN = "persona-domain-read"
+    UPDATE_DOMAIN = "persona-domain-update"
+    DELETE_DOMAIN = "persona-domain-delete"
+    CREATE_SUBDOMAIN = "persona-domain-sub-domain-create"
+    READ_SUBDOMAIN = "persona-domain-sub-domain-read"
+    UPDATE_SUBDOMAIN = "persona-domain-sub-domain-update"
+    DELETE_SUBDOMAIN = "persona-domain-sub-domain-delete"
+    CREATE_PRODUCTS = "persona-domain-product-create"
+    READ_PRODUCTS = "persona-domain-product-read"
+    UPDATE_PRODUCTS = "persona-domain-product-update"
+    DELETE_PRODUCTS = "persona-domain-product-delete"
+
+
 class PurposeMetadataAction(str, Enum):
     CREATE = "entity-create"
     READ = "entity-read"
@@ -1972,6 +1987,24 @@ class CertificateStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     DRAFT = "DRAFT"
     VERIFIED = "VERIFIED"
+
+
+class DataProductCriticality(str, Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
+
+class DataProductSensitivity(str, Enum):
+    PUBLIC = "Public"
+    INTERNAL = "Internal"
+    CONFIDENTIAL = "Confidential"
+
+
+class DataProductStatus(str, Enum):
+    ACTIVE = "Active"
+    SUNSET = "Sunset"
+    ARCHIVED = "Archived"
 
 
 class FileType(str, Enum):

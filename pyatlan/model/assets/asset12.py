@@ -13,6 +13,7 @@ from pyatlan.model.enums import (
     AuthPolicyResourceCategory,
     AuthPolicyType,
     DataAction,
+    PersonaDomainAction,
     PersonaGlossaryAction,
     PersonaMetadataAction,
 )
@@ -117,6 +118,33 @@ class Persona(AccessControl):
         policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
         policy.policy_service_name = "atlas"
         policy.policy_sub_category = "glossary"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_domain_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        actions: Set[PersonaDomainAction],
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "actions", "resources"],
+            [name, persona_id, actions, resources],
+        )
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = AuthPolicyType.ALLOW
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "domain"
         persona = Persona()
         persona.guid = persona_id
         policy.access_control = persona

@@ -10,1104 +10,336 @@ from typing import ClassVar, Optional
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
 )
 
-from .asset44 import Sisense
+from .asset44 import Redash
 
 
-class SisenseFolder(Sisense):
+class RedashQuery(Redash):
     """Description"""
 
-    type_name: str = Field("SisenseFolder", allow_mutation=False)
+    type_name: str = Field("RedashQuery", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SisenseFolder":
-            raise ValueError("must be SisenseFolder")
+        if v != "RedashQuery":
+            raise ValueError("must be RedashQuery")
         return v
 
     def __setattr__(self, name, value):
-        if name in SisenseFolder._convenience_properties:
+        if name in RedashQuery._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "sisenseFolderParentFolderQualifiedName",
-        "sisenseFolderParentFolderQualifiedName",
-        "sisenseFolderParentFolderQualifiedName.text",
+    REDASH_QUERY_SQL: ClassVar[KeywordField] = KeywordField(
+        "redashQuerySQL", "redashQuerySQL"
     )
     """
-    Qualified name of the parent folder
+    SQL code of this query.
+    """
+    REDASH_QUERY_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+        "redashQueryParameters", "redashQueryParameters"
+    )
+    """
+    Parameters of this query.
+    """
+    REDASH_QUERY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "redashQuerySchedule", "redashQuerySchedule"
+    )
+    """
+    Schedule for this query.
+    """
+    REDASH_QUERY_LAST_EXECUTION_RUNTIME: ClassVar[NumericField] = NumericField(
+        "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
+    )
+    """
+    Elapsed time of the last execution of this query.
+    """
+    REDASH_QUERY_LAST_EXECUTED_AT: ClassVar[NumericField] = NumericField(
+        "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
+    )
+    """
+    Time (epoch) when this query was last executed, in milliseconds.
+    """
+    REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryScheduleHumanized",
+        "redashQueryScheduleHumanized",
+        "redashQueryScheduleHumanized.text",
+    )
+    """
+    Schdule for this query in readable text for overview tab and filtering.
     """
 
-    SISENSE_CHILD_FOLDERS: ClassVar[RelationField] = RelationField(
-        "sisenseChildFolders"
-    )
-    """
-    TBC
-    """
-    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
-    """
-    TBC
-    """
-    SISENSE_DASHBOARDS: ClassVar[RelationField] = RelationField("sisenseDashboards")
-    """
-    TBC
-    """
-    SISENSE_PARENT_FOLDER: ClassVar[RelationField] = RelationField(
-        "sisenseParentFolder"
+    REDASH_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "redashVisualizations"
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "sisense_folder_parent_folder_qualified_name",
-        "sisense_child_folders",
-        "sisense_widgets",
-        "sisense_dashboards",
-        "sisense_parent_folder",
+        "redash_query_s_q_l",
+        "redash_query_parameters",
+        "redash_query_schedule",
+        "redash_query_last_execution_runtime",
+        "redash_query_last_executed_at",
+        "redash_query_schedule_humanized",
+        "redash_visualizations",
     ]
 
     @property
-    def sisense_folder_parent_folder_qualified_name(self) -> Optional[str]:
+    def redash_query_s_q_l(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.redash_query_s_q_l
+
+    @redash_query_s_q_l.setter
+    def redash_query_s_q_l(self, redash_query_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_s_q_l = redash_query_s_q_l
+
+    @property
+    def redash_query_parameters(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.redash_query_parameters
+        )
+
+    @redash_query_parameters.setter
+    def redash_query_parameters(self, redash_query_parameters: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_parameters = redash_query_parameters
+
+    @property
+    def redash_query_schedule(self) -> Optional[dict[str, str]]:
+        return (
+            None if self.attributes is None else self.attributes.redash_query_schedule
+        )
+
+    @redash_query_schedule.setter
+    def redash_query_schedule(self, redash_query_schedule: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_schedule = redash_query_schedule
+
+    @property
+    def redash_query_last_execution_runtime(self) -> Optional[float]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sisense_folder_parent_folder_qualified_name
+            else self.attributes.redash_query_last_execution_runtime
         )
 
-    @sisense_folder_parent_folder_qualified_name.setter
-    def sisense_folder_parent_folder_qualified_name(
-        self, sisense_folder_parent_folder_qualified_name: Optional[str]
+    @redash_query_last_execution_runtime.setter
+    def redash_query_last_execution_runtime(
+        self, redash_query_last_execution_runtime: Optional[float]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_folder_parent_folder_qualified_name = (
-            sisense_folder_parent_folder_qualified_name
+        self.attributes.redash_query_last_execution_runtime = (
+            redash_query_last_execution_runtime
         )
 
     @property
-    def sisense_child_folders(self) -> Optional[list[SisenseFolder]]:
+    def redash_query_last_executed_at(self) -> Optional[datetime]:
         return (
-            None if self.attributes is None else self.attributes.sisense_child_folders
+            None
+            if self.attributes is None
+            else self.attributes.redash_query_last_executed_at
         )
 
-    @sisense_child_folders.setter
-    def sisense_child_folders(
-        self, sisense_child_folders: Optional[list[SisenseFolder]]
+    @redash_query_last_executed_at.setter
+    def redash_query_last_executed_at(
+        self, redash_query_last_executed_at: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_child_folders = sisense_child_folders
+        self.attributes.redash_query_last_executed_at = redash_query_last_executed_at
 
     @property
-    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
-        return None if self.attributes is None else self.attributes.sisense_widgets
-
-    @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_widgets = sisense_widgets
-
-    @property
-    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
-        return None if self.attributes is None else self.attributes.sisense_dashboards
-
-    @sisense_dashboards.setter
-    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_dashboards = sisense_dashboards
-
-    @property
-    def sisense_parent_folder(self) -> Optional[SisenseFolder]:
+    def redash_query_schedule_humanized(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.sisense_parent_folder
+            None
+            if self.attributes is None
+            else self.attributes.redash_query_schedule_humanized
         )
 
-    @sisense_parent_folder.setter
-    def sisense_parent_folder(self, sisense_parent_folder: Optional[SisenseFolder]):
+    @redash_query_schedule_humanized.setter
+    def redash_query_schedule_humanized(
+        self, redash_query_schedule_humanized: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_parent_folder = sisense_parent_folder
-
-    class Attributes(Sisense.Attributes):
-        sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseFolderParentFolderQualifiedName"
+        self.attributes.redash_query_schedule_humanized = (
+            redash_query_schedule_humanized
         )
-        sisense_child_folders: Optional[list[SisenseFolder]] = Field(
-            None, description="", alias="sisenseChildFolders"
-        )  # relationship
-        sisense_widgets: Optional[list[SisenseWidget]] = Field(
-            None, description="", alias="sisenseWidgets"
-        )  # relationship
-        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
-            None, description="", alias="sisenseDashboards"
-        )  # relationship
-        sisense_parent_folder: Optional[SisenseFolder] = Field(
-            None, description="", alias="sisenseParentFolder"
+
+    @property
+    def redash_visualizations(self) -> Optional[list[RedashVisualization]]:
+        return (
+            None if self.attributes is None else self.attributes.redash_visualizations
+        )
+
+    @redash_visualizations.setter
+    def redash_visualizations(
+        self, redash_visualizations: Optional[list[RedashVisualization]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_visualizations = redash_visualizations
+
+    class Attributes(Redash.Attributes):
+        redash_query_s_q_l: Optional[str] = Field(
+            None, description="", alias="redashQuerySQL"
+        )
+        redash_query_parameters: Optional[str] = Field(
+            None, description="", alias="redashQueryParameters"
+        )
+        redash_query_schedule: Optional[dict[str, str]] = Field(
+            None, description="", alias="redashQuerySchedule"
+        )
+        redash_query_last_execution_runtime: Optional[float] = Field(
+            None, description="", alias="redashQueryLastExecutionRuntime"
+        )
+        redash_query_last_executed_at: Optional[datetime] = Field(
+            None, description="", alias="redashQueryLastExecutedAt"
+        )
+        redash_query_schedule_humanized: Optional[str] = Field(
+            None, description="", alias="redashQueryScheduleHumanized"
+        )
+        redash_visualizations: Optional[list[RedashVisualization]] = Field(
+            None, description="", alias="redashVisualizations"
         )  # relationship
 
-    attributes: "SisenseFolder.Attributes" = Field(
-        default_factory=lambda: SisenseFolder.Attributes(),
+    attributes: "RedashQuery.Attributes" = Field(
+        default_factory=lambda: RedashQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SisenseWidget(Sisense):
+class RedashVisualization(Redash):
     """Description"""
 
-    type_name: str = Field("SisenseWidget", allow_mutation=False)
+    type_name: str = Field("RedashVisualization", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SisenseWidget":
-            raise ValueError("must be SisenseWidget")
+        if v != "RedashVisualization":
+            raise ValueError("must be RedashVisualization")
         return v
 
     def __setattr__(self, name, value):
-        if name in SisenseWidget._convenience_properties:
+        if name in RedashVisualization._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SISENSE_WIDGET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
-        "sisenseWidgetColumnCount", "sisenseWidgetColumnCount"
+    REDASH_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "redashVisualizationType", "redashVisualizationType"
     )
     """
-    Numbers of columns used in the widget
+    Type of this visualization.
     """
-    SISENSE_WIDGET_SUB_TYPE: ClassVar[KeywordField] = KeywordField(
-        "sisenseWidgetSubType", "sisenseWidgetSubType"
+    REDASH_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryName", "redashQueryName.keyword", "redashQueryName"
     )
     """
-    Sub type of the widget
+    Simple name of the query from which this visualization is created.
     """
-    SISENSE_WIDGET_SIZE: ClassVar[KeywordField] = KeywordField(
-        "sisenseWidgetSize", "sisenseWidgetSize"
+    REDASH_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryQualifiedName",
+        "redashQueryQualifiedName",
+        "redashQueryQualifiedName.text",
     )
     """
-    Size of the widget
-    """
-    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "sisenseWidgetDashboardQualifiedName",
-        "sisenseWidgetDashboardQualifiedName",
-        "sisenseWidgetDashboardQualifiedName.text",
-    )
-    """
-    Qualified name of the dashboard under which this widget is present
-    """
-    SISENSE_WIDGET_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sisenseWidgetFolderQualifiedName",
-        "sisenseWidgetFolderQualifiedName",
-        "sisenseWidgetFolderQualifiedName.text",
-    )
-    """
-    Qualified name of the folder under which this widget is present
+    Unique name of the query from which this visualization is created.
     """
 
-    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
-        "sisenseDatamodelTables"
-    )
-    """
-    TBC
-    """
-    SISENSE_FOLDER: ClassVar[RelationField] = RelationField("sisenseFolder")
-    """
-    TBC
-    """
-    SISENSE_DASHBOARD: ClassVar[RelationField] = RelationField("sisenseDashboard")
+    REDASH_QUERY: ClassVar[RelationField] = RelationField("redashQuery")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "sisense_widget_column_count",
-        "sisense_widget_sub_type",
-        "sisense_widget_size",
-        "sisense_widget_dashboard_qualified_name",
-        "sisense_widget_folder_qualified_name",
-        "sisense_datamodel_tables",
-        "sisense_folder",
-        "sisense_dashboard",
+        "redash_visualization_type",
+        "redash_query_name",
+        "redash_query_qualified_name",
+        "redash_query",
     ]
 
     @property
-    def sisense_widget_column_count(self) -> Optional[int]:
+    def redash_visualization_type(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sisense_widget_column_count
+            else self.attributes.redash_visualization_type
         )
 
-    @sisense_widget_column_count.setter
-    def sisense_widget_column_count(self, sisense_widget_column_count: Optional[int]):
+    @redash_visualization_type.setter
+    def redash_visualization_type(self, redash_visualization_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_widget_column_count = sisense_widget_column_count
+        self.attributes.redash_visualization_type = redash_visualization_type
 
     @property
-    def sisense_widget_sub_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sisense_widget_sub_type
-        )
+    def redash_query_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.redash_query_name
 
-    @sisense_widget_sub_type.setter
-    def sisense_widget_sub_type(self, sisense_widget_sub_type: Optional[str]):
+    @redash_query_name.setter
+    def redash_query_name(self, redash_query_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_widget_sub_type = sisense_widget_sub_type
+        self.attributes.redash_query_name = redash_query_name
 
     @property
-    def sisense_widget_size(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_widget_size
-
-    @sisense_widget_size.setter
-    def sisense_widget_size(self, sisense_widget_size: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_widget_size = sisense_widget_size
-
-    @property
-    def sisense_widget_dashboard_qualified_name(self) -> Optional[str]:
+    def redash_query_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sisense_widget_dashboard_qualified_name
+            else self.attributes.redash_query_qualified_name
         )
 
-    @sisense_widget_dashboard_qualified_name.setter
-    def sisense_widget_dashboard_qualified_name(
-        self, sisense_widget_dashboard_qualified_name: Optional[str]
-    ):
+    @redash_query_qualified_name.setter
+    def redash_query_qualified_name(self, redash_query_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_widget_dashboard_qualified_name = (
-            sisense_widget_dashboard_qualified_name
-        )
+        self.attributes.redash_query_qualified_name = redash_query_qualified_name
 
     @property
-    def sisense_widget_folder_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_widget_folder_qualified_name
-        )
+    def redash_query(self) -> Optional[RedashQuery]:
+        return None if self.attributes is None else self.attributes.redash_query
 
-    @sisense_widget_folder_qualified_name.setter
-    def sisense_widget_folder_qualified_name(
-        self, sisense_widget_folder_qualified_name: Optional[str]
-    ):
+    @redash_query.setter
+    def redash_query(self, redash_query: Optional[RedashQuery]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_widget_folder_qualified_name = (
-            sisense_widget_folder_qualified_name
-        )
+        self.attributes.redash_query = redash_query
 
-    @property
-    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_tables
+    class Attributes(Redash.Attributes):
+        redash_visualization_type: Optional[str] = Field(
+            None, description="", alias="redashVisualizationType"
         )
-
-    @sisense_datamodel_tables.setter
-    def sisense_datamodel_tables(
-        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
-
-    @property
-    def sisense_folder(self) -> Optional[SisenseFolder]:
-        return None if self.attributes is None else self.attributes.sisense_folder
-
-    @sisense_folder.setter
-    def sisense_folder(self, sisense_folder: Optional[SisenseFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_folder = sisense_folder
-
-    @property
-    def sisense_dashboard(self) -> Optional[SisenseDashboard]:
-        return None if self.attributes is None else self.attributes.sisense_dashboard
-
-    @sisense_dashboard.setter
-    def sisense_dashboard(self, sisense_dashboard: Optional[SisenseDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_dashboard = sisense_dashboard
-
-    class Attributes(Sisense.Attributes):
-        sisense_widget_column_count: Optional[int] = Field(
-            None, description="", alias="sisenseWidgetColumnCount"
+        redash_query_name: Optional[str] = Field(
+            None, description="", alias="redashQueryName"
         )
-        sisense_widget_sub_type: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetSubType"
+        redash_query_qualified_name: Optional[str] = Field(
+            None, description="", alias="redashQueryQualifiedName"
         )
-        sisense_widget_size: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetSize"
-        )
-        sisense_widget_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetDashboardQualifiedName"
-        )
-        sisense_widget_folder_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetFolderQualifiedName"
-        )
-        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
-            None, description="", alias="sisenseDatamodelTables"
-        )  # relationship
-        sisense_folder: Optional[SisenseFolder] = Field(
-            None, description="", alias="sisenseFolder"
-        )  # relationship
-        sisense_dashboard: Optional[SisenseDashboard] = Field(
-            None, description="", alias="sisenseDashboard"
+        redash_query: Optional[RedashQuery] = Field(
+            None, description="", alias="redashQuery"
         )  # relationship
 
-    attributes: "SisenseWidget.Attributes" = Field(
-        default_factory=lambda: SisenseWidget.Attributes(),
+    attributes: "RedashVisualization.Attributes" = Field(
+        default_factory=lambda: RedashVisualization.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SisenseDatamodel(Sisense):
-    """Description"""
+RedashQuery.Attributes.update_forward_refs()
 
-    type_name: str = Field("SisenseDatamodel", allow_mutation=False)
 
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SisenseDatamodel":
-            raise ValueError("must be SisenseDatamodel")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SisenseDatamodel._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SISENSE_DATAMODEL_TABLE_COUNT: ClassVar[NumericField] = NumericField(
-        "sisenseDatamodelTableCount", "sisenseDatamodelTableCount"
-    )
-    """
-    Number of tables present in the datamodel
-    """
-    SISENSE_DATAMODEL_SERVER: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelServer", "sisenseDatamodelServer"
-    )
-    """
-    Hostname of server on which the Datamodel is created
-    """
-    SISENSE_DATAMODEL_REVISION: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelRevision", "sisenseDatamodelRevision"
-    )
-    """
-    Revision of the datamodel
-    """
-    SISENSE_DATAMODEL_LAST_BUILD_TIME: ClassVar[NumericField] = NumericField(
-        "sisenseDatamodelLastBuildTime", "sisenseDatamodelLastBuildTime"
-    )
-    """
-    Timestamp of when the datamodel was last built
-    """
-    SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[NumericField] = NumericField(
-        "sisenseDatamodelLastSuccessfulBuildTime",
-        "sisenseDatamodelLastSuccessfulBuildTime",
-    )
-    """
-    Timestamp of when the datamodel was last built successfully
-    """
-    SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[NumericField] = NumericField(
-        "sisenseDatamodelLastPublishTime", "sisenseDatamodelLastPublishTime"
-    )
-    """
-    Timestamp of when the datamodel was last published
-    """
-    SISENSE_DATAMODEL_TYPE: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelType", "sisenseDatamodelType"
-    )
-    """
-    Type of the datamodel. It has values 'extract' or 'custom'
-    """
-    SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelRelationType", "sisenseDatamodelRelationType"
-    )
-    """
-    Default relation type for the Datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default.
-    """  # noqa: E501
-
-    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
-        "sisenseDatamodelTables"
-    )
-    """
-    TBC
-    """
-    SISENSE_DASHBOARDS: ClassVar[RelationField] = RelationField("sisenseDashboards")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "sisense_datamodel_table_count",
-        "sisense_datamodel_server",
-        "sisense_datamodel_revision",
-        "sisense_datamodel_last_build_time",
-        "sisense_datamodel_last_successful_build_time",
-        "sisense_datamodel_last_publish_time",
-        "sisense_datamodel_type",
-        "sisense_datamodel_relation_type",
-        "sisense_datamodel_tables",
-        "sisense_dashboards",
-    ]
-
-    @property
-    def sisense_datamodel_table_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_count
-        )
-
-    @sisense_datamodel_table_count.setter
-    def sisense_datamodel_table_count(
-        self, sisense_datamodel_table_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_count = sisense_datamodel_table_count
-
-    @property
-    def sisense_datamodel_server(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_server
-        )
-
-    @sisense_datamodel_server.setter
-    def sisense_datamodel_server(self, sisense_datamodel_server: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_server = sisense_datamodel_server
-
-    @property
-    def sisense_datamodel_revision(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_revision
-        )
-
-    @sisense_datamodel_revision.setter
-    def sisense_datamodel_revision(self, sisense_datamodel_revision: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_revision = sisense_datamodel_revision
-
-    @property
-    def sisense_datamodel_last_build_time(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_last_build_time
-        )
-
-    @sisense_datamodel_last_build_time.setter
-    def sisense_datamodel_last_build_time(
-        self, sisense_datamodel_last_build_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_last_build_time = (
-            sisense_datamodel_last_build_time
-        )
-
-    @property
-    def sisense_datamodel_last_successful_build_time(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_last_successful_build_time
-        )
-
-    @sisense_datamodel_last_successful_build_time.setter
-    def sisense_datamodel_last_successful_build_time(
-        self, sisense_datamodel_last_successful_build_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_last_successful_build_time = (
-            sisense_datamodel_last_successful_build_time
-        )
-
-    @property
-    def sisense_datamodel_last_publish_time(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_last_publish_time
-        )
-
-    @sisense_datamodel_last_publish_time.setter
-    def sisense_datamodel_last_publish_time(
-        self, sisense_datamodel_last_publish_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_last_publish_time = (
-            sisense_datamodel_last_publish_time
-        )
-
-    @property
-    def sisense_datamodel_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sisense_datamodel_type
-        )
-
-    @sisense_datamodel_type.setter
-    def sisense_datamodel_type(self, sisense_datamodel_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_type = sisense_datamodel_type
-
-    @property
-    def sisense_datamodel_relation_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_relation_type
-        )
-
-    @sisense_datamodel_relation_type.setter
-    def sisense_datamodel_relation_type(
-        self, sisense_datamodel_relation_type: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_relation_type = (
-            sisense_datamodel_relation_type
-        )
-
-    @property
-    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_tables
-        )
-
-    @sisense_datamodel_tables.setter
-    def sisense_datamodel_tables(
-        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
-
-    @property
-    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
-        return None if self.attributes is None else self.attributes.sisense_dashboards
-
-    @sisense_dashboards.setter
-    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_dashboards = sisense_dashboards
-
-    class Attributes(Sisense.Attributes):
-        sisense_datamodel_table_count: Optional[int] = Field(
-            None, description="", alias="sisenseDatamodelTableCount"
-        )
-        sisense_datamodel_server: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelServer"
-        )
-        sisense_datamodel_revision: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelRevision"
-        )
-        sisense_datamodel_last_build_time: Optional[datetime] = Field(
-            None, description="", alias="sisenseDatamodelLastBuildTime"
-        )
-        sisense_datamodel_last_successful_build_time: Optional[datetime] = Field(
-            None, description="", alias="sisenseDatamodelLastSuccessfulBuildTime"
-        )
-        sisense_datamodel_last_publish_time: Optional[datetime] = Field(
-            None, description="", alias="sisenseDatamodelLastPublishTime"
-        )
-        sisense_datamodel_type: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelType"
-        )
-        sisense_datamodel_relation_type: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelRelationType"
-        )
-        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
-            None, description="", alias="sisenseDatamodelTables"
-        )  # relationship
-        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
-            None, description="", alias="sisenseDashboards"
-        )  # relationship
-
-    attributes: "SisenseDatamodel.Attributes" = Field(
-        default_factory=lambda: SisenseDatamodel.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SisenseDatamodelTable(Sisense):
-    """Description"""
-
-    type_name: str = Field("SisenseDatamodelTable", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SisenseDatamodelTable":
-            raise ValueError("must be SisenseDatamodelTable")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SisenseDatamodelTable._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SISENSE_DATAMODEL_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sisenseDatamodelQualifiedName",
-        "sisenseDatamodelQualifiedName",
-        "sisenseDatamodelQualifiedName.text",
-    )
-    """
-    Qualified name of the datamodel in which this datamodel table is present
-    """
-    SISENSE_DATAMODEL_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
-        "sisenseDatamodelTableColumnCount", "sisenseDatamodelTableColumnCount"
-    )
-    """
-    Number of columns present in the datamodel table
-    """
-    SISENSE_DATAMODEL_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelTableType", "sisenseDatamodelTableType"
-    )
-    """
-    Type of the datamodel table. 'base' for regular tables, 'custom' for SQL expression-based tables
-    """
-    SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
-    )
-    """
-    Actual SQL expression of the datamodel table
-    """
-    SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED: ClassVar[BooleanField] = BooleanField(
-        "sisenseDatamodelTableIsMaterialized", "sisenseDatamodelTableIsMaterialized"
-    )
-    """
-    Boolean indicating if the datamodel table is materialised
-    """
-    SISENSE_DATAMODEL_TABLE_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
-        "sisenseDatamodelTableIsHidden", "sisenseDatamodelTableIsHidden"
-    )
-    """
-    Boolean indicating if the datamodel table is hidden on sisense
-    """
-    SISENSE_DATAMODEL_TABLE_SCHEDULE: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelTableSchedule", "sisenseDatamodelTableSchedule"
-    )
-    """
-    Refresh schedule of the datamodel table (JSON Object)
-    """
-    SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS: ClassVar[KeywordField] = KeywordField(
-        "sisenseDatamodelTableLiveQuerySettings",
-        "sisenseDatamodelTableLiveQuerySettings",
-    )
-    """
-    LiveQuery settings of the datamodel table (JSON Object)
-    """
-
-    SISENSE_DATAMODEL: ClassVar[RelationField] = RelationField("sisenseDatamodel")
-    """
-    TBC
-    """
-    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "sisense_datamodel_qualified_name",
-        "sisense_datamodel_table_column_count",
-        "sisense_datamodel_table_type",
-        "sisense_datamodel_table_expression",
-        "sisense_datamodel_table_is_materialized",
-        "sisense_datamodel_table_is_hidden",
-        "sisense_datamodel_table_schedule",
-        "sisense_datamodel_table_live_query_settings",
-        "sisense_datamodel",
-        "sisense_widgets",
-    ]
-
-    @property
-    def sisense_datamodel_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_qualified_name
-        )
-
-    @sisense_datamodel_qualified_name.setter
-    def sisense_datamodel_qualified_name(
-        self, sisense_datamodel_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_qualified_name = (
-            sisense_datamodel_qualified_name
-        )
-
-    @property
-    def sisense_datamodel_table_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_column_count
-        )
-
-    @sisense_datamodel_table_column_count.setter
-    def sisense_datamodel_table_column_count(
-        self, sisense_datamodel_table_column_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_column_count = (
-            sisense_datamodel_table_column_count
-        )
-
-    @property
-    def sisense_datamodel_table_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_type
-        )
-
-    @sisense_datamodel_table_type.setter
-    def sisense_datamodel_table_type(self, sisense_datamodel_table_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_type = sisense_datamodel_table_type
-
-    @property
-    def sisense_datamodel_table_expression(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_expression
-        )
-
-    @sisense_datamodel_table_expression.setter
-    def sisense_datamodel_table_expression(
-        self, sisense_datamodel_table_expression: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_expression = (
-            sisense_datamodel_table_expression
-        )
-
-    @property
-    def sisense_datamodel_table_is_materialized(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_is_materialized
-        )
-
-    @sisense_datamodel_table_is_materialized.setter
-    def sisense_datamodel_table_is_materialized(
-        self, sisense_datamodel_table_is_materialized: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_is_materialized = (
-            sisense_datamodel_table_is_materialized
-        )
-
-    @property
-    def sisense_datamodel_table_is_hidden(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_is_hidden
-        )
-
-    @sisense_datamodel_table_is_hidden.setter
-    def sisense_datamodel_table_is_hidden(
-        self, sisense_datamodel_table_is_hidden: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_is_hidden = (
-            sisense_datamodel_table_is_hidden
-        )
-
-    @property
-    def sisense_datamodel_table_schedule(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_schedule
-        )
-
-    @sisense_datamodel_table_schedule.setter
-    def sisense_datamodel_table_schedule(
-        self, sisense_datamodel_table_schedule: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_schedule = (
-            sisense_datamodel_table_schedule
-        )
-
-    @property
-    def sisense_datamodel_table_live_query_settings(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_table_live_query_settings
-        )
-
-    @sisense_datamodel_table_live_query_settings.setter
-    def sisense_datamodel_table_live_query_settings(
-        self, sisense_datamodel_table_live_query_settings: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_live_query_settings = (
-            sisense_datamodel_table_live_query_settings
-        )
-
-    @property
-    def sisense_datamodel(self) -> Optional[SisenseDatamodel]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel
-
-    @sisense_datamodel.setter
-    def sisense_datamodel(self, sisense_datamodel: Optional[SisenseDatamodel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel = sisense_datamodel
-
-    @property
-    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
-        return None if self.attributes is None else self.attributes.sisense_widgets
-
-    @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_widgets = sisense_widgets
-
-    class Attributes(Sisense.Attributes):
-        sisense_datamodel_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelQualifiedName"
-        )
-        sisense_datamodel_table_column_count: Optional[int] = Field(
-            None, description="", alias="sisenseDatamodelTableColumnCount"
-        )
-        sisense_datamodel_table_type: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableType"
-        )
-        sisense_datamodel_table_expression: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableExpression"
-        )
-        sisense_datamodel_table_is_materialized: Optional[bool] = Field(
-            None, description="", alias="sisenseDatamodelTableIsMaterialized"
-        )
-        sisense_datamodel_table_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sisenseDatamodelTableIsHidden"
-        )
-        sisense_datamodel_table_schedule: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableSchedule"
-        )
-        sisense_datamodel_table_live_query_settings: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableLiveQuerySettings"
-        )
-        sisense_datamodel: Optional[SisenseDatamodel] = Field(
-            None, description="", alias="sisenseDatamodel"
-        )  # relationship
-        sisense_widgets: Optional[list[SisenseWidget]] = Field(
-            None, description="", alias="sisenseWidgets"
-        )  # relationship
-
-    attributes: "SisenseDatamodelTable.Attributes" = Field(
-        default_factory=lambda: SisenseDatamodelTable.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SisenseDashboard(Sisense):
-    """Description"""
-
-    type_name: str = Field("SisenseDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SisenseDashboard":
-            raise ValueError("must be SisenseDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SisenseDashboard._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "sisenseDashboardFolderQualifiedName",
-        "sisenseDashboardFolderQualifiedName",
-        "sisenseDashboardFolderQualifiedName.text",
-    )
-    """
-    Qualified name of the folder in which this dashboard exists
-    """
-    SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[NumericField] = NumericField(
-        "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
-    )
-    """
-    Number of widgets that are present in this dashboard
-    """
-
-    SISENSE_DATAMODELS: ClassVar[RelationField] = RelationField("sisenseDatamodels")
-    """
-    TBC
-    """
-    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
-    """
-    TBC
-    """
-    SISENSE_FOLDER: ClassVar[RelationField] = RelationField("sisenseFolder")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "sisense_dashboard_folder_qualified_name",
-        "sisense_dashboard_widget_count",
-        "sisense_datamodels",
-        "sisense_widgets",
-        "sisense_folder",
-    ]
-
-    @property
-    def sisense_dashboard_folder_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_dashboard_folder_qualified_name
-        )
-
-    @sisense_dashboard_folder_qualified_name.setter
-    def sisense_dashboard_folder_qualified_name(
-        self, sisense_dashboard_folder_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_dashboard_folder_qualified_name = (
-            sisense_dashboard_folder_qualified_name
-        )
-
-    @property
-    def sisense_dashboard_widget_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_dashboard_widget_count
-        )
-
-    @sisense_dashboard_widget_count.setter
-    def sisense_dashboard_widget_count(
-        self, sisense_dashboard_widget_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_dashboard_widget_count = sisense_dashboard_widget_count
-
-    @property
-    def sisense_datamodels(self) -> Optional[list[SisenseDatamodel]]:
-        return None if self.attributes is None else self.attributes.sisense_datamodels
-
-    @sisense_datamodels.setter
-    def sisense_datamodels(self, sisense_datamodels: Optional[list[SisenseDatamodel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_datamodels = sisense_datamodels
-
-    @property
-    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
-        return None if self.attributes is None else self.attributes.sisense_widgets
-
-    @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_widgets = sisense_widgets
-
-    @property
-    def sisense_folder(self) -> Optional[SisenseFolder]:
-        return None if self.attributes is None else self.attributes.sisense_folder
-
-    @sisense_folder.setter
-    def sisense_folder(self, sisense_folder: Optional[SisenseFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_folder = sisense_folder
-
-    class Attributes(Sisense.Attributes):
-        sisense_dashboard_folder_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseDashboardFolderQualifiedName"
-        )
-        sisense_dashboard_widget_count: Optional[int] = Field(
-            None, description="", alias="sisenseDashboardWidgetCount"
-        )
-        sisense_datamodels: Optional[list[SisenseDatamodel]] = Field(
-            None, description="", alias="sisenseDatamodels"
-        )  # relationship
-        sisense_widgets: Optional[list[SisenseWidget]] = Field(
-            None, description="", alias="sisenseWidgets"
-        )  # relationship
-        sisense_folder: Optional[SisenseFolder] = Field(
-            None, description="", alias="sisenseFolder"
-        )  # relationship
-
-    attributes: "SisenseDashboard.Attributes" = Field(
-        default_factory=lambda: SisenseDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-SisenseFolder.Attributes.update_forward_refs()
-
-
-SisenseWidget.Attributes.update_forward_refs()
-
-
-SisenseDatamodel.Attributes.update_forward_refs()
-
-
-SisenseDatamodelTable.Attributes.update_forward_refs()
-
-
-SisenseDashboard.Attributes.update_forward_refs()
+RedashVisualization.Attributes.update_forward_refs()

@@ -1,0 +1,47 @@
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        assets: IndexSearchRequest,
+        icon: Optional[AtlanIcon] = None,
+        domain: Optional[DataDomain] = None,
+        domain_qualified_name: Optional[StrictStr] = None,
+    ) -> DataProduct:
+        validate_required_fields(["name", "assets"], [name, assets])
+        assets_dsl = assets.get_dsl_str()
+        attributes = DataProduct.Attributes.create(
+            name=name,
+            assets_dsl=assets_dsl,
+            icon=icon,
+            domain=domain,
+            domain_qualified_name=domain_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name"],
+            [name, qualified_name],
+        )
+        # Split the data product qualified_name to extract data mesh info
+        fields = qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
+        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                mesh_slug=mesh_slug,
+                mesh_abbreviation=mesh_abbreviation,
+            )
+        )

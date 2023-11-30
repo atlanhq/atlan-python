@@ -1,0 +1,30 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: StrictStr,
+            icon: Optional[AtlanIcon] = None,
+            parent_domain: Optional[DataDomain] = None,
+            parent_domain_qualified_name: Optional[StrictStr] = None,
+        ) -> DataDomain.Attributes:
+            validate_required_fields(["name"], [name])
+            mesh_name = to_camel_case(name)
+            qualified_name = f"default/domain/{mesh_name}"
+            # If "qualified name" of the parent domain is specified
+            if parent_domain_qualified_name:
+                parent_domain = DataDomain()
+                parent_domain.unique_attributes = {
+                    "qualifiedName": parent_domain_qualified_name
+                }
+                qualified_name = f"{parent_domain_qualified_name}/domain/{mesh_name}"
+            icon_str = icon.value if icon is not None else None
+            return DataDomain.Attributes(
+                name=name,
+                parent_domain=parent_domain,
+                mesh_slug=mesh_name,
+                mesh_abbreviation=mesh_name,
+                qualified_name=qualified_name,
+                icon=icon_str,
+            )

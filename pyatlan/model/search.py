@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
+from json import dumps, loads
 from typing import Any, Literal, Optional, Union
 
 from pydantic import (
@@ -1847,6 +1848,11 @@ class IndexSearchRequest(SearchRequest):
         "this is false and therefore only active (not deleted) relationships will be included.",
         alias="allowDeletedRelations",
     )
+
+    def get_dsl_str(self) -> str:
+        dsl_json_str = self.json(by_alias=True, exclude_none=True)
+        dsl_query_dict = dict(query=loads(dsl_json_str))
+        return dumps(dsl_query_dict)
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
