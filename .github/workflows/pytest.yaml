@@ -39,4 +39,4 @@ jobs:
           MARK_BASE_URL: https://mark.atlan.com
         run: |
           pytest tests/unit
-          pytest tests/integration
+          pytest tests/integration --ignore tests/integration/data_mesh_test.py

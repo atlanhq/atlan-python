@@ -1,3 +1,28 @@
+## 1.7.0 (December 1, 2023)
+
+### New features
+
+- (Experimental) Adds initial support for data domains and data products
+
+### Breaking changes
+
+- Disables the `delete_by_guid()` and restore methods for categories. Categories can currently only be purged (hard-deleted), so even when previously calling the `delete_by_guid()` method the backend actually translated this to a hard-delete (purge). (Which also means there is no way to restore a category.) We have therefore opted to disable the `delete_by_guid()` and restore methods — only for categories — to make it clearer that categories can only be purged (hard-deleted).
+
+### Bug fixes
+
+- Fixes error shown on retry overrun to show the underlying error, not the retry limit
+- Fixes a message that was logged as an error but was purely informational (debug-level)
+
+### QOL improvements
+
+- Adds a unique request ID to every request, and includes in logging
+- Logging is now done in both plain text and JSON
+- Bundles a reasonable default logging configuration to the base container image
+
+### Background changes
+
+- Consolidates Python-based code repositories into a single place
+
 ## 1.6.4 (November 21, 2023)
 
 ### Deprecations
