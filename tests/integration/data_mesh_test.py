@@ -164,7 +164,7 @@ def test_retrieve_sub_domain(client: AtlanClient, sub_domain: DataDomain):
 def product(
     client: AtlanClient,
     domain: DataDomain,
-) -> Generator[DataDomain, None, None]:
+) -> Generator[DataProduct, None, None]:
     assert domain.guid
     assets = (
         FluentSearch()

@@ -9,7 +9,7 @@
             icon: Optional[AtlanIcon] = None,
             domain: Optional[DataDomain] = None,
             domain_qualified_name: Optional[StrictStr] = None,
-        ) -> DataDomain.Attributes:
+        ) -> DataProduct.Attributes:
             validate_required_fields(["name"], [name])
             validate_single_required_field(
                 ["domain", "domain_qualified_name"],
