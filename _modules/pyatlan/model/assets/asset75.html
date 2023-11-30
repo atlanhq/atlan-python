@@ -186,6 +186,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
@@ -439,36 +443,184 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">.asset48</span> <span class="kn">import</span> <span class="n">Thoughtspot</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordTextField</span><span class="p">,</span> <span class="n">RelationField</span>
+
+<span class="kn">from</span> <span class="nn">.asset49</span> <span class="kn">import</span> <span class="n">Thoughtspot</span>
 
 
-<div class="viewcode-block" id="ThoughtspotAnswer">
-<a class="viewcode-back" href="../../../../asset/thoughtspotanswer.html#pyatlan.model.assets.ThoughtspotAnswer">[docs]</a>
-<span class="k">class</span> <span class="nc">ThoughtspotAnswer</span><span class="p">(</span><span class="n">Thoughtspot</span><span class="p">):</span>
+<div class="viewcode-block" id="ThoughtspotLiveboard">
+<a class="viewcode-back" href="../../../../asset/thoughtspotliveboard.html#pyatlan.model.assets.ThoughtspotLiveboard">[docs]</a>
+<span class="k">class</span> <span class="nc">ThoughtspotLiveboard</span><span class="p">(</span><span class="n">Thoughtspot</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ThoughtspotAnswer&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ThoughtspotLiveboard&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ThoughtspotAnswer&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ThoughtspotAnswer&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ThoughtspotLiveboard&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ThoughtspotLiveboard&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ThoughtspotAnswer</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ThoughtspotLiveboard</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="n">THOUGHTSPOT_DASHLETS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;thoughtspotDashlets&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;thoughtspot_dashlets&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_dashlets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ThoughtspotDashlet</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_dashlets</span>
+
+    <span class="nd">@thoughtspot_dashlets</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_dashlets</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">thoughtspot_dashlets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ThoughtspotDashlet</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_dashlets</span> <span class="o">=</span> <span class="n">thoughtspot_dashlets</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Thoughtspot</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">thoughtspot_dashlets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ThoughtspotDashlet</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;thoughtspotDashlets&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ThoughtspotLiveboard.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ThoughtspotLiveboard</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 
-<span class="n">ThoughtspotAnswer</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<div class="viewcode-block" id="ThoughtspotDashlet">
+<a class="viewcode-back" href="../../../../asset/thoughtspotdashlet.html#pyatlan.model.assets.ThoughtspotDashlet">[docs]</a>
+<span class="k">class</span> <span class="nc">ThoughtspotDashlet</span><span class="p">(</span><span class="n">Thoughtspot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ThoughtspotDashlet&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ThoughtspotDashlet&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ThoughtspotDashlet&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ThoughtspotDashlet</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">THOUGHTSPOT_LIVEBOARD_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;thoughtspotLiveboardName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspotLiveboardName.keyword&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspotLiveboardName&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple name of the liveboard in which this dashlet exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">THOUGHTSPOT_LIVEBOARD_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;thoughtspotLiveboardQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspotLiveboardQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspotLiveboardQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the liveboard in which this dashlet exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">THOUGHTSPOT_LIVEBOARD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;thoughtspotLiveboard&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;thoughtspot_liveboard_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspot_liveboard_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspot_liveboard&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_liveboard_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_liveboard_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@thoughtspot_liveboard_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_liveboard_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thoughtspot_liveboard_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_liveboard_name</span> <span class="o">=</span> <span class="n">thoughtspot_liveboard_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_liveboard_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_liveboard_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@thoughtspot_liveboard_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_liveboard_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">thoughtspot_liveboard_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_liveboard_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">thoughtspot_liveboard_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_liveboard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ThoughtspotLiveboard</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_liveboard</span>
+        <span class="p">)</span>
+
+    <span class="nd">@thoughtspot_liveboard</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_liveboard</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">thoughtspot_liveboard</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ThoughtspotLiveboard</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_liveboard</span> <span class="o">=</span> <span class="n">thoughtspot_liveboard</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Thoughtspot</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">thoughtspot_liveboard_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;thoughtspotLiveboardName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">thoughtspot_liveboard_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;thoughtspotLiveboardQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">thoughtspot_liveboard</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ThoughtspotLiveboard</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;thoughtspotLiveboard&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ThoughtspotDashlet.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ThoughtspotDashlet</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="n">ThoughtspotLiveboard</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">ThoughtspotDashlet</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

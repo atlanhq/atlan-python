@@ -187,6 +187,10 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datastudio.html">DataStudio</a></li>
@@ -443,7 +447,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.ALIAS">
 <span class="sig-name descname"><span class="pre">ALIAS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.ALIAS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Alias for this partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -461,49 +465,49 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.COLUMN_COUNT">
 <span class="sig-name descname"><span class="pre">COLUMN_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.COLUMN_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of columns in this partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.CONSTRAINT">
 <span class="sig-name descname"><span class="pre">CONSTRAINT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.CONSTRAINT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Constraint that defines this table partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION">
 <span class="sig-name descname"><span class="pre">EXTERNAL_LOCATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>External location of this partition, for example: an S3 object location.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION_FORMAT">
 <span class="sig-name descname"><span class="pre">EXTERNAL_LOCATION_FORMAT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION_FORMAT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Format of the external location of this partition, for example: JSON, CSV, PARQUET, etc.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION_REGION">
 <span class="sig-name descname"><span class="pre">EXTERNAL_LOCATION_REGION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION_REGION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Region of the external location of this partition, for example: S3 region.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.IS_PARTITIONED">
 <span class="sig-name descname"><span class="pre">IS_PARTITIONED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.IS_PARTITIONED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this partition is further partitioned (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.IS_QUERY_PREVIEW">
 <span class="sig-name descname"><span class="pre">IS_QUERY_PREVIEW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.IS_QUERY_PREVIEW" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether preview queries for this partition are allowed (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.IS_TEMPORARY">
 <span class="sig-name descname"><span class="pre">IS_TEMPORARY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.IS_TEMPORARY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this partition is temporary (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -521,37 +525,37 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.PARTITION_COUNT">
 <span class="sig-name descname"><span class="pre">PARTITION_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.PARTITION_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of sub-partitions of this partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.PARTITION_LIST">
 <span class="sig-name descname"><span class="pre">PARTITION_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.PARTITION_LIST" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of sub-partitions in this partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.PARTITION_STRATEGY">
 <span class="sig-name descname"><span class="pre">PARTITION_STRATEGY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.PARTITION_STRATEGY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Partition strategy of this partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.QUERY_PREVIEW_CONFIG">
 <span class="sig-name descname"><span class="pre">QUERY_PREVIEW_CONFIG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.QUERY_PREVIEW_CONFIG" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Configuration for the preview queries.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.ROW_COUNT">
 <span class="sig-name descname"><span class="pre">ROW_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.ROW_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows in this partition.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.TablePartition.SIZE_BYTES">
 <span class="sig-name descname"><span class="pre">SIZE_BYTES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.TablePartition.SIZE_BYTES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Size of this partition, in bytes.</p>
 </dd></dl>
 
 </dd></dl>

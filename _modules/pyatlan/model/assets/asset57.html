@@ -186,6 +186,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
@@ -439,531 +443,506 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BooleanField</span><span class="p">,</span>
     <span class="n">KeywordField</span><span class="p">,</span>
     <span class="n">KeywordTextField</span><span class="p">,</span>
-    <span class="n">RelationField</span><span class="p">,</span>
-    <span class="n">TextField</span><span class="p">,</span>
+    <span class="n">NumericField</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.structs</span> <span class="kn">import</span> <span class="n">SourceTagAttribute</span>
 
-<span class="kn">from</span> <span class="nn">.asset26</span> <span class="kn">import</span> <span class="n">API</span>
+<span class="kn">from</span> <span class="nn">.asset00</span> <span class="kn">import</span> <span class="n">Dbt</span>
 
 
-<div class="viewcode-block" id="APISpec">
-<a class="viewcode-back" href="../../../../asset/apispec.html#pyatlan.model.assets.APISpec">[docs]</a>
-<span class="k">class</span> <span class="nc">APISpec</span><span class="p">(</span><span class="n">API</span><span class="p">):</span>
+<div class="viewcode-block" id="DbtTag">
+<a class="viewcode-back" href="../../../../asset/dbttag.html#pyatlan.model.assets.DbtTag">[docs]</a>
+<span class="k">class</span> <span class="nc">DbtTag</span><span class="p">(</span><span class="n">Dbt</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="c1"># @validate_arguments()</span>
-    <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APISpec</span><span class="p">:</span>
-        <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;APISpec&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;DbtTag&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;APISpec&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be APISpec&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;DbtTag&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be DbtTag&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">DbtTag</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">API_SPEC_TERMS_OF_SERVICE_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecTermsOfServiceURL&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;apiSpecTermsOfServiceURL&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;apiSpecTermsOfServiceURL.text&quot;</span><span class="p">,</span>
+    <span class="n">DBT_ALIAS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtAlias&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtAlias.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtAlias&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_CONTACT_EMAIL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecContactEmail&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContactEmail&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContactEmail.text&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_CONTACT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecContactName&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContactName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContactName&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_CONTACT_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecContactURL&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContactURL&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContactURL.text&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_LICENSE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecLicenseName&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecLicenseName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecLicenseName&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_LICENSE_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecLicenseURL&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecLicenseURL&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecLicenseURL.text&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_CONTRACT_VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecContractVersion&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecContractVersion&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_SPEC_SERVICE_ALIAS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiSpecServiceAlias&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecServiceAlias&quot;</span><span class="p">,</span> <span class="s2">&quot;apiSpecServiceAlias.text&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">API_PATHS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;apiPaths&quot;</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_META</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;dbtMeta&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtMeta&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_UNIQUE_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtUniqueId&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtUniqueId.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtUniqueId&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_ACCOUNT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtAccountName&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtAccountName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtAccountName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtProjectName&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtProjectName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtProjectName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_PACKAGE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtPackageName&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtPackageName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtPackageName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobName&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtJobName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtJobName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_SCHEDULE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobSchedule&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtJobSchedule&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtJobStatus&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_SCHEDULE_CRON_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobScheduleCronHumanized&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbtJobScheduleCronHumanized.keyword&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbtJobScheduleCronHumanized&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_LAST_RUN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobLastRun&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtJobLastRun&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_NEXT_RUN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobNextRun&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtJobNextRun&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_JOB_NEXT_RUN_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtJobNextRunHumanized&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbtJobNextRunHumanized.keyword&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbtJobNextRunHumanized&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_ENVIRONMENT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtEnvironmentName&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtEnvironmentName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtEnvironmentName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_ENVIRONMENT_DBT_VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtEnvironmentDbtVersion&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbtEnvironmentDbtVersion.keyword&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbtEnvironmentDbtVersion&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;dbtTags&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtTags&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_CONNECTION_CONTEXT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtConnectionContext&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtConnectionContext&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DBT_SEMANTIC_LAYER_PROXY_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dbtSemanticLayerProxyUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;dbtSemanticLayerProxyUrl&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TAG_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;tagId&quot;</span><span class="p">,</span> <span class="s2">&quot;tagId&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique identifier of the tag in the source system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TAG_ATTRIBUTES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;tagAttributes&quot;</span><span class="p">,</span> <span class="s2">&quot;tagAttributes&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Attributes associated with the tag in the source system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TAG_ALLOWED_VALUES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;tagAllowedValues&quot;</span><span class="p">,</span> <span class="s2">&quot;tagAllowedValues&quot;</span><span class="p">,</span> <span class="s2">&quot;tagAllowedValues.text&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MAPPED_CLASSIFICATION_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;mappedClassificationName&quot;</span><span class="p">,</span> <span class="s2">&quot;mappedClassificationName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name of the classification in Atlan that is mapped to this tag.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;api_spec_terms_of_service_url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_contact_email&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_contact_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_contact_url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_license_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_license_url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_contract_version&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec_service_alias&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_paths&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_alias&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_meta&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_unique_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_account_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_project_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_package_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_schedule&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_status&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_schedule_cron_humanized&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_last_run&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_next_run&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_job_next_run_humanized&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_environment_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_environment_dbt_version&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_tags&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_connection_context&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dbt_semantic_layer_proxy_url&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tag_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tag_attributes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tag_allowed_values&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mapped_atlan_tag_name&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_terms_of_service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">dbt_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_alias</span>
+
+    <span class="nd">@dbt_alias</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_alias</span> <span class="o">=</span> <span class="n">dbt_alias</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_meta</span>
+
+    <span class="nd">@dbt_meta</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_meta</span> <span class="o">=</span> <span class="n">dbt_meta</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_unique_id</span>
+
+    <span class="nd">@dbt_unique_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_unique_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_unique_id</span> <span class="o">=</span> <span class="n">dbt_unique_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_account_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_account_name</span>
+
+    <span class="nd">@dbt_account_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_account_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_account_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_account_name</span> <span class="o">=</span> <span class="n">dbt_account_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_project_name</span>
+
+    <span class="nd">@dbt_project_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_project_name</span> <span class="o">=</span> <span class="n">dbt_project_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_package_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_package_name</span>
+
+    <span class="nd">@dbt_package_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_package_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_package_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_package_name</span> <span class="o">=</span> <span class="n">dbt_package_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_job_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_name</span>
+
+    <span class="nd">@dbt_job_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_name</span> <span class="o">=</span> <span class="n">dbt_job_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_job_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_schedule</span>
+
+    <span class="nd">@dbt_job_schedule</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_schedule</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_schedule</span> <span class="o">=</span> <span class="n">dbt_job_schedule</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_job_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_status</span>
+
+    <span class="nd">@dbt_job_status</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_status</span> <span class="o">=</span> <span class="n">dbt_job_status</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_job_schedule_cron_humanized</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_terms_of_service_url</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_schedule_cron_humanized</span>
         <span class="p">)</span>
 
-    <span class="nd">@api_spec_terms_of_service_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_terms_of_service_url</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_terms_of_service_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="nd">@dbt_job_schedule_cron_humanized</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_schedule_cron_humanized</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_schedule_cron_humanized</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_terms_of_service_url</span> <span class="o">=</span> <span class="n">api_spec_terms_of_service_url</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_contact_email</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contact_email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_schedule_cron_humanized</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">dbt_job_schedule_cron_humanized</span>
         <span class="p">)</span>
 
-    <span class="nd">@api_spec_contact_email</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_contact_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_contact_email</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_job_last_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_last_run</span>
+
+    <span class="nd">@dbt_job_last_run</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_last_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_last_run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contact_email</span> <span class="o">=</span> <span class="n">api_spec_contact_email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_last_run</span> <span class="o">=</span> <span class="n">dbt_job_last_run</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_contact_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contact_name</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">dbt_job_next_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_next_run</span>
 
-    <span class="nd">@api_spec_contact_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_contact_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_contact_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@dbt_job_next_run</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_next_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_next_run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contact_name</span> <span class="o">=</span> <span class="n">api_spec_contact_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_next_run</span> <span class="o">=</span> <span class="n">dbt_job_next_run</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_contact_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contact_url</span>
-
-    <span class="nd">@api_spec_contact_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_contact_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_contact_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contact_url</span> <span class="o">=</span> <span class="n">api_spec_contact_url</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_license_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_license_name</span>
-        <span class="p">)</span>
-
-    <span class="nd">@api_spec_license_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_license_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_license_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_license_name</span> <span class="o">=</span> <span class="n">api_spec_license_name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_license_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_license_url</span>
-
-    <span class="nd">@api_spec_license_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_license_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_license_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_license_url</span> <span class="o">=</span> <span class="n">api_spec_license_url</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_contract_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">dbt_job_next_run_humanized</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contract_version</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_next_run_humanized</span>
         <span class="p">)</span>
 
-    <span class="nd">@api_spec_contract_version</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_contract_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_contract_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@dbt_job_next_run_humanized</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_job_next_run_humanized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_job_next_run_humanized</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_contract_version</span> <span class="o">=</span> <span class="n">api_spec_contract_version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_job_next_run_humanized</span> <span class="o">=</span> <span class="n">dbt_job_next_run_humanized</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec_service_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">dbt_environment_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_environment_name</span>
+
+    <span class="nd">@dbt_environment_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_environment_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_environment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_environment_name</span> <span class="o">=</span> <span class="n">dbt_environment_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_environment_dbt_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_service_alias</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_environment_dbt_version</span>
         <span class="p">)</span>
 
-    <span class="nd">@api_spec_service_alias</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec_service_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec_service_alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@dbt_environment_dbt_version</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_environment_dbt_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_environment_dbt_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec_service_alias</span> <span class="o">=</span> <span class="n">api_spec_service_alias</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_environment_dbt_version</span> <span class="o">=</span> <span class="n">dbt_environment_dbt_version</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">APIPath</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_paths</span>
+    <span class="k">def</span> <span class="nf">dbt_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_tags</span>
 
-    <span class="nd">@api_paths</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_paths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">APIPath</span><span class="p">]]):</span>
+    <span class="nd">@dbt_tags</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_paths</span> <span class="o">=</span> <span class="n">api_paths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_tags</span> <span class="o">=</span> <span class="n">dbt_tags</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">API</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">api_spec_terms_of_service_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecTermsOfServiceURL&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_connection_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_connection_context</span>
         <span class="p">)</span>
-        <span class="n">api_spec_contact_email</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecContactEmail&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec_contact_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecContactName&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec_contact_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecContactURL&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec_license_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecLicenseName&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec_license_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecLicenseURL&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec_contract_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecContractVersion&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec_service_alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpecServiceAlias&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_paths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">APIPath</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPaths&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
 
-        <span class="nd">@classmethod</span>
-        <span class="c1"># @validate_arguments()</span>
-        <span class="nd">@init_guid</span>
-        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
-            <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
-            <span class="p">)</span>
+    <span class="nd">@dbt_connection_context</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_connection_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_connection_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_connection_context</span> <span class="o">=</span> <span class="n">dbt_connection_context</span>
 
-            <span class="c1"># Split the connection_qualified_name to extract necessary information</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">connection_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dbt_semantic_layer_proxy_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_semantic_layer_proxy_url</span>
+        <span class="p">)</span>
 
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+    <span class="nd">@dbt_semantic_layer_proxy_url</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dbt_semantic_layer_proxy_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbt_semantic_layer_proxy_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_semantic_layer_proxy_url</span> <span class="o">=</span> <span class="n">dbt_semantic_layer_proxy_url</span>
 
-            <span class="k">return</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
-                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">tag_id</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;APISpec.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="nd">@tag_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tag_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">tag_id</span> <span class="o">=</span> <span class="n">tag_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SourceTagAttribute</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">tag_attributes</span>
+
+    <span class="nd">@tag_attributes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tag_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SourceTagAttribute</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">tag_attributes</span> <span class="o">=</span> <span class="n">tag_attributes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag_allowed_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">tag_allowed_values</span>
+
+    <span class="nd">@tag_allowed_values</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tag_allowed_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_allowed_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">tag_allowed_values</span> <span class="o">=</span> <span class="n">tag_allowed_values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mapped_atlan_tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mapped_atlan_tag_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@mapped_atlan_tag_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mapped_atlan_tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapped_atlan_tag_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mapped_atlan_tag_name</span> <span class="o">=</span> <span class="n">mapped_atlan_tag_name</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Dbt</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">dbt_alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtAlias&quot;</span><span class="p">)</span>
+        <span class="n">dbt_meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtMeta&quot;</span><span class="p">)</span>
+        <span class="n">dbt_unique_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtUniqueId&quot;</span><span class="p">)</span>
+        <span class="n">dbt_account_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtAccountName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtProjectName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_package_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtPackageName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_job_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobName&quot;</span><span class="p">)</span>
+        <span class="n">dbt_job_schedule</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobSchedule&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_job_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobStatus&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_job_schedule_cron_humanized</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobScheduleCronHumanized&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_job_last_run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobLastRun&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_job_next_run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobNextRun&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_job_next_run_humanized</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtJobNextRunHumanized&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_environment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtEnvironmentName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_environment_dbt_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtEnvironmentDbtVersion&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtTags&quot;</span><span class="p">)</span>
+        <span class="n">dbt_connection_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtConnectionContext&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dbt_semantic_layer_proxy_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dbtSemanticLayerProxyUrl&quot;</span>
+        <span class="p">)</span>
+        <span class="n">tag_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;tagId&quot;</span><span class="p">)</span>
+        <span class="n">tag_attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SourceTagAttribute</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;tagAttributes&quot;</span>
+        <span class="p">)</span>
+        <span class="n">tag_allowed_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;tagAllowedValues&quot;</span>
+        <span class="p">)</span>
+        <span class="n">mapped_atlan_tag_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;mappedClassificationName&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;DbtTag.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DbtTag</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="APIPath">
-<a class="viewcode-back" href="../../../../asset/apipath.html#pyatlan.model.assets.APIPath">[docs]</a>
-<span class="k">class</span> <span class="nc">APIPath</span><span class="p">(</span><span class="n">API</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="c1"># @validate_arguments()</span>
-    <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path_raw_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIPath</span><span class="p">:</span>
-        <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;path_raw_uri&quot;</span><span class="p">,</span> <span class="s2">&quot;spec_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">path_raw_uri</span><span class="o">=</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="o">=</span><span class="n">spec_qualified_name</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;APIPath&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;APIPath&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be APIPath&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="n">API_PATH_SUMMARY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiPathSummary&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathSummary&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_PATH_RAW_URI</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;apiPathRawURI&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathRawURI&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathRawURI.text&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_PATH_IS_TEMPLATED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;apiPathIsTemplated&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathIsTemplated&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_PATH_AVAILABLE_OPERATIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;apiPathAvailableOperations&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathAvailableOperations&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_PATH_AVAILABLE_RESPONSE_CODES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;apiPathAvailableResponseCodes&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathAvailableResponseCodes&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">API_PATH_IS_INGRESS_EXPOSED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;apiPathIsIngressExposed&quot;</span><span class="p">,</span> <span class="s2">&quot;apiPathIsIngressExposed&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">API_SPEC</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;apiSpec&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;api_path_summary&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_path_raw_u_r_i&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_path_is_templated&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_path_available_operations&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_path_available_response_codes&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_path_is_ingress_exposed&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_spec&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_path_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_summary</span>
-
-    <span class="nd">@api_path_summary</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_path_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_path_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_summary</span> <span class="o">=</span> <span class="n">api_path_summary</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_path_raw_u_r_i</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_raw_u_r_i</span>
-
-    <span class="nd">@api_path_raw_u_r_i</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_path_raw_u_r_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_path_raw_u_r_i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_raw_u_r_i</span> <span class="o">=</span> <span class="n">api_path_raw_u_r_i</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_path_is_templated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_is_templated</span>
-        <span class="p">)</span>
-
-    <span class="nd">@api_path_is_templated</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_path_is_templated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_path_is_templated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_is_templated</span> <span class="o">=</span> <span class="n">api_path_is_templated</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_path_available_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_available_operations</span>
-        <span class="p">)</span>
-
-    <span class="nd">@api_path_available_operations</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_path_available_operations</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">api_path_available_operations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_available_operations</span> <span class="o">=</span> <span class="n">api_path_available_operations</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_path_available_response_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_available_response_codes</span>
-        <span class="p">)</span>
-
-    <span class="nd">@api_path_available_response_codes</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_path_available_response_codes</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">api_path_available_response_codes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_available_response_codes</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">api_path_available_response_codes</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_path_is_ingress_exposed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_is_ingress_exposed</span>
-        <span class="p">)</span>
-
-    <span class="nd">@api_path_is_ingress_exposed</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_path_is_ingress_exposed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_path_is_ingress_exposed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_path_is_ingress_exposed</span> <span class="o">=</span> <span class="n">api_path_is_ingress_exposed</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">api_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">APISpec</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec</span>
-
-    <span class="nd">@api_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">api_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">APISpec</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">api_spec</span> <span class="o">=</span> <span class="n">api_spec</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">API</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">api_path_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPathSummary&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_path_raw_u_r_i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPathRawURI&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_path_is_templated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPathIsTemplated&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_path_available_operations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPathAvailableOperations&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_path_available_response_codes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPathAvailableResponseCodes&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_path_is_ingress_exposed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPathIsIngressExposed&quot;</span>
-        <span class="p">)</span>
-        <span class="n">api_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">APISpec</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpec&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-
-        <span class="nd">@classmethod</span>
-        <span class="c1"># @validate_arguments()</span>
-        <span class="nd">@init_guid</span>
-        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path_raw_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
-            <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;path_raw_uri&quot;</span><span class="p">,</span> <span class="s2">&quot;spec_qualified_name&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">],</span>
-            <span class="p">)</span>
-
-            <span class="c1"># Split the spec_qualified_name to extract necessary information</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">spec_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spec_qualified_name&quot;</span><span class="p">)</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spec_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-
-            <span class="k">return</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">api_path_raw_u_r_i</span><span class="o">=</span><span class="n">path_raw_uri</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">path_raw_uri</span><span class="p">,</span>
-                <span class="n">api_spec_qualified_name</span><span class="o">=</span><span class="n">spec_qualified_name</span><span class="p">,</span>
-                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spec_qualified_name</span><span class="si">}{</span><span class="n">path_raw_uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="n">apiSpec</span><span class="o">=</span><span class="n">APISpec</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span><span class="n">spec_qualified_name</span><span class="p">),</span>
-            <span class="p">)</span>
-
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;APIPath.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
-
-
-<span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">DbtTag</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

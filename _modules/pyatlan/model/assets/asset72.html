@@ -186,6 +186,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
@@ -439,6 +443,7 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
@@ -451,399 +456,1115 @@
     <span class="n">RelationField</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.asset46</span> <span class="kn">import</span> <span class="n">Metabase</span>
+<span class="kn">from</span> <span class="nn">.asset45</span> <span class="kn">import</span> <span class="n">Sisense</span>
 
 
-<div class="viewcode-block" id="MetabaseQuestion">
-<a class="viewcode-back" href="../../../../asset/metabasequestion.html#pyatlan.model.assets.MetabaseQuestion">[docs]</a>
-<span class="k">class</span> <span class="nc">MetabaseQuestion</span><span class="p">(</span><span class="n">Metabase</span><span class="p">):</span>
+<div class="viewcode-block" id="SisenseFolder">
+<a class="viewcode-back" href="../../../../asset/sisensefolder.html#pyatlan.model.assets.SisenseFolder">[docs]</a>
+<span class="k">class</span> <span class="nc">SisenseFolder</span><span class="p">(</span><span class="n">Sisense</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;MetabaseQuestion&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SisenseFolder&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;MetabaseQuestion&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be MetabaseQuestion&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SisenseFolder&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SisenseFolder&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">MetabaseQuestion</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SisenseFolder</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">METABASE_DASHBOARD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseDashboardCount&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseDashboardCount&quot;</span>
+    <span class="n">SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
+        <span class="n">KeywordTextField</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseFolderParentFolderQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseFolderParentFolderQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseFolderParentFolderQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_QUERY_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseQueryType&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseQueryType&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseQueryType.text&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseQuery.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseQuery&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Unique name of the parent folder in which this folder exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">METABASE_DASHBOARDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;metabaseDashboards&quot;</span><span class="p">)</span>
+    <span class="n">SISENSE_CHILD_FOLDERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseChildFolders&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_COLLECTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;metabaseCollection&quot;</span><span class="p">)</span>
+    <span class="n">SISENSE_WIDGETS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseWidgets&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DASHBOARDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDashboards&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_PARENT_FOLDER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseParentFolder&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;metabase_dashboard_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_query_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_query&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_dashboards&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_collection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_folder_parent_folder_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_child_folders&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widgets&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_dashboards&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_parent_folder&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_dashboard_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">sisense_folder_parent_folder_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_dashboard_count</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_folder_parent_folder_qualified_name</span>
         <span class="p">)</span>
 
-    <span class="nd">@metabase_dashboard_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_dashboard_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_dashboard_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_dashboard_count</span> <span class="o">=</span> <span class="n">metabase_dashboard_count</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_query_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_query_type</span>
-
-    <span class="nd">@metabase_query_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_query_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_query_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_query_type</span> <span class="o">=</span> <span class="n">metabase_query_type</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_query</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_query</span>
-
-    <span class="nd">@metabase_query</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_query</span> <span class="o">=</span> <span class="n">metabase_query</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseDashboard</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_dashboards</span>
-
-    <span class="nd">@metabase_dashboards</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_dashboards</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">metabase_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseDashboard</span><span class="p">]]</span>
+    <span class="nd">@sisense_folder_parent_folder_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_folder_parent_folder_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_folder_parent_folder_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_dashboards</span> <span class="o">=</span> <span class="n">metabase_dashboards</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_folder_parent_folder_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_folder_parent_folder_qualified_name</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetabaseCollection</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_collection</span>
+    <span class="k">def</span> <span class="nf">sisense_child_folders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_child_folders</span>
+        <span class="p">)</span>
 
-    <span class="nd">@metabase_collection</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetabaseCollection</span><span class="p">]):</span>
+    <span class="nd">@sisense_child_folders</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_child_folders</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_child_folders</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]]</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_collection</span> <span class="o">=</span> <span class="n">metabase_collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_child_folders</span> <span class="o">=</span> <span class="n">sisense_child_folders</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Metabase</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">metabase_dashboard_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseDashboardCount&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widgets</span>
+
+    <span class="nd">@sisense_widgets</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widgets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widgets</span> <span class="o">=</span> <span class="n">sisense_widgets</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboards</span>
+
+    <span class="nd">@sisense_dashboards</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboards</span> <span class="o">=</span> <span class="n">sisense_dashboards</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_parent_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_parent_folder</span>
         <span class="p">)</span>
-        <span class="n">metabase_query_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseQueryType&quot;</span>
+
+    <span class="nd">@sisense_parent_folder</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_parent_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_parent_folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_parent_folder</span> <span class="o">=</span> <span class="n">sisense_parent_folder</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sisense</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">sisense_folder_parent_folder_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseFolderParentFolderQualifiedName&quot;</span>
         <span class="p">)</span>
-        <span class="n">metabase_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseQuery&quot;</span>
-        <span class="p">)</span>
-        <span class="n">metabase_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseDashboard</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseDashboards&quot;</span>
+        <span class="n">sisense_child_folders</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseChildFolders&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">metabase_collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetabaseCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseCollection&quot;</span>
+        <span class="n">sisense_widgets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgets&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">sisense_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDashboards&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">sisense_parent_folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseParentFolder&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;MetabaseQuestion.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MetabaseQuestion</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SisenseFolder.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SisenseFolder</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="MetabaseCollection">
-<a class="viewcode-back" href="../../../../asset/metabasecollection.html#pyatlan.model.assets.MetabaseCollection">[docs]</a>
-<span class="k">class</span> <span class="nc">MetabaseCollection</span><span class="p">(</span><span class="n">Metabase</span><span class="p">):</span>
+<div class="viewcode-block" id="SisenseWidget">
+<a class="viewcode-back" href="../../../../asset/sisensewidget.html#pyatlan.model.assets.SisenseWidget">[docs]</a>
+<span class="k">class</span> <span class="nc">SisenseWidget</span><span class="p">(</span><span class="n">Sisense</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;MetabaseCollection&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SisenseWidget&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;MetabaseCollection&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be MetabaseCollection&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SisenseWidget&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SisenseWidget&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">MetabaseCollection</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SisenseWidget</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">METABASE_SLUG</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseSlug&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseSlug&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseSlug.text&quot;</span>
+    <span class="n">SISENSE_WIDGET_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseWidgetColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseWidgetColumnCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of columns used in this widget.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_COLOR</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseColor&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseColor&quot;</span>
+    <span class="n">SISENSE_WIDGET_SUB_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseWidgetSubType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseWidgetSubType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Subtype of this widget.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_NAMESPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseNamespace&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseNamespace&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseNamespace.text&quot;</span>
+    <span class="n">SISENSE_WIDGET_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseWidgetSize&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseWidgetSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Size of this widget.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_IS_PERSONAL_COLLECTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseIsPersonalCollection&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseIsPersonalCollection&quot;</span>
+    <span class="n">SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
+        <span class="n">KeywordTextField</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseWidgetDashboardQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseWidgetDashboardQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseWidgetDashboardQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Unique name of the dashboard in which this widget exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_WIDGET_FOLDER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseWidgetFolderQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseWidgetFolderQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseWidgetFolderQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the folder in which this widget exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">METABASE_DASHBOARDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;metabaseDashboards&quot;</span><span class="p">)</span>
+    <span class="n">SISENSE_DATAMODEL_TABLES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTables&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_QUESTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;metabaseQuestions&quot;</span><span class="p">)</span>
+    <span class="n">SISENSE_FOLDER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseFolder&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DASHBOARD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDashboard&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;metabase_slug&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_color&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_namespace&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_is_personal_collection&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_dashboards&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_questions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widget_column_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widget_sub_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widget_size&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widget_dashboard_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widget_folder_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_tables&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_folder&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_dashboard&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_slug</span>
-
-    <span class="nd">@metabase_slug</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_slug</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_slug</span> <span class="o">=</span> <span class="n">metabase_slug</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_color</span>
-
-    <span class="nd">@metabase_color</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_color</span> <span class="o">=</span> <span class="n">metabase_color</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_namespace</span>
-
-    <span class="nd">@metabase_namespace</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_namespace</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_namespace</span> <span class="o">=</span> <span class="n">metabase_namespace</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_is_personal_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_is_personal_collection</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_column_count</span>
         <span class="p">)</span>
 
-    <span class="nd">@metabase_is_personal_collection</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_is_personal_collection</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">metabase_is_personal_collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="nd">@sisense_widget_column_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widget_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_column_count</span> <span class="o">=</span> <span class="n">sisense_widget_column_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_sub_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_sub_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_widget_sub_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_sub_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widget_sub_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_sub_type</span> <span class="o">=</span> <span class="n">sisense_widget_sub_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_size</span>
+
+    <span class="nd">@sisense_widget_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widget_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_size</span> <span class="o">=</span> <span class="n">sisense_widget_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_dashboard_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_dashboard_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_widget_dashboard_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_dashboard_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widget_dashboard_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_is_personal_collection</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">metabase_is_personal_collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_dashboard_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_widget_dashboard_qualified_name</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseDashboard</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_dashboards</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_folder_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_folder_qualified_name</span>
+        <span class="p">)</span>
 
-    <span class="nd">@metabase_dashboards</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_dashboards</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">metabase_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseDashboard</span><span class="p">]]</span>
+    <span class="nd">@sisense_widget_folder_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widget_folder_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widget_folder_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_dashboards</span> <span class="o">=</span> <span class="n">metabase_dashboards</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widget_folder_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_widget_folder_qualified_name</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_questions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseQuestion</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_questions</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodelTable</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_tables</span>
+        <span class="p">)</span>
 
-    <span class="nd">@metabase_questions</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_questions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_questions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseQuestion</span><span class="p">]]):</span>
+    <span class="nd">@sisense_datamodel_tables</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_tables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodelTable</span><span class="p">]]</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_questions</span> <span class="o">=</span> <span class="n">metabase_questions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_tables</span> <span class="o">=</span> <span class="n">sisense_datamodel_tables</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Metabase</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">metabase_slug</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseSlug&quot;</span><span class="p">)</span>
-        <span class="n">metabase_color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseColor&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_folder</span>
+
+    <span class="nd">@sisense_folder</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_folder</span> <span class="o">=</span> <span class="n">sisense_folder</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboard</span>
+
+    <span class="nd">@sisense_dashboard</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_dashboard</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboard</span> <span class="o">=</span> <span class="n">sisense_dashboard</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sisense</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">sisense_widget_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgetColumnCount&quot;</span>
         <span class="p">)</span>
-        <span class="n">metabase_namespace</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseNamespace&quot;</span>
+        <span class="n">sisense_widget_sub_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgetSubType&quot;</span>
         <span class="p">)</span>
-        <span class="n">metabase_is_personal_collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseIsPersonalCollection&quot;</span>
+        <span class="n">sisense_widget_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgetSize&quot;</span>
         <span class="p">)</span>
-        <span class="n">metabase_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseDashboard</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseDashboards&quot;</span>
+        <span class="n">sisense_widget_dashboard_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgetDashboardQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_widget_folder_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgetFolderQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodelTable</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTables&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">metabase_questions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseQuestion</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseQuestions&quot;</span>
+        <span class="n">sisense_folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseFolder&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">sisense_dashboard</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDashboard&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;MetabaseCollection.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MetabaseCollection</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SisenseWidget.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SisenseWidget</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="MetabaseDashboard">
-<a class="viewcode-back" href="../../../../asset/metabasedashboard.html#pyatlan.model.assets.MetabaseDashboard">[docs]</a>
-<span class="k">class</span> <span class="nc">MetabaseDashboard</span><span class="p">(</span><span class="n">Metabase</span><span class="p">):</span>
+<div class="viewcode-block" id="SisenseDatamodel">
+<a class="viewcode-back" href="../../../../asset/sisensedatamodel.html#pyatlan.model.assets.SisenseDatamodel">[docs]</a>
+<span class="k">class</span> <span class="nc">SisenseDatamodel</span><span class="p">(</span><span class="n">Sisense</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;MetabaseDashboard&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SisenseDatamodel&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;MetabaseDashboard&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be MetabaseDashboard&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SisenseDatamodel&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SisenseDatamodel&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">MetabaseDashboard</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SisenseDatamodel</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">METABASE_QUESTION_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;metabaseQuestionCount&quot;</span><span class="p">,</span> <span class="s2">&quot;metabaseQuestionCount&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of tables in this datamodel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_SERVER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelServer&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelServer&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hostname of the server on which this datamodel was created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_REVISION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelRevision&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelRevision&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Revision of this datamodel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_LAST_BUILD_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelLastBuildTime&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelLastBuildTime&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) when this datamodel was last built, in milliseconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelLastSuccessfulBuildTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseDatamodelLastSuccessfulBuildTime&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) when this datamodel was last built successfully, in milliseconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_LAST_PUBLISH_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelLastPublishTime&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelLastPublishTime&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) when this datamodel was last published, in milliseconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of this datamodel, for example: &#39;extract&#39; or &#39;custom&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_RELATION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelRelationType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelRelationType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Default relation type for this datamodel. &#39;extract&#39; type Datamodels have regular relations by default. &#39;live&#39; type Datamodels have direct relations by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="n">SISENSE_DATAMODEL_TABLES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTables&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">METABASE_QUESTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;metabaseQuestions&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">METABASE_COLLECTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;metabaseCollection&quot;</span><span class="p">)</span>
+    <span class="n">SISENSE_DASHBOARDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDashboards&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;metabase_question_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_questions&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;metabase_collection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_server&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_revision&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_last_build_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_last_successful_build_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_last_publish_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_relation_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_tables&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_dashboards&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_question_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_question_count</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_count</span>
         <span class="p">)</span>
 
-    <span class="nd">@metabase_question_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_question_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_question_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="nd">@sisense_datamodel_table_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_question_count</span> <span class="o">=</span> <span class="n">metabase_question_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_count</span> <span class="o">=</span> <span class="n">sisense_datamodel_table_count</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_questions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseQuestion</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_questions</span>
-
-    <span class="nd">@metabase_questions</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_questions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_questions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseQuestion</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_questions</span> <span class="o">=</span> <span class="n">metabase_questions</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metabase_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetabaseCollection</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_collection</span>
-
-    <span class="nd">@metabase_collection</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metabase_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabase_collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetabaseCollection</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">metabase_collection</span> <span class="o">=</span> <span class="n">metabase_collection</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Metabase</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">metabase_question_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseQuestionCount&quot;</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_server</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_server</span>
         <span class="p">)</span>
-        <span class="n">metabase_questions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MetabaseQuestion</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseQuestions&quot;</span>
+
+    <span class="nd">@sisense_datamodel_server</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_server</span> <span class="o">=</span> <span class="n">sisense_datamodel_server</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_revision</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_revision</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_revision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_revision</span> <span class="o">=</span> <span class="n">sisense_datamodel_revision</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_last_build_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_last_build_time</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_last_build_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_last_build_time</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_last_build_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_last_build_time</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_last_build_time</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_last_successful_build_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_last_successful_build_time</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_last_successful_build_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_last_successful_build_time</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_last_successful_build_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_last_successful_build_time</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_last_successful_build_time</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_last_publish_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_last_publish_time</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_last_publish_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_last_publish_time</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_last_publish_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_last_publish_time</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_last_publish_time</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_type</span> <span class="o">=</span> <span class="n">sisense_datamodel_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_relation_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_relation_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_relation_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_relation_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_relation_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_relation_type</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_relation_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodelTable</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_tables</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_tables</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_tables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodelTable</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_tables</span> <span class="o">=</span> <span class="n">sisense_datamodel_tables</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboards</span>
+
+    <span class="nd">@sisense_dashboards</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboards</span> <span class="o">=</span> <span class="n">sisense_dashboards</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sisense</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">sisense_datamodel_table_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelServer&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_revision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelRevision&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_last_build_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelLastBuildTime&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_last_successful_build_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelLastSuccessfulBuildTime&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_last_publish_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelLastPublishTime&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_relation_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelRelationType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodelTable</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTables&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">metabase_collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetabaseCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;metabaseCollection&quot;</span>
+        <span class="n">sisense_dashboards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDashboard</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDashboards&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;MetabaseDashboard.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MetabaseDashboard</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SisenseDatamodel.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SisenseDatamodel</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">MetabaseQuestion</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<div class="viewcode-block" id="SisenseDatamodelTable">
+<a class="viewcode-back" href="../../../../asset/sisensedatamodeltable.html#pyatlan.model.assets.SisenseDatamodelTable">[docs]</a>
+<span class="k">class</span> <span class="nc">SisenseDatamodelTable</span><span class="p">(</span><span class="n">Sisense</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SisenseDatamodelTable&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SisenseDatamodelTable&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SisenseDatamodelTable&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SisenseDatamodelTable</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">SISENSE_DATAMODEL_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseDatamodelQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseDatamodelQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the datamodel in which this datamodel table exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableColumnCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of columns present in this datamodel table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of this datamodel table, for example: &#39;base&#39; for regular tables, &#39;custom&#39; for SQL expression-based tables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_EXPRESSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableExpression&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableExpression&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SQL expression of this datamodel table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableIsMaterialized&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableIsMaterialized&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Whether this datamodel table is materialised (true) or not (false).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_IS_HIDDEN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableIsHidden&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableIsHidden&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Whether this datamodel table is hidden in Sisense (true) or not (false).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_SCHEDULE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableSchedule&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableSchedule&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    JSON specifying the refresh schedule of this datamodel table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDatamodelTableLiveQuerySettings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseDatamodelTableLiveQuerySettings&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    JSON specifying the LiveQuery settings of this datamodel table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SISENSE_DATAMODEL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDatamodel&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_WIDGETS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseWidgets&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;sisense_datamodel_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_column_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_expression&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_is_materialized&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_is_hidden&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_schedule&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel_table_live_query_settings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodel&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widgets&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_column_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_column_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_column_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_column_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_table_column_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_type</span> <span class="o">=</span> <span class="n">sisense_datamodel_table_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_expression</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_expression</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_expression</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_expression</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_table_expression</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_is_materialized</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_is_materialized</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_is_materialized</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_is_materialized</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_is_materialized</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_is_materialized</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_table_is_materialized</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_is_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_is_hidden</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_is_hidden</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_is_hidden</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_is_hidden</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_is_hidden</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_table_is_hidden</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_schedule</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_schedule</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_schedule</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_schedule</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_schedule</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_table_schedule</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_live_query_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_live_query_settings</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_datamodel_table_live_query_settings</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel_table_live_query_settings</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel_table_live_query_settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel_table_live_query_settings</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_datamodel_table_live_query_settings</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseDatamodel</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel</span>
+
+    <span class="nd">@sisense_datamodel</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseDatamodel</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodel</span> <span class="o">=</span> <span class="n">sisense_datamodel</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widgets</span>
+
+    <span class="nd">@sisense_widgets</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widgets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widgets</span> <span class="o">=</span> <span class="n">sisense_widgets</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sisense</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">sisense_datamodel_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableColumnCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableExpression&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_is_materialized</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableIsMaterialized&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_is_hidden</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableIsHidden&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_schedule</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableSchedule&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel_table_live_query_settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodelTableLiveQuerySettings&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseDatamodel</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodel&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">sisense_widgets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgets&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SisenseDatamodelTable.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SisenseDatamodelTable</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
-<span class="n">MetabaseCollection</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SisenseDashboard">
+<a class="viewcode-back" href="../../../../asset/sisensedashboard.html#pyatlan.model.assets.SisenseDashboard">[docs]</a>
+<span class="k">class</span> <span class="nc">SisenseDashboard</span><span class="p">(</span><span class="n">Sisense</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;SisenseDashboard&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;SisenseDashboard&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be SisenseDashboard&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">SisenseDashboard</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
+        <span class="n">KeywordTextField</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDashboardFolderQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseDashboardFolderQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisenseDashboardFolderQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the folder in which this dashboard exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_DASHBOARD_WIDGET_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;sisenseDashboardWidgetCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDashboardWidgetCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of widgets in this dashboard.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SISENSE_DATAMODELS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDatamodels&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_WIDGETS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseWidgets&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SISENSE_FOLDER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseFolder&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;sisense_dashboard_folder_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_dashboard_widget_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_datamodels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_widgets&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sisense_folder&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboard_folder_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboard_folder_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_dashboard_folder_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboard_folder_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_dashboard_folder_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboard_folder_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sisense_dashboard_folder_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboard_widget_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboard_widget_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sisense_dashboard_widget_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_dashboard_widget_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sisense_dashboard_widget_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_dashboard_widget_count</span> <span class="o">=</span> <span class="n">sisense_dashboard_widget_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodel</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodels</span>
+
+    <span class="nd">@sisense_datamodels</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_datamodels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_datamodels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodel</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_datamodels</span> <span class="o">=</span> <span class="n">sisense_datamodels</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widgets</span>
+
+    <span class="nd">@sisense_widgets</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_widgets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_widgets</span> <span class="o">=</span> <span class="n">sisense_widgets</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sisense_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_folder</span>
+
+    <span class="nd">@sisense_folder</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sisense_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sisense_folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sisense_folder</span> <span class="o">=</span> <span class="n">sisense_folder</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Sisense</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">sisense_dashboard_folder_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDashboardFolderQualifiedName&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_dashboard_widget_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDashboardWidgetCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sisense_datamodels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseDatamodel</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseDatamodels&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">sisense_widgets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SisenseWidget</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseWidgets&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">sisense_folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SisenseFolder</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sisenseFolder&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SisenseDashboard.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SisenseDashboard</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
-<span class="n">MetabaseDashboard</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+<span class="n">SisenseFolder</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">SisenseWidget</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">SisenseDatamodel</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">SisenseDatamodelTable</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">SisenseDashboard</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

@@ -186,6 +186,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
@@ -439,36 +443,470 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">.asset78</span> <span class="kn">import</span> <span class="n">QlikSpace</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">KafkaTopicCleanupPolicy</span><span class="p">,</span> <span class="n">KafkaTopicCompressionType</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BooleanField</span><span class="p">,</span>
+    <span class="n">KeywordField</span><span class="p">,</span>
+    <span class="n">NumericField</span><span class="p">,</span>
+    <span class="n">RelationField</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.structs</span> <span class="kn">import</span> <span class="n">KafkaTopicConsumption</span>
+
+<span class="kn">from</span> <span class="nn">.asset55</span> <span class="kn">import</span> <span class="n">Kafka</span>
 
 
-<div class="viewcode-block" id="QlikStream">
-<a class="viewcode-back" href="../../../../asset/qlikstream.html#pyatlan.model.assets.QlikStream">[docs]</a>
-<span class="k">class</span> <span class="nc">QlikStream</span><span class="p">(</span><span class="n">QlikSpace</span><span class="p">):</span>
+<div class="viewcode-block" id="KafkaTopic">
+<a class="viewcode-back" href="../../../../asset/kafkatopic.html#pyatlan.model.assets.KafkaTopic">[docs]</a>
+<span class="k">class</span> <span class="nc">KafkaTopic</span><span class="p">(</span><span class="n">Kafka</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;QlikStream&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;KafkaTopic&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;QlikStream&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be QlikStream&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;KafkaTopic&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be KafkaTopic&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">QlikStream</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">KafkaTopic</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="n">KAFKA_TOPIC_IS_INTERNAL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicIsInternal&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicIsInternal&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Whether this topic is an internal topic (true) or not (false).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_COMPRESSION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicCompressionType&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicCompressionType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of compression used for this topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_REPLICATION_FACTOR</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicReplicationFactor&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicReplicationFactor&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Replication factor for this topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_SEGMENT_BYTES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicSegmentBytes&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicSegmentBytes&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Segment size for this topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_RETENTION_TIME_IN_MS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicRetentionTimeInMs&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicRetentionTimeInMs&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Amount of time messages will be retained in this topic, in milliseconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_PARTITIONS_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicPartitionsCount&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicPartitionsCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of partitions for this topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_SIZE_IN_BYTES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicSizeInBytes&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicSizeInBytes&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Size of this topic, in bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_RECORD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicRecordCount&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicRecordCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of (unexpired) messages in this topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_CLEANUP_POLICY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicCleanupPolicy&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicCleanupPolicy&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleanup policy for this topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">KAFKA_CONSUMER_GROUPS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaConsumerGroups&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;kafka_topic_is_internal&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_compression_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_replication_factor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_segment_bytes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_retention_time_in_ms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_partitions_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_size_in_bytes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_record_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_cleanup_policy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_consumer_groups&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_is_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_is_internal</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_is_internal</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_is_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_is_internal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_is_internal</span> <span class="o">=</span> <span class="n">kafka_topic_is_internal</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_compression_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KafkaTopicCompressionType</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_compression_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_compression_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_compression_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_compression_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KafkaTopicCompressionType</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_compression_type</span> <span class="o">=</span> <span class="n">kafka_topic_compression_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_replication_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_replication_factor</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_replication_factor</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_replication_factor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_replication_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_replication_factor</span> <span class="o">=</span> <span class="n">kafka_topic_replication_factor</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_segment_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_segment_bytes</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_segment_bytes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_segment_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_segment_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_segment_bytes</span> <span class="o">=</span> <span class="n">kafka_topic_segment_bytes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_retention_time_in_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_retention_time_in_ms</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_retention_time_in_ms</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_retention_time_in_ms</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_retention_time_in_ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_retention_time_in_ms</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">kafka_topic_retention_time_in_ms</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_partitions_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_partitions_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_partitions_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_partitions_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_partitions_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_partitions_count</span> <span class="o">=</span> <span class="n">kafka_topic_partitions_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_size_in_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_size_in_bytes</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_size_in_bytes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_size_in_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_size_in_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_size_in_bytes</span> <span class="o">=</span> <span class="n">kafka_topic_size_in_bytes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_record_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_record_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_record_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_record_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_record_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_record_count</span> <span class="o">=</span> <span class="n">kafka_topic_record_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_cleanup_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KafkaTopicCleanupPolicy</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_cleanup_policy</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_cleanup_policy</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_cleanup_policy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_cleanup_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KafkaTopicCleanupPolicy</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_cleanup_policy</span> <span class="o">=</span> <span class="n">kafka_topic_cleanup_policy</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_consumer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaConsumerGroup</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_consumer_groups</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_consumer_groups</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_consumer_groups</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_consumer_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaConsumerGroup</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_consumer_groups</span> <span class="o">=</span> <span class="n">kafka_consumer_groups</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Kafka</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">kafka_topic_is_internal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicIsInternal&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_compression_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KafkaTopicCompressionType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicCompressionType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_replication_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicReplicationFactor&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_segment_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicSegmentBytes&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_retention_time_in_ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicRetentionTimeInMs&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_partitions_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicPartitionsCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_size_in_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicSizeInBytes&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_record_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicRecordCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_cleanup_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KafkaTopicCleanupPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicCleanupPolicy&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_consumer_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaConsumerGroup</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaConsumerGroups&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;KafkaTopic.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">KafkaTopic</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 
-<span class="n">QlikStream</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<div class="viewcode-block" id="KafkaConsumerGroup">
+<a class="viewcode-back" href="../../../../asset/kafkaconsumergroup.html#pyatlan.model.assets.KafkaConsumerGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">KafkaConsumerGroup</span><span class="p">(</span><span class="n">Kafka</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;KafkaConsumerGroup&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;KafkaConsumerGroup&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be KafkaConsumerGroup&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">KafkaConsumerGroup</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
+        <span class="n">KeywordField</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of consumption properties for Kafka topics, for this consumer group.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_CONSUMER_GROUP_MEMBER_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaConsumerGroupMemberCount&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaConsumerGroupMemberCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of members in this consumer group.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicNames&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicNames&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple names of the topics consumed by this consumer group.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">KAFKA_TOPIC_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;kafkaTopicQualifiedNames&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicQualifiedNames&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique names of the topics consumed by this consumer group.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">KAFKA_TOPICS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;kafkaTopics&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;kafka_consumer_group_topic_consumption_properties&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_consumer_group_member_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_names&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topic_qualified_names&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kafka_topics&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_consumer_group_topic_consumption_properties</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaTopicConsumption</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_consumer_group_topic_consumption_properties</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_consumer_group_topic_consumption_properties</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_consumer_group_topic_consumption_properties</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kafka_consumer_group_topic_consumption_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="nb">list</span><span class="p">[</span><span class="n">KafkaTopicConsumption</span><span class="p">]</span>
+        <span class="p">],</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_consumer_group_topic_consumption_properties</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">kafka_consumer_group_topic_consumption_properties</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_consumer_group_member_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_consumer_group_member_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_consumer_group_member_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_consumer_group_member_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_consumer_group_member_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_consumer_group_member_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">kafka_consumer_group_member_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_names</span>
+
+    <span class="nd">@kafka_topic_names</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_names</span> <span class="o">=</span> <span class="n">kafka_topic_names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_qualified_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_qualified_names</span>
+        <span class="p">)</span>
+
+    <span class="nd">@kafka_topic_qualified_names</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topic_qualified_names</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topic_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topic_qualified_names</span> <span class="o">=</span> <span class="n">kafka_topic_qualified_names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kafka_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaTopic</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topics</span>
+
+    <span class="nd">@kafka_topics</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">kafka_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kafka_topics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaTopic</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">kafka_topics</span> <span class="o">=</span> <span class="n">kafka_topics</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Kafka</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">kafka_consumer_group_topic_consumption_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="nb">list</span><span class="p">[</span><span class="n">KafkaTopicConsumption</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_consumer_group_member_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaConsumerGroupMemberCount&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicNames&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topic_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopicQualifiedNames&quot;</span>
+        <span class="p">)</span>
+        <span class="n">kafka_topics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">KafkaTopic</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kafkaTopics&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;KafkaConsumerGroup.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">KafkaConsumerGroup</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="n">KafkaTopic</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+
+
+<span class="n">KafkaConsumerGroup</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

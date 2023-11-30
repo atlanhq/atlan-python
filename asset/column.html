@@ -187,6 +187,10 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datastudio.html">DataStudio</a></li>
@@ -443,13 +447,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_AVERAGE">
 <span class="sig-name descname"><span class="pre">COLUMN_AVERAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_AVERAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Average value in this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_AVERAGE_LENGTH">
 <span class="sig-name descname"><span class="pre">COLUMN_AVERAGE_LENGTH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_AVERAGE_LENGTH" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Average length of values in a string column.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -461,145 +465,145 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_DEPTH_LEVEL">
 <span class="sig-name descname"><span class="pre">COLUMN_DEPTH_LEVEL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_DEPTH_LEVEL" title="Link to this definition">#</a></dt>
-<dd><p>Level of nesting, used for STRUCT/NESTED columns</p>
+<dd><p>Level of nesting of this column, used for STRUCT and NESTED columns.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_DISTINCT_VALUES_COUNT">
 <span class="sig-name descname"><span class="pre">COLUMN_DISTINCT_VALUES_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_DISTINCT_VALUES_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows that contain distinct values.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_DISTINCT_VALUES_COUNT_LONG">
 <span class="sig-name descname"><span class="pre">COLUMN_DISTINCT_VALUES_COUNT_LONG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_DISTINCT_VALUES_COUNT_LONG" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows that contain distinct values.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_DUPLICATE_VALUES_COUNT">
 <span class="sig-name descname"><span class="pre">COLUMN_DUPLICATE_VALUES_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_DUPLICATE_VALUES_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows that contain duplicate values.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_DUPLICATE_VALUES_COUNT_LONG">
 <span class="sig-name descname"><span class="pre">COLUMN_DUPLICATE_VALUES_COUNT_LONG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_DUPLICATE_VALUES_COUNT_LONG" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows that contain duplicate values.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_HISTOGRAM">
 <span class="sig-name descname"><span class="pre">COLUMN_HISTOGRAM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_HISTOGRAM" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of values in a histogram that represents the contents of this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MAX">
 <span class="sig-name descname"><span class="pre">COLUMN_MAX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MAX" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Greatest value in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MAXIMUM_STRING_LENGTH">
 <span class="sig-name descname"><span class="pre">COLUMN_MAXIMUM_STRING_LENGTH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MAXIMUM_STRING_LENGTH" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Length of the longest value in a string column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MAXS">
 <span class="sig-name descname"><span class="pre">COLUMN_MAXS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MAXS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of the greatest values in a column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MEAN">
 <span class="sig-name descname"><span class="pre">COLUMN_MEAN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MEAN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Arithmetic mean of the values in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MEDIAN">
 <span class="sig-name descname"><span class="pre">COLUMN_MEDIAN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MEDIAN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Calculated median of the values in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MIN">
 <span class="sig-name descname"><span class="pre">COLUMN_MIN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MIN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Least value in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MINIMUM_STRING_LENGTH">
 <span class="sig-name descname"><span class="pre">COLUMN_MINIMUM_STRING_LENGTH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MINIMUM_STRING_LENGTH" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Length of the shortest value in a string column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MINS">
 <span class="sig-name descname"><span class="pre">COLUMN_MINS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MINS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of the least values in a column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MISSING_VALUES_COUNT">
 <span class="sig-name descname"><span class="pre">COLUMN_MISSING_VALUES_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MISSING_VALUES_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows in a column that do not contain content.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MISSING_VALUES_COUNT_LONG">
 <span class="sig-name descname"><span class="pre">COLUMN_MISSING_VALUES_COUNT_LONG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MISSING_VALUES_COUNT_LONG" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows in a column that do not contain content.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_MISSING_VALUES_PERCENTAGE">
 <span class="sig-name descname"><span class="pre">COLUMN_MISSING_VALUES_PERCENTAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_MISSING_VALUES_PERCENTAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Percentage of rows in a column that do not contain content.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_STANDARD_DEVIATION">
 <span class="sig-name descname"><span class="pre">COLUMN_STANDARD_DEVIATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_STANDARD_DEVIATION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Calculated standard deviation of the values in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_SUM">
 <span class="sig-name descname"><span class="pre">COLUMN_SUM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_SUM" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Calculated sum of the values in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_TOP_VALUES">
 <span class="sig-name descname"><span class="pre">COLUMN_TOP_VALUES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_TOP_VALUES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of top values in this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_UNIQUENESS_PERCENTAGE">
 <span class="sig-name descname"><span class="pre">COLUMN_UNIQUENESS_PERCENTAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_UNIQUENESS_PERCENTAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_UNIQUE_VALUES_COUNT">
 <span class="sig-name descname"><span class="pre">COLUMN_UNIQUE_VALUES_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_UNIQUE_VALUES_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows in which a value in this column appears only once.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_UNIQUE_VALUES_COUNT_LONG">
 <span class="sig-name descname"><span class="pre">COLUMN_UNIQUE_VALUES_COUNT_LONG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_UNIQUE_VALUES_COUNT_LONG" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of rows in which a value in this column appears only once.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.COLUMN_VARIANCE">
 <span class="sig-name descname"><span class="pre">COLUMN_VARIANCE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.COLUMN_VARIANCE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Calculated variance of the values in a numeric column.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -611,7 +615,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.DATA_TYPE">
 <span class="sig-name descname"><span class="pre">DATA_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.DATA_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Data type of values in this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -629,7 +633,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.DEFAULT_VALUE">
 <span class="sig-name descname"><span class="pre">DEFAULT_VALUE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.DEFAULT_VALUE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Default value for this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -647,55 +651,55 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_CLUSTERED">
 <span class="sig-name descname"><span class="pre">IS_CLUSTERED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_CLUSTERED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this column is a clustered column (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_DIST">
 <span class="sig-name descname"><span class="pre">IS_DIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_DIST" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this column is a distribution column (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_FOREIGN">
 <span class="sig-name descname"><span class="pre">IS_FOREIGN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_FOREIGN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>When true, this column is a foreign key to another table. NOTE: this must be true when using the foreignKeyTo relationship to specify columns that refer to this column as a foreign key.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_INDEXED">
 <span class="sig-name descname"><span class="pre">IS_INDEXED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_INDEXED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>When true, this column is indexed in the database.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_NULLABLE">
 <span class="sig-name descname"><span class="pre">IS_NULLABLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_NULLABLE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>When true, the values in this column can be null.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_PARTITION">
 <span class="sig-name descname"><span class="pre">IS_PARTITION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_PARTITION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this column is a partition column (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_PINNED">
 <span class="sig-name descname"><span class="pre">IS_PINNED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_PINNED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this column is pinned (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_PRIMARY">
 <span class="sig-name descname"><span class="pre">IS_PRIMARY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_PRIMARY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>When true, this column is the primary key for the table.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.IS_SORT">
 <span class="sig-name descname"><span class="pre">IS_SORT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.IS_SORT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this column is a sort column (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -707,7 +711,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.MAX_LENGTH">
 <span class="sig-name descname"><span class="pre">MAX_LENGTH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.MAX_LENGTH" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Maximum length of a value in this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -725,19 +729,19 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.NESTED_COLUMN_COUNT">
 <span class="sig-name descname"><span class="pre">NESTED_COLUMN_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.NESTED_COLUMN_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of columns nested within this (STRUCT or NESTED) column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.NUMERIC_SCALE">
 <span class="sig-name descname"><span class="pre">NUMERIC_SCALE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.NUMERIC_SCALE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of digits allowed to the right of the decimal point.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.ORDER">
 <span class="sig-name descname"><span class="pre">ORDER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.ORDER" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Order (position) in which this column appears in the table (starting at 1).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -749,37 +753,37 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.PARENT_COLUMN_NAME">
 <span class="sig-name descname"><span class="pre">PARENT_COLUMN_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.PARENT_COLUMN_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Simple name of the column this column is nested within, for STRUCT and NESTED columns.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.PARENT_COLUMN_QUALIFIED_NAME">
 <span class="sig-name descname"><span class="pre">PARENT_COLUMN_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.PARENT_COLUMN_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unique name of the column this column is nested within, for STRUCT and NESTED columns.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.PARTITION_ORDER">
 <span class="sig-name descname"><span class="pre">PARTITION_ORDER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.PARTITION_ORDER" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Order (position) of this partition column in the table.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.PINNED_AT">
 <span class="sig-name descname"><span class="pre">PINNED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.PINNED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which this column was pinned, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.PINNED_BY">
 <span class="sig-name descname"><span class="pre">PINNED_BY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.PINNED_BY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>User who pinned this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.PRECISION">
 <span class="sig-name descname"><span class="pre">PRECISION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.PRECISION" title="Link to this definition">#</a></dt>
-<dd><p>Total number of digits allowed</p>
+<dd><p>Total number of digits allowed, when the dataType is numeric.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -791,8 +795,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.RAW_DATA_TYPE_DEFINITION">
 <span class="sig-name descname"><span class="pre">RAW_DATA_TYPE_DEFINITION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.RAW_DATA_TYPE_DEFINITION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.SNOWFLAKE_DYNAMIC_TABLE">
@@ -803,7 +806,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.SUB_DATA_TYPE">
 <span class="sig-name descname"><span class="pre">SUB_DATA_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.SUB_DATA_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Sub-data type of this column.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -821,7 +824,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Column.VALIDATIONS">
 <span class="sig-name descname"><span class="pre">VALIDATIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Column.VALIDATIONS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Validations for this column.</p>
 </dd></dl>
 
 <dl class="py attribute">

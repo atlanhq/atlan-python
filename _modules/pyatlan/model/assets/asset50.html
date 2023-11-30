@@ -186,6 +186,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
@@ -439,326 +443,147 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">PowerbiEndorsement</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BooleanField</span><span class="p">,</span>
     <span class="n">KeywordField</span><span class="p">,</span>
     <span class="n">KeywordTextField</span><span class="p">,</span>
-    <span class="n">NumericField</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.asset18</span> <span class="kn">import</span> <span class="n">BI</span>
 
 
-<div class="viewcode-block" id="MicroStrategy">
-<a class="viewcode-back" href="../../../../asset/microstrategy.html#pyatlan.model.assets.MicroStrategy">[docs]</a>
-<span class="k">class</span> <span class="nc">MicroStrategy</span><span class="p">(</span><span class="n">BI</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerBI">
+<a class="viewcode-back" href="../../../../asset/powerbi.html#pyatlan.model.assets.PowerBI">[docs]</a>
+<span class="k">class</span> <span class="nc">PowerBI</span><span class="p">(</span><span class="n">BI</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;MicroStrategy&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;PowerBI&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;MicroStrategy&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be MicroStrategy&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;PowerBI&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be PowerBI&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">MicroStrategy</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">PowerBI</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">MICRO_STRATEGY_PROJECT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordTextField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyProjectQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="n">POWER_BI_IS_HIDDEN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;powerBIIsHidden&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIIsHidden&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Related project qualified name</span>
+<span class="sd">    Whether this asset is hidden in Power BI (true) or not (false).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyProjectName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyProjectName.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyProjectName&quot;</span><span class="p">,</span>
+    <span class="n">POWER_BI_TABLE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;powerBITableQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;powerBITableQualifiedName&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;powerBITableQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Related project name</span>
+<span class="sd">    Unique name of the Power BI table in which this asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_CUBE_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyCubeQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyCubeQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyCubeQualifiedNames.text&quot;</span><span class="p">,</span>
+    <span class="n">POWER_BI_FORMAT_STRING</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;powerBIFormatString&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIFormatString&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Related cube qualified name list</span>
+<span class="sd">    Format of this asset, as specified in the FORMAT_STRING of the MDX cell property.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_CUBE_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyCubeNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyCubeNames.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyCubeNames&quot;</span><span class="p">,</span>
+    <span class="n">POWER_BI_ENDORSEMENT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;powerBIEndorsement&quot;</span><span class="p">,</span> <span class="s2">&quot;powerBIEndorsement&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Related cube name list</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_REPORT_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordTextField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyReportQualifiedNames.text&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Related report qualified name list</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_REPORT_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyReportNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyReportNames.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyReportNames&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Related report name list</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_IS_CERTIFIED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyIsCertified&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyIsCertified&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether certified in MicroStrategy</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_CERTIFIED_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyCertifiedBy&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyCertifiedBy&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    User who certified in MicroStrategy</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_CERTIFIED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyCertifiedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyCertifiedAt&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Certified date in MicroStrategy</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_LOCATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyLocation&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyLocation&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Location path in MicroStrategy</span>
+<span class="sd">    Endorsement status of this asset, in Power BI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;micro_strategy_project_qualified_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_project_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_cube_qualified_names&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_cube_names&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_report_qualified_names&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_report_names&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_is_certified&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_certified_by&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_certified_at&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;micro_strategy_location&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;power_b_i_is_hidden&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;power_b_i_table_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;power_b_i_format_string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;power_b_i_endorsement&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_project_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">power_b_i_is_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_is_hidden</span>
+
+    <span class="nd">@power_b_i_is_hidden</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">power_b_i_is_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_b_i_is_hidden</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_is_hidden</span> <span class="o">=</span> <span class="n">power_b_i_is_hidden</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">power_b_i_table_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_project_qualified_name</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_table_qualified_name</span>
         <span class="p">)</span>
 
-    <span class="nd">@micro_strategy_project_qualified_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_project_qualified_name</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_project_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="nd">@power_b_i_table_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">power_b_i_table_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">power_b_i_table_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_project_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">micro_strategy_project_qualified_name</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_table_qualified_name</span> <span class="o">=</span> <span class="n">power_b_i_table_qualified_name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">power_b_i_format_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_project_name</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_format_string</span>
         <span class="p">)</span>
 
-    <span class="nd">@micro_strategy_project_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="nd">@power_b_i_format_string</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">power_b_i_format_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_b_i_format_string</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_project_name</span> <span class="o">=</span> <span class="n">micro_strategy_project_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_format_string</span> <span class="o">=</span> <span class="n">power_b_i_format_string</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_cube_qualified_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">power_b_i_endorsement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PowerbiEndorsement</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_cube_qualified_names</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_endorsement</span>
         <span class="p">)</span>
 
-    <span class="nd">@micro_strategy_cube_qualified_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_cube_qualified_names</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_cube_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="nd">@power_b_i_endorsement</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">power_b_i_endorsement</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">power_b_i_endorsement</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PowerbiEndorsement</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_cube_qualified_names</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">micro_strategy_cube_qualified_names</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_cube_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_cube_names</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_cube_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_cube_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_cube_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_cube_names</span> <span class="o">=</span> <span class="n">micro_strategy_cube_names</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_report_qualified_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_report_qualified_names</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_report_qualified_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_report_qualified_names</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_report_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_report_qualified_names</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">micro_strategy_report_qualified_names</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_report_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_report_names</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_report_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_report_names</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_report_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_report_names</span> <span class="o">=</span> <span class="n">micro_strategy_report_names</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_is_certified</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_is_certified</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_is_certified</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_is_certified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_is_certified</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_is_certified</span> <span class="o">=</span> <span class="n">micro_strategy_is_certified</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_certified_by</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_certified_by</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_certified_by</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_certified_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_certified_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_certified_by</span> <span class="o">=</span> <span class="n">micro_strategy_certified_by</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_certified_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_certified_at</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_certified_at</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_certified_at</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_certified_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_certified_at</span> <span class="o">=</span> <span class="n">micro_strategy_certified_at</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_location</span>
-        <span class="p">)</span>
-
-    <span class="nd">@micro_strategy_location</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">micro_strategy_location</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">micro_strategy_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">micro_strategy_location</span> <span class="o">=</span> <span class="n">micro_strategy_location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">power_b_i_endorsement</span> <span class="o">=</span> <span class="n">power_b_i_endorsement</span>
 
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">BI</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">micro_strategy_project_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span>
+        <span class="n">power_b_i_is_hidden</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;powerBIIsHidden&quot;</span>
         <span class="p">)</span>
-        <span class="n">micro_strategy_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyProjectName&quot;</span>
+        <span class="n">power_b_i_table_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;powerBITableQualifiedName&quot;</span>
         <span class="p">)</span>
-        <span class="n">micro_strategy_cube_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyCubeQualifiedNames&quot;</span>
+        <span class="n">power_b_i_format_string</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;powerBIFormatString&quot;</span>
         <span class="p">)</span>
-        <span class="n">micro_strategy_cube_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyCubeNames&quot;</span>
-        <span class="p">)</span>
-        <span class="n">micro_strategy_report_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span>
-        <span class="p">)</span>
-        <span class="n">micro_strategy_report_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyReportNames&quot;</span>
-        <span class="p">)</span>
-        <span class="n">micro_strategy_is_certified</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyIsCertified&quot;</span>
-        <span class="p">)</span>
-        <span class="n">micro_strategy_certified_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyCertifiedBy&quot;</span>
-        <span class="p">)</span>
-        <span class="n">micro_strategy_certified_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyCertifiedAt&quot;</span>
-        <span class="p">)</span>
-        <span class="n">micro_strategy_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;microStrategyLocation&quot;</span>
+        <span class="n">power_b_i_endorsement</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PowerbiEndorsement</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;powerBIEndorsement&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;MicroStrategy.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MicroStrategy</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;PowerBI.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">PowerBI</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<span class="n">MicroStrategy</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">PowerBI</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

@@ -187,6 +187,10 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datastudio.html">DataStudio</a></li>
@@ -443,469 +447,466 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ADMIN_GROUPS">
 <span class="sig-name descname"><span class="pre">ADMIN_GROUPS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ADMIN_GROUPS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of groups who administer this asset. (This is only used for certain asset types.)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ADMIN_ROLES">
 <span class="sig-name descname"><span class="pre">ADMIN_ROLES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ADMIN_ROLES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of roles who administer this asset. (This is only used for Connection assets.)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ADMIN_USERS">
 <span class="sig-name descname"><span class="pre">ADMIN_USERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ADMIN_USERS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of users who administer this asset. (This is only used for certain asset types.)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ANNOUNCEMENT_MESSAGE">
 <span class="sig-name descname"><span class="pre">ANNOUNCEMENT_MESSAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_MESSAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Detailed message to include in the announcement on this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ANNOUNCEMENT_TITLE">
 <span class="sig-name descname"><span class="pre">ANNOUNCEMENT_TITLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_TITLE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Brief title for the announcement on this asset. Required when announcementType is specified.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ANNOUNCEMENT_TYPE">
 <span class="sig-name descname"><span class="pre">ANNOUNCEMENT_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Type of announcement on this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ANNOUNCEMENT_UPDATED_AT">
 <span class="sig-name descname"><span class="pre">ANNOUNCEMENT_UPDATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_UPDATED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the announcement was last updated, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ANNOUNCEMENT_UPDATED_BY">
 <span class="sig-name descname"><span class="pre">ANNOUNCEMENT_UPDATED_BY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_UPDATED_BY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the user who last updated the announcement.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_ACCOUNT_NAME">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_ACCOUNT_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_ACCOUNT_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the account in which this asset exists in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_ALIAS">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_ALIAS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_ALIAS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Alias of this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_ENVIRONMENT_DBT_VERSION">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_ENVIRONMENT_DBT_VERSION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_ENVIRONMENT_DBT_VERSION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Version of the environment in which this asset is materialized in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_ENVIRONMENT_NAME">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_ENVIRONMENT_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_ENVIRONMENT_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the environment in which this asset is materialized in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether artifacts were saved from the last run of the job that materialized this asset in dbt (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3PATH">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3PATH" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Path in S3 to the artifacts saved from the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_CREATED_AT">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_CREATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_CREATED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the job that materialized this asset in dbt was last created, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_DEQUED_AT">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_DEQUED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_DEQUED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the job that materialized this asset in dbt was dequeued, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Thread ID of the user who executed the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Branch in git from which the last run of the job that materialized this asset in dbt ran.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_GIT_SHA">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_GIT_SHA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_GIT_SHA" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>SHA hash in git for the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether docs were generated from the last run of the job that materialized this asset in dbt (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether sources were generated from the last run of the job that materialized this asset in dbt (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether notifications were sent from the last run of the job that materialized this asset in dbt (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Thread ID of the owner of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Total duration the job that materialized this asset in dbt spent being queued.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_RUN_DURATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Run duration of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable run duration of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_STARTED_AT">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_STARTED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_STARTED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the job that materialized this asset in dbt was started running, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Status message of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Total duration of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable total duration of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_UPDATED_AT">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_UPDATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_UPDATED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the job that materialized this asset in dbt was last updated, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_URL">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_LAST_RUN_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_LAST_RUN_URL" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>URL of the last run of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_NAME">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_NEXT_RUN">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_NEXT_RUN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_NEXT_RUN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) when the next run of the job that materializes this asset in dbt is scheduled.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_NEXT_RUN_HUMANIZED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_NEXT_RUN_HUMANIZED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_NEXT_RUN_HUMANIZED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable time when the next run of the job that materializes this asset in dbt is scheduled.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_SCHEDULE">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_SCHEDULE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_SCHEDULE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Schedule of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/text_field.html#pyatlan.model.fields.atlan_fields.TextField" title="pyatlan.model.fields.atlan_fields.TextField"><span class="pre">TextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.TextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable cron schedule of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_JOB_STATUS">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_JOB_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_JOB_STATUS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Status of the job that materialized this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_META">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_META</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_META" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Metadata for this asset in dbt, specifically everything under the ‘meta’ key in the dbt object.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_PACKAGE_NAME">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_PACKAGE_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_PACKAGE_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the package in which this asset exists in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_PROJECT_NAME">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_PROJECT_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_PROJECT_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the project in which this asset exists in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_SEMANTIC_LAYER_PROXY_URL">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_SEMANTIC_LAYER_PROXY_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_SEMANTIC_LAYER_PROXY_URL" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>URL of the semantic layer proxy for this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_SOURCE_FRESHNESS_CRITERIA">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_SOURCE_FRESHNESS_CRITERIA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_SOURCE_FRESHNESS_CRITERIA" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Freshness criteria for the source of this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_TAGS">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_TAGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_TAGS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of tags attached to this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_TEST_STATUS">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_TEST_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_TEST_STATUS" title="Link to this definition">#</a></dt>
-<dd><p>All associated dbt test statuses</p>
+<dd><p>All associated dbt test statuses.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_DBT_UNIQUE_ID">
 <span class="sig-name descname"><span class="pre">ASSET_DBT_UNIQUE_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_DBT_UNIQUE_ID" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unique identifier of this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_ICON">
 <span class="sig-name descname"><span class="pre">ASSET_ICON</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_ICON" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the icon to use for this asset. (Only applies to glossaries, currently.)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_NAMES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_INCIDENT_NAMES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_NAMES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of Monte Carlo incident names attached to this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_QUALIFIED_NAMES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_INCIDENT_QUALIFIED_NAMES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_QUALIFIED_NAMES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of unique Monte Carlo incident names attached to this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_SEVERITIES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_INCIDENT_SEVERITIES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_SEVERITIES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of Monte Carlo incident severities associated with this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_STATES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_INCIDENT_STATES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_STATES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of Monte Carlo incident states associated with this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_SUB_TYPES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_INCIDENT_SUB_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_SUB_TYPES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of Monte Carlo incident sub-types associated with this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_TYPES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_INCIDENT_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_TYPES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of Monte Carlo incident types associated with this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_LAST_SYNC_RUN_AT">
 <span class="sig-name descname"><span class="pre">ASSET_MC_LAST_SYNC_RUN_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_LAST_SYNC_RUN_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which this asset was last synced from Monte Carlo.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_MONITOR_NAMES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_MONITOR_NAMES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_MONITOR_NAMES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of Monte Carlo monitor names attached to this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_MONITOR_QUALIFIED_NAMES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_MONITOR_QUALIFIED_NAMES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_MONITOR_QUALIFIED_NAMES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of unique Monte Carlo monitor names attached to this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_MONITOR_SCHEDULE_TYPES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_MONITOR_SCHEDULE_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_MONITOR_SCHEDULE_TYPES" title="Link to this definition">#</a></dt>
-<dd><p>MonteCarlo Monitor schedule type</p>
+<dd><p>Schedules of all associated Monte Carlo monitors.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_MONITOR_STATUSES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_MONITOR_STATUSES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_MONITOR_STATUSES" title="Link to this definition">#</a></dt>
-<dd><p>All associated monitors statuses</p>
+<dd><p>Statuses of all associated Monte Carlo monitors.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_MONITOR_TYPES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_MONITOR_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_MONITOR_TYPES" title="Link to this definition">#</a></dt>
-<dd><p>All associated monitor types</p>
+<dd><p>Types of all associated Monte Carlo monitors.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_CHECK_COUNT">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_CHECK_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_CHECK_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>Soda check count</p>
+<dd><p>Number of checks done via Soda.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_CHECK_STATUSES">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_CHECK_STATUSES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_CHECK_STATUSES" title="Link to this definition">#</a></dt>
-<dd><p>All associated soda check statuses</p>
+<dd><p>All associated Soda check statuses.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_DQ_STATUS">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_DQ_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_DQ_STATUS" title="Link to this definition">#</a></dt>
-<dd><p>Soda DQ Status</p>
+<dd><p>Status of data quality from Soda.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_LAST_SCAN_AT">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_LAST_SCAN_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_LAST_SCAN_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_LAST_SYNC_RUN_AT">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_LAST_SYNC_RUN_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_LAST_SYNC_RUN_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_SOURCE_URL">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_SOURCE_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_SOURCE_URL" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_TAGS">
 <span class="sig-name descname"><span class="pre">ASSET_TAGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_TAGS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of tags attached to this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CERTIFICATE_STATUS">
 <span class="sig-name descname"><span class="pre">CERTIFICATE_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CERTIFICATE_STATUS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Status of this asset’s certification.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CERTIFICATE_STATUS_MESSAGE">
 <span class="sig-name descname"><span class="pre">CERTIFICATE_STATUS_MESSAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CERTIFICATE_STATUS_MESSAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable descriptive message used to provide further detail to certificateStatus.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CERTIFICATE_UPDATED_AT">
 <span class="sig-name descname"><span class="pre">CERTIFICATE_UPDATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CERTIFICATE_UPDATED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which the certification was last updated, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CERTIFICATE_UPDATED_BY">
 <span class="sig-name descname"><span class="pre">CERTIFICATE_UPDATED_BY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CERTIFICATE_UPDATED_BY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the user who last updated the certification of this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CONNECTION_NAME">
 <span class="sig-name descname"><span class="pre">CONNECTION_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CONNECTION_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Simple name of the connection through which this asset is accessible.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CONNECTION_QUALIFIED_NAME">
 <span class="sig-name descname"><span class="pre">CONNECTION_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CONNECTION_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unique name of the connection through which this asset is accessible.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.CONNECTOR_NAME">
 <span class="sig-name descname"><span class="pre">CONNECTOR_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.CONNECTOR_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Type of the connector through which this asset is accessible.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.DBT_QUALIFIED_NAME">
 <span class="sig-name descname"><span class="pre">DBT_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.DBT_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unique name of this asset in dbt.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.DESCRIPTION">
 <span class="sig-name descname"><span class="pre">DESCRIPTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.DESCRIPTION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.DISPLAY_NAME">
 <span class="sig-name descname"><span class="pre">DISPLAY_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.DISPLAY_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Human-readable name of this asset used for display purposes (in user interface).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -917,49 +918,48 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.HAS_LINEAGE">
 <span class="sig-name descname"><span class="pre">HAS_LINEAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.HAS_LINEAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this asset has lineage (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.IS_AI_GENERATED">
 <span class="sig-name descname"><span class="pre">IS_AI_GENERATED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.IS_AI_GENERATED" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.IS_DISCOVERABLE">
 <span class="sig-name descname"><span class="pre">IS_DISCOVERABLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.IS_DISCOVERABLE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this asset is discoverable through the UI (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.IS_EDITABLE">
 <span class="sig-name descname"><span class="pre">IS_EDITABLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.IS_EDITABLE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Whether this asset can be edited in the UI (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.LAST_ROW_CHANGED_AT">
 <span class="sig-name descname"><span class="pre">LAST_ROW_CHANGED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.LAST_ROW_CHANGED_AT" title="Link to this definition">#</a></dt>
-<dd><p>Timestamp of last operation that inserted/updated/deleted rows. Google Sheets, Mysql table etc</p>
+<dd><p>Time (epoch) of the last operation that inserted, updated, or deleted rows, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.LAST_SYNC_RUN">
 <span class="sig-name descname"><span class="pre">LAST_SYNC_RUN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.LAST_SYNC_RUN" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the last run of the crawler that last synchronized this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.LAST_SYNC_RUN_AT">
 <span class="sig-name descname"><span class="pre">LAST_SYNC_RUN_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.LAST_SYNC_RUN_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which this asset was last crawled, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.LAST_SYNC_WORKFLOW_NAME">
 <span class="sig-name descname"><span class="pre">LAST_SYNC_WORKFLOW_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.LAST_SYNC_WORKFLOW_NAME" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the crawler that last synchronized this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -989,25 +989,31 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.NAME">
 <span class="sig-name descname"><span class="pre">NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_stemmed_field.html#pyatlan.model.fields.atlan_fields.KeywordTextStemmedField" title="pyatlan.model.fields.atlan_fields.KeywordTextStemmedField"><span class="pre">KeywordTextStemmedField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextStemmedField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.NAME" title="Link to this definition">#</a></dt>
+<dd><p>Name of this asset. Fallback for display purposes, if displayName is empty.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.OUTPUT_PORT_DATA_PRODUCTS">
+<span class="sig-name descname"><span class="pre">OUTPUT_PORT_DATA_PRODUCTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.OUTPUT_PORT_DATA_PRODUCTS" title="Link to this definition">#</a></dt>
 <dd><p>TBC</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.OWNER_GROUPS">
 <span class="sig-name descname"><span class="pre">OWNER_GROUPS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.OWNER_GROUPS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of groups who own this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.OWNER_USERS">
 <span class="sig-name descname"><span class="pre">OWNER_USERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.OWNER_USERS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of users who own this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.POPULARITY_SCORE">
 <span class="sig-name descname"><span class="pre">POPULARITY_SCORE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_rank_field.html#pyatlan.model.fields.atlan_fields.NumericRankField" title="pyatlan.model.fields.atlan_fields.NumericRankField"><span class="pre">NumericRankField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericRankField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.POPULARITY_SCORE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Popularity score for this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1019,7 +1025,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SAMPLE_DATA_URL">
 <span class="sig-name descname"><span class="pre">SAMPLE_DATA_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SAMPLE_DATA_URL" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>URL for sample data for this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1037,187 +1043,187 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_COST_UNIT">
 <span class="sig-name descname"><span class="pre">SOURCE_COST_UNIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_COST_UNIT" title="Link to this definition">#</a></dt>
-<dd><p>The unit of measure for sourceTotalCost</p>
+<dd><p>The unit of measure for sourceTotalCost.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_CREATED_AT">
 <span class="sig-name descname"><span class="pre">SOURCE_CREATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_CREATED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which this asset was created in the source system, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_CREATED_BY">
 <span class="sig-name descname"><span class="pre">SOURCE_CREATED_BY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_CREATED_BY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the user who created this asset, in the source system.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_EMBED_URL">
 <span class="sig-name descname"><span class="pre">SOURCE_EMBED_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_EMBED_URL" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>URL to create an embed for a resource (for example, an image of a dashboard) within Atlan.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_LAST_READ_AT">
 <span class="sig-name descname"><span class="pre">SOURCE_LAST_READ_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_LAST_READ_AT" title="Link to this definition">#</a></dt>
-<dd><p>Timestamp of most recent read operation</p>
+<dd><p>Timestamp of most recent read operation.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_OWNERS">
 <span class="sig-name descname"><span class="pre">SOURCE_OWNERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_OWNERS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of owners of this asset, in the source system.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_QUERY_COMPUTE_COST_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_QUERY_COMPUTE_COST_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_QUERY_COMPUTE_COST_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of most expensive warehouse names</p>
+<dd><p>List of most expensive warehouse names.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_QUERY_COMPUTE_COST_RECORD_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_QUERY_COMPUTE_COST_RECORD_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_QUERY_COMPUTE_COST_RECORD_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of most expensive warehouses with extra insights</p>
+<dd><p>List of most expensive warehouses with extra insights.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_COUNT">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>Total count of all read operations at source</p>
+<dd><p>Total count of all read operations at source.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of the most expensive queries that accessed this asset</p>
+<dd><p>List of the most expensive queries that accessed this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_POPULAR_QUERY_RECORD_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_POPULAR_QUERY_RECORD_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_POPULAR_QUERY_RECORD_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of the most popular queries that accessed this asset</p>
+<dd><p>List of the most popular queries that accessed this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_QUERY_COST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_QUERY_COST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_QUERY_COST" title="Link to this definition">#</a></dt>
-<dd><p>Total cost of read queries at source</p>
+<dd><p>Total cost of read queries at source.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_RECENT_USER_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_RECENT_USER_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_RECENT_USER_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of usernames of the most recent users who read the asset</p>
+<dd><p>List of usernames of the most recent users who read this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_RECENT_USER_RECORD_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_RECENT_USER_RECORD_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_RECENT_USER_RECORD_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of usernames with extra insights for the most recent users who read the asset</p>
+<dd><p>List of usernames with extra insights for the most recent users who read this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_SLOW_QUERY_RECORD_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_SLOW_QUERY_RECORD_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_SLOW_QUERY_RECORD_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of the slowest queries that accessed this asset</p>
+<dd><p>List of the slowest queries that accessed this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_TOP_USER_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_TOP_USER_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_TOP_USER_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of usernames of the top users who read the asset the most</p>
+<dd><p>List of usernames of the users who read this asset the most.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_TOP_USER_RECORD_LIST">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_TOP_USER_RECORD_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_TOP_USER_RECORD_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of usernames with extra insights for the top users who read the asset the most</p>
+<dd><p>List of usernames with extra insights for the users who read this asset the most.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_READ_USER_COUNT">
 <span class="sig-name descname"><span class="pre">SOURCE_READ_USER_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_READ_USER_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>Total number of unique users that read data from asset</p>
+<dd><p>Total number of unique users that read data from asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_TOTAL_COST">
 <span class="sig-name descname"><span class="pre">SOURCE_TOTAL_COST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_TOTAL_COST" title="Link to this definition">#</a></dt>
-<dd><p>Total cost of all operations at source</p>
+<dd><p>Total cost of all operations at source.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_UPDATED_AT">
 <span class="sig-name descname"><span class="pre">SOURCE_UPDATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_UPDATED_AT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Time (epoch) at which this asset was last updated in the source system, in milliseconds.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_UPDATED_BY">
 <span class="sig-name descname"><span class="pre">SOURCE_UPDATED_BY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_UPDATED_BY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the user who last updated this asset, in the source system.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SOURCE_URL">
 <span class="sig-name descname"><span class="pre">SOURCE_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SOURCE_URL" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>URL to the resource within the source application, used to create a button to view this asset in the source application.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.STARRED_BY">
 <span class="sig-name descname"><span class="pre">STARRED_BY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.STARRED_BY" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Users who have starred this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.STARRED_COUNT">
 <span class="sig-name descname"><span class="pre">STARRED_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.STARRED_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Number of users who have starred this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.STARRED_DETAILS_LIST">
 <span class="sig-name descname"><span class="pre">STARRED_DETAILS_LIST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.STARRED_DETAILS_LIST" title="Link to this definition">#</a></dt>
-<dd><p>List of usernames with extra information of the users who have starred an asset</p>
+<dd><p>List of usernames with extra information of the users who have starred an asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.SUB_TYPE">
 <span class="sig-name descname"><span class="pre">SUB_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.SUB_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Subtype of this asset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.TENANT_ID">
 <span class="sig-name descname"><span class="pre">TENANT_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.TENANT_ID" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Name of the Atlan workspace in which this asset exists.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.USER_DESCRIPTION">
 <span class="sig-name descname"><span class="pre">USER_DESCRIPTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.USER_DESCRIPTION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Description of this asset, as provided by a user. If present, this will be used for the description in user interface.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.VIEWER_GROUPS">
 <span class="sig-name descname"><span class="pre">VIEWER_GROUPS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.VIEWER_GROUPS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of groups who can view assets contained in a collection. (This is only used for certain asset types.)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.VIEWER_USERS">
 <span class="sig-name descname"><span class="pre">VIEWER_USERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.VIEWER_USERS" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>List of users who can view assets contained in a collection. (This is only used for certain asset types.)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.VIEW_SCORE">
 <span class="sig-name descname"><span class="pre">VIEW_SCORE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_rank_field.html#pyatlan.model.fields.atlan_fields.NumericRankField" title="pyatlan.model.fields.atlan_fields.NumericRankField"><span class="pre">NumericRankField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericRankField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.VIEW_SCORE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>View score for this asset.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1394,6 +1400,7 @@ downstream chain a .direction() call</p>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.MC_MONITORS"><code class="docutils literal notranslate"><span class="pre">Asset.MC_MONITORS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.METRICS"><code class="docutils literal notranslate"><span class="pre">Asset.METRICS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.NAME"><code class="docutils literal notranslate"><span class="pre">Asset.NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.OUTPUT_PORT_DATA_PRODUCTS"><code class="docutils literal notranslate"><span class="pre">Asset.OUTPUT_PORT_DATA_PRODUCTS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.OWNER_GROUPS"><code class="docutils literal notranslate"><span class="pre">Asset.OWNER_GROUPS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.OWNER_USERS"><code class="docutils literal notranslate"><span class="pre">Asset.OWNER_USERS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.POPULARITY_SCORE"><code class="docutils literal notranslate"><span class="pre">Asset.POPULARITY_SCORE</span></code></a></li>
