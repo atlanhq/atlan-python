@@ -20,7 +20,9 @@ DATA_DOMAIN_QUALIFIED_NAME = f"default/domain/{DATA_DOMAIN_MESH_SLUG}"
 DATA_SUB_DOMAIN_NAME = "data-sub-domain"
 DATA_SUB_DOMAIN_MESH_SLUG = "dataSubDomain"
 DATA_SUB_DOMAIN_MESH_ABBREVIATION = "dataSubDomain"
-DATA_SUB_DOMAIN_QUALIFIED_NAME = f"default/domain/{DATA_SUB_DOMAIN_MESH_SLUG}"
+DATA_SUB_DOMAIN_QUALIFIED_NAME = (
+    f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/{DATA_SUB_DOMAIN_MESH_SLUG}"
+)
 DATA_PRODUCT_MESH_SLUG = "dataProduct"
 DATA_PRODUCT_MESH_ABBREVIATION = "dataProduct"
 DATA_PRODUCT_NAME = "data-product"
@@ -59,7 +61,8 @@ def sub_domain(
 ) -> Generator[DataDomain, None, None]:
     assert domain.guid
     to_create = DataDomain.create(
-        name=DATA_SUB_DOMAIN_NAME, parent_domain_guid=domain.guid
+        name=DATA_SUB_DOMAIN_NAME,
+        parent_domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataDomain)[0]
@@ -163,14 +166,15 @@ def product(
     domain: DataDomain,
 ) -> Generator[DataDomain, None, None]:
     assert domain.guid
-    index = (
+    assets = (
         FluentSearch()
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
     ).to_request()
-    assets_dsl = index.get_dsl_str()
     to_create = DataProduct.create(
-        name=DATA_PRODUCT_NAME, assets_dsl=assets_dsl, domain_guid=domain.guid
+        name=DATA_PRODUCT_NAME,
+        assets=assets,
+        domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataProduct)[0]

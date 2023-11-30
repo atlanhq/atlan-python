@@ -68,15 +68,15 @@ def test_create_with_missing_parameters_raise_value_error(
         (DATA_PRODUCT_NAME, assets, None, DATA_DOMAIN_QUALIFIED_NAME),
     ],
 )
-def test_create_atttributes_with_required_parameters(
+def test_create(
     name: str,
     assets: IndexSearchRequest,
     domain: DataDomain,
     domain_qualified_name: str,
 ):
-    test_product = DataProduct.Attributes.create(
+    test_product = DataProduct.create(
         name=name,
-        assets_dsl=assets_dsl,
+        assets=assets,
         domain=domain,
         domain_qualified_name=domain_qualified_name,
     )
