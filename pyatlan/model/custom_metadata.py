@@ -98,6 +98,7 @@ class CustomMetadataDict(UserDict):
         return {
             CustomMetadataCache.get_attr_id_for_name(self._name, key): value
             for (key, value) in self.data.items()
+            if "archived" not in key
         }
 
 
