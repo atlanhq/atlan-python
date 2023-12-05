@@ -17,6 +17,8 @@
     def create_for_modification(
         cls: type[SelfAsset], qualified_name: str = "", name: str = ""
     ) -> SelfAsset:
+        if cls.__name__ == "Asset":
+            raise ErrorCode.METHOD_CAN_NOT_BE_INVOKED_ON_ASSET.exception_with_parameters()
         validate_required_fields(
             ["name", "qualified_name"],
             [name, qualified_name],

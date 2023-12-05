@@ -1928,6 +1928,10 @@ class ADLSStorageKind(str, Enum):
     STORAGE_V2 = "StorageV2"
 
 
+class AtlasGlossaryCategoryType(str, Enum):
+    DOCUMENT_FOLDER = "DOCUMENT_FOLDER"
+
+
 class AtlasGlossaryTermAssignmentStatus(str, Enum):
     DISCOVERED = "DISCOVERED"
     PROPOSED = "PROPOSED"
@@ -1944,6 +1948,14 @@ class AtlasGlossaryTermRelationshipStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     OBSOLETE = "OBSOLETE"
     OTHER = "OTHER"
+
+
+class AtlasGlossaryTermType(str, Enum):
+    DOCUMENT = "DOCUMENT"
+
+
+class AtlasGlossaryType(str, Enum):
+    KNOWLEDGE_HUB = "KNOWLEDGE_HUB"
 
 
 class AtlasOperation(str, Enum):
