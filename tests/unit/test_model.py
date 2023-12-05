@@ -901,7 +901,7 @@ def test_atlan_tag_names(monkeypatch):
 def test_create_for_modification_on_asset_raises_exception():
     with pytest.raises(
         InvalidRequestError,
-        match="ATLAN-PYTHON-400-053 This method can not be invoked on the Asset "
+        match="ATLAN-PYTHON-400-053 This method cannot be invoked on the Asset "
         "class. Please invoke on a specific asset type",
     ):
         Asset.create_for_modification(qualified_name="", name="")
