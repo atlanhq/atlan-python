@@ -466,7 +466,7 @@ class ErrorCode(Enum):
     METHOD_CAN_NOT_BE_INVOKED_ON_ASSET = (
         400,
         "ATLAN-PYTHON-400-053",
-        "This method can not be invoked on the Asset class. Please invoke on a specific asset type",
+        "This method cannot be invoked on the Asset class. Please invoke on a specific asset type",
         "Please invoke this method on a sub-class of Asset",
         InvalidRequestError,
     )
