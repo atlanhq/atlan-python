@@ -108,6 +108,15 @@ class CustomMetadataCache:
         return cls.get_cache()._get_attr_name_for_id(set_id=set_id, attr_id=attr_id)
 
     @classmethod
+    def is_attr_archived(cls, attr_id: str) -> bool:
+        """
+        Determine if an attribute is archived
+        :param attr_id: Atlan-internal ID string for the attribute
+        :returns: True if the attribute has been archived
+        """
+        return cls.get_cache()._is_attr_archived(attr_id=attr_id)
+
+    @classmethod
     def get_attributes_for_search_results(cls, set_name: str) -> Optional[list[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
@@ -330,6 +339,15 @@ class CustomMetadataCache:
         raise ErrorCode.CM_ATTR_NOT_FOUND_BY_ID.exception_with_parameters(
             attr_id, set_id
         )
+
+    def _is_attr_archived(self, attr_id: str) -> bool:
+        """
+        Determine if an attribute id is archived
+        :param attr_id: Atlan-internal ID string for the attribute
+        :returns: True if the attribute has been archived
+        """
+
+        return attr_id in self.archived_attr_ids
 
     def _get_attributes_for_search_results_(self, set_id: str) -> Optional[list[str]]:
         if sub_map := self.map_attr_name_to_id.get(set_id):
