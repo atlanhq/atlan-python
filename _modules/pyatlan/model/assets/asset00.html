@@ -453,12 +453,16 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">PrivateAttr</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">root_validator</span><span class="p">,</span> <span class="n">validator</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">Announcement</span><span class="p">,</span> <span class="n">AtlanObject</span><span class="p">,</span> <span class="n">AtlanTag</span><span class="p">,</span> <span class="n">Meaning</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.custom_metadata</span> <span class="kn">import</span> <span class="n">CustomMetadataDict</span><span class="p">,</span> <span class="n">CustomMetadataProxy</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AnnouncementType</span><span class="p">,</span>
     <span class="n">AtlanConnectorType</span><span class="p">,</span>
     <span class="n">AtlanIcon</span><span class="p">,</span>
+    <span class="n">AtlasGlossaryCategoryType</span><span class="p">,</span>
+    <span class="n">AtlasGlossaryTermType</span><span class="p">,</span>
+    <span class="n">AtlasGlossaryType</span><span class="p">,</span>
     <span class="n">CertificateStatus</span><span class="p">,</span>
     <span class="n">DataProductCriticality</span><span class="p">,</span>
     <span class="n">DataProductSensitivity</span><span class="p">,</span>
@@ -791,6 +795,8 @@
     <span class="k">def</span> <span class="nf">create_for_modification</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SelfAsset</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SelfAsset</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Asset&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">METHOD_CAN_NOT_BE_INVOKED_ON_ASSET</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;qualified_name&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">],</span>
@@ -817,7 +823,6 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_convert_to_real_type_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Asset</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">data</span>
 
@@ -1639,8 +1644,18 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Name of the icon to use for this asset. (Only applies to glossaries, currently.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">IS_PARTIAL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isPartial&quot;</span><span class="p">,</span> <span class="s2">&quot;isPartial&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">IS_AI_GENERATED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;isAIGenerated&quot;</span><span class="p">,</span> <span class="s2">&quot;isAIGenerated&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ASSET_COVER_IMAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;assetCoverImage&quot;</span><span class="p">,</span> <span class="s2">&quot;assetCoverImage&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
@@ -1809,7 +1824,9 @@
         <span class="s2">&quot;asset_soda_check_statuses&quot;</span><span class="p">,</span>
         <span class="s2">&quot;asset_soda_source_url&quot;</span><span class="p">,</span>
         <span class="s2">&quot;asset_icon&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_partial&quot;</span><span class="p">,</span>
         <span class="s2">&quot;is_a_i_generated&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;asset_cover_image&quot;</span><span class="p">,</span>
         <span class="s2">&quot;schema_registry_subjects&quot;</span><span class="p">,</span>
         <span class="s2">&quot;mc_monitors&quot;</span><span class="p">,</span>
         <span class="s2">&quot;output_port_data_products&quot;</span><span class="p">,</span>
@@ -3422,6 +3439,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_icon</span> <span class="o">=</span> <span class="n">asset_icon</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_partial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_partial</span>
+
+    <span class="nd">@is_partial</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_partial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_partial</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_partial</span> <span class="o">=</span> <span class="n">is_partial</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_a_i_generated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_a_i_generated</span>
 
@@ -3430,6 +3457,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_a_i_generated</span> <span class="o">=</span> <span class="n">is_a_i_generated</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">asset_cover_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_cover_image</span>
+
+    <span class="nd">@asset_cover_image</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">asset_cover_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_cover_image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_cover_image</span> <span class="o">=</span> <span class="n">asset_cover_image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">schema_registry_subjects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SchemaRegistrySubject</span><span class="p">]]:</span>
@@ -3877,8 +3914,12 @@
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetSodaSourceURL&quot;</span>
         <span class="p">)</span>
         <span class="n">asset_icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetIcon&quot;</span><span class="p">)</span>
+        <span class="n">is_partial</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;isPartial&quot;</span><span class="p">)</span>
         <span class="n">is_a_i_generated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;isAIGenerated&quot;</span>
+        <span class="p">)</span>
+        <span class="n">asset_cover_image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetCoverImage&quot;</span>
         <span class="p">)</span>
         <span class="n">schema_registry_subjects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SchemaRegistrySubject</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;schemaRegistrySubjects&quot;</span>
@@ -4048,6 +4089,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unused. Arbitrary set of additional attributes associated with the category.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CATEGORY_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;categoryType&quot;</span><span class="p">,</span> <span class="s2">&quot;categoryType&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of category, determining the kind of knowledge it organizes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">TERMS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;terms&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4062,6 +4107,7 @@
         <span class="s2">&quot;short_description&quot;</span><span class="p">,</span>
         <span class="s2">&quot;long_description&quot;</span><span class="p">,</span>
         <span class="s2">&quot;additional_attributes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;category_type&quot;</span><span class="p">,</span>
         <span class="s2">&quot;terms&quot;</span><span class="p">,</span>
         <span class="s2">&quot;anchor&quot;</span><span class="p">,</span>
         <span class="s2">&quot;parent_category&quot;</span><span class="p">,</span>
@@ -4099,6 +4145,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">additional_attributes</span> <span class="o">=</span> <span class="n">additional_attributes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">category_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryCategoryType</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">category_type</span>
+
+    <span class="nd">@category_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">category_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryCategoryType</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">category_type</span> <span class="o">=</span> <span class="n">category_type</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">terms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]:</span>
@@ -4151,6 +4207,9 @@
         <span class="p">)</span>
         <span class="n">additional_attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;additionalAttributes&quot;</span>
+        <span class="p">)</span>
+        <span class="n">category_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryCategoryType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;categoryType&quot;</span>
         <span class="p">)</span>
         <span class="n">terms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;terms&quot;</span>
@@ -4256,6 +4315,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unused. Arbitrary set of additional attributes associated with this glossary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GLOSSARY_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;glossaryType&quot;</span><span class="p">,</span> <span class="s2">&quot;glossaryType&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of glosssary, which determines the type of knowledge it captures.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">TERMS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;terms&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4272,6 +4335,7 @@
         <span class="s2">&quot;language&quot;</span><span class="p">,</span>
         <span class="s2">&quot;usage&quot;</span><span class="p">,</span>
         <span class="s2">&quot;additional_attributes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;glossary_type&quot;</span><span class="p">,</span>
         <span class="s2">&quot;terms&quot;</span><span class="p">,</span>
         <span class="s2">&quot;categories&quot;</span><span class="p">,</span>
     <span class="p">]</span>
@@ -4329,6 +4393,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">additional_attributes</span> <span class="o">=</span> <span class="n">additional_attributes</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">glossary_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryType</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">glossary_type</span>
+
+    <span class="nd">@glossary_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">glossary_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossary_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryType</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">glossary_type</span> <span class="o">=</span> <span class="n">glossary_type</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">terms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">terms</span>
 
@@ -4359,6 +4433,9 @@
         <span class="n">usage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;usage&quot;</span><span class="p">)</span>
         <span class="n">additional_attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;additionalAttributes&quot;</span>
+        <span class="p">)</span>
+        <span class="n">glossary_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;glossaryType&quot;</span>
         <span class="p">)</span>
         <span class="n">terms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;terms&quot;</span>
@@ -4502,6 +4579,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unused. Arbitrary set of additional attributes for the terrm.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TERM_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;termType&quot;</span><span class="p">,</span> <span class="s2">&quot;termType&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of term, determining how knowledge is captured.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">VALID_VALUES_FOR</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;validValuesFor&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4567,6 +4648,7 @@
         <span class="s2">&quot;abbreviation&quot;</span><span class="p">,</span>
         <span class="s2">&quot;usage&quot;</span><span class="p">,</span>
         <span class="s2">&quot;additional_attributes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;term_type&quot;</span><span class="p">,</span>
         <span class="s2">&quot;valid_values_for&quot;</span><span class="p">,</span>
         <span class="s2">&quot;valid_values&quot;</span><span class="p">,</span>
         <span class="s2">&quot;see_also&quot;</span><span class="p">,</span>
@@ -4646,6 +4728,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">additional_attributes</span> <span class="o">=</span> <span class="n">additional_attributes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">term_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryTermType</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">term_type</span>
+
+    <span class="nd">@term_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">term_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">term_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryTermType</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">term_type</span> <span class="o">=</span> <span class="n">term_type</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">valid_values_for</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]:</span>
@@ -4819,6 +4911,9 @@
         <span class="n">usage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;usage&quot;</span><span class="p">)</span>
         <span class="n">additional_attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;additionalAttributes&quot;</span>
+        <span class="p">)</span>
+        <span class="n">term_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlasGlossaryTermType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;termType&quot;</span>
         <span class="p">)</span>
         <span class="n">valid_values_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;validValuesFor&quot;</span>

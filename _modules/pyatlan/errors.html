@@ -932,6 +932,13 @@
         <span class="s2">&quot;Please use purge if you wish to remove assets of this type&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">METHOD_CAN_NOT_BE_INVOKED_ON_ASSET</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-053&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;This method cannot be invoked on the Asset class. Please invoke on a specific asset type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Please invoke this method on a sub-class of Asset&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
