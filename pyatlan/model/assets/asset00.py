@@ -14,12 +14,16 @@ from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
     AtlanIcon,
+    AtlasGlossaryCategoryType,
+    AtlasGlossaryTermType,
+    AtlasGlossaryType,
     CertificateStatus,
     DataProductCriticality,
     DataProductSensitivity,
@@ -341,6 +345,8 @@ class Asset(Referenceable):
     def create_for_modification(
         cls: type[SelfAsset], qualified_name: str = "", name: str = ""
     ) -> SelfAsset:
+        if cls.__name__ == "Asset":
+            raise ErrorCode.METHOD_CAN_NOT_BE_INVOKED_ON_ASSET.exception_with_parameters()
         validate_required_fields(
             ["name", "qualified_name"],
             [name, qualified_name],
@@ -1185,8 +1191,18 @@ class Asset(Referenceable):
     """
     Name of the icon to use for this asset. (Only applies to glossaries, currently.)
     """
+    IS_PARTIAL: ClassVar[BooleanField] = BooleanField("isPartial", "isPartial")
+    """
+
+    """
     IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField(
         "isAIGenerated", "isAIGenerated"
+    )
+    """
+
+    """
+    ASSET_COVER_IMAGE: ClassVar[KeywordField] = KeywordField(
+        "assetCoverImage", "assetCoverImage"
     )
     """
 
@@ -1355,7 +1371,9 @@ class Asset(Referenceable):
         "asset_soda_check_statuses",
         "asset_soda_source_url",
         "asset_icon",
+        "is_partial",
         "is_a_i_generated",
+        "asset_cover_image",
         "schema_registry_subjects",
         "mc_monitors",
         "output_port_data_products",
@@ -2968,6 +2986,16 @@ class Asset(Referenceable):
         self.attributes.asset_icon = asset_icon
 
     @property
+    def is_partial(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_partial
+
+    @is_partial.setter
+    def is_partial(self, is_partial: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_partial = is_partial
+
+    @property
     def is_a_i_generated(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_a_i_generated
 
@@ -2976,6 +3004,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.is_a_i_generated = is_a_i_generated
+
+    @property
+    def asset_cover_image(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.asset_cover_image
+
+    @asset_cover_image.setter
+    def asset_cover_image(self, asset_cover_image: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_cover_image = asset_cover_image
 
     @property
     def schema_registry_subjects(self) -> Optional[list[SchemaRegistrySubject]]:
@@ -3423,8 +3461,12 @@ class Asset(Referenceable):
             None, description="", alias="assetSodaSourceURL"
         )
         asset_icon: Optional[str] = Field(None, description="", alias="assetIcon")
+        is_partial: Optional[bool] = Field(None, description="", alias="isPartial")
         is_a_i_generated: Optional[bool] = Field(
             None, description="", alias="isAIGenerated"
+        )
+        asset_cover_image: Optional[str] = Field(
+            None, description="", alias="assetCoverImage"
         )
         schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
             None, description="", alias="schemaRegistrySubjects"
@@ -3588,6 +3630,10 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """
     Unused. Arbitrary set of additional attributes associated with the category.
     """
+    CATEGORY_TYPE: ClassVar[KeywordField] = KeywordField("categoryType", "categoryType")
+    """
+    Type of category, determining the kind of knowledge it organizes.
+    """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
     """
@@ -3602,6 +3648,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "short_description",
         "long_description",
         "additional_attributes",
+        "category_type",
         "terms",
         "anchor",
         "parent_category",
@@ -3639,6 +3686,16 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
+
+    @property
+    def category_type(self) -> Optional[AtlasGlossaryCategoryType]:
+        return None if self.attributes is None else self.attributes.category_type
+
+    @category_type.setter
+    def category_type(self, category_type: Optional[AtlasGlossaryCategoryType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.category_type = category_type
 
     @property
     def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -3691,6 +3748,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
+        )
+        category_type: Optional[AtlasGlossaryCategoryType] = Field(
+            None, description="", alias="categoryType"
         )
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
@@ -3793,6 +3853,10 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """
     Unused. Arbitrary set of additional attributes associated with this glossary.
     """
+    GLOSSARY_TYPE: ClassVar[KeywordField] = KeywordField("glossaryType", "glossaryType")
+    """
+    Type of glosssary, which determines the type of knowledge it captures.
+    """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
     """
@@ -3809,6 +3873,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "language",
         "usage",
         "additional_attributes",
+        "glossary_type",
         "terms",
         "categories",
     ]
@@ -3866,6 +3931,16 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         self.attributes.additional_attributes = additional_attributes
 
     @property
+    def glossary_type(self) -> Optional[AtlasGlossaryType]:
+        return None if self.attributes is None else self.attributes.glossary_type
+
+    @glossary_type.setter
+    def glossary_type(self, glossary_type: Optional[AtlasGlossaryType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.glossary_type = glossary_type
+
+    @property
     def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.terms
 
@@ -3896,6 +3971,9 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         usage: Optional[str] = Field(None, description="", alias="usage")
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
+        )
+        glossary_type: Optional[AtlasGlossaryType] = Field(
+            None, description="", alias="glossaryType"
         )
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
@@ -4036,6 +4114,10 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """
     Unused. Arbitrary set of additional attributes for the terrm.
     """
+    TERM_TYPE: ClassVar[KeywordField] = KeywordField("termType", "termType")
+    """
+    Type of term, determining how knowledge is captured.
+    """
 
     VALID_VALUES_FOR: ClassVar[RelationField] = RelationField("validValuesFor")
     """
@@ -4101,6 +4183,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "abbreviation",
         "usage",
         "additional_attributes",
+        "term_type",
         "valid_values_for",
         "valid_values",
         "see_also",
@@ -4180,6 +4263,16 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
+
+    @property
+    def term_type(self) -> Optional[AtlasGlossaryTermType]:
+        return None if self.attributes is None else self.attributes.term_type
+
+    @term_type.setter
+    def term_type(self, term_type: Optional[AtlasGlossaryTermType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.term_type = term_type
 
     @property
     def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -4353,6 +4446,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         usage: Optional[str] = Field(None, description="", alias="usage")
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
+        )
+        term_type: Optional[AtlasGlossaryTermType] = Field(
+            None, description="", alias="termType"
         )
         valid_values_for: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="validValuesFor"
