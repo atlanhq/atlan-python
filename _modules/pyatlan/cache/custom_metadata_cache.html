@@ -566,6 +566,18 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_get_attr_name_for_id</span><span class="p">(</span><span class="n">set_id</span><span class="o">=</span><span class="n">set_id</span><span class="p">,</span> <span class="n">attr_id</span><span class="o">=</span><span class="n">attr_id</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="CustomMetadataCache.is_attr_archived">
+<a class="viewcode-back" href="../../../cache/custom_metadata_cache.html#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.is_attr_archived">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_attr_archived</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine if an attribute is archived</span>
+<span class="sd">        :param attr_id: Atlan-internal ID string for the attribute</span>
+<span class="sd">        :returns: True if the attribute has been archived</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_is_attr_archived</span><span class="p">(</span><span class="n">attr_id</span><span class="o">=</span><span class="n">attr_id</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="CustomMetadataCache.get_attributes_for_search_results">
 <a class="viewcode-back" href="../../../cache/custom_metadata_cache.html#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attributes_for_search_results">[docs]</a>
     <span class="nd">@classmethod</span>
@@ -801,6 +813,15 @@
         <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">CM_ATTR_NOT_FOUND_BY_ID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
             <span class="n">attr_id</span><span class="p">,</span> <span class="n">set_id</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_is_attr_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine if an attribute id is archived</span>
+<span class="sd">        :param attr_id: Atlan-internal ID string for the attribute</span>
+<span class="sd">        :returns: True if the attribute has been archived</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">attr_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">archived_attr_ids</span>
 
     <span class="k">def</span> <span class="nf">_get_attributes_for_search_results_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
         <span class="k">if</span> <span class="n">sub_map</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">set_id</span><span class="p">):</span>

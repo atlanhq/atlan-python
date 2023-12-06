@@ -477,9 +477,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">_id</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">value</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">_id</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">is_attr_archived</span><span class="p">(</span><span class="n">attr_id</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        <span class="p">}</span>
 
 <div class="viewcode-block" id="CustomMetadataDict.get_deleted_sentinel">
 <a class="viewcode-back" href="../../../other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict.get_deleted_sentinel">[docs]</a>
