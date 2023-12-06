@@ -36,9 +36,13 @@ class CustomMetadataDict(UserDict):
         self._name = name
         self._modified = False
         _id = CustomMetadataCache.get_id_for_name(name)
-        self._names = set(
-            CustomMetadataCache.get_cache().map_attr_id_to_name[_id].values()
-        )
+        self._names = {
+            value
+            for key, value in CustomMetadataCache.get_cache()
+            .map_attr_id_to_name[_id]
+            .items()
+            if not CustomMetadataCache.is_attr_archived(attr_id=key)
+        }
 
     @classmethod
     def get_deleted_sentinel(cls) -> "CustomMetadataDict":
