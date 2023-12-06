@@ -1805,6 +1805,11 @@ class DSL(AtlanObject):
     sort: list[SortItem] = Field(
         alias="sort", default=[SortItem(TermAttributes.GUID.value)]
     )
+    source: Optional[list[str]] = Field(
+        default_factory=list,
+        description="Used by recent search log request",
+        alias="_source",
+    )
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1812,7 +1817,14 @@ class DSL(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(
-            ["from_", "size", "track_total_hits", "sort", "aggregations"]
+            [
+                "from_",
+                "size",
+                "track_total_hits",
+                "sort",
+                "aggregations",
+                "source",
+            ]
         )
 
     @validator("query", always=True)
