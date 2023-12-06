@@ -43,6 +43,7 @@ class TestCustomMetadataDict:
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
         mock_cache.map_attr_id_to_name = META_DATA
+        mock_cache.is_attr_archived.return_value = False
 
         return CustomMetadataDict(CM_NAME)
 
@@ -153,6 +154,7 @@ class TestCustomMetadataProxy:
     def test_after_modifying_metadata_modified_is_true(self, sut, mock_cache):
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.is_attr_archived.return_value = False
 
         cm = sut.get_custom_metadata(name=CM_NAME)
         cm[ATTR_FIRST_NAME] = "James"
@@ -164,6 +166,7 @@ class TestCustomMetadataProxy:
         mock_cache.get_attr_name_for_id.return_value = ATTR_FIRST_NAME
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.is_attr_archived.return_value = False
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME}}
 
         sut = CustomMetadataProxy(business_attributes=ba)
@@ -175,6 +178,7 @@ class TestCustomMetadataProxy:
         mock_cache.get_attr_name_for_id.side_effect = get_attr_name_for_id
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.is_attr_archived.return_value = False
         mock_cache.get_attr_id_for_name.side_effect = get_attr_id_for_name
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
 
