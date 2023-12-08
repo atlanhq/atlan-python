@@ -1,5 +1,4 @@
 from datetime import datetime
-from enum import Enum
 from typing import Generator, Iterable, Optional
 
 from pydantic import Field, ValidationError, parse_obj_as
@@ -9,6 +8,7 @@ from pyatlan.client.constants import SEARCH_LOG
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.enums import UTMTags
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -19,10 +19,6 @@ from pyatlan.model.search import (
     Term,
     Terms,
 )
-
-
-class SearchLogUtmTags(str, Enum):
-    ACTION_ASSET_VIEWED = "action_asset_viewed"
 
 
 class SearchLogRequest(SearchRequest):
@@ -75,7 +71,7 @@ class SearchLogRequest(SearchRequest):
         query_filters = [
             Terms(
                 field="utmTags",
-                values=[SearchLogUtmTags.ACTION_ASSET_VIEWED],
+                values=[UTMTags.ACTION_ASSET_VIEWED],
             ),
             Bool(
                 should=[
@@ -123,7 +119,7 @@ class SearchLogRequest(SearchRequest):
     @classmethod
     def get_recent_search(
         cls,
-        usernames: list[str],
+        guid: str,
         *,
         from_: int = 0,
         size: int = 15,
@@ -131,13 +127,12 @@ class SearchLogRequest(SearchRequest):
         """
         Create a search log request to retrieve recent search logs of an assets.
 
-        :param usernames: list of usernames of whom to retrieve recent search logs
+        :param guid: unique identifier of the asset.
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
         :param max_logs: number of logs to retrieve from the recent search log. Defaults to 15.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
-        usernames = usernames or []
         dsl = DSL(
             size=size,
             from_=from_,
@@ -156,9 +151,8 @@ class SearchLogRequest(SearchRequest):
                 filter=[
                     Bool(
                         must=[
-                            Terms(field="userName", values=usernames),
+                            Term(field="entityGuidsAll", value=guid),
                             Term(field="utmTags", value="action_asset_viewed"),
-                            Term(field="utmTags", value="ui_profile"),
                         ]
                     )
                 ]

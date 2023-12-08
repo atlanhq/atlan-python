@@ -30,6 +30,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     ChildScoreMode,
     SortOrder,
+    UTMTags,
 )
 
 SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
@@ -1859,6 +1860,17 @@ class IndexSearchRequest(SearchRequest):
         description="Whether to include deleted relationships to this asset (true) or not (false). By default, "
         "this is false and therefore only active (not deleted) relationships will be included.",
         alias="allowDeletedRelations",
+    )
+
+    class Metadata(AtlanObject):
+        save_search_log: bool = True
+        utm_tags: list[str] = []
+
+    request_metadata: Metadata = Field(
+        default_factory=lambda: IndexSearchRequest.Metadata(
+            save_search_log=True,
+            utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
+        ),
     )
 
     def get_dsl_str(self) -> str:

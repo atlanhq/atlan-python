@@ -283,7 +283,8 @@ def test_index_search_request():
         ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
-        '"sort": [{"__guid": {"order": "asc"}}], "_source": []}, "relationAttributes": []}'
+        '"sort": [{"__guid": {"order": "asc"}}], "_source": []}, "relationAttributes": [], '
+        '"requestMetadata": {"saveSearchLog": true, "utmTags": ["project_sdk_python"]}}'
     )
 
 
@@ -299,7 +300,8 @@ def test_index_search_request_get_dsl_str():
         ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true,'
         ' "post_filter": {"term": {"databaseName.keyword": {"value": "ATLAN_SAMPLE_DATA"}}},'
         ' "query": {"term": {"__typeName.keyword": {"value": "Schema"}}},'
-        ' "sort": [{"__guid": {"order": "asc"}}], "_source": []}, "relationAttributes": []}}'
+        ' "sort": [{"__guid": {"order": "asc"}}], "_source": []}, "relationAttributes": [],'
+        ' "requestMetadata": {"saveSearchLog": true, "utmTags": ["project_sdk_python"]}}}'
     )
 
 
