@@ -30,12 +30,12 @@ class SearchLogRequest(SearchRequest):
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
-    def _get_dsl_aggs(self, user_size: int) -> dict[str, Aggregation]:
+    def _get_dsl_aggs(self, max_users: int) -> dict[str, Aggregation]:
         return {
             "uniqueUsers": {
                 "terms": {
                     "field": "userName",
-                    "size": user_size,
+                    "size": max_users,
                     "order": {"latest_timestamp": "desc"},
                 },
                 "aggs": {"latest_timestamp": {"max": {"field": "timestamp"}}},
@@ -46,13 +46,13 @@ class SearchLogRequest(SearchRequest):
         }
 
     @classmethod
-    def by_guid(
+    def most_recent_viewers(
         cls,
         guid: str,
         *,
         size: int = 0,
         from_: int = 0,
-        user_size: int = 20,
+        max_users: int = 20,
         start_time: Optional[int] = None,
         end_time: Optional[int] = None,
     ) -> "SearchLogRequest":
@@ -62,7 +62,7 @@ class SearchLogRequest(SearchRequest):
         :param guid: unique identifier of the asset.
         :param size: number of changes to retrieve. Defaults to 0.
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
-        :param user_size: number of users to retrieve from the search log. Defaults to 20.
+        :param max_users: maximum number of recent users to consider. Defaults to 20.
         :param start_time: start timestamp (epoch) for the search log range filter.
         :param end_time: end timestamp (epoch) for the search log range filter.
 
@@ -112,94 +112,215 @@ class SearchLogRequest(SearchRequest):
                     ),
                 ],
             ),
-            aggregations=cls._get_dsl_aggs(cls, user_size),
+            aggregations=cls._get_dsl_aggs(cls, max_users),
         )
         return SearchLogRequest(dsl=dsl)
 
     @classmethod
-    def get_recent_search(
+    def most_viewed_assets(
+        cls,
+        max_assets: int = 10,
+        *,
+        size: int = 0,
+        from_: int = 0,
+        by_different_user: bool = False,
+    ) -> "SearchLogRequest":
+        asset_aggs_terms = {
+            "field": "entityGuidsAll",
+            "size": max_assets,
+        }
+        if by_different_user:
+            asset_aggs_terms.update({"order": {"uniqueUsers": "desc"}})
+        query_filters = [
+            Term(field="utmTags", value="action_asset_viewed"),
+            Bool(
+                should=[
+                    Term(field="utmTags", value="ui_profile"),
+                    Term(field="utmTags", value="ui_sidebar"),
+                ],
+                minimum_should_match=1,
+            ),
+        ]
+        dsl = DSL(
+            size=size,
+            from_=from_,
+            aggregations={
+                "uniqueAssets": {
+                    "aggregations": {
+                        "uniqueUsers": {
+                            "cardinality": {
+                                "field": "userName",
+                                "precision_threshold": 1000,
+                            }
+                        }
+                    },
+                    "terms": asset_aggs_terms,
+                },
+                "totalDistinctUsers": {
+                    "cardinality": {"field": "userName", "precision_threshold": 1000}
+                },
+            },
+            query=Bool(filter=query_filters),
+            sort=[SortItem("timestamp", order="asc")],
+            track_total_hits=True,
+        )
+        return SearchLogRequest(dsl=dsl)
+
+    @classmethod
+    def views_by_guid(
         cls,
         guid: str,
         *,
         from_: int = 0,
-        size: int = 15,
+        size: int = 20,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve recent search logs of an assets.
 
         :param guid: unique identifier of the asset.
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
-        :param max_logs: number of logs to retrieve from the recent search log. Defaults to 15.
+        :param max_logs: number of logs to retrieve from the recent search log. Defaults to 20.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
         dsl = DSL(
+            from_=0,
             size=size,
-            from_=from_,
-            source=[
-                "host",
-                "ipAddress",
-                "userAgent",
-                "userName",
-                "timestamp",
-                "entityGuidsAll",
-                "entityQFNamesAll",
-                "entityTypeNamesAll",
-            ],
-            sort=[SortItem("timestamp", order="desc")],
             query=Bool(
                 filter=[
+                    Term(field="utmTags", value="action_asset_viewed"),
+                    Term(field="entityGuidsAll", value=guid, case_insensitive=False),
                     Bool(
-                        must=[
-                            Term(field="entityGuidsAll", value=guid),
-                            Term(field="utmTags", value="action_asset_viewed"),
-                        ]
-                    )
+                        minimum_should_match="1",
+                        should=[
+                            Term(field="utmTags", value="ui_profile"),
+                            Term(field="utmTags", value="ui_sidebar"),
+                        ],
+                    ),
                 ]
             ),
+            sort=[SortItem("timestamp", order="asc")],
+            track_total_hits=True,
         )
         return SearchLogRequest(dsl=dsl)
 
 
-class UniqueUsers(AtlanObject):
+class AssetViews(AtlanObject):
     """
-    Represents unique user entry in the search log.
+    Captures a specific aggregate result of assets and the views on that asset.
     Instances of this class should be treated as immutable.
     """
 
-    name: str = Field(description="User name of the user who viewed the assets.")
-    view_count: str = Field(description="Total view count of the asset for a user.")
-    view_timestamp: datetime = Field(
-        description="Latest view timestamp (epoch) of the viewed asset."
+    guid: str = Field(description="GUID of the asset that was viewed.")
+    total_views: int = Field(
+        description="Number of times the asset has been viewed (in total)."
+    )
+    distinct_users: int = Field(
+        description="Number of distinct users that have viewed the asset."
     )
 
 
-class AssetLog(AtlanObject):
+class UserViews(AtlanObject):
     """
-    Represents an log entry for asset search in the search log.
+    Represents unique user views entry in the search log.
     Instances of this class should be treated as immutable.
     """
 
-    log_host: str = Field(
-        description="The host information associated with the search log."
+    username: str = Field(description="User name of the user who viewed the assets.")
+    view_count: str = Field(description="Number of times the user viewed the asset.")
+    most_recent_view: datetime = Field(
+        description="When the user most recently viewed the asset (epoch-style), in milliseconds."
     )
-    log_ipaddress: str = Field(
-        description="The IP address associated with the search log."
-    )
-    log_user_agent: str = Field(
-        description="The user agent information associated with the search log."
-    )
-    log_username: str = Field(
-        description="The username of the user who searched for the assets."
-    )
-    log_guid: str = Field(description="The GUID of the search log asset.")
-    log_qualified_name: str = Field(
-        description="The unique name of the search log asset."
-    )
-    log_type_name: str = Field(description="The type name of the search log asset.")
 
-    log_timestamp: datetime = Field(
-        description="The timestamp (epoch) when the search occurred, in milliseconds."
+
+class SearchLogEntry(AtlanObject):
+    """
+    Represents a log entry for asset search in the search log.
+    Instances of this class should be treated as immutable.
+    """
+
+    user_agent: str = Field(
+        description="Details of the browser or other client used to make the request."
+    )
+    host: str = Field(
+        description="Hostname of the tenant against which the search was run."
+    )
+    ip_address: str = Field(description="IP address from which the search was run.")
+    user_name: str = Field(description="Username of the user who ran the search.")
+    entity_guids_all: list[str] = Field(
+        default_factory=list,
+        alias="entityGuidsAll",
+        description="GUID(s) of asset(s) that were in the results of the search.",
+    )
+    entity_qf_names_all: list[str] = Field(
+        default_factory=list,
+        alias="entityQFNamesAll",
+        description="Unique name(s) of asset(s) that were in the results of the search.",
+    )
+    entity_guids_allowed: list[str] = Field(
+        default_factory=list,
+        alias="entityGuidsAllowed",
+        description="GUID(s) of asset(s) that were in the results of the search, that the user is permitted to see.",
+    )
+    entity_qf_names_allowed: list[str] = Field(
+        default_factory=list,
+        alias="entityQFNamesAllowed",
+        description=(
+            "Unique name(s) of asset(s) that were in the "
+            "results of the search, that the user is permitted to see."
+        ),
+    )
+    entity_type_names_all: list[str] = Field(
+        default_factory=list,
+        alias="entityTypeNamesAll",
+        description="Name(s) of the types of assets that were in the results of the search.",
+    )
+    entity_type_names_allowed: list[str] = Field(
+        default_factory=list,
+        alias="entityTypeNamesAllowed",
+        description=(
+            "Name(s) of the types of assets that were in "
+            "the results of the search, that the user is permitted to see."
+        ),
+    )
+    utm_tags: list[str] = Field(
+        default_factory=list, description="Tag(s) that were sent in the search request."
+    )
+    has_result: bool = Field(
+        alias="hasResult",
+        description="Whether the search had any results (true) or not (false).",
+    )
+    results_count: int = Field(
+        alias="resultsCount", description="Number of results for the search."
+    )
+    response_time: int = Field(
+        alias="responseTime",
+        description="Elapsed time to produce the results for the search, in milliseconds.",
+    )
+    created_at: datetime = Field(
+        alias="createdAt",
+        description="Time (epoch-style) at which the search was logged, in milliseconds.",
+    )
+    timestamp: datetime = Field(
+        description="Time (epoch-style) at which the search was run, in milliseconds."
+    )
+    failed: bool = Field(
+        description="Whether the search was successful (false) or not (true)."
+    )
+    request_dsl: dict = Field(
+        alias="request.dsl", description="DSL of the full search request that was made."
+    )
+    request_dsl_text: str = Field(
+        alias="request.dslText",
+        description="DSL of the full search request that was made, as a string.",
+    )
+    request_attributes: Optional[list[str]] = Field(
+        alias="request.attributes",
+        description="List of attribute (names) that were requested as part of the search.",
+    )
+    request_relation_attributes: Optional[list[str]] = Field(
+        alias="request.relationAttributes",
+        description="List of relationship attribute (names) that were requested as part of the search.",
     )
 
 
@@ -208,19 +329,25 @@ class SearchLogViewResults:
 
     def __init__(
         self,
-        total_views: int,
-        unique_users: list[UniqueUsers],
+        count: int,
+        user_views: Optional[list[UserViews]] = None,
+        asset_views: Optional[list[AssetViews]] = None,
     ):
-        self._total_views = total_views
-        self._unique_users = unique_users
+        self._count = count
+        self._user_views = user_views
+        self._asset_views = asset_views
 
     @property
-    def total_views(self) -> int:
-        return self._total_views
+    def count(self) -> int:
+        return self._count
 
     @property
-    def unique_users(self) -> int:
-        return self._unique_users
+    def user_views(self) -> int:
+        return self._user_views
+
+    @property
+    def asset_views(self) -> int:
+        return self._asset_views
 
 
 class SearchLogResults(Iterable):
@@ -233,7 +360,7 @@ class SearchLogResults(Iterable):
         start: int,
         size: int,
         count: int,
-        asset_logs: list[AssetLog],
+        log_enties: list[SearchLogEntry],
         aggregations: dict[str, Aggregation],
     ):
         self._client = client
@@ -242,20 +369,20 @@ class SearchLogResults(Iterable):
         self._start = start
         self._size = size
         self._count = count
-        self._asset_logs = asset_logs
+        self._log_enties = log_enties
         self._aggregations = aggregations
 
     @property
-    def total_count(self) -> int:
+    def count(self) -> int:
         return self._count
 
-    def current_page(self) -> list[AssetLog]:
+    def current_page(self) -> list[SearchLogEntry]:
         """
         Retrieve the current page of results.
 
         :returns: list of assets on the current page of results
         """
-        return self._asset_logs
+        return self._log_enties
 
     def next_page(self, start=None, size=None) -> bool:
         """
@@ -266,7 +393,7 @@ class SearchLogResults(Iterable):
         self._start = start or self._start + self._size
         if size:
             self._size = size
-        return self._get_next_page() if self._asset_logs else False
+        return self._get_next_page() if self._log_enties else False
 
     def _get_next_page(self):
         """
@@ -283,25 +410,6 @@ class SearchLogResults(Iterable):
             return True
         return False
 
-    def _map_logs_to_asset_log(self, log) -> AssetLog:
-        """
-        Maps a logs from the API response to a search log AssetLog instance.
-        """
-        # Handle the case where the log is empty or not a dictionary
-        if not log or not isinstance(log, dict):
-            return None
-
-        return AssetLog(
-            log_host=log.get("host", ""),
-            log_ipaddress=log.get("ipAddress", ""),
-            log_user_agent=log.get("userAgent", ""),
-            log_username=log.get("userName", ""),
-            log_guid=log.get("entityGuidsAll")[0],
-            log_qualified_name=log.get("entityQFNamesAll")[0],
-            log_type_name=log.get("entityTypeNamesAll")[0],
-            log_timestamp=log.get("timestamp", 0),
-        )
-
     def _get_next_page_json(self):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
@@ -313,20 +421,18 @@ class SearchLogResults(Iterable):
             request_obj=self._criteria,
         )
         if "logs" not in raw_json or not raw_json["logs"]:
-            self._asset_logs = []
+            self._log_enties = []
             return None
         try:
-            logs = raw_json.get("logs", [])
-            self._asset_logs = parse_obj_as(
-                list[AssetLog], [self._map_logs_to_asset_log(log) for log in logs]
-            )
+            raw_json.get("logs", [])
+            self._log_enties = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
 
-    def __iter__(self) -> Generator[AssetLog, None, None]:
+    def __iter__(self) -> Generator[SearchLogEntry, None, None]:
         """
         Iterates through the results, lazily-fetching each next page until there
         are no more results.
