@@ -9,16 +9,7 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import UTMTags
-from pyatlan.model.search import (
-    DSL,
-    Bool,
-    Query,
-    Range,
-    SearchRequest,
-    SortItem,
-    Term,
-    Terms,
-)
+from pyatlan.model.search import DSL, Bool, Query, SearchRequest, SortItem, Term, Terms
 
 
 class SearchLogRequest(SearchRequest):
@@ -26,19 +17,83 @@ class SearchLogRequest(SearchRequest):
 
     dsl: DSL
     attributes: list[str] = Field(default_factory=list, alias="attributes")
+    _EXCLUDE_USERS = [
+        "atlansupport",
+        "support",
+        "support@atlan.com",
+        "atlansupport@atlan.com",
+        "hello@atlan.com",
+    ]
+    _BASE_QUERY_FILTER = [
+        Term(
+            field="utmTags",
+            value=UTMTags.ACTION_ASSET_VIEWED.value,
+        ),
+        Bool(
+            should=[
+                Term(field="utmTags", value=UTMTags.UI_PROFILE.value),
+                Term(field="utmTags", value=UTMTags.UI_SIDEBAR.value),
+            ],
+            minimum_should_match=1,
+        ),
+    ]
+
+    def _get_view_dsl_kwargs(
+        self, size: int, from_: int, query_filter: Optional[list] = None
+    ) -> dict:
+        query_filter = query_filter or []
+        return dict(
+            size=size,
+            from_=from_,
+            sort=[SortItem("timestamp", order="asc")],
+            query=Bool(filter=query_filter + self._BASE_QUERY_FILTER),
+            must_not=[
+                Terms(
+                    field="userName",
+                    values=self._EXCLUDE_USERS,
+                ),
+            ],
+            track_total_hits=True,
+        )
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
-    def _get_dsl_aggs(self, max_users: int) -> dict[str, Aggregation]:
+    def _get_recent_viewers_aggs(self, max_users: int) -> dict[str, Aggregation]:
         return {
             "uniqueUsers": {
                 "terms": {
                     "field": "userName",
                     "size": max_users,
-                    "order": {"latest_timestamp": "desc"},
+                    "order": [{"latest_timestamp": "desc"}],
                 },
-                "aggs": {"latest_timestamp": {"max": {"field": "timestamp"}}},
+                "aggregations": {"latest_timestamp": {"max": {"field": "timestamp"}}},
+            },
+            "totalDistinctUsers": {
+                "cardinality": {"field": "userName", "precision_threshold": 1000}
+            },
+        }
+
+    def _get_most_viewed_assets_aggs(
+        self, max_assets: int, by_diff_user: bool
+    ) -> dict[str, Aggregation]:
+        aggs_terms = {
+            "field": "entityGuidsAll",
+            "size": max_assets,
+        }
+        if by_diff_user:
+            aggs_terms.update({"order": [{"uniqueUsers": "desc"}]})
+        return {
+            "uniqueAssets": {
+                "aggregations": {
+                    "uniqueUsers": {
+                        "cardinality": {
+                            "field": "userName",
+                            "precision_threshold": 1000,
+                        }
+                    }
+                },
+                "terms": aggs_terms,
             },
             "totalDistinctUsers": {
                 "cardinality": {"field": "userName", "precision_threshold": 1000}
@@ -53,8 +108,6 @@ class SearchLogRequest(SearchRequest):
         size: int = 0,
         from_: int = 0,
         max_users: int = 20,
-        start_time: Optional[int] = None,
-        end_time: Optional[int] = None,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve views of an asset by its GUID.
@@ -63,56 +116,17 @@ class SearchLogRequest(SearchRequest):
         :param size: number of changes to retrieve. Defaults to 0.
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
         :param max_users: maximum number of recent users to consider. Defaults to 20.
-        :param start_time: start timestamp (epoch) for the search log range filter.
-        :param end_time: end timestamp (epoch) for the search log range filter.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
-        query_filters = [
-            Terms(
-                field="utmTags",
-                values=[UTMTags.ACTION_ASSET_VIEWED],
-            ),
-            Bool(
-                should=[
-                    Term(field="utmTags", value="ui_profile"),
-                    Term(field="utmTags", value="ui_sidebar"),
-                ],
-                minimum_should_match=1,
-            ),
-            Term(
-                field="entityGuidsAll",
-                value=guid,
-            ),
+        query_filter = [
+            Term(field="entityGuidsAll", value=guid, case_insensitive=False)
         ]
-        if start_time and end_time:
-            query_filters.append(
-                Range(
-                    field="timestamp",
-                    gte=start_time,
-                    lte=end_time,
-                )
-            )
         dsl = DSL(
-            size=size,
-            from_=from_,
-            sort=[],
-            query=Bool(
-                filter=[Bool(must=query_filters)],
-                must_not=[
-                    Terms(
-                        field="userName",
-                        values=[
-                            "atlansupport",
-                            "support",
-                            "support@atlan.com",
-                            "atlansupport@atlan.com",
-                            "hello@atlan.com",
-                        ],
-                    ),
-                ],
+            **cls._get_view_dsl_kwargs(
+                cls, size=size, from_=from_, query_filter=query_filter
             ),
-            aggregations=cls._get_dsl_aggs(cls, max_users),
+            aggregations=cls._get_recent_viewers_aggs(cls, max_users),
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -125,44 +139,11 @@ class SearchLogRequest(SearchRequest):
         from_: int = 0,
         by_different_user: bool = False,
     ) -> "SearchLogRequest":
-        asset_aggs_terms = {
-            "field": "entityGuidsAll",
-            "size": max_assets,
-        }
-        if by_different_user:
-            asset_aggs_terms.update({"order": {"uniqueUsers": "desc"}})
-        query_filters = [
-            Term(field="utmTags", value="action_asset_viewed"),
-            Bool(
-                should=[
-                    Term(field="utmTags", value="ui_profile"),
-                    Term(field="utmTags", value="ui_sidebar"),
-                ],
-                minimum_should_match=1,
-            ),
-        ]
         dsl = DSL(
-            size=size,
-            from_=from_,
-            aggregations={
-                "uniqueAssets": {
-                    "aggregations": {
-                        "uniqueUsers": {
-                            "cardinality": {
-                                "field": "userName",
-                                "precision_threshold": 1000,
-                            }
-                        }
-                    },
-                    "terms": asset_aggs_terms,
-                },
-                "totalDistinctUsers": {
-                    "cardinality": {"field": "userName", "precision_threshold": 1000}
-                },
-            },
-            query=Bool(filter=query_filters),
-            sort=[SortItem("timestamp", order="asc")],
-            track_total_hits=True,
+            **cls._get_view_dsl_kwargs(cls, size=size, from_=from_),
+            aggregations=cls._get_most_viewed_assets_aggs(
+                cls, max_assets, by_different_user
+            ),
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -183,24 +164,13 @@ class SearchLogRequest(SearchRequest):
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
+        query_filter = [
+            Term(field="entityGuidsAll", value=guid, case_insensitive=False)
+        ]
         dsl = DSL(
-            from_=0,
-            size=size,
-            query=Bool(
-                filter=[
-                    Term(field="utmTags", value="action_asset_viewed"),
-                    Term(field="entityGuidsAll", value=guid, case_insensitive=False),
-                    Bool(
-                        minimum_should_match="1",
-                        should=[
-                            Term(field="utmTags", value="ui_profile"),
-                            Term(field="utmTags", value="ui_sidebar"),
-                        ],
-                    ),
-                ]
+            **cls._get_view_dsl_kwargs(
+                cls, size=size, from_=from_, query_filter=query_filter
             ),
-            sort=[SortItem("timestamp", order="asc")],
-            track_total_hits=True,
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -360,7 +330,7 @@ class SearchLogResults(Iterable):
         start: int,
         size: int,
         count: int,
-        log_enties: list[SearchLogEntry],
+        log_entries: list[SearchLogEntry],
         aggregations: dict[str, Aggregation],
     ):
         self._client = client
@@ -369,7 +339,7 @@ class SearchLogResults(Iterable):
         self._start = start
         self._size = size
         self._count = count
-        self._log_enties = log_enties
+        self._log_entries = log_entries
         self._aggregations = aggregations
 
     @property
@@ -382,7 +352,7 @@ class SearchLogResults(Iterable):
 
         :returns: list of assets on the current page of results
         """
-        return self._log_enties
+        return self._log_entries
 
     def next_page(self, start=None, size=None) -> bool:
         """
@@ -393,7 +363,7 @@ class SearchLogResults(Iterable):
         self._start = start or self._start + self._size
         if size:
             self._size = size
-        return self._get_next_page() if self._log_enties else False
+        return self._get_next_page() if self._log_entries else False
 
     def _get_next_page(self):
         """
@@ -421,11 +391,11 @@ class SearchLogResults(Iterable):
             request_obj=self._criteria,
         )
         if "logs" not in raw_json or not raw_json["logs"]:
-            self._log_enties = []
+            self._log_entries = []
             return None
         try:
             raw_json.get("logs", [])
-            self._log_enties = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
+            self._log_entries = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(

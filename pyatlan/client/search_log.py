@@ -82,10 +82,12 @@ class SearchLogClient:
         """
         user_views = []
         asset_views = []
+        log_entries = []
         raw_json = self._client._call_api(
             SEARCH_LOG,
             request_obj=criteria,
         )
+        count = raw_json.get("approximateCount", 0)
         if "aggregations" in raw_json and UNIQUE_USERS in raw_json.get(
             "aggregations", {}
         ):
@@ -105,9 +107,6 @@ class SearchLogClient:
                     raw_json, 200, str(err)
                 ) from err
             self._get_aggregations(raw_json)
-            count = (
-                raw_json["approximateCount"] if "approximateCount" in raw_json else 0
-            )
             return SearchLogViewResults(
                 count=count,
                 user_views=user_views,
@@ -131,30 +130,24 @@ class SearchLogClient:
                     raw_json, 200, str(err)
                 ) from err
             self._get_aggregations(raw_json)
-            count = (
-                raw_json["approximateCount"] if "approximateCount" in raw_json else 0
-            )
             return SearchLogViewResults(
                 count=count,
                 asset_views=asset_views,
             )
         # for recent search logs
-        if "logs" in raw_json:
+        if "logs" in raw_json and raw_json.get("logs", []):
             try:
-                log_enties = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
+                log_entries = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)
                 ) from err
-            count = (
-                raw_json["approximateCount"] if "approximateCount" in raw_json else 0
-            )
-            return SearchLogResults(
-                client=self._client,
-                criteria=criteria,
-                start=criteria.dsl.from_,
-                size=criteria.dsl.size,
-                count=count,
-                log_enties=log_enties,
-                aggregations=None,
-            )
+        return SearchLogResults(
+            client=self._client,
+            criteria=criteria,
+            start=criteria.dsl.from_,
+            size=criteria.dsl.size,
+            count=count,
+            log_entries=log_entries,
+            aggregations=None,
+        )
