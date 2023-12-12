@@ -1078,14 +1078,16 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">adls_account_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSObject</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_account_qualified_name&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">adls_container_qualified_name</span><span class="o">=</span><span class="n">adls_container_qualified_name</span><span class="p">,</span>
+            <span class="n">adls_account_qualified_name</span><span class="o">=</span><span class="n">adls_account_qualified_name</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
@@ -1546,11 +1548,19 @@
         <span class="c1"># @validate_arguments()</span>
         <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">adls_account_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">],</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;adls_account_qualified_name&quot;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="p">],</span>
             <span class="p">)</span>
 
             <span class="c1"># Split the qualified_name to extract necessary information</span>
@@ -1572,6 +1582,7 @@
                 <span class="n">adls_container</span><span class="o">=</span><span class="n">ADLSContainer</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span>
                     <span class="n">adls_container_qualified_name</span>
                 <span class="p">),</span>
+                <span class="n">adls_account_qualified_name</span><span class="o">=</span><span class="n">adls_account_qualified_name</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ADLSObject.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
