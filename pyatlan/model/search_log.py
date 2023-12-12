@@ -9,7 +9,16 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import UTMTags
-from pyatlan.model.search import DSL, Bool, Query, SearchRequest, SortItem, Term, Terms
+from pyatlan.model.search import (
+    DSL,
+    Bool,
+    Query,
+    SearchRequest,
+    SortItem,
+    Term,
+    Terms,
+    SortOrder,
+)
 
 
 class SearchLogRequest(SearchRequest):
@@ -38,19 +47,20 @@ class SearchLogRequest(SearchRequest):
         ),
     ]
 
+    @classmethod
     def _get_view_dsl_kwargs(
-        self, size: int, from_: int, query_filter: Optional[list] = None
+        cls, size: int, from_: int, query_filter: Optional[list] = None
     ) -> dict:
         query_filter = query_filter or []
         return dict(
             size=size,
             from_=from_,
-            sort=[SortItem("timestamp", order="asc")],
-            query=Bool(filter=query_filter + self._BASE_QUERY_FILTER),
+            sort=[SortItem("timestamp", order=SortOrder.ASCENDING)],
+            query=Bool(filter=query_filter + cls._BASE_QUERY_FILTER),
             must_not=[
                 Terms(
                     field="userName",
-                    values=self._EXCLUDE_USERS,
+                    values=cls._EXCLUDE_USERS,
                 ),
             ],
             track_total_hits=True,
@@ -59,7 +69,8 @@ class SearchLogRequest(SearchRequest):
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
-    def _get_recent_viewers_aggs(self, max_users: int) -> dict[str, Aggregation]:
+    @staticmethod
+    def _get_recent_viewers_aggs(max_users: int) -> dict[str, object]:
         return {
             "uniqueUsers": {
                 "terms": {
@@ -74,9 +85,10 @@ class SearchLogRequest(SearchRequest):
             },
         }
 
+    @staticmethod
     def _get_most_viewed_assets_aggs(
-        self, max_assets: int, by_diff_user: bool
-    ) -> dict[str, Aggregation]:
+        max_assets: int, by_diff_user: bool
+    ) -> dict[str, object]:
         aggs_terms = {
             "field": "entityGuidsAll",
             "size": max_assets,
@@ -123,9 +135,9 @@ class SearchLogRequest(SearchRequest):
         ]
         dsl = DSL(
             **cls._get_view_dsl_kwargs(
-                cls, size=size, from_=from_, query_filter=query_filter
+                size=size, from_=from_, query_filter=query_filter
             ),
-            aggregations=cls._get_recent_viewers_aggs(cls, max_users),
+            aggregations=cls._get_recent_viewers_aggs(max_users),
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -149,9 +161,9 @@ class SearchLogRequest(SearchRequest):
         :returns: A SearchLogRequest that can be used to perform the search.
         """
         dsl = DSL(
-            **cls._get_view_dsl_kwargs(cls, size=size, from_=from_),
+            **cls._get_view_dsl_kwargs(size=size, from_=from_),
             aggregations=cls._get_most_viewed_assets_aggs(
-                cls, max_assets, by_different_user
+                max_assets, by_different_user
             ),
         )
         return SearchLogRequest(dsl=dsl)
@@ -177,7 +189,7 @@ class SearchLogRequest(SearchRequest):
         ]
         dsl = DSL(
             **cls._get_view_dsl_kwargs(
-                cls, size=size, from_=from_, query_filter=query_filter
+                size=size, from_=from_, query_filter=query_filter
             ),
         )
         return SearchLogRequest(dsl=dsl)
@@ -320,11 +332,11 @@ class SearchLogViewResults:
         return self._count
 
     @property
-    def user_views(self) -> int:
+    def user_views(self) -> Optional[list[UserViews]]:
         return self._user_views
 
     @property
-    def asset_views(self) -> int:
+    def asset_views(self) -> Optional[list[AssetViews]]:
         return self._asset_views
 
 
