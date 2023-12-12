@@ -17,14 +17,14 @@ class SearchLogRequest(SearchRequest):
 
     dsl: DSL
     attributes: list[str] = Field(default_factory=list, alias="attributes")
-    _EXCLUDE_USERS = [
+    _EXCLUDE_USERS: list[str] = [
         "atlansupport",
         "support",
         "support@atlan.com",
         "atlansupport@atlan.com",
         "hello@atlan.com",
     ]
-    _BASE_QUERY_FILTER = [
+    _BASE_QUERY_FILTER: list[Query] = [
         Term(
             field="utmTags",
             value=UTMTags.ACTION_ASSET_VIEWED.value,
@@ -104,18 +104,17 @@ class SearchLogRequest(SearchRequest):
     def most_recent_viewers(
         cls,
         guid: str,
-        *,
+        max_users: int = 20,
         size: int = 0,
         from_: int = 0,
-        max_users: int = 20,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve views of an asset by its GUID.
 
         :param guid: unique identifier of the asset.
-        :param size: number of changes to retrieve. Defaults to 0.
-        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
         :param max_users: maximum number of recent users to consider. Defaults to 20.
+        :param size: number of results to retrieve per page. Defaults to 0.
+        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
@@ -134,11 +133,21 @@ class SearchLogRequest(SearchRequest):
     def most_viewed_assets(
         cls,
         max_assets: int = 10,
-        *,
+        by_different_user: bool = False,
         size: int = 0,
         from_: int = 0,
-        by_different_user: bool = False,
     ) -> "SearchLogRequest":
+        """
+        Create a search log request to retrieve most viewed assets.
+
+        :param max_assets: maximum number of assets to consider.
+        :param by_different_user: when True, will consider assets viewed by more users as more
+        important than total view count, otherwise will consider total view count most important.
+        :param size: number of results to retrieve per page. Defaults to 20.
+        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
+
+        :returns: A SearchLogRequest that can be used to perform the search.
+        """
         dsl = DSL(
             **cls._get_view_dsl_kwargs(cls, size=size, from_=from_),
             aggregations=cls._get_most_viewed_assets_aggs(
@@ -151,16 +160,15 @@ class SearchLogRequest(SearchRequest):
     def views_by_guid(
         cls,
         guid: str,
-        *,
-        from_: int = 0,
         size: int = 20,
+        from_: int = 0,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve recent search logs of an assets.
 
         :param guid: unique identifier of the asset.
+        :param size: number of results to retrieve per page. Defaults to 20.
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
-        :param max_logs: number of logs to retrieve from the recent search log. Defaults to 20.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """

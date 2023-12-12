@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import ValidationError, parse_obj_as
 
@@ -21,8 +21,9 @@ UNIQUE_ASSETS = "uniqueAssets"
 
 class SearchLogClient:
     """
-    This class can be used to configure and run a search against Atlan's searcg log. This class does not need to be
-    instantiated directly but can be obtained through the search_log property of AtlanClient.
+    This class can be used to configure and run a search against Atlan's searcg log.
+    This class does not need to be instantiated directly but can be obtained
+    through the search_log property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
@@ -44,9 +45,9 @@ class SearchLogClient:
             aggregations = None
         return aggregations
 
-    def _map_bucket_to_user_view(self, bucket) -> UserViews:
+    def _map_bucket_to_user_view(self, bucket) -> Union[UserViews, None]:
         """
-        Maps a bucket from the API response to a search log UniqueUsers instance.
+        Maps a bucket from the API response to a search log UserViews instance.
         """
         # Handle the case where the bucket is empty or not a dictionary
         if not bucket or not isinstance(bucket, dict):
@@ -58,9 +59,9 @@ class SearchLogClient:
             most_recent_view=bucket.get("latest_timestamp", {}).get("value", 0),
         )
 
-    def _map_bucket_to_asset_view(self, bucket) -> AssetViews:
+    def _map_bucket_to_asset_view(self, bucket) -> Union[AssetViews, None]:
         """
-        Maps a bucket from the API response to a search log UniqueUsers instance.
+        Maps a bucket from the API response to a search log AssetViews instance.
         """
         # Handle the case where the bucket is empty or not a dictionary
         if not bucket or not isinstance(bucket, dict):
@@ -72,7 +73,9 @@ class SearchLogClient:
             distinct_users=bucket.get(UNIQUE_USERS, {}).get("value", 0),
         )
 
-    def search(self, criteria: SearchLogRequest) -> dict:
+    def search(
+        self, criteria: SearchLogRequest
+    ) -> Union[SearchLogViewResults, SearchLogResults]:
         """
         Search for assets using the provided criteria.
 
@@ -149,5 +152,5 @@ class SearchLogClient:
             size=criteria.dsl.size,
             count=count,
             log_entries=log_entries,
-            aggregations=None,
+            aggregations={},
         )
