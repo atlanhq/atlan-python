@@ -631,14 +631,16 @@ class ADLSObject(ADLS):
         *,
         name: str,
         adls_container_qualified_name: str,
+        adls_account_qualified_name: str,
     ) -> ADLSObject:
         validate_required_fields(
-            ["name", "adls_container_qualified_name"],
-            [name, adls_container_qualified_name],
+            ["name", "adls_container_qualified_name", "adls_account_qualified_name"],
+            [name, adls_container_qualified_name, adls_account_qualified_name],
         )
         attributes = ADLSObject.Attributes.create(
             name=name,
             adls_container_qualified_name=adls_container_qualified_name,
+            adls_account_qualified_name=adls_account_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -1099,11 +1101,19 @@ class ADLSObject(ADLS):
         # @validate_arguments()
         @init_guid
         def create(
-            cls, *, name: str, adls_container_qualified_name: str
+            cls,
+            *,
+            name: str,
+            adls_container_qualified_name: str,
+            adls_account_qualified_name: str,
         ) -> ADLSObject.Attributes:
             validate_required_fields(
-                ["name", "adls_container_qualified_name"],
-                [name, adls_container_qualified_name],
+                [
+                    "name",
+                    "adls_container_qualified_name",
+                    "adls_account_qualified_name",
+                ],
+                [name, adls_container_qualified_name, adls_account_qualified_name],
             )
 
             # Split the qualified_name to extract necessary information
@@ -1125,6 +1135,7 @@ class ADLSObject(ADLS):
                 adls_container=ADLSContainer.ref_by_qualified_name(
                     adls_container_qualified_name
                 ),
+                adls_account_qualified_name=adls_account_qualified_name,
             )
 
     attributes: "ADLSObject.Attributes" = Field(
