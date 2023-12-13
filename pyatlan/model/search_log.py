@@ -15,9 +15,9 @@ from pyatlan.model.search import (
     Query,
     SearchRequest,
     SortItem,
+    SortOrder,
     Term,
     Terms,
-    SortOrder,
 )
 
 
@@ -56,14 +56,15 @@ class SearchLogRequest(SearchRequest):
             size=size,
             from_=from_,
             sort=[SortItem("timestamp", order=SortOrder.ASCENDING)],
-            query=Bool(filter=query_filter + cls._BASE_QUERY_FILTER),
-            must_not=[
-                Terms(
-                    field="userName",
-                    values=cls._EXCLUDE_USERS,
-                ),
-            ],
-            track_total_hits=True,
+            query=Bool(
+                filter=query_filter + cls._BASE_QUERY_FILTER,
+                must_not=[
+                    Terms(
+                        field="userName",
+                        values=cls._EXCLUDE_USERS,
+                    ),
+                ],
+            ),
         )
 
     class Config:
@@ -217,7 +218,7 @@ class UserViews(AtlanObject):
     """
 
     username: str = Field(description="User name of the user who viewed the assets.")
-    view_count: str = Field(description="Number of times the user viewed the asset.")
+    view_count: int = Field(description="Number of times the user viewed the asset.")
     most_recent_view: datetime = Field(
         description="When the user most recently viewed the asset (epoch-style), in milliseconds."
     )

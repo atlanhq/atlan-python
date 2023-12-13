@@ -1,11 +1,10 @@
-from typing import Optional, Union
+from typing import Union
 
 from pydantic import ValidationError, parse_obj_as
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import SEARCH_LOG
 from pyatlan.errors import ErrorCode
-from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.search_log import (
     AssetViews,
     SearchLogEntry,
@@ -32,18 +31,6 @@ class SearchLogClient:
                 "client", "ApiCaller"
             )
         self._client = client
-
-    def _get_aggregations(self, raw_json) -> Optional[Aggregations]:
-        if "aggregations" in raw_json:
-            try:
-                aggregations = Aggregations.parse_obj(raw_json["aggregations"])
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            aggregations = None
-        return aggregations
 
     def _map_bucket_to_user_view(self, bucket) -> Union[UserViews, None]:
         """
@@ -73,6 +60,18 @@ class SearchLogClient:
             distinct_users=bucket.get(UNIQUE_USERS, {}).get("value", 0),
         )
 
+    def _call_search_api(self, criteria: SearchLogRequest) -> dict:
+        """
+        Calls the Atlan search API, facilitating easier mocking for testing purposes.
+
+        :param criteria: An instance of SearchLogRequest detailing the search query, parameters, etc.
+        :return: A dictionary representing the raw JSON response from the search API.
+        """
+        return self._client._call_api(
+            SEARCH_LOG,
+            request_obj=criteria,
+        )
+
     def search(
         self, criteria: SearchLogRequest
     ) -> Union[SearchLogViewResults, SearchLogResults]:
@@ -86,10 +85,7 @@ class SearchLogClient:
         user_views = []
         asset_views = []
         log_entries = []
-        raw_json = self._client._call_api(
-            SEARCH_LOG,
-            request_obj=criteria,
-        )
+        raw_json = self._call_search_api(criteria)
         count = raw_json.get("approximateCount", 0)
         if "aggregations" in raw_json and UNIQUE_USERS in raw_json.get(
             "aggregations", {}
@@ -109,7 +105,6 @@ class SearchLogClient:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)
                 ) from err
-            self._get_aggregations(raw_json)
             return SearchLogViewResults(
                 count=count,
                 user_views=user_views,
@@ -132,7 +127,6 @@ class SearchLogClient:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)
                 ) from err
-            self._get_aggregations(raw_json)
             return SearchLogViewResults(
                 count=count,
                 asset_views=asset_views,

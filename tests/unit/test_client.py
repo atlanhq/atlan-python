@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from json import load, loads
+from pathlib import Path
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import pytest
 
 from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.search_log import SearchLogClient
 from pyatlan.errors import AtlanError, ErrorCode, InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
@@ -15,6 +18,7 @@ from pyatlan.model.assets import (
 )
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
+from pyatlan.model.search_log import SearchLogRequest
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
@@ -27,6 +31,15 @@ GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(
     name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY
 )
 GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSARY)
+UNIQUE_USERS = "uniqueUsers"
+UNIQUE_ASSETS = "uniqueAssets"
+LOG_IP_ADDRESS = "ipAddress"
+LOG_USERNAME = "userName"
+SEARCH_PARAMS = "searchParameters"
+DATA_RESPONSES_DIR = Path(__file__).parent / "data" / "search_log_responses"
+SL_MOST_RECENT_VIEWERS_JSON = "sl_most_recent_viewers.json"
+SL_MOST_VIEWED_ASSETS_JSON = "sl_most_viewed_assets.json"
+SL_DETAILED_LOG_ENTRIES_JSON = "sl_detailed_log_entries.json"
 
 
 @pytest.fixture(autouse=True)
@@ -38,6 +51,26 @@ def set_env(monkeypatch):
 @pytest.fixture()
 def client():
     return AtlanClient()
+
+
+def load_json(filename):
+    with (DATA_RESPONSES_DIR / filename).open() as input_file:
+        return load(input_file)
+
+
+@pytest.fixture()
+def sl_most_recent_viewers_json():
+    return load_json(SL_MOST_RECENT_VIEWERS_JSON)
+
+
+@pytest.fixture()
+def sl_most_viewed_assets_json():
+    return load_json(SL_MOST_VIEWED_ASSETS_JSON)
+
+
+@pytest.fixture()
+def sl_detailed_log_entries_json():
+    return load_json(SL_DETAILED_LOG_ENTRIES_JSON)
 
 
 @pytest.mark.parametrize(
@@ -896,6 +929,64 @@ def test_find_term_by_name():
             attributes=attributes,
         )
         assert mock_find_term_fast_by_name.return_value == term
+
+
+@patch.object(SearchLogClient, "_call_search_api")
+def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers_json):
+    client = AtlanClient()
+    mock_sl_api_call.return_value = sl_most_recent_viewers_json
+    recent_viewers_aggs = sl_most_recent_viewers_json["aggregations"]
+    recent_viewers_aggs_buckets = recent_viewers_aggs[UNIQUE_USERS]["buckets"]
+    request = SearchLogRequest.most_recent_viewers("test-guid-123")
+    request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
+    response = client.search_log.search(request)
+    viewers = response.user_views
+    assert len(viewers) == 3
+    assert response.asset_views is None
+    assert request_dsl_json == sl_most_recent_viewers_json[SEARCH_PARAMS]["dsl"]
+    assert response.count == sl_most_recent_viewers_json["approximateCount"]
+    assert viewers[0].username == recent_viewers_aggs_buckets[0]["key"]
+    assert viewers[0].view_count == recent_viewers_aggs_buckets[0]["doc_count"]
+    assert viewers[0].most_recent_view
+    assert viewers[1].username == recent_viewers_aggs_buckets[1]["key"]
+    assert viewers[1].view_count == recent_viewers_aggs_buckets[1]["doc_count"]
+    assert viewers[1].most_recent_view
+
+
+@patch.object(SearchLogClient, "_call_search_api")
+def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_json):
+    client = AtlanClient()
+    mock_sl_api_call.return_value = sl_most_viewed_assets_json
+    viewed_assets_aggs = sl_most_viewed_assets_json["aggregations"]
+    viewed_assets_aggs_buckets = viewed_assets_aggs[UNIQUE_ASSETS]["buckets"][0]
+    request = SearchLogRequest.most_viewed_assets(10)
+    request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
+    response = client.search_log.search(request)
+    detail = response.asset_views
+    assert len(detail) == 8
+    assert response.user_views is None
+    assert request_dsl_json == sl_most_viewed_assets_json[SEARCH_PARAMS]["dsl"]
+    assert response.count == sl_most_viewed_assets_json["approximateCount"]
+    assert detail[0].guid == viewed_assets_aggs_buckets["key"]
+    assert detail[0].total_views == viewed_assets_aggs_buckets["doc_count"]
+    assert detail[0].distinct_users == viewed_assets_aggs_buckets[UNIQUE_USERS]["value"]
+
+
+@patch.object(SearchLogClient, "_call_search_api")
+def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json):
+    client = AtlanClient()
+    mock_sl_api_call.return_value = sl_detailed_log_entries_json
+    sl_detailed_log_entries = sl_detailed_log_entries_json["logs"]
+    request = SearchLogRequest.views_by_guid(guid="test-guid-123", size=10)
+    request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
+    response = client.search_log.search(request)
+    log_entries = response.current_page()
+    assert request_dsl_json == sl_detailed_log_entries_json[SEARCH_PARAMS]["dsl"]
+    assert (
+        len(response.current_page()) == sl_detailed_log_entries_json["approximateCount"]
+    )
+    assert log_entries[0].user_name == sl_detailed_log_entries[0][LOG_USERNAME]
+    assert log_entries[0].ip_address == sl_detailed_log_entries[0][LOG_IP_ADDRESS]
 
 
 class TestBatch:
