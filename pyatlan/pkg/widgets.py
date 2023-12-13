@@ -79,3 +79,38 @@ class APITokenSelector(UIElement):
             label=label, hidden=hidden, help=help, grid=grid
         )
         super().__init__(type="string", required=required, ui=widget)
+
+
+@dataclass
+class BooleanInputWidget(Widget):
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help: str = "",
+        placeholder: str = "",
+        grid: int = 8,
+    ):
+        super().__init__(
+            widget="boolean",
+            label=label,
+            hidden=hidden,
+            help=help,
+            placeholder=placeholder,
+            grid=grid,
+        )
+
+
+@dataclass
+class BooleanInput(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        widget = BooleanInputWidget(label=label, hidden=hidden, help=help, grid=grid)
+        super().__init__(type="boolean", required=required, ui=widget)
