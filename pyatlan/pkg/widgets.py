@@ -114,3 +114,34 @@ class BooleanInput(UIElement):
     ):
         widget = BooleanInputWidget(label=label, hidden=hidden, help=help, grid=grid)
         super().__init__(type="boolean", required=required, ui=widget)
+
+
+@dataclass
+class ConnectionCreatorWidget(Widget):
+    def __init__(
+        self, label: str, hidden: bool = False, help: str = "", placeholder: str = ""
+    ):
+        super().__init__(
+            widget="connection",
+            label=label,
+            hidden=hidden,
+            help=help,
+            placeholder=placeholder,
+        )
+
+
+@dataclass
+class ConnectionCreator(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help: StrictStr = "",
+        placeholder: StrictStr = "",
+    ):
+        widget = ConnectionCreatorWidget(
+            label=label, hidden=hidden, help=help, placeholder=placeholder
+        )
+        super().__init__(type="string", required=required, ui=widget)
