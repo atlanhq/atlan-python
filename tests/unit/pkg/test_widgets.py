@@ -48,6 +48,14 @@ class TestAPITokenSelector:
         "label, required, hidden, help, grid, msg",
         [
             (
+                None,
+                True,
+                True,
+                HELP,
+                1,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
                 1,
                 True,
                 True,
