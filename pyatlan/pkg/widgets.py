@@ -574,3 +574,44 @@ class PasswordInput(UIElement):
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclass
+class RadioWidget(Widget):
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help_: str = "",
+    ):
+        super().__init__(
+            widget="radio",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+        )
+
+
+@dataclass
+class Radio(UIElement):
+    possible_values: dict[str, str]
+    default: str
+
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        posssible_values: dict[str, str],
+        default: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+    ):
+        widget = RadioWidget(
+            label=label,
+            hidden=hidden,
+            help_=help_,
+        )
+        super().__init__(type_="string", required=required, ui=widget)
+        self.possible_values = posssible_values
+        self.default = default

@@ -28,6 +28,8 @@ from pyatlan.pkg.widgets import (
     NumericInputWidget,
     PasswordInput,
     PasswordInputWidget,
+    Radio,
+    RadioWidget,
 )
 
 LABEL: str = "Some label"
@@ -1487,4 +1489,117 @@ class TestPasswordInput:
                 hidden=hidden,
                 help_=help_,
                 grid=grid,
+            )
+
+
+class TestRadio:
+    def test_constructor_with_defaults(self):
+        sut = Radio(
+            label=LABEL, posssible_values=POSSIBLE_VALUES, default=(default := "a")
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_NOT_REQUIRED
+        assert sut.possible_values == POSSIBLE_VALUES
+        assert sut.default == default
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, RadioWidget)
+        assert ui.widget == "radio"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help_ == ""
+
+    def test_constructor_with_overrides(self):
+        sut = Radio(
+            label=LABEL,
+            posssible_values=POSSIBLE_VALUES,
+            default=(default := "a"),
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help_=HELP,
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_REQUIRED
+        assert sut.possible_values == POSSIBLE_VALUES
+        assert sut.default == default
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, RadioWidget)
+        assert ui.widget == "radio"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help_ == HELP
+
+    @pytest.mark.parametrize(
+        "label, possible_values, default, required, hidden, help_, msg",
+        [
+            (
+                None,
+                POSSIBLE_VALUES,
+                "a",
+                True,
+                True,
+                HELP,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                None,
+                "a",
+                True,
+                True,
+                HELP,
+                r"1 validation error for Init\nposssible_values\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                None,
+                True,
+                True,
+                HELP,
+                r"1 validation error for Init\ndefault\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                "a",
+                1,
+                True,
+                HELP,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                "a",
+                True,
+                1,
+                HELP,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                "a",
+                True,
+                True,
+                1,
+                r"1 validation error for Init\nhelp_\n  str type expected",
+            ),
+        ],
+    )
+    def test_validation(
+        self, label, possible_values, default, required, hidden, help_, msg
+    ):
+        with pytest.raises(ValidationError, match=msg):
+            Radio(
+                label=label,
+                posssible_values=possible_values,
+                default=default,
+                required=required,
+                hidden=hidden,
+                help_=help_,
             )
