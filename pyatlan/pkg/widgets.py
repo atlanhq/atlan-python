@@ -145,3 +145,54 @@ class ConnectionCreator(UIElement):
             label=label, hidden=hidden, help=help, placeholder=placeholder
         )
         super().__init__(type="string", required=required, ui=widget)
+
+
+@dataclass
+class ConnectionSelectorWidget(Widget):
+    start: int = 1
+
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help: str = "",
+        placeholder: str = "",
+        grid: int = 4,
+        start: int = 1,
+    ):
+        super().__init__(
+            widget="connectionSelector",
+            label=label,
+            hidden=hidden,
+            help=help,
+            placeholder=placeholder,
+            grid=grid,
+        )
+        self.start = start
+
+
+@dataclass
+class ConnectionSelector(UIElement):
+    start: StrictInt = 1
+
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help: StrictStr = "",
+        placeholder: StrictStr = "",
+        grid: StrictInt = 4,
+        start: StrictInt = 1,
+    ):
+        widget = ConnectionSelectorWidget(
+            label=label,
+            hidden=hidden,
+            help=help,
+            placeholder=placeholder,
+            grid=grid,
+            start=start,
+        )
+        super().__init__(type="string", required=required, ui=widget)
+        self.start = start

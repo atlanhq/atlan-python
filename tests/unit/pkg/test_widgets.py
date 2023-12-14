@@ -8,6 +8,8 @@ from pyatlan.pkg.widgets import (
     BooleanInputWidget,
     ConnectionCreator,
     ConnectionCreatorWidget,
+    ConnectionSelector,
+    ConnectionSelectorWidget,
 )
 
 LABEL: str = "Some label"
@@ -304,4 +306,145 @@ class TestConnectionCreator:
                 hidden=hidden,
                 help=help,
                 placeholder=placeholder,
+            )
+
+
+class TestConnectionSelector:
+    def test_constructor_with_defaults(self):
+        sut = ConnectionSelector(label=LABEL)
+        assert sut.type == "string"
+        assert sut.required == IS_NOT_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, ConnectionSelectorWidget)
+        assert ui.widget == "connectionSelector"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help == ""
+        assert ui.placeholder == ""
+        assert ui.grid == 4
+        assert ui.start == 1
+
+    def test_constructor_with_overrides(self):
+        sut = ConnectionSelector(
+            label=LABEL,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help=HELP,
+            placeholder=PLACE_HOLDER,
+            grid=(grid := 2),
+            start=(start := 10),
+        )
+        assert sut.type == "string"
+        assert sut.required == IS_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, ConnectionSelectorWidget)
+        assert ui.widget == "connectionSelector"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help == HELP
+        assert ui.placeholder == PLACE_HOLDER
+        assert ui.grid == grid
+        assert ui.start == start
+
+    @pytest.mark.parametrize(
+        "label, required, hidden, help, placeholder, grid, start, msg",
+        [
+            (
+                None,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                1,
+                2,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                1,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                1,
+                2,
+                r"1 validation error for Init\nlabel\n  str type expected",
+            ),
+            (
+                LABEL,
+                1,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                1,
+                2,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                1,
+                HELP,
+                PLACE_HOLDER,
+                1,
+                2,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                1,
+                PLACE_HOLDER,
+                1,
+                2,
+                r"1 validation error for Init\nhelp\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                1.0,
+                1,
+                2,
+                r"1 validation error for Init\nplaceholder\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                1.0,
+                2,
+                r"1 validation error for Init\ngrid\n  value is not a valid integer",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                1,
+                2.0,
+                r"1 validation error for Init\nstart\n  value is not a valid integer",
+            ),
+        ],
+    )
+    def test_validation(
+        self, label, required, hidden, help, placeholder, grid, start, msg
+    ):
+        with pytest.raises(ValidationError, match=msg):
+            ConnectionSelector(
+                label=label,
+                required=required,
+                hidden=hidden,
+                help=help,
+                placeholder=placeholder,
+                grid=grid,
+                start=start,
             )
