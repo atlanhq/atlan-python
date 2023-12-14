@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 import abc
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 # from dataclasses import dataclass
 from typing import Optional
@@ -16,14 +16,14 @@ class Widget(abc.ABC):
     widget: str
     label: str
     hidden: bool = False
-    help: str = ""
+    help_: str = ""
     placeholder: str = ""
     grid: int = 8
 
 
 @dataclass
 class UIElement(abc.ABC):
-    type: str
+    type_: str
     required: bool
     ui: Optional[Widget]
 
@@ -36,12 +36,12 @@ class UIElementWithEnum(UIElement):
 
     def __init__(
         self,
-        type: str,
+        type_: str,
         required: bool,
         possible_values: dict[str, str],
         ui: Optional[Widget] = None,
     ):
-        super().__init__(type=type, required=required, ui=ui)
+        super().__init__(type_=type_, required=required, ui=ui)
         self.enum = list(possible_values.keys())
         self.enum_names = list(possible_values.values())
 
@@ -52,14 +52,14 @@ class APITokenSelectorWidget(Widget):
         self,
         label: str,
         hidden: bool = False,
-        help: str = "",
+        help_: str = "",
         grid: int = 4,
     ):
         super().__init__(
             widget="apiTokenSelect",
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             grid=grid,
         )
 
@@ -72,13 +72,13 @@ class APITokenSelector(UIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
+        help_: StrictStr = "",
         grid: StrictInt = 4,
     ):
         widget = APITokenSelectorWidget(
-            label=label, hidden=hidden, help=help, grid=grid
+            label=label, hidden=hidden, help_=help_, grid=grid
         )
-        super().__init__(type="string", required=required, ui=widget)
+        super().__init__(type_="string", required=required, ui=widget)
 
 
 @dataclass
@@ -87,7 +87,7 @@ class BooleanInputWidget(Widget):
         self,
         label: str,
         hidden: bool = False,
-        help: str = "",
+        help_: str = "",
         placeholder: str = "",
         grid: int = 8,
     ):
@@ -95,7 +95,7 @@ class BooleanInputWidget(Widget):
             widget="boolean",
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             placeholder=placeholder,
             grid=grid,
         )
@@ -109,23 +109,23 @@ class BooleanInput(UIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
+        help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
-        widget = BooleanInputWidget(label=label, hidden=hidden, help=help, grid=grid)
-        super().__init__(type="boolean", required=required, ui=widget)
+        widget = BooleanInputWidget(label=label, hidden=hidden, help_=help_, grid=grid)
+        super().__init__(type_="boolean", required=required, ui=widget)
 
 
 @dataclass
 class ConnectionCreatorWidget(Widget):
     def __init__(
-        self, label: str, hidden: bool = False, help: str = "", placeholder: str = ""
+        self, label: str, hidden: bool = False, help_: str = "", placeholder: str = ""
     ):
         super().__init__(
             widget="connection",
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             placeholder=placeholder,
         )
 
@@ -138,13 +138,13 @@ class ConnectionCreator(UIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
+        help_: StrictStr = "",
         placeholder: StrictStr = "",
     ):
         widget = ConnectionCreatorWidget(
-            label=label, hidden=hidden, help=help, placeholder=placeholder
+            label=label, hidden=hidden, help_=help_, placeholder=placeholder
         )
-        super().__init__(type="string", required=required, ui=widget)
+        super().__init__(type_="string", required=required, ui=widget)
 
 
 @dataclass
@@ -155,7 +155,7 @@ class ConnectionSelectorWidget(Widget):
         self,
         label: str,
         hidden: bool = False,
-        help: str = "",
+        help_: str = "",
         placeholder: str = "",
         grid: int = 4,
         start: int = 1,
@@ -164,7 +164,7 @@ class ConnectionSelectorWidget(Widget):
             widget="connectionSelector",
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             placeholder=placeholder,
             grid=grid,
         )
@@ -181,7 +181,7 @@ class ConnectionSelector(UIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
+        help_: StrictStr = "",
         placeholder: StrictStr = "",
         grid: StrictInt = 4,
         start: StrictInt = 1,
@@ -189,12 +189,12 @@ class ConnectionSelector(UIElement):
         widget = ConnectionSelectorWidget(
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             placeholder=placeholder,
             grid=grid,
             start=start,
         )
-        super().__init__(type="string", required=required, ui=widget)
+        super().__init__(type_="string", required=required, ui=widget)
         self.start = start
 
 
@@ -206,7 +206,7 @@ class ConnectorTypeSelectorWidget(Widget):
         self,
         label: str,
         hidden: bool = False,
-        help: str = "",
+        help_: str = "",
         grid: int = 4,
         start: int = 1,
     ):
@@ -214,7 +214,7 @@ class ConnectorTypeSelectorWidget(Widget):
             widget="sourceConnectionSelector",
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             grid=grid,
         )
         self.start = start
@@ -228,24 +228,24 @@ class ConnectorTypeSelector(UIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
+        help_: StrictStr = "",
         grid: StrictInt = 4,
         start: StrictInt = 1,
     ):
         widget = ConnectorTypeSelectorWidget(
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             grid=grid,
             start=start,
         )
-        super().__init__(type="string", required=required, ui=widget)
+        super().__init__(type_="string", required=required, ui=widget)
 
 
 @dataclass
 class DateInputWidget(Widget):
-    min: int = -14
-    max: int = 0
+    min_: int = -14
+    max_: int = 0
     default: int = 0
     start: int = 1
 
@@ -253,19 +253,19 @@ class DateInputWidget(Widget):
         self,
         label: str,
         hidden: bool = False,
-        help: str = "",
-        min: int = -14,
-        max: int = 0,
+        help_: str = "",
+        min_: int = -14,
+        max_: int = 0,
         default: int = 0,
         start: int = 1,
         grid: int = 4,
     ):
         super().__init__(
-            widget="date", label=label, hidden=hidden, help=help, grid=grid
+            widget="date", label=label, hidden=hidden, help_=help_, grid=grid
         )
         self.start = start
-        self.max = max
-        self.min = min
+        self.max_ = max_
+        self.min_ = min_
         self.default = default
 
 
@@ -277,9 +277,9 @@ class DateInput(UIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
-        min: StrictInt = -14,
-        max: StrictInt = 0,
+        help_: StrictStr = "",
+        min_: StrictInt = -14,
+        max_: StrictInt = 0,
         default: StrictInt = 0,
         start: StrictInt = 1,
         grid: StrictInt = 8,
@@ -287,14 +287,14 @@ class DateInput(UIElement):
         widget = DateInputWidget(
             label=label,
             hidden=hidden,
-            help=help,
-            min=min,
-            max=max,
+            help_=help_,
+            min_=min_,
+            max_=max_,
             default=default,
             start=start,
             grid=grid,
         )
-        super().__init__(type="number", required=required, ui=widget)
+        super().__init__(type_="number", required=required, ui=widget)
 
 
 @dataclass
@@ -306,14 +306,14 @@ class DropDownWidget(Widget):
         label: str,
         mode: str,
         hidden: bool = False,
-        help: str = "",
+        help_: str = "",
         grid: int = 8,
     ):
         super().__init__(
             widget="select",
             label=label,
             hidden=hidden,
-            help=help,
+            help_=help_,
             grid=grid,
         )
         self.mode = mode
@@ -330,7 +330,7 @@ class DropDown(UIElementWithEnum):
         possible_values: dict[str, str],
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help: StrictStr = "",
+        help_: StrictStr = "",
         multi_select: StrictBool = False,
         grid: StrictInt = 8,
     ):
@@ -338,10 +338,57 @@ class DropDown(UIElementWithEnum):
             label=label,
             mode="multiple" if multi_select else "",
             hidden=hidden,
-            help=help,
+            help_=help_,
             grid=grid,
         )
         super().__init__(
-            type="string", required=required, possible_values=possible_values, ui=widget
+            type_="string",
+            required=required,
+            possible_values=possible_values,
+            ui=widget,
         )
         self.possible_values = possible_values
+
+
+@dataclass
+class FileUploaderWidget(Widget):
+    file_types: list[str] = field(default_factory=list)
+
+    def __init__(
+        self,
+        label: str,
+        file_types: list[str],
+        hidden: bool = False,
+        help_: str = "",
+        placeholder: str = "",
+    ):
+        super().__init__(
+            widget="fileUpload",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            placeholder=placeholder,
+        )
+        self.file_types = file_types
+
+
+@dataclass
+class FileUploader(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        file_types: list[str],
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+        placeholder: StrictStr = "",
+    ):
+        widget = FileUploaderWidget(
+            label=label,
+            file_types=file_types,
+            hidden=hidden,
+            help_=help_,
+            placeholder=placeholder,
+        )
+        super().__init__(type_="string", required=required, ui=widget)

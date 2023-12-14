@@ -16,22 +16,25 @@ from pyatlan.pkg.widgets import (
     DateInputWidget,
     DropDown,
     DropDownWidget,
+    FileUploader,
+    FileUploaderWidget,
 )
 
 LABEL: str = "Some label"
-HELP: str = "Some help text"
+HELP: str = "Some help_ text"
 PLACE_HOLDER: str = "something goes here"
 IS_REQUIRED = True
 IS_NOT_REQUIRED = False
 IS_HIDDEN = True
 IS_NOT_HIDDEN = False
 POSSIBLE_VALUES = {"name": "Dave"}
+FILE_TYPES = ["txt"]
 
 
 class TestAPITokenSelector:
     def test_constructor_with_defaults(self):
         sut = APITokenSelector(LABEL)
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_NOT_REQUIRED
 
         ui = sut.ui
@@ -39,7 +42,7 @@ class TestAPITokenSelector:
         assert ui.widget == "apiTokenSelect"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
+        assert ui.help_ == ""
         assert ui.grid == 4
 
     def test_constructor_with_overrides(self):
@@ -47,10 +50,10 @@ class TestAPITokenSelector:
             label=LABEL,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
+            help_=HELP,
             grid=(grid := 1),
         )
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_REQUIRED
 
         ui = sut.ui
@@ -59,11 +62,11 @@ class TestAPITokenSelector:
         assert ui.widget == "apiTokenSelect"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
+        assert ui.help_ == HELP
         assert ui.grid == grid
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help, grid, msg",
+        "label, required, hidden, help_, grid, msg",
         [
             (
                 None,
@@ -103,7 +106,7 @@ class TestAPITokenSelector:
                 True,
                 1,
                 1,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -115,17 +118,17 @@ class TestAPITokenSelector:
             ),
         ],
     )
-    def test_validation(self, label, required, hidden, help, grid, msg):
+    def test_validation(self, label, required, hidden, help_, grid, msg):
         with pytest.raises(ValidationError, match=msg):
             APITokenSelector(
-                label=label, required=required, hidden=hidden, help=help, grid=grid
+                label=label, required=required, hidden=hidden, help_=help_, grid=grid
             )
 
 
 class TestBooleanInput:
     def test_constructor_with_defaults(self):
         sut = BooleanInput(label=LABEL)
-        assert sut.type == "boolean"
+        assert sut.type_ == "boolean"
         assert sut.required == IS_NOT_REQUIRED
 
         ui = sut.ui
@@ -134,7 +137,7 @@ class TestBooleanInput:
         assert ui.widget == "boolean"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
+        assert ui.help_ == ""
         assert ui.grid == 8
 
     def test_constructor_with_overrides(self):
@@ -142,10 +145,10 @@ class TestBooleanInput:
             label=LABEL,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
+            help_=HELP,
             grid=(grid := 3),
         )
-        assert sut.type == "boolean"
+        assert sut.type_ == "boolean"
         assert sut.required == IS_REQUIRED
 
         ui = sut.ui
@@ -154,11 +157,11 @@ class TestBooleanInput:
         assert ui.widget == "boolean"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
+        assert ui.help_ == HELP
         assert ui.grid == grid
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help, grid, msg",
+        "label, required, hidden, help_, grid, msg",
         [
             (
                 None,
@@ -198,7 +201,7 @@ class TestBooleanInput:
                 True,
                 1,
                 1,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -210,17 +213,17 @@ class TestBooleanInput:
             ),
         ],
     )
-    def test_validation(self, label, required, hidden, help, grid, msg):
+    def test_validation(self, label, required, hidden, help_, grid, msg):
         with pytest.raises(ValidationError, match=msg):
             BooleanInput(
-                label=label, required=required, hidden=hidden, help=help, grid=grid
+                label=label, required=required, hidden=hidden, help_=help_, grid=grid
             )
 
 
 class TestConnectionCreator:
     def test_constructor_with_defaults(self):
         sut = ConnectionCreator(label=LABEL)
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_NOT_REQUIRED
 
         ui = sut.ui
@@ -229,7 +232,7 @@ class TestConnectionCreator:
         assert ui.widget == "connection"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
+        assert ui.help_ == ""
         assert ui.placeholder == ""
 
     def test_constructor_with_overrides(self):
@@ -237,10 +240,10 @@ class TestConnectionCreator:
             label=LABEL,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
+            help_=HELP,
             placeholder=PLACE_HOLDER,
         )
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_REQUIRED
 
         ui = sut.ui
@@ -249,11 +252,11 @@ class TestConnectionCreator:
         assert ui.widget == "connection"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
+        assert ui.help_ == HELP
         assert ui.placeholder == PLACE_HOLDER
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help, placeholder, msg",
+        "label, required, hidden, help_, placeholder, msg",
         [
             (
                 None,
@@ -293,7 +296,7 @@ class TestConnectionCreator:
                 True,
                 1,
                 PLACE_HOLDER,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -305,13 +308,13 @@ class TestConnectionCreator:
             ),
         ],
     )
-    def test_validation(self, label, required, hidden, help, placeholder, msg):
+    def test_validation(self, label, required, hidden, help_, placeholder, msg):
         with pytest.raises(ValidationError, match=msg):
             ConnectionCreator(
                 label=label,
                 required=required,
                 hidden=hidden,
-                help=help,
+                help_=help_,
                 placeholder=placeholder,
             )
 
@@ -319,7 +322,7 @@ class TestConnectionCreator:
 class TestConnectionSelector:
     def test_constructor_with_defaults(self):
         sut = ConnectionSelector(label=LABEL)
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_NOT_REQUIRED
 
         ui = sut.ui
@@ -328,7 +331,7 @@ class TestConnectionSelector:
         assert ui.widget == "connectionSelector"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
+        assert ui.help_ == ""
         assert ui.placeholder == ""
         assert ui.grid == 4
         assert ui.start == 1
@@ -338,12 +341,12 @@ class TestConnectionSelector:
             label=LABEL,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
+            help_=HELP,
             placeholder=PLACE_HOLDER,
             grid=(grid := 2),
             start=(start := 10),
         )
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_REQUIRED
 
         ui = sut.ui
@@ -352,13 +355,13 @@ class TestConnectionSelector:
         assert ui.widget == "connectionSelector"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
+        assert ui.help_ == HELP
         assert ui.placeholder == PLACE_HOLDER
         assert ui.grid == grid
         assert ui.start == start
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help, placeholder, grid, start, msg",
+        "label, required, hidden, help_, placeholder, grid, start, msg",
         [
             (
                 None,
@@ -408,7 +411,7 @@ class TestConnectionSelector:
                 PLACE_HOLDER,
                 1,
                 2,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -443,14 +446,14 @@ class TestConnectionSelector:
         ],
     )
     def test_validation(
-        self, label, required, hidden, help, placeholder, grid, start, msg
+        self, label, required, hidden, help_, placeholder, grid, start, msg
     ):
         with pytest.raises(ValidationError, match=msg):
             ConnectionSelector(
                 label=label,
                 required=required,
                 hidden=hidden,
-                help=help,
+                help_=help_,
                 placeholder=placeholder,
                 grid=grid,
                 start=start,
@@ -460,7 +463,7 @@ class TestConnectionSelector:
 class TestConnectorTypeSelector:
     def test_constructor_with_defaults(self):
         sut = ConnectorTypeSelector(label=LABEL)
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_NOT_REQUIRED
 
         ui = sut.ui
@@ -469,7 +472,7 @@ class TestConnectorTypeSelector:
         assert ui.widget == "sourceConnectionSelector"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
+        assert ui.help_ == ""
         assert ui.grid == 4
         assert ui.start == 1
 
@@ -478,11 +481,11 @@ class TestConnectorTypeSelector:
             label=LABEL,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
+            help_=HELP,
             grid=(grid := 2),
             start=(start := 10),
         )
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_REQUIRED
 
         ui = sut.ui
@@ -491,12 +494,12 @@ class TestConnectorTypeSelector:
         assert ui.widget == "sourceConnectionSelector"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
+        assert ui.help_ == HELP
         assert ui.grid == grid
         assert ui.start == start
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help, grid, start, msg",
+        "label, required, hidden, help_, grid, start, msg",
         [
             (
                 None,
@@ -541,7 +544,7 @@ class TestConnectorTypeSelector:
                 1,
                 1,
                 2,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -563,13 +566,13 @@ class TestConnectorTypeSelector:
             ),
         ],
     )
-    def test_validation(self, label, required, hidden, help, grid, start, msg):
+    def test_validation(self, label, required, hidden, help_, grid, start, msg):
         with pytest.raises(ValidationError, match=msg):
             ConnectorTypeSelector(
                 label=label,
                 required=required,
                 hidden=hidden,
-                help=help,
+                help_=help_,
                 grid=grid,
                 start=start,
             )
@@ -578,7 +581,7 @@ class TestConnectorTypeSelector:
 class TestDateInput:
     def test_constructor_with_defaults(self):
         sut = DateInput(label=LABEL)
-        assert sut.type == "number"
+        assert sut.type_ == "number"
         assert sut.required == IS_NOT_REQUIRED
 
         ui = sut.ui
@@ -587,9 +590,9 @@ class TestDateInput:
         assert ui.widget == "date"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
-        assert ui.min == -14
-        assert ui.max == 0
+        assert ui.help_ == ""
+        assert ui.min_ == -14
+        assert ui.max_ == 0
         assert ui.default == 0
         assert ui.start == 1
         assert ui.grid == 8
@@ -599,14 +602,14 @@ class TestDateInput:
             label=LABEL,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
-            min=(min := -2),
-            max=(max := 3),
+            help_=HELP,
+            min_=(min_ := -2),
+            max_=(max_ := 3),
             default=(default := 1),
             start=(start := 10),
             grid=(grid := 2),
         )
-        assert sut.type == "number"
+        assert sut.type_ == "number"
         assert sut.required == IS_REQUIRED
 
         ui = sut.ui
@@ -615,15 +618,15 @@ class TestDateInput:
         assert ui.widget == "date"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
-        assert ui.min == min
-        assert ui.max == max
+        assert ui.help_ == HELP
+        assert ui.min_ == min_
+        assert ui.max_ == max_
         assert ui.default == default
         assert ui.start == start
         assert ui.grid == grid
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help, min, max, default, start, grid, msg",
+        "label, required, hidden, help_, min_, max_, default, start, grid, msg",
         [
             (
                 None,
@@ -671,7 +674,7 @@ class TestDateInput:
                 1,
                 0,
                 4,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -683,7 +686,7 @@ class TestDateInput:
                 1,
                 0,
                 4,
-                r"1 validation error for Init\nmin\n  value is not a valid integer",
+                r"1 validation error for Init\nmin_\n  value is not a valid integer",
             ),
             (
                 LABEL,
@@ -695,7 +698,7 @@ class TestDateInput:
                 1,
                 0,
                 4,
-                r"1 validation error for Init\nmax\n  value is not a valid integer",
+                r"1 validation error for Init\nmax_\n  value is not a valid integer",
             ),
             (
                 LABEL,
@@ -736,16 +739,16 @@ class TestDateInput:
         ],
     )
     def test_validation(
-        self, label, required, hidden, help, min, max, default, start, grid, msg
+        self, label, required, hidden, help_, min_, max_, default, start, grid, msg
     ):
         with pytest.raises(ValidationError, match=msg):
             DateInput(
                 label=label,
                 required=required,
                 hidden=hidden,
-                help=help,
-                min=min,
-                max=max,
+                help_=help_,
+                min_=min_,
+                max_=max_,
                 default=default,
                 start=start,
                 grid=grid,
@@ -755,7 +758,7 @@ class TestDateInput:
 class TestDropDown:
     def test_constructor_with_defaults(self):
         sut = DropDown(label=LABEL, possible_values=POSSIBLE_VALUES)
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_NOT_REQUIRED
         assert sut.possible_values == POSSIBLE_VALUES
 
@@ -766,7 +769,7 @@ class TestDropDown:
         assert ui.label == LABEL
         assert ui.mode == ""
         assert ui.hidden == IS_NOT_HIDDEN
-        assert ui.help == ""
+        assert ui.help_ == ""
         assert ui.grid == 8
 
     def test_constructor_with_overrides(self):
@@ -775,11 +778,11 @@ class TestDropDown:
             possible_values=POSSIBLE_VALUES,
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
-            help=HELP,
+            help_=HELP,
             multi_select=True,
             grid=(grid := 2),
         )
-        assert sut.type == "string"
+        assert sut.type_ == "string"
         assert sut.required == IS_REQUIRED
         assert sut.possible_values == POSSIBLE_VALUES
 
@@ -789,12 +792,12 @@ class TestDropDown:
         assert ui.widget == "select"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
-        assert ui.help == HELP
+        assert ui.help_ == HELP
         assert ui.mode == "multiple"
         assert ui.grid == grid
 
     @pytest.mark.parametrize(
-        "label, possible_values, required, hidden, help, multi_select, grid, msg",
+        "label, possible_values, required, hidden, help_, multi_select, grid, msg",
         [
             (
                 None,
@@ -844,7 +847,7 @@ class TestDropDown:
                 1,
                 False,
                 4,
-                r"1 validation error for Init\nhelp\n  str type expected",
+                r"1 validation error for Init\nhelp_\n  str type expected",
             ),
             (
                 LABEL,
@@ -869,7 +872,7 @@ class TestDropDown:
         ],
     )
     def test_validation(
-        self, label, possible_values, required, hidden, help, multi_select, grid, msg
+        self, label, possible_values, required, hidden, help_, multi_select, grid, msg
     ):
         with pytest.raises(ValidationError, match=msg):
             DropDown(
@@ -877,7 +880,118 @@ class TestDropDown:
                 possible_values=possible_values,
                 required=required,
                 hidden=hidden,
-                help=help,
+                help_=help_,
                 multi_select=multi_select,
                 grid=grid,
+            )
+
+
+class TestFileUploader:
+    def test_constructor_with_defaults(self):
+        sut = FileUploader(label=LABEL, file_types=FILE_TYPES)
+        assert sut.type_ == "string"
+        assert sut.required == IS_NOT_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, FileUploaderWidget)
+        assert ui.widget == "fileUpload"
+        assert ui.label == LABEL
+        assert ui.file_types == FILE_TYPES
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help_ == ""
+        assert ui.placeholder == ""
+
+    def test_constructor_with_overrides(self):
+        sut = FileUploader(
+            label=LABEL,
+            file_types=FILE_TYPES,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help_=HELP,
+            placeholder=PLACE_HOLDER,
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, FileUploaderWidget)
+        assert ui.widget == "fileUpload"
+        assert ui.label == LABEL
+        assert ui.file_types == FILE_TYPES
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help_ == HELP
+        assert ui.placeholder == PLACE_HOLDER
+
+    @pytest.mark.parametrize(
+        "label, file_types, required, hidden, help_, placeholder, msg",
+        [
+            (
+                None,
+                FILE_TYPES,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                None,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                r"1 validation error for Init\nfile_types\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                FILE_TYPES,
+                1,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                FILE_TYPES,
+                True,
+                0,
+                HELP,
+                PLACE_HOLDER,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                FILE_TYPES,
+                True,
+                True,
+                1,
+                PLACE_HOLDER,
+                r"1 validation error for Init\nhelp_\n  str type expected",
+            ),
+            (
+                LABEL,
+                FILE_TYPES,
+                True,
+                True,
+                HELP,
+                1,
+                r"1 validation error for Init\nplaceholder\n  str type expected",
+            ),
+        ],
+    )
+    def test_validation(
+        self, label, file_types, required, hidden, help_, placeholder, msg
+    ):
+        with pytest.raises(ValidationError, match=msg):
+            FileUploader(
+                label=label,
+                file_types=file_types,
+                required=required,
+                hidden=hidden,
+                help_=help_,
+                placeholder=placeholder,
             )
