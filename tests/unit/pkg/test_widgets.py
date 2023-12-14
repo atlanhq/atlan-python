@@ -12,6 +12,8 @@ from pyatlan.pkg.widgets import (
     ConnectionSelectorWidget,
     ConnectorTypeSelector,
     ConnectorTypeSelectorWidget,
+    DateInput,
+    DateInputWidget,
 )
 
 LABEL: str = "Some label"
@@ -567,4 +569,181 @@ class TestConnectorTypeSelector:
                 help=help,
                 grid=grid,
                 start=start,
+            )
+
+
+class TestDateInput:
+    def test_constructor_with_defaults(self):
+        sut = DateInput(label=LABEL)
+        assert sut.type == "number"
+        assert sut.required == IS_NOT_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, DateInputWidget)
+        assert ui.widget == "date"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help == ""
+        assert ui.min == -14
+        assert ui.max == 0
+        assert ui.default == 0
+        assert ui.start == 1
+        assert ui.grid == 8
+
+    def test_constructor_with_overrides(self):
+        sut = DateInput(
+            label=LABEL,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help=HELP,
+            min=(min := -2),
+            max=(max := 3),
+            default=(default := 1),
+            start=(start := 10),
+            grid=(grid := 2),
+        )
+        assert sut.type == "number"
+        assert sut.required == IS_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, DateInputWidget)
+        assert ui.widget == "date"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help == HELP
+        assert ui.min == min
+        assert ui.max == max
+        assert ui.default == default
+        assert ui.start == start
+        assert ui.grid == grid
+
+    @pytest.mark.parametrize(
+        "label, required, hidden, help, min, max, default, start, grid, msg",
+        [
+            (
+                None,
+                True,
+                True,
+                HELP,
+                -5,
+                3,
+                1,
+                0,
+                4,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                1,
+                True,
+                HELP,
+                -5,
+                3,
+                1,
+                0,
+                4,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                1,
+                HELP,
+                -5,
+                3,
+                1,
+                0,
+                4,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                1,
+                -5,
+                3,
+                1,
+                0,
+                4,
+                r"1 validation error for Init\nhelp\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                "a",
+                3,
+                1,
+                0,
+                4,
+                r"1 validation error for Init\nmin\n  value is not a valid integer",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                -5,
+                "a",
+                1,
+                0,
+                4,
+                r"1 validation error for Init\nmax\n  value is not a valid integer",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                -5,
+                3,
+                "a",
+                0,
+                4,
+                r"1 validation error for Init\ndefault\n  value is not a valid integer",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                -5,
+                3,
+                1,
+                "a",
+                4,
+                r"1 validation error for Init\nstart\n  value is not a valid integer",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                -5,
+                3,
+                1,
+                0,
+                "4",
+                r"1 validation error for Init\ngrid\n  value is not a valid integer",
+            ),
+        ],
+    )
+    def test_validation(
+        self, label, required, hidden, help, min, max, default, start, grid, msg
+    ):
+        with pytest.raises(ValidationError, match=msg):
+            DateInput(
+                label=label,
+                required=required,
+                hidden=hidden,
+                help=help,
+                min=min,
+                max=max,
+                default=default,
+                start=start,
+                grid=grid,
             )

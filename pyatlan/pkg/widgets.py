@@ -240,3 +240,58 @@ class ConnectorTypeSelector(UIElement):
             start=start,
         )
         super().__init__(type="string", required=required, ui=widget)
+
+
+@dataclass
+class DateInputWidget(Widget):
+    min: int = (-14,)
+    max: int = (0,)
+    default: int = (0,)
+    start: int = 1
+
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help: str = "",
+        min: int = -14,
+        max: int = 0,
+        default: int = 0,
+        start: int = 1,
+        grid: int = 4,
+    ):
+        super().__init__(
+            widget="date", label=label, hidden=hidden, help=help, grid=grid
+        )
+        self.start = start
+        self.max = max
+        self.min = min
+        self.default = default
+
+
+@dataclass
+class DateInput(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help: StrictStr = "",
+        min: StrictInt = -14,
+        max: StrictInt = 0,
+        default: StrictInt = 0,
+        start: StrictInt = 1,
+        grid: StrictInt = 8,
+    ):
+        widget = DateInputWidget(
+            label=label,
+            hidden=hidden,
+            help=help,
+            min=min,
+            max=max,
+            default=default,
+            start=start,
+            grid=grid,
+        )
+        super().__init__(type="number", required=required, ui=widget)
