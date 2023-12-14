@@ -10,6 +10,8 @@ from pyatlan.pkg.widgets import (
     ConnectionCreatorWidget,
     ConnectionSelector,
     ConnectionSelectorWidget,
+    ConnectorTypeSelector,
+    ConnectorTypeSelectorWidget,
 )
 
 LABEL: str = "Some label"
@@ -445,6 +447,124 @@ class TestConnectionSelector:
                 hidden=hidden,
                 help=help,
                 placeholder=placeholder,
+                grid=grid,
+                start=start,
+            )
+
+
+class TestConnectorTypeSelector:
+    def test_constructor_with_defaults(self):
+        sut = ConnectorTypeSelector(label=LABEL)
+        assert sut.type == "string"
+        assert sut.required == IS_NOT_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, ConnectorTypeSelectorWidget)
+        assert ui.widget == "sourceConnectionSelector"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help == ""
+        assert ui.grid == 4
+        assert ui.start == 1
+
+    def test_constructor_with_overrides(self):
+        sut = ConnectorTypeSelector(
+            label=LABEL,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help=HELP,
+            grid=(grid := 2),
+            start=(start := 10),
+        )
+        assert sut.type == "string"
+        assert sut.required == IS_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, ConnectorTypeSelectorWidget)
+        assert ui.widget == "sourceConnectionSelector"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help == HELP
+        assert ui.grid == grid
+        assert ui.start == start
+
+    @pytest.mark.parametrize(
+        "label, required, hidden, help, grid, start, msg",
+        [
+            (
+                None,
+                True,
+                True,
+                HELP,
+                1,
+                2,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                1,
+                True,
+                True,
+                HELP,
+                1,
+                2,
+                r"1 validation error for Init\nlabel\n  str type expected",
+            ),
+            (
+                LABEL,
+                1,
+                True,
+                HELP,
+                1,
+                2,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                1,
+                HELP,
+                1,
+                2,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                1,
+                1,
+                2,
+                r"1 validation error for Init\nhelp\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                1.0,
+                2,
+                r"1 validation error for Init\ngrid\n  value is not a valid integer",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                1,
+                2.0,
+                r"1 validation error for Init\nstart\n  value is not a valid integer",
+            ),
+        ],
+    )
+    def test_validation(self, label, required, hidden, help, grid, start, msg):
+        with pytest.raises(ValidationError, match=msg):
+            ConnectorTypeSelector(
+                label=label,
+                required=required,
+                hidden=hidden,
+                help=help,
                 grid=grid,
                 start=start,
             )
