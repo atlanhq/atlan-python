@@ -392,3 +392,37 @@ class FileUploader(UIElement):
             placeholder=placeholder,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclass
+class KeygenInputWidget(Widget):
+    def __init__(
+        self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
+    ):
+        super().__init__(
+            widget="keygen",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            grid=grid,
+        )
+
+
+@dataclass
+class KeygenInput(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        widget = KeygenInputWidget(
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            grid=grid,
+        )
+        super().__init__(type_="string", required=required, ui=widget)
