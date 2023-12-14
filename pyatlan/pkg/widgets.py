@@ -75,6 +75,18 @@ class APITokenSelector(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 4,
     ):
+        """
+        Widget that allows you to select an existing API token from a drop-down list, and returns the GUID of the
+        selected API token.
+        Note: currently only API tokens that were created by the user configuring the workflow will appear in the
+        drop-down list.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = APITokenSelectorWidget(
             label=label, hidden=hidden, help_=help_, grid=grid
         )
