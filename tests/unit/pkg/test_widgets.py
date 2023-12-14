@@ -32,6 +32,8 @@ from pyatlan.pkg.widgets import (
     RadioWidget,
     SingleGroup,
     SingleGroupWidget,
+    SingleUser,
+    SingleUserWidget,
 )
 
 LABEL: str = "Some label"
@@ -1692,6 +1694,99 @@ class TestSingleGroup:
     def test_validation(self, label, required, hidden, help_, grid, msg):
         with pytest.raises(ValidationError, match=msg):
             SingleGroup(
+                label=label,
+                required=required,
+                hidden=hidden,
+                help_=help_,
+                grid=grid,
+            )
+
+
+class TestSingleUser:
+    def test_constructor_with_defaults(self):
+        sut = SingleUser(
+            label=LABEL,
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_NOT_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, SingleUserWidget)
+        assert ui.widget == "users"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help_ == ""
+        assert ui.grid == 8
+
+    def test_constructor_with_overrides(self):
+        sut = SingleUser(
+            label=LABEL,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help_=HELP,
+            grid=(grid := 3),
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, SingleUserWidget)
+        assert ui.widget == "users"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help_ == HELP
+        assert ui.grid == grid
+
+    @pytest.mark.parametrize(
+        "label, required, hidden, help_, grid, msg",
+        [
+            (
+                None,
+                True,
+                True,
+                HELP,
+                3,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                0,
+                True,
+                HELP,
+                3,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                0,
+                HELP,
+                3,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                1,
+                3,
+                r"1 validation error for Init\nhelp_\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                "3",
+                r"1 validation error for Init\ngrid\n  value is not a valid integer",
+            ),
+        ],
+    )
+    def test_validation(self, label, required, hidden, help_, grid, msg):
+        with pytest.raises(ValidationError, match=msg):
+            SingleUser(
                 label=label,
                 required=required,
                 hidden=hidden,
