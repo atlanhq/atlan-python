@@ -244,9 +244,9 @@ class ConnectorTypeSelector(UIElement):
 
 @dataclass
 class DateInputWidget(Widget):
-    min: int = (-14,)
-    max: int = (0,)
-    default: int = (0,)
+    min: int = -14
+    max: int = 0
+    default: int = 0
     start: int = 1
 
     def __init__(
