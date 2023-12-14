@@ -691,3 +691,45 @@ class SingleUser(UIElement):
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclass
+class TextInputWidget(Widget):
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help_: str = "",
+        placeholder: str = "",
+        grid: int = 8,
+    ):
+        super().__init__(
+            widget="input",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            placeholder=placeholder,
+            grid=grid,
+        )
+
+
+@dataclass
+class TextInput(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+        placeholder: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        widget = TextInputWidget(
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            placeholder=placeholder,
+            grid=grid,
+        )
+        super().__init__(type_="string", required=required, ui=widget)

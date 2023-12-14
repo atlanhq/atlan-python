@@ -34,6 +34,8 @@ from pyatlan.pkg.widgets import (
     SingleGroupWidget,
     SingleUser,
     SingleUserWidget,
+    TextInput,
+    TextInputWidget,
 )
 
 LABEL: str = "Some label"
@@ -1791,5 +1793,116 @@ class TestSingleUser:
                 required=required,
                 hidden=hidden,
                 help_=help_,
+                grid=grid,
+            )
+
+
+class TestTextInput:
+    def test_constructor_with_defaults(self):
+        sut = TextInput(
+            label=LABEL,
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_NOT_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, TextInputWidget)
+        assert ui.widget == "input"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help_ == ""
+        assert ui.placeholder == ""
+        assert ui.grid == 8
+
+    def test_constructor_with_overrides(self):
+        sut = TextInput(
+            label=LABEL,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help_=HELP,
+            placeholder=PLACE_HOLDER,
+            grid=(grid := 3),
+        )
+        assert sut.type_ == "string"
+        assert sut.required == IS_REQUIRED
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, TextInputWidget)
+        assert ui.widget == "input"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help_ == HELP
+        assert ui.placeholder == PLACE_HOLDER
+        assert ui.grid == grid
+
+    @pytest.mark.parametrize(
+        "label, required, hidden, help_, placeholder, grid, msg",
+        [
+            (
+                None,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                3,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                0,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                3,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                0,
+                HELP,
+                PLACE_HOLDER,
+                3,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                1,
+                PLACE_HOLDER,
+                3,
+                r"1 validation error for Init\nhelp_\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                1,
+                3,
+                r"1 validation error for Init\nplaceholder\n  str type expected",
+            ),
+            (
+                LABEL,
+                True,
+                True,
+                HELP,
+                PLACE_HOLDER,
+                "3",
+                r"1 validation error for Init\ngrid\n  value is not a valid integer",
+            ),
+        ],
+    )
+    def test_validation(self, label, required, hidden, help_, placeholder, grid, msg):
+        with pytest.raises(ValidationError, match=msg):
+            TextInput(
+                label=label,
+                required=required,
+                hidden=hidden,
+                help_=help_,
+                placeholder=placeholder,
                 grid=grid,
             )
