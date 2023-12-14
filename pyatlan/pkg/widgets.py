@@ -426,3 +426,37 @@ class KeygenInput(UIElement):
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclass
+class MultipleGroupsWidget(Widget):
+    def __init__(
+        self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
+    ):
+        super().__init__(
+            widget="groupMultiple",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            grid=grid,
+        )
+
+
+@dataclass
+class MultipleGroups(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        widget = MultipleGroupsWidget(
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            grid=grid,
+        )
+        super().__init__(type_="string", required=required, ui=widget)
