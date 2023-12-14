@@ -615,3 +615,41 @@ class Radio(UIElement):
         super().__init__(type_="string", required=required, ui=widget)
         self.possible_values = posssible_values
         self.default = default
+
+
+@dataclass
+class SingleGroupWidget(Widget):
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help_: str = "",
+        grid: int = 8,
+    ):
+        super().__init__(
+            widget="groups",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            grid=grid,
+        )
+
+
+@dataclass
+class SingleGroup(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        widget = SingleGroupWidget(
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            grid=grid,
+        )
+        super().__init__(type_="string", required=required, ui=widget)
