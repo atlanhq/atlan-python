@@ -1875,6 +1875,10 @@ class IndexSearchRequest(SearchRequest):
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        super().__init__(**data)
+        __pydantic_self__.__fields_set__.update(["request_metadata"])
+
 
 def with_active_glossary(name: StrictStr) -> "Bool":
     return (

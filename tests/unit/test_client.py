@@ -36,6 +36,7 @@ UNIQUE_ASSETS = "uniqueAssets"
 LOG_IP_ADDRESS = "ipAddress"
 LOG_USERNAME = "userName"
 SEARCH_PARAMS = "searchParameters"
+SEARCH_COUNT = "approximateCount"
 DATA_RESPONSES_DIR = Path(__file__).parent / "data" / "search_log_responses"
 SL_MOST_RECENT_VIEWERS_JSON = "sl_most_recent_viewers.json"
 SL_MOST_VIEWED_ASSETS_JSON = "sl_most_viewed_assets.json"
@@ -944,7 +945,7 @@ def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers
     assert len(viewers) == 3
     assert response.asset_views is None
     assert request_dsl_json == sl_most_recent_viewers_json[SEARCH_PARAMS]["dsl"]
-    assert response.count == sl_most_recent_viewers_json["approximateCount"]
+    assert response.count == sl_most_recent_viewers_json[SEARCH_COUNT]
     assert viewers[0].username == recent_viewers_aggs_buckets[0]["key"]
     assert viewers[0].view_count == recent_viewers_aggs_buckets[0]["doc_count"]
     assert viewers[0].most_recent_view
@@ -966,7 +967,7 @@ def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_j
     assert len(detail) == 8
     assert response.user_views is None
     assert request_dsl_json == sl_most_viewed_assets_json[SEARCH_PARAMS]["dsl"]
-    assert response.count == sl_most_viewed_assets_json["approximateCount"]
+    assert response.count == sl_most_viewed_assets_json[SEARCH_COUNT]
     assert detail[0].guid == viewed_assets_aggs_buckets["key"]
     assert detail[0].total_views == viewed_assets_aggs_buckets["doc_count"]
     assert detail[0].distinct_users == viewed_assets_aggs_buckets[UNIQUE_USERS]["value"]
@@ -982,11 +983,28 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     response = client.search_log.search(request)
     log_entries = response.current_page()
     assert request_dsl_json == sl_detailed_log_entries_json[SEARCH_PARAMS]["dsl"]
-    assert (
-        len(response.current_page()) == sl_detailed_log_entries_json["approximateCount"]
-    )
+    assert len(response.current_page()) == sl_detailed_log_entries_json[SEARCH_COUNT]
     assert log_entries[0].user_name == sl_detailed_log_entries[0][LOG_USERNAME]
     assert log_entries[0].ip_address == sl_detailed_log_entries[0][LOG_IP_ADDRESS]
+    assert log_entries[0].host
+    assert log_entries[0].user_agent
+    assert log_entries[0].utm_tags
+    assert log_entries[0].entity_guids_all
+    assert log_entries[0].entity_guids_allowed
+    assert log_entries[0].entity_qf_names_all
+    assert log_entries[0].entity_qf_names_allowed
+    assert log_entries[0].entity_type_names_all
+    assert log_entries[0].entity_type_names_allowed
+    assert log_entries[0].has_result
+    assert log_entries[0].results_count
+    assert log_entries[0].response_time
+    assert log_entries[0].created_at
+    assert log_entries[0].timestamp
+    assert log_entries[0].failed is False
+    assert log_entries[0].request_dsl
+    assert log_entries[0].request_dsl_text
+    assert log_entries[0].request_attributes is None
+    assert log_entries[0].request_relation_attributes
 
 
 class TestBatch:

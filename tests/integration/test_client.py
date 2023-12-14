@@ -1,9 +1,12 @@
+import time
 from dataclasses import dataclass
 from typing import Generator
 
 import pytest
+from pydantic import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.search_log import SearchLogRequest
 from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
     Asset,
@@ -19,8 +22,10 @@ from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
     CertificateStatus,
+    UTMTags,
     WorkflowPackage,
 )
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
@@ -63,6 +68,21 @@ def database(
 @pytest.fixture()
 def current_user(client: AtlanClient) -> UserMinimalResponse:
     return client.user.get_current()
+
+
+def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
+    g = AtlasGlossary.create(name=StrictStr(name))
+    r = client.asset.save(g)
+    return r.assets_created(AtlasGlossary)[0]
+
+
+@pytest.fixture(scope="module")
+def sl_glossary(
+    client: AtlanClient,
+) -> Generator[AtlasGlossary, None, None]:
+    g = create_glossary(client, TestId.make_unique("test-sl-glossary"))
+    yield g
+    delete_asset(client, guid=g.guid, asset_type=AtlasGlossary)
 
 
 def test_append_terms_with_guid(
@@ -419,3 +439,85 @@ def test_audit_find_by_guid(client: AtlanClient, audit_info: AuditInfo):
     assert results.total_count > 0
     count = len(results.current_page())
     assert count > 0 and count <= size
+
+
+def _view_test_glossary_by_search(
+    client: AtlanClient, sl_glossary: AtlasGlossary
+) -> None:
+    time.sleep(2)
+    index = (
+        FluentSearch().where(Asset.GUID.eq(sl_glossary.guid, case_insensitive=True))
+    ).to_request()
+    index.request_metadata.utm_tags = [
+        UTMTags.ACTION_ASSET_VIEWED,
+        UTMTags.UI_PROFILE,
+        UTMTags.UI_SIDEBAR,
+        UTMTags.PROJECT_SDK_PYTHON,
+    ]
+    response = client.asset.search(index)
+    assert response.count == 1
+    assert response.current_page()[0].name == sl_glossary.name
+    time.sleep(2)
+
+
+def test_search_log_most_recent_viewers(
+    client: AtlanClient, sl_glossary: AtlasGlossary
+):
+    _view_test_glossary_by_search(client, sl_glossary)
+    request = SearchLogRequest.most_recent_viewers(sl_glossary.guid)
+    response = client.search_log.search(request)
+    viewers = response.user_views
+    assert len(viewers) == 1
+    assert response.asset_views is None
+    assert viewers[0].username
+    assert viewers[0].view_count
+    assert viewers[0].most_recent_view
+
+
+@pytest.mark.order(after="test_search_log_most_recent_viewers")
+def test_search_log_most_viewed_assets(client: AtlanClient):
+    def _assert_most_viewed_assets():
+        assert len(detail) > 0
+        assert response.user_views is None
+        assert detail[0].guid
+        assert detail[0].total_views
+        assert detail[0].distinct_users
+
+    request = SearchLogRequest.most_viewed_assets(10)
+    response = client.search_log.search(request)
+    detail = response.asset_views
+    _assert_most_viewed_assets()
+
+    request = SearchLogRequest.most_viewed_assets(10, by_different_user=True)
+    response = client.search_log.search(request)
+    detail = response.asset_views
+    _assert_most_viewed_assets()
+
+
+@pytest.mark.order(after="test_search_log_most_viewed_assets")
+def test_search_log_views_by_guid(client: AtlanClient, sl_glossary: AtlasGlossary):
+    request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=10)
+    response = client.search_log.search(request)
+    log_entries = response.current_page()
+    assert len(response.current_page()) == 1
+    assert "Atlan-PythonSDK" in log_entries[0].user_agent
+    assert "service-account-apikey" in log_entries[0].user_name
+    assert log_entries[0].entity_guids_all[0] == sl_glossary.guid
+    assert log_entries[0].ip_address
+    assert log_entries[0].host
+    assert log_entries[0].utm_tags
+    assert log_entries[0].entity_guids_allowed
+    assert log_entries[0].entity_qf_names_all
+    assert log_entries[0].entity_qf_names_allowed
+    assert log_entries[0].entity_type_names_all
+    assert log_entries[0].entity_type_names_allowed
+    assert log_entries[0].has_result
+    assert log_entries[0].results_count
+    assert log_entries[0].response_time
+    assert log_entries[0].created_at
+    assert log_entries[0].timestamp
+    assert log_entries[0].failed is False
+    assert log_entries[0].request_dsl
+    assert log_entries[0].request_dsl_text
+    assert log_entries[0].request_attributes is None
+    assert log_entries[0].request_relation_attributes is None
