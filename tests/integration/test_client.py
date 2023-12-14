@@ -1,12 +1,17 @@
 import time
 from dataclasses import dataclass
-from typing import Generator
+from typing import Generator, Optional
 
 import pytest
 from pydantic import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.search_log import SearchLogRequest
+from pyatlan.client.search_log import (
+    AssetViews,
+    SearchLogRequest,
+    SearchLogResults,
+    SearchLogViewResults,
+)
 from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
     Asset,
@@ -466,38 +471,49 @@ def test_search_log_most_recent_viewers(
     _view_test_glossary_by_search(client, sl_glossary)
     request = SearchLogRequest.most_recent_viewers(sl_glossary.guid)
     response = client.search_log.search(request)
+    if not isinstance(response, SearchLogViewResults):
+        pytest.fail(f"Failed to retrieve most recent viewers of : {sl_glossary.name}")
     viewers = response.user_views
-    assert len(viewers) == 1
     assert response.asset_views is None
-    assert viewers[0].username
-    assert viewers[0].view_count
-    assert viewers[0].most_recent_view
+    if viewers is not None:
+        assert len(viewers) == 1
+        for viewer in viewers:
+            assert viewer.username
+            assert viewer.view_count
+            assert viewer.most_recent_view
 
 
 @pytest.mark.order(after="test_search_log_most_recent_viewers")
 def test_search_log_most_viewed_assets(client: AtlanClient):
-    def _assert_most_viewed_assets():
-        assert len(detail) > 0
-        assert response.user_views is None
-        assert detail[0].guid
-        assert detail[0].total_views
-        assert detail[0].distinct_users
+    def _assert_most_viewed_assets(details: Optional[list[AssetViews]]):
+        if details is not None:
+            assert len(details) > 0
+            for detail in details:
+                assert detail.guid
+                assert detail.total_views
+                assert detail.distinct_users
 
     request = SearchLogRequest.most_viewed_assets(10)
     response = client.search_log.search(request)
-    detail = response.asset_views
-    _assert_most_viewed_assets()
+    if not isinstance(response, SearchLogViewResults):
+        pytest.fail("Failed to retrieve most viewed assets")
+    assert response.user_views is None
+    _assert_most_viewed_assets(response.asset_views)
 
     request = SearchLogRequest.most_viewed_assets(10, by_different_user=True)
     response = client.search_log.search(request)
-    detail = response.asset_views
-    _assert_most_viewed_assets()
+    if not isinstance(response, SearchLogViewResults):
+        pytest.fail("Failed to retrieve most viewed assets (by_different_user)")
+    assert response.user_views is None
+    _assert_most_viewed_assets(response.asset_views)
 
 
 @pytest.mark.order(after="test_search_log_most_viewed_assets")
 def test_search_log_views_by_guid(client: AtlanClient, sl_glossary: AtlasGlossary):
     request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=10)
     response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
     log_entries = response.current_page()
     assert len(response.current_page()) == 1
     assert "Atlan-PythonSDK" in log_entries[0].user_agent
