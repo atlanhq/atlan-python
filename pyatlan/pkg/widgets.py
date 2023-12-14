@@ -295,3 +295,53 @@ class DateInput(UIElement):
             grid=grid,
         )
         super().__init__(type="number", required=required, ui=widget)
+
+
+@dataclass
+class DropDownWidget(Widget):
+    mode: str = ""
+
+    def __init__(
+        self,
+        label: str,
+        mode: str,
+        hidden: bool = False,
+        help: str = "",
+        grid: int = 8,
+    ):
+        super().__init__(
+            widget="select",
+            label=label,
+            hidden=hidden,
+            help=help,
+            grid=grid,
+        )
+        self.mode = mode
+
+
+@dataclass
+class DropDown(UIElementWithEnum):
+    possible_values: dict[str, str]
+
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        possible_values: dict[str, str],
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help: StrictStr = "",
+        multi_select: StrictBool = False,
+        grid: StrictInt = 8,
+    ):
+        widget = DropDownWidget(
+            label=label,
+            mode="multiple" if multi_select else "",
+            hidden=hidden,
+            help=help,
+            grid=grid,
+        )
+        super().__init__(
+            type="string", required=required, possible_values=possible_values, ui=widget
+        )
+        self.possible_values = possible_values

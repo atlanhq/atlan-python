@@ -14,6 +14,8 @@ from pyatlan.pkg.widgets import (
     ConnectorTypeSelectorWidget,
     DateInput,
     DateInputWidget,
+    DropDown,
+    DropDownWidget,
 )
 
 LABEL: str = "Some label"
@@ -23,6 +25,7 @@ IS_REQUIRED = True
 IS_NOT_REQUIRED = False
 IS_HIDDEN = True
 IS_NOT_HIDDEN = False
+POSSIBLE_VALUES = {"name": "Dave"}
 
 
 class TestAPITokenSelector:
@@ -745,5 +748,136 @@ class TestDateInput:
                 max=max,
                 default=default,
                 start=start,
+                grid=grid,
+            )
+
+
+class TestDropDown:
+    def test_constructor_with_defaults(self):
+        sut = DropDown(label=LABEL, possible_values=POSSIBLE_VALUES)
+        assert sut.type == "string"
+        assert sut.required == IS_NOT_REQUIRED
+        assert sut.possible_values == POSSIBLE_VALUES
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, DropDownWidget)
+        assert ui.widget == "select"
+        assert ui.label == LABEL
+        assert ui.mode == ""
+        assert ui.hidden == IS_NOT_HIDDEN
+        assert ui.help == ""
+        assert ui.grid == 8
+
+    def test_constructor_with_overrides(self):
+        sut = DropDown(
+            label=LABEL,
+            possible_values=POSSIBLE_VALUES,
+            required=IS_REQUIRED,
+            hidden=IS_HIDDEN,
+            help=HELP,
+            multi_select=True,
+            grid=(grid := 2),
+        )
+        assert sut.type == "string"
+        assert sut.required == IS_REQUIRED
+        assert sut.possible_values == POSSIBLE_VALUES
+
+        ui = sut.ui
+        assert ui
+        assert isinstance(ui, DropDownWidget)
+        assert ui.widget == "select"
+        assert ui.label == LABEL
+        assert ui.hidden == IS_HIDDEN
+        assert ui.help == HELP
+        assert ui.mode == "multiple"
+        assert ui.grid == grid
+
+    @pytest.mark.parametrize(
+        "label, possible_values, required, hidden, help, multi_select, grid, msg",
+        [
+            (
+                None,
+                POSSIBLE_VALUES,
+                True,
+                True,
+                HELP,
+                False,
+                4,
+                r"1 validation error for Init\nlabel\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                None,
+                True,
+                True,
+                HELP,
+                False,
+                4,
+                r"1 validation error for Init\npossible_values\n  none is not an allowed value",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                1,
+                True,
+                HELP,
+                False,
+                4,
+                r"1 validation error for Init\nrequired\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                True,
+                1,
+                HELP,
+                False,
+                4,
+                r"1 validation error for Init\nhidden\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                True,
+                True,
+                1,
+                False,
+                4,
+                r"1 validation error for Init\nhelp\n  str type expected",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                True,
+                True,
+                HELP,
+                1,
+                4,
+                r"1 validation error for Init\nmulti_select\n  value is not a valid boolean",
+            ),
+            (
+                LABEL,
+                POSSIBLE_VALUES,
+                True,
+                True,
+                HELP,
+                False,
+                "1",
+                r"1 validation error for Init\ngrid\n  value is not a valid integer",
+            ),
+        ],
+    )
+    def test_validation(
+        self, label, possible_values, required, hidden, help, multi_select, grid, msg
+    ):
+        with pytest.raises(ValidationError, match=msg):
+            DropDown(
+                label=label,
+                possible_values=possible_values,
+                required=required,
+                hidden=hidden,
+                help=help,
+                multi_select=multi_select,
                 grid=grid,
             )
