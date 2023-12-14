@@ -494,3 +494,45 @@ class MultipleUsers(UIElement):
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclass
+class NumericInputWidget(Widget):
+    def __init__(
+        self,
+        label: str,
+        hidden: bool = False,
+        help_: str = "",
+        placeholder: str = "",
+        grid: int = 8,
+    ):
+        super().__init__(
+            widget="inputNumber",
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            placeholder=placeholder,
+            grid=grid,
+        )
+
+
+@dataclass
+class NumericInput(UIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help_: StrictStr = "",
+        placeholder: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        widget = NumericInputWidget(
+            label=label,
+            hidden=hidden,
+            help_=help_,
+            placeholder=placeholder,
+            grid=grid,
+        )
+        super().__init__(type_="number", required=required, ui=widget)
