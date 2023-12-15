@@ -34,6 +34,7 @@ from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
+from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.token import TokenClient
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
@@ -123,6 +124,7 @@ class AtlanClient(BaseSettings):
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
+    _search_log_client: Optional[SearchLogClient] = PrivateAttr(default=None)
     _group_client: Optional[GroupClient] = PrivateAttr(default=None)
     _role_client: Optional[RoleClient] = PrivateAttr(default=None)
     _asset_client: Optional[AssetClient] = PrivateAttr(default=None)
@@ -177,6 +179,12 @@ class AtlanClient(BaseSettings):
         if self._audit_client is None:
             self._audit_client = AuditClient(client=self)
         return self._audit_client
+
+    @property
+    def search_log(self) -> SearchLogClient:
+        if self._search_log_client is None:
+            self._search_log_client = SearchLogClient(client=self)
+        return self._search_log_client
 
     @property
     def workflow(self) -> WorkflowClient:

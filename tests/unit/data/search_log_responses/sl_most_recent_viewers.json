@@ -1,0 +1,131 @@
+{
+  "searchParameters": {
+    "dsl": {
+      "from": 0,
+      "size": 0,
+      "aggregations": {
+        "uniqueUsers": {
+          "terms": {
+            "field": "userName",
+            "size": 20,
+            "order": [
+              {
+                "latest_timestamp": "desc"
+              }
+            ]
+          },
+          "aggregations": {
+            "latest_timestamp": {
+              "max": {
+                "field": "timestamp"
+              }
+            }
+          }
+        },
+        "totalDistinctUsers": {
+          "cardinality": {
+            "field": "userName",
+            "precision_threshold": 1000
+          }
+        }
+      },
+      "track_total_hits": true,
+      "query": {
+        "bool": {
+          "must_not": [
+            {
+              "terms": {
+                "userName": [
+                  "atlansupport",
+                  "support",
+                  "support@atlan.com",
+                  "atlansupport@atlan.com",
+                  "hello@atlan.com"
+                ]
+              }
+            }
+          ],
+          "filter": [
+            {
+              "term": {
+                "entityGuidsAll": {
+                  "value": "test-guid-123",
+                  "case_insensitive": false
+                }
+              }
+            },
+            {
+              "term": {
+                "utmTags": {
+                  "value": "action_asset_viewed"
+                }
+              }
+            },
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "utmTags": {
+                        "value": "ui_profile"
+                      }
+                    }
+                  },
+                  {
+                    "term": {
+                      "utmTags": {
+                        "value": "ui_sidebar"
+                      }
+                    }
+                  }
+                ],
+                "minimum_should_match": 1
+              }
+            }
+          ]
+        }
+      },
+      "sort": [
+        {
+          "timestamp": {
+            "order": "asc"
+          }
+        }
+      ]
+    },
+    "queryString": "{\"from\":0,\"size\":0,\"aggregations\":{\"uniqueUsers\":{\"terms\":{\"field\":\"userName\",\"size\":20,\"order\":[{\"latest_timestamp\":\"desc\"}]},\"aggregations\":{\"latest_timestamp\":{\"max\":{\"field\":\"timestamp\"}}}},\"totalDistinctUsers\":{\"cardinality\":{\"field\":\"userName\",\"precision_threshold\":1000}}},\"track_total_hits\":true,\"query\":{\"bool\":{\"must_not\":[{\"terms\":{\"userName\":[\"atlansupport\",\"support\",\"support@atlan.com\",\"atlansupport@atlan.com\",\"hello@atlan.com\"]}}],\"filter\":[{\"term\":{\"entityGuidsAll\":{\"value\":\"test-guid-123\",\"case_insensitive\":false}}},{\"term\":{\"utmTags\":{\"value\":\"action_asset_viewed\"}}},{\"bool\":{\"should\":[{\"term\":{\"utmTags\":{\"value\":\"ui_profile\"}}},{\"term\":{\"utmTags\":{\"value\":\"ui_sidebar\"}}}],\"minimum_should_match\":1}}]}},\"sort\":[{\"timestamp\":{\"order\":\"asc\"}}]}"
+  },
+  "aggregations": {
+    "totalDistinctUsers": {
+      "value": 3
+    },
+    "uniqueUsers": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "aryaman.bhushan",
+          "doc_count": 15,
+          "latest_timestamp": {
+            "value": 1702467380854
+          }
+        },
+        {
+          "key": "chris",
+          "doc_count": 2,
+          "latest_timestamp": {
+            "value": 1702456573382
+          }
+        },
+        {
+          "key": "ernest",
+          "doc_count": 1,
+          "latest_timestamp": {
+            "value": 1702430875247
+          }
+        }
+      ]
+    }
+  },
+  "approximateCount": 18
+}

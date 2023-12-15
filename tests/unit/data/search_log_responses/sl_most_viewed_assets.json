@@ -1,0 +1,154 @@
+{
+  "searchParameters": {
+    "dsl": {
+      "from": 0,
+      "size": 0,
+      "aggregations": {
+        "uniqueAssets": {
+          "aggregations": {
+            "uniqueUsers": {
+              "cardinality": {
+                "field": "userName",
+                "precision_threshold": 1000
+              }
+            }
+          },
+          "terms": {
+            "field": "entityGuidsAll",
+            "size": 10
+          }
+        },
+        "totalDistinctUsers": {
+          "cardinality": {
+            "field": "userName",
+            "precision_threshold": 1000
+          }
+        }
+      },
+      "track_total_hits": true,
+      "query": {
+        "bool": {
+          "must_not": [
+            {
+              "terms": {
+                "userName": [
+                  "atlansupport",
+                  "support",
+                  "support@atlan.com",
+                  "atlansupport@atlan.com",
+                  "hello@atlan.com"
+                ]
+              }
+            }
+          ],
+          "filter": [
+            {
+              "term": {
+                "utmTags": {
+                  "value": "action_asset_viewed"
+                }
+              }
+            },
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "utmTags": {
+                        "value": "ui_profile"
+                      }
+                    }
+                  },
+                  {
+                    "term": {
+                      "utmTags": {
+                        "value": "ui_sidebar"
+                      }
+                    }
+                  }
+                ],
+                "minimum_should_match": 1
+              }
+            }
+          ]
+        }
+      },
+      "sort": [
+        {
+          "timestamp": {
+            "order": "asc"
+          }
+        }
+      ]
+    },
+    "queryString": "{\"from\":0,\"size\":0,\"aggregations\":{\"uniqueAssets\":{\"aggregations\":{\"uniqueUsers\":{\"cardinality\":{\"field\":\"userName\",\"precision_threshold\":1000}}},\"terms\":{\"field\":\"entityGuidsAll\",\"size\":10}},\"totalDistinctUsers\":{\"cardinality\":{\"field\":\"userName\",\"precision_threshold\":1000}}},\"track_total_hits\":true,\"query\":{\"bool\":{\"must_not\":[{\"terms\":{\"userName\":[\"atlansupport\",\"support\",\"support@atlan.com\",\"atlansupport@atlan.com\",\"hello@atlan.com\"]}}],\"filter\":[{\"term\":{\"utmTags\":{\"value\":\"action_asset_viewed\"}}},{\"bool\":{\"should\":[{\"term\":{\"utmTags\":{\"value\":\"ui_profile\"}}},{\"term\":{\"utmTags\":{\"value\":\"ui_sidebar\"}}}],\"minimum_should_match\":1}}]}},\"sort\":[{\"timestamp\":{\"order\":\"asc\"}}]}"
+  },
+  "aggregations": {
+    "totalDistinctUsers": {
+      "value": 3
+    },
+    "uniqueAssets": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "c19550f5-91ea-45a5-8b83-de07fcd5bbd1",
+          "doc_count": 18,
+          "uniqueUsers": {
+            "value": 3
+          }
+        },
+        {
+          "key": "a31756e0-a2f0-4fb6-ba8f-934bd607117b",
+          "doc_count": 7,
+          "uniqueUsers": {
+            "value": 1
+          }
+        },
+        {
+          "key": "cc162918-0602-4806-a2ea-4a835d4dea8f",
+          "doc_count": 4,
+          "uniqueUsers": {
+            "value": 2
+          }
+        },
+        {
+          "key": "d4c540a8-cd87-4273-bb89-b40a7681b3f2",
+          "doc_count": 4,
+          "uniqueUsers": {
+            "value": 1
+          }
+        },
+        {
+          "key": "08308c94-d0e6-411b-bc03-d1a8f50e71de",
+          "doc_count": 1,
+          "uniqueUsers": {
+            "value": 1
+          }
+        },
+        {
+          "key": "3a1d3738-1efc-4533-bd4a-9f876a519090",
+          "doc_count": 1,
+          "uniqueUsers": {
+            "value": 1
+          }
+        },
+        {
+          "key": "3aa33907-9f69-46aa-9c31-e38b0804c078",
+          "doc_count": 1,
+          "uniqueUsers": {
+            "value": 1
+          }
+        },
+        {
+          "key": "b84bfe43-806f-4a5b-8256-1b0f3acc1b4b",
+          "doc_count": 1,
+          "uniqueUsers": {
+            "value": 1
+          }
+        }
+      ]
+    }
+  },
+  "approximateCount": 40
+}
