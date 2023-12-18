@@ -124,6 +124,15 @@ class BooleanInput(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to choose either "Yes" or "No", and returns the value that was selected.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = BooleanInputWidget(label=label, hidden=hidden, help_=help_, grid=grid)
         super().__init__(type_="boolean", required=required, ui=widget)
 
@@ -153,6 +162,16 @@ class ConnectionCreator(UIElement):
         help_: StrictStr = "",
         placeholder: StrictStr = "",
     ):
+        """
+        Widget that allows you to create a new connection by providing a name and list of admins, and returns a string
+        representation of the connection object that should be created.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param placeholder: example text to place within the widget to exemplify its use
+        """
         widget = ConnectionCreatorWidget(
             label=label, hidden=hidden, help_=help_, placeholder=placeholder
         )
@@ -198,6 +217,18 @@ class ConnectionSelector(UIElement):
         grid: StrictInt = 4,
         start: StrictInt = 1,
     ):
+        """
+        Widget that allows you to select an existing connection from a drop-down list, and returns the qualified name
+        of the selected connection.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param placeholder: example text to place within the widget to exemplify its use
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        :param start: TBC
+        """
         widget = ConnectionSelectorWidget(
             label=label,
             hidden=hidden,
@@ -244,6 +275,19 @@ class ConnectorTypeSelector(UIElement):
         grid: StrictInt = 4,
         start: StrictInt = 1,
     ):
+        """
+        Widget that allows you to select from the types of connectors that exist in the tenant
+        (for example "Snowflake"), without needing to select a specific instance of a connection
+        (for example, the "production" connection for Snowflake). Will return a string-encoded object giving the
+        connection type that was selected and a list of all connections in the tenant that have that type.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        :aram start: TBC
+        """
         widget = ConnectorTypeSelectorWidget(
             label=label,
             hidden=hidden,
@@ -296,6 +340,23 @@ class DateInput(UIElement):
         start: StrictInt = 1,
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to enter or select a date (not including time) from a calendar, and returns the
+        epoch-based number representing that selected date in seconds.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param min_: an offset from today (0) that indicates how far back in the calendar can be selected
+        (-1 is yesterday, 1 is tomorrow, and so on)
+        :param max_: an offset from today (0) that indicates how far forward in the calendar can be selected
+        (-1 is yesterday, 1 is tomorrow, and so on)
+         :param default: an offset from today that indicates the default date that should be selected in the calendar
+         (0 is today, -1 is yesterday, 1 is tomorrow, and so on)
+         :param start: TBC
+         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = DateInputWidget(
             label=label,
             hidden=hidden,
@@ -346,6 +407,17 @@ class DropDown(UIElementWithEnum):
         multi_select: StrictBool = False,
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to select from a drop-down of provided options.
+
+        :param label: name to show in the UI for the widget
+        :param possible_values: map of option keys to the value that will be display for each option in the drop-down
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param multi_select: whether multiple options can be selected (true) or only a single option (false)
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = DropDownWidget(
             label=label,
             mode="multiple" if multi_select else "",
@@ -396,6 +468,17 @@ class FileUploader(UIElement):
         help_: StrictStr = "",
         placeholder: StrictStr = "",
     ):
+        """
+        Widget that allows you to upload a file, and returns the GUID-based name of the file (as it is renamed after
+        upload).
+
+        :param label: name to show in the UI for the widget
+        :param file_types: list of the mime-types of files that should be accepted
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param placeholder: placeholder example text to place within the widget to exemplify its use
+        """
         widget = FileUploaderWidget(
             label=label,
             file_types=file_types,
@@ -431,6 +514,17 @@ class KeygenInput(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to generate a unique key that could be used for securing an exchange or other unique
+        identification purposes, and provides buttons to regenerate the key or copy its text. Will return the generated
+        key as clear text.
+
+        :param label: name to show in the UI for the widge
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = KeygenInputWidget(
             label=label,
             hidden=hidden,
@@ -465,6 +559,15 @@ class MultipleGroups(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to choose multiple groups, and returns an array of group names that were selected.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = MultipleGroupsWidget(
             label=label,
             hidden=hidden,
@@ -499,6 +602,15 @@ class MultipleUsers(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to choose multiple users, and returns an array of usernames that were selected.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = MultipleUsersWidget(
             label=label,
             hidden=hidden,
@@ -540,6 +652,17 @@ class NumericInput(UIElement):
         placeholder: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to enter an arbitrary number into a single-line text input field, and returns the value
+        of the number that was entered.
+
+        :param label name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param placeholder: example text to place within the widget to exemplify its use
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = NumericInputWidget(
             label=label,
             hidden=hidden,
@@ -579,6 +702,16 @@ class PasswordInput(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to enter arbitrary text, but the text will be shown as dots when entered rather than
+        being displayed in clear text. Will return the entered text in clear text.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = PasswordInputWidget(
             label=label,
             hidden=hidden,
@@ -619,6 +752,18 @@ class Radio(UIElement):
         hidden: StrictBool = False,
         help_: StrictStr = "",
     ):
+        """
+        Widget that allows you to select just one option from a set of options, and returns the key of the selected
+        option. Typically, this is used to control mutually exclusive options in the UI.
+
+        :param label: name to show in the UI for the widget
+        :param possible_values: map of option keys to the value that will be display for each option in the UI
+        :param default: the default value to select in the UI, given as the string key of the option
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+
+        """
         widget = RadioWidget(
             label=label,
             hidden=hidden,
@@ -658,6 +803,15 @@ class SingleGroup(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to select a single group, and returns the group name of the selected group.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = SingleGroupWidget(
             label=label,
             hidden=hidden,
@@ -696,6 +850,15 @@ class SingleUser(UIElement):
         help_: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to select a single user, and returns the username of the selected user.
+
+        :param label: name to show in the UI for the widget
+        :param required: whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+        """
         widget = SingleUserWidget(
             label=label,
             hidden=hidden,
@@ -737,6 +900,18 @@ class TextInput(UIElement):
         placeholder: StrictStr = "",
         grid: StrictInt = 8,
     ):
+        """
+        Widget that allows you to enter arbitrary text into a single-line text input field, and returns the value of the
+        text that was entered.
+
+        :param label: name to show in the UI for the widget
+        :param required" whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param placeholder: example text to place within the widget to exemplify its use
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+
+        """
         widget = TextInputWidget(
             label=label,
             hidden=hidden,
