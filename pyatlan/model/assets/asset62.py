@@ -55,7 +55,7 @@ class GCSObject(GCS):
         "gcsBucketName", "gcsBucketName.keyword", "gcsBucketName"
     )
     """
-    Simple name of the bucket in which this object exists.
+    TBC
     """
     GCS_BUCKET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "gcsBucketQualifiedName",
@@ -63,85 +63,85 @@ class GCSObject(GCS):
         "gcsBucketQualifiedName.text",
     )
     """
-    Unique name of the bucket in which this object exists.
+    TBC
     """
     GCS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
         "gcsObjectSize", "gcsObjectSize"
     )
     """
-    Object size in bytes.
+    TBC
     """
     GCS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
         "gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text"
     )
     """
-    Key of this object, in GCS.
+    TBC
     """
     GCS_OBJECT_MEDIA_LINK: ClassVar[KeywordTextField] = KeywordTextField(
         "gcsObjectMediaLink", "gcsObjectMediaLink", "gcsObjectMediaLink.text"
     )
     """
-    Media link to this object.
+    TBC
     """
     GCS_OBJECT_HOLD_TYPE: ClassVar[KeywordField] = KeywordField(
         "gcsObjectHoldType", "gcsObjectHoldType"
     )
     """
-    Type of hold on this object.
+    TBC
     """
     GCS_OBJECT_GENERATION_ID: ClassVar[NumericField] = NumericField(
         "gcsObjectGenerationId", "gcsObjectGenerationId"
     )
     """
-    Generation ID of this object.
+    TBC
     """
     GCS_OBJECT_CRC32C_HASH: ClassVar[KeywordField] = KeywordField(
         "gcsObjectCRC32CHash", "gcsObjectCRC32CHash"
     )
     """
-    CRC32C hash of this object.
+    TBC
     """
     GCS_OBJECT_MD5HASH: ClassVar[KeywordField] = KeywordField(
         "gcsObjectMD5Hash", "gcsObjectMD5Hash"
     )
     """
-    MD5 hash of this object.
+    TBC
     """
     GCS_OBJECT_DATA_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
         "gcsObjectDataLastModifiedTime", "gcsObjectDataLastModifiedTime"
     )
     """
-    Time (epoch) at which this object's data was last modified, in milliseconds.
+    TBC
     """
     GCS_OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
         "gcsObjectContentType", "gcsObjectContentType"
     )
     """
-    Type of content in this object.
+    TBC
     """
     GCS_OBJECT_CONTENT_ENCODING: ClassVar[KeywordField] = KeywordField(
         "gcsObjectContentEncoding", "gcsObjectContentEncoding"
     )
     """
-    Content encoding of this object.
+    TBC
     """
     GCS_OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
         "gcsObjectContentDisposition", "gcsObjectContentDisposition"
     )
     """
-    Information about how this object's content should be presented.
+    TBC
     """
     GCS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordField] = KeywordField(
         "gcsObjectContentLanguage", "gcsObjectContentLanguage"
     )
     """
-    Language of this object's contents.
+    TBC
     """
     GCS_OBJECT_RETENTION_EXPIRATION_DATE: ClassVar[NumericField] = NumericField(
         "gcsObjectRetentionExpirationDate", "gcsObjectRetentionExpirationDate"
     )
     """
-    Retention expiration date of this object.
+    TBC
     """
 
     GCS_BUCKET: ClassVar[RelationField] = RelationField("gcsBucket")
@@ -492,43 +492,43 @@ class GCSBucket(GCS):
         "gcsObjectCount", "gcsObjectCount"
     )
     """
-    Number of objects within the bucket.
+    TBC
     """
     GCS_BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
         "gcsBucketVersioningEnabled", "gcsBucketVersioningEnabled"
     )
     """
-    Whether versioning is enabled on the bucket (true) or not (false).
+    TBC
     """
     GCS_BUCKET_RETENTION_LOCKED: ClassVar[BooleanField] = BooleanField(
         "gcsBucketRetentionLocked", "gcsBucketRetentionLocked"
     )
     """
-    Whether retention is locked for this bucket (true) or not (false).
+    TBC
     """
     GCS_BUCKET_RETENTION_PERIOD: ClassVar[NumericField] = NumericField(
         "gcsBucketRetentionPeriod", "gcsBucketRetentionPeriod"
     )
     """
-    Retention period for objects in this bucket.
+    TBC
     """
     GCS_BUCKET_RETENTION_EFFECTIVE_TIME: ClassVar[NumericField] = NumericField(
         "gcsBucketRetentionEffectiveTime", "gcsBucketRetentionEffectiveTime"
     )
     """
-    Effective time for retention of objects in this bucket.
+    TBC
     """
     GCS_BUCKET_LIFECYCLE_RULES: ClassVar[TextField] = TextField(
         "gcsBucketLifecycleRules", "gcsBucketLifecycleRules"
     )
     """
-    Lifecycle rules for this bucket.
+    TBC
     """
     GCS_BUCKET_RETENTION_POLICY: ClassVar[TextField] = TextField(
         "gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy"
     )
     """
-    Retention policy for this bucket.
+    TBC
     """
 
     GCS_OBJECTS: ClassVar[RelationField] = RelationField("gcsObjects")

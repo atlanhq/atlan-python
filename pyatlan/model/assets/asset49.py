@@ -33,13 +33,13 @@ class Thoughtspot(BI):
         "thoughtspotChartType", "thoughtspotChartType"
     )
     """
-
+    TBC
     """
     THOUGHTSPOT_QUESTION_TEXT: ClassVar[TextField] = TextField(
         "thoughtspotQuestionText", "thoughtspotQuestionText"
     )
     """
-
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

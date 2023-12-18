@@ -2,8 +2,6 @@ import pytest
 
 from pyatlan.model.assets import DataDomain
 from tests.unit.model.constants import (
-    DATA_DOMAIN_MESH_ABBREVIATION,
-    DATA_DOMAIN_MESH_SLUG,
     DATA_DOMAIN_NAME,
     DATA_DOMAIN_QUALIFIED_NAME,
     DATA_SUB_DOMAIN_NAME,
@@ -13,8 +11,6 @@ from tests.unit.model.constants import (
 
 def _assert_domain(domain: DataDomain) -> None:
     assert domain.name == DATA_DOMAIN_NAME
-    assert domain.mesh_slug == DATA_DOMAIN_MESH_SLUG
-    assert domain.mesh_abbreviation == DATA_DOMAIN_MESH_ABBREVIATION
     assert domain.qualified_name == DATA_DOMAIN_QUALIFIED_NAME
 
 

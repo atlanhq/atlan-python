@@ -12,7 +12,6 @@ from .asset00 import (
     Column,
     ColumnProcess,
     Database,
-    DataContract,
     DataDomain,
     DataMesh,
     DataProduct,

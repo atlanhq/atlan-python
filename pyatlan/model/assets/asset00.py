@@ -373,6 +373,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -478,119 +479,119 @@ class Asset(Referenceable):
         "name", "name.keyword", "name", "name.stemmed"
     )
     """
-    Name of this asset. Fallback for display purposes, if displayName is empty.
+    TBC
     """
     DISPLAY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "displayName", "displayName.keyword", "displayName"
     )
     """
-    Human-readable name of this asset used for display purposes (in user interface).
+    TBC
     """
     DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
         "description", "description.keyword", "description"
     )
     """
-    Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty.
-    """  # noqa: E501
+    TBC
+    """
     USER_DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
         "userDescription", "userDescription.keyword", "userDescription"
     )
     """
-    Description of this asset, as provided by a user. If present, this will be used for the description in user interface.
-    """  # noqa: E501
+    TBC
+    """
     TENANT_ID: ClassVar[KeywordField] = KeywordField("tenantId", "tenantId")
     """
-    Name of the Atlan workspace in which this asset exists.
+    TBC
     """
     CERTIFICATE_STATUS: ClassVar[KeywordTextField] = KeywordTextField(
         "certificateStatus", "certificateStatus", "certificateStatus.text"
     )
     """
-    Status of this asset's certification.
+    TBC
     """
     CERTIFICATE_STATUS_MESSAGE: ClassVar[KeywordField] = KeywordField(
         "certificateStatusMessage", "certificateStatusMessage"
     )
     """
-    Human-readable descriptive message used to provide further detail to certificateStatus.
+    TBC
     """
     CERTIFICATE_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
         "certificateUpdatedBy", "certificateUpdatedBy"
     )
     """
-    Name of the user who last updated the certification of this asset.
+    TBC
     """
     CERTIFICATE_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "certificateUpdatedAt", "certificateUpdatedAt"
     )
     """
-    Time (epoch) at which the certification was last updated, in milliseconds.
+    TBC
     """
     ANNOUNCEMENT_TITLE: ClassVar[KeywordField] = KeywordField(
         "announcementTitle", "announcementTitle"
     )
     """
-    Brief title for the announcement on this asset. Required when announcementType is specified.
+    TBC
     """
     ANNOUNCEMENT_MESSAGE: ClassVar[KeywordField] = KeywordField(
         "announcementMessage", "announcementMessage"
     )
     """
-    Detailed message to include in the announcement on this asset.
+    TBC
     """
     ANNOUNCEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
         "announcementType", "announcementType"
     )
     """
-    Type of announcement on this asset.
+    TBC
     """
     ANNOUNCEMENT_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "announcementUpdatedAt", "announcementUpdatedAt"
     )
     """
-    Time (epoch) at which the announcement was last updated, in milliseconds.
+    TBC
     """
     ANNOUNCEMENT_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
         "announcementUpdatedBy", "announcementUpdatedBy"
     )
     """
-    Name of the user who last updated the announcement.
+    TBC
     """
     OWNER_USERS: ClassVar[KeywordField] = KeywordField("ownerUsers", "ownerUsers")
     """
-    List of users who own this asset.
+    TBC
     """
     OWNER_GROUPS: ClassVar[KeywordField] = KeywordField("ownerGroups", "ownerGroups")
     """
-    List of groups who own this asset.
+    TBC
     """
     ADMIN_USERS: ClassVar[KeywordField] = KeywordField("adminUsers", "adminUsers")
     """
-    List of users who administer this asset. (This is only used for certain asset types.)
+    TBC
     """
     ADMIN_GROUPS: ClassVar[KeywordField] = KeywordField("adminGroups", "adminGroups")
     """
-    List of groups who administer this asset. (This is only used for certain asset types.)
+    TBC
     """
     VIEWER_USERS: ClassVar[KeywordField] = KeywordField("viewerUsers", "viewerUsers")
     """
-    List of users who can view assets contained in a collection. (This is only used for certain asset types.)
+    TBC
     """
     VIEWER_GROUPS: ClassVar[KeywordField] = KeywordField("viewerGroups", "viewerGroups")
     """
-    List of groups who can view assets contained in a collection. (This is only used for certain asset types.)
+    TBC
     """
     CONNECTOR_NAME: ClassVar[KeywordField] = KeywordField(
         "connectorName", "connectorName"
     )
     """
-    Type of the connector through which this asset is accessible.
+    TBC
     """
     CONNECTION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "connectionName", "connectionName", "connectionName.text"
     )
     """
-    Simple name of the connection through which this asset is accessible.
+    TBC
     """
     CONNECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "connectionQualifiedName",
@@ -598,305 +599,305 @@ class Asset(Referenceable):
         "connectionQualifiedName.text",
     )
     """
-    Unique name of the connection through which this asset is accessible.
+    TBC
     """
     HAS_LINEAGE: ClassVar[BooleanField] = BooleanField("__hasLineage", "__hasLineage")
     """
-    Whether this asset has lineage (true) or not (false).
+    TBC
     """
     IS_DISCOVERABLE: ClassVar[BooleanField] = BooleanField(
         "isDiscoverable", "isDiscoverable"
     )
     """
-    Whether this asset is discoverable through the UI (true) or not (false).
+    TBC
     """
     IS_EDITABLE: ClassVar[BooleanField] = BooleanField("isEditable", "isEditable")
     """
-    Whether this asset can be edited in the UI (true) or not (false).
+    TBC
     """
     SUB_TYPE: ClassVar[KeywordField] = KeywordField("subType", "subType")
     """
-    Subtype of this asset.
+    TBC
     """
     VIEW_SCORE: ClassVar[NumericRankField] = NumericRankField(
         "viewScore", "viewScore", "viewScore.rank_feature"
     )
     """
-    View score for this asset.
+    TBC
     """
     POPULARITY_SCORE: ClassVar[NumericRankField] = NumericRankField(
         "popularityScore", "popularityScore", "popularityScore.rank_feature"
     )
     """
-    Popularity score for this asset.
+    TBC
     """
     SOURCE_OWNERS: ClassVar[KeywordField] = KeywordField("sourceOwners", "sourceOwners")
     """
-    List of owners of this asset, in the source system.
+    TBC
     """
     SOURCE_CREATED_BY: ClassVar[KeywordField] = KeywordField(
         "sourceCreatedBy", "sourceCreatedBy"
     )
     """
-    Name of the user who created this asset, in the source system.
+    TBC
     """
     SOURCE_CREATED_AT: ClassVar[NumericField] = NumericField(
         "sourceCreatedAt", "sourceCreatedAt"
     )
     """
-    Time (epoch) at which this asset was created in the source system, in milliseconds.
+    TBC
     """
     SOURCE_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "sourceUpdatedAt", "sourceUpdatedAt"
     )
     """
-    Time (epoch) at which this asset was last updated in the source system, in milliseconds.
+    TBC
     """
     SOURCE_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
         "sourceUpdatedBy", "sourceUpdatedBy"
     )
     """
-    Name of the user who last updated this asset, in the source system.
+    TBC
     """
     SOURCE_URL: ClassVar[KeywordField] = KeywordField("sourceURL", "sourceURL")
     """
-    URL to the resource within the source application, used to create a button to view this asset in the source application.
-    """  # noqa: E501
+    TBC
+    """
     SOURCE_EMBED_URL: ClassVar[KeywordField] = KeywordField(
         "sourceEmbedURL", "sourceEmbedURL"
     )
     """
-    URL to create an embed for a resource (for example, an image of a dashboard) within Atlan.
+    TBC
     """
     LAST_SYNC_WORKFLOW_NAME: ClassVar[KeywordField] = KeywordField(
         "lastSyncWorkflowName", "lastSyncWorkflowName"
     )
     """
-    Name of the crawler that last synchronized this asset.
+    TBC
     """
     LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
         "lastSyncRunAt", "lastSyncRunAt"
     )
     """
-    Time (epoch) at which this asset was last crawled, in milliseconds.
+    TBC
     """
     LAST_SYNC_RUN: ClassVar[KeywordField] = KeywordField("lastSyncRun", "lastSyncRun")
     """
-    Name of the last run of the crawler that last synchronized this asset.
+    TBC
     """
     ADMIN_ROLES: ClassVar[KeywordField] = KeywordField("adminRoles", "adminRoles")
     """
-    List of roles who administer this asset. (This is only used for Connection assets.)
+    TBC
     """
     SOURCE_READ_COUNT: ClassVar[NumericField] = NumericField(
         "sourceReadCount", "sourceReadCount"
     )
     """
-    Total count of all read operations at source.
+    Total count of all read operations at source
     """
     SOURCE_READ_USER_COUNT: ClassVar[NumericField] = NumericField(
         "sourceReadUserCount", "sourceReadUserCount"
     )
     """
-    Total number of unique users that read data from asset.
+    Total number of unique users that read data from asset
     """
     SOURCE_LAST_READ_AT: ClassVar[NumericField] = NumericField(
         "sourceLastReadAt", "sourceLastReadAt"
     )
     """
-    Timestamp of most recent read operation.
+    Timestamp of most recent read operation
     """
     LAST_ROW_CHANGED_AT: ClassVar[NumericField] = NumericField(
         "lastRowChangedAt", "lastRowChangedAt"
     )
     """
-    Time (epoch) of the last operation that inserted, updated, or deleted rows, in milliseconds.
+    Timestamp of last operation that inserted/updated/deleted rows. Google Sheets, Mysql table etc
     """
     SOURCE_TOTAL_COST: ClassVar[NumericField] = NumericField(
         "sourceTotalCost", "sourceTotalCost"
     )
     """
-    Total cost of all operations at source.
+    Total cost of all operations at source
     """
     SOURCE_COST_UNIT: ClassVar[KeywordField] = KeywordField(
         "sourceCostUnit", "sourceCostUnit"
     )
     """
-    The unit of measure for sourceTotalCost.
+    The unit of measure for sourceTotalCost
     """
     SOURCE_READ_QUERY_COST: ClassVar[NumericField] = NumericField(
         "sourceReadQueryCost", "sourceReadQueryCost"
     )
     """
-    Total cost of read queries at source.
+    Total cost of read queries at source
     """
     SOURCE_READ_RECENT_USER_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadRecentUserList", "sourceReadRecentUserList"
     )
     """
-    List of usernames of the most recent users who read this asset.
+    List of usernames of the most recent users who read the asset
     """
     SOURCE_READ_RECENT_USER_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadRecentUserRecordList", "sourceReadRecentUserRecordList"
     )
     """
-    List of usernames with extra insights for the most recent users who read this asset.
+    List of usernames with extra insights for the most recent users who read the asset
     """
     SOURCE_READ_TOP_USER_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadTopUserList", "sourceReadTopUserList"
     )
     """
-    List of usernames of the users who read this asset the most.
+    List of usernames of the top users who read the asset the most
     """
     SOURCE_READ_TOP_USER_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadTopUserRecordList", "sourceReadTopUserRecordList"
     )
     """
-    List of usernames with extra insights for the users who read this asset the most.
+    List of usernames with extra insights for the top users who read the asset the most
     """
     SOURCE_READ_POPULAR_QUERY_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadPopularQueryRecordList", "sourceReadPopularQueryRecordList"
     )
     """
-    List of the most popular queries that accessed this asset.
+    List of the most popular queries that accessed this asset
     """
     SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadExpensiveQueryRecordList", "sourceReadExpensiveQueryRecordList"
     )
     """
-    List of the most expensive queries that accessed this asset.
+    List of the most expensive queries that accessed this asset
     """
     SOURCE_READ_SLOW_QUERY_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceReadSlowQueryRecordList", "sourceReadSlowQueryRecordList"
     )
     """
-    List of the slowest queries that accessed this asset.
+    List of the slowest queries that accessed this asset
     """
     SOURCE_QUERY_COMPUTE_COST_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceQueryComputeCostList", "sourceQueryComputeCostList"
     )
     """
-    List of most expensive warehouse names.
+    List of most expensive warehouse names
     """
     SOURCE_QUERY_COMPUTE_COST_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
         "sourceQueryComputeCostRecordList", "sourceQueryComputeCostRecordList"
     )
     """
-    List of most expensive warehouses with extra insights.
+    List of most expensive warehouses with extra insights
     """
     DBT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtQualifiedName", "dbtQualifiedName", "dbtQualifiedName.text"
     )
     """
-    Unique name of this asset in dbt.
+    TBC
     """
     ASSET_DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtAlias", "assetDbtAlias.keyword", "assetDbtAlias"
     )
     """
-    Alias of this asset in dbt.
+    TBC
     """
     ASSET_DBT_META: ClassVar[KeywordField] = KeywordField(
         "assetDbtMeta", "assetDbtMeta"
     )
     """
-    Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object.
+    TBC
     """
     ASSET_DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtUniqueId", "assetDbtUniqueId.keyword", "assetDbtUniqueId"
     )
     """
-    Unique identifier of this asset in dbt.
+    TBC
     """
     ASSET_DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtAccountName", "assetDbtAccountName.keyword", "assetDbtAccountName"
     )
     """
-    Name of the account in which this asset exists in dbt.
+    TBC
     """
     ASSET_DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtProjectName", "assetDbtProjectName.keyword", "assetDbtProjectName"
     )
     """
-    Name of the project in which this asset exists in dbt.
+    TBC
     """
     ASSET_DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtPackageName", "assetDbtPackageName.keyword", "assetDbtPackageName"
     )
     """
-    Name of the package in which this asset exists in dbt.
+    TBC
     """
     ASSET_DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtJobName", "assetDbtJobName.keyword", "assetDbtJobName"
     )
     """
-    Name of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobSchedule", "assetDbtJobSchedule"
     )
     """
-    Schedule of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobStatus", "assetDbtJobStatus"
     )
     """
-    Status of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField(
         "assetDbtTestStatus", "assetDbtTestStatus"
     )
     """
-    All associated dbt test statuses.
+    All associated dbt test statuses
     """
     ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[TextField] = TextField(
         "assetDbtJobScheduleCronHumanized", "assetDbtJobScheduleCronHumanized"
     )
     """
-    Human-readable cron schedule of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "assetDbtJobLastRun", "assetDbtJobLastRun"
     )
     """
-    Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_URL: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunUrl", "assetDbtJobLastRunUrl"
     )
     """
-    URL of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_CREATED_AT: ClassVar[NumericField] = NumericField(
         "assetDbtJobLastRunCreatedAt", "assetDbtJobLastRunCreatedAt"
     )
     """
-    Time (epoch) at which the job that materialized this asset in dbt was last created, in milliseconds.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "assetDbtJobLastRunUpdatedAt", "assetDbtJobLastRunUpdatedAt"
     )
     """
-    Time (epoch) at which the job that materialized this asset in dbt was last updated, in milliseconds.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_DEQUED_AT: ClassVar[NumericField] = NumericField(
         "assetDbtJobLastRunDequedAt", "assetDbtJobLastRunDequedAt"
     )
     """
-    Time (epoch) at which the job that materialized this asset in dbt was dequeued, in milliseconds.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_STARTED_AT: ClassVar[NumericField] = NumericField(
         "assetDbtJobLastRunStartedAt", "assetDbtJobLastRunStartedAt"
     )
     """
-    Time (epoch) at which the job that materialized this asset in dbt was started running, in milliseconds.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunTotalDuration", "assetDbtJobLastRunTotalDuration"
     )
     """
-    Total duration of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED: ClassVar[
         KeywordField
@@ -905,13 +906,13 @@ class Asset(Referenceable):
         "assetDbtJobLastRunTotalDurationHumanized",
     )
     """
-    Human-readable total duration of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunQueuedDuration", "assetDbtJobLastRunQueuedDuration"
     )
     """
-    Total duration the job that materialized this asset in dbt spent being queued.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED: ClassVar[
         KeywordField
@@ -920,13 +921,13 @@ class Asset(Referenceable):
         "assetDbtJobLastRunQueuedDurationHumanized",
     )
     """
-    Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_RUN_DURATION: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunRunDuration", "assetDbtJobLastRunRunDuration"
     )
     """
-    Run duration of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED: ClassVar[
         KeywordField
@@ -935,7 +936,7 @@ class Asset(Referenceable):
         "assetDbtJobLastRunRunDurationHumanized",
     )
     """
-    Human-readable run duration of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtJobLastRunGitBranch",
@@ -943,13 +944,13 @@ class Asset(Referenceable):
         "assetDbtJobLastRunGitBranch.text",
     )
     """
-    Branch in git from which the last run of the job that materialized this asset in dbt ran.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_GIT_SHA: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunGitSha", "assetDbtJobLastRunGitSha"
     )
     """
-    SHA hash in git for the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE: ClassVar[
         KeywordTextField
@@ -959,55 +960,55 @@ class Asset(Referenceable):
         "assetDbtJobLastRunStatusMessage",
     )
     """
-    Status message of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunOwnerThreadId", "assetDbtJobLastRunOwnerThreadId"
     )
     """
-    Thread ID of the owner of the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunExecutedByThreadId", "assetDbtJobLastRunExecutedByThreadId"
     )
     """
-    Thread ID of the user who executed the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED: ClassVar[BooleanField] = BooleanField(
         "assetDbtJobLastRunArtifactsSaved", "assetDbtJobLastRunArtifactsSaved"
     )
     """
-    Whether artifacts were saved from the last run of the job that materialized this asset in dbt (true) or not (false).
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3PATH: ClassVar[KeywordField] = KeywordField(
         "assetDbtJobLastRunArtifactS3Path", "assetDbtJobLastRunArtifactS3Path"
     )
     """
-    Path in S3 to the artifacts saved from the last run of the job that materialized this asset in dbt.
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED: ClassVar[BooleanField] = BooleanField(
         "assetDbtJobLastRunHasDocsGenerated", "assetDbtJobLastRunHasDocsGenerated"
     )
     """
-    Whether docs were generated from the last run of the job that materialized this asset in dbt (true) or not (false).
+    TBC
     """
     ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED: ClassVar[BooleanField] = BooleanField(
         "assetDbtJobLastRunHasSourcesGenerated", "assetDbtJobLastRunHasSourcesGenerated"
     )
     """
-    Whether sources were generated from the last run of the job that materialized this asset in dbt (true) or not (false).
-    """  # noqa: E501
+    TBC
+    """
     ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT: ClassVar[BooleanField] = BooleanField(
         "assetDbtJobLastRunNotificationsSent", "assetDbtJobLastRunNotificationsSent"
     )
     """
-    Whether notifications were sent from the last run of the job that materialized this asset in dbt (true) or not (false).
-    """  # noqa: E501
+    TBC
+    """
     ASSET_DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "assetDbtJobNextRun", "assetDbtJobNextRun"
     )
     """
-    Time (epoch) when the next run of the job that materializes this asset in dbt is scheduled.
+    TBC
     """
     ASSET_DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtJobNextRunHumanized",
@@ -1015,7 +1016,7 @@ class Asset(Referenceable):
         "assetDbtJobNextRunHumanized",
     )
     """
-    Human-readable time when the next run of the job that materializes this asset in dbt is scheduled.
+    TBC
     """
     ASSET_DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtEnvironmentName",
@@ -1023,49 +1024,49 @@ class Asset(Referenceable):
         "assetDbtEnvironmentName",
     )
     """
-    Name of the environment in which this asset is materialized in dbt.
+    TBC
     """
     ASSET_DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordField] = KeywordField(
         "assetDbtEnvironmentDbtVersion", "assetDbtEnvironmentDbtVersion"
     )
     """
-    Version of the environment in which this asset is materialized in dbt.
+    TBC
     """
     ASSET_DBT_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtTags", "assetDbtTags", "assetDbtTags.text"
     )
     """
-    List of tags attached to this asset in dbt.
+    TBC
     """
     ASSET_DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "assetDbtSemanticLayerProxyUrl", "assetDbtSemanticLayerProxyUrl"
     )
     """
-    URL of the semantic layer proxy for this asset in dbt.
+    TBC
     """
     ASSET_DBT_SOURCE_FRESHNESS_CRITERIA: ClassVar[KeywordField] = KeywordField(
         "assetDbtSourceFreshnessCriteria", "assetDbtSourceFreshnessCriteria"
     )
     """
-    Freshness criteria for the source of this asset in dbt.
+    TBC
     """
     SAMPLE_DATA_URL: ClassVar[KeywordTextField] = KeywordTextField(
         "sampleDataUrl", "sampleDataUrl", "sampleDataUrl.text"
     )
     """
-    URL for sample data for this asset.
+    TBC
     """
     ASSET_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
         "assetTags", "assetTags", "assetTags.text"
     )
     """
-    List of tags attached to this asset.
+    TBC
     """
     ASSET_MC_INCIDENT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "assetMcIncidentNames", "assetMcIncidentNames.keyword", "assetMcIncidentNames"
     )
     """
-    List of Monte Carlo incident names attached to this asset.
+    TBC
     """
     ASSET_MC_INCIDENT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "assetMcIncidentQualifiedNames",
@@ -1073,13 +1074,13 @@ class Asset(Referenceable):
         "assetMcIncidentQualifiedNames.text",
     )
     """
-    List of unique Monte Carlo incident names attached to this asset.
+    TBC
     """
     ASSET_MC_MONITOR_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "assetMcMonitorNames", "assetMcMonitorNames.keyword", "assetMcMonitorNames"
     )
     """
-    List of Monte Carlo monitor names attached to this asset.
+    TBC
     """
     ASSET_MC_MONITOR_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "assetMcMonitorQualifiedNames",
@@ -1087,125 +1088,131 @@ class Asset(Referenceable):
         "assetMcMonitorQualifiedNames.text",
     )
     """
-    List of unique Monte Carlo monitor names attached to this asset.
+    TBC
     """
     ASSET_MC_MONITOR_STATUSES: ClassVar[KeywordField] = KeywordField(
         "assetMcMonitorStatuses", "assetMcMonitorStatuses"
     )
     """
-    Statuses of all associated Monte Carlo monitors.
+    All associated monitors statuses
     """
     ASSET_MC_MONITOR_TYPES: ClassVar[KeywordField] = KeywordField(
         "assetMcMonitorTypes", "assetMcMonitorTypes"
     )
     """
-    Types of all associated Monte Carlo monitors.
+    All associated monitor types
     """
     ASSET_MC_MONITOR_SCHEDULE_TYPES: ClassVar[KeywordField] = KeywordField(
         "assetMcMonitorScheduleTypes", "assetMcMonitorScheduleTypes"
     )
     """
-    Schedules of all associated Monte Carlo monitors.
+    MonteCarlo Monitor schedule type
     """
     ASSET_MC_INCIDENT_TYPES: ClassVar[KeywordField] = KeywordField(
         "assetMcIncidentTypes", "assetMcIncidentTypes"
     )
     """
-    List of Monte Carlo incident types associated with this asset.
+    TBC
     """
     ASSET_MC_INCIDENT_SUB_TYPES: ClassVar[KeywordField] = KeywordField(
         "assetMcIncidentSubTypes", "assetMcIncidentSubTypes"
     )
     """
-    List of Monte Carlo incident sub-types associated with this asset.
+    TBC
     """
     ASSET_MC_INCIDENT_SEVERITIES: ClassVar[KeywordField] = KeywordField(
         "assetMcIncidentSeverities", "assetMcIncidentSeverities"
     )
     """
-    List of Monte Carlo incident severities associated with this asset.
+    TBC
     """
     ASSET_MC_INCIDENT_STATES: ClassVar[KeywordField] = KeywordField(
         "assetMcIncidentStates", "assetMcIncidentStates"
     )
     """
-    List of Monte Carlo incident states associated with this asset.
+    TBC
     """
     ASSET_MC_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
         "assetMcLastSyncRunAt", "assetMcLastSyncRunAt"
     )
     """
-    Time (epoch) at which this asset was last synced from Monte Carlo.
+    TBC
     """
     STARRED_BY: ClassVar[KeywordField] = KeywordField("starredBy", "starredBy")
     """
-    Users who have starred this asset.
+    TBC
     """
     STARRED_DETAILS_LIST: ClassVar[KeywordField] = KeywordField(
         "starredDetailsList", "starredDetailsList"
     )
     """
-    List of usernames with extra information of the users who have starred an asset.
+    List of usernames with extra information of the users who have starred an asset
     """
     STARRED_COUNT: ClassVar[NumericField] = NumericField("starredCount", "starredCount")
     """
-    Number of users who have starred this asset.
+    TBC
     """
     ASSET_SODA_DQ_STATUS: ClassVar[KeywordField] = KeywordField(
         "assetSodaDQStatus", "assetSodaDQStatus"
     )
     """
-    Status of data quality from Soda.
+    Soda DQ Status
     """
     ASSET_SODA_CHECK_COUNT: ClassVar[NumericField] = NumericField(
         "assetSodaCheckCount", "assetSodaCheckCount"
     )
     """
-    Number of checks done via Soda.
+    Soda check count
     """
     ASSET_SODA_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
         "assetSodaLastSyncRunAt", "assetSodaLastSyncRunAt"
     )
     """
-
+    TBC
     """
     ASSET_SODA_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
         "assetSodaLastScanAt", "assetSodaLastScanAt"
     )
     """
-
+    TBC
     """
     ASSET_SODA_CHECK_STATUSES: ClassVar[KeywordField] = KeywordField(
         "assetSodaCheckStatuses", "assetSodaCheckStatuses"
     )
     """
-    All associated Soda check statuses.
+    All associated soda check statuses
     """
     ASSET_SODA_SOURCE_URL: ClassVar[KeywordField] = KeywordField(
         "assetSodaSourceURL", "assetSodaSourceURL"
     )
     """
-
+    TBC
     """
     ASSET_ICON: ClassVar[KeywordField] = KeywordField("assetIcon", "assetIcon")
     """
-    Name of the icon to use for this asset. (Only applies to glossaries, currently.)
+    TBC
     """
     IS_PARTIAL: ClassVar[BooleanField] = BooleanField("isPartial", "isPartial")
     """
-
+    TBC
     """
     IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField(
         "isAIGenerated", "isAIGenerated"
     )
     """
-
+    TBC
     """
     ASSET_COVER_IMAGE: ClassVar[KeywordField] = KeywordField(
         "assetCoverImage", "assetCoverImage"
     )
     """
-
+    TBC
+    """
+    ASSET_THEME_HEX: ClassVar[KeywordField] = KeywordField(
+        "assetThemeHex", "assetThemeHex"
+    )
+    """
+    Color (in hexadecimal RGB) to use to represent this asset.
     """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
@@ -1374,6 +1381,7 @@ class Asset(Referenceable):
         "is_partial",
         "is_a_i_generated",
         "asset_cover_image",
+        "asset_theme_hex",
         "schema_registry_subjects",
         "mc_monitors",
         "output_port_data_products",
@@ -3016,6 +3024,16 @@ class Asset(Referenceable):
         self.attributes.asset_cover_image = asset_cover_image
 
     @property
+    def asset_theme_hex(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.asset_theme_hex
+
+    @asset_theme_hex.setter
+    def asset_theme_hex(self, asset_theme_hex: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_theme_hex = asset_theme_hex
+
+    @property
     def schema_registry_subjects(self) -> Optional[list[SchemaRegistrySubject]]:
         return (
             None
@@ -3468,6 +3486,9 @@ class Asset(Referenceable):
         asset_cover_image: Optional[str] = Field(
             None, description="", alias="assetCoverImage"
         )
+        asset_theme_hex: Optional[str] = Field(
+            None, description="", alias="assetThemeHex"
+        )
         schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
             None, description="", alias="schemaRegistrySubjects"
         )  # relationship
@@ -3616,23 +3637,23 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "shortDescription", "shortDescription"
     )
     """
-    Unused. Brief summary of the category. See 'description' and 'userDescription' instead.
+    TBC
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    Unused. Detailed description of the category. See 'readme' instead.
+    TBC
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    Unused. Arbitrary set of additional attributes associated with the category.
+    TBC
     """
     CATEGORY_TYPE: ClassVar[KeywordField] = KeywordField("categoryType", "categoryType")
     """
-    Type of category, determining the kind of knowledge it organizes.
+    TBC
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
@@ -3831,31 +3852,31 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "shortDescription", "shortDescription"
     )
     """
-    Unused. A short definition of the glossary. See 'description' and 'userDescription' instead.
+    TBC
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    Unused. A longer description of the glossary. See 'readme' instead.
+    TBC
     """
     LANGUAGE: ClassVar[KeywordField] = KeywordField("language", "language")
     """
-    Unused. Language of the glossary's contents.
+    TBC
     """
     USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
     """
-    Unused. Inteded usage for the glossary.
+    TBC
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    Unused. Arbitrary set of additional attributes associated with this glossary.
+    TBC
     """
     GLOSSARY_TYPE: ClassVar[KeywordField] = KeywordField("glossaryType", "glossaryType")
     """
-    Type of glosssary, which determines the type of knowledge it captures.
+    TBC
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")
@@ -4088,35 +4109,35 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "shortDescription", "shortDescription"
     )
     """
-    Unused. Brief summary of the term. See 'description' and 'userDescription' instead.
+    TBC
     """
     LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
         "longDescription", "longDescription"
     )
     """
-    Unused. Detailed definition of the term. See 'readme' instead.
+    TBC
     """
     EXAMPLES: ClassVar[KeywordField] = KeywordField("examples", "examples")
     """
-    Unused. Exmaples of the term.
+    TBC
     """
     ABBREVIATION: ClassVar[KeywordField] = KeywordField("abbreviation", "abbreviation")
     """
-    Unused. Abbreviation of the term.
+    TBC
     """
     USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
     """
-    Unused. Intended usage for the term.
+    TBC
     """
     ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "additionalAttributes", "additionalAttributes"
     )
     """
-    Unused. Arbitrary set of additional attributes for the terrm.
+    TBC
     """
     TERM_TYPE: ClassVar[KeywordField] = KeywordField("termType", "termType")
     """
-    Type of term, determining how knowledge is captured.
+    TBC
     """
 
     VALID_VALUES_FOR: ClassVar[RelationField] = RelationField("validValuesFor")
@@ -4576,15 +4597,15 @@ class Process(Asset, type_name="Process"):
 
     CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """
-    Code that ran within the process.
+    TBC
     """
     SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
     """
-    SQL query that ran to produce the outputs.
+    TBC
     """
     AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
     """
-    Parsed AST of the code or SQL statements that describe the logic of this process.
+    TBC
     """
 
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
@@ -4864,7 +4885,7 @@ class Folder(Namespace):
         "parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text"
     )
     """
-    Unique name of the parent folder or collection in which this folder exists.
+    TBC
     """
     COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "collectionQualifiedName",
@@ -4872,7 +4893,7 @@ class Folder(Namespace):
         "collectionQualifiedName.text",
     )
     """
-    Unique name of the collection in which this folder exists.
+    TBC
     """
 
     PARENT: ClassVar[RelationField] = RelationField("parent")
@@ -5077,25 +5098,25 @@ class Tag(Catalog):
 
     TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
     """
-    Unique identifier of the tag in the source system.
+    Unique source tag identifier
     """
     TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "tagAttributes", "tagAttributes"
     )
     """
-    Attributes associated with the tag in the source system.
+    Source tag attributes
     """
     TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
         "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
     )
     """
-    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.
+    Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying
     """
     MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
         "mappedClassificationName", "mappedClassificationName"
     )
     """
-    Name of the classification in Atlan that is mapped to this tag.
+    Mapped atlan classification name
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -5184,7 +5205,7 @@ class ColumnProcess(Process):
 
     OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
     """
-    Assets that are outputs from this process.
+    TBC
     """
     PROCESS: ClassVar[RelationField] = RelationField("process")
     """
@@ -5192,7 +5213,7 @@ class ColumnProcess(Process):
     """
     INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
-    Assets that are inputs to this process.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -5267,49 +5288,49 @@ class Airflow(Catalog):
 
     AIRFLOW_TAGS: ClassVar[KeywordField] = KeywordField("airflowTags", "airflowTags")
     """
-    Tags assigned to the asset in Airflow.
+    TBC
     """
     AIRFLOW_RUN_VERSION: ClassVar[KeywordField] = KeywordField(
         "airflowRunVersion", "airflowRunVersion"
     )
     """
-    Version of the run in Airflow.
+    Airflow Version of the run
     """
     AIRFLOW_RUN_OPEN_LINEAGE_VERSION: ClassVar[KeywordField] = KeywordField(
         "airflowRunOpenLineageVersion", "airflowRunOpenLineageVersion"
     )
     """
-    Version of the run in OpenLineage.
+    OpenLineage Version of the run
     """
     AIRFLOW_RUN_NAME: ClassVar[KeywordField] = KeywordField(
         "airflowRunName", "airflowRunName"
     )
     """
-    Name of the run.
+    Name of the run
     """
     AIRFLOW_RUN_TYPE: ClassVar[KeywordField] = KeywordField(
         "airflowRunType", "airflowRunType"
     )
     """
-    Type of the run.
+    Type of the run
     """
     AIRFLOW_RUN_START_TIME: ClassVar[NumericField] = NumericField(
         "airflowRunStartTime", "airflowRunStartTime"
     )
     """
-    Start time of the run.
+    Start time of the run
     """
     AIRFLOW_RUN_END_TIME: ClassVar[NumericField] = NumericField(
         "airflowRunEndTime", "airflowRunEndTime"
     )
     """
-    End time of the run.
+    End time of the run
     """
     AIRFLOW_RUN_OPEN_LINEAGE_STATE: ClassVar[KeywordField] = KeywordField(
         "airflowRunOpenLineageState", "airflowRunOpenLineageState"
     )
     """
-    State of the run in OpenLineage.
+    OpenLineage state of the run
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -5472,13 +5493,13 @@ class AirflowDag(Airflow):
         "airflowDagSchedule", "airflowDagSchedule"
     )
     """
-    Schedule for the DAG.
+    TBC
     """
     AIRFLOW_DAG_SCHEDULE_DELTA: ClassVar[NumericField] = NumericField(
         "airflowDagScheduleDelta", "airflowDagScheduleDelta"
     )
     """
-    Duration between scheduled runs, in seconds.
+    Duration between scheduled runs in seconds
     """
 
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
@@ -5566,19 +5587,19 @@ class AirflowTask(Airflow):
         "airflowTaskOperatorClass",
     )
     """
-    Class name for the operator this task uses.
+    TBC
     """
     AIRFLOW_DAG_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "airflowDagName", "airflowDagName.keyword", "airflowDagName"
     )
     """
-    Simple name of the DAG this task is contained within.
+    TBC
     """
     AIRFLOW_DAG_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "airflowDagQualifiedName", "airflowDagQualifiedName"
     )
     """
-    Unique name of the DAG this task is contained within.
+    TBC
     """
     AIRFLOW_TASK_CONNECTION_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "airflowTaskConnectionId",
@@ -5586,49 +5607,49 @@ class AirflowTask(Airflow):
         "airflowTaskConnectionId",
     )
     """
-    Identifier for the connection this task accesses.
+    TBC
     """
     AIRFLOW_TASK_SQL: ClassVar[KeywordField] = KeywordField(
         "airflowTaskSql", "airflowTaskSql"
     )
     """
-    SQL code that executes through this task.
+    TBC
     """
     AIRFLOW_TASK_RETRY_NUMBER: ClassVar[NumericField] = NumericField(
         "airflowTaskRetryNumber", "airflowTaskRetryNumber"
     )
     """
-    Retry count for this task running.
+    Retry required for the run
     """
     AIRFLOW_TASK_POOL: ClassVar[KeywordField] = KeywordField(
         "airflowTaskPool", "airflowTaskPool"
     )
     """
-    Pool on which this run happened.
+    Pool on which this run happened
     """
     AIRFLOW_TASK_POOL_SLOTS: ClassVar[NumericField] = NumericField(
         "airflowTaskPoolSlots", "airflowTaskPoolSlots"
     )
     """
-    Pool slots used for the run.
+    Pool slots used for the run
     """
     AIRFLOW_TASK_QUEUE: ClassVar[KeywordField] = KeywordField(
         "airflowTaskQueue", "airflowTaskQueue"
     )
     """
-    Queue on which this run happened.
+    Queue on which this run happened
     """
     AIRFLOW_TASK_PRIORITY_WEIGHT: ClassVar[NumericField] = NumericField(
         "airflowTaskPriorityWeight", "airflowTaskPriorityWeight"
     )
     """
-    Priority of the run.
+    Priority weight of the run
     """
     AIRFLOW_TASK_TRIGGER_RULE: ClassVar[KeywordField] = KeywordField(
         "airflowTaskTriggerRule", "airflowTaskTriggerRule"
     )
     """
-    Trigger for the run.
+    Trigger rule of the run
     """
 
     OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
@@ -5933,21 +5954,21 @@ class Metric(DataQuality):
 
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """
-    Type of the metric.
+    TBC
     """
     METRIC_SQL: ClassVar[KeywordField] = KeywordField("metricSQL", "metricSQL")
     """
-    SQL query used to compute the metric.
+    TBC
     """
     METRIC_FILTERS: ClassVar[TextField] = TextField("metricFilters", "metricFilters")
     """
-    Filters to be applied to the metric query.
+    TBC
     """
     METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
         "metricTimeGrains", "metricTimeGrains"
     )
     """
-    List of time grains to be applied to the metric query.
+    TBC
     """
 
     METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
@@ -6099,21 +6120,21 @@ class Resource(Catalog):
 
     LINK: ClassVar[KeywordField] = KeywordField("link", "link")
     """
-    URL to the resource.
+    TBC
     """
     IS_GLOBAL: ClassVar[BooleanField] = BooleanField("isGlobal", "isGlobal")
     """
-    Whether the resource is global (true) or not (false).
+    TBC
     """
     REFERENCE: ClassVar[KeywordField] = KeywordField("reference", "reference")
     """
-    Reference to the resource.
+    TBC
     """
     RESOURCE_METADATA: ClassVar[KeywordField] = KeywordField(
         "resourceMetadata", "resourceMetadata"
     )
     """
-    Metadata of the resource.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -6325,11 +6346,11 @@ class File(Resource):
 
     FILE_TYPE: ClassVar[KeywordField] = KeywordField("fileType", "fileType")
     """
-    Type (extension) of the file.
+    TBC
     """
     FILE_PATH: ClassVar[KeywordField] = KeywordField("filePath", "filePath")
     """
-    URL giving the online location where the file can be accessed.
+    TBC
     """
 
     FILE_ASSETS: ClassVar[RelationField] = RelationField("fileAssets")
@@ -6430,11 +6451,11 @@ class Link(Resource):
 
     ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
     """
-    Icon for the link.
+    TBC
     """
     ICON_TYPE: ClassVar[KeywordField] = KeywordField("iconType", "iconType")
     """
-    Type of icon for the link, for example: image or emoji.
+    TBC
     """
 
     ASSET: ClassVar[RelationField] = RelationField("asset")
@@ -6520,26 +6541,6 @@ class DataMesh(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MESH_COVER_IMAGE_URL: ClassVar[KeywordField] = KeywordField(
-        "meshCoverImageUrl", "meshCoverImageUrl"
-    )
-    """
-    URL for an image used as the cover for this asset.
-    """
-    MESH_SLUG: ClassVar[KeywordField] = KeywordField("meshSlug", "meshSlug")
-    """
-    Unique business key for this asset.
-    """
-    MESH_ABBREVIATION: ClassVar[KeywordField] = KeywordField(
-        "meshAbbreviation", "meshAbbreviation"
-    )
-    """
-    Abbreviation for this asset.
-    """
-    IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("isPublished", "isPublished")
-    """
-    Whether this asset is published (true) or still a work in progress (false).
-    """
     PARENT_DOMAIN_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "parentDomainQualifiedName",
         "parentDomainQualifiedName",
@@ -6558,53 +6559,9 @@ class DataMesh(Catalog):
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mesh_cover_image_url",
-        "mesh_slug",
-        "mesh_abbreviation",
-        "is_published",
         "parent_domain_qualified_name",
         "super_domain_qualified_name",
     ]
-
-    @property
-    def mesh_cover_image_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mesh_cover_image_url
-
-    @mesh_cover_image_url.setter
-    def mesh_cover_image_url(self, mesh_cover_image_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mesh_cover_image_url = mesh_cover_image_url
-
-    @property
-    def mesh_slug(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mesh_slug
-
-    @mesh_slug.setter
-    def mesh_slug(self, mesh_slug: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mesh_slug = mesh_slug
-
-    @property
-    def mesh_abbreviation(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mesh_abbreviation
-
-    @mesh_abbreviation.setter
-    def mesh_abbreviation(self, mesh_abbreviation: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mesh_abbreviation = mesh_abbreviation
-
-    @property
-    def is_published(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_published
-
-    @is_published.setter
-    def is_published(self, is_published: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_published = is_published
 
     @property
     def parent_domain_qualified_name(self) -> Optional[str]:
@@ -6635,14 +6592,6 @@ class DataMesh(Catalog):
         self.attributes.super_domain_qualified_name = super_domain_qualified_name
 
     class Attributes(Catalog.Attributes):
-        mesh_cover_image_url: Optional[str] = Field(
-            None, description="", alias="meshCoverImageUrl"
-        )
-        mesh_slug: Optional[str] = Field(None, description="", alias="meshSlug")
-        mesh_abbreviation: Optional[str] = Field(
-            None, description="", alias="meshAbbreviation"
-        )
-        is_published: Optional[bool] = Field(None, description="", alias="isPublished")
         parent_domain_qualified_name: Optional[str] = Field(
             None, description="", alias="parentDomainQualifiedName"
         )
@@ -6652,53 +6601,6 @@ class DataMesh(Catalog):
 
     attributes: "DataMesh.Attributes" = Field(
         default_factory=lambda: DataMesh.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class DataContract(DataMesh):
-    """Description"""
-
-    type_name: str = Field("DataContract", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DataContract":
-            raise ValueError("must be DataContract")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in DataContract._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    DATA_PRODUCT: ClassVar[RelationField] = RelationField("dataProduct")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "data_product",
-    ]
-
-    @property
-    def data_product(self) -> Optional[DataProduct]:
-        return None if self.attributes is None else self.attributes.data_product
-
-    @data_product.setter
-    def data_product(self, data_product: Optional[DataProduct]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_product = data_product
-
-    class Attributes(DataMesh.Attributes):
-        data_product: Optional[DataProduct] = Field(
-            None, description="", alias="dataProduct"
-        )  # relationship
-
-    attributes: "DataContract.Attributes" = Field(
-        default_factory=lambda: DataContract.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6739,13 +6641,10 @@ class DataDomain(DataMesh):
         # for domain and subdomain
         if len(fields) not in (3, 5):
             raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
-        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                mesh_slug=mesh_slug,
-                mesh_abbreviation=mesh_abbreviation,
             )
         )
 
@@ -6762,13 +6661,6 @@ class DataDomain(DataMesh):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DOMAIN_THEME_HEX: ClassVar[KeywordField] = KeywordField(
-        "domainThemeHex", "domainThemeHex"
-    )
-    """
-    Color (in hexadecimal RGB) to use to represent this data domain.
-    """
-
     DATA_PRODUCTS: ClassVar[RelationField] = RelationField("dataProducts")
     """
     TBC
@@ -6783,21 +6675,10 @@ class DataDomain(DataMesh):
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "domain_theme_hex",
         "data_products",
         "parent_domain",
         "sub_domains",
     ]
-
-    @property
-    def domain_theme_hex(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.domain_theme_hex
-
-    @domain_theme_hex.setter
-    def domain_theme_hex(self, domain_theme_hex: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.domain_theme_hex = domain_theme_hex
 
     @property
     def data_products(self) -> Optional[list[DataProduct]]:
@@ -6830,9 +6711,6 @@ class DataDomain(DataMesh):
         self.attributes.sub_domains = sub_domains
 
     class Attributes(DataMesh.Attributes):
-        domain_theme_hex: Optional[str] = Field(
-            None, description="", alias="domainThemeHex"
-        )
         data_products: Optional[list[DataProduct]] = Field(
             None, description="", alias="dataProducts"
         )  # relationship
@@ -6867,8 +6745,6 @@ class DataDomain(DataMesh):
             return DataDomain.Attributes(
                 name=name,
                 parent_domain=parent_domain,
-                mesh_slug=mesh_name,
-                mesh_abbreviation=mesh_name,
                 qualified_name=qualified_name,
                 icon=icon_str,
             )
@@ -6920,13 +6796,10 @@ class DataProduct(DataMesh):
         fields = qualified_name.split("/")
         if len(fields) != 3:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
-        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                mesh_slug=mesh_slug,
-                mesh_abbreviation=mesh_abbreviation,
             )
         )
 
@@ -6943,12 +6816,6 @@ class DataProduct(DataMesh):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_PRODUCT_THEME: ClassVar[KeywordField] = KeywordField(
-        "dataProductTheme", "dataProductTheme"
-    )
-    """
-    Color (in hexadecimal RGB) to use to represent this data product.
-    """
     DATA_PRODUCT_STATUS: ClassVar[KeywordField] = KeywordField(
         "dataProductStatus", "dataProductStatus"
     )
@@ -6980,10 +6847,6 @@ class DataProduct(DataMesh):
     Playbook filter to define which assets are part of this data product.
     """
 
-    DATA_CONTRACTS: ClassVar[RelationField] = RelationField("dataContracts")
-    """
-    TBC
-    """
     DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
     TBC
@@ -6994,26 +6857,14 @@ class DataProduct(DataMesh):
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "data_product_theme",
         "data_product_status",
         "data_product_criticality",
         "data_product_sensitivity",
         "data_product_assets_d_s_l",
         "data_product_assets_playbook_filter",
-        "data_contracts",
         "data_domain",
         "output_ports",
     ]
-
-    @property
-    def data_product_theme(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_product_theme
-
-    @data_product_theme.setter
-    def data_product_theme(self, data_product_theme: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_product_theme = data_product_theme
 
     @property
     def data_product_status(self) -> Optional[DataProductStatus]:
@@ -7090,16 +6941,6 @@ class DataProduct(DataMesh):
         )
 
     @property
-    def data_contracts(self) -> Optional[list[DataContract]]:
-        return None if self.attributes is None else self.attributes.data_contracts
-
-    @data_contracts.setter
-    def data_contracts(self, data_contracts: Optional[list[DataContract]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_contracts = data_contracts
-
-    @property
     def data_domain(self) -> Optional[DataDomain]:
         return None if self.attributes is None else self.attributes.data_domain
 
@@ -7120,9 +6961,6 @@ class DataProduct(DataMesh):
         self.attributes.output_ports = output_ports
 
     class Attributes(DataMesh.Attributes):
-        data_product_theme: Optional[str] = Field(
-            None, description="", alias="dataProductTheme"
-        )
         data_product_status: Optional[DataProductStatus] = Field(
             None, description="", alias="dataProductStatus"
         )
@@ -7138,9 +6976,6 @@ class DataProduct(DataMesh):
         data_product_assets_playbook_filter: Optional[str] = Field(
             None, description="", alias="dataProductAssetsPlaybookFilter"
         )
-        data_contracts: Optional[list[DataContract]] = Field(
-            None, description="", alias="dataContracts"
-        )  # relationship
         data_domain: Optional[DataDomain] = Field(
             None, description="", alias="dataDomain"
         )  # relationship
@@ -7173,8 +7008,6 @@ class DataProduct(DataMesh):
                 name=name,
                 data_product_assets_d_s_l=assets_dsl,
                 data_domain=domain,
-                mesh_slug=camel_case_name,
-                mesh_abbreviation=camel_case_name,
                 qualified_name=f"default/product/{camel_case_name}",
                 icon=icon_str,
             )
@@ -7204,83 +7037,83 @@ class SQL(Catalog):
 
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
-    Number of times this asset has been queried.
+    TBC
     """
     QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
         "queryUserCount", "queryUserCount"
     )
     """
-    Number of unique users who have queried this asset.
+    TBC
     """
     QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
         "queryUserMap", "queryUserMap"
     )
     """
-    Map of unique users who have queried this asset to the number of times they have queried it.
+    TBC
     """
     QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "queryCountUpdatedAt", "queryCountUpdatedAt"
     )
     """
-    Time (epoch) at which the query count was last updated, in milliseconds.
+    TBC
     """
     DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "databaseName", "databaseName.keyword", "databaseName"
     )
     """
-    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "databaseQualifiedName", "databaseQualifiedName"
     )
     """
-    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "schemaName", "schemaName.keyword", "schemaName"
     )
     """
-    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "schemaQualifiedName", "schemaQualifiedName"
     )
     """
-    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "tableName", "tableName.keyword", "tableName"
     )
     """
-    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "tableQualifiedName", "tableQualifiedName"
     )
     """
-    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "viewName", "viewName.keyword", "viewName"
     )
     """
-    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "viewQualifiedName", "viewQualifiedName"
     )
     """
-    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
-    Whether this asset has been profiled (true) or not (false).
+    TBC
     """
     LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
         "lastProfiledAt", "lastProfiledAt"
     )
     """
-    Time (epoch) at which this asset was last profiled, in milliseconds.
+    TBC
     """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
@@ -7594,17 +7427,17 @@ class Query(SQL):
 
     RAW_QUERY: ClassVar[KeywordField] = KeywordField("rawQuery", "rawQuery")
     """
-    Deprecated. See 'longRawQuery' instead.
+    TBC
     """
     LONG_RAW_QUERY: ClassVar[KeywordField] = KeywordField(
         "longRawQuery", "longRawQuery"
     )
     """
-    Raw SQL query string.
+    TBC
     """
     RAW_QUERY_TEXT: ClassVar[RelationField] = RelationField("rawQueryText")
     """
-
+    TBC
     """
     DEFAULT_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "defaultSchemaQualifiedName",
@@ -7612,7 +7445,7 @@ class Query(SQL):
         "defaultSchemaQualifiedName.text",
     )
     """
-    Unique name of the default schema to use for this query.
+    TBC
     """
     DEFAULT_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "defaultDatabaseQualifiedName",
@@ -7620,29 +7453,29 @@ class Query(SQL):
         "defaultDatabaseQualifiedName.text",
     )
     """
-    Unique name of the default database to use for this query.
+    TBC
     """
     VARIABLES_SCHEMA_BASE64: ClassVar[KeywordField] = KeywordField(
         "variablesSchemaBase64", "variablesSchemaBase64"
     )
     """
-    Base64-encoded string of the variables to use in this query.
+    TBC
     """
     IS_PRIVATE: ClassVar[BooleanField] = BooleanField("isPrivate", "isPrivate")
     """
-    Whether this query is private (true) or shared (false).
+    TBC
     """
     IS_SQL_SNIPPET: ClassVar[BooleanField] = BooleanField(
         "isSqlSnippet", "isSqlSnippet"
     )
     """
-    Whether this query is a SQL snippet (true) or not (false).
+    TBC
     """
     PARENT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text"
     )
     """
-    Unique name of the parent collection or folder in which this query exists.
+    TBC
     """
     COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "collectionQualifiedName",
@@ -7650,19 +7483,19 @@ class Query(SQL):
         "collectionQualifiedName.text",
     )
     """
-    Unique name of the collection in which this query exists.
+    TBC
     """
     IS_VISUAL_QUERY: ClassVar[BooleanField] = BooleanField(
         "isVisualQuery", "isVisualQuery"
     )
     """
-    Whether this query is a visual query (true) or not (false).
+    TBC
     """
     VISUAL_BUILDER_SCHEMA_BASE64: ClassVar[KeywordField] = KeywordField(
         "visualBuilderSchemaBase64", "visualBuilderSchemaBase64"
     )
     """
-    Base64-encoded string for the visual query builder.
+    TBC
     """
 
     PARENT: ClassVar[RelationField] = RelationField("parent")
@@ -7970,11 +7803,11 @@ class Schema(SQL):
 
     TABLE_COUNT: ClassVar[NumericField] = NumericField("tableCount", "tableCount")
     """
-    Number of tables in this schema.
+    TBC
     """
     VIEWS_COUNT: ClassVar[NumericField] = NumericField("viewsCount", "viewsCount")
     """
-    Number of views in this schema.
+    TBC
     """
 
     SNOWFLAKE_TAGS: ClassVar[RelationField] = RelationField("snowflakeTags")
@@ -8248,13 +8081,13 @@ class SnowflakePipe(SQL):
 
     DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
     """
-    SQL definition of this pipe.
+    TBC
     """
     SNOWFLAKE_PIPE_IS_AUTO_INGEST_ENABLED: ClassVar[BooleanField] = BooleanField(
         "snowflakePipeIsAutoIngestEnabled", "snowflakePipeIsAutoIngestEnabled"
     )
     """
-    Whether auto-ingest is enabled for this pipe (true) or not (false).
+    TBC
     """
     SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME: ClassVar[
         KeywordTextField
@@ -8264,7 +8097,7 @@ class SnowflakePipe(SQL):
         "snowflakePipeNotificationChannelName.text",
     )
     """
-    Name of the notification channel for this pipe.
+    TBC
     """
 
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
@@ -8384,39 +8217,39 @@ class View(SQL):
 
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
-    Number of columns in this view.
+    TBC
     """
     ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
     """
-    Number of rows in this view.
+    TBC
     """
     SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
     """
-    Size of this view, in bytes.
+    TBC
     """
     IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "isQueryPreview", "isQueryPreview"
     )
     """
-    Whether preview queries are allowed on this view (true) or not (false).
+    TBC
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    Configuration for preview queries on this view.
+    TBC
     """
     ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
     """
-    Alias for this view.
+    TBC
     """
     IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
     """
-    Whether this view is temporary (true) or not (false).
+    TBC
     """
     DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
     """
-    SQL definition of this view.
+    TBC
     """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
@@ -8642,59 +8475,59 @@ class MaterialisedView(SQL):
 
     REFRESH_MODE: ClassVar[KeywordField] = KeywordField("refreshMode", "refreshMode")
     """
-    Refresh mode for this materialized view.
+    TBC
     """
     REFRESH_METHOD: ClassVar[KeywordField] = KeywordField(
         "refreshMethod", "refreshMethod"
     )
     """
-    Refresh method for this materialized view.
+    TBC
     """
     STALENESS: ClassVar[KeywordField] = KeywordField("staleness", "staleness")
     """
-    Staleness of this materialized view.
+    TBC
     """
     STALE_SINCE_DATE: ClassVar[NumericField] = NumericField(
         "staleSinceDate", "staleSinceDate"
     )
     """
-    Time (epoch) from which this materialized view is stale, in milliseconds.
+    TBC
     """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
-    Number of columns in this materialized view.
+    TBC
     """
     ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
     """
-    Number of rows in this materialized view.
+    TBC
     """
     SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
     """
-    Size of this materialized view, in bytes.
+    TBC
     """
     IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "isQueryPreview", "isQueryPreview"
     )
     """
-    Whether it's possible to run a preview query on this materialized view (true) or not (false).
+    TBC
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    Configuration for the query preview of this materialized view.
+    TBC
     """
     ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
     """
-    Alias for this materialized view.
+    TBC
     """
     IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
     """
-    Whether this materialized view is temporary (true) or not (false).
+    TBC
     """
     DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
     """
-    SQL definition of this materialized view.
+    TBC
     """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
@@ -8964,29 +8797,29 @@ class Function(SQL):
         "functionLanguage", "functionLanguage"
     )
     """
-    Programming language in which the function is written.
+    The programming language in which the function is written.
     """
     FUNCTION_TYPE: ClassVar[KeywordField] = KeywordField("functionType", "functionType")
     """
-    Type of function.
+    The type of function.
     """
     FUNCTION_IS_EXTERNAL: ClassVar[BooleanField] = BooleanField(
         "functionIsExternal", "functionIsExternal"
     )
     """
-    Whether the function is stored or executed externally (true) or internally (false).
+    Determines whether the functions is stored or executed externally.
     """
     FUNCTION_IS_SECURE: ClassVar[BooleanField] = BooleanField(
         "functionIsSecure", "functionIsSecure"
     )
     """
-    Whether sensitive information of the function is omitted for unauthorized users (true) or not (false).
+    Determines whether sensitive information of the function is omitted for unauthorized users.
     """
     FUNCTION_IS_MEMOIZABLE: ClassVar[BooleanField] = BooleanField(
         "functionIsMemoizable", "functionIsMemoizable"
     )
     """
-    Whether the function must re-compute if there are no underlying changes in the values (false) or not (true).
+    Determines whether the function must re-compute or not if there are no underlying changes in the values.
     """
 
     FUNCTION_SCHEMA: ClassVar[RelationField] = RelationField("functionSchema")
@@ -9150,81 +8983,81 @@ class TablePartition(SQL):
 
     CONSTRAINT: ClassVar[KeywordField] = KeywordField("constraint", "constraint")
     """
-    Constraint that defines this table partition.
+    TBC
     """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
-    Number of columns in this partition.
+    TBC
     """
     ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
     """
-    Number of rows in this partition.
+    TBC
     """
     SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
     """
-    Size of this partition, in bytes.
+    TBC
     """
     ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
     """
-    Alias for this partition.
+    TBC
     """
     IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
     """
-    Whether this partition is temporary (true) or not (false).
+    TBC
     """
     IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "isQueryPreview", "isQueryPreview"
     )
     """
-    Whether preview queries for this partition are allowed (true) or not (false).
+    TBC
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    Configuration for the preview queries.
+    TBC
     """
     EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
         "externalLocation", "externalLocation"
     )
     """
-    External location of this partition, for example: an S3 object location.
+    TBC
     """
     EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
         "externalLocationRegion", "externalLocationRegion"
     )
     """
-    Region of the external location of this partition, for example: S3 region.
+    TBC
     """
     EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
         "externalLocationFormat", "externalLocationFormat"
     )
     """
-    Format of the external location of this partition, for example: JSON, CSV, PARQUET, etc.
+    TBC
     """
     IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
         "isPartitioned", "isPartitioned"
     )
     """
-    Whether this partition is further partitioned (true) or not (false).
+    TBC
     """
     PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "partitionStrategy", "partitionStrategy"
     )
     """
-    Partition strategy of this partition.
+    TBC
     """
     PARTITION_COUNT: ClassVar[NumericField] = NumericField(
         "partitionCount", "partitionCount"
     )
     """
-    Number of sub-partitions of this partition.
+    TBC
     """
     PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
         "partitionList", "partitionList"
     )
     """
-    List of sub-partitions in this partition.
+    TBC
     """
 
     CHILD_TABLE_PARTITIONS: ClassVar[RelationField] = RelationField(
@@ -9563,97 +9396,97 @@ class Column(SQL):
         "dataType", "dataType", "dataType.text"
     )
     """
-    Data type of values in this column.
+    TBC
     """
     SUB_DATA_TYPE: ClassVar[KeywordField] = KeywordField("subDataType", "subDataType")
     """
-    Sub-data type of this column.
+    TBC
     """
     RAW_DATA_TYPE_DEFINITION: ClassVar[KeywordField] = KeywordField(
         "rawDataTypeDefinition", "rawDataTypeDefinition"
     )
     """
-
+    TBC
     """
     ORDER: ClassVar[NumericField] = NumericField("order", "order")
     """
-    Order (position) in which this column appears in the table (starting at 1).
+    TBC
     """
     NESTED_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
         "nestedColumnCount", "nestedColumnCount"
     )
     """
-    Number of columns nested within this (STRUCT or NESTED) column.
+    TBC
     """
     IS_PARTITION: ClassVar[BooleanField] = BooleanField("isPartition", "isPartition")
     """
-    Whether this column is a partition column (true) or not (false).
+    TBC
     """
     PARTITION_ORDER: ClassVar[NumericField] = NumericField(
         "partitionOrder", "partitionOrder"
     )
     """
-    Order (position) of this partition column in the table.
+    TBC
     """
     IS_CLUSTERED: ClassVar[BooleanField] = BooleanField("isClustered", "isClustered")
     """
-    Whether this column is a clustered column (true) or not (false).
+    TBC
     """
     IS_PRIMARY: ClassVar[BooleanField] = BooleanField("isPrimary", "isPrimary")
     """
-    When true, this column is the primary key for the table.
+    TBC
     """
     IS_FOREIGN: ClassVar[BooleanField] = BooleanField("isForeign", "isForeign")
     """
-    When true, this column is a foreign key to another table. NOTE: this must be true when using the foreignKeyTo relationship to specify columns that refer to this column as a foreign key.
-    """  # noqa: E501
+    TBC
+    """
     IS_INDEXED: ClassVar[BooleanField] = BooleanField("isIndexed", "isIndexed")
     """
-    When true, this column is indexed in the database.
+    TBC
     """
     IS_SORT: ClassVar[BooleanField] = BooleanField("isSort", "isSort")
     """
-    Whether this column is a sort column (true) or not (false).
+    TBC
     """
     IS_DIST: ClassVar[BooleanField] = BooleanField("isDist", "isDist")
     """
-    Whether this column is a distribution column (true) or not (false).
+    TBC
     """
     IS_PINNED: ClassVar[BooleanField] = BooleanField("isPinned", "isPinned")
     """
-    Whether this column is pinned (true) or not (false).
+    TBC
     """
     PINNED_BY: ClassVar[KeywordField] = KeywordField("pinnedBy", "pinnedBy")
     """
-    User who pinned this column.
+    TBC
     """
     PINNED_AT: ClassVar[NumericField] = NumericField("pinnedAt", "pinnedAt")
     """
-    Time (epoch) at which this column was pinned, in milliseconds.
+    TBC
     """
     PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
     """
-    Total number of digits allowed, when the dataType is numeric.
+    Total number of digits allowed
     """
     DEFAULT_VALUE: ClassVar[KeywordField] = KeywordField("defaultValue", "defaultValue")
     """
-    Default value for this column.
+    TBC
     """
     IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
     """
-    When true, the values in this column can be null.
+    TBC
     """
     NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
     """
-    Number of digits allowed to the right of the decimal point.
+    TBC
     """
     MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
     """
-    Maximum length of a value in this column.
+    TBC
     """
     VALIDATIONS: ClassVar[KeywordField] = KeywordField("validations", "validations")
     """
-    Validations for this column.
+    TBC
     """
     PARENT_COLUMN_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "parentColumnQualifiedName",
@@ -9661,155 +9494,155 @@ class Column(SQL):
         "parentColumnQualifiedName.text",
     )
     """
-    Unique name of the column this column is nested within, for STRUCT and NESTED columns.
+    TBC
     """
     PARENT_COLUMN_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "parentColumnName", "parentColumnName.keyword", "parentColumnName"
     )
     """
-    Simple name of the column this column is nested within, for STRUCT and NESTED columns.
+    TBC
     """
     COLUMN_DISTINCT_VALUES_COUNT: ClassVar[NumericField] = NumericField(
         "columnDistinctValuesCount", "columnDistinctValuesCount"
     )
     """
-    Number of rows that contain distinct values.
+    TBC
     """
     COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
         "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
     )
     """
-    Number of rows that contain distinct values.
+    TBC
     """
     COLUMN_HISTOGRAM: ClassVar[KeywordField] = KeywordField(
         "columnHistogram", "columnHistogram"
     )
     """
-    List of values in a histogram that represents the contents of this column.
+    TBC
     """
     COLUMN_MAX: ClassVar[NumericField] = NumericField("columnMax", "columnMax")
     """
-    Greatest value in a numeric column.
+    TBC
     """
     COLUMN_MIN: ClassVar[NumericField] = NumericField("columnMin", "columnMin")
     """
-    Least value in a numeric column.
+    TBC
     """
     COLUMN_MEAN: ClassVar[NumericField] = NumericField("columnMean", "columnMean")
     """
-    Arithmetic mean of the values in a numeric column.
+    TBC
     """
     COLUMN_SUM: ClassVar[NumericField] = NumericField("columnSum", "columnSum")
     """
-    Calculated sum of the values in a numeric column.
+    TBC
     """
     COLUMN_MEDIAN: ClassVar[NumericField] = NumericField("columnMedian", "columnMedian")
     """
-    Calculated median of the values in a numeric column.
+    TBC
     """
     COLUMN_STANDARD_DEVIATION: ClassVar[NumericField] = NumericField(
         "columnStandardDeviation", "columnStandardDeviation"
     )
     """
-    Calculated standard deviation of the values in a numeric column.
+    TBC
     """
     COLUMN_UNIQUE_VALUES_COUNT: ClassVar[NumericField] = NumericField(
         "columnUniqueValuesCount", "columnUniqueValuesCount"
     )
     """
-    Number of rows in which a value in this column appears only once.
+    TBC
     """
     COLUMN_UNIQUE_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
         "columnUniqueValuesCountLong", "columnUniqueValuesCountLong"
     )
     """
-    Number of rows in which a value in this column appears only once.
+    TBC
     """
     COLUMN_AVERAGE: ClassVar[NumericField] = NumericField(
         "columnAverage", "columnAverage"
     )
     """
-    Average value in this column.
+    TBC
     """
     COLUMN_AVERAGE_LENGTH: ClassVar[NumericField] = NumericField(
         "columnAverageLength", "columnAverageLength"
     )
     """
-    Average length of values in a string column.
+    TBC
     """
     COLUMN_DUPLICATE_VALUES_COUNT: ClassVar[NumericField] = NumericField(
         "columnDuplicateValuesCount", "columnDuplicateValuesCount"
     )
     """
-    Number of rows that contain duplicate values.
+    TBC
     """
     COLUMN_DUPLICATE_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
         "columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong"
     )
     """
-    Number of rows that contain duplicate values.
+    TBC
     """
     COLUMN_MAXIMUM_STRING_LENGTH: ClassVar[NumericField] = NumericField(
         "columnMaximumStringLength", "columnMaximumStringLength"
     )
     """
-    Length of the longest value in a string column.
+    TBC
     """
     COLUMN_MAXS: ClassVar[KeywordField] = KeywordField("columnMaxs", "columnMaxs")
     """
-    List of the greatest values in a column.
+    TBC
     """
     COLUMN_MINIMUM_STRING_LENGTH: ClassVar[NumericField] = NumericField(
         "columnMinimumStringLength", "columnMinimumStringLength"
     )
     """
-    Length of the shortest value in a string column.
+    TBC
     """
     COLUMN_MINS: ClassVar[KeywordField] = KeywordField("columnMins", "columnMins")
     """
-    List of the least values in a column.
+    TBC
     """
     COLUMN_MISSING_VALUES_COUNT: ClassVar[NumericField] = NumericField(
         "columnMissingValuesCount", "columnMissingValuesCount"
     )
     """
-    Number of rows in a column that do not contain content.
+    TBC
     """
     COLUMN_MISSING_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
         "columnMissingValuesCountLong", "columnMissingValuesCountLong"
     )
     """
-    Number of rows in a column that do not contain content.
+    TBC
     """
     COLUMN_MISSING_VALUES_PERCENTAGE: ClassVar[NumericField] = NumericField(
         "columnMissingValuesPercentage", "columnMissingValuesPercentage"
     )
     """
-    Percentage of rows in a column that do not contain content.
+    TBC
     """
     COLUMN_UNIQUENESS_PERCENTAGE: ClassVar[NumericField] = NumericField(
         "columnUniquenessPercentage", "columnUniquenessPercentage"
     )
     """
-    Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique.
-    """  # noqa: E501
+    TBC
+    """
     COLUMN_VARIANCE: ClassVar[NumericField] = NumericField(
         "columnVariance", "columnVariance"
     )
     """
-    Calculated variance of the values in a numeric column.
+    TBC
     """
     COLUMN_TOP_VALUES: ClassVar[KeywordField] = KeywordField(
         "columnTopValues", "columnTopValues"
     )
     """
-    List of top values in this column.
+    TBC
     """
     COLUMN_DEPTH_LEVEL: ClassVar[NumericField] = NumericField(
         "columnDepthLevel", "columnDepthLevel"
     )
     """
-    Level of nesting of this column, used for STRUCT and NESTED columns.
+    Level of nesting, used for STRUCT/NESTED columns
     """
 
     SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
@@ -10931,31 +10764,31 @@ class SnowflakeStream(SQL):
         "snowflakeStreamType", "snowflakeStreamType"
     )
     """
-    Type of this stream, for example: standard, append-only, insert-only, etc.
+    TBC
     """
     SNOWFLAKE_STREAM_SOURCE_TYPE: ClassVar[KeywordField] = KeywordField(
         "snowflakeStreamSourceType", "snowflakeStreamSourceType"
     )
     """
-    Type of the source of this stream.
+    TBC
     """
     SNOWFLAKE_STREAM_MODE: ClassVar[KeywordField] = KeywordField(
         "snowflakeStreamMode", "snowflakeStreamMode"
     )
     """
-    Mode of this stream.
+    TBC
     """
     SNOWFLAKE_STREAM_IS_STALE: ClassVar[BooleanField] = BooleanField(
         "snowflakeStreamIsStale", "snowflakeStreamIsStale"
     )
     """
-    Whether this stream is stale (true) or not (false).
+    TBC
     """
     SNOWFLAKE_STREAM_STALE_AFTER: ClassVar[NumericField] = NumericField(
         "snowflakeStreamStaleAfter", "snowflakeStreamStaleAfter"
     )
     """
-    Time (epoch) after which this stream will be stale, in milliseconds.
+    TBC
     """
 
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
@@ -11095,7 +10928,7 @@ class Procedure(SQL):
 
     DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
     """
-    SQL definition of the procedure.
+    TBC
     """
 
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
@@ -11159,105 +10992,105 @@ class SnowflakeTag(Tag):
 
     TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
     """
-    Unique identifier of the tag in the source system.
+    Unique source tag identifier
     """
     TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "tagAttributes", "tagAttributes"
     )
     """
-    Attributes associated with the tag in the source system.
+    Source tag attributes
     """
     TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
         "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
     )
     """
-    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.
+    Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying
     """
     MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
         "mappedClassificationName", "mappedClassificationName"
     )
     """
-    Name of the classification in Atlan that is mapped to this tag.
+    Mapped atlan classification name
     """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
-    Number of times this asset has been queried.
+    TBC
     """
     QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
         "queryUserCount", "queryUserCount"
     )
     """
-    Number of unique users who have queried this asset.
+    TBC
     """
     QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
         "queryUserMap", "queryUserMap"
     )
     """
-    Map of unique users who have queried this asset to the number of times they have queried it.
+    TBC
     """
     QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "queryCountUpdatedAt", "queryCountUpdatedAt"
     )
     """
-    Time (epoch) at which the query count was last updated, in milliseconds.
+    TBC
     """
     DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "databaseName", "databaseName.keyword", "databaseName"
     )
     """
-    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "databaseQualifiedName", "databaseQualifiedName"
     )
     """
-    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "schemaName", "schemaName.keyword", "schemaName"
     )
     """
-    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "schemaQualifiedName", "schemaQualifiedName"
     )
     """
-    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "tableName", "tableName.keyword", "tableName"
     )
     """
-    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "tableQualifiedName", "tableQualifiedName"
     )
     """
-    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "viewName", "viewName.keyword", "viewName"
     )
     """
-    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "viewQualifiedName", "viewQualifiedName"
     )
     """
-    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
-    Whether this asset has been profiled (true) or not (false).
+    TBC
     """
     LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
         "lastProfiledAt", "lastProfiledAt"
     )
     """
-    Time (epoch) at which this asset was last profiled, in milliseconds.
+    TBC
     """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
@@ -11647,8 +11480,8 @@ class Matillion(Catalog):
         "matillionVersion", "matillionVersion"
     )
     """
-    Current point in time state of a project.
-    """
+    This designates the current point in time state of a project. We can think it to be branch or version control in github
+    """  # noqa: E501
 
     _convenience_properties: ClassVar[list[str]] = [
         "matillion_version",
@@ -11696,7 +11529,7 @@ class MatillionGroup(Matillion):
         "matillionProjectCount", "matillionProjectCount"
     )
     """
-    Number of projects within the group.
+    Count of the number of matillion projects under a matillion group
     """
 
     MATILLION_PROJECTS: ClassVar[RelationField] = RelationField("matillionProjects")
@@ -11766,31 +11599,31 @@ class MatillionJob(Matillion):
         "matillionJobType", "matillionJobType"
     )
     """
-    Type of the job, for example: orchestration or transformation.
+    The type of a job. There are two kinds of jobs in matillion - orchestration and transformation
     """
     MATILLION_JOB_PATH: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionJobPath", "matillionJobPath", "matillionJobPath.text"
     )
     """
-    Path of the job within the project. Jobs can be managed at multiple folder levels within a project.
-    """
+    The hierarchy path of a job under a matillion project. Jobs can be managed at multiple folder levels under a matillion project
+    """  # noqa: E501
     MATILLION_JOB_COMPONENT_COUNT: ClassVar[NumericField] = NumericField(
         "matillionJobComponentCount", "matillionJobComponentCount"
     )
     """
-    Number of components within the job.
+    The count of components under a specific matillion job
     """
     MATILLION_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "matillionJobSchedule", "matillionJobSchedule"
     )
     """
-    How the job is scheduled, for example: weekly or monthly.
+    Specifies whether a matillion job is scheduled weekly or monthly
     """
     MATILLION_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionProjectName", "matillionProjectName.keyword", "matillionProjectName"
     )
     """
-    Simple name of the project to which the job belongs.
+    Name of the matillion project to which the matillion job belongs
     """
     MATILLION_PROJECT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionProjectQualifiedName",
@@ -11798,7 +11631,7 @@ class MatillionJob(Matillion):
         "matillionProjectQualifiedName.text",
     )
     """
-    Unique name of the project to which the job belongs.
+    Qualified name of the matillion project to which the matillion job belongs
     """
 
     MATILLION_PROJECT: ClassVar[RelationField] = RelationField("matillionProject")
@@ -11974,25 +11807,25 @@ class MatillionProject(Matillion):
         "matillionVersions", "matillionVersions"
     )
     """
-    List of versions in the project.
+    List of versions under a matillion project
     """
     MATILLION_ENVIRONMENTS: ClassVar[KeywordField] = KeywordField(
         "matillionEnvironments", "matillionEnvironments"
     )
     """
-    List of environments in the project.
+    List of environments under a matillion project
     """
     MATILLION_PROJECT_JOB_COUNT: ClassVar[NumericField] = NumericField(
         "matillionProjectJobCount", "matillionProjectJobCount"
     )
     """
-    Number of jobs in the project.
+    Count of jobs under a matillion project
     """
     MATILLION_GROUP_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionGroupName", "matillionGroupName.keyword", "matillionGroupName"
     )
     """
-    Simple name of the Matillion group to which the project belongs.
+    Name of the matillion group to which the matillion project belongs
     """
     MATILLION_GROUP_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionGroupQualifiedName",
@@ -12000,7 +11833,7 @@ class MatillionProject(Matillion):
         "matillionGroupQualifiedName.text",
     )
     """
-    Unique name of the Matillion group to which the project belongs.
+    Qualified name of the matillion group to which the matillion project belongs
     """
 
     MATILLION_JOBS: ClassVar[RelationField] = RelationField("matillionJobs")
@@ -12154,43 +11987,43 @@ class MatillionComponent(Matillion):
         "matillionComponentId", "matillionComponentId"
     )
     """
-    Unique identifier of the component in Matillion.
+    Unique id of a matillion component
     """
     MATILLION_COMPONENT_IMPLEMENTATION_ID: ClassVar[KeywordField] = KeywordField(
         "matillionComponentImplementationId", "matillionComponentImplementationId"
     )
     """
-    Unique identifier for the type of the component in Matillion.
+    Unique id which represents the type of a component in matillion
     """
     MATILLION_COMPONENT_LINKED_JOB: ClassVar[KeywordField] = KeywordField(
         "matillionComponentLinkedJob", "matillionComponentLinkedJob"
     )
     """
-    Job details of the job to which the component internally links.
+    Job details of the matillion job to which the matillion component internally links to
     """
     MATILLION_COMPONENT_LAST_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
         "matillionComponentLastRunStatus", "matillionComponentLastRunStatus"
     )
     """
-    Latest run status of the component within a job.
+    The latest run status of a matillion component under a matillion job
     """
     MATILLION_COMPONENT_LAST_FIVE_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
         "matillionComponentLastFiveRunStatus", "matillionComponentLastFiveRunStatus"
     )
     """
-    Last five run statuses of the component within a job.
+    The last five run status of a matillion component under a matillion job
     """
     MATILLION_COMPONENT_SQLS: ClassVar[KeywordField] = KeywordField(
         "matillionComponentSqls", "matillionComponentSqls"
     )
     """
-    SQL queries used by the component.
+    SQL Query involved with a matillion component
     """
     MATILLION_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionJobName", "matillionJobName.keyword", "matillionJobName"
     )
     """
-    Simple name of the job to which the component belongs.
+    Name of the matillion job to which the matillion component belongs
     """
     MATILLION_JOB_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "matillionJobQualifiedName",
@@ -12198,7 +12031,7 @@ class MatillionComponent(Matillion):
         "matillionJobQualifiedName.text",
     )
     """
-    Unique name of the job to which the component belongs.
+    Qualified name of the matillion job to which the matillion component belongs
     """
 
     MATILLION_PROCESS: ClassVar[RelationField] = RelationField("matillionProcess")
@@ -12422,53 +12255,53 @@ class Dbt(Catalog):
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    TBC
     """
     DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
     """
-
+    TBC
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    TBC
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    TBC
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    TBC
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    TBC
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    TBC
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -12476,19 +12309,19 @@ class Dbt(Catalog):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    TBC
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -12496,13 +12329,13 @@ class Dbt(Catalog):
         "dbtJobNextRunHumanized",
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -12510,23 +12343,23 @@ class Dbt(Catalog):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    TBC
     """
     DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
     """
-
+    TBC
     """
     DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    TBC
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -12825,19 +12658,19 @@ class DbtModelColumn(Dbt):
         "dbtModelQualifiedName", "dbtModelQualifiedName", "dbtModelQualifiedName.text"
     )
     """
-
+    TBC
     """
     DBT_MODEL_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
         "dbtModelColumnDataType", "dbtModelColumnDataType"
     )
     """
-
+    TBC
     """
     DBT_MODEL_COLUMN_ORDER: ClassVar[NumericField] = NumericField(
         "dbtModelColumnOrder", "dbtModelColumnOrder"
     )
     """
-
+    TBC
     """
 
     SQL_COLUMN: ClassVar[RelationField] = RelationField("sqlColumn")
@@ -13005,49 +12838,49 @@ class DbtTest(Dbt):
         "dbtTestStatus", "dbtTestStatus"
     )
     """
-    Details of the results of the test. For errors, it reads "ERROR".
+    Status provides the details of the results of a test. For errors, it reads "ERROR".
     """
     DBT_TEST_STATE: ClassVar[KeywordField] = KeywordField(
         "dbtTestState", "dbtTestState"
     )
     """
-    Test results. Can be one of, in order of severity, "error", "fail", "warn", "pass".
+    The test results. Can be one of, in order of severity, "error", "fail", "warn", "pass"
     """
     DBT_TEST_ERROR: ClassVar[KeywordField] = KeywordField(
         "dbtTestError", "dbtTestError"
     )
     """
-    Error message in the case of state being "error".
+    The error message in the case of state being "error"
     """
     DBT_TEST_RAW_SQL: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtTestRawSQL", "dbtTestRawSQL", "dbtTestRawSQL.text"
     )
     """
-    Raw SQL of the test.
+    The raw sql of a test
     """
     DBT_TEST_COMPILED_SQL: ClassVar[KeywordField] = KeywordField(
         "dbtTestCompiledSQL", "dbtTestCompiledSQL"
     )
     """
-    Compiled SQL of the test.
+    The compiled sql of a test
     """
     DBT_TEST_RAW_CODE: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtTestRawCode", "dbtTestRawCode", "dbtTestRawCode.text"
     )
     """
-    Raw code of the test (when the test is defined using Python).
+    The raw code of a test ( tests in dbt can be defined using python )
     """
     DBT_TEST_COMPILED_CODE: ClassVar[KeywordField] = KeywordField(
         "dbtTestCompiledCode", "dbtTestCompiledCode"
     )
     """
-    Compiled code of the test (when the test is defined using Python).
+    The compiled code of a test ( tests in dbt can be defined using python )
     """
     DBT_TEST_LANGUAGE: ClassVar[KeywordField] = KeywordField(
         "dbtTestLanguage", "dbtTestLanguage"
     )
     """
-    Language in which the test is written, for example: SQL or Python.
+    The language in which a dbt test is written. Example: sql,python
     """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
@@ -13269,73 +13102,73 @@ class DbtModel(Dbt):
 
     DBT_STATUS: ClassVar[KeywordField] = KeywordField("dbtStatus", "dbtStatus")
     """
-
+    TBC
     """
     DBT_ERROR: ClassVar[KeywordField] = KeywordField("dbtError", "dbtError")
     """
-
+    TBC
     """
     DBT_RAW_SQL: ClassVar[KeywordField] = KeywordField("dbtRawSQL", "dbtRawSQL")
     """
-
+    TBC
     """
     DBT_COMPILED_SQL: ClassVar[KeywordField] = KeywordField(
         "dbtCompiledSQL", "dbtCompiledSQL"
     )
     """
-
+    TBC
     """
     DBT_STATS: ClassVar[KeywordField] = KeywordField("dbtStats", "dbtStats")
     """
-
+    TBC
     """
     DBT_MATERIALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
         "dbtMaterializationType", "dbtMaterializationType"
     )
     """
-
+    TBC
     """
     DBT_MODEL_COMPILE_STARTED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelCompileStartedAt", "dbtModelCompileStartedAt"
     )
     """
-
+    TBC
     """
     DBT_MODEL_COMPILE_COMPLETED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelCompileCompletedAt", "dbtModelCompileCompletedAt"
     )
     """
-
+    TBC
     """
     DBT_MODEL_EXECUTE_STARTED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelExecuteStartedAt", "dbtModelExecuteStartedAt"
     )
     """
-
+    TBC
     """
     DBT_MODEL_EXECUTE_COMPLETED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelExecuteCompletedAt", "dbtModelExecuteCompletedAt"
     )
     """
-
+    TBC
     """
     DBT_MODEL_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
         "dbtModelExecutionTime", "dbtModelExecutionTime"
     )
     """
-
+    TBC
     """
     DBT_MODEL_RUN_GENERATED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelRunGeneratedAt", "dbtModelRunGeneratedAt"
     )
     """
-
+    TBC
     """
     DBT_MODEL_RUN_ELAPSED_TIME: ClassVar[NumericField] = NumericField(
         "dbtModelRunElapsedTime", "dbtModelRunElapsedTime"
     )
     """
-
+    TBC
     """
 
     DBT_METRICS: ClassVar[RelationField] = RelationField("dbtMetrics")
@@ -13677,59 +13510,59 @@ class DbtMetric(Dbt):
         "dbtMetricFilters", "dbtMetricFilters"
     )
     """
-
+    TBC
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    TBC
     """
     DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
     """
-
+    TBC
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    TBC
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    TBC
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    TBC
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    TBC
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    TBC
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -13737,19 +13570,19 @@ class DbtMetric(Dbt):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    TBC
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -13757,13 +13590,13 @@ class DbtMetric(Dbt):
         "dbtJobNextRunHumanized",
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -13771,41 +13604,41 @@ class DbtMetric(Dbt):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    TBC
     """
     DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
     """
-
+    TBC
     """
     DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    TBC
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    TBC
     """
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """
-    Type of the metric.
+    TBC
     """
     METRIC_SQL: ClassVar[KeywordField] = KeywordField("metricSQL", "metricSQL")
     """
-    SQL query used to compute the metric.
+    TBC
     """
     METRIC_FILTERS: ClassVar[TextField] = TextField("metricFilters", "metricFilters")
     """
-    Filters to be applied to the metric query.
+    TBC
     """
     METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
         "metricTimeGrains", "metricTimeGrains"
     )
     """
-    List of time grains to be applied to the metric query.
+    TBC
     """
 
     METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
@@ -14279,13 +14112,13 @@ class DbtSource(Dbt):
 
     DBT_STATE: ClassVar[KeywordField] = KeywordField("dbtState", "dbtState")
     """
-
+    TBC
     """
     DBT_FRESHNESS_CRITERIA: ClassVar[KeywordField] = KeywordField(
         "dbtFreshnessCriteria", "dbtFreshnessCriteria"
     )
     """
-
+    TBC
     """
 
     SQL_ASSETS: ClassVar[RelationField] = RelationField("sqlAssets")
@@ -14403,13 +14236,13 @@ class SchemaRegistry(Catalog):
         "schemaRegistrySchemaType", "schemaRegistrySchemaType"
     )
     """
-    Type of language or specification used to define the schema, for example: JSON, Protobuf, etc.
+    Type of language/specification used to define the schema like JSON, Protobuf etc.
     """
     SCHEMA_REGISTRY_SCHEMA_ID: ClassVar[KeywordField] = KeywordField(
         "schemaRegistrySchemaId", "schemaRegistrySchemaId"
     )
     """
-    Unique identifier for schema definition set by the schema registry.
+    Unique identifier for schema definition set by the schema registry
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -14482,13 +14315,13 @@ class SchemaRegistrySubject(SchemaRegistry):
         "schemaRegistrySubjectBaseName", "schemaRegistrySubjectBaseName"
     )
     """
-    Base name of the subject, without -key, -value prefixes.
+    Base name of the subject (i.e. without -key, -value prefixes)
     """
     SCHEMA_REGISTRY_SUBJECT_IS_KEY_SCHEMA: ClassVar[BooleanField] = BooleanField(
         "schemaRegistrySubjectIsKeySchema", "schemaRegistrySubjectIsKeySchema"
     )
     """
-    Whether the subject is a schema for the keys of the messages (true) or not (false).
+    If the subject is a schema for the keys of the messages.
     """
     SCHEMA_REGISTRY_SUBJECT_SCHEMA_COMPATIBILITY: ClassVar[KeywordField] = KeywordField(
         "schemaRegistrySubjectSchemaCompatibility",
@@ -14718,13 +14551,13 @@ class MonteCarlo(DataQuality):
 
     MC_LABELS: ClassVar[KeywordField] = KeywordField("mcLabels", "mcLabels")
     """
-    List of labels for this Monte Carlo asset.
+    TBC
     """
     MC_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
         "mcAssetQualifiedNames", "mcAssetQualifiedNames"
     )
     """
-    List of unique names of assets that are part of this Monte Carlo asset.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -14789,37 +14622,37 @@ class MCIncident(MonteCarlo):
         "mcIncidentId", "mcIncidentId"
     )
     """
-    Identifier of this incident, from Monte Carlo.
+    TBC
     """
     MC_INCIDENT_TYPE: ClassVar[KeywordField] = KeywordField(
         "mcIncidentType", "mcIncidentType"
     )
     """
-    Type of this incident.
+    TBC
     """
     MC_INCIDENT_SUB_TYPES: ClassVar[KeywordField] = KeywordField(
         "mcIncidentSubTypes", "mcIncidentSubTypes"
     )
     """
-    Subtypes of this incident.
+    TBC
     """
     MC_INCIDENT_SEVERITY: ClassVar[KeywordField] = KeywordField(
         "mcIncidentSeverity", "mcIncidentSeverity"
     )
     """
-    Severity of this incident.
+    TBC
     """
     MC_INCIDENT_STATE: ClassVar[KeywordField] = KeywordField(
         "mcIncidentState", "mcIncidentState"
     )
     """
-    State of this incident.
+    TBC
     """
     MC_INCIDENT_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
         "mcIncidentWarehouse", "mcIncidentWarehouse"
     )
     """
-    Name of this incident's warehouse.
+    Incident warehouse name
     """
 
     MC_MONITOR: ClassVar[RelationField] = RelationField("mcMonitor")
@@ -14977,103 +14810,103 @@ class MCMonitor(MonteCarlo):
 
     MC_MONITOR_ID: ClassVar[KeywordField] = KeywordField("mcMonitorId", "mcMonitorId")
     """
-    Unique identifier for this monitor, from Monte Carlo.
+    Monitor Id
     """
     MC_MONITOR_STATUS: ClassVar[KeywordField] = KeywordField(
         "mcMonitorStatus", "mcMonitorStatus"
     )
     """
-    Status of this monitor.
+    Monitor status
     """
     MC_MONITOR_TYPE: ClassVar[KeywordField] = KeywordField(
         "mcMonitorType", "mcMonitorType"
     )
     """
-    Type of this monitor, for example: field health (stats) or dimension tracking (categories).
+    Monitor type
     """
     MC_MONITOR_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
         "mcMonitorWarehouse", "mcMonitorWarehouse"
     )
     """
-    Name of the warehouse for this monitor.
+    Monitor warehouse name
     """
     MC_MONITOR_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField(
         "mcMonitorScheduleType", "mcMonitorScheduleType"
     )
     """
-    Type of schedule for this monitor, for example: fixed or dynamic.
+    Monitor schedule type
     """
     MC_MONITOR_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
         "mcMonitorNamespace", "mcMonitorNamespace.keyword", "mcMonitorNamespace"
     )
     """
-    Namespace of this monitor.
+    Monitor namespace
     """
     MC_MONITOR_RULE_TYPE: ClassVar[KeywordField] = KeywordField(
         "mcMonitorRuleType", "mcMonitorRuleType"
     )
     """
-    Type of rule for this monitor.
+    TBC
     """
     MC_MONITOR_RULE_CUSTOM_SQL: ClassVar[KeywordField] = KeywordField(
         "mcMonitorRuleCustomSql", "mcMonitorRuleCustomSql"
     )
     """
-    SQL code for custom SQL rules.
+    custom sql query
     """
     MC_MONITOR_RULE_SCHEDULE_CONFIG: ClassVar[KeywordField] = KeywordField(
         "mcMonitorRuleScheduleConfig", "mcMonitorRuleScheduleConfig"
     )
     """
-    Schedule details for the rule.
+    TBC
     """
     MC_MONITOR_RULE_SCHEDULE_CONFIG_HUMANIZED: ClassVar[TextField] = TextField(
         "mcMonitorRuleScheduleConfigHumanized", "mcMonitorRuleScheduleConfigHumanized"
     )
     """
-    Readable description of the schedule for the rule.
+    TBC
     """
     MC_MONITOR_ALERT_CONDITION: ClassVar[TextField] = TextField(
         "mcMonitorAlertCondition", "mcMonitorAlertCondition"
     )
     """
-    Condition on which the monitor produces an alert.
+    TBC
     """
     MC_MONITOR_RULE_NEXT_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
         "mcMonitorRuleNextExecutionTime", "mcMonitorRuleNextExecutionTime"
     )
     """
-    Time at which the next execution of the rule should occur.
+    TBC
     """
     MC_MONITOR_RULE_PREVIOUS_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
         "mcMonitorRulePreviousExecutionTime", "mcMonitorRulePreviousExecutionTime"
     )
     """
-    Time at which the previous execution of the rule occurred.
+    TBC
     """
     MC_MONITOR_RULE_COMPARISONS: ClassVar[KeywordField] = KeywordField(
         "mcMonitorRuleComparisons", "mcMonitorRuleComparisons"
     )
     """
-    Comparison logic used for the rule.
+    TBC
     """
     MC_MONITOR_RULE_IS_SNOOZED: ClassVar[BooleanField] = BooleanField(
         "mcMonitorRuleIsSnoozed", "mcMonitorRuleIsSnoozed"
     )
     """
-    Whether the rule is currently snoozed (true) or not (false).
+    TBC
     """
     MC_MONITOR_BREACH_RATE: ClassVar[NumericField] = NumericField(
         "mcMonitorBreachRate", "mcMonitorBreachRate"
     )
     """
-    Rate at which this monitor is breached.
+    TBC
     """
     MC_MONITOR_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
         "mcMonitorIncidentCount", "mcMonitorIncidentCount"
     )
     """
-    Number of incidents associated with this monitor.
+    TBC
     """
 
     MC_MONITOR_ASSETS: ClassVar[RelationField] = RelationField("mcMonitorAssets")
@@ -15440,31 +15273,31 @@ class SodaCheck(Soda):
 
     SODA_CHECK_ID: ClassVar[KeywordField] = KeywordField("sodaCheckId", "sodaCheckId")
     """
-    Identifier of the check in Soda.
+    Check Id
     """
     SODA_CHECK_EVALUATION_STATUS: ClassVar[KeywordField] = KeywordField(
         "sodaCheckEvaluationStatus", "sodaCheckEvaluationStatus"
     )
     """
-    Status of the check in Soda.
+    Check status
     """
     SODA_CHECK_DEFINITION: ClassVar[KeywordField] = KeywordField(
         "sodaCheckDefinition", "sodaCheckDefinition"
     )
     """
-    Definition of the check in Soda.
+    Check definition
     """
     SODA_CHECK_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
         "sodaCheckLastScanAt", "sodaCheckLastScanAt"
     )
     """
-
+    TBC
     """
     SODA_CHECK_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
         "sodaCheckIncidentCount", "sodaCheckIncidentCount"
     )
     """
-
+    TBC
     """
 
     SODA_CHECK_COLUMNS: ClassVar[RelationField] = RelationField("sodaCheckColumns")
@@ -15626,77 +15459,77 @@ class Table(SQL):
 
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
-    Number of columns in this table.
+    TBC
     """
     ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
     """
-    Number of rows in this table.
+    TBC
     """
     SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
     """
-    Size of this table, in bytes.
+    TBC
     """
     ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
     """
-    Alias for this table.
+    TBC
     """
     IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
     """
-    Whether this table is temporary (true) or not (false).
+    TBC
     """
     IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "isQueryPreview", "isQueryPreview"
     )
     """
-    Whether preview queries are allowed for this table (true) or not (false).
+    TBC
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    Configuration for preview queries.
+    TBC
     """
     EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
         "externalLocation", "externalLocation"
     )
     """
-    External location of this table, for example: an S3 object location.
+    TBC
     """
     EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
         "externalLocationRegion", "externalLocationRegion"
     )
     """
-    Region of the external location of this table, for example: S3 region.
+    TBC
     """
     EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
         "externalLocationFormat", "externalLocationFormat"
     )
     """
-    Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.
+    TBC
     """
     IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
         "isPartitioned", "isPartitioned"
     )
     """
-    Whether this table is partitioned (true) or not (false).
+    TBC
     """
     PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "partitionStrategy", "partitionStrategy"
     )
     """
-    Partition strategy for this table.
+    TBC
     """
     PARTITION_COUNT: ClassVar[NumericField] = NumericField(
         "partitionCount", "partitionCount"
     )
     """
-    Number of partitions in this table.
+    TBC
     """
     PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
         "partitionList", "partitionList"
     )
     """
-    List of partitions in this table.
+    TBC
     """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
@@ -16058,7 +15891,7 @@ class SnowflakeDynamicTable(Table):
 
     DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
     """
-    SQL statements used to define the dynamic table.
+    SQL statements used to define a Snowflake Dynamic Table
     """
 
     _convenience_properties: ClassVar[list[str]] = [
@@ -16125,7 +15958,7 @@ class Database(SQL):
 
     SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
     """
-    Number of schemas in this database.
+    TBC
     """
 
     SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
@@ -16255,9 +16088,6 @@ Link.Attributes.update_forward_refs()
 
 
 DataMesh.Attributes.update_forward_refs()
-
-
-DataContract.Attributes.update_forward_refs()
 
 
 DataDomain.Attributes.update_forward_refs()

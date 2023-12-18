@@ -35,13 +35,13 @@ class Sigma(BI):
         "sigmaWorkbookQualifiedName.text",
     )
     """
-    Unique name of the workbook in which this asset exists.
+    TBC
     """
     SIGMA_WORKBOOK_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sigmaWorkbookName", "sigmaWorkbookName.keyword", "sigmaWorkbookName"
     )
     """
-    Simple name of the workbook in which this asset exists.
+    TBC
     """
     SIGMA_PAGE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sigmaPageQualifiedName",
@@ -49,13 +49,13 @@ class Sigma(BI):
         "sigmaPageQualifiedName.text",
     )
     """
-    Unique name of the page on which this asset exists.
+    TBC
     """
     SIGMA_PAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sigmaPageName", "sigmaPageName.keyword", "sigmaPageName"
     )
     """
-    Simple name of the page on which this asset exists.
+    TBC
     """
     SIGMA_DATA_ELEMENT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sigmaDataElementQualifiedName",
@@ -63,13 +63,13 @@ class Sigma(BI):
         "sigmaDataElementQualifiedName.text",
     )
     """
-    Unique name of the data element in which this asset exists.
+    TBC
     """
     SIGMA_DATA_ELEMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "sigmaDataElementName", "sigmaDataElementName.keyword", "sigmaDataElementName"
     )
     """
-    Simple name of the data element in which this asset exists.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

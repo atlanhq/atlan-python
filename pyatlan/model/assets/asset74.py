@@ -45,13 +45,13 @@ class QuickSightFolder(QuickSight):
         "quickSightFolderType", "quickSightFolderType"
     )
     """
-    Type of this folder, for example: SHARED.
+    Shared or private type of folder
     """
     QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "quickSightFolderHierarchy", "quickSightFolderHierarchy"
     )
     """
-    Detailed path of this folder.
+    Detailed path of the folder
     """
 
     QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
@@ -191,7 +191,7 @@ class QuickSightDashboardVisual(QuickSight):
         "quickSightDashboardQualifiedName.text",
     )
     """
-    Unique name of the dashboard in which this visual exists.
+    TBC
     """
 
     QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
@@ -275,7 +275,7 @@ class QuickSightAnalysisVisual(QuickSight):
         "quickSightAnalysisQualifiedName.text",
     )
     """
-    Unique name of the QuickSight analysis in which this visual exists.
+    Qualified name of the QuickSight Analysis
     """
 
     QUICK_SIGHT_ANALYSIS: ClassVar[RelationField] = RelationField("quickSightAnalysis")
@@ -351,7 +351,7 @@ class QuickSightDatasetField(QuickSight):
         "quickSightDatasetFieldType", "quickSightDatasetFieldType"
     )
     """
-    Datatype of this field, for example: STRING, INTEGER, etc.
+    Datatype of column in the dataset
     """
     QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "quickSightDatasetQualifiedName",
@@ -359,7 +359,7 @@ class QuickSightDatasetField(QuickSight):
         "quickSightDatasetQualifiedName.text",
     )
     """
-    Unique name of the dataset in which this field exists.
+    Qualified name of the parent dataset
     """
 
     QUICK_SIGHT_DATASET: ClassVar[RelationField] = RelationField("quickSightDataset")
@@ -455,26 +455,26 @@ class QuickSightAnalysis(QuickSight):
         "quickSightAnalysisStatus", "quickSightAnalysisStatus"
     )
     """
-    Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc.
+    Status of quicksight analysis
     """
     QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
         "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
     )
     """
-    List of field names calculated by this analysis.
+    Calculated fields of quicksight analysis
     """
     QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
         "quickSightAnalysisParameterDeclarations",
         "quickSightAnalysisParameterDeclarations",
     )
     """
-    List of parameters used for this analysis.
+    parameters used for quicksight analysis
     """
     QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
         "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
     )
     """
-    List of filter groups used for this analysis.
+    Filter groups used for quicksight analysis
     """
 
     QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
@@ -651,13 +651,13 @@ class QuickSightDashboard(QuickSight):
         "quickSightDashboardPublishedVersionNumber",
     )
     """
-    Version number of the published dashboard.
+    Version number of the dashboard published
     """
     QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[NumericField] = NumericField(
         "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
     )
     """
-    Time (epoch) at which this dashboard was last published, in milliseconds.
+    Last published time of dashboard
     """
 
     QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
@@ -793,13 +793,13 @@ class QuickSightDataset(QuickSight):
         "quickSightDatasetImportMode", "quickSightDatasetImportMode"
     )
     """
-    Import mode for this dataset, for example: SPICE or DIRECT_QUERY.
+    Quicksight dataset importMode indicates a value that indicates whether you want to import the data into SPICE
     """
     QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
         "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
     )
     """
-    Number of columns present in this dataset.
+    Quicksight dataset column count indicates number of columns present in the dataset
     """
 
     QUICK_SIGHT_DATASET_FOLDERS: ClassVar[RelationField] = RelationField(

@@ -109,18 +109,18 @@ class SourceTagAttachment(AtlanObject):
     source_tag_sync_error: Optional[str] = Field(None, description="")
 
 
-class StarredDetails(AtlanObject):
-    """Description"""
-
-    asset_starred_by: Optional[str] = Field(None, description="")
-    asset_starred_at: Optional[datetime] = Field(None, description="")
-
-
 class AzureTag(AtlanObject):
     """Description"""
 
     azure_tag_key: str = Field(description="")
     azure_tag_value: str = Field(description="")
+
+
+class StarredDetails(AtlanObject):
+    """Description"""
+
+    asset_starred_by: Optional[str] = Field(None, description="")
+    asset_starred_at: Optional[datetime] = Field(None, description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -220,9 +220,9 @@ SourceTagAttachmentValue.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
 
-StarredDetails.update_forward_refs()
-
 AzureTag.update_forward_refs()
+
+StarredDetails.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 

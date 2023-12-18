@@ -84,7 +84,7 @@ class ThoughtspotDashlet(Thoughtspot):
         "thoughtspotLiveboardName",
     )
     """
-    Simple name of the liveboard in which this dashlet exists.
+    TBC
     """
     THOUGHTSPOT_LIVEBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "thoughtspotLiveboardQualifiedName",
@@ -92,7 +92,7 @@ class ThoughtspotDashlet(Thoughtspot):
         "thoughtspotLiveboardQualifiedName.text",
     )
     """
-    Unique name of the liveboard in which this dashlet exists.
+    TBC
     """
 
     THOUGHTSPOT_LIVEBOARD: ClassVar[RelationField] = RelationField(
