@@ -39,53 +39,53 @@ class DbtTag(Dbt):
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    TBC
     """
     DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
     """
-
+    TBC
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    TBC
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    TBC
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    TBC
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    TBC
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    TBC
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -93,19 +93,19 @@ class DbtTag(Dbt):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    TBC
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -113,13 +113,13 @@ class DbtTag(Dbt):
         "dbtJobNextRunHumanized",
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -127,45 +127,45 @@ class DbtTag(Dbt):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    TBC
     """
     DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
     """
-
+    TBC
     """
     DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    TBC
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    TBC
     """
     TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
     """
-    Unique identifier of the tag in the source system.
+    Unique source tag identifier
     """
     TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
         "tagAttributes", "tagAttributes"
     )
     """
-    Attributes associated with the tag in the source system.
+    Source tag attributes
     """
     TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
         "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
     )
     """
-    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.
+    Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying
     """
     MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
         "mappedClassificationName", "mappedClassificationName"
     )
     """
-    Name of the classification in Atlan that is mapped to this tag.
+    Mapped atlan classification name
     """
 
     _convenience_properties: ClassVar[list[str]] = [

@@ -7,6 +7,21 @@
     def trim_to_required(self:SelfAsset) -> SelfAsset:
         return self.create_for_modification(qualified_name=self.qualified_name or "", name=self.name or "")
 
+    def trim_to_reference(self:SelfAsset) -> SelfAsset:
+        if bool(self.guid and self.guid.strip()):
+            return self.ref_by_guid(self.guid)
+        if bool(self.qualified_name and self.qualified_name.strip()):
+            return self.ref_by_qualified_name(str(self.qualified_name))
+        if bool(
+            self.unique_attributes
+            and self.unique_attributes.get("qualified_name")
+            and str(self.unique_attributes.get("qualified_name")).strip()
+        ):
+            return self.ref_by_qualified_name(
+                str(cast(dict[str, Any], self.unique_attributes).get("qualified_name"))
+            )
+        raise ErrorCode.MISSING_REQUIRED_RELATIONSHIP_PARAM.exception_with_parameters(self.type_name, "guid, qualifiedName")
+
     @classmethod
     @init_guid
     def create(cls:Type[SelfAsset], *args, **kwargs)->SelfAsset:

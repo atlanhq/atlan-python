@@ -37,53 +37,53 @@ class LookerLook(Looker):
 
     FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
     """
-    Name of the folder in which the Look is organized.
+    TBC
     """
     SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
         "sourceUserId", "sourceUserId"
     )
     """
-    Identifier of the user who created the Look, from Looker.
+    TBC
     """
     SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
         "sourceViewCount", "sourceViewCount"
     )
     """
-    Number of times the look has been viewed in the Looker web UI.
+    TBC
     """
     SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
         "sourcelastUpdaterId", "sourcelastUpdaterId"
     )
     """
-    Identifier of the user that last updated the Look, from Looker.
+    TBC
     """
     SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
         "sourceLastAccessedAt", "sourceLastAccessedAt"
     )
     """
-    Time (epoch) when the Look was last accessed by a user, in milliseconds.
+    TBC
     """
     SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
         "sourceLastViewedAt", "sourceLastViewedAt"
     )
     """
-    Time (epoch) when the Look was last viewed by a user, in milliseconds.
+    TBC
     """
     SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
         "sourceContentMetadataId", "sourceContentMetadataId"
     )
     """
-    Identifier of the Look's content metadata, from Looker.
+    TBC
     """
     SOURCE_QUERY_ID: ClassVar[NumericField] = NumericField(
         "sourceQueryId", "sourceQueryId"
     )
     """
-    Identifier of the query for the Look, from Looker.
+    TBC
     """
     MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
     """
-    Name of the model in which this Look exists.
+    TBC
     """
 
     QUERY: ClassVar[RelationField] = RelationField("query")
@@ -339,43 +339,43 @@ class LookerDashboard(Looker):
 
     FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
     """
-    Name of the parent folder in Looker that contains this dashboard.
+    TBC
     """
     SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
         "sourceUserId", "sourceUserId"
     )
     """
-    Identifier of the user who created this dashboard, from Looker.
+    TBC
     """
     SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
         "sourceViewCount", "sourceViewCount"
     )
     """
-    Number of times the dashboard has been viewed through the Looker web UI.
+    TBC
     """
     SOURCE_METADATA_ID: ClassVar[NumericField] = NumericField(
         "sourceMetadataId", "sourceMetadataId"
     )
     """
-    Identifier of the dashboard's content metadata, from Looker.
+    TBC
     """
     SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
         "sourcelastUpdaterId", "sourcelastUpdaterId"
     )
     """
-    Identifier of the user who last updated the dashboard, from Looker.
+    TBC
     """
     SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
         "sourceLastAccessedAt", "sourceLastAccessedAt"
     )
     """
-    Timestamp (epoch) when the dashboard was last accessed by a user, in milliseconds.
+    TBC
     """
     SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
         "sourceLastViewedAt", "sourceLastViewedAt"
     )
     """
-    Timestamp (epoch) when the dashboard was last viewed by a user.
+    TBC
     """
 
     TILES: ClassVar[RelationField] = RelationField("tiles")
@@ -567,25 +567,25 @@ class LookerFolder(Looker):
         "sourceContentMetadataId", "sourceContentMetadataId"
     )
     """
-    Identifier for the folder's content metadata in Looker.
+    TBC
     """
     SOURCE_CREATOR_ID: ClassVar[NumericField] = NumericField(
         "sourceCreatorId", "sourceCreatorId"
     )
     """
-    Identifier of the user who created the folder, from Looker.
+    TBC
     """
     SOURCE_CHILD_COUNT: ClassVar[NumericField] = NumericField(
         "sourceChildCount", "sourceChildCount"
     )
     """
-    Number of subfolders in this folder.
+    TBC
     """
     SOURCE_PARENT_ID: ClassVar[NumericField] = NumericField(
         "sourceParentID", "sourceParentID"
     )
     """
-    Identifier of the parent folder of this folder, from Looker.
+    TBC
     """
 
     LOOKER_SUB_FOLDERS: ClassVar[RelationField] = RelationField("lookerSubFolders")
@@ -753,35 +753,35 @@ class LookerTile(Looker):
         "lookmlLinkId", "lookmlLinkId"
     )
     """
-    Identifier for the LoomML link.
+    TBC
     """
     MERGE_RESULT_ID: ClassVar[KeywordField] = KeywordField(
         "mergeResultId", "mergeResultId"
     )
     """
-    Identifier for the merge result.
+    TBC
     """
     NOTE_TEXT: ClassVar[KeywordField] = KeywordField("noteText", "noteText")
     """
-    Text of notes added to the tile.
+    TBC
     """
     QUERY_ID: ClassVar[NumericField] = NumericField("queryID", "queryID")
     """
-    Identifier for the query used to build this tile, from Looker.
+    TBC
     """
     RESULT_MAKER_ID: ClassVar[NumericField] = NumericField(
         "resultMakerID", "resultMakerID"
     )
     """
-    Identifier of the ResultMarkerLookup entry, from Looker.
+    TBC
     """
     SUBTITLE_TEXT: ClassVar[KeywordField] = KeywordField("subtitleText", "subtitleText")
     """
-    Text for the subtitle for text tiles.
+    TBC
     """
     LOOK_ID: ClassVar[NumericField] = NumericField("lookId", "lookId")
     """
-    Identifier of the Look used to create this tile, from Looker.
+    TBC
     """
 
     QUERY: ClassVar[RelationField] = RelationField("query")
@@ -959,7 +959,7 @@ class LookerModel(Looker):
 
     PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
     """
-    Name of the project in which the model exists.
+    TBC
     """
 
     EXPLORES: ClassVar[RelationField] = RelationField("explores")
@@ -1095,29 +1095,29 @@ class LookerExplore(Looker):
 
     PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
     """
-    Name of the parent project of this Explore.
+    TBC
     """
     MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
     """
-    Name of the parent model of this Explore.
+    TBC
     """
     SOURCE_CONNECTION_NAME: ClassVar[KeywordField] = KeywordField(
         "sourceConnectionName", "sourceConnectionName"
     )
     """
-    Connection name for the Explore, from Looker.
+    TBC
     """
     VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "viewName", "viewName.keyword", "viewName"
     )
     """
-    Name of the view for the Explore.
+    TBC
     """
     SQL_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
         "sqlTableName", "sqlTableName"
     )
     """
-    Name of the SQL table used to declare the Explore.
+    TBC
     """
 
     PROJECT: ClassVar[RelationField] = RelationField("project")
@@ -1374,23 +1374,23 @@ class LookerQuery(Looker):
         "sourceDefinition", "sourceDefinition"
     )
     """
-    Deprecated.
+    TBC
     """
     SOURCE_DEFINITION_DATABASE: ClassVar[KeywordField] = KeywordField(
         "sourceDefinitionDatabase", "sourceDefinitionDatabase"
     )
     """
-    Deprecated.
+    TBC
     """
     SOURCE_DEFINITION_SCHEMA: ClassVar[KeywordField] = KeywordField(
         "sourceDefinitionSchema", "sourceDefinitionSchema"
     )
     """
-    Deprecated.
+    TBC
     """
     FIELDS: ClassVar[KeywordField] = KeywordField("fields", "fields")
     """
-    Deprecated.
+    TBC
     """
 
     TILES: ClassVar[RelationField] = RelationField("tiles")
@@ -1540,7 +1540,7 @@ class LookerField(Looker):
 
     PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
     """
-    Name of the project in which this field exists.
+    TBC
     """
     LOOKER_EXPLORE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "lookerExploreQualifiedName",
@@ -1548,7 +1548,7 @@ class LookerField(Looker):
         "lookerExploreQualifiedName.text",
     )
     """
-    Unique name of the Explore in which this field exists.
+    TBC
     """
     LOOKER_VIEW_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "lookerViewQualifiedName",
@@ -1556,29 +1556,29 @@ class LookerField(Looker):
         "lookerViewQualifiedName.text",
     )
     """
-    Unique name of the view in which this field exists.
+    TBC
     """
     MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
     """
-    Name of the model in which this field exists.
+    TBC
     """
     SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
         "sourceDefinition", "sourceDefinition"
     )
     """
-    Deprecated.
+    TBC
     """
     LOOKER_FIELD_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
         "lookerFieldDataType", "lookerFieldDataType"
     )
     """
-    Deprecated.
+    TBC
     """
     LOOKER_TIMES_USED: ClassVar[NumericField] = NumericField(
         "lookerTimesUsed", "lookerTimesUsed"
     )
     """
-    Deprecated.
+    TBC
     """
 
     EXPLORE: ClassVar[RelationField] = RelationField("explore")
@@ -1790,19 +1790,19 @@ class LookerView(Looker):
 
     PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
     """
-    Name of the project in which this view exists.
+    TBC
     """
     LOOKER_VIEW_FILE_PATH: ClassVar[KeywordField] = KeywordField(
         "lookerViewFilePath", "lookerViewFilePath"
     )
     """
-    File path of this view within the project.
+    File path of the looker view in the project
     """
     LOOKER_VIEW_FILE_NAME: ClassVar[KeywordField] = KeywordField(
         "lookerViewFileName", "lookerViewFileName"
     )
     """
-    File name of this view.
+    File name of the looker view in the project
     """
 
     PROJECT: ClassVar[RelationField] = RelationField("project")
