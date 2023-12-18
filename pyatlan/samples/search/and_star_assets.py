@@ -27,7 +27,7 @@ def find_assets() -> IndexSearchResults:
         FluentSearch()
         .where(FluentSearch.active_assets())
         .where(FluentSearch.asset_type(AtlasGlossaryTerm))
-        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name or ""))
         .page_size(100)
         .include_on_results(Asset.STARRED_DETAILS_LIST)
         .include_on_results(Asset.STARRED_BY)
