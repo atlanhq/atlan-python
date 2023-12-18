@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TestId:
-    from nanoid import generate as generate_nanoid
+    from nanoid import generate as generate_nanoid  # type: ignore
 
     session_id = generate_nanoid(
         alphabet="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",

@@ -385,6 +385,10 @@ WORKFLOW_RUN = API(
 )
 AUDIT_API = "entity/auditSearch"
 AUDIT_SEARCH = API(AUDIT_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+SEARCH_LOG_API = "search/searchlog"
+SEARCH_LOG = API(
+    SEARCH_LOG_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 
 TYPES_API = "types/"
 TYPEDEFS_API = f"{TYPES_API}typedefs/"

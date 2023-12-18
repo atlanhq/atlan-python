@@ -98,11 +98,13 @@ def test_adls_container(
 
 @pytest.fixture(scope="module")
 def adls_object(
-    client: AtlanClient, adls_container: ADLSContainer
+    client: AtlanClient, adls_container: ADLSContainer, adls_account: ADLSAccount
 ) -> Generator[ADLSObject, None, None]:
     assert adls_container.qualified_name
     to_create = ADLSObject.create(
-        name=OBJECT_NAME, adls_container_qualified_name=adls_container.qualified_name
+        name=OBJECT_NAME,
+        adls_container_qualified_name=adls_container.qualified_name,
+        adls_account_qualified_name=adls_account.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSObject)[0]

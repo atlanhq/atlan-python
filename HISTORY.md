@@ -1,3 +1,19 @@
+## 1.8.0 (December 13, 2023)
+
+### New features
+
+### Breaking changes
+
+- `Asset.create_for_modification` now raises an exception. The `create_for_modification` method should not be invoked on the `Asset` class. Instead `create_for_modification` should be invoked on the class of the asset to be created, for example `Table.create_for_modification`.
+
+### Bug fixes
+
+- An exception was being raised when `client.asset.replace_custom_metadata` was invoked on a custom metadata set that contained archived attributes.
+- The `ADLSObject.create()` was missing the parameter for `adls_account_qualified_name`. This was causing the `ADSLObject` to be displayed incorrectly in the UI.
+
+### QOL improvements
+
+
 ## 1.7.0 (December 1, 2023)
 
 ### New features
