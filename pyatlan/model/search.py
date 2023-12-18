@@ -30,6 +30,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     ChildScoreMode,
     SortOrder,
+    UTMTags,
 )
 
 SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
@@ -1812,7 +1813,13 @@ class DSL(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(
-            ["from_", "size", "track_total_hits", "sort", "aggregations"]
+            [
+                "from_",
+                "size",
+                "track_total_hits",
+                "sort",
+                "aggregations",
+            ]
         )
 
     @validator("query", always=True)
@@ -1849,6 +1856,17 @@ class IndexSearchRequest(SearchRequest):
         alias="allowDeletedRelations",
     )
 
+    class Metadata(AtlanObject):
+        save_search_log: bool = True
+        utm_tags: list[str] = []
+
+    request_metadata: Metadata = Field(
+        default_factory=lambda: IndexSearchRequest.Metadata(
+            save_search_log=True,
+            utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
+        ),
+    )
+
     def get_dsl_str(self) -> str:
         dsl_json_str = self.json(by_alias=True, exclude_none=True)
         dsl_query_dict = dict(query=loads(dsl_json_str))
@@ -1856,6 +1874,10 @@ class IndexSearchRequest(SearchRequest):
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        super().__init__(**data)
+        __pydantic_self__.__fields_set__.update(["request_metadata"])
 
 
 def with_active_glossary(name: StrictStr) -> "Bool":

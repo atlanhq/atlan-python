@@ -13,45 +13,65 @@
         def validate_required(self):
             pass
 
-    TYPE_NAME: ClassVar[KeywordTextField] = KeywordTextField("typeName", "__typeName.keyword", "__typeName")
+    TYPE_NAME: ClassVar[KeywordTextField] = InternalKeywordTextField(
+        "typeName", "__typeName.keyword", "__typeName", "__typeName"
+    )
     """Type of the asset. For example Table, Column, and so on."""
 
-    GUID: ClassVar[KeywordField] = KeywordField("guid", "__guid")
+    GUID: ClassVar[KeywordField] = InternalKeywordField("guid", "__guid", "__guid")
     """Globally unique identifier (GUID) of any object in Atlan."""
 
-    CREATED_BY: ClassVar[KeywordField] = KeywordField("createdBy", "__createdBy")
+    CREATED_BY: ClassVar[KeywordField] = InternalKeywordField(
+        "createdBy", "__createdBy", "__createdBy"
+    )
     """Atlan user who created this asset."""
 
-    UPDATED_BY: ClassVar[KeywordField] = KeywordField("updatedBy", "__modifiedBy")
+    UPDATED_BY: ClassVar[KeywordField] = InternalKeywordField(
+        "updatedBy", "__modifiedBy", "__modifiedBy"
+    )
     """Atlan user who last updated the asset."""
 
-    STATUS: ClassVar[KeywordField] = KeywordField("status", "__state")
+    STATUS: ClassVar[KeywordField] = InternalKeywordField(
+        "status", "__state", "__state"
+    )
     """Asset status in Atlan (active vs deleted)."""
 
-    ATLAN_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
-        "classificationNames", "__traitNames", "__classificationsText"
+    ATLAN_TAGS: ClassVar[KeywordTextField] = InternalKeywordTextField(
+        "classificationNames",
+        "__traitNames",
+        "__classificationsText",
+        "__classificationNames",
     )
     """
     All directly-assigned Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag.
     """
 
-    PROPAGATED_ATLAN_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
-        "classificationNames", "__propagatedTraitNames", "__classificationsText"
+    PROPAGATED_ATLAN_TAGS: ClassVar[KeywordTextField] = InternalKeywordTextField(
+        "classificationNames",
+        "__propagatedTraitNames",
+        "__classificationsText",
+        "__propagatedClassificationNames",
     )
     """All propagated Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag."""
 
-    ASSIGNED_TERMS: ClassVar[KeywordTextField] = KeywordTextField("meanings", "__meanings", "__meaningsText")
+    ASSIGNED_TERMS: ClassVar[KeywordTextField] = InternalKeywordTextField(
+        "meanings", "__meanings", "__meaningsText", "__meanings"
+    )
     """All terms attached to an asset, searchable by the term's qualifiedName."""
 
-    SUPER_TYPE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "typeName", "__superTypeNames.keyword", "__superTypeNames"
+    SUPER_TYPE_NAMES: ClassVar[KeywordTextField] = InternalKeywordTextField(
+        "typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames"
     )
     """All super types of an asset."""
 
-    CREATE_TIME: ClassVar[NumericField] = NumericField("createTime", "__timestamp")
+    CREATE_TIME: ClassVar[NumericField] = InternalNumericField(
+        "createTime", "__timestamp", "__timestamp"
+    )
     """Time (in milliseconds) when the asset was created."""
 
-    UPDATE_TIME: ClassVar[NumericField] = NumericField("updateTime", "__modificationTimestamp")
+    UPDATE_TIME: ClassVar[NumericField] = InternalNumericField(
+        "updateTime", "__modificationTimestamp", "__modificationTimestamp"
+    )
     """Time (in milliseconds) when the asset was last updated."""
 
     QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
