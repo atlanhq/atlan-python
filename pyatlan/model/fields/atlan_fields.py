@@ -259,6 +259,35 @@ class TextField(SearchableField):
         )
 
 
+class InternalKeywordField(KeywordField):
+    """
+    Represents any field in Atlan that can be searched only by keyword (no text-analyzed fuzziness), and can also be
+    searched against a special internal field directly within Atlan.
+    """
+
+    _internal_field_name: StrictStr
+
+    def __init__(
+        self,
+        atlan_field_name: StrictStr,
+        keyword_field_name: StrictStr,
+        internal_field_name: StrictStr,
+    ):
+        """
+        Default constructor.
+
+        :param atlan_field_name: name of the attribute in the metastore
+        :param keyword_field_name: name of the keyword field in the search index
+        :param internal_field_name: internal name of the internal searchable attribute in the metastore
+        """
+        super().__init__(atlan_field_name, keyword_field_name)
+        self._internal_field_name = internal_field_name
+
+    @property
+    def internal_field_name(self):
+        return self._internal_field_name
+
+
 class NumericField(SearchableField):
     """
     Represents any field in Atlan that can be searched using only numeric search operations.
@@ -367,6 +396,28 @@ class NumericField(SearchableField):
     def max(self) -> Aggregation:
         """Returns criteria to calculate the maximum value of the provided field across all results."""
         return Aggregation(__root__={"max": {"field": self.elastic_field_name}})
+
+
+class InternalNumericField(NumericField):
+    def __init__(
+        self,
+        atlan_field_name: StrictStr,
+        numeric_field_name: StrictStr,
+        internal_field_name: StrictStr,
+    ):
+        """
+        Default constructor.
+
+        :param atlan_field_name: name of the attribute in the metastore
+        :param numeric_field_name: name of the numeric field in the search index
+        :param internal_field_name: internal name of the internal searchable attribute in the metastore
+        """
+        super().__init__(atlan_field_name, numeric_field_name)
+        self._internal_field_name = internal_field_name
+
+    @property
+    def internal_field_name(self):
+        return self._internal_field_name
 
 
 class NumericRankField(NumericField):
