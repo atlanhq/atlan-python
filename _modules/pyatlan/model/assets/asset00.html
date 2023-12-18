@@ -478,6 +478,9 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BooleanField</span><span class="p">,</span>
+    <span class="n">InternalKeywordField</span><span class="p">,</span>
+    <span class="n">InternalKeywordTextField</span><span class="p">,</span>
+    <span class="n">InternalNumericField</span><span class="p">,</span>
     <span class="n">KeywordField</span><span class="p">,</span>
     <span class="n">KeywordTextField</span><span class="p">,</span>
     <span class="n">KeywordTextStemmedField</span><span class="p">,</span>
@@ -616,50 +619,64 @@
         <span class="k">def</span> <span class="nf">validate_required</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">pass</span>
 
-    <span class="n">TYPE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;typeName&quot;</span><span class="p">,</span> <span class="s2">&quot;__typeName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;__typeName&quot;</span>
+    <span class="n">TYPE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;typeName&quot;</span><span class="p">,</span> <span class="s2">&quot;__typeName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;__typeName&quot;</span><span class="p">,</span> <span class="s2">&quot;__typeName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Type of the asset. For example Table, Column, and so on.&quot;&quot;&quot;</span>
 
-    <span class="n">GUID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;guid&quot;</span><span class="p">,</span> <span class="s2">&quot;__guid&quot;</span><span class="p">)</span>
+    <span class="n">GUID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordField</span><span class="p">(</span><span class="s2">&quot;guid&quot;</span><span class="p">,</span> <span class="s2">&quot;__guid&quot;</span><span class="p">,</span> <span class="s2">&quot;__guid&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Globally unique identifier (GUID) of any object in Atlan.&quot;&quot;&quot;</span>
 
-    <span class="n">CREATED_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;createdBy&quot;</span><span class="p">,</span> <span class="s2">&quot;__createdBy&quot;</span><span class="p">)</span>
+    <span class="n">CREATED_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;createdBy&quot;</span><span class="p">,</span> <span class="s2">&quot;__createdBy&quot;</span><span class="p">,</span> <span class="s2">&quot;__createdBy&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Atlan user who created this asset.&quot;&quot;&quot;</span>
 
-    <span class="n">UPDATED_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;updatedBy&quot;</span><span class="p">,</span> <span class="s2">&quot;__modifiedBy&quot;</span><span class="p">)</span>
+    <span class="n">UPDATED_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;updatedBy&quot;</span><span class="p">,</span> <span class="s2">&quot;__modifiedBy&quot;</span><span class="p">,</span> <span class="s2">&quot;__modifiedBy&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Atlan user who last updated the asset.&quot;&quot;&quot;</span>
 
-    <span class="n">STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;__state&quot;</span><span class="p">)</span>
+    <span class="n">STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;__state&quot;</span><span class="p">,</span> <span class="s2">&quot;__state&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Asset status in Atlan (active vs deleted).&quot;&quot;&quot;</span>
 
-    <span class="n">ATLAN_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;classificationNames&quot;</span><span class="p">,</span> <span class="s2">&quot;__traitNames&quot;</span><span class="p">,</span> <span class="s2">&quot;__classificationsText&quot;</span>
+    <span class="n">ATLAN_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;classificationNames&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__traitNames&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__classificationsText&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__classificationNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    All directly-assigned Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">PROPAGATED_ATLAN_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;classificationNames&quot;</span><span class="p">,</span> <span class="s2">&quot;__propagatedTraitNames&quot;</span><span class="p">,</span> <span class="s2">&quot;__classificationsText&quot;</span>
+    <span class="n">PROPAGATED_ATLAN_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;classificationNames&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__propagatedTraitNames&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__classificationsText&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__propagatedClassificationNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All propagated Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag.&quot;&quot;&quot;</span>
 
-    <span class="n">ASSIGNED_TERMS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;meanings&quot;</span><span class="p">,</span> <span class="s2">&quot;__meanings&quot;</span><span class="p">,</span> <span class="s2">&quot;__meaningsText&quot;</span>
+    <span class="n">ASSIGNED_TERMS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;meanings&quot;</span><span class="p">,</span> <span class="s2">&quot;__meanings&quot;</span><span class="p">,</span> <span class="s2">&quot;__meaningsText&quot;</span><span class="p">,</span> <span class="s2">&quot;__meanings&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All terms attached to an asset, searchable by the term&#39;s qualifiedName.&quot;&quot;&quot;</span>
 
-    <span class="n">SUPER_TYPE_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;typeName&quot;</span><span class="p">,</span> <span class="s2">&quot;__superTypeNames.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;__superTypeNames&quot;</span>
+    <span class="n">SUPER_TYPE_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalKeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;typeName&quot;</span><span class="p">,</span> <span class="s2">&quot;__superTypeNames.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;__superTypeNames&quot;</span><span class="p">,</span> <span class="s2">&quot;__superTypeNames&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All super types of an asset.&quot;&quot;&quot;</span>
 
-    <span class="n">CREATE_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;createTime&quot;</span><span class="p">,</span> <span class="s2">&quot;__timestamp&quot;</span><span class="p">)</span>
+    <span class="n">CREATE_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalNumericField</span><span class="p">(</span>
+        <span class="s2">&quot;createTime&quot;</span><span class="p">,</span> <span class="s2">&quot;__timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;__timestamp&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Time (in milliseconds) when the asset was created.&quot;&quot;&quot;</span>
 
-    <span class="n">UPDATE_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;updateTime&quot;</span><span class="p">,</span> <span class="s2">&quot;__modificationTimestamp&quot;</span>
+    <span class="n">UPDATE_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">InternalNumericField</span><span class="p">(</span>
+        <span class="s2">&quot;updateTime&quot;</span><span class="p">,</span> <span class="s2">&quot;__modificationTimestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;__modificationTimestamp&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Time (in milliseconds) when the asset was last updated.&quot;&quot;&quot;</span>
 
@@ -823,6 +840,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_convert_to_real_type_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Asset</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">data</span>
 

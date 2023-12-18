@@ -740,6 +740,35 @@
 
 
 
+<span class="k">class</span> <span class="nc">InternalKeywordField</span><span class="p">(</span><span class="n">KeywordField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents any field in Atlan that can be searched only by keyword (no text-analyzed fuzziness), and can also be</span>
+<span class="sd">    searched against a special internal field directly within Atlan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_internal_field_name</span><span class="p">:</span> <span class="n">StrictStr</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atlan_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">keyword_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">internal_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor.</span>
+
+<span class="sd">        :param atlan_field_name: name of the attribute in the metastore</span>
+<span class="sd">        :param keyword_field_name: name of the keyword field in the search index</span>
+<span class="sd">        :param internal_field_name: internal name of the internal searchable attribute in the metastore</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atlan_field_name</span><span class="p">,</span> <span class="n">keyword_field_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_internal_field_name</span> <span class="o">=</span> <span class="n">internal_field_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">internal_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_field_name</span>
+
+
 <div class="viewcode-block" id="NumericField">
 <a class="viewcode-back" href="../../../../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField">[docs]</a>
 <span class="k">class</span> <span class="nc">NumericField</span><span class="p">(</span><span class="n">SearchableField</span><span class="p">):</span>
@@ -881,6 +910,28 @@
         <span class="k">return</span> <span class="n">Aggregation</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span><span class="p">}})</span></div>
 </div>
 
+
+
+<span class="k">class</span> <span class="nc">InternalNumericField</span><span class="p">(</span><span class="n">NumericField</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atlan_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">numeric_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">internal_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor.</span>
+
+<span class="sd">        :param atlan_field_name: name of the attribute in the metastore</span>
+<span class="sd">        :param numeric_field_name: name of the numeric field in the search index</span>
+<span class="sd">        :param internal_field_name: internal name of the internal searchable attribute in the metastore</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atlan_field_name</span><span class="p">,</span> <span class="n">numeric_field_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_internal_field_name</span> <span class="o">=</span> <span class="n">internal_field_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">internal_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_field_name</span>
 
 
 <div class="viewcode-block" id="NumericRankField">
