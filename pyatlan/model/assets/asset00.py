@@ -6682,13 +6682,10 @@ class DataDomain(DataMesh):
         # for domain and subdomain
         if len(fields) not in (3, 5):
             raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
-        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                mesh_slug=mesh_slug,
-                mesh_abbreviation=mesh_abbreviation,
             )
         )
 
@@ -6789,8 +6786,6 @@ class DataDomain(DataMesh):
             return DataDomain.Attributes(
                 name=name,
                 parent_domain=parent_domain,
-                mesh_slug=mesh_name,
-                mesh_abbreviation=mesh_name,
                 qualified_name=qualified_name,
                 icon=icon_str,
             )
@@ -6842,13 +6837,10 @@ class DataProduct(DataMesh):
         fields = qualified_name.split("/")
         if len(fields) != 3:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
-        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                mesh_slug=mesh_slug,
-                mesh_abbreviation=mesh_abbreviation,
             )
         )
 
@@ -7057,8 +7049,6 @@ class DataProduct(DataMesh):
                 name=name,
                 data_product_assets_d_s_l=assets_dsl,
                 data_domain=domain,
-                mesh_slug=camel_case_name,
-                mesh_abbreviation=camel_case_name,
                 qualified_name=f"default/product/{camel_case_name}",
                 icon=icon_str,
             )
