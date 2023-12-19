@@ -187,7 +187,6 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
@@ -447,25 +446,25 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.MAPPED_CLASSIFICATION_NAME">
 <span class="sig-name descname"><span class="pre">MAPPED_CLASSIFICATION_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.MAPPED_CLASSIFICATION_NAME" title="Link to this definition">#</a></dt>
-<dd><p>Name of the classification in Atlan that is mapped to this tag.</p>
+<dd><p>Mapped atlan classification name</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.TAG_ALLOWED_VALUES">
 <span class="sig-name descname"><span class="pre">TAG_ALLOWED_VALUES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.TAG_ALLOWED_VALUES" title="Link to this definition">#</a></dt>
-<dd><p>Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.</p>
+<dd><p>Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.TAG_ATTRIBUTES">
 <span class="sig-name descname"><span class="pre">TAG_ATTRIBUTES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.TAG_ATTRIBUTES" title="Link to this definition">#</a></dt>
-<dd><p>Attributes associated with the tag in the source system.</p>
+<dd><p>Source tag attributes</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.TAG_ID">
 <span class="sig-name descname"><span class="pre">TAG_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.TAG_ID" title="Link to this definition">#</a></dt>
-<dd><p>Unique identifier of the tag in the source system.</p>
+<dd><p>Unique source tag identifier</p>
 </dd></dl>
 
 </dd></dl>

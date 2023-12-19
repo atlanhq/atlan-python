@@ -185,7 +185,6 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dataproduct.html">DataProduct</a></li>
@@ -728,10 +727,10 @@
 </li>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_glossary_types">applicable_glossary_types (pyatlan.model.typedef.AttributeDef property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_other_asset_types">applicable_other_asset_types (pyatlan.model.typedef.AttributeDef property)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset">Asset (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/link.html#pyatlan.model.assets.Link.ASSET">ASSET (pyatlan.model.assets.Link attribute)</a>
@@ -861,6 +860,8 @@
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_SODA_SOURCE_URL">ASSET_SODA_SOURCE_URL (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_TAGS">ASSET_TAGS (pyatlan.model.assets.Asset attribute)</a>
+</li>
+        <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_THEME_HEX">ASSET_THEME_HEX (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="other_model/core.html#pyatlan.model.core.AssetRequest">AssetRequest (class in pyatlan.model.core)</a>
 </li>
@@ -1364,11 +1365,7 @@
         </ul></li>
         <li><a href="asset/tableaucalculatedfield.html#pyatlan.model.assets.TableauCalculatedField.DATA_CATEGORY">DATA_CATEGORY (pyatlan.model.assets.TableauCalculatedField attribute)</a>
 </li>
-        <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.DATA_CONTRACTS">DATA_CONTRACTS (pyatlan.model.assets.DataProduct attribute)</a>
-</li>
         <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.DATA_DOMAIN">DATA_DOMAIN (pyatlan.model.assets.DataProduct attribute)</a>
-</li>
-        <li><a href="asset/datacontract.html#pyatlan.model.assets.DataContract.DATA_PRODUCT">DATA_PRODUCT (pyatlan.model.assets.DataContract attribute)</a>
 </li>
         <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.DATA_PRODUCT_ASSETS_DSL">DATA_PRODUCT_ASSETS_DSL (pyatlan.model.assets.DataProduct attribute)</a>
 </li>
@@ -1379,8 +1376,6 @@
         <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.DATA_PRODUCT_SENSITIVITY">DATA_PRODUCT_SENSITIVITY (pyatlan.model.assets.DataProduct attribute)</a>
 </li>
         <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.DATA_PRODUCT_STATUS">DATA_PRODUCT_STATUS (pyatlan.model.assets.DataProduct attribute)</a>
-</li>
-        <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.DATA_PRODUCT_THEME">DATA_PRODUCT_THEME (pyatlan.model.assets.DataProduct attribute)</a>
 </li>
         <li><a href="asset/datadomain.html#pyatlan.model.assets.DataDomain.DATA_PRODUCTS">DATA_PRODUCTS (pyatlan.model.assets.DataDomain attribute)</a>
 </li>
@@ -1422,8 +1417,6 @@
           <li><a href="asset/sql.html#pyatlan.model.assets.SQL.DATABASE_QUALIFIED_NAME">(pyatlan.model.assets.SQL attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/datacontract.html#pyatlan.model.assets.DataContract">DataContract (class in pyatlan.model.assets)</a>
-</li>
         <li><a href="asset/datadomain.html#pyatlan.model.assets.DataDomain">DataDomain (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/powerbiworkspace.html#pyatlan.model.assets.PowerBIWorkspace.DATAFLOW_COUNT">DATAFLOW_COUNT (pyatlan.model.assets.PowerBIWorkspace attribute)</a>
@@ -1893,8 +1886,6 @@
         <li><a href="asset/table.html#pyatlan.model.assets.Table.DIMENSIONS">DIMENSIONS (pyatlan.model.assets.Table attribute)</a>
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.DISPLAY_NAME">DISPLAY_NAME (pyatlan.model.assets.Asset attribute)</a>
-</li>
-        <li><a href="asset/datadomain.html#pyatlan.model.assets.DataDomain.DOMAIN_THEME_HEX">DOMAIN_THEME_HEX (pyatlan.model.assets.DataDomain attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -2496,10 +2487,10 @@
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.IS_EDITABLE">IS_EDITABLE (pyatlan.model.assets.Asset attribute)</a>
 </li>
-        <li><a href="asset/salesforcefield.html#pyatlan.model.assets.SalesforceField.IS_ENCRYPTED">IS_ENCRYPTED (pyatlan.model.assets.SalesforceField attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="asset/salesforcefield.html#pyatlan.model.assets.SalesforceField.IS_ENCRYPTED">IS_ENCRYPTED (pyatlan.model.assets.SalesforceField attribute)</a>
+</li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.IS_FOREIGN">IS_FOREIGN (pyatlan.model.assets.Column attribute)</a>
 </li>
         <li><a href="asset/resource.html#pyatlan.model.assets.Resource.IS_GLOBAL">IS_GLOBAL (pyatlan.model.assets.Resource attribute)</a>
@@ -2546,12 +2537,8 @@
           <li><a href="asset/sql.html#pyatlan.model.assets.SQL.IS_PROFILED">(pyatlan.model.assets.SQL attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/datamesh.html#pyatlan.model.assets.DataMesh.IS_PUBLISHED">IS_PUBLISHED (pyatlan.model.assets.DataMesh attribute)</a>
-
-        <ul>
-          <li><a href="asset/tableaudatasource.html#pyatlan.model.assets.TableauDatasource.IS_PUBLISHED">(pyatlan.model.assets.TableauDatasource attribute)</a>
+        <li><a href="asset/tableaudatasource.html#pyatlan.model.assets.TableauDatasource.IS_PUBLISHED">IS_PUBLISHED (pyatlan.model.assets.TableauDatasource attribute)</a>
 </li>
-        </ul></li>
         <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.IS_QUERY_PREVIEW">IS_QUERY_PREVIEW (pyatlan.model.assets.MaterialisedView attribute)</a>
 
         <ul>
@@ -2993,12 +2980,6 @@
         <li><a href="asset/powerbitable.html#pyatlan.model.assets.PowerBITable.MEASURES">MEASURES (pyatlan.model.assets.PowerBITable attribute)</a>
 </li>
         <li><a href="asset/lookertile.html#pyatlan.model.assets.LookerTile.MERGE_RESULT_ID">MERGE_RESULT_ID (pyatlan.model.assets.LookerTile attribute)</a>
-</li>
-        <li><a href="asset/datamesh.html#pyatlan.model.assets.DataMesh.MESH_ABBREVIATION">MESH_ABBREVIATION (pyatlan.model.assets.DataMesh attribute)</a>
-</li>
-        <li><a href="asset/datamesh.html#pyatlan.model.assets.DataMesh.MESH_COVER_IMAGE_URL">MESH_COVER_IMAGE_URL (pyatlan.model.assets.DataMesh attribute)</a>
-</li>
-        <li><a href="asset/datamesh.html#pyatlan.model.assets.DataMesh.MESH_SLUG">MESH_SLUG (pyatlan.model.assets.DataMesh attribute)</a>
 </li>
         <li><a href="asset/metabase.html#pyatlan.model.assets.Metabase">Metabase (class in pyatlan.model.assets)</a>
 </li>

@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -475,55 +474,55 @@
         <span class="s2">&quot;s3ETag&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ETag&quot;</span><span class="p">,</span> <span class="s2">&quot;s3ETag.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">S3ENCRYPTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;s3Encryption&quot;</span><span class="p">,</span> <span class="s2">&quot;s3Encryption&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_ARN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;awsArn&quot;</span><span class="p">,</span> <span class="s2">&quot;awsArn&quot;</span><span class="p">,</span> <span class="s2">&quot;awsArn.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_PARTITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;awsPartition&quot;</span><span class="p">,</span> <span class="s2">&quot;awsPartition&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Group of AWS region and service objects.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_SERVICE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;awsService&quot;</span><span class="p">,</span> <span class="s2">&quot;awsService&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of service in which the asset exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_REGION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;awsRegion&quot;</span><span class="p">,</span> <span class="s2">&quot;awsRegion&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Physical region where the data center in which the asset exists is clustered.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_ACCOUNT_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;awsAccountId&quot;</span><span class="p">,</span> <span class="s2">&quot;awsAccountId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    12-digit number that uniquely identifies an AWS account.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_RESOURCE_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;awsResourceId&quot;</span><span class="p">,</span> <span class="s2">&quot;awsResourceId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique resource ID assigned when a new resource is created.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_OWNER_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;awsOwnerName&quot;</span><span class="p">,</span> <span class="s2">&quot;awsOwnerName&quot;</span><span class="p">,</span> <span class="s2">&quot;awsOwnerName.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Root user&#39;s name.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_OWNER_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;awsOwnerId&quot;</span><span class="p">,</span> <span class="s2">&quot;awsOwnerId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Root user&#39;s ID.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">AWS_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;awsTags&quot;</span><span class="p">,</span> <span class="s2">&quot;awsTags&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List of tags that have been applied to the asset in AWS.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>

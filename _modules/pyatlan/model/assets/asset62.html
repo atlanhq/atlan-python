@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -496,7 +495,7 @@
         <span class="s2">&quot;gcsBucketName&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the bucket in which this object exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketQualifiedName&quot;</span><span class="p">,</span>
@@ -504,85 +503,85 @@
         <span class="s2">&quot;gcsBucketQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the bucket in which this object exists.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectSize&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Object size in bytes.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_KEY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectKey&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectKey&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectKey.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Key of this object, in GCS.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_MEDIA_LINK</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectMediaLink&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectMediaLink&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectMediaLink.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Media link to this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_HOLD_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectHoldType&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectHoldType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of hold on this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_GENERATION_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectGenerationId&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectGenerationId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generation ID of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_CRC32C_HASH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectCRC32CHash&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectCRC32CHash&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CRC32C hash of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_MD5HASH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectMD5Hash&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectMD5Hash&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    MD5 hash of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_DATA_LAST_MODIFIED_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectDataLastModifiedTime&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectDataLastModifiedTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) at which this object&#39;s data was last modified, in milliseconds.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_CONTENT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectContentType&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectContentType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of content in this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_CONTENT_ENCODING</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectContentEncoding&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectContentEncoding&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Content encoding of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_CONTENT_DISPOSITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectContentDisposition&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectContentDisposition&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Information about how this object&#39;s content should be presented.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_CONTENT_LANGUAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectContentLanguage&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectContentLanguage&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Language of this object&#39;s contents.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_OBJECT_RETENTION_EXPIRATION_DATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;gcsObjectRetentionExpirationDate&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectRetentionExpirationDate&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retention expiration date of this object.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">GCS_BUCKET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;gcsBucket&quot;</span><span class="p">)</span>
@@ -936,43 +935,43 @@
         <span class="s2">&quot;gcsObjectCount&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsObjectCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of objects within the bucket.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_VERSIONING_ENABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketVersioningEnabled&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketVersioningEnabled&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether versioning is enabled on the bucket (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_RETENTION_LOCKED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketRetentionLocked&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketRetentionLocked&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether retention is locked for this bucket (true) or not (false).</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_RETENTION_PERIOD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketRetentionPeriod&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketRetentionPeriod&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retention period for objects in this bucket.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_RETENTION_EFFECTIVE_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketRetentionEffectiveTime&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketRetentionEffectiveTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Effective time for retention of objects in this bucket.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_LIFECYCLE_RULES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketLifecycleRules&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketLifecycleRules&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Lifecycle rules for this bucket.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GCS_BUCKET_RETENTION_POLICY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;gcsBucketRetentionPolicy&quot;</span><span class="p">,</span> <span class="s2">&quot;gcsBucketRetentionPolicy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retention policy for this bucket.</span>
+<span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">GCS_OBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;gcsObjects&quot;</span><span class="p">)</span>

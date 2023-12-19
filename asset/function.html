@@ -187,7 +187,6 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
@@ -459,25 +458,25 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Function.FUNCTION_IS_EXTERNAL">
 <span class="sig-name descname"><span class="pre">FUNCTION_IS_EXTERNAL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Function.FUNCTION_IS_EXTERNAL" title="Link to this definition">#</a></dt>
-<dd><p>Whether the function is stored or executed externally (true) or internally (false).</p>
+<dd><p>Determines whether the functions is stored or executed externally.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Function.FUNCTION_IS_MEMOIZABLE">
 <span class="sig-name descname"><span class="pre">FUNCTION_IS_MEMOIZABLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Function.FUNCTION_IS_MEMOIZABLE" title="Link to this definition">#</a></dt>
-<dd><p>Whether the function must re-compute if there are no underlying changes in the values (false) or not (true).</p>
+<dd><p>Determines whether the function must re-compute or not if there are no underlying changes in the values.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Function.FUNCTION_IS_SECURE">
 <span class="sig-name descname"><span class="pre">FUNCTION_IS_SECURE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Function.FUNCTION_IS_SECURE" title="Link to this definition">#</a></dt>
-<dd><p>Whether sensitive information of the function is omitted for unauthorized users (true) or not (false).</p>
+<dd><p>Determines whether sensitive information of the function is omitted for unauthorized users.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Function.FUNCTION_LANGUAGE">
 <span class="sig-name descname"><span class="pre">FUNCTION_LANGUAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Function.FUNCTION_LANGUAGE" title="Link to this definition">#</a></dt>
-<dd><p>Programming language in which the function is written.</p>
+<dd><p>The programming language in which the function is written.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -495,7 +494,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Function.FUNCTION_TYPE">
 <span class="sig-name descname"><span class="pre">FUNCTION_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Function.FUNCTION_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>Type of function.</p>
+<dd><p>The type of function.</p>
 </dd></dl>
 
 </dd></dl>

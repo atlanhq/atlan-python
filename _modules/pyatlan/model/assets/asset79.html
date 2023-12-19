@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -481,31 +480,31 @@
         <span class="s2">&quot;qlikHasSectionAccess&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikHasSectionAccess&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether section access or data masking is enabled on the source (true) or not (false).</span>
+<span class="sd">    Whether section access/data masking is enabled on source</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_ORIGIN_APP_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;qlikOriginAppId&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikOriginAppId&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Value of originAppId for this app.</span>
+<span class="sd">    originAppId value for a qlik app</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_IS_ENCRYPTED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;qlikIsEncrypted&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikIsEncrypted&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this app is encrypted (true) or not (false).</span>
+<span class="sd">    Whether a qlik app is encrypted</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_IS_DIRECT_QUERY_MODE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;qlikIsDirectQueryMode&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikIsDirectQueryMode&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this app is in direct query mode (true) or not (false).</span>
+<span class="sd">    Whether a qlik app is in direct query mode</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_APP_STATIC_BYTE_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;qlikAppStaticByteSize&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikAppStaticByteSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Static space used by this app, in bytes.</span>
+<span class="sd">    Static space taken by a qlik app</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QLIK_SPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;qlikSpace&quot;</span><span class="p">)</span>
@@ -660,25 +659,25 @@
         <span class="s2">&quot;qlikChartSubtitle&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikChartSubtitle&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subtitle of this chart.</span>
+<span class="sd">    Subtitle of a qlik chart</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_CHART_FOOTNOTE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;qlikChartFootnote&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikChartFootnote&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Footnote of this chart.</span>
+<span class="sd">    Footnote of a qlik chart</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_CHART_ORIENTATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;qlikChartOrientation&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikChartOrientation&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Orientation of this chart.</span>
+<span class="sd">    Orientation of a qlik chart</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_CHART_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;qlikChartType&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikChartType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subtype of this chart, for example: bar, graph, pie, etc.</span>
+<span class="sd">    Subtype of an qlik chart. E.g. bar, graph, pie etc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QLIK_SHEET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;qlikSheet&quot;</span><span class="p">)</span>
@@ -795,25 +794,25 @@
         <span class="s2">&quot;qlikDatasetTechnicalName&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Technical name of this asset.</span>
+<span class="sd">    Technical name of a qlik data asset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_DATASET_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;qlikDatasetType&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikDatasetType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of this data asset, for example: qix-df, snowflake, etc.</span>
+<span class="sd">    Type of an qlik data asset. E.g. qix-df, snowflake etc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_DATASET_URI</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;qlikDatasetUri&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikDatasetUri&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikDatasetUri.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    URI of this dataset.</span>
+<span class="sd">    URI of a qlik dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QLIK_DATASET_SUBTYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;qlikDatasetSubtype&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikDatasetSubtype&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subtype this dataset asset.</span>
+<span class="sd">    Subtype of an qlik dataset asset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QLIK_SPACE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;qlikSpace&quot;</span><span class="p">)</span>
@@ -930,7 +929,7 @@
         <span class="s2">&quot;qlikSheetIsApproved&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikSheetIsApproved&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this is approved (true) or not (false).</span>
+<span class="sd">    Whether a qlik sheet is approved</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QLIK_APP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;qlikApp&quot;</span><span class="p">)</span>
@@ -1021,7 +1020,7 @@
         <span class="s2">&quot;qlikSpaceType&quot;</span><span class="p">,</span> <span class="s2">&quot;qlikSpaceType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of this space, for exmaple: Private, Shared, etc.</span>
+<span class="sd">    Type of a qlik space. E.g. Private, Shared etc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">QLIK_DATASETS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;qlikDatasets&quot;</span><span class="p">)</span>

@@ -187,7 +187,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataproduct.html">DataProduct</a></li>
@@ -447,7 +446,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.cache.group_cache.GroupCache.get_id_for_alias">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id_for_alias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/group_cache.html#GroupCache.get_id_for_alias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.group_cache.GroupCache.get_id_for_alias" title="Link to this definition">#</a></dt>
-<dd><p>Translate the provided alias to its GUID.</p>
+<dd><p>Translate the provided human-readable group name to its GUID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>alias</strong> – name of the group as it appears in the UI</p>
@@ -461,7 +460,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.cache.group_cache.GroupCache.get_id_for_name">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id_for_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/group_cache.html#GroupCache.get_id_for_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.group_cache.GroupCache.get_id_for_name" title="Link to this definition">#</a></dt>
-<dd><p>Translate the provided human-readable group name to its GUID.</p>
+<dd><p>Translate the provided internal group name to its GUID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>name</strong> – human-readable name of the group</p>
@@ -475,7 +474,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.cache.group_cache.GroupCache.get_name_for_id">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_name_for_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idstr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/group_cache.html#GroupCache.get_name_for_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.group_cache.GroupCache.get_name_for_id" title="Link to this definition">#</a></dt>
-<dd><p>Translate the provided group GUID to the human-readable group name.</p>
+<dd><p>Translate the provided group GUID to the internal group name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>idstr</strong> – unique identifier (GUID) of the group</p>

@@ -187,7 +187,6 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
@@ -453,37 +452,37 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_LAST_BUILD_TIME">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_LAST_BUILD_TIME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_LAST_BUILD_TIME" title="Link to this definition">#</a></dt>
-<dd><p>Time (epoch) when this datamodel was last built, in milliseconds.</p>
+<dd><p>Timestamp of when the datamodel was last built</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_LAST_PUBLISH_TIME">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_LAST_PUBLISH_TIME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_LAST_PUBLISH_TIME" title="Link to this definition">#</a></dt>
-<dd><p>Time (epoch) when this datamodel was last published, in milliseconds.</p>
+<dd><p>Timestamp of when the datamodel was last published</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME" title="Link to this definition">#</a></dt>
-<dd><p>Time (epoch) when this datamodel was last built successfully, in milliseconds.</p>
+<dd><p>Timestamp of when the datamodel was last built successfully</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_RELATION_TYPE">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_RELATION_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_RELATION_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>Default relation type for this datamodel. ‘extract’ type Datamodels have regular relations by default. ‘live’ type Datamodels have direct relations by default.</p>
+<dd><p>Default relation type for the Datamodel. ‘extract’ type Datamodels have regular relations by default. ‘live’ type Datamodels have direct relations by default.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_REVISION">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_REVISION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_REVISION" title="Link to this definition">#</a></dt>
-<dd><p>Revision of this datamodel.</p>
+<dd><p>Revision of the datamodel</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_SERVER">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_SERVER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_SERVER" title="Link to this definition">#</a></dt>
-<dd><p>Hostname of the server on which this datamodel was created.</p>
+<dd><p>Hostname of server on which the Datamodel is created</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -495,13 +494,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_TABLE_COUNT">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_TABLE_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_TABLE_COUNT" title="Link to this definition">#</a></dt>
-<dd><p>Number of tables in this datamodel.</p>
+<dd><p>Number of tables present in the datamodel</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_TYPE">
 <span class="sig-name descname"><span class="pre">SISENSE_DATAMODEL_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SisenseDatamodel.SISENSE_DATAMODEL_TYPE" title="Link to this definition">#</a></dt>
-<dd><p>Type of this datamodel, for example: ‘extract’ or ‘custom’.</p>
+<dd><p>Type of the datamodel. It has values ‘extract’ or ‘custom’</p>
 </dd></dl>
 
 </dd></dl>

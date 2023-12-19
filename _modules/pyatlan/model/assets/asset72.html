@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -485,7 +484,7 @@
         <span class="s2">&quot;sisenseFolderParentFolderQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the parent folder in which this folder exists.</span>
+<span class="sd">    Qualified name of the parent folder</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SISENSE_CHILD_FOLDERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -628,19 +627,19 @@
         <span class="s2">&quot;sisenseWidgetColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseWidgetColumnCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of columns used in this widget.</span>
+<span class="sd">    Numbers of columns used in the widget</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_WIDGET_SUB_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseWidgetSubType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseWidgetSubType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Subtype of this widget.</span>
+<span class="sd">    Sub type of the widget</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_WIDGET_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseWidgetSize&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseWidgetSize&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Size of this widget.</span>
+<span class="sd">    Size of the widget</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">KeywordTextField</span>
@@ -650,7 +649,7 @@
         <span class="s2">&quot;sisenseWidgetDashboardQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the dashboard in which this widget exists.</span>
+<span class="sd">    Qualified name of the dashboard under which this widget is present</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_WIDGET_FOLDER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseWidgetFolderQualifiedName&quot;</span><span class="p">,</span>
@@ -658,7 +657,7 @@
         <span class="s2">&quot;sisenseWidgetFolderQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the folder in which this widget exists.</span>
+<span class="sd">    Qualified name of the folder under which this widget is present</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SISENSE_DATAMODEL_TABLES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -851,50 +850,50 @@
         <span class="s2">&quot;sisenseDatamodelTableCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of tables in this datamodel.</span>
+<span class="sd">    Number of tables present in the datamodel</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_SERVER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelServer&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelServer&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Hostname of the server on which this datamodel was created.</span>
+<span class="sd">    Hostname of server on which the Datamodel is created</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_REVISION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelRevision&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelRevision&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Revision of this datamodel.</span>
+<span class="sd">    Revision of the datamodel</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_LAST_BUILD_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelLastBuildTime&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelLastBuildTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) when this datamodel was last built, in milliseconds.</span>
+<span class="sd">    Timestamp of when the datamodel was last built</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelLastSuccessfulBuildTime&quot;</span><span class="p">,</span>
         <span class="s2">&quot;sisenseDatamodelLastSuccessfulBuildTime&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) when this datamodel was last built successfully, in milliseconds.</span>
+<span class="sd">    Timestamp of when the datamodel was last built successfully</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_LAST_PUBLISH_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelLastPublishTime&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelLastPublishTime&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) when this datamodel was last published, in milliseconds.</span>
+<span class="sd">    Timestamp of when the datamodel was last published</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of this datamodel, for example: &#39;extract&#39; or &#39;custom&#39;.</span>
+<span class="sd">    Type of the datamodel. It has values &#39;extract&#39; or &#39;custom&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_RELATION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelRelationType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelRelationType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Default relation type for this datamodel. &#39;extract&#39; type Datamodels have regular relations by default. &#39;live&#39; type Datamodels have direct relations by default.</span>
+<span class="sd">    Default relation type for the Datamodel. &#39;extract&#39; type Datamodels have regular relations by default. &#39;live&#39; type Datamodels have direct relations by default.</span>
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="n">SISENSE_DATAMODEL_TABLES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -1139,50 +1138,50 @@
         <span class="s2">&quot;sisenseDatamodelQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the datamodel in which this datamodel table exists.</span>
+<span class="sd">    Qualified name of the datamodel in which this datamodel table is present</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableColumnCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of columns present in this datamodel table.</span>
+<span class="sd">    Number of columns present in the datamodel table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableType&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of this datamodel table, for example: &#39;base&#39; for regular tables, &#39;custom&#39; for SQL expression-based tables.</span>
+<span class="sd">    Type of the datamodel table. &#39;base&#39; for regular tables, &#39;custom&#39; for SQL expression-based tables</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_EXPRESSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableExpression&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableExpression&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    SQL expression of this datamodel table.</span>
+<span class="sd">    Actual SQL expression of the datamodel table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableIsMaterialized&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableIsMaterialized&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this datamodel table is materialised (true) or not (false).</span>
+<span class="sd">    Boolean indicating if the datamodel table is materialised</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_IS_HIDDEN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableIsHidden&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableIsHidden&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether this datamodel table is hidden in Sisense (true) or not (false).</span>
+<span class="sd">    Boolean indicating if the datamodel table is hidden on sisense</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_SCHEDULE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableSchedule&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDatamodelTableSchedule&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    JSON specifying the refresh schedule of this datamodel table.</span>
+<span class="sd">    Refresh schedule of the datamodel table (JSON Object)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDatamodelTableLiveQuerySettings&quot;</span><span class="p">,</span>
         <span class="s2">&quot;sisenseDatamodelTableLiveQuerySettings&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    JSON specifying the LiveQuery settings of this datamodel table.</span>
+<span class="sd">    LiveQuery settings of the datamodel table (JSON Object)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SISENSE_DATAMODEL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDatamodel&quot;</span><span class="p">)</span>
@@ -1433,13 +1432,13 @@
         <span class="s2">&quot;sisenseDashboardFolderQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the folder in which this dashboard exists.</span>
+<span class="sd">    Qualified name of the folder in which this dashboard exists</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SISENSE_DASHBOARD_WIDGET_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;sisenseDashboardWidgetCount&quot;</span><span class="p">,</span> <span class="s2">&quot;sisenseDashboardWidgetCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Number of widgets in this dashboard.</span>
+<span class="sd">    Number of widgets that are present in this dashboard</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SISENSE_DATAMODELS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sisenseDatamodels&quot;</span><span class="p">)</span>

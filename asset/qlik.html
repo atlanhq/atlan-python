@@ -187,7 +187,6 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
@@ -447,49 +446,49 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_APP_ID">
 <span class="sig-name descname"><span class="pre">QLIK_APP_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_APP_ID" title="Link to this definition">#</a></dt>
-<dd><p>Identifier of the app in which this asset belongs, from Qlik.</p>
+<dd><p>qID of a app where the qlik object belongs</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_APP_QUALIFIED_NAME">
 <span class="sig-name descname"><span class="pre">QLIK_APP_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_APP_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
-<dd><p>Unique name of the app where this asset belongs.</p>
+<dd><p>qualifiedName of an app where the qlik object belongs to</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_ID">
 <span class="sig-name descname"><span class="pre">QLIK_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_ID" title="Link to this definition">#</a></dt>
-<dd><p>Identifier of this asset, from Qlik.</p>
+<dd><p>qID/guid of the qlik object</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_IS_PUBLISHED">
 <span class="sig-name descname"><span class="pre">QLIK_IS_PUBLISHED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_IS_PUBLISHED" title="Link to this definition">#</a></dt>
-<dd><p>Whether this asset is published in Qlik (true) or not (false).</p>
+<dd><p>If the qlik object is published</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_OWNER_ID">
 <span class="sig-name descname"><span class="pre">QLIK_OWNER_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_OWNER_ID" title="Link to this definition">#</a></dt>
-<dd><p>Identifier of the owner of this asset, in Qlik.</p>
+<dd><p>Owner’s guid of the qlik object</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_QRI">
 <span class="sig-name descname"><span class="pre">QLIK_QRI</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_QRI" title="Link to this definition">#</a></dt>
-<dd><p>Unique QRI of this asset, from Qlik.</p>
+<dd><p>QRI of the qlik object, kind of like qualifiedName on Atlan</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_SPACE_ID">
 <span class="sig-name descname"><span class="pre">QLIK_SPACE_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_SPACE_ID" title="Link to this definition">#</a></dt>
-<dd><p>Identifier of the space in which this asset exists, from Qlik.</p>
+<dd><p>qID of a space where the qlik object belongs to</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Qlik.QLIK_SPACE_QUALIFIED_NAME">
 <span class="sig-name descname"><span class="pre">QLIK_SPACE_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Qlik.QLIK_SPACE_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
-<dd><p>Unique name of the space in which this asset exists.</p>
+<dd><p>qualifiedName of a space where the qlik object belongs to</p>
 </dd></dl>
 
 </dd></dl>

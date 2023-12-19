@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -484,7 +483,7 @@
         <span class="s2">&quot;microStrategyProjectQualifiedName.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique name of the project in which this asset exists.</span>
+<span class="sd">    Related project qualified name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyProjectName&quot;</span><span class="p">,</span>
@@ -492,7 +491,7 @@
         <span class="s2">&quot;microStrategyProjectName&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple name of the project in which this asset exists.</span>
+<span class="sd">    Related project name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_CUBE_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyCubeQualifiedNames&quot;</span><span class="p">,</span>
@@ -500,7 +499,7 @@
         <span class="s2">&quot;microStrategyCubeQualifiedNames.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique names of the cubes related to this asset.</span>
+<span class="sd">    Related cube qualified name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_CUBE_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyCubeNames&quot;</span><span class="p">,</span>
@@ -508,7 +507,7 @@
         <span class="s2">&quot;microStrategyCubeNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple names of the cubes related to this asset.</span>
+<span class="sd">    Related cube name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_REPORT_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
         <span class="n">KeywordTextField</span>
@@ -518,7 +517,7 @@
         <span class="s2">&quot;microStrategyReportQualifiedNames.text&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unique names of the reports related to this asset.</span>
+<span class="sd">    Related report qualified name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_REPORT_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyReportNames&quot;</span><span class="p">,</span>
@@ -526,31 +525,31 @@
         <span class="s2">&quot;microStrategyReportNames&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simple names of the reports related to this asset.</span>
+<span class="sd">    Related report name list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_IS_CERTIFIED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyIsCertified&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyIsCertified&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether the asset is certified in MicroStrategy (true) or not (false).</span>
+<span class="sd">    Whether certified in MicroStrategy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_CERTIFIED_BY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyCertifiedBy&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyCertifiedBy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    User who certified this asset, in MicroStrategy.</span>
+<span class="sd">    User who certified in MicroStrategy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_CERTIFIED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyCertifiedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyCertifiedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Time (epoch) this asset was certified in MicroStrategy, in milliseconds.</span>
+<span class="sd">    Certified date in MicroStrategy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MICRO_STRATEGY_LOCATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;microStrategyLocation&quot;</span><span class="p">,</span> <span class="s2">&quot;microStrategyLocation&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Location of this asset in MicroStrategy.</span>
+<span class="sd">    Location path in MicroStrategy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>

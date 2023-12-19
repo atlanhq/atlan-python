@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -510,10 +509,10 @@
             <span class="k">if</span> <span class="n">policy_groups</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">pyatlan.cache.group_cache</span> <span class="kn">import</span> <span class="n">GroupCache</span>
 
-                <span class="k">for</span> <span class="n">group_alias</span> <span class="ow">in</span> <span class="n">policy_groups</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">GroupCache</span><span class="o">.</span><span class="n">get_id_for_alias</span><span class="p">(</span><span class="n">group_alias</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">policy_groups</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">GroupCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Provided group name </span><span class="si">{</span><span class="n">group_alias</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Provided group name </span><span class="si">{</span><span class="n">group_name</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
                         <span class="p">)</span>
                 <span class="n">target_found</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">policy</span><span class="o">.</span><span class="n">policy_groups</span> <span class="o">=</span> <span class="n">policy_groups</span>
@@ -568,10 +567,10 @@
             <span class="k">if</span> <span class="n">policy_groups</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">pyatlan.cache.group_cache</span> <span class="kn">import</span> <span class="n">GroupCache</span>
 
-                <span class="k">for</span> <span class="n">group_alias</span> <span class="ow">in</span> <span class="n">policy_groups</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">GroupCache</span><span class="o">.</span><span class="n">get_id_for_alias</span><span class="p">(</span><span class="n">group_alias</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">policy_groups</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">GroupCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Provided group name </span><span class="si">{</span><span class="n">group_alias</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Provided group name </span><span class="si">{</span><span class="n">group_name</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
                         <span class="p">)</span>
                 <span class="n">target_found</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">policy</span><span class="o">.</span><span class="n">policy_groups</span> <span class="o">=</span> <span class="n">policy_groups</span>

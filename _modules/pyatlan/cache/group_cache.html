@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataproduct.html">DataProduct</a></li>
@@ -468,7 +467,7 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_id_for_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Translate the provided human-readable group name to its GUID.</span>
+<span class="sd">        Translate the provided internal group name to its GUID.</span>
 
 <span class="sd">        :param name: human-readable name of the group</span>
 <span class="sd">        :returns: unique identifier (GUID) of the group</span>
@@ -481,7 +480,7 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_id_for_alias</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Translate the provided alias to its GUID.</span>
+<span class="sd">        Translate the provided human-readable group name to its GUID.</span>
 
 <span class="sd">        :param alias: name of the group as it appears in the UI</span>
 <span class="sd">        :returns: unique identifier (GUID) of the group</span>
@@ -494,7 +493,7 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_name_for_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">idstr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Translate the provided group GUID to the human-readable group name.</span>
+<span class="sd">        Translate the provided group GUID to the internal group name.</span>
 
 <span class="sd">        :param idstr: unique identifier (GUID) of the group</span>
 <span class="sd">        :returns: human-readable name of the group</span>
@@ -536,9 +535,9 @@
 
     <span class="k">def</span> <span class="nf">_get_id_for_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Translate the provided human-readable group name to its GUID.</span>
+<span class="sd">        Translate the provided internal group name to its GUID.</span>
 
-<span class="sd">        :param name: human-readable name of the group</span>
+<span class="sd">        :param name: internal name of the group</span>
 <span class="sd">        :returns: unique identifier (GUID) of the group</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">group_id</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
@@ -548,7 +547,7 @@
 
     <span class="k">def</span> <span class="nf">_get_id_for_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Translate the provided alias to its GUID.</span>
+<span class="sd">        Translate the provided human-readable group name to its GUID.</span>
 
 <span class="sd">        :param alias: name of the group as it appears in the UI</span>
 <span class="sd">        :returns: unique identifier (GUID) of the group</span>
@@ -560,10 +559,10 @@
 
     <span class="k">def</span> <span class="nf">_get_name_for_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idstr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Translate the provided group GUID to the human-readable group name.</span>
+<span class="sd">        Translate the provided group GUID to the internal group name.</span>
 
 <span class="sd">        :param idstr: unique identifier (GUID) of the group</span>
-<span class="sd">        :returns: human-readable name of the group</span>
+<span class="sd">        :returns: internal name of the group</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">group_name</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">group_name</span>
