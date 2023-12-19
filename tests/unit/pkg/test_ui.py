@@ -36,6 +36,22 @@ def ui_rule() -> UIRule:
     return UIRule(when_inputs=WHEN_INPUTS, required=REQUIRED)
 
 
+@pytest.fixture()
+def good_or_bad_step(request, ui_step):
+    if request.param == "good":
+        return [ui_step]
+    else:
+        return None
+
+
+@pytest.fixture()
+def good_or_bad_rule(request, ui_rule):
+    if request.param == "good":
+        return [ui_rule]
+    else:
+        return None
+
+
 class TestUIConfig:
     def test_constructor(self, ui_step, ui_rule):
         sut = UIConfig(steps=[ui_step], rules=[ui_rule])
@@ -45,15 +61,25 @@ class TestUIConfig:
             assert key in sut.properties
             assert sut.properties[key] == value
 
-    # @pytest.mark.parametrize(
-    #     "ui_step, ui_rule, msg",
-    #     [({1: "kjk"}, REQUIRED, r"1 validation error for Init\nwhen_inputs -> __key__\n  str type expected"),
-    #      (WHEN_INPUTS, [1], r"1 validation error for Init\nrequired -> 0\n  str type expected")
-    #      ],
-    # )
-    # def test_validation(self, ui_step, ui_rule, msg):
-    #     with pytest.raises(ValidationError, match=msg):
-    #         UIConfig(ui_step=ui_stpe)
+    @pytest.mark.parametrize(
+        "good_or_bad_step, good_or_bad_rule, msg",
+        [
+            (
+                "good",
+                "bad",
+                r"1 validation error for Init\nrules\n  none is not an allowed value",
+            ),
+            (
+                "bad",
+                "good",
+                r"1 validation error for Init\nsteps\n  none is not an allowed value",
+            ),
+        ],
+        indirect=["good_or_bad_step", "good_or_bad_rule"],
+    )
+    def test_validation(self, good_or_bad_step, good_or_bad_rule, msg):
+        with pytest.raises(ValidationError, match=msg):
+            UIConfig(steps=good_or_bad_step, rules=good_or_bad_rule)
 
 
 class TestUIRule:
