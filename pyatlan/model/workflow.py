@@ -64,6 +64,7 @@ class WorkflowTemplate(AtlanObject):
 class WorkflowSpec(AtlanObject):
     entrypoint: Optional[str]
     arguments: Optional[Any]
+    templates: Optional[list[WorkflowTemplate]]
     workflow_template_ref: Optional[dict[str, str]]
     workflow_metadata: Optional[WorkflowMetadata]
 
