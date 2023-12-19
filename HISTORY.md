@@ -1,3 +1,21 @@
+## 1.8.1 (December 19, 2023)
+
+### New Features
+
+- Add support for search log access
+  
+### Breaking changes
+
+### Bug fixes
+
+- Modify constants like Referenceable.TYPE_NAME to use InternalKeywordField, InternalKeywordTextField or InternalNumericField 
+- Fix groups in purpose policies and remove data mesh slugs and abbreviations
+- Added missing "templates" field to the WorkflowSpec model 
+
+### QOL improvements
+
+- Change qualifiedName generation on Link to be deterministic
+
 ## 1.8.0 (December 13, 2023)
 
 ### New features

@@ -350,6 +350,21 @@ class Asset(Referenceable):
             qualified_name=self.qualified_name or "", name=self.name or ""
         )
 
+    def trim_to_reference(self: SelfAsset) -> SelfAsset:
+        if self.guid and self.guid.strip():
+            return self.ref_by_guid(self.guid)
+        if self.qualified_name and self.qualified_name.strip():
+            return self.ref_by_qualified_name(self.qualified_name)
+        if (
+            self.unique_attributes
+            and (qualified_name := self.unique_attributes.get("qualified_name"))
+            and qualified_name.strip()
+        ):
+            return self.ref_by_qualified_name(qualified_name)
+        raise ErrorCode.MISSING_REQUIRED_RELATIONSHIP_PARAM.exception_with_parameters(
+            self.type_name, "guid, qualifiedName"
+        )
+
     @classmethod
     @init_guid
     def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
@@ -6448,9 +6463,13 @@ class Link(Resource):
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, asset: Asset, name: str, link: str) -> Link:
+    def create(
+        cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
+    ) -> Link:
         return Link(
-            attributes=Link.Attributes.create(asset=asset, name=name, link=link)
+            attributes=Link.Attributes.create(
+                asset=asset, name=name, link=link, idempotent=idempotent
+            )
         )
 
     type_name: str = Field("Link", allow_mutation=False)
@@ -6526,13 +6545,16 @@ class Link(Resource):
         @classmethod
         # @validate_arguments()
         @init_guid
-        def create(cls, *, asset: Asset, name: str, link: str) -> Link.Attributes:
+        def create(
+            cls, *, asset: Asset, name: str, link: str, idempotent: bool
+        ) -> Link.Attributes:
             validate_required_fields(["asset", "name", "link"], [asset, name, link])
+            qn = f"{asset.qualified_name}/{name}" if idempotent else str(uuid.uuid4())
             return Link.Attributes(
-                qualified_name=str(uuid.uuid4()),
+                qualified_name=qn,
                 name=name,
                 link=link,
-                asset=asset,
+                asset=asset.trim_to_reference(),
             )
 
     attributes: "Link.Attributes" = Field(
