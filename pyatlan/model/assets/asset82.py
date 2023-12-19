@@ -43,67 +43,67 @@ class MongoDBCollection(Table):
         "mongoDBCollectionSubtype.text",
     )
     """
-    Subtype of a MongoDB collection, for example: Capped, Time Series, etc.
+    Subtype of a MongoDB collection (e.g. Capped, Time Series etc.)
     """
     MONGO_DB_COLLECTION_IS_CAPPED: ClassVar[BooleanField] = BooleanField(
         "mongoDBCollectionIsCapped", "mongoDBCollectionIsCapped"
     )
     """
-    Whether the collection is capped (true) or not (false).
+    If the collection is a capped collection
     """
     MONGO_DB_COLLECTION_TIME_FIELD: ClassVar[KeywordField] = KeywordField(
         "mongoDBCollectionTimeField", "mongoDBCollectionTimeField"
     )
     """
-    Name of the field containing the date in each time series document.
+    The name of the field which contains the date in each time series document
     """
     MONGO_DB_COLLECTION_TIME_GRANULARITY: ClassVar[KeywordField] = KeywordField(
         "mongoDBCollectionTimeGranularity", "mongoDBCollectionTimeGranularity"
     )
     """
-    Closest match to the time span between consecutive incoming measurements.
-    """
+    Set the granularity to the value that is the closest match to the time span between consecutive incoming measurements
+    """  # noqa: E501
     MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionExpireAfterSeconds", "mongoDBCollectionExpireAfterSeconds"
     )
     """
-    Seconds after which documents in a time series collection or clustered collection expire.
+    Specifies the seconds after which documents in a time series collection or clustered collection expire
     """
     MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionMaximumDocumentCount", "mongoDBCollectionMaximumDocumentCount"
     )
     """
-    Maximum number of documents allowed in a capped collection.
+    The maximum number of documents allowed in the capped collection
     """
     MONGO_DB_COLLECTION_MAX_SIZE: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionMaxSize", "mongoDBCollectionMaxSize"
     )
     """
-    Maximum size allowed in a capped collection.
+    The maximum size allowed in the capped collection
     """
     MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionNumOrphanDocs", "mongoDBCollectionNumOrphanDocs"
     )
     """
-    Number of orphaned documents in the collection.
+    The number of orphaned documents in the collection
     """
     MONGO_DB_COLLECTION_NUM_INDEXES: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionNumIndexes", "mongoDBCollectionNumIndexes"
     )
     """
-    Number of indexes on the collection.
+    The number of indexes on the collection
     """
     MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionTotalIndexSize", "mongoDBCollectionTotalIndexSize"
     )
     """
-    Total size of all indexes.
+    The total size of all indexes
     """
     MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
         "mongoDBCollectionAverageObjectSize", "mongoDBCollectionAverageObjectSize"
     )
     """
-    Average size of an object in the collection.
+    The average size of an object in the collection
     """
     MONGO_DB_COLLECTION_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition"
@@ -113,157 +113,157 @@ class MongoDBCollection(Table):
     """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
-    Number of columns in this table.
+    TBC
     """
     ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
     """
-    Number of rows in this table.
+    TBC
     """
     SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
     """
-    Size of this table, in bytes.
+    TBC
     """
     ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
     """
-    Alias for this table.
+    TBC
     """
     IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
     """
-    Whether this table is temporary (true) or not (false).
+    TBC
     """
     IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "isQueryPreview", "isQueryPreview"
     )
     """
-    Whether preview queries are allowed for this table (true) or not (false).
+    TBC
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    Configuration for preview queries.
+    TBC
     """
     EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
         "externalLocation", "externalLocation"
     )
     """
-    External location of this table, for example: an S3 object location.
+    TBC
     """
     EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
         "externalLocationRegion", "externalLocationRegion"
     )
     """
-    Region of the external location of this table, for example: S3 region.
+    TBC
     """
     EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
         "externalLocationFormat", "externalLocationFormat"
     )
     """
-    Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.
+    TBC
     """
     IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
         "isPartitioned", "isPartitioned"
     )
     """
-    Whether this table is partitioned (true) or not (false).
+    TBC
     """
     PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "partitionStrategy", "partitionStrategy"
     )
     """
-    Partition strategy for this table.
+    TBC
     """
     PARTITION_COUNT: ClassVar[NumericField] = NumericField(
         "partitionCount", "partitionCount"
     )
     """
-    Number of partitions in this table.
+    TBC
     """
     PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
         "partitionList", "partitionList"
     )
     """
-    List of partitions in this table.
+    TBC
     """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
-    Number of times this asset has been queried.
+    TBC
     """
     QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
         "queryUserCount", "queryUserCount"
     )
     """
-    Number of unique users who have queried this asset.
+    TBC
     """
     QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
         "queryUserMap", "queryUserMap"
     )
     """
-    Map of unique users who have queried this asset to the number of times they have queried it.
+    TBC
     """
     QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "queryCountUpdatedAt", "queryCountUpdatedAt"
     )
     """
-    Time (epoch) at which the query count was last updated, in milliseconds.
+    TBC
     """
     DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "databaseName", "databaseName.keyword", "databaseName"
     )
     """
-    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "databaseQualifiedName", "databaseQualifiedName"
     )
     """
-    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "schemaName", "schemaName.keyword", "schemaName"
     )
     """
-    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "schemaQualifiedName", "schemaQualifiedName"
     )
     """
-    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "tableName", "tableName.keyword", "tableName"
     )
     """
-    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "tableQualifiedName", "tableQualifiedName"
     )
     """
-    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "viewName", "viewName.keyword", "viewName"
     )
     """
-    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "viewQualifiedName", "viewQualifiedName"
     )
     """
-    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
-    Whether this asset has been profiled (true) or not (false).
+    TBC
     """
     LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
         "lastProfiledAt", "lastProfiledAt"
     )
     """
-    Time (epoch) at which this asset was last profiled, in milliseconds.
+    TBC
     """
 
     MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
@@ -957,91 +957,91 @@ class MongoDBDatabase(Database):
         "mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount"
     )
     """
-    Number of collections in the database.
+    The number of collection in a MongoDB Database
     """
     SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
     """
-    Number of schemas in this database.
+    TBC
     """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
-    Number of times this asset has been queried.
+    TBC
     """
     QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
         "queryUserCount", "queryUserCount"
     )
     """
-    Number of unique users who have queried this asset.
+    TBC
     """
     QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
         "queryUserMap", "queryUserMap"
     )
     """
-    Map of unique users who have queried this asset to the number of times they have queried it.
+    TBC
     """
     QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "queryCountUpdatedAt", "queryCountUpdatedAt"
     )
     """
-    Time (epoch) at which the query count was last updated, in milliseconds.
+    TBC
     """
     DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "databaseName", "databaseName.keyword", "databaseName"
     )
     """
-    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "databaseQualifiedName", "databaseQualifiedName"
     )
     """
-    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    TBC
     """
     SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "schemaName", "schemaName.keyword", "schemaName"
     )
     """
-    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "schemaQualifiedName", "schemaQualifiedName"
     )
     """
-    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    TBC
     """
     TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "tableName", "tableName.keyword", "tableName"
     )
     """
-    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "tableQualifiedName", "tableQualifiedName"
     )
     """
-    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    TBC
     """
     VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "viewName", "viewName.keyword", "viewName"
     )
     """
-    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "viewQualifiedName", "viewQualifiedName"
     )
     """
-    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    TBC
     """
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
-    Whether this asset has been profiled (true) or not (false).
+    TBC
     """
     LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
         "lastProfiledAt", "lastProfiledAt"
     )
     """
-    Time (epoch) at which this asset was last profiled, in milliseconds.
+    TBC
     """
 
     MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField("mongoDBCollections")

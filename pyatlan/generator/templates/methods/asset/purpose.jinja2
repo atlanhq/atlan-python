@@ -28,10 +28,10 @@
         else:
             if policy_groups:
                 from pyatlan.cache.group_cache import GroupCache
-                for group_alias in policy_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
+                for group_name in policy_groups:
+                    if not GroupCache.get_id_for_name(group_name):
                         raise ValueError(
-                            f"Provided group name {group_alias} was not found in Atlan."
+                            f"Provided group name {group_name} was not found in Atlan."
                         )
                 target_found = True
                 policy.policy_groups = policy_groups
@@ -75,10 +75,10 @@
         else:
             if policy_groups:
                 from pyatlan.cache.group_cache import GroupCache
-                for group_alias in policy_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
+                for group_name in policy_groups:
+                    if not GroupCache.get_id_for_name(group_name):
                         raise ValueError(
-                            f"Provided group name {group_alias} was not found in Atlan."
+                            f"Provided group name {group_name} was not found in Atlan."
                         )
                 target_found = True
                 policy.policy_groups = policy_groups

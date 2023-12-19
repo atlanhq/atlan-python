@@ -35,7 +35,7 @@ class Metabase(BI):
         "metabaseCollectionName",
     )
     """
-    Simple name of the Metabase collection in which this asset exists.
+    TBC
     """
     METABASE_COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseCollectionQualifiedName",
@@ -43,7 +43,7 @@ class Metabase(BI):
         "metabaseCollectionQualifiedName.text",
     )
     """
-    Unique name of the Metabase collection in which this asset exists.
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [

@@ -31,12 +31,9 @@
         # for domain and subdomain
         if len(fields) not in (3, 5):
             raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
-        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                mesh_slug=mesh_slug,
-                mesh_abbreviation=mesh_abbreviation,
             )
         )

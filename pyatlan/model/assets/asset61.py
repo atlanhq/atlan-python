@@ -66,13 +66,13 @@ class ADLSAccount(ADLS):
 
     ADLS_E_TAG: ClassVar[KeywordField] = KeywordField("adlsETag", "adlsETag")
     """
-    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.
-    """  # noqa: E501
+    TBC
+    """
     ADLS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
         "adlsEncryptionType", "adlsEncryptionType"
     )
     """
-    Type of encryption for this account.
+    TBC
     """
     ADLS_ACCOUNT_RESOURCE_GROUP: ClassVar[KeywordTextField] = KeywordTextField(
         "adlsAccountResourceGroup",
@@ -80,7 +80,7 @@ class ADLSAccount(ADLS):
         "adlsAccountResourceGroup",
     )
     """
-    Resource group for this account.
+    TBC
     """
     ADLS_ACCOUNT_SUBSCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
         "adlsAccountSubscription",
@@ -88,43 +88,43 @@ class ADLSAccount(ADLS):
         "adlsAccountSubscription",
     )
     """
-    Subscription for this account.
+    TBC
     """
     ADLS_ACCOUNT_PERFORMANCE: ClassVar[KeywordField] = KeywordField(
         "adlsAccountPerformance", "adlsAccountPerformance"
     )
     """
-    Performance of this account.
+    TBC
     """
     ADLS_ACCOUNT_REPLICATION: ClassVar[KeywordField] = KeywordField(
         "adlsAccountReplication", "adlsAccountReplication"
     )
     """
-    Replication of this account.
+    TBC
     """
     ADLS_ACCOUNT_KIND: ClassVar[KeywordField] = KeywordField(
         "adlsAccountKind", "adlsAccountKind"
     )
     """
-    Kind of this account.
+    TBC
     """
     ADLS_PRIMARY_DISK_STATE: ClassVar[KeywordField] = KeywordField(
         "adlsPrimaryDiskState", "adlsPrimaryDiskState"
     )
     """
-    Primary disk state of this account.
+    TBC
     """
     ADLS_ACCOUNT_PROVISION_STATE: ClassVar[KeywordField] = KeywordField(
         "adlsAccountProvisionState", "adlsAccountProvisionState"
     )
     """
-    Provision state of this account.
+    TBC
     """
     ADLS_ACCOUNT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
         "adlsAccountAccessTier", "adlsAccountAccessTier"
     )
     """
-    Access tier of this account.
+    TBC
     """
 
     ADLS_CONTAINERS: ClassVar[RelationField] = RelationField("adlsContainers")
@@ -391,25 +391,25 @@ class ADLSContainer(ADLS):
         "adlsContainerUrl", "adlsContainerUrl.keyword", "adlsContainerUrl"
     )
     """
-    URL of this container.
+    TBC
     """
     ADLS_CONTAINER_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
         "adlsContainerLeaseState", "adlsContainerLeaseState"
     )
     """
-    Lease state of this container.
+    TBC
     """
     ADLS_CONTAINER_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
         "adlsContainerLeaseStatus", "adlsContainerLeaseStatus"
     )
     """
-    Lease status of this container.
+    TBC
     """
     ADLS_CONTAINER_ENCRYPTION_SCOPE: ClassVar[KeywordField] = KeywordField(
         "adlsContainerEncryptionScope", "adlsContainerEncryptionScope"
     )
     """
-    Encryption scope of this container.
+    TBC
     """
     ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
         BooleanField
@@ -418,13 +418,13 @@ class ADLSContainer(ADLS):
         "adlsContainerVersionLevelImmutabilitySupport",
     )
     """
-    Whether this container supports version-level immutability (true) or not (false).
+    TBC
     """
     ADLS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
         "adlsObjectCount", "adlsObjectCount"
     )
     """
-    Number of objects that exist within this container.
+    TBC
     """
 
     ADLS_OBJECTS: ClassVar[RelationField] = RelationField("adlsObjects")
@@ -661,49 +661,49 @@ class ADLSObject(ADLS):
         "adlsObjectUrl", "adlsObjectUrl.keyword", "adlsObjectUrl"
     )
     """
-    URL of this object.
+    TBC
     """
     ADLS_OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
         "adlsObjectVersionId", "adlsObjectVersionId"
     )
     """
-    Identifier of the version of this object, from ADLS.
+    TBC
     """
     ADLS_OBJECT_TYPE: ClassVar[KeywordField] = KeywordField(
         "adlsObjectType", "adlsObjectType"
     )
     """
-    Type of this object.
+    TBC
     """
     ADLS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
         "adlsObjectSize", "adlsObjectSize"
     )
     """
-    Size of this object.
+    TBC
     """
     ADLS_OBJECT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
         "adlsObjectAccessTier", "adlsObjectAccessTier"
     )
     """
-    Access tier of this object.
+    TBC
     """
     ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
         "adlsObjectAccessTierLastModifiedTime", "adlsObjectAccessTierLastModifiedTime"
     )
     """
-    Time (epoch) when the acccess tier for this object was last modified, in milliseconds.
+    TBC
     """
     ADLS_OBJECT_ARCHIVE_STATUS: ClassVar[KeywordField] = KeywordField(
         "adlsObjectArchiveStatus", "adlsObjectArchiveStatus"
     )
     """
-    Archive status of this object.
+    TBC
     """
     ADLS_OBJECT_SERVER_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
         "adlsObjectServerEncrypted", "adlsObjectServerEncrypted"
     )
     """
-    Whether this object is server encrypted (true) or not (false).
+    TBC
     """
     ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
         BooleanField
@@ -712,25 +712,25 @@ class ADLSObject(ADLS):
         "adlsObjectVersionLevelImmutabilitySupport",
     )
     """
-    Whether this object supports version-level immutability (true) or not (false).
+    TBC
     """
     ADLS_OBJECT_CACHE_CONTROL: ClassVar[TextField] = TextField(
         "adlsObjectCacheControl", "adlsObjectCacheControl"
     )
     """
-    Cache control of this object.
+    TBC
     """
     ADLS_OBJECT_CONTENT_TYPE: ClassVar[TextField] = TextField(
         "adlsObjectContentType", "adlsObjectContentType"
     )
     """
-    Content type of this object.
+    TBC
     """
     ADLS_OBJECT_CONTENT_MD5HASH: ClassVar[KeywordField] = KeywordField(
         "adlsObjectContentMD5Hash", "adlsObjectContentMD5Hash"
     )
     """
-    MD5 hash of this object's contents.
+    TBC
     """
     ADLS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordTextField] = KeywordTextField(
         "adlsObjectContentLanguage",
@@ -738,25 +738,25 @@ class ADLSObject(ADLS):
         "adlsObjectContentLanguage",
     )
     """
-    Language of this object's contents.
+    TBC
     """
     ADLS_OBJECT_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
         "adlsObjectLeaseStatus", "adlsObjectLeaseStatus"
     )
     """
-    Status of this object's lease.
+    TBC
     """
     ADLS_OBJECT_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
         "adlsObjectLeaseState", "adlsObjectLeaseState"
     )
     """
-    State of this object's lease.
+    TBC
     """
     ADLS_OBJECT_METADATA: ClassVar[KeywordField] = KeywordField(
         "adlsObjectMetadata", "adlsObjectMetadata"
     )
     """
-    Metadata associated with this object, from ADLS.
+    TBC
     """
     ADLS_CONTAINER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "adlsContainerQualifiedName",
@@ -764,7 +764,7 @@ class ADLSObject(ADLS):
         "adlsContainerQualifiedName.text",
     )
     """
-    Unique name of the container this object exists within.
+    TBC
     """
 
     ADLS_CONTAINER: ClassVar[RelationField] = RelationField("adlsContainer")
