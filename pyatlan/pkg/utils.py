@@ -22,7 +22,7 @@ class PackageWriter(BaseModel):
         self._config_maps_dir = self._root_dir / "configmaps"
         self._templates_dir = self._root_dir / "templates"
         self._env = Environment(  # noqa: S701
-            loader=PackageLoader("package_toolkit.pkg", "templates")
+            loader=PackageLoader("pyatlan.pkg", "templates")
         )
 
     def create_package(self):

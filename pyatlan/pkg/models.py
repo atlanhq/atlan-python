@@ -7,7 +7,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr, validate_arguments
 
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.pkg.ui import UIConfig
@@ -44,6 +44,31 @@ class ConfigMap(BaseModel):
     def __init__(self, name: str, **data):
         super().__init__(**data)
         self.metadata = {"name": name}
+
+
+class NamePathS3Tuple:
+    name: str
+    path: str
+    s3: dict[str, str]
+
+    def __init__(self, input_name: str):
+        self.name = f"{input_name}_s3"
+        self.path = (
+            f"/tmp/{input_name}/{{{{inputs.parameters.{input_name}}}}}"  # noqa: S108
+        )
+        self.s3 = {"key": f"{{{{inputs.parameters.{input_name}}}}}"}
+
+
+class WorkflowInputs:
+    parameters: list[tuple[str, str]]
+    artifacts: list[NamePathS3Tuple]
+
+    @validate_arguments()
+    def __init__(self, config: UIConfig, pkg_name: str):
+        self.parameters = []
+        self.artifacts = []
+        for _key, value in config.properties.items():
+            value.ui
 
 
 class PackageDefinition(BaseModel):

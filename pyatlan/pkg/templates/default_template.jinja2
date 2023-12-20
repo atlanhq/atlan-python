@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: {{ pkg.name }}
+spec:
+  templates:
+    - name: main
+      inputs:
+        parameters:
+        {%- if pkg.name %}
+            - name: output_prefix
+              value: {{ pkg.name }}
+        {%- endif %}
+        artifacts:
+      outputs:
+        artifacts:
+      container:
+        image: {{ pkg.container_image }}
+        imagePullPolicy: {{ pkg.container_image_pull_policy.value }}
+        command:
+          - {{ pkg.container_command[0] }}
+        args:
+            {%- for cmd in pkg.container_command[1:] %}
+          - {{ cmd }}
+            {%- endfor %}
+        env:
+          - name: ATLAN_BASE_URL
+            value: INTERNAL
+          - name: ATLAN_USER_ID
+            value: "{% raw %}{{=sprig.dig('labels', 'workflows', 'argoproj', 'io/creator', '', workflow)}}{% endraw %}"
+          - name: X_ATLAN_AGENT
+            value: workflow
+          - name: X_ATLAN_AGENT_ID
+            value: "{% raw %}{{workflow.name}}{% endraw %}"
+          - name: X_ATLAN_AGENT_PACKAGE_NAME
+            value: "{% raw %}{{=sprig.dig('annotations', 'package', 'argoproj', 'io/name', '', workflow)}}{% endraw %}"
+          - name: X_ATLAN_AGENT_WORKFLOW_ID
+            value: "{% raw %}{{=sprig.dig('labels', 'workflows', 'argoproj', 'io/workflow-template', '', workflow)}}{% endraw %}"
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: argo-client-creds
+                key: login
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: argo-client-creds
+                key: password

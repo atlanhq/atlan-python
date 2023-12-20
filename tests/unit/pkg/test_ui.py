@@ -2,7 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from pyatlan.pkg.ui import UIConfig, UIRule, UIStep
-from pyatlan.pkg.widgets import TextInput, UIElement
+from pyatlan.pkg.widgets import AbstractUIElement, TextInput
 
 WHEN_INPUTS_VALUE = "advanced"
 
@@ -14,6 +14,9 @@ WHEN_INPUTS = {WHEN_INPUTS_KEY: WHEN_INPUTS_VALUE}
 
 TITLE = "Some Title"
 DESCRIPTION = "Some description"
+HELP = "some help"
+PLACEHOLDER = "some placeholder"
+LABEL = "Some label"
 
 
 @pytest.fixture()
@@ -22,7 +25,7 @@ def text_input() -> TextInput:
 
 
 @pytest.fixture()
-def inputs(text_input: TextInput) -> dict[str, UIElement]:
+def inputs(text_input: TextInput) -> dict[str, AbstractUIElement]:
     return {"qn_prefix": text_input}
 
 
@@ -110,6 +113,32 @@ class TestUIRule:
 
 
 class TestUIStep:
+    @pytest.mark.parametrize(
+        "an_input",
+        [
+            "APITokenSelector",
+            "BooleanInput",
+            "ConnectionCreator",
+            "ConnectionSelector",
+            "ConnectorTypeSelector",
+            "DateInput",
+            "DropDown",
+            "FileUploader",
+            "KeygenInput",
+            "MultipleGroups",
+            "MultipleUsers",
+            "NumericInput",
+            "PasswordInput",
+            "Radio",
+            "SingleGroup",
+            "SingleUser",
+            "TextInput",
+        ],
+        indirect=True,
+    )
+    def test_contstructor(self, an_input):
+        UIStep(title=TITLE, inputs={"an_input": an_input})
+
     def test_constructor_with_defaults(self, text_input, inputs):
         sut = UIStep(title=TITLE, inputs=inputs)
 
@@ -147,7 +176,8 @@ class TestUIStep:
                 TITLE,
                 {"qn_prefix": "oioi"},
                 "",
-                r"1 validation error for Init\ninputs -> qn_prefix\n  instance of UIElement",
+                r"16 validation errors for Init\ninputs -> qn_prefix\n  instance of APITokenSelector, tuple or dict "
+                r"expected",
             ),
             (
                 TITLE,

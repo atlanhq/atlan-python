@@ -1,12 +1,48 @@
 import logging
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Union
 
 from pydantic import StrictStr, validate_arguments
 
-from pyatlan.pkg.widgets import UIElement
+from pyatlan.pkg.widgets import (
+    APITokenSelector,
+    BooleanInput,
+    ConnectionCreator,
+    ConnectorTypeSelector,
+    DateInput,
+    DropDown,
+    FileUploader,
+    KeygenInput,
+    MultipleGroups,
+    MultipleUsers,
+    NumericInput,
+    PasswordInput,
+    Radio,
+    SingleGroup,
+    SingleUser,
+    TextInput,
+)
 
 LOGGER = logging.getLogger(__name__)
+
+UIElement = Union[
+    APITokenSelector,
+    BooleanInput,
+    ConnectionCreator,
+    ConnectorTypeSelector,
+    DateInput,
+    DropDown,
+    FileUploader,
+    KeygenInput,
+    MultipleGroups,
+    MultipleUsers,
+    NumericInput,
+    PasswordInput,
+    Radio,
+    SingleGroup,
+    SingleUser,
+    TextInput,
+]
 
 
 @dataclass()
@@ -17,7 +53,7 @@ class UIStep:
     id: str = ""
     properties: list[str] = field(default_factory=list)
 
-    @validate_arguments()
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def __init__(
         self,
         title: StrictStr,

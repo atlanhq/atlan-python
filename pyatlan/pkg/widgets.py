@@ -4,15 +4,35 @@ import abc
 from dataclasses import dataclass, field
 
 # from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import StrictBool, StrictInt, StrictStr, validate_arguments
 
 # from pydantic.dataclasses import dataclass
 
+Widget = Union[
+    "APITokenSelectorWidget",
+    "BooleanInputWidget",
+    "ConnectionCreatorWidget",
+    "ConnectionSelectorWidget",
+    "ConnectorTypeSelectorWidget",
+    "DateInputWidget",
+    "DropDownWidget",
+    "FileUploaderWidget",
+    "KeygenInputWidget",
+    "MultipleGroupsWidget",
+    "MultipleUsersWidget",
+    "NumericInputWidget",
+    "PasswordInputWidget",
+    "RadioWidget",
+    "SingleGroupWidget",
+    "SingleUserWidget",
+    "TextInputWidget",
+]
+
 
 @dataclass
-class Widget(abc.ABC):
+class AbstractWidget(abc.ABC):
     widget: str
     label: str
     hidden: bool = False
@@ -22,17 +42,17 @@ class Widget(abc.ABC):
 
 
 @dataclass
-class UIElement(abc.ABC):
+class AbstractUIElement(abc.ABC):
     type_: str
     required: bool
     ui: Optional[Widget]
 
 
 @dataclass
-class UIElementWithEnum(UIElement):
-    default: Optional[str]
+class UIElementWithEnum(AbstractUIElement):
     enum: list[str]
     enum_names: list[str]
+    default: Optional[str] = None
 
     def __init__(
         self,
@@ -47,7 +67,7 @@ class UIElementWithEnum(UIElement):
 
 
 @dataclass
-class APITokenSelectorWidget(Widget):
+class APITokenSelectorWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -65,7 +85,7 @@ class APITokenSelectorWidget(Widget):
 
 
 @dataclass
-class APITokenSelector(UIElement):
+class APITokenSelector(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -94,7 +114,7 @@ class APITokenSelector(UIElement):
 
 
 @dataclass
-class BooleanInputWidget(Widget):
+class BooleanInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -114,7 +134,7 @@ class BooleanInputWidget(Widget):
 
 
 @dataclass
-class BooleanInput(UIElement):
+class BooleanInput(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -138,7 +158,7 @@ class BooleanInput(UIElement):
 
 
 @dataclass
-class ConnectionCreatorWidget(Widget):
+class ConnectionCreatorWidget(AbstractWidget):
     def __init__(
         self, label: str, hidden: bool = False, help_: str = "", placeholder: str = ""
     ):
@@ -152,7 +172,7 @@ class ConnectionCreatorWidget(Widget):
 
 
 @dataclass
-class ConnectionCreator(UIElement):
+class ConnectionCreator(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -179,7 +199,7 @@ class ConnectionCreator(UIElement):
 
 
 @dataclass
-class ConnectionSelectorWidget(Widget):
+class ConnectionSelectorWidget(AbstractWidget):
     start: int = 1
 
     def __init__(
@@ -203,7 +223,7 @@ class ConnectionSelectorWidget(Widget):
 
 
 @dataclass
-class ConnectionSelector(UIElement):
+class ConnectionSelector(AbstractUIElement):
     start: StrictInt = 1
 
     @validate_arguments()
@@ -242,7 +262,7 @@ class ConnectionSelector(UIElement):
 
 
 @dataclass
-class ConnectorTypeSelectorWidget(Widget):
+class ConnectorTypeSelectorWidget(AbstractWidget):
     start: int = 1
 
     def __init__(
@@ -264,7 +284,7 @@ class ConnectorTypeSelectorWidget(Widget):
 
 
 @dataclass
-class ConnectorTypeSelector(UIElement):
+class ConnectorTypeSelector(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -299,7 +319,7 @@ class ConnectorTypeSelector(UIElement):
 
 
 @dataclass
-class DateInputWidget(Widget):
+class DateInputWidget(AbstractWidget):
     min_: int = -14
     max_: int = 0
     default: int = 0
@@ -326,7 +346,7 @@ class DateInputWidget(Widget):
 
 
 @dataclass
-class DateInput(UIElement):
+class DateInput(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -371,7 +391,7 @@ class DateInput(UIElement):
 
 
 @dataclass
-class DropDownWidget(Widget):
+class DropDownWidget(AbstractWidget):
     mode: str = ""
 
     def __init__(
@@ -394,7 +414,7 @@ class DropDownWidget(Widget):
 
 @dataclass
 class DropDown(UIElementWithEnum):
-    possible_values: dict[str, str]
+    possible_values: dict[str, str] = field(default_factory=dict)
 
     @validate_arguments()
     def __init__(
@@ -435,7 +455,7 @@ class DropDown(UIElementWithEnum):
 
 
 @dataclass
-class FileUploaderWidget(Widget):
+class FileUploaderWidget(AbstractWidget):
     file_types: list[str] = field(default_factory=list)
 
     def __init__(
@@ -457,7 +477,7 @@ class FileUploaderWidget(Widget):
 
 
 @dataclass
-class FileUploader(UIElement):
+class FileUploader(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -490,7 +510,7 @@ class FileUploader(UIElement):
 
 
 @dataclass
-class KeygenInputWidget(Widget):
+class KeygenInputWidget(AbstractWidget):
     def __init__(
         self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
     ):
@@ -504,7 +524,7 @@ class KeygenInputWidget(Widget):
 
 
 @dataclass
-class KeygenInput(UIElement):
+class KeygenInput(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -535,7 +555,7 @@ class KeygenInput(UIElement):
 
 
 @dataclass
-class MultipleGroupsWidget(Widget):
+class MultipleGroupsWidget(AbstractWidget):
     def __init__(
         self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
     ):
@@ -549,7 +569,7 @@ class MultipleGroupsWidget(Widget):
 
 
 @dataclass
-class MultipleGroups(UIElement):
+class MultipleGroups(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -578,7 +598,7 @@ class MultipleGroups(UIElement):
 
 
 @dataclass
-class MultipleUsersWidget(Widget):
+class MultipleUsersWidget(AbstractWidget):
     def __init__(
         self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
     ):
@@ -592,7 +612,7 @@ class MultipleUsersWidget(Widget):
 
 
 @dataclass
-class MultipleUsers(UIElement):
+class MultipleUsers(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -621,7 +641,7 @@ class MultipleUsers(UIElement):
 
 
 @dataclass
-class NumericInputWidget(Widget):
+class NumericInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -641,7 +661,7 @@ class NumericInputWidget(Widget):
 
 
 @dataclass
-class NumericInput(UIElement):
+class NumericInput(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -674,7 +694,7 @@ class NumericInput(UIElement):
 
 
 @dataclass
-class PasswordInputWidget(Widget):
+class PasswordInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -692,7 +712,7 @@ class PasswordInputWidget(Widget):
 
 
 @dataclass
-class PasswordInput(UIElement):
+class PasswordInput(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -722,7 +742,7 @@ class PasswordInput(UIElement):
 
 
 @dataclass
-class RadioWidget(Widget):
+class RadioWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -738,10 +758,7 @@ class RadioWidget(Widget):
 
 
 @dataclass
-class Radio(UIElement):
-    possible_values: dict[str, str]
-    default: str
-
+class Radio(UIElementWithEnum):
     @validate_arguments()
     def __init__(
         self,
@@ -769,13 +786,17 @@ class Radio(UIElement):
             hidden=hidden,
             help_=help_,
         )
-        super().__init__(type_="string", required=required, ui=widget)
-        self.possible_values = posssible_values
+        super().__init__(
+            type_="string",
+            required=required,
+            ui=widget,
+            possible_values=posssible_values,
+        )
         self.default = default
 
 
 @dataclass
-class SingleGroupWidget(Widget):
+class SingleGroupWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -793,7 +814,7 @@ class SingleGroupWidget(Widget):
 
 
 @dataclass
-class SingleGroup(UIElement):
+class SingleGroup(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -822,7 +843,7 @@ class SingleGroup(UIElement):
 
 
 @dataclass
-class SingleUserWidget(Widget):
+class SingleUserWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -840,7 +861,7 @@ class SingleUserWidget(Widget):
 
 
 @dataclass
-class SingleUser(UIElement):
+class SingleUser(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
@@ -869,7 +890,7 @@ class SingleUser(UIElement):
 
 
 @dataclass
-class TextInputWidget(Widget):
+class TextInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
@@ -889,7 +910,7 @@ class TextInputWidget(Widget):
 
 
 @dataclass
-class TextInput(UIElement):
+class TextInput(AbstractUIElement):
     @validate_arguments()
     def __init__(
         self,
