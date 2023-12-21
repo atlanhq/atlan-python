@@ -1,16 +1,27 @@
+## 1.8.2 (December 21, 2023)
+
+### New Features
+
+### Bug fixes
+
+- Fix problem parsing assets that contain SourceTagAttachements
+
+### QOL improvements
+
+
 ## 1.8.1 (December 19, 2023)
 
 ### New Features
 
 - Add support for search log access
-  
+
 ### Breaking changes
 
 ### Bug fixes
 
-- Modify constants like Referenceable.TYPE_NAME to use InternalKeywordField, InternalKeywordTextField or InternalNumericField 
+- Modify constants like Referenceable.TYPE_NAME to use InternalKeywordField, InternalKeywordTextField or InternalNumericField
 - Fix groups in purpose policies and remove data mesh slugs and abbreviations
-- Added missing "templates" field to the WorkflowSpec model 
+- Added missing "templates" field to the WorkflowSpec model
 
 ### QOL improvements
 
