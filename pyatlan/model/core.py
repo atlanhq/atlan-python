@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Extra, Field, validator
 
+from pyatlan.model.utils import to_camel_case
+
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
@@ -17,47 +19,6 @@ from pydantic.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus
-
-CAMEL_CASE_OVERRIDES = {
-    "IndexTypeEsFields": "IndexTypeESFields",
-    "sourceUrl": "sourceURL",
-    "sourceEmbedUrl": "sourceEmbedURL",
-    "sql_dbt_sources": "sqlDBTSources",
-    "purpose_atlan_tags": "purposeClassifications",
-    "mapped_atlan_tag_name": "mappedClassificationName",
-}
-
-
-def to_camel_case(value: str) -> str:
-    if not isinstance(value, str):
-        raise ValueError("Value must be a string")
-    if value == "__root__":
-        return value
-    value = "".join(word.capitalize() for word in value.split("_"))
-    if value in CAMEL_CASE_OVERRIDES:
-        value = CAMEL_CASE_OVERRIDES[value]
-    if value.startswith("__"):
-        value = value[2:]
-    return f"{value[0].lower()}{value[1:]}"
-
-
-def to_snake_case(value):
-    if value.startswith("__"):
-        value = value[2:]
-    if value == "purposeClassifications":
-        return "purpose_atlan_tags"
-    elif value == "mappedClassificationName":
-        return "mapped_atlan_tag_name"
-    res = [value[0].lower()]
-    for c in (
-        value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]
-    ):
-        if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-            res.append("_")
-            res.append(c.lower())
-        else:
-            res.append(c)
-    return "".join(res).replace(" _", "_").replace(" ", "_")
 
 
 class AtlanTagName:
