@@ -185,6 +185,8 @@ class AtlanTag(AtlanObject):
     )
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
 
+    attributes: Optional[dict[str, Any]] = None
+
     @validator("type_name", pre=True)
     def type_name_is_tag_name(cls, value):
         if isinstance(value, AtlanTagName):
