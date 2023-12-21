@@ -5,14 +5,13 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Extra, Field, validator
 
-from pyatlan.model.utils import to_camel_case
+from pyatlan.model.utils import encoders, to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
     from pydantic.dataclasses import dataclass
 
-from datetime import datetime
 from typing import Any, Generic, Optional, TypeVar
 
 from pydantic.generics import GenericModel
@@ -89,10 +88,7 @@ class AtlanObject(BaseModel):
         allow_population_by_field_name = True
         alias_generator = to_camel_case
         extra = Extra.ignore
-        json_encoders = {
-            datetime: lambda v: int(v.timestamp() * 1000),
-            "AtlanTagName": AtlanTagName.json_encode_atlan_tag,
-        }
+        json_encoders = encoders()
         validate_assignment = True
 
 
