@@ -1,5 +1,4 @@
-from typing import Any, Dict, List, Optional
-import time
+from pyatlan.model.assets import Connection
 from pyatlan.model.workflow import (
     PackageParameter,
     Workflow,
@@ -16,30 +15,21 @@ from pyatlan.model.workflow import (
 class AbstractPackage:
     """
     Abstract class for packages
-
-    Attributes:
-        prefix: the name of the user for which to look for any changes
-        name: unique name of the package, usually @atlan/something
-        labels: labels associated with the package.
-        annotations: annotations associated with the package.
-        parameters: parameters associated with the package.
-        credentials: credentials for the package to access its source.
     """
 
-    _PACKAGE_NAME = None
-    _PACKAGE_PREFIX = None
-    _WORKFLOW_METADATA = {}
-    _credentials_body = {}
-    _parameters = []
+    _parameters: list = []
+    _credentials_body: dict = {}
+    _PACKAGE_NAME: str = ""
+    _PACKAGE_PREFIX: str = ""
+    _WORKFLOW_METADATA: dict = {}
 
-    @staticmethod
-    def get_epoch() -> str:
-        return str(int(time.time()))
-
-    def _get_metadata(self):
+    def _get_metadata(self) -> WorkflowMetadata:
         raise NotImplementedError
 
-    def to_workflow(self):
+    def _get_connection(self) -> Connection:
+        raise NotImplementedError
+
+    def to_workflow(self) -> Workflow:
         self._parameters.append(
             {"name": "credential-guid", "value": "{{credentialGuid}}"}
         )

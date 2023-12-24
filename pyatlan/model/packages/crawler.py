@@ -1,5 +1,6 @@
 from json import dumps
-from typing import Any, Dict, List, Optional
+from time import time
+from typing import Any, Dict, Optional
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.model.assets import Connection
@@ -7,24 +8,33 @@ from pyatlan.model.packages.package import AbstractPackage
 
 
 class AbstractCrawler(AbstractPackage):
+    """
+    Abstract class for crawlers
+    """
+
+    @staticmethod
+    def get_epoch() -> str:
+        return str(int(time()))
+
     @staticmethod
     def get_connection(
         connection_name: str,
-        connection_type,
-        roles: List[str],
-        groups: List[str],
-        users: List[str],
+        connection_type: str,
+        roles: Optional[list[str]],
+        groups: Optional[list[str]],
+        users: Optional[list[str]],
         allow_query: bool,
         allow_query_preview: bool,
-        row_limit: int = 10000,
-        source_logo: str = None,
-    ):
+        row_limit: int,
+        source_logo: str,
+    ) -> Connection:
         """
         Builds a connection using the provided parameters,
         which will be the target for the package to crawl assets.
         """
-        if not roles:
-            roles = [RoleCache.get_id_for_name("$admin")]
+        admin_role = RoleCache.get_id_for_name("$admin")
+        if not roles and admin_role:
+            roles = [admin_role]
         connection = Connection.create(
             name=connection_name,
             connector_type=connection_type,
@@ -36,9 +46,7 @@ class AbstractCrawler(AbstractPackage):
         connection.allow_query_preview = allow_query_preview
         connection.row_limit = row_limit
         connection.default_credential_guid = "{{credentialGuid}}"
-        connection.source_logo = source_logo or (
-            "https://docs.snowflake.com/en/_images/logo-snowflake-sans-text.png"
-        )
+        connection.source_logo = source_logo
         connection.is_discoverable = True
         connection.is_editable = False
         return connection
@@ -53,7 +61,7 @@ class AbstractCrawler(AbstractPackage):
         return dumps(to_include)
 
     @staticmethod
-    def build_flat_filter(raw_filter: Optional[dict]) -> str:
+    def build_flat_filter(raw_filter: Optional[list]) -> str:
         to_include: Dict[str, Any] = {}
         if raw_filter:
             for entry in raw_filter:
