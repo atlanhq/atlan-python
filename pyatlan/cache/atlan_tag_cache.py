@@ -54,7 +54,7 @@ class AtlanTagCache:
         return cls.get_cache()._get_name_for_id(idstr=idstr)
 
     @classmethod
-    def get_source_tags_attr_id(cls, id: str) -> str:
+    def get_source_tags_attr_id(cls, id: str) -> Optional[str]:
         """
         Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
         captures tag attachment details (for source-synced tags).
@@ -136,7 +136,7 @@ class AtlanTagCache:
                 self.deleted_ids.add(idstr)
         return cls_name
 
-    def _get_source_tags_attr_id(self, id: str) -> str:
+    def _get_source_tags_attr_id(self, id: str) -> Optional[str]:
         """
         Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
         captures tag attachment details (for source-synced tags).
@@ -146,11 +146,11 @@ class AtlanTagCache:
         """
         if id and id.strip():
             attr_id = self.map_id_to_source_tags_attr_id.get(id)
-            if attr_id is None and id not in self.deleted_ids:
-                self.refresh_cache()
-                attr_id = self.map_id_to_source_tags_attr_id.get(id)
-                if attr_id:
-                    return attr_id
-                self.deleted_ids.add(id)
-                raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_ID.exception_with_parameters(id)
+            if attr_id is not None or id in self.deleted_ids:
+                return attr_id
+            self.refresh_cache()
+            if attr_id := self.map_id_to_source_tags_attr_id.get(id):
+                return attr_id
+            self.deleted_ids.add(id)
+            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_ID.exception_with_parameters(id)
         raise ErrorCode.MISSING_ATLAN_TAG_ID.exception_with_parameters()

@@ -4,15 +4,24 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, Union
 
-from pydantic import Field
+from pydantic import BaseModel, Extra, Field
 
-from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
     BadgeComparisonOperator,
     BadgeConditionColor,
     SourceCostUnitType,
 )
+from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import validate_required_fields
+
+
+class AtlanObject(BaseModel):
+    class Config:
+        allow_population_by_field_name = True
+        alias_generator = to_camel_case
+        extra = Extra.ignore
+        json_encoders = {datetime: lambda v: int(v.timestamp() * 1000)}
+        validate_assignment = True
 
 
 class MCRuleSchedule(AtlanObject):
