@@ -1,0 +1,126 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6335824578705",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://assets.atlan.com/assets/dbt-new.svg",
+        "orchestration.atlan.com/logo": "https://assets.atlan.com/assets/dbt-new.svg",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/dbt",
+        "orchestration.atlan.com/name": "dbt Assets",
+        "orchestration.atlan.com/usecase": "crawling",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl dbt assets and publish to Atlan for discovery.",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/dbt",
+        "package.argoproj.io/keywords": "[\"connector\",\"crawler\",\"dbt\"]",
+        "package.argoproj.io/name": "@atlan/dbt",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-dbt-default-dbt-123456.123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "dbt",
+        "orchestration.atlan.com/sourceCategory": "elt",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hdbt",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-dbt-123456.123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-dbt-123456.123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "extraction-method",
+                      "value": "core"
+                    },
+                    {
+                      "name": "deployment-type",
+                      "value": "single"
+                    },
+                    {
+                      "name": "core-extraction-s3-bucket",
+                      "value": "test-s3-bucket"
+                    },
+                    {
+                      "name": "core-extraction-s3-prefix",
+                      "value": "test-s3-prefix"
+                    },
+                    {
+                      "name": "core-extraction-s3-region",
+                      "value": "test-s3-region"
+                    },
+                    {
+                      "name": "connection-qualified-name",
+                      "value": "default/dbt/1234567890"
+                    },
+                    {
+                      "name": "include-filter",
+                      "value": "{\"1234\":{\"4321\":{}}}"
+                    },
+                    {
+                      "name": "include-filter-core",
+                      "value": "{\"1234\":{\"4321\":{}}}"
+                    },
+                    {
+                      "name": "enable-dbt-tagsync",
+                      "value": "true"
+                    },
+                    {
+                      "name": "enrich-materialised-sql-assets",
+                      "value": "true"
+                    },
+                    {
+                      "name": "api-credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "control-config-strategy",
+                      "value": "default"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/dbt/123456\", \"name\": \"test-dbt-core-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"dbt\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"elt\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://assets.atlan.com/assets/dbt-new.svg\"}, \"guid\": \"-123456123456\"}"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-dbt",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/dbt"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {}
+      }
+    ]
+}

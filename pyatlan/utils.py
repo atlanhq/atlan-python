@@ -10,6 +10,7 @@ import random
 import re
 import time
 from contextvars import ContextVar
+from datetime import datetime
 from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Mapping, Optional
@@ -33,6 +34,10 @@ s_nextId = milliseconds = int(round(time.time() * 1000)) + 1
 def to_camel_case(s: str) -> str:
     s = re.sub(r"(_|-)+", " ", s).title().replace(" ", "")
     return "".join([s[0].lower(), s[1:]])
+
+
+def get_epoch_timestamp() -> str:
+    return datetime.now().timestamp()
 
 
 def next_id() -> str:

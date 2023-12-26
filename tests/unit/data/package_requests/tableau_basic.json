@@ -1,0 +1,119 @@
+{
+  "metadata": {
+    "annotations": {
+      "orchestration.atlan.com/allowSchedule": "true",
+      "orchestration.atlan.com/categories": "tableau,crawler",
+      "orchestration.atlan.com/dependentPackage": "",
+      "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6332449996689",
+      "orchestration.atlan.com/emoji": "🚀",
+      "orchestration.atlan.com/icon": "https://img.icons8.com/color/480/000000/tableau-software.png",
+      "orchestration.atlan.com/logo": "https://img.icons8.com/color/480/000000/tableau-software.png",
+      "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/tableau",
+      "orchestration.atlan.com/name": "tableau Assets",
+      "package.argoproj.io/author": "Atlan",
+      "package.argoproj.io/description": "Package to crawl Tableau assets and publish to Atlan for discovery.",
+      "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/tableau",
+      "package.argoproj.io/keywords": "[\"tableau\",\"bi\",\"connector\",\"crawler\"]",
+      "package.argoproj.io/name": "@atlan/tableau",
+      "package.argoproj.io/parent": ".",
+      "package.argoproj.io/registry": "https://packages.atlan.com",
+      "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+      "package.argoproj.io/support": "support@atlan.com",
+      "orchestration.atlan.com/atlanName": "atlan-tableau-default-tableau-123456.123456"
+    },
+    "labels": {
+      "orchestration.atlan.com/certified": "true",
+      "orchestration.atlan.com/source": "tableau",
+      "orchestration.atlan.com/sourceCategory": "bi",
+      "orchestration.atlan.com/type": "connector",
+      "orchestration.atlan.com/verified": "true",
+      "package.argoproj.io/installer": "argopm",
+      "package.argoproj.io/name": "a-t-ratlans-l-a-s-htableau",
+      "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+      "orchestration.atlan.com/default-tableau-123456.123456": "true",
+      "orchestration.atlan.com/atlan-ui": "true"
+    },
+    "name": "atlan-tableau-123456.123456",
+    "namespace": "default"
+  },
+  "spec": {
+    "entrypoint": "main",
+    "templates": [
+      {
+        "name": "main",
+        "dag": {
+          "tasks": [
+            {
+              "name": "run",
+              "arguments": {
+                "parameters": [
+                  {
+                    "name": "extraction-method",
+                    "value": "direct"
+                  },
+                  {
+                    "name": "include-filter",
+                    "value": "{\"test-project-guid\": {}}"
+                  },
+                  {
+                    "name": "crawl-unpublished-worksheets-dashboard",
+                    "value": "true"
+                  },
+                  {
+                    "name": "crawl-hidden-datasource-fields",
+                    "value": "false"
+                  },
+                  {
+                    "name": "credential-guid",
+                    "value": "{{credentialGuid}}"
+                  },
+                  {
+                    "name": "connection",
+                    "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/tableau/123456\", \"name\": \"test-tableau-basic-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"tableau\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://img.icons8.com/color/480/000000/tableau-software.png\"}, \"guid\": \"-123456123456\"}"
+                  },
+                  {
+                    "name": "atlas-auth-type",
+                    "value": "internal"
+                  },
+                  {
+                    "name": "publish-mode",
+                    "value": "production"
+                  }
+                ]
+              },
+              "templateRef": {
+                "name": "atlan-tableau",
+                "template": "main",
+                "clusterScope": true
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "workflowMetadata": {
+      "annotations": {
+        "package.argoproj.io/name": "@atlan/tableau"
+      }
+    }
+  },
+  "payload": [
+    {
+      "parameter": "credentialGuid",
+      "type": "credential",
+      "body": {
+        "name": "default-tableau-123456.123456-0",
+        "host": "test.tableau.com",
+        "port": 444,
+        "extra": {
+          "protocol": "https",
+          "defaultSite": "test-site"
+        },
+        "connectorConfigName": "atlan-connectors-tableau",
+        "authType": "basic",
+        "username": "test-username",
+        "password": "test-password"
+      }
+    }
+  ]
+}

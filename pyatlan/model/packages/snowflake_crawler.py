@@ -1,6 +1,5 @@
 from typing import Optional
 
-from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
@@ -24,32 +23,22 @@ class SnowflakeCrawler(AbstractCrawler):
         allow_query_preview: bool = True,
         row_limit: int = 10000,
     ):
-        self._epoch = self.get_epoch()
-        self.connection_name = connection_name
-        self.admin_roles = admin_roles
-        self.admin_groups = admin_groups
-        self.admin_users = admin_users
-        self.allow_query = allow_query
-        self.allow_query_preview = allow_query_preview
-        self.row_limit = row_limit
-
-    def _get_connection(self) -> Connection:
-        return self.get_connection(
-            connection_name=self.connection_name,
+        super().__init__(
+            connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
-            roles=self.admin_roles,
-            groups=self.admin_groups,
-            users=self.admin_users,
-            allow_query=self.allow_query,
-            allow_query_preview=self.allow_query_preview,
-            row_limit=self.row_limit,
+            admin_roles=admin_roles,
+            admin_groups=admin_groups,
+            admin_users=admin_users,
+            allow_query=allow_query,
+            allow_query_preview=allow_query_preview,
+            row_limit=row_limit,
             source_logo=self._PACKAGE_LOGO,
         )
 
     def basic_auth(
         self, username: str, password: str, role: str, warehouse: str
     ) -> "SnowflakeCrawler":
-        self._credentials_body = {
+        local_creds = {
             "name": f"default-snowflake-{self._epoch}-0",
             "port": 443,
             "authType": "basic",
@@ -57,6 +46,7 @@ class SnowflakeCrawler(AbstractCrawler):
             "password": password,
             "extra": {"role": role, "warehouse": warehouse},
         }
+        self._credentials_body.update(local_creds)
         return self
 
     def keypair_auth(
@@ -67,7 +57,7 @@ class SnowflakeCrawler(AbstractCrawler):
         role: str,
         warehouse: str,
     ) -> "SnowflakeCrawler":
-        self._credentials_body = {
+        local_creds = {
             "name": f"default-snowflake-{self._epoch}-0",
             "port": 443,
             "authType": "keypair",
@@ -79,6 +69,7 @@ class SnowflakeCrawler(AbstractCrawler):
                 "private_key_password": private_key_password,
             },
         }
+        self._credentials_body.update(local_creds)
         return self
 
     def information_schema(self, hostname: str) -> "SnowflakeCrawler":
@@ -121,21 +112,36 @@ class SnowflakeCrawler(AbstractCrawler):
         )
         return self
 
-    def include(self, include_assets: dict) -> "SnowflakeCrawler":
-        include_assets = include_assets or {}
+    def include(self, assets: dict) -> "SnowflakeCrawler":
+        include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
         if to_include:
             self._parameters.append(dict(name="include-filter", value=to_include))
         return self
 
-    def exclude(self, exclude_assets: dict) -> "SnowflakeCrawler":
-        exclude_assets = exclude_assets or {}
+    def exclude(self, assets: dict) -> "SnowflakeCrawler":
+        exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
         if to_exclude:
             self._parameters.append(dict(name="exclude-filter", value=to_exclude))
         return self
 
+    def _set_required_metadata_params(self):
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
+        self._parameters.append(dict(name="control-config-strategy", value="default"))
+        self._parameters.append(
+            {
+                "name": "connection",
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
+            }
+        )
+
     def _get_metadata(self) -> WorkflowMetadata:
+        self._set_required_metadata_params()
         return WorkflowMetadata(
             labels={
                 "orchestration.atlan.com/certified": "true",

@@ -1,6 +1,5 @@
 from typing import Optional
 
-from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
@@ -24,25 +23,15 @@ class TableauCrawler(AbstractCrawler):
         allow_query_preview: bool = False,
         row_limit: int = 0,
     ):
-        self._epoch = self.get_epoch()
-        self.connection_name = connection_name
-        self.admin_roles = admin_roles
-        self.admin_groups = admin_groups
-        self.admin_users = admin_users
-        self.allow_query = allow_query
-        self.allow_query_preview = allow_query_preview
-        self.row_limit = row_limit
-
-    def _get_connection(self) -> Connection:
-        return self.get_connection(
-            connection_name=self.connection_name,
+        super().__init__(
+            connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
-            roles=self.admin_roles,
-            groups=self.admin_groups,
-            users=self.admin_users,
-            allow_query=self.allow_query,
-            allow_query_preview=self.allow_query_preview,
-            row_limit=self.row_limit,
+            admin_roles=admin_roles,
+            admin_groups=admin_groups,
+            admin_users=admin_users,
+            allow_query=allow_query,
+            allow_query_preview=allow_query_preview,
+            row_limit=row_limit,
             source_logo=self._PACKAGE_LOGO,
         )
 
@@ -50,12 +39,13 @@ class TableauCrawler(AbstractCrawler):
         self,
         hostname: str,
         site: str,
-        ssl_enabled: bool,
+        port: int = 443,
+        ssl_enabled: bool = True,
     ) -> "TableauCrawler":
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "host": hostname,
-            "port": 443,
+            "port": port,
             "extra": {
                 "protocol": "https" if ssl_enabled else "http",
                 "defaultSite": site,
@@ -122,7 +112,23 @@ class TableauCrawler(AbstractCrawler):
         self._parameters.append({"name": "tableau-alternate-host", "value": hostname})
         return self
 
+    def _set_required_metadata_params(self):
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
+        self._parameters.append(
+            {
+                "name": "connection",
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
+            }
+        )
+        self._parameters.append(dict(name="atlas-auth-type", value="internal"))
+        self._parameters.append(dict(name="publish-mode", value="production"))
+
     def _get_metadata(self) -> WorkflowMetadata:
+        self._set_required_metadata_params()
         return WorkflowMetadata(
             labels={
                 "orchestration.atlan.com/certified": "true",

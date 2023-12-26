@@ -1,6 +1,5 @@
 from typing import Optional
 
-from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
@@ -28,25 +27,15 @@ class PowerBICrawler(AbstractCrawler):
         allow_query_preview: bool = False,
         row_limit: int = 0,
     ):
-        self._epoch = self.get_epoch()
-        self.connection_name = connection_name
-        self.admin_roles = admin_roles
-        self.admin_groups = admin_groups
-        self.admin_users = admin_users
-        self.allow_query = allow_query
-        self.allow_query_preview = allow_query_preview
-        self.row_limit = row_limit
-
-    def _get_connection(self) -> Connection:
-        return self.get_connection(
-            connection_name=self.connection_name,
+        super().__init__(
+            connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
-            roles=self.admin_roles,
-            groups=self.admin_groups,
-            users=self.admin_users,
-            allow_query=self.allow_query,
-            allow_query_preview=self.allow_query_preview,
-            row_limit=self.row_limit,
+            admin_roles=admin_roles,
+            admin_groups=admin_groups,
+            admin_users=admin_users,
+            allow_query=allow_query,
+            allow_query_preview=allow_query_preview,
+            row_limit=row_limit,
             source_logo=self._PACKAGE_LOGO,
         )
 
@@ -119,7 +108,23 @@ class PowerBICrawler(AbstractCrawler):
         )
         return self
 
+    def _set_required_metadata_params(self):
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
+        self._parameters.append(
+            {
+                "name": "connection",
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
+            }
+        )
+        self._parameters.append(dict(name="atlas-auth-type", value="internal"))
+        self._parameters.append(dict(name="publish-mode", value="production"))
+
     def _get_metadata(self) -> WorkflowMetadata:
+        self._set_required_metadata_params()
         return WorkflowMetadata(
             labels={
                 "orchestration.atlan.com/certified": "true",
@@ -135,7 +140,7 @@ class PowerBICrawler(AbstractCrawler):
             },
             annotations={
                 "orchestration.atlan.com/allowSchedule": "true",
-                "orchestration.atlan.com/categories": "tableau,crawler",
+                "orchestration.atlan.com/categories": "powerbi,crawler",
                 "orchestration.atlan.com/dependentPackage": "",
                 "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6332245668881",
                 "orchestration.atlan.com/emoji": "\U0001f680",
@@ -146,7 +151,7 @@ class PowerBICrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to crawl PowerBI assets and publish to Atlan for discovery.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"tableau\",\"bi\",\"connector\",\"crawler\"]",  # fmt: skip
+                "package.argoproj.io/keywords": "[\"powerbi\",\"bi\",\"connector\",\"crawler\"]",  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

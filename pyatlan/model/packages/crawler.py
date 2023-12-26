@@ -1,7 +1,9 @@
 from json import dumps
-from time import time
 from typing import Any, Dict, Optional
 
+from pyatlan import utils
+
+# from pyatlan.utils import get_epoch_timestamp
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.model.assets import Connection
 from pyatlan.model.packages.package import AbstractPackage
@@ -12,41 +14,52 @@ class AbstractCrawler(AbstractPackage):
     Abstract class for crawlers
     """
 
-    @staticmethod
-    def get_epoch() -> str:
-        return str(int(time()))
-
-    @staticmethod
-    def get_connection(
+    def __init__(
+        self,
         connection_name: str,
         connection_type: str,
-        roles: Optional[list[str]],
-        groups: Optional[list[str]],
-        users: Optional[list[str]],
-        allow_query: bool,
-        allow_query_preview: bool,
-        row_limit: int,
-        source_logo: str,
-    ) -> Connection:
+        admin_roles: Optional[list[str]],
+        admin_groups: Optional[list[str]],
+        admin_users: Optional[list[str]],
+        allow_query: bool = False,
+        allow_query_preview: bool = False,
+        row_limit: int = 0,
+        source_logo: str = "",
+    ):
+        self._parameters: list = []
+        self._credentials_body: dict = {}
+        self._epoch = utils.get_epoch_timestamp()
+        self._connection_name = connection_name
+        self._connection_type = connection_type
+        self._admin_roles = admin_roles
+        self._admin_groups = admin_groups
+        self._admin_users = admin_users
+        self._allow_query = allow_query
+        self._allow_query_preview = allow_query_preview
+        self._row_limit = row_limit
+        self._source_logo = source_logo
+
+    def _get_connection(self) -> Connection:
         """
         Builds a connection using the provided parameters,
         which will be the target for the package to crawl assets.
         """
-        admin_role = RoleCache.get_id_for_name("$admin")
-        if not roles and admin_role:
-            roles = [admin_role]
+        if not self._admin_roles:
+            role = RoleCache.get_id_for_name("$admin")
+            if role:
+                self._admin_roles = [role]
         connection = Connection.create(
-            name=connection_name,
-            connector_type=connection_type,
-            admin_roles=roles,
-            admin_groups=groups,
-            admin_users=users,
+            name=self._connection_name,
+            connector_type=self._connection_type,
+            admin_roles=self._admin_roles,
+            admin_groups=self._admin_groups,
+            admin_users=self._admin_users,
         )
-        connection.allow_query = allow_query
-        connection.allow_query_preview = allow_query_preview
-        connection.row_limit = row_limit
+        connection.allow_query = self._allow_query
+        connection.allow_query_preview = self._allow_query_preview
+        connection.row_limit = self._row_limit
         connection.default_credential_guid = "{{credentialGuid}}"
-        connection.source_logo = source_logo
+        connection.source_logo = self._source_logo
         connection.is_discoverable = True
         connection.is_editable = False
         return connection

@@ -1,0 +1,119 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "warehouse,crawler",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6037440864145",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg",
+        "orchestration.atlan.com/logo": "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/snowflake",
+        "orchestration.atlan.com/name": "Snowflake Assets",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl Snowflake assets and publish to Atlan for discovery",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/snowflake",
+        "package.argoproj.io/keywords": "[\"snowflake\",\"warehouse\",\"connector\",\"crawler\"]",
+        "package.argoproj.io/name": "@atlan/snowflake",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-snowflake-default-snowflake-123456.123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "snowflake",
+        "orchestration.atlan.com/sourceCategory": "warehouse",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hsnowflake",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-snowflake-123456.123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-snowflake-123456.123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "account-usage-database-name",
+                      "value": "test-db"
+                    },
+                    {
+                      "name": "account-usage-schema-name",
+                      "value": "test-schema"
+                    },
+                    {
+                      "name": "include-filter",
+                      "value": "{\"^test-include$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
+                    },
+                    {
+                      "name": "enable-lineage",
+                      "value": "true"
+                    },
+                    {
+                      "name": "enable-snowflake-tag",
+                      "value": "false"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "control-config-strategy",
+                      "value": "default"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/snowflake/123456\", \"name\": \"test-snowflake-keypair-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"snowflake\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg\"}, \"guid\": \"-123456123456\"}"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-snowflake",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/snowflake"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "hostname": "test-hostname",
+          "name": "default-snowflake-123456.123456-0",
+          "connectorConfigName": "atlan-connectors-snowflake",
+          "port": 443,
+          "authType": "keypair",
+          "username": "test-user",
+          "password": "test-key",
+          "extra": {
+            "role": "test-role",
+            "warehouse": "test-warehouse",
+            "private_key_password": "test-key-pass"
+          }
+        }
+      }
+    ]
+}
