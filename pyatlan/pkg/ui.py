@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from pydantic import StrictStr, validate_arguments
 
@@ -93,11 +93,13 @@ class UIRule:
 @dataclass()
 class UIConfig:
     steps: list[UIStep]
-    rules: list[Any]
+    rules: list[Any] = field(default_factory=list)
     properties: dict[str, UIElement] = field(default_factory=dict)
 
     @validate_arguments()
-    def __init__(self, steps: list[UIStep], rules: list[Any]):
+    def __init__(self, steps: list[UIStep], rules: Optional[list[Any]] = None):
+        if rules is None:
+            rules = []
         self.steps = steps
         self.rules = rules
         self.properties = {}

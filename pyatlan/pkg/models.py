@@ -7,7 +7,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, PrivateAttr, validate_arguments
+from pydantic import BaseModel, Field, PrivateAttr, StrictStr, validate_arguments
 
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.pkg.ui import UIConfig
@@ -16,8 +16,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class PackageConfig(BaseModel):
-    labels: dict[str, str]
-    annotations: dict[str, str]
+    labels: dict[StrictStr, StrictStr]
+    annotations: dict[StrictStr, StrictStr]
 
 
 class _PackageDefinition(BaseModel):
