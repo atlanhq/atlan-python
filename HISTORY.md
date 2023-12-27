@@ -1,3 +1,14 @@
+## 1.8.3 (December 27, 2023)
+
+### New Features
+
+- (Experimental) Define and run new workflows
+- Added support for retrieval of `SourceTagAttachements` in `AtlanTags`
+
+### Bug fixes
+
+- Fix duplicate initial GUID on Windows. This was due to a lack of support for nano-second accuracy in timestamps in Python on Windows. Code has been changed to rectify this problem.
+
 ## 1.8.2 (December 21, 2023)
 
 ### New Features
