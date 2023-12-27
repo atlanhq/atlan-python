@@ -64,7 +64,7 @@
                     },
                     {
                       "name": "connection",
-                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/glue/123456\", \"name\": \"test-glue-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"glue\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"lake\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png\"}, \"guid\": \"-123456123456\"}"
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/glue/123456\", \"name\": \"test-glue-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"glue\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"lake\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png\"}, \"guid\": \"-1234567890000000000000000\"}"
                     },
                     {
                       "name": "publish-mode",

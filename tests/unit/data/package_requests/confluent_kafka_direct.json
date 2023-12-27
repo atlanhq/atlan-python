@@ -65,7 +65,7 @@
                     },
                     {
                       "name": "connection",
-                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/confluent-kafka/123456\", \"name\": \"test-conf-kafka-direct-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"confluent-kafka\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"eventbus\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://cdn.confluent.io/wp-content/uploads/apache-kafka-icon-2021-e1638496305992.jpg\"}, \"guid\": \"-123456123456\"}"
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/confluent-kafka/123456\", \"name\": \"test-conf-kafka-direct-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"confluent-kafka\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"eventbus\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://cdn.confluent.io/wp-content/uploads/apache-kafka-icon-2021-e1638496305992.jpg\"}, \"guid\": \"-1234567890000000000000000\"}"
                     },
                     {
                       "name": "publish-mode",

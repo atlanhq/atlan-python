@@ -84,7 +84,7 @@
                   },
                   {
                     "name": "connection",
-                    "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/dbt/123456\", \"name\": \"test-dbt-cloud-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"dbt\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"elt\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://assets.atlan.com/assets/dbt-new.svg\"}, \"guid\": \"-123456123456\"}"
+                    "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/dbt/123456\", \"name\": \"test-dbt-cloud-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"dbt\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"elt\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://assets.atlan.com/assets/dbt-new.svg\"}, \"guid\": \"-1234567890000000000000000\"}"
                   }
                 ]
               },

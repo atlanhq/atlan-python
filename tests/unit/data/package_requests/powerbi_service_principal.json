@@ -57,7 +57,7 @@
                     },
                     {
                       "name": "connection",
-                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/powerbi/123456\", \"name\": \"test-powerbi-sp-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"powerbi\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://powerbi.microsoft.com/pictures/application-logos/svg/powerbi.svg\"}, \"guid\": \"-123456123456\"}"
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/powerbi/123456\", \"name\": \"test-powerbi-sp-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"powerbi\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://powerbi.microsoft.com/pictures/application-logos/svg/powerbi.svg\"}, \"guid\": \"-1234567890000000000000000\"}"
                     },
                     {
                       "name": "atlas-auth-type",

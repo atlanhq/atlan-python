@@ -72,7 +72,7 @@
                   },
                   {
                     "name": "connection",
-                    "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/snowflake/123456\", \"name\": \"test-snowflake-basic-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"snowflake\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg\"}, \"guid\": \"-123456123456\"}"
+                    "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/snowflake/123456\", \"name\": \"test-snowflake-basic-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"snowflake\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg\"}, \"guid\": \"-1234567890000000000000000\"}"
                   }
                 ]
               },

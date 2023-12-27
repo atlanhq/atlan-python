@@ -69,7 +69,7 @@
                     },
                     {
                       "name": "connection",
-                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/tableau/123456\", \"name\": \"test-tableau-access-token-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"tableau\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://img.icons8.com/color/480/000000/tableau-software.png\"}, \"guid\": \"-123456123456\"}"
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/tableau/123456\", \"name\": \"test-tableau-access-token-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"tableau\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://img.icons8.com/color/480/000000/tableau-software.png\"}, \"guid\": \"-1234567890000000000000000\"}"
                     },
                     {
                       "name": "atlas-auth-type",

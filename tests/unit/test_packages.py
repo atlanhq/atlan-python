@@ -47,10 +47,18 @@ def mock_get_epoch_timestamp():
         yield mock_datetime
 
 
+@pytest.fixture()
+def mock_connection_guid():
+    with patch("pyatlan.utils.random") as mock_random:
+        mock_random.random.return_value = 123456789
+        yield mock_random
+
+
 def test_snowflake_package(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    mock_connection_guid,
     mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
@@ -109,6 +117,7 @@ def test_glue_package(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    mock_connection_guid,
     mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
@@ -138,6 +147,7 @@ def test_tableau_package(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    mock_connection_guid,
     mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
@@ -193,6 +203,7 @@ def test_powerbi_package(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    mock_connection_guid,
     mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
@@ -246,6 +257,7 @@ def test_confluent_kafka_package(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    mock_connection_guid,
     mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
@@ -273,6 +285,7 @@ def test_dbt_package(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    mock_connection_guid,
     mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
