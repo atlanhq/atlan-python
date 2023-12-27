@@ -79,6 +79,10 @@ class DbtCrawler(AbstractCrawler):
         self._parameters.append(
             dict(name="deployment-type", value="multi" if multi_tenant else "single")
         )
+        self._parameters.append(
+            {"name": "api-credential-guid", "value": "{{credentialGuid}}"}
+        )
+        self._parameters.append(dict(name="control-config-strategy", value="default"))
         return self
 
     def core(self, s3_bucket: str, s3_prefix: str, s3_region: str) -> "DbtCrawler":
@@ -183,10 +187,6 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "api-credential-guid", "value": "{{credentialGuid}}"}
-        )
-        self._parameters.append(dict(name="control-config-strategy", value="default"))
         self._parameters.append(
             {
                 "name": "connection",

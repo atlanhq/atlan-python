@@ -60,5 +60,5 @@ class AbstractPackage:
         return Workflow(
             metadata=metadata,
             spec=spec,
-            payload=payload,
+            payload=payload if self._credentials_body else [],  # type: ignore
         )

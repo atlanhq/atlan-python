@@ -71,28 +71,12 @@
                       "value": "default/dbt/1234567890"
                     },
                     {
-                      "name": "include-filter",
-                      "value": "{\"1234\":{\"4321\":{}}}"
-                    },
-                    {
-                      "name": "include-filter-core",
-                      "value": "{\"1234\":{\"4321\":{}}}"
-                    },
-                    {
                       "name": "enable-dbt-tagsync",
                       "value": "true"
                     },
                     {
                       "name": "enrich-materialised-sql-assets",
                       "value": "true"
-                    },
-                    {
-                      "name": "api-credential-guid",
-                      "value": "{{credentialGuid}}"
-                    },
-                    {
-                      "name": "control-config-strategy",
-                      "value": "default"
                     },
                     {
                       "name": "connection",
@@ -116,11 +100,5 @@
         }
       }
     },
-    "payload": [
-      {
-        "parameter": "credentialGuid",
-        "type": "credential",
-        "body": {}
-      }
-    ]
+    "payload": []
 }

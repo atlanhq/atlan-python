@@ -291,7 +291,6 @@ def test_dbt_package(
             s3_region="test-s3-region",
         )
         .limit_to_connection(connection_qualified_name="default/dbt/1234567890")
-        .include(filter='{"1234":{"4321":{}}}')
         .tags(True)
         .enrich_materialized_assets(True)
         .to_workflow()
