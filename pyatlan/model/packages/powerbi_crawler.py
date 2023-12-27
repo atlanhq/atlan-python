@@ -129,6 +129,8 @@ class PowerBICrawler(AbstractCrawler):
 
         :param workspaces: the GUIDs of workspaces to include when crawling
         :return: crawler, set to include only those workspaces specified
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         include_workspaces = workspaces or []
         to_include = self.build_flat_filter(include_workspaces)
@@ -142,6 +144,8 @@ class PowerBICrawler(AbstractCrawler):
 
         :param workspaces: the GUIDs of workspaces to exclude when crawling
         :return: crawler, set to exclude only those workspaces specified
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         exclude_workspaces = workspaces or []
         to_exclude = self.build_flat_filter(exclude_workspaces)

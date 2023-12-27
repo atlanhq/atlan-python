@@ -120,6 +120,8 @@ class TableauCrawler(AbstractCrawler):
 
         :param projects: the GUIDs of projects to include when crawling
         :returns: crawler, set to include only those projects specified
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         include_projects = projects or []
         to_include = self.build_flat_filter(include_projects)
@@ -133,6 +135,8 @@ class TableauCrawler(AbstractCrawler):
 
         :param projects: the GUIDs of projects to exclude when crawling
         :returns: crawler, set to exclude only those projects specified
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         exclude_projects = projects or []
         to_exclude = self.build_flat_filter(exclude_projects)

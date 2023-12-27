@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.packages.confluent_kafka_crawler import ConfluentKafkaCrawler
 from pyatlan.model.packages.dbt_crawler import DbtCrawler
 from pyatlan.model.packages.glue_crawler import GlueCrawler
@@ -22,6 +22,16 @@ POWEBI_SERVICE_PRINCIPAL = "powerbi_service_principal.json"
 CONFLUENT_KAFKA_DIRECT = "confluent_kafka_direct.json"
 DBT_CORE = "dbt_core.json"
 DBT_CLOUD = "dbt_cloud.json"
+
+
+class NonSerializable:
+    pass
+
+
+INVALID_REQ_ERROR = (
+    "ATLAN-PYTHON-400-014 Unable to translate "
+    "the provided include/exclude asset filters into JSON"
+)
 
 
 def load_json(filename):
@@ -309,3 +319,92 @@ def test_dbt_package(
     )
     request_json = loads(dbt_cloud.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(DBT_CLOUD)
+
+
+@pytest.mark.parametrize(
+    "test_assets",
+    [
+        "abc",
+        123,
+        {"abc": 123},
+        [123],
+        NonSerializable(),
+        [NonSerializable()],
+        {"abc": NonSerializable()},
+    ],
+)
+def test_wrong_hierarchical_filter_raises_invalid_req_err(
+    test_assets,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+    mock_get_epoch_timestamp,
+):
+    mock_role_cache.validate_idstrs
+    mock_user_cache.validate_names
+    mock_group_cache.validate_aliases
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=INVALID_REQ_ERROR,
+    ):
+        SnowflakeCrawler(
+            connection_name="test-snowflake-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        ).include(assets=test_assets)
+
+
+@pytest.mark.parametrize(
+    "test_projects",
+    [[NonSerializable()], NonSerializable()],
+)
+def test_wrong_flat_filter_raises_invalid_req_err(
+    test_projects,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+    mock_get_epoch_timestamp,
+):
+    mock_role_cache.validate_idstrs
+    mock_user_cache.validate_names
+    mock_group_cache.validate_aliases
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=INVALID_REQ_ERROR,
+    ):
+        TableauCrawler(
+            connection_name="test-tableau-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        ).include(projects=test_projects)
+
+
+@pytest.mark.parametrize(
+    "test_assets",
+    [NonSerializable(), [NonSerializable()]],
+)
+def test_wrong_glue_package_filter_raises_invalid_req_err(
+    test_assets,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+    mock_get_epoch_timestamp,
+):
+    mock_role_cache.validate_idstrs
+    mock_user_cache.validate_names
+    mock_group_cache.validate_aliases
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=INVALID_REQ_ERROR,
+    ):
+        GlueCrawler(
+            connection_name="test-glue-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        ).include(assets=test_assets)

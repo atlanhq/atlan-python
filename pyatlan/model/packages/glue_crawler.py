@@ -1,6 +1,7 @@
-from json import JSONDecodeError, dumps
+from json import dumps
 from typing import Optional
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
@@ -94,16 +95,15 @@ class GlueCrawler(AbstractCrawler):
             self._parameters.append({"name": f"{filter_type}-filter", "value": {}})
             return
         filter_dict: dict = {"AwsDataCatalog": {}}
-        for asset in filter_assets:
-            filter_dict["AwsDataCatalog"][asset] = {}
-            try:
+        try:
+            for asset in filter_assets:
+                filter_dict["AwsDataCatalog"][asset] = {}
                 filter_values = dumps(filter_dict)
                 self._parameters.append(
                     {"name": f"{filter_type}-filter", "value": filter_values}
                 )
-            except JSONDecodeError as e:
-                # TODO: Use logger here
-                print(f"Error while encoding JSON for {filter_type} filter: {e}")
+        except TypeError:
+            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
     def include(self, assets: list[str]) -> "GlueCrawler":
         """
@@ -111,7 +111,8 @@ class GlueCrawler(AbstractCrawler):
 
         :param assets: list of schema names to include when crawling
         :returns: crawler, set to include only those assets specified
-        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         self._build_asset_filter("include", assets)
         return self
@@ -122,7 +123,8 @@ class GlueCrawler(AbstractCrawler):
 
         :param assets: list of schema names to exclude when crawling
         :returns: crawler, set to exclude only those assets specified
-        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         self._build_asset_filter("exclude", assets)
         return self

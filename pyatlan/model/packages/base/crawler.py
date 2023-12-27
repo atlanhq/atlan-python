@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional
 
 from pyatlan import utils
 from pyatlan.cache.role_cache import RoleCache
+from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Connection
 from pyatlan.model.packages.base.package import AbstractPackage
 
@@ -82,13 +83,18 @@ class AbstractCrawler(AbstractPackage):
 
         :param raw_filter: map keyed by database name with each value being a list of schemas
         :returns: an exact-match filter map string, usable in crawlers include / exclude filters
+        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
         """
         to_include: Dict[str, Any] = {}
-        if raw_filter:
+        if not raw_filter:
+            return ""
+        try:
             for db_name, schemas in raw_filter.items():
                 exact_schemas = [f"^{schema}$" for schema in schemas]
                 to_include[f"^{db_name}$"] = exact_schemas
-        return dumps(to_include)
+            return dumps(to_include)
+        except (AttributeError, TypeError):
+            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
     @staticmethod
     def build_flat_filter(raw_filter: Optional[list]) -> str:
@@ -97,9 +103,14 @@ class AbstractCrawler(AbstractPackage):
 
         :param raw_filter: list of objects for the filter
         :returns: a filter map string, usable in crawlers include / exclude filters
+        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
         """
         to_include: Dict[str, Any] = {}
-        if raw_filter:
+        if not raw_filter:
+            return ""
+        try:
             for entry in raw_filter:
                 to_include[entry] = {}
-        return dumps(to_include)
+            return dumps(to_include)
+        except (AttributeError, TypeError) as e:
+            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()

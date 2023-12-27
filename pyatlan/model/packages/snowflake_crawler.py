@@ -178,6 +178,10 @@ class SnowflakeCrawler(AbstractCrawler):
 
         :param assets: Map keyed by database name with each value being a list of schemas
         :returns: crawler, set to include only those assets specified
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
@@ -191,6 +195,10 @@ class SnowflakeCrawler(AbstractCrawler):
 
         :param assets: Map keyed by database name with each value being a list of schemas
         :returns: crawler, set to exclude only those assets specified
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
+        :raises InvalidRequestException: In the unlikely
+        event the provided filter cannot be translated
         """
         exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)

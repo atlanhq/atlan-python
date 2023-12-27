@@ -7,8 +7,8 @@ from typing import Protocol, Type, TypeVar
 
 E = TypeVar("E", bound="AtlanError")
 RAISE_GITHUB_ISSUE = (
-    "Please raise an issue on the Java SDK GitHub repository providing context in which this error "
-    "occurred."
+    "Please raise an issue on the Python SDK GitHub "
+    "repository providing context in which this error occurred."
 )
 
 
@@ -182,14 +182,14 @@ class ErrorCode(Enum):
         400,
         "ATLAN-PYTHON-400-013",
         "Lineage was retrieved using hideProces=False. We do not provide a graph view in this case.",
-        "Retry your request for lineage setting hideProcess=true.",
+        "Retry your request for lineage setting hideProcess=True.",
         InvalidRequestError,
     )
     UNABLE_TO_TRANSLATE_FILTERS = (
         400,
         "ATLAN-PYTHON-400-014",
         "Unable to translate the provided include/exclude asset filters into JSON.",
-        "Verify the filters you provided. If the problem persists, please raise an issue on the Java SDK GitHub "
+        "Verify the filters you provided. If the problem persists, please raise an issue on the Python SDK GitHub "
         "repository providing context in which this error occurred.",
         InvalidRequestError,
     )
