@@ -170,7 +170,7 @@ class GlueCrawler(AbstractCrawler):
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
-                "orchestration.atlan.com/name": f"{self._NAME} Assets",
+                "orchestration.atlan.com/name": f"{self._NAME.capitalize()} Assets",
                 "orchestration.atlan.com/usecase": "crawling,auto-classifications",
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": f"Package to crawl AWS {self._NAME.capitalize()} assets and publish to Atlan for discovery.",  # noqa
