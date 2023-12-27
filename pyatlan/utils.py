@@ -3,10 +3,10 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
-import datetime
 import enum
 import json
 import logging
+import random
 import re
 import time
 from contextvars import ContextVar
@@ -242,7 +242,9 @@ def init_guid(func):
     def call(*args, **kwargs):
         ret_value = func(*args, **kwargs)
         if hasattr(ret_value, "guid"):
-            ret_value.guid = str(-int(datetime.datetime.now().timestamp() * 1000000))
+            ret_value.guid = str(
+                -int(random.random() * 10000000000000000)  # noqa: S311
+            )
         return ret_value
 
     return call
