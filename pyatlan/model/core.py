@@ -171,7 +171,8 @@ class AtlanTag(AtlanObject):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
         super().__init__(*args, **kwargs)
-        attr_id = AtlanTagCache.get_source_tags_attr_id(self.type_name.id)
+        if self.type_name != AtlanTagName.get_deleted_sentinel():
+            attr_id = AtlanTagCache.get_source_tags_attr_id(self.type_name.id)
         if self.attributes and attr_id in self.attributes:
             self._source_tag_attachements = [
                 SourceTagAttachment(**source_tag["attributes"])
