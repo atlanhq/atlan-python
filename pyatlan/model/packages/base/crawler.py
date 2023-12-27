@@ -2,7 +2,6 @@ from json import dumps
 from typing import Any, Dict, Optional
 
 from pyatlan import utils
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Connection
 from pyatlan.model.packages.base.package import AbstractPackage
@@ -56,10 +55,6 @@ class AbstractCrawler(AbstractPackage):
         Builds a connection using the provided parameters,
         which will be the target for the package to crawl assets.
         """
-        if not self._admin_roles:
-            role = RoleCache.get_id_for_name("$admin")
-            if role:
-                self._admin_roles = [role]
         connection = Connection.create(
             name=self._connection_name,
             connector_type=self._connection_type,
@@ -112,5 +107,5 @@ class AbstractCrawler(AbstractPackage):
             for entry in raw_filter:
                 to_include[entry] = {}
             return dumps(to_include)
-        except (AttributeError, TypeError) as e:
+        except (AttributeError, TypeError):
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()

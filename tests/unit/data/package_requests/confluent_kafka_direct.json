@@ -99,7 +99,7 @@
         "type": "credential",
         "body": {
           "name": "default-confluent-kafka-123456-0",
-          "host": "test-bootstrap-server",
+          "host": "test-bootstrap-server:9092",
           "port": 9092,
           "extra": {
             "security_protocol": "SASL_SSL"

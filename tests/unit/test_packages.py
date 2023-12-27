@@ -3,6 +3,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.packages.confluent_kafka_crawler import ConfluentKafkaCrawler
 from pyatlan.model.packages.dbt_crawler import DbtCrawler
@@ -258,7 +259,7 @@ def test_confluent_kafka_package(
             admin_groups=None,
             admin_users=None,
         )
-        .direct(bootstrap="test-bootstrap-server", encrypted=True)
+        .direct(bootstrap="test-bootstrap-server:9092", encrypted=True)
         .api_token(api_key="test-api-key", api_secret="test-api-secret")
         .skip_internal(False)
         .include(regex=".*_TEST")
