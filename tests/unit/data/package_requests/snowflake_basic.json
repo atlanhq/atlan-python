@@ -18,7 +18,7 @@
       "package.argoproj.io/registry": "https://packages.atlan.com",
       "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
       "package.argoproj.io/support": "support@atlan.com",
-      "orchestration.atlan.com/atlanName": "atlan-snowflake-default-snowflake-123456.123456"
+      "orchestration.atlan.com/atlanName": "atlan-snowflake-default-snowflake-123456"
     },
     "labels": {
       "orchestration.atlan.com/certified": "true",
@@ -29,10 +29,10 @@
       "package.argoproj.io/installer": "argopm",
       "package.argoproj.io/name": "a-t-ratlans-l-a-s-hsnowflake",
       "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
-      "orchestration.atlan.com/default-snowflake-123456.123456": "true",
+      "orchestration.atlan.com/default-snowflake-123456": "true",
       "orchestration.atlan.com/atlan-ui": "true"
     },
-    "name": "atlan-snowflake-123456.123456",
+    "name": "atlan-snowflake-123456",
     "namespace": "default"
   },
   "spec": {
@@ -98,7 +98,7 @@
       "type": "credential",
       "body": {
         "host": "test-hostname",
-        "name": "default-snowflake-123456.123456-0",
+        "name": "default-snowflake-123456-0",
         "connectorConfigName": "atlan-connectors-snowflake",
         "port": 443,
         "authType": "basic",

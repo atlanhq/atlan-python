@@ -1,11 +1,26 @@
 from typing import Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
-from pyatlan.model.packages.crawler import AbstractCrawler
+from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
 class DbtCrawler(AbstractCrawler):
+    """
+    Base configuration for a new Dbt crawler.
+
+    :param connection_name: name for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the
+    connection (True) or not (False), default: False
+    :param allow_query_preview: allow sample data viewing for
+    assets in the connection (True) or not (False), default: False
+    :param row_limit: maximum number of rows
+    that can be returned by a query, default: 0
+    """
+
     _NAME = "dbt"
     _PACKAGE_NAME = "@atlan/dbt"
     _PACKAGE_PREFIX = WorkflowPackage.DBT.value
@@ -41,6 +56,15 @@ class DbtCrawler(AbstractCrawler):
         hostname: str = "https://cloud.getdbt.com",
         multi_tenant: bool = True,
     ) -> "DbtCrawler":
+        """
+        Set up the crawler to extract using dbt Cloud.
+
+        :param service_token: token to use to authenticate against dbt
+        :param hostname: of dbt, default: https://cloud.getdbt.com
+        :param multi_tenant: if True, use a multi-tenant
+        cloud config, otherwise a single-tenant cloud config
+        :returns: crawler, set up to extract using dbt Cloud
+        """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-1",
             "host": hostname,
@@ -58,6 +82,14 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def core(self, s3_bucket: str, s3_prefix: str, s3_region: str) -> "DbtCrawler":
+        """
+        Set up the crawler to extract using dbt Core files in S3.
+
+        :param s3_bucket: S3 bucket containing the dbt Core files
+        :param s3_prefix: prefix within the S3 bucket where the dbt Core files are located
+        :param s3_region: S3 region where the bucket is located
+        :returns: crawler, set up to extract using dbt Core files in S3
+        """
         self._parameters.append(dict(name="extraction-method", value="core"))
         self._parameters.append(dict(name="deployment-type", value="single"))
         self._parameters.append(dict(name="core-extraction-s3-bucket", value=s3_bucket))
@@ -66,6 +98,15 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def enrich_materialized_assets(self, enabled: bool = False) -> "DbtCrawler":
+        """
+        Whether to enable the enrichment of
+        materialized SQL assets as part of crawling dbt.
+
+        :param enabled: if True, any assets that dbt materializes
+        will also be enriched with details from dbt, default: False
+        :returns: crawler, set up to include
+        or exclude enrichment of materialized assets
+        """
         self._parameters.append(
             {
                 "name": "enrich-materialised-sql-assets",
@@ -75,6 +116,13 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def tags(self, include: bool = False) -> "DbtCrawler":
+        """
+        Whether to enable dbt tag syncing as part of crawling dbt.
+
+        :param include: if True, tags in dbt will
+        be included while crawling dbt, default: False
+        :returns: crawler, set to include or exclude dbt tags
+        """
         self._parameters.append(
             {
                 "name": "enable-dbt-tagsync",
@@ -84,6 +132,16 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def limit_to_connection(self, connection_qualified_name: str) -> "DbtCrawler":
+        """
+        Limit the crawling to a single connection's assets.
+        If not specified, crawling will be
+        attempted across all connection's assets.
+
+        :param connection_qualified_name: unique name
+        of the connection for whose assets to limit crawling
+        :returns: crawler, set to limit crawling
+        to only those assets in the specified connection
+        """
         self._parameters.append(
             {
                 "name": "connection-qualified-name",
@@ -93,6 +151,13 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def include(self, filter: str = "") -> "DbtCrawler":
+        """
+        Defines the filter for assets to include when crawling.
+
+        :param filter: for dbt Core provide a wildcard
+        expression and for dbt Cloud provide a string-encoded map
+        :returns: crawler, set to include only those assets specified
+        """
         self._parameters.append(
             dict(name="include-filter", value=filter if filter else "{}")
         )
@@ -102,6 +167,13 @@ class DbtCrawler(AbstractCrawler):
         return self
 
     def exclude(self, filter: str = "") -> "DbtCrawler":
+        """
+        Defines the filter for assets to exclude when crawling.
+
+        :param filter: for dbt Core provide a wildcard
+        expression and for dbt Cloud provide a string-encoded map
+        :return: the builder, set to exclude only those assets specified
+        """
         self._parameters.append(
             dict(name="exclude-filter", value=filter if filter else "{}")
         )

@@ -34,7 +34,7 @@ class AbstractPackage:
                             WorkflowTask(
                                 name="run",
                                 arguments=WorkflowParameters(
-                                    parameters=self._parameters # type: ignore
+                                    parameters=self._parameters  # type: ignore
                                 ),
                                 template_ref=WorkflowTemplateRef(
                                     name=self._PACKAGE_PREFIX,
@@ -54,7 +54,7 @@ class AbstractPackage:
             PackageParameter(
                 parameter="credentialGuid",
                 type="credential",
-                body=self._credentials_body, # type: ignore
+                body=self._credentials_body,  # type: ignore
             )
         ]
         return Workflow(

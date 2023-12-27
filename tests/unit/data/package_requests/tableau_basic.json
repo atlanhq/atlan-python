@@ -19,7 +19,7 @@
       "package.argoproj.io/registry": "https://packages.atlan.com",
       "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
       "package.argoproj.io/support": "support@atlan.com",
-      "orchestration.atlan.com/atlanName": "atlan-tableau-default-tableau-123456.123456"
+      "orchestration.atlan.com/atlanName": "atlan-tableau-default-tableau-123456"
     },
     "labels": {
       "orchestration.atlan.com/certified": "true",
@@ -30,10 +30,10 @@
       "package.argoproj.io/installer": "argopm",
       "package.argoproj.io/name": "a-t-ratlans-l-a-s-htableau",
       "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
-      "orchestration.atlan.com/default-tableau-123456.123456": "true",
+      "orchestration.atlan.com/default-tableau-123456": "true",
       "orchestration.atlan.com/atlan-ui": "true"
     },
-    "name": "atlan-tableau-123456.123456",
+    "name": "atlan-tableau-123456",
     "namespace": "default"
   },
   "spec": {
@@ -102,7 +102,7 @@
       "parameter": "credentialGuid",
       "type": "credential",
       "body": {
-        "name": "default-tableau-123456.123456-0",
+        "name": "default-tableau-123456-0",
         "host": "test.tableau.com",
         "port": 444,
         "extra": {

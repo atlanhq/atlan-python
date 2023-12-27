@@ -1,11 +1,26 @@
 from typing import Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
-from pyatlan.model.packages.crawler import AbstractCrawler
+from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
 class ConfluentKafkaCrawler(AbstractCrawler):
+    """
+    Base configuration for a new Confluent Kafka crawler.
+
+    :param connection_name: name for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the
+    connection (True) or not (False), default: False
+    :param allow_query_preview: allow sample data viewing for
+    assets in the connection (True) or not (False), default: False
+    :param row_limit: maximum number of rows
+    that can be returned by a query, default: 0
+    """
+
     _NAME = "confluent-kafka"
     _PACKAGE_NAME = "@atlan/kafka-confluent-cloud"
     _PACKAGE_PREFIX = WorkflowPackage.KAFKA_CONFLUENT_CLOUD.value
@@ -36,6 +51,13 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         )
 
     def direct(self, bootstrap: str, encrypted: bool = True) -> "ConfluentKafkaCrawler":
+        """
+        Set up the crawler to extract directly from Kafka.
+
+        :param bootstrap: hostname and port number (host.example.com:9092) for the Kafka bootstrap server
+        :param encrypted: whether to use an encrypted SSL connection (True), or plaintext (False), default: True
+        :returns: crawler, set up to extract directly from Kafka
+        """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "host": bootstrap,
@@ -54,6 +76,13 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         api_key: str,
         api_secret: str,
     ) -> "ConfluentKafkaCrawler":
+        """
+        Set up the crawler to use API token-based authentication.
+
+        :param api_key: through which to access Kafka
+        :param api_secret: through which to access Kafka
+        :returns: crawler, set up to use API token-based authentication
+        """
         local_creds = {
             "authType": "basic",
             "username": api_key,
@@ -63,14 +92,36 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         return self
 
     def include(self, regex: str = "") -> "ConfluentKafkaCrawler":
+        """
+        Defines the filter for topics to include when crawling.
+
+        :param regex: any topic names that match this
+        regular expression will be included in crawling
+        :returns: crawler, set to include only those topics specified
+        """
         self._parameters.append(dict(name="include-filter", value=regex))
         return self
 
     def exclude(self, regex: str = "") -> "ConfluentKafkaCrawler":
+        """
+        Defines a regular expression to use for excluding topics when crawling.
+
+        :param regex: any topic names that match this
+        regular expression will be excluded from crawling
+        :returns: crawler, set to exclude any topics
+        that match the provided regular expression
+        """
         self._parameters.append(dict(name="exclude-filter", value=regex))
         return self
 
     def skip_internal(self, enabled: bool = True) -> "ConfluentKafkaCrawler":
+        """
+        Whether to skip internal topics when crawling (True) or include them.
+
+        :param enabled: if True, internal topics
+        will be skipped when crawling, default: True
+        :returns: crawler, set to include or exclude internal topics
+        """
         self._parameters.append(
             {
                 "name": "skip-internal-topics",

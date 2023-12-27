@@ -1,11 +1,26 @@
 from typing import Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
-from pyatlan.model.packages.crawler import AbstractCrawler
+from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
 class SnowflakeCrawler(AbstractCrawler):
+    """
+    Base configuration for a new Snowflake crawler.
+
+    :param connection_name: name for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the
+    connection (True) or not (False), default: True
+    :param allow_query_preview: allow sample data viewing for
+    assets in the connection (True) or not (False), default: True
+    :param row_limit: maximum number of rows
+    that can be returned by a query, default: 10000
+    """
+
     _NAME = "snowflake"
     _PACKAGE_NAME = "@atlan/snowflake"
     _PACKAGE_PREFIX = WorkflowPackage.SNOWFLAKE.value
@@ -38,6 +53,15 @@ class SnowflakeCrawler(AbstractCrawler):
     def basic_auth(
         self, username: str, password: str, role: str, warehouse: str
     ) -> "SnowflakeCrawler":
+        """
+        Set up the crawler to use basic authentication.
+
+        :param username: through which to access Snowflake
+        :param password: through which to access Snowflake
+        :param role: name of the role within Snowflake to crawl through
+        :param warehouse: name of the warehouse within Snowflake to crawl through
+        :returns: crawler, set up to use basic authentication
+        """
         local_creds = {
             "name": f"default-snowflake-{self._epoch}-0",
             "port": 443,
@@ -57,6 +81,16 @@ class SnowflakeCrawler(AbstractCrawler):
         role: str,
         warehouse: str,
     ) -> "SnowflakeCrawler":
+        """
+        Set up the crawler to use keypair-based authentication.
+
+        :param username: through which to access Snowflake
+        :param private_key: encrypted private key for authenticating with Snowflake
+        :param private_key_password: password for the encrypted private key
+        :param role: name of the role within Snowflake to crawl through
+        :param warehouse: name of the warehouse within Snowflake to crawl through
+        :returns: crawler, set up to use keypair-based authentication
+        """
         local_creds = {
             "name": f"default-snowflake-{self._epoch}-0",
             "port": 443,
@@ -73,6 +107,12 @@ class SnowflakeCrawler(AbstractCrawler):
         return self
 
     def information_schema(self, hostname: str) -> "SnowflakeCrawler":
+        """
+        Set the crawler to extract using Snowflake's information schema.
+
+        :param hostname: hostname of the Snowflake instance
+        :returns: crawler, set to extract using information schema
+        """
         local_creds = {
             "host": hostname,
             "name": f"default-snowflake-{self._epoch}-0",
@@ -86,6 +126,14 @@ class SnowflakeCrawler(AbstractCrawler):
     def account_usage(
         self, hostname: str, database_name: str, schema_name: str
     ) -> "SnowflakeCrawler":
+        """
+        Set the crawler to extract using Snowflake's account usage database and schema.
+
+        :param hostname: hostname of the Snowflake instance
+        :param database_name: name of the database to use
+        :param schema_name: name of the schema to use
+        :returns: crawler, set to extract using account usage
+        """
         local_creds = {
             "hostname": hostname,
             "name": f"default-snowflake-{self._epoch}-0",
@@ -101,18 +149,36 @@ class SnowflakeCrawler(AbstractCrawler):
         return self
 
     def lineage(self, include: bool = True) -> "SnowflakeCrawler":
+        """
+        Whether to enable lineage as part of crawling Snowflake.
+
+        :param include: if True, lineage will be included while crawling Snowflake, default: True
+        :returns: crawler, set to include or exclude lineage
+        """
         self._parameters.append(
             {"name": "enable-lineage", "value": "true" if include else "false"}
         )
         return self
 
     def tags(self, include: bool = False) -> "SnowflakeCrawler":
+        """
+        Whether to enable Snowflake tag syncing as part of crawling Snowflake.
+
+        :param include: Whether true, tags in Snowflake will be included while crawling Snowflake
+        :returns: crawler, set to include or exclude Snowflake tags
+        """
         self._parameters.append(
             {"name": "enable-snowflake-tag", "value": "true" if include else "false"}
         )
         return self
 
     def include(self, assets: dict) -> "SnowflakeCrawler":
+        """
+        Defines the filter for assets to include when crawling.
+
+        :param assets: Map keyed by database name with each value being a list of schemas
+        :returns: crawler, set to include only those assets specified
+        """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
         if to_include:
@@ -120,6 +186,12 @@ class SnowflakeCrawler(AbstractCrawler):
         return self
 
     def exclude(self, assets: dict) -> "SnowflakeCrawler":
+        """
+        Defines the filter for assets to exclude when crawling.
+
+        :param assets: Map keyed by database name with each value being a list of schemas
+        :returns: crawler, set to exclude only those assets specified
+        """
         exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
         if to_exclude:

@@ -2,16 +2,27 @@ from json import dumps
 from typing import Any, Dict, Optional
 
 from pyatlan import utils
-
-# from pyatlan.utils import get_epoch_timestamp
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.model.assets import Connection
-from pyatlan.model.packages.package import AbstractPackage
+from pyatlan.model.packages.base.package import AbstractPackage
 
 
 class AbstractCrawler(AbstractPackage):
     """
     Abstract class for crawlers
+
+    :param connection_name: name for the connection
+    :param connection_type: type of connector for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the connection (True) or not (False)
+    :param allow_query_preview: allow sample data viewing for assets in the connection (True) or not (False)
+    :param row_limit: maximum number of rows that can be returned by a query
+    :param source_logo: logo to use for the source
+
+    :raises AtlanException: if there is not at least one role,
+    group, or user defined as an admin (or any of them are invalid)
     """
 
     def __init__(
@@ -28,7 +39,7 @@ class AbstractCrawler(AbstractPackage):
     ):
         self._parameters: list = []
         self._credentials_body: dict = {}
-        self._epoch = utils.get_epoch_timestamp()
+        self._epoch = int(utils.get_epoch_timestamp())
         self._connection_name = connection_name
         self._connection_type = connection_type
         self._admin_roles = admin_roles
@@ -66,6 +77,12 @@ class AbstractCrawler(AbstractPackage):
 
     @staticmethod
     def build_hierarchical_filter(raw_filter: Optional[dict]) -> str:
+        """
+        Build an exact match filter from the provided map of databases and schemas.
+
+        :param raw_filter: map keyed by database name with each value being a list of schemas
+        :returns: an exact-match filter map string, usable in crawlers include / exclude filters
+        """
         to_include: Dict[str, Any] = {}
         if raw_filter:
             for db_name, schemas in raw_filter.items():
@@ -75,19 +92,14 @@ class AbstractCrawler(AbstractPackage):
 
     @staticmethod
     def build_flat_filter(raw_filter: Optional[list]) -> str:
+        """
+        Build a filter from the provided list of object names / IDs.
+
+        :param raw_filter: list of objects for the filter
+        :returns: a filter map string, usable in crawlers include / exclude filters
+        """
         to_include: Dict[str, Any] = {}
         if raw_filter:
             for entry in raw_filter:
                 to_include[entry] = {}
-        return dumps(to_include)
-
-    @staticmethod
-    def build_dbt_cloud_filter(raw_filter: Optional[dict]) -> str:
-        to_include: Dict[str, Any] = {}
-        if raw_filter:
-            for account_id, projects in raw_filter.items():
-                if account_id not in to_include:
-                    to_include[account_id] = {}
-                for project_id in projects:
-                    to_include[account_id][project_id] = {}
         return dumps(to_include)

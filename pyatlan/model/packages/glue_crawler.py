@@ -2,11 +2,26 @@ from json import JSONDecodeError, dumps
 from typing import Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
-from pyatlan.model.packages.crawler import AbstractCrawler
+from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
 class GlueCrawler(AbstractCrawler):
+    """
+    Base configuration for a new Glue crawler.
+
+    :param connection_name: name for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the
+    connection (True) or not (False), default: False
+    :param allow_query_preview: allow sample data viewing for
+    assets in the connection (True) or not (False), default: False
+    :param row_limit: maximum number of rows
+    that can be returned by a query, default: 0
+    """
+
     _NAME = "glue"
     _PACKAGE_NAME = "@atlan/glue"
     _PACKAGE_PREFIX = WorkflowPackage.GLUE.value
@@ -44,6 +59,12 @@ class GlueCrawler(AbstractCrawler):
         self,
         region: str,
     ) -> "GlueCrawler":
+        """
+        Set up the crawler to extract directly from Glue.
+
+        :param region: AWS region where Glue is set up
+        :returns: crawler, set up to extract directly from Glue
+        """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "extra": {"region": region},
@@ -53,6 +74,13 @@ class GlueCrawler(AbstractCrawler):
         return self
 
     def iam_user_auth(self, access_key: str, secret_key: str) -> "GlueCrawler":
+        """
+        Set up the crawler to use IAM user-based authentication.
+
+        :param access_key: through which to access Glue
+        :param secret_key: through which to access Glue
+        :returns: crawler, set up to use IAM user-based authentication
+        """
         local_creds = {
             "authType": "iam",
             "username": access_key,
@@ -78,10 +106,24 @@ class GlueCrawler(AbstractCrawler):
                 print(f"Error while encoding JSON for {filter_type} filter: {e}")
 
     def include(self, assets: list[str]) -> "GlueCrawler":
+        """
+        Defines the filter for assets to include when crawling.
+
+        :param assets: list of schema names to include when crawling
+        :returns: crawler, set to include only those assets specified
+        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
+        """
         self._build_asset_filter("include", assets)
         return self
 
     def exclude(self, assets: list[str]) -> "GlueCrawler":
+        """
+        Defines the filter for assets to exclude when crawling.
+
+        :param assets: list of schema names to exclude when crawling
+        :returns: crawler, set to exclude only those assets specified
+        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
+        """
         self._build_asset_filter("exclude", assets)
         return self
 

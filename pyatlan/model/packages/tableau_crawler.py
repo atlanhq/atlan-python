@@ -1,11 +1,26 @@
 from typing import Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
-from pyatlan.model.packages.crawler import AbstractCrawler
+from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
 class TableauCrawler(AbstractCrawler):
+    """
+    Base configuration for a new Tableau crawler.
+
+    :param connection_name: name for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the
+    connection (True) or not (False), default: False
+    :param allow_query_preview: allow sample data viewing for
+    assets in the connection (True) or not (False), default: False
+    :param row_limit: maximum number of rows
+    that can be returned by a query, default: 0
+    """
+
     _NAME = "tableau"
     _PACKAGE_NAME = "@atlan/tableau"
     _PACKAGE_PREFIX = WorkflowPackage.TABLEAU.value
@@ -42,6 +57,15 @@ class TableauCrawler(AbstractCrawler):
         port: int = 443,
         ssl_enabled: bool = True,
     ) -> "TableauCrawler":
+        """
+        Set up the crawler to extract directly from Tableau.
+
+        :param hostname: hostname of Tableau
+        :param site: site in Tableau from which to extract
+        :param port: port for the connection to Tableau
+        :param ssl_enabled: if True, use SSL for the connection, otherwise do not use SSL
+        :returns: crawler, set up to extract directly from Tableau
+        """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "host": hostname,
@@ -57,6 +81,13 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def basic_auth(self, username: str, password: str) -> "TableauCrawler":
+        """
+        Set up the crawler to use basic authentication.
+
+        :param username: through which to access Tableau
+        :param password: through which to access Tableau
+        :returns: crawler, set up to use basic authentication
+        """
         local_creds = {
             "authType": "basic",
             "username": username,
@@ -68,6 +99,13 @@ class TableauCrawler(AbstractCrawler):
     def personal_access_token(
         self, username: str, access_token: str
     ) -> "TableauCrawler":
+        """
+        Set up the crawler to use PAT-based authentication.
+
+        :param username: through which to access Tableau
+        :param access_token: personal access token for the user, through which to access Tableau
+        :returns: crawler, set up to use PAT-based authentication
+        """
         local_creds = {
             "authType": "personal_access_token",
             "username": username,
@@ -77,6 +115,12 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def include(self, projects: list[str]) -> "TableauCrawler":
+        """
+        Defines the filter for projects to include when crawling.
+
+        :param projects: the GUIDs of projects to include when crawling
+        :returns: crawler, set to include only those projects specified
+        """
         include_projects = projects or []
         to_include = self.build_flat_filter(include_projects)
         if to_include:
@@ -84,6 +128,12 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def exclude(self, projects: list[str]) -> "TableauCrawler":
+        """
+        Defines the filter for projects to exclude when crawling.
+
+        :param projects: the GUIDs of projects to exclude when crawling
+        :returns: crawler, set to exclude only those projects specified
+        """
         exclude_projects = projects or []
         to_exclude = self.build_flat_filter(exclude_projects)
         if to_exclude:
@@ -91,6 +141,13 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def crawl_hidden_fields(self, enabled: bool = True) -> "TableauCrawler":
+        """
+        Whether to crawl hidden datasource fields (True) or not.
+
+        :param enabled: If True, hidden datasource fields
+        will be crawled, otherwise they will not, default: True
+        :returns: crawler, set to include or exclude hidden datasource fields
+        """
         self._parameters.append(
             {
                 "name": "crawl-hidden-datasource-fields",
@@ -100,6 +157,13 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def crawl_unpublished(self, enabled: bool = True) -> "TableauCrawler":
+        """
+        Whether to crawl unpublished worksheets and dashboards (True) or not.
+
+        :param enabled: If True, unpublished worksheets and dashboards
+        will be crawled, otherwise they will not, default: True
+        :returns: crawler, set to include or exclude unpublished worksheets and dashboards
+        """
         self._parameters.append(
             {
                 "name": "crawl-unpublished-worksheets-dashboard",
@@ -109,6 +173,12 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def alternate_host(self, hostname: str) -> "TableauCrawler":
+        """
+        Set an alternate host to use for the "View in Tableau" button for assets in the UI.
+
+        :param hostname: alternate hostname to use
+        :returns: crawler, set to use an alternate host for viewing assets in Tableau
+        """
         self._parameters.append({"name": "tableau-alternate-host", "value": hostname})
         return self
 

@@ -1,11 +1,9 @@
 from json import load, loads
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.workflow import WorkflowClient
 from pyatlan.model.packages.confluent_kafka_crawler import ConfluentKafkaCrawler
 from pyatlan.model.packages.dbt_crawler import DbtCrawler
 from pyatlan.model.packages.glue_crawler import GlueCrawler
@@ -29,16 +27,6 @@ DBT_CLOUD = "dbt_cloud.json"
 def load_json(filename):
     with (PACKAGE_REQUESTS_DIR / filename).open() as input_file:
         return load(input_file)
-
-
-@pytest.fixture()
-def mock_api_caller():
-    return Mock(spec=ApiCaller)
-
-
-@pytest.fixture()
-def client(mock_api_caller) -> WorkflowClient:
-    return WorkflowClient(mock_api_caller)
 
 
 @pytest.fixture()

@@ -1,11 +1,26 @@
 from typing import Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
-from pyatlan.model.packages.crawler import AbstractCrawler
+from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
 class PowerBICrawler(AbstractCrawler):
+    """
+    Base configuration for a new PowerBI crawler.
+
+    :param connection_name: name for the connection
+    :param admin_roles: admin roles for the connection
+    :param admin_groups: admin groups for the connection
+    :param admin_users: admin users for the connection
+    :param allow_query: allow data to be queried in the
+    connection (True) or not (False), default: False
+    :param allow_query_preview: allow sample data viewing for
+    assets in the connection (True) or not (False), default: False
+    :param row_limit: maximum number of rows
+    that can be returned by a query, default: 0
+    """
+
     _NAME = "powerbi"
     _PACKAGE_NAME = "@atlan/powerbi"
     _PACKAGE_PREFIX = WorkflowPackage.POWERBI.value
@@ -40,6 +55,11 @@ class PowerBICrawler(AbstractCrawler):
         )
 
     def direct(self) -> "PowerBICrawler":
+        """
+        Set up the crawler to extract directly from Power BI.
+
+        :returns: rawler, set up to extract directly from Power BI
+        """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "host": "api.powerbi.com",
@@ -57,6 +77,16 @@ class PowerBICrawler(AbstractCrawler):
         client_id: str,
         client_secret: str,
     ) -> "PowerBICrawler":
+        """
+        Set up the crawler to use delegated user authentication.
+
+        :param username: through which to access Power BI
+        :param password: through which to access Power BI
+        :param tenant_id: unique ID (GUID) of the tenant for Power BI
+        :param client_id: unique ID (GUID) of the client for Power BI
+        :param client_secret: through which to access Power BI
+        :returns: crawler, set up to use delegated user authentication
+        """
         local_creds = {
             "authType": "basic",
             "username": username,
@@ -73,6 +103,14 @@ class PowerBICrawler(AbstractCrawler):
     def service_principal(
         self, tenant_id: str, client_id: str, client_secret: str
     ) -> "PowerBICrawler":
+        """
+        Set up the crawler to use service principal authentication.
+
+        :param tenant_id: unique ID (GUID) of the tenant for Power BI
+        :param client_id: unique ID (GUID) of the client for Power BI
+        :param client_secret: through which to access Power BI
+        :returns: crawler, set up to use service principal authentication
+        """
         local_creds = {
             "authType": "service_principal",
             "connectorType": "rest",
@@ -86,6 +124,12 @@ class PowerBICrawler(AbstractCrawler):
         return self
 
     def include(self, workspaces: list[str]) -> "PowerBICrawler":
+        """
+        Defines the filter for workspaces to include when crawling.
+
+        :param workspaces: the GUIDs of workspaces to include when crawling
+        :return: crawler, set to include only those workspaces specified
+        """
         include_workspaces = workspaces or []
         to_include = self.build_flat_filter(include_workspaces)
         if to_include:
@@ -93,6 +137,12 @@ class PowerBICrawler(AbstractCrawler):
         return self
 
     def exclude(self, workspaces: list[str]) -> "PowerBICrawler":
+        """
+        Defines the filter for workspaces to exclude when crawling.
+
+        :param workspaces: the GUIDs of workspaces to exclude when crawling
+        :return: crawler, set to exclude only those workspaces specified
+        """
         exclude_workspaces = workspaces or []
         to_exclude = self.build_flat_filter(exclude_workspaces)
         if to_exclude:
@@ -100,6 +150,14 @@ class PowerBICrawler(AbstractCrawler):
         return self
 
     def direct_endorsements(self, enabled: bool = True) -> "PowerBICrawler":
+        """
+        Whether to directly attach endorsements as
+        certificates (True), or instead raise these as requests
+
+        :param enabled: if True, endorsements will be directly set as
+        certificates on assets, otherwise requests will be raised, default: True
+        :returns: crawler, set to directly (or not) set certificates on assets for endorsements
+        """
         self._parameters.append(
             {
                 "name": "endorsement-attach-mode",
