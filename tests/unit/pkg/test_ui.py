@@ -52,7 +52,7 @@ def good_or_bad_rule(request, ui_rule):
     if request.param == "good":
         return [ui_rule]
     else:
-        return None
+        return 1
 
 
 class TestUIConfig:
@@ -70,7 +70,7 @@ class TestUIConfig:
             (
                 "good",
                 "bad",
-                r"1 validation error for Init\nrules\n  none is not an allowed value",
+                r"1 validation error for Init\nrules\n  value is not a valid list",
             ),
             (
                 "bad",
