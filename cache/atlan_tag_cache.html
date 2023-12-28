@@ -473,6 +473,21 @@ for Atlan tags.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_source_tags_attr_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache.get_source_tags_attr_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id" title="Link to this definition">#</a></dt>
+<dd><p>Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
+captures tag attachment details (for source-synced tags).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> – Atlan-internal ID string of the Atlan tag</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Atlan-internal ID string of the attribute containing source-synced tag attachment details</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache.refresh_cache">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">refresh_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache.refresh_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.refresh_cache" title="Link to this definition">#</a></dt>
 <dd><p>Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.</p>
@@ -541,6 +556,7 @@ for Atlan tags.</p>
 <li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache</span></code></a><ul>
 <li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_id_for_name"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.get_id_for_name()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_name_for_id"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.get_name_for_id()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.get_source_tags_attr_id()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.refresh_cache"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.refresh_cache()</span></code></a></li>
 </ul>
 </li>

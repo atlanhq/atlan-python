@@ -502,6 +502,20 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_get_name_for_id</span><span class="p">(</span><span class="n">idstr</span><span class="o">=</span><span class="n">idstr</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="AtlanTagCache.get_source_tags_attr_id">
+<a class="viewcode-back" href="../../../cache/atlan_tag_cache.html#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_source_tags_attr_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that</span>
+<span class="sd">        captures tag attachment details (for source-synced tags).</span>
+
+<span class="sd">        :param id: Atlan-internal ID string of the Atlan tag</span>
+<span class="sd">        :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_get_source_tags_attr_id</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></div>
+
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typedef_client</span><span class="p">:</span> <span class="n">TypeDefClient</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">typdef_client</span><span class="p">:</span> <span class="n">TypeDefClient</span> <span class="o">=</span> <span class="n">typedef_client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache_by_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlanTagDef</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -509,6 +523,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deleted_ids</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deleted_names</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_source_tags_attr_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_refresh_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -529,6 +544,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">cache_by_id</span><span class="p">[</span><span class="n">atlan_tag_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">atlan_tag</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">[</span><span class="n">atlan_tag_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">atlan_tag_name</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">[</span><span class="n">atlan_tag_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">atlan_tag_id</span>
+                <span class="n">sourceTagsId</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">for</span> <span class="n">attr_def</span> <span class="ow">in</span> <span class="n">atlan_tag</span><span class="o">.</span><span class="n">attribute_defs</span> <span class="ow">or</span> <span class="p">[]:</span>
+                    <span class="k">if</span> <span class="n">attr_def</span><span class="o">.</span><span class="n">display_name</span> <span class="o">==</span> <span class="s2">&quot;sourceTagAttachment&quot;</span><span class="p">:</span>
+                        <span class="n">sourceTagsId</span> <span class="o">=</span> <span class="n">attr_def</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_source_tags_attr_id</span><span class="p">[</span><span class="n">atlan_tag_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sourceTagsId</span>
 
     <span class="k">def</span> <span class="nf">_get_id_for_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -566,7 +586,26 @@
                 <span class="c1"># an entry in an audit log that refers to a classification that</span>
                 <span class="c1"># no longer exists)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deleted_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cls_name</span></div>
+        <span class="k">return</span> <span class="n">cls_name</span>
+
+    <span class="k">def</span> <span class="nf">_get_source_tags_attr_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that</span>
+<span class="sd">        captures tag attachment details (for source-synced tags).</span>
+
+<span class="sd">        :param id: Atlan-internal ID string of the Atlan tag</span>
+<span class="sd">        :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">and</span> <span class="nb">id</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">attr_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_source_tags_attr_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">attr_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">deleted_ids</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">attr_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">attr_id</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_source_tags_attr_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">attr_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deleted_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ATLAN_TAG_NOT_FOUND_BY_ID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_ATLAN_TAG_ID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span></div>
 
 </pre></div>
         </article>
