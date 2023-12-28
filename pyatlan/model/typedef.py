@@ -677,7 +677,7 @@ class StructDef(TypeDef):
 
 
 class AtlanTagDef(TypeDef):
-    attribute_defs: Optional[list[dict[str, Any]]] = Field(description="Unused.")
+    attribute_defs: Optional[list[AttributeDef]] = Field(description="Unused.")
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
     display_name: str = Field(
         description="Name used for display purposes (in user interfaces)."

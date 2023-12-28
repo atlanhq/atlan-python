@@ -37,7 +37,7 @@ class MicroStrategyReport(MicroStrategy):
         "microStrategyReportType", "microStrategyReportType"
     )
     """
-    Type of report, for example: Grid or Chart.
+    Whether the report is a Grid or Chart report
     """
 
     MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
@@ -388,7 +388,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyMetricExpression", "microStrategyMetricExpression"
     )
     """
-    Text specifiying this metric's expression.
+    Metric expression text
     """
     MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[
         KeywordTextField
@@ -398,7 +398,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyAttributeQualifiedNames.text",
     )
     """
-    List of unique names of attributes related to this metric.
+    Related attribute qualified name list
     """
     MICRO_STRATEGY_ATTRIBUTE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyAttributeNames",
@@ -406,7 +406,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyAttributeNames",
     )
     """
-    List of simple names of attributes related to this metric.
+    Related attribute name list
     """
     MICRO_STRATEGY_FACT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyFactQualifiedNames",
@@ -414,7 +414,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyFactQualifiedNames.text",
     )
     """
-    List of unique names of facts related to this metric.
+    Related fact qualified name list
     """
     MICRO_STRATEGY_FACT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyFactNames",
@@ -422,7 +422,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyFactNames",
     )
     """
-    List of simple names of facts related to this metric.
+    Related fact name list
     """
     MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[
         KeywordTextField
@@ -432,7 +432,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyMetricParentQualifiedNames.text",
     )
     """
-    List of unique names of parent metrics of this metric.
+    Related parent metric qualified name list
     """
     MICRO_STRATEGY_METRIC_PARENT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyMetricParentNames",
@@ -440,7 +440,7 @@ class MicroStrategyMetric(MicroStrategy):
         "microStrategyMetricParentNames",
     )
     """
-    List of simple names of parent metrics of this metric.
+    Related parent metric name list
     """
 
     MICRO_STRATEGY_METRIC_PARENTS: ClassVar[RelationField] = RelationField(
@@ -790,13 +790,13 @@ class MicroStrategyCube(MicroStrategy):
         "microStrategyCubeType", "microStrategyCubeType"
     )
     """
-    Type of cube, for example: OLAP or MTDI.
+    Whether the cube is an OLAP or MTDI cube
     """
     MICRO_STRATEGY_CUBE_QUERY: ClassVar[KeywordField] = KeywordField(
         "microStrategyCubeQuery", "microStrategyCubeQuery"
     )
     """
-    Query used to create the cube.
+    The query used to create the cube
     """
 
     MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
@@ -942,7 +942,7 @@ class MicroStrategyDossier(MicroStrategy):
         "microStrategyDossierChapterNames", "microStrategyDossierChapterNames"
     )
     """
-    List of chapter names in this dossier.
+    Dossier chapter name list
     """
 
     MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
@@ -1054,7 +1054,7 @@ class MicroStrategyFact(MicroStrategy):
         "microStrategyFactExpressions", "microStrategyFactExpressions"
     )
     """
-    List of expressions for this fact.
+    Fact expression list
     """
 
     MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
@@ -1213,7 +1213,7 @@ class MicroStrategyAttribute(MicroStrategy):
         "microStrategyAttributeForms", "microStrategyAttributeForms"
     )
     """
-    JSON string specifying the attribute's name, description, displayFormat, etc.
+    Attribute form name, description, displayFormat and expression as JSON string
     """
 
     MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
@@ -1361,7 +1361,7 @@ class MicroStrategyVisualization(MicroStrategy):
         "microStrategyVisualizationType", "microStrategyVisualizationType"
     )
     """
-    Type of visualization.
+    Visualization type name
     """
     MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[
         KeywordTextField
@@ -1371,7 +1371,7 @@ class MicroStrategyVisualization(MicroStrategy):
         "microStrategyDossierQualifiedName.text",
     )
     """
-    Unique name of the dossier in which this visualization exists.
+    Parent dossier qualified name
     """
     MICRO_STRATEGY_DOSSIER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyDossierName",
@@ -1379,7 +1379,7 @@ class MicroStrategyVisualization(MicroStrategy):
         "microStrategyDossierName",
     )
     """
-    Simple name of the dossier in which this visualization exists.
+    Parent dossier name
     """
 
     MICRO_STRATEGY_DOSSIER: ClassVar[RelationField] = RelationField(

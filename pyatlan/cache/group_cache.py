@@ -25,7 +25,7 @@ class GroupCache:
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
         """
-        Translate the provided human-readable group name to its GUID.
+        Translate the provided internal group name to its GUID.
 
         :param name: human-readable name of the group
         :returns: unique identifier (GUID) of the group
@@ -35,7 +35,7 @@ class GroupCache:
     @classmethod
     def get_id_for_alias(cls, alias: str) -> Optional[str]:
         """
-        Translate the provided alias to its GUID.
+        Translate the provided human-readable group name to its GUID.
 
         :param alias: name of the group as it appears in the UI
         :returns: unique identifier (GUID) of the group
@@ -45,7 +45,7 @@ class GroupCache:
     @classmethod
     def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
-        Translate the provided group GUID to the human-readable group name.
+        Translate the provided group GUID to the internal group name.
 
         :param idstr: unique identifier (GUID) of the group
         :returns: human-readable name of the group
@@ -83,9 +83,9 @@ class GroupCache:
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """
-        Translate the provided human-readable group name to its GUID.
+        Translate the provided internal group name to its GUID.
 
-        :param name: human-readable name of the group
+        :param name: internal name of the group
         :returns: unique identifier (GUID) of the group
         """
         if group_id := self.map_name_to_id.get(name):
@@ -95,7 +95,7 @@ class GroupCache:
 
     def _get_id_for_alias(self, alias: str) -> Optional[str]:
         """
-        Translate the provided alias to its GUID.
+        Translate the provided human-readable group name to its GUID.
 
         :param alias: name of the group as it appears in the UI
         :returns: unique identifier (GUID) of the group
@@ -107,10 +107,10 @@ class GroupCache:
 
     def _get_name_for_id(self, idstr: str) -> Optional[str]:
         """
-        Translate the provided group GUID to the human-readable group name.
+        Translate the provided group GUID to the internal group name.
 
         :param idstr: unique identifier (GUID) of the group
-        :returns: human-readable name of the group
+        :returns: internal name of the group
         """
         if group_name := self.map_id_to_name.get(idstr):
             return group_name

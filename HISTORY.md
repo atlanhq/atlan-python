@@ -1,3 +1,43 @@
+## 1.8.3 (December 27, 2023)
+
+### New Features
+
+- (Experimental) Define and run new workflows
+- Added support for retrieval of `SourceTagAttachements` in `AtlanTags`
+
+### Bug fixes
+
+- Fix duplicate initial GUID on Windows. This was due to a lack of support for nano-second accuracy in timestamps in Python on Windows. Code has been changed to rectify this problem.
+
+## 1.8.2 (December 21, 2023)
+
+### New Features
+
+### Bug fixes
+
+- Fix problem parsing assets that contain SourceTagAttachements
+
+### QOL improvements
+
+
+## 1.8.1 (December 19, 2023)
+
+### New Features
+
+- Add support for search log access
+
+### Breaking changes
+
+### Bug fixes
+
+- Modify constants like Referenceable.TYPE_NAME to use InternalKeywordField, InternalKeywordTextField or InternalNumericField
+- Fix groups in purpose policies and remove data mesh slugs and abbreviations
+- Added missing "templates" field to the WorkflowSpec model
+
+### QOL improvements
+
+- Change qualifiedName generation on Link to be deterministic
+
 ## 1.8.0 (December 13, 2023)
 
 ### New features

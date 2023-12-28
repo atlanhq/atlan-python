@@ -38,7 +38,6 @@ You can interact with all of the following different kinds of assets:
     asset/column
     asset/columnprocess
     asset/connection
-    asset/datacontract
     asset/datadomain
     asset/datamesh
     asset/dataproduct

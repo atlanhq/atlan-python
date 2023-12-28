@@ -53,6 +53,17 @@ class AtlanTagCache:
         """
         return cls.get_cache()._get_name_for_id(idstr=idstr)
 
+    @classmethod
+    def get_source_tags_attr_id(cls, id: str) -> Optional[str]:
+        """
+        Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
+        captures tag attachment details (for source-synced tags).
+
+        :param id: Atlan-internal ID string of the Atlan tag
+        :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details
+        """
+        return cls.get_cache()._get_source_tags_attr_id(id)
+
     def __init__(self, typedef_client: TypeDefClient):
         self.typdef_client: TypeDefClient = typedef_client
         self.cache_by_id: dict[str, AtlanTagDef] = {}
@@ -60,6 +71,7 @@ class AtlanTagCache:
         self.map_name_to_id: dict[str, str] = {}
         self.deleted_ids: set[str] = set()
         self.deleted_names: set[str] = set()
+        self.map_id_to_source_tags_attr_id: dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
         """
@@ -80,6 +92,11 @@ class AtlanTagCache:
                 self.cache_by_id[atlan_tag_id] = atlan_tag
                 self.map_id_to_name[atlan_tag_id] = atlan_tag_name
                 self.map_name_to_id[atlan_tag_name] = atlan_tag_id
+                sourceTagsId = ""
+                for attr_def in atlan_tag.attribute_defs or []:
+                    if attr_def.display_name == "sourceTagAttachment":
+                        sourceTagsId = attr_def.name or ""
+                self.map_id_to_source_tags_attr_id[atlan_tag_id] = sourceTagsId
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """
@@ -118,3 +135,22 @@ class AtlanTagCache:
                 # no longer exists)
                 self.deleted_ids.add(idstr)
         return cls_name
+
+    def _get_source_tags_attr_id(self, id: str) -> Optional[str]:
+        """
+        Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
+        captures tag attachment details (for source-synced tags).
+
+        :param id: Atlan-internal ID string of the Atlan tag
+        :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details
+        """
+        if id and id.strip():
+            attr_id = self.map_id_to_source_tags_attr_id.get(id)
+            if attr_id is not None or id in self.deleted_ids:
+                return attr_id
+            self.refresh_cache()
+            if attr_id := self.map_id_to_source_tags_attr_id.get(id):
+                return attr_id
+            self.deleted_ids.add(id)
+            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_ID.exception_with_parameters(id)
+        raise ErrorCode.MISSING_ATLAN_TAG_ID.exception_with_parameters()

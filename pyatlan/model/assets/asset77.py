@@ -39,21 +39,21 @@ class PowerBIReport(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this report exists.
+    TBC
     """
     DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    Unique name of the dataset used to build this report.
+    TBC
     """
     WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Deprecated. See 'sourceUrl' instead.
+    TBC
     """
     PAGE_COUNT: ClassVar[NumericField] = NumericField("pageCount", "pageCount")
     """
-    Number of pages in this report.
+    TBC
     """
 
     WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
@@ -219,25 +219,25 @@ class PowerBIMeasure(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this measure exists.
+    TBC
     """
     DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    Unique name of the dataset in which this measure exists.
+    TBC
     """
     POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField(
         "powerBIMeasureExpression", "powerBIMeasureExpression"
     )
     """
-    DAX expression for this measure.
+    TBC
     """
     POWER_BI_IS_EXTERNAL_MEASURE: ClassVar[BooleanField] = BooleanField(
         "powerBIIsExternalMeasure", "powerBIIsExternalMeasure"
     )
     """
-    Whether this measure is external (true) or internal (false).
+    TBC
     """
 
     TABLE: ClassVar[RelationField] = RelationField("table")
@@ -363,37 +363,37 @@ class PowerBIColumn(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this column exists.
+    TBC
     """
     DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    Unique name of the dataset in which this column exists.
+    TBC
     """
     POWER_BI_COLUMN_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
         "powerBIColumnDataCategory", "powerBIColumnDataCategory"
     )
     """
-    Data category that describes the data in this column.
+    TBC
     """
     POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
         "powerBIColumnDataType", "powerBIColumnDataType"
     )
     """
-    Data type of this column.
+    TBC
     """
     POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField(
         "powerBISortByColumn", "powerBISortByColumn"
     )
     """
-    Name of a column in the same table to use to order this column.
+    TBC
     """
     POWER_BI_COLUMN_SUMMARIZE_BY: ClassVar[KeywordField] = KeywordField(
         "powerBIColumnSummarizeBy", "powerBIColumnSummarizeBy"
     )
     """
-    Aggregate function to use for summarizing this column.
+    TBC
     """
 
     TABLE: ClassVar[RelationField] = RelationField("table")
@@ -557,31 +557,31 @@ class PowerBITable(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this table exists.
+    TBC
     """
     DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "datasetQualifiedName", "datasetQualifiedName"
     )
     """
-    Unique name of the dataset in which this table exists.
+    TBC
     """
     POWER_BI_TABLE_SOURCE_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
         "powerBITableSourceExpressions", "powerBITableSourceExpressions"
     )
     """
-    Power Query M expressions for the table.
+    TBC
     """
     POWER_BI_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
         "powerBITableColumnCount", "powerBITableColumnCount"
     )
     """
-    Number of columns in this table.
+    TBC
     """
     POWER_BI_TABLE_MEASURE_COUNT: ClassVar[NumericField] = NumericField(
         "powerBITableMeasureCount", "powerBITableMeasureCount"
     )
     """
-    Number of measures in this table.
+    TBC
     """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
@@ -765,13 +765,13 @@ class PowerBITile(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this tile exists.
+    TBC
     """
     DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "dashboardQualifiedName", "dashboardQualifiedName"
     )
     """
-    Unique name of the dashboard in which this tile is pinned.
+    TBC
     """
 
     REPORT: ClassVar[RelationField] = RelationField("report")
@@ -897,7 +897,7 @@ class PowerBIDatasource(PowerBI):
         "connectionDetails", "connectionDetails"
     )
     """
-    Connection details of the datasource.
+    TBC
     """
 
     DATASETS: ClassVar[RelationField] = RelationField("datasets")
@@ -963,27 +963,27 @@ class PowerBIWorkspace(PowerBI):
 
     WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Deprecated.
+    TBC
     """
     REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
     """
-    Number of reports in this workspace.
+    TBC
     """
     DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
         "dashboardCount", "dashboardCount"
     )
     """
-    Number of dashboards in this workspace.
+    TBC
     """
     DATASET_COUNT: ClassVar[NumericField] = NumericField("datasetCount", "datasetCount")
     """
-    Number of datasets in this workspace.
+    TBC
     """
     DATAFLOW_COUNT: ClassVar[NumericField] = NumericField(
         "dataflowCount", "dataflowCount"
     )
     """
-    Number of dataflows in this workspace.
+    TBC
     """
 
     REPORTS: ClassVar[RelationField] = RelationField("reports")
@@ -1155,11 +1155,11 @@ class PowerBIDataset(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this dataset exists.
+    TBC
     """
     WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Deprecated. See 'sourceUrl' instead.
+    TBC
     """
 
     REPORTS: ClassVar[RelationField] = RelationField("reports")
@@ -1333,15 +1333,15 @@ class PowerBIDashboard(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this dashboard exists.
+    TBC
     """
     WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Deprecated. See 'sourceUrl' instead.
+    TBC
     """
     TILE_COUNT: ClassVar[NumericField] = NumericField("tileCount", "tileCount")
     """
-    Number of tiles in this table.
+    TBC
     """
 
     WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
@@ -1455,11 +1455,11 @@ class PowerBIDataflow(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this dataflow exists.
+    TBC
     """
     WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
     """
-    Deprecated. See 'sourceUrl' instead.
+    TBC
     """
 
     WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
@@ -1561,13 +1561,13 @@ class PowerBIPage(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this page exists.
+    TBC
     """
     REPORT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "reportQualifiedName", "reportQualifiedName"
     )
     """
-    Unique name of the report in which this page exists.
+    TBC
     """
 
     REPORT: ClassVar[RelationField] = RelationField("report")

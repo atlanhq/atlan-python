@@ -36,12 +36,9 @@
         fields = qualified_name.split("/")
         if len(fields) != 3:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
-        mesh_slug, mesh_abbreviation = fields[-1], fields[-1]
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                mesh_slug=mesh_slug,
-                mesh_abbreviation=mesh_abbreviation,
             )
         )

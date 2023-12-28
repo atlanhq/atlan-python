@@ -43,7 +43,7 @@ class MicroStrategy(BI):
         "microStrategyProjectQualifiedName.text",
     )
     """
-    Unique name of the project in which this asset exists.
+    Related project qualified name
     """
     MICRO_STRATEGY_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyProjectName",
@@ -51,7 +51,7 @@ class MicroStrategy(BI):
         "microStrategyProjectName",
     )
     """
-    Simple name of the project in which this asset exists.
+    Related project name
     """
     MICRO_STRATEGY_CUBE_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyCubeQualifiedNames",
@@ -59,7 +59,7 @@ class MicroStrategy(BI):
         "microStrategyCubeQualifiedNames.text",
     )
     """
-    Unique names of the cubes related to this asset.
+    Related cube qualified name list
     """
     MICRO_STRATEGY_CUBE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyCubeNames",
@@ -67,7 +67,7 @@ class MicroStrategy(BI):
         "microStrategyCubeNames",
     )
     """
-    Simple names of the cubes related to this asset.
+    Related cube name list
     """
     MICRO_STRATEGY_REPORT_QUALIFIED_NAMES: ClassVar[
         KeywordTextField
@@ -77,7 +77,7 @@ class MicroStrategy(BI):
         "microStrategyReportQualifiedNames.text",
     )
     """
-    Unique names of the reports related to this asset.
+    Related report qualified name list
     """
     MICRO_STRATEGY_REPORT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "microStrategyReportNames",
@@ -85,31 +85,31 @@ class MicroStrategy(BI):
         "microStrategyReportNames",
     )
     """
-    Simple names of the reports related to this asset.
+    Related report name list
     """
     MICRO_STRATEGY_IS_CERTIFIED: ClassVar[BooleanField] = BooleanField(
         "microStrategyIsCertified", "microStrategyIsCertified"
     )
     """
-    Whether the asset is certified in MicroStrategy (true) or not (false).
+    Whether certified in MicroStrategy
     """
     MICRO_STRATEGY_CERTIFIED_BY: ClassVar[KeywordField] = KeywordField(
         "microStrategyCertifiedBy", "microStrategyCertifiedBy"
     )
     """
-    User who certified this asset, in MicroStrategy.
+    User who certified in MicroStrategy
     """
     MICRO_STRATEGY_CERTIFIED_AT: ClassVar[NumericField] = NumericField(
         "microStrategyCertifiedAt", "microStrategyCertifiedAt"
     )
     """
-    Time (epoch) this asset was certified in MicroStrategy, in milliseconds.
+    Certified date in MicroStrategy
     """
     MICRO_STRATEGY_LOCATION: ClassVar[KeywordField] = KeywordField(
         "microStrategyLocation", "microStrategyLocation"
     )
     """
-    Location of this asset in MicroStrategy.
+    Location path in MicroStrategy
     """
 
     _convenience_properties: ClassVar[list[str]] = [

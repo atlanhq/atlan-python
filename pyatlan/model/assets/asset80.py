@@ -38,19 +38,19 @@ class SalesforceObject(Salesforce):
 
     IS_CUSTOM: ClassVar[BooleanField] = BooleanField("isCustom", "isCustom")
     """
-    Whether this object is a custom object (true) or not (false).
+    isCustom captures whether the object is a custom object or not
     """
     IS_MERGABLE: ClassVar[BooleanField] = BooleanField("isMergable", "isMergable")
     """
-    Whether this object is mergable (true) or not (false).
+    TBC
     """
     IS_QUERYABLE: ClassVar[BooleanField] = BooleanField("isQueryable", "isQueryable")
     """
-    Whether this object is queryable (true) or not (false).
+    TBC
     """
     FIELD_COUNT: ClassVar[NumericField] = NumericField("fieldCount", "fieldCount")
     """
-    Number of fields in this object.
+    fieldCount is the number of fields in the object entity
     """
 
     LOOKUP_FIELDS: ClassVar[RelationField] = RelationField("lookupFields")
@@ -188,49 +188,49 @@ class SalesforceField(Salesforce):
         "dataType", "dataType", "dataType.text"
     )
     """
-    Data type of values in this field.
+    data type of the field
     """
     OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "objectQualifiedName", "objectQualifiedName"
     )
     """
-    Unique name of the object in which this field exists.
+    TBC
     """
     ORDER: ClassVar[NumericField] = NumericField("order", "order")
     """
-    Order (position) of this field within the object.
+    TBC
     """
     INLINE_HELP_TEXT: ClassVar[TextField] = TextField(
         "inlineHelpText", "inlineHelpText.text"
     )
     """
-    Help text for this field.
+    TBC
     """
     IS_CALCULATED: ClassVar[BooleanField] = BooleanField("isCalculated", "isCalculated")
     """
-    Whether this field is calculated (true) or not (false).
+    TBC
     """
     FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
     """
-    Formula for this field, if it is a calculated field.
+    TBC
     """
     IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField(
         "isCaseSensitive", "isCaseSensitive"
     )
     """
-    Whether this field is case sensitive (true) or in-sensitive (false).
+    TBC
     """
     IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField("isEncrypted", "isEncrypted")
     """
-    Whether this field is encrypted (true) or not (false).
+    TBC
     """
     MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
     """
-    Maximum length of this field.
+    TBC
     """
     IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
     """
-    Whether this field allows null values (true) or not (false).
+    TBC
     """
     PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
     """
@@ -238,29 +238,29 @@ class SalesforceField(Salesforce):
     """
     NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
     """
-    Number of digits allowed to the right of the decimal point.
+    TBC
     """
     IS_UNIQUE: ClassVar[BooleanField] = BooleanField("isUnique", "isUnique")
     """
-    Whether this field must have unique values (true) or not (false).
+    TBC
     """
     PICKLIST_VALUES: ClassVar[KeywordField] = KeywordField(
         "picklistValues", "picklistValues"
     )
     """
-    List of values from which a user can pick while adding a record.
+    picklistValues is a list of values from which a user can pick from while adding a record
     """
     IS_POLYMORPHIC_FOREIGN_KEY: ClassVar[BooleanField] = BooleanField(
         "isPolymorphicForeignKey", "isPolymorphicForeignKey"
     )
     """
-    Whether this field references a record of multiple objects (true) or not (false).
+    isPolymorphicForeignKey captures whether the field references to record of multiple objects
     """
     DEFAULT_VALUE_FORMULA: ClassVar[KeywordField] = KeywordField(
         "defaultValueFormula", "defaultValueFormula"
     )
     """
-    Formula for the default value for this field.
+    TBC
     """
 
     LOOKUP_OBJECTS: ClassVar[RelationField] = RelationField("lookupObjects")
@@ -546,7 +546,7 @@ class SalesforceOrganization(Salesforce):
 
     SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
     """
-    Identifier of the organization in Salesforce.
+    sourceId is the Id of the organization entity on salesforce
     """
 
     REPORTS: ClassVar[RelationField] = RelationField("reports")
@@ -646,17 +646,17 @@ class SalesforceDashboard(Salesforce):
 
     SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
     """
-    Identifier of the dashboard in Salesforce.
+    sourceId is the Id of the dashboard entity on salesforce
     """
     DASHBOARD_TYPE: ClassVar[KeywordField] = KeywordField(
         "dashboardType", "dashboardType"
     )
     """
-    Type of dashboard in Salesforce.
+    dashboardType is the type of dashboard in salesforce
     """
     REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
     """
-    Number of reports linked to the dashboard in Salesforce.
+    reportCount is the number of reports linked to the dashboard entity on salesforce
     """
 
     REPORTS: ClassVar[RelationField] = RelationField("reports")
@@ -764,17 +764,17 @@ class SalesforceReport(Salesforce):
 
     SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
     """
-    Identifier of the report in Salesforce.
+    sourceId is the Id of the report entity on salesforce
     """
     REPORT_TYPE: ClassVar[KeywordField] = KeywordField("reportType", "reportType")
     """
-    Type of report in Salesforce.
+    reportType is the type of report in salesforce
     """
     DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField(
         "detailColumns", "detailColumns"
     )
     """
-    List of column names on the report.
+    detailColumns is a list of column names on the report
     """
 
     DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")

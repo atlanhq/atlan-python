@@ -17,8 +17,8 @@ from typing import Any, NamedTuple, Optional
 import networkx as nx
 from jinja2 import Environment, PackageLoader
 
-from pyatlan.model.core import to_snake_case
 from pyatlan.model.typedef import EntityDef, EnumDef, TypeDefResponse
+from pyatlan.model.utils import to_snake_case
 
 REFERENCEABLE = "Referenceable"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"

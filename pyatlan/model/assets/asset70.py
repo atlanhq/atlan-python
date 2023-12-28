@@ -33,7 +33,7 @@ class RedashDashboard(Redash):
         "redashDashboardWidgetCount", "redashDashboardWidgetCount"
     )
     """
-    Number of widgets in this dashboard.
+    Number of widgets in the Redash Dashboard
     """
 
     _convenience_properties: ClassVar[list[str]] = [

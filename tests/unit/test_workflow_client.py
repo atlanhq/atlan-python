@@ -10,7 +10,9 @@ from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import WorkflowPackage
 from pyatlan.model.workflow import (
+    Workflow,
     WorkflowMetadata,
+    WorkflowResponse,
     WorkflowRunResponse,
     WorkflowSearchHits,
     WorkflowSearchRequest,
@@ -64,11 +66,20 @@ def search_response(search_result: WorkflowSearchResult) -> WorkflowSearchRespon
 
 
 @pytest.fixture()
-def run_response() -> WorkflowRunResponse:
+def rerun_response() -> WorkflowRunResponse:
     return WorkflowRunResponse(
         status=WorkflowSearchResultStatus(),
         metadata=WorkflowMetadata(name="name", namespace="namespace"),
         spec=WorkflowSpec(),
+    )
+
+
+@pytest.fixture()
+def run_response() -> WorkflowResponse:
+    return WorkflowResponse(
+        metadata=WorkflowMetadata(name="name", namespace="namespace"),
+        spec=WorkflowSpec(),
+        payload=[{"parameter": "test-param", "type": "test-type", "body": {}}],
     )
 
 
@@ -133,36 +144,36 @@ def test_re_run_when_given_workflowpackage(
     client: WorkflowClient,
     mock_api_caller,
     search_response: WorkflowSearchResponse,
-    run_response: WorkflowRunResponse,
+    rerun_response: WorkflowRunResponse,
 ):
     mock_api_caller._call_api.side_effect = [
         search_response.dict(),
-        run_response.dict(),
+        rerun_response.dict(),
     ]
 
-    assert client.rerun(WorkflowPackage.FIVETRAN) == run_response
+    assert client.rerun(WorkflowPackage.FIVETRAN) == rerun_response
 
 
 def test_re_run_when_given_workflowsearchresultdetail(
     client: WorkflowClient,
     mock_api_caller,
     search_result_detail: WorkflowSearchResultDetail,
-    run_response: WorkflowRunResponse,
+    rerun_response: WorkflowRunResponse,
 ):
-    mock_api_caller._call_api.return_value = run_response.dict()
+    mock_api_caller._call_api.return_value = rerun_response.dict()
 
-    assert client.rerun(workflow=search_result_detail) == run_response
+    assert client.rerun(workflow=search_result_detail) == rerun_response
 
 
 def test_re_run_when_given_workflowsearchresult(
     client: WorkflowClient,
     mock_api_caller,
     search_result: WorkflowSearchResult,
-    run_response: WorkflowRunResponse,
+    rerun_response: WorkflowRunResponse,
 ):
-    mock_api_caller._call_api.return_value = run_response.dict()
+    mock_api_caller._call_api.return_value = rerun_response.dict()
 
-    assert client.rerun(workflow=search_result) == run_response
+    assert client.rerun(workflow=search_result) == rerun_response
 
 
 @pytest.mark.parametrize("workflow_response", ["abc", None])
@@ -174,3 +185,31 @@ def test_monitor_when_given_wrong_parameter_raises_invalid_request_error(
         match="ATLAN-PYTHON-400-048 Invalid parameter type for workflow_response should be WorkflowResponse",
     ):
         client.monitor(workflow_response)
+
+
+def test_run_when_given_workflow(
+    client: WorkflowClient,
+    mock_api_caller,
+    search_result: WorkflowSearchResult,
+    run_response: WorkflowResponse,
+):
+    mock_api_caller._call_api.return_value = run_response.dict()
+    response = client.run(
+        Workflow(
+            metadata=WorkflowMetadata(name="name", namespace="namespace"),
+            spec=WorkflowSpec(),
+            payload=[{"parameter": "test-param", "type": "test-type", "body": {}}],
+        )
+    )
+    assert response == run_response
+
+
+@pytest.mark.parametrize("workflow", ["abc", None])
+def test_run_when_given_wrong_parameter_raises_invalid_request_error(
+    workflow, client: WorkflowClient
+):
+    with pytest.raises(
+        InvalidRequestError,
+        match="ATLAN-PYTHON-400-048 Invalid parameter type for workflow should be Workflow",
+    ):
+        client.run(workflow)

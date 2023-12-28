@@ -4,8 +4,6 @@ from pyatlan.model.assets import DataDomain, DataProduct
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from tests.unit.model.constants import (
     DATA_DOMAIN_QUALIFIED_NAME,
-    DATA_PRODUCT_MESH_ABBREVIATION,
-    DATA_PRODUCT_MESH_SLUG,
     DATA_PRODUCT_NAME,
     DATA_PRODUCT_QUALIFIED_NAME,
 )
@@ -20,8 +18,6 @@ assets_dsl = assets.get_dsl_str()
 
 def _assert_product(product: DataProduct) -> None:
     assert product.name == DATA_PRODUCT_NAME
-    assert product.mesh_slug == DATA_PRODUCT_MESH_SLUG
-    assert product.mesh_abbreviation == DATA_PRODUCT_MESH_ABBREVIATION
     assert product.qualified_name == DATA_PRODUCT_QUALIFIED_NAME
 
 

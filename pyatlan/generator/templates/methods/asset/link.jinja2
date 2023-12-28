@@ -3,10 +3,10 @@
     # @validate_arguments()
     @init_guid
     def create(
-        cls, *, asset: Asset, name: str, link: str
+        cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
     ) -> Link:
         return Link(
             attributes=Link.Attributes.create(
-                asset=asset, name=name, link=link
+                asset=asset, name=name, link=link, idempotent=idempotent
             )
         )

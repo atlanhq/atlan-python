@@ -46,59 +46,59 @@ class DbtColumnProcess(Dbt):
         "dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus"
     )
     """
-
+    TBC
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    TBC
     """
     DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
     """
-
+    TBC
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    TBC
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    TBC
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    TBC
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    TBC
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    TBC
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    TBC
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -106,19 +106,19 @@ class DbtColumnProcess(Dbt):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    TBC
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    TBC
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -126,13 +126,13 @@ class DbtColumnProcess(Dbt):
         "dbtJobNextRunHumanized",
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    TBC
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -140,35 +140,35 @@ class DbtColumnProcess(Dbt):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    TBC
     """
     DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
     """
-
+    TBC
     """
     DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    TBC
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    TBC
     """
     CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """
-    Code that ran within the process.
+    TBC
     """
     SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
     """
-    SQL query that ran to produce the outputs.
+    TBC
     """
     AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
     """
-    Parsed AST of the code or SQL statements that describe the logic of this process.
+    TBC
     """
 
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")

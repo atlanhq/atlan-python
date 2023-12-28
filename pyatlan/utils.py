@@ -3,13 +3,14 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
-import datetime
 import enum
 import json
 import logging
+import random
 import re
 import time
 from contextvars import ContextVar
+from datetime import datetime
 from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Mapping, Optional
@@ -33,6 +34,10 @@ s_nextId = milliseconds = int(round(time.time() * 1000)) + 1
 def to_camel_case(s: str) -> str:
     s = re.sub(r"(_|-)+", " ", s).title().replace(" ", "")
     return "".join([s[0].lower(), s[1:]])
+
+
+def get_epoch_timestamp() -> str:
+    return datetime.now().timestamp()
 
 
 def next_id() -> str:
@@ -242,7 +247,9 @@ def init_guid(func):
     def call(*args, **kwargs):
         ret_value = func(*args, **kwargs)
         if hasattr(ret_value, "guid"):
-            ret_value.guid = str(-int(datetime.datetime.now().timestamp() * 1000000))
+            ret_value.guid = str(
+                -int(random.random() * 10000000000000000)  # noqa: S311
+            )
         return ret_value
 
     return call
