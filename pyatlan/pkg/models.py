@@ -7,6 +7,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal, Optional
 
+from jinja2 import Environment, PackageLoader
 from pydantic import BaseModel, Field, PrivateAttr, StrictStr, validate_arguments
 
 from pyatlan.model.enums import AtlanConnectorType
@@ -217,3 +218,55 @@ class CustomPackage(BaseModel):
         config_maps_dir.mkdir(parents=True, exist_ok=True)
         templates_dir = root_dir / "templates"
         templates_dir.mkdir(parents=True, exist_ok=True)
+
+
+class PackageWriter(BaseModel):
+    path: Path
+    pkg: CustomPackage
+    _root_dir: Path = PrivateAttr()
+    _config_maps_dir: Path = PrivateAttr()
+    _templates_dir: Path = PrivateAttr()
+    _env: Environment = PrivateAttr()
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self._root_dir = self.path / self.pkg.name
+        self._config_maps_dir = self._root_dir / "configmaps"
+        self._templates_dir = self._root_dir / "templates"
+        self._env = Environment(  # noqa: S701
+            loader=PackageLoader("pyatlan.pkg", "templates")
+        )
+
+    def create_package(self):
+        self._root_dir.mkdir(parents=True, exist_ok=True)
+        with (self._root_dir / "index.js").open("w") as index:
+            index.write(CustomPackage.indexJS())
+        with (self._root_dir / "index.js").open("w") as index:
+            index.write(CustomPackage.indexJS())
+        with (self._root_dir / "package.json").open("w") as package:
+            package.write(self.pkg.packageJSON)
+        self.create_templates()
+        self.create_configmaps()
+
+    def create_templates(self):
+        self._templates_dir.mkdir(parents=True, exist_ok=True)
+        template = self._env.get_template("default_template.jinja2")
+        content = template.render({"pkg": self.pkg})
+        with (self._templates_dir / "default.yaml").open("w") as script:
+            script.write(content)
+
+    def create_configmaps(self):
+        self._config_maps_dir.mkdir(parents=True, exist_ok=True)
+        template = self._env.get_template("default_configmap.jinja2")
+        content = template.render({"pkg": self.pkg})
+        with (self._config_maps_dir / "default.yaml").open("w") as script:
+            script.write(content)
+
+
+@validate_arguments()
+def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "config"]):
+    writer = PackageWriter(pkg=pkg, path=path)
+    if operation == "package":
+        writer.create_package()
+    else:
+        writer.create_config()

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ pkg.name }}
+data:
+  config: |-
+    {
+      "properties": {
+{%- for key, value in pkg.ui_config.properties.items() %}
+        "{{ key }}": {
+          "type": {{ value.type_ }}
+          "required": {{ value.required | tojson}}
+          "ui": {
+          }
+        }
+{% endfor %}
+
+      }
+
+    }
