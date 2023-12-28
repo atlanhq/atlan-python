@@ -8,6 +8,7 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     WORKFLOW_INDEX_RUN_SEARCH,
     WORKFLOW_INDEX_SEARCH,
+    WORKFLOW_RERUN,
     WORKFLOW_RUN,
 )
 from pyatlan.errors import ErrorCode
@@ -15,6 +16,7 @@ from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term
 from pyatlan.model.workflow import (
     ReRunRequest,
+    Workflow,
     WorkflowResponse,
     WorkflowRunResponse,
     WorkflowSearchRequest,
@@ -139,10 +141,33 @@ class WorkflowClient:
             namespace=detail.metadata.namespace, resource_name=detail.metadata.name
         )
         raw_json = self._client._call_api(
-            WORKFLOW_RUN,
+            WORKFLOW_RERUN,
             request_obj=request,
         )
         return WorkflowRunResponse(**raw_json)
+
+    def run(self, workflow: Workflow) -> WorkflowResponse:
+        """
+        Run the Atlan workflow with a specific configuration.
+
+        Note: This method should only be used to create the workflow for the first time.
+        Each invocation creates a new connection and new assets within that connection.
+        Running the workflow multiple times with the same configuration may lead to duplicate assets.
+        Consider using the "rerun()" method instead to re-execute an existing workflow.
+
+        :param workflow: The workflow to run.
+        :returns: Details of the workflow run.
+        :raises ErrorCode.INVALID_PARAMETER_TYPE: If the provided 'workflow' parameter is not an instance of Workflow.
+        """
+        if not isinstance(workflow, Workflow):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "workflow", "Workflow"
+            )
+        raw_json = self._client._call_api(
+            WORKFLOW_RUN,
+            request_obj=workflow,
+        )
+        return WorkflowResponse(**raw_json)
 
     def monitor(
         self, workflow_response: WorkflowResponse, logger: Optional[Logger] = None

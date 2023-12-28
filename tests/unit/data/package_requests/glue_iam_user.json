@@ -1,0 +1,111 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6335637665681",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png",
+        "orchestration.atlan.com/logo": "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/glue",
+        "orchestration.atlan.com/name": "Glue Assets",
+        "orchestration.atlan.com/usecase": "crawling,auto-classifications",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl AWS Glue assets and publish to Atlan for discovery.",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/glue",
+        "package.argoproj.io/keywords": "[\"lake\",\"connector\",\"crawler\",\"glue\",\"aws\",\"s3\"]",
+        "package.argoproj.io/name": "@atlan/glue",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-glue-default-glue-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "glue",
+        "orchestration.atlan.com/sourceCategory": "lake",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hglue",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-glue-123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-glue-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "include-filter",
+                      "value": "{\"AwsDataCatalog\": {\"test-asset-1\": {}}}"
+                    },
+                    {
+                      "name": "include-filter",
+                      "value": "{\"AwsDataCatalog\": {\"test-asset-1\": {}, \"test-asset-2\": {}}}"
+                    },
+                    {
+                      "name": "credentials-fetch-strategy",
+                      "value": "credential_guid"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/glue/123456\", \"name\": \"test-glue-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"glue\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"lake\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    },
+                    {
+                      "name": "publish-mode",
+                      "value": "production"
+                    },
+                    {
+                      "name": "atlas-auth-type",
+                      "value": "internal"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-glue",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/glue"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "authType": "iam",
+          "username": "test-access-key",
+          "password": "test-secret-key",
+          "name": "default-glue-123456-0",
+          "extra": {
+            "region": "test-region"
+          },
+          "connectorConfigName": "atlan-connectors-glue"
+        }
+      }
+    ]
+}

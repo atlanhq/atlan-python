@@ -373,13 +373,17 @@ INDEX_API = "search/indexsearch"
 INDEX_SEARCH = API(INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 WORKFLOW_INDEX_API = "workflows/indexsearch"
 WORKFLOW_INDEX_RUN_API = "runs/indexsearch"
-WORKFLOW_RUN_API = "workflows/submit"
 WORKFLOW_INDEX_SEARCH = API(
     WORKFLOW_INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 WORKFLOW_INDEX_RUN_SEARCH = API(
     WORKFLOW_INDEX_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+WORKFLOW_RERUN_API = "workflows/submit"
+WORKFLOW_RERUN = API(
+    WORKFLOW_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+WORKFLOW_RUN_API = "workflows?submit=true"
 WORKFLOW_RUN = API(
     WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )

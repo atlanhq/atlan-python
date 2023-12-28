@@ -37,7 +37,7 @@ LOG_IP_ADDRESS = "ipAddress"
 LOG_USERNAME = "userName"
 SEARCH_PARAMS = "searchParameters"
 SEARCH_COUNT = "approximateCount"
-DATA_RESPONSES_DIR = Path(__file__).parent / "data" / "search_log_responses"
+SEARCH_RESPONSES_DIR = Path(__file__).parent / "data" / "search_log_responses"
 SL_MOST_RECENT_VIEWERS_JSON = "sl_most_recent_viewers.json"
 SL_MOST_VIEWED_ASSETS_JSON = "sl_most_viewed_assets.json"
 SL_DETAILED_LOG_ENTRIES_JSON = "sl_detailed_log_entries.json"
@@ -55,7 +55,7 @@ def client():
 
 
 def load_json(filename):
-    with (DATA_RESPONSES_DIR / filename).open() as input_file:
+    with (SEARCH_RESPONSES_DIR / filename).open() as input_file:
         return load(input_file)
 
 

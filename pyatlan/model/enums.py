@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from datetime import datetime
 from enum import Enum
+
+from pyatlan import utils
 
 
 class AdminOperationType(str, Enum):
@@ -143,7 +144,7 @@ class AtlanConnectorType(str, Enum):
         return obj
 
     def to_qualified_name(self):
-        return f"default/{self.value}/{int(datetime.now().timestamp())}"
+        return f"default/{self.value}/{int(utils.get_epoch_timestamp())}"
 
     SNOWFLAKE = ("snowflake", AtlanConnectionCategory.WAREHOUSE)
     TABLEAU = ("tableau", AtlanConnectionCategory.BI)
