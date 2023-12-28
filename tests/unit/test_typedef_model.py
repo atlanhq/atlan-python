@@ -7,7 +7,6 @@ from pathlib import Path
 import pytest
 
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.core import to_camel_case, to_snake_case
 from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
@@ -23,6 +22,7 @@ from pyatlan.model.typedef import (
     _all_other_types,
     _complete_type_list,
 )
+from pyatlan.model.utils import to_camel_case, to_snake_case
 
 APPLICABLE_GLOSSARIES = "applicable_glossaries"
 

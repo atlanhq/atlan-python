@@ -3,61 +3,22 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+
+from pyatlan.model.utils import encoders, to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
     from pydantic.dataclasses import dataclass
 
-from datetime import datetime
 from typing import Any, Generic, Optional, TypeVar
 
 from pydantic.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus
-
-CAMEL_CASE_OVERRIDES = {
-    "IndexTypeEsFields": "IndexTypeESFields",
-    "sourceUrl": "sourceURL",
-    "sourceEmbedUrl": "sourceEmbedURL",
-    "sql_dbt_sources": "sqlDBTSources",
-    "purpose_atlan_tags": "purposeClassifications",
-    "mapped_atlan_tag_name": "mappedClassificationName",
-}
-
-
-def to_camel_case(value: str) -> str:
-    if not isinstance(value, str):
-        raise ValueError("Value must be a string")
-    if value == "__root__":
-        return value
-    value = "".join(word.capitalize() for word in value.split("_"))
-    if value in CAMEL_CASE_OVERRIDES:
-        value = CAMEL_CASE_OVERRIDES[value]
-    if value.startswith("__"):
-        value = value[2:]
-    return f"{value[0].lower()}{value[1:]}"
-
-
-def to_snake_case(value):
-    if value.startswith("__"):
-        value = value[2:]
-    if value == "purposeClassifications":
-        return "purpose_atlan_tags"
-    elif value == "mappedClassificationName":
-        return "mapped_atlan_tag_name"
-    res = [value[0].lower()]
-    for c in (
-        value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]
-    ):
-        if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-            res.append("_")
-            res.append(c.lower())
-        else:
-            res.append(c)
-    return "".join(res).replace(" _", "_").replace(" ", "_")
+from pyatlan.model.structs import SourceTagAttachment
 
 
 class AtlanTagName:
@@ -75,9 +36,14 @@ class AtlanTagName:
     def __init__(self, display_text: str):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        if not AtlanTagCache.get_id_for_name(display_text):
+        if not (id := AtlanTagCache.get_id_for_name(display_text)):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
+        self._id = id
+
+    @property
+    def id(self):
+        return self._id
 
     @classmethod
     def get_deleted_sentinel(cls) -> "AtlanTagName":
@@ -128,10 +94,7 @@ class AtlanObject(BaseModel):
         allow_population_by_field_name = True
         alias_generator = to_camel_case
         extra = Extra.ignore
-        json_encoders = {
-            datetime: lambda v: int(v.timestamp() * 1000),
-            "AtlanTagName": AtlanTagName.json_encode_atlan_tag,
-        }
+        json_encoders = encoders()
         validate_assignment = True
 
 
@@ -184,8 +147,15 @@ class AtlanTag(AtlanObject):
         None, description="", alias="restrictPropagationThroughLineage"
     )
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
+    _source_tag_attachements: list[SourceTagAttachment] = PrivateAttr(
+        default_factory=list
+    )
 
     attributes: Optional[dict[str, Any]] = None
+
+    @property
+    def source_tag_attachements(self) -> list[SourceTagAttachment]:
+        return self._source_tag_attachements
 
     @validator("type_name", pre=True)
     def type_name_is_tag_name(cls, value):
@@ -196,6 +166,18 @@ class AtlanTag(AtlanObject):
         except ValueError:
             value = AtlanTagName.get_deleted_sentinel()
         return value
+
+    def __init__(self, *args, **kwargs):
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+
+        super().__init__(*args, **kwargs)
+        if self.type_name != AtlanTagName.get_deleted_sentinel():
+            attr_id = AtlanTagCache.get_source_tags_attr_id(self.type_name.id)
+        if self.attributes and attr_id in self.attributes:
+            self._source_tag_attachements = [
+                SourceTagAttachment(**source_tag["attributes"])
+                for source_tag in self.attributes[attr_id]
+            ]
 
 
 class AtlanTags(AtlanObject):
