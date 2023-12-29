@@ -76,10 +76,10 @@ class WorkflowClient:
             filter=[
                 NestedQuery(
                     query=Term(
-                        field="metadata.name.keyword",
+                        field="spec.workflowTemplateRef.name.keyword",
                         value=workflow_name,
                     ),
-                    path="metadata",
+                    path="spec",
                 )
             ]
         )
