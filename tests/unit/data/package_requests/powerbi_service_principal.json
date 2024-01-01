@@ -52,6 +52,10 @@
                       "value": "{\"test-workspace-guid\": {}}"
                     },
                     {
+                      "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
                       "name": "credential-guid",
                       "value": "{{credentialGuid}}"
                     },

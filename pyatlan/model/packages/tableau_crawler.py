@@ -125,8 +125,9 @@ class TableauCrawler(AbstractCrawler):
         """
         include_projects = projects or []
         to_include = self.build_flat_filter(include_projects)
-        if to_include:
-            self._parameters.append(dict(name="include-filter", value=to_include))
+        self._parameters.append(
+            dict(name="include-filter", value=to_include if to_include else "{}")
+        )
         return self
 
     def exclude(self, projects: list[str]) -> "TableauCrawler":
@@ -140,8 +141,9 @@ class TableauCrawler(AbstractCrawler):
         """
         exclude_projects = projects or []
         to_exclude = self.build_flat_filter(exclude_projects)
-        if to_exclude:
-            self._parameters.append(dict(name="exclude-filter", value=to_exclude))
+        self._parameters.append(
+            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
+        )
         return self
 
     def crawl_hidden_fields(self, enabled: bool = True) -> "TableauCrawler":

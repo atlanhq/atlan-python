@@ -37,9 +37,7 @@ class AbstractCrawler(AbstractPackage):
         row_limit: int = 0,
         source_logo: str = "",
     ):
-        self._parameters: list = []
-        self._credentials_body: dict = {}
-        self._epoch = int(utils.get_epoch_timestamp())
+        super().__init__()
         self._connection_name = connection_name
         self._connection_type = connection_type
         self._admin_roles = admin_roles
@@ -49,6 +47,7 @@ class AbstractCrawler(AbstractPackage):
         self._allow_query_preview = allow_query_preview
         self._row_limit = row_limit
         self._source_logo = source_logo
+        self._epoch = int(utils.get_epoch_timestamp())
 
     def _get_connection(self) -> Connection:
         """

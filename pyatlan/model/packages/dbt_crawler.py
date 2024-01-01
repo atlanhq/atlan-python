@@ -69,10 +69,10 @@ class DbtCrawler(AbstractCrawler):
             "name": f"default-{self._NAME}-{self._epoch}-1",
             "host": hostname,
             "port": 443,
-            "authType": "token",
+            "auth_type": "token",
             "username": "",
             "password": service_token,
-            "connectorConfigName": f"atlan-connectors-{self._NAME}",
+            "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
         self._credentials_body.update(local_creds)
         self._parameters.append(dict(name="extraction-method", value="api"))
