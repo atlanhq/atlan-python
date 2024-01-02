@@ -27,20 +27,20 @@ class CredentialClient:
             )
         self._client = client
 
-    def get(self, guid: str) -> Credential:
+    def get(self, guid: str) -> CredentialResponse:
         """
         Retrieves a credential by its unique identifier (GUID).
         Note that this will never contain sensitive information
         in the credential, such as usernames, passwords or client secrets or keys.
 
         :param guid: GUID of the credential.
-        :returns: A Credential instance.
+        :returns: A CredentialResponse instance.
         :raises: AtlanException on any error during API invocation.
         """
         raw_json = self._client._call_api(
             GET_CREDENTIAL_BY_GUID.format_path({"credential_guid": guid})
         )
-        return CredentialResponse(**raw_json).to_credential()
+        return CredentialResponse(**raw_json)
 
     def test(self, credential: Credential) -> CredentialTestResponse:
         """
@@ -48,17 +48,14 @@ class CredentialClient:
 
         :param credential: The credential to be tested.
         :type credential: A CredentialTestResponse instance.
-        :return: The response indicating the test result.
+        :returns: The response indicating the test result.
         :raises InvalidRequestException: If the provided credential is invalid type.
         :raises AtlanException: On any error during API invocation.
-        :raises InvalidRequestException: If the provided credential does not have an ID.
         """
         if not isinstance(credential, Credential):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "credential", "Credential"
             )
-        if not credential.id:
-            raise ErrorCode.MISSING_TOKEN_ID.exception_with_parameters()
         raw_json = self._client._call_api(TEST_CREDENTIAL, request_obj=credential)
         return CredentialTestResponse(**raw_json)
 
@@ -67,17 +64,25 @@ class CredentialClient:
         Updates this credential in Atlan after first
         testing it to confirm its successful validation.
 
-        :returns: An updated Credential instance.
+        :returns: An updated CredentialResponse instance.
+        :raises InvalidRequestException: If the provided credential is invalid type.
         :raises InvalidRequestException: if the provided credentials
         cannot be validated successfully.
+        :raises InvalidRequestException: If the provided credential
+        does not have an ID.
         :raises AtlanException: on any error during API invocation.
         """
-
+        if not isinstance(credential, Credential):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "credential", "Credential"
+            )
         test_response = self.test(credential=credential)
         if not test_response.is_successful:
             raise ErrorCode.INVALID_CREDENTIALS.exception_with_parameters(
                 test_response.message
             )
+        if not credential.id:
+            raise ErrorCode.MISSING_TOKEN_ID.exception_with_parameters()
         raw_json = self._client._call_api(
             UPDATE_CREDENTIAL_BY_GUID.format_path({"credential_guid": credential.id}),
             request_obj=credential,
