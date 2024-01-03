@@ -55,9 +55,16 @@ class AbstractWidget(abc.ABC):
     def to_nested(self, name: str) -> str:
         return f"{{{{=toJson(inputs.parameters.{name})}}}}"
 
+    def to_env(self, name: str) -> str:
+        return f"{{{{inputs.parameters.{name}}}}}"
+
     @property
     def parameter_value(self) -> str:
         return '""'
+
+    @property
+    def s3_artifact(self) -> bool:
+        return False
 
 
 @dataclass
@@ -508,11 +515,18 @@ class FileUploaderWidget(AbstractWidget):
         self.file_types = file_types
 
     def to_nested(self, name: str) -> str:
-        return f"/tmp/{name}/{{inputs.parameters.{name}}}"  # noqa: S108
+        return f'"/tmp/{name}/{{{{inputs.parameters.{name}}}}}"'  # noqa: S108
 
     @property
     def parameter_value(self) -> str:
         return '"argo-artifacts/atlan-update/last-run-timestamp.txt"'
+
+    def to_env(self, name: str) -> str:
+        return f"/tmp/{name}/{{{{inputs.parameters.{name}}}}}"  # noqa: S108
+
+    @property
+    def s3_artifact(self) -> bool:
+        return True
 
 
 @dataclass
@@ -546,6 +560,10 @@ class FileUploader(AbstractUIElement):
             placeholder=placeholder,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+    @property
+    def parameter_value(self) -> str:
+        return ""
 
 
 @dataclasses.dataclass

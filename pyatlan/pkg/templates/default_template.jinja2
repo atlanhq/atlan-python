@@ -15,7 +15,22 @@ spec:
               value: {{ property.ui.parameter_value}}
 {%- endfor %}
         {%- endif %}
+{%- set ns = namespace(has_s3=false) %}
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+    {%- if property.ui.s3_artifact %}
+        {%- if loop.first %}
+        artifacts:
+        {%- endif %}
+        {%-  set ns.has_s3 = true %}
+          - name: {{ name }}_s3
+            path: "/tmp/{{ name }}/{% raw %}{{inputs.parameters.{% endraw %}{{ name }}{% raw %}}}{% endraw %}"
+            s3:
+              key: "{% raw %}{{inputs.parameters.{% endraw %}{{ name }}{% raw %}}}{% endraw %}"
+    {%- endif  %}
+{%- endfor %}
+{%- if not ns.has_s3 %}
         artifacts: []
+{% endif %}
       outputs:
         artifacts:
 {%-  for name, value in pkg.outputs.items()  %}
@@ -56,7 +71,7 @@ spec:
                 key: password
 {%-  for name, property in pkg.ui_config.properties.items()  %}
           - name: {{ name | upper }}
-            value: "{% raw %}{{inputs.parameters.{% endraw %}{{name}}{% raw %}}}{% endraw %}"
+            value: "{{property.ui.to_env(name)}}"
 {%- endfor %}
           - name: NESTED_CONFIG
             value: |-
