@@ -52,6 +52,13 @@ class AbstractWidget(abc.ABC):
     def to_json(self):
         return json.dumps(self, indent=2, default=pydantic_encoder)
 
+    def to_nested(self, name: str) -> str:
+        return f"{{{{=toJson(inputs.parameters.{name})}}}}"
+
+    @property
+    def parameter_value(self) -> str:
+        return '""'
+
 
 @dataclass
 class AbstractUIElement(abc.ABC):
@@ -65,6 +72,7 @@ class UIElementWithEnum(AbstractUIElement):
     enum: list[str]
     enum_names: list[str]
     default: Optional[str] = None
+    possible_values: dict[str, str] = field(default_factory=dict)
 
     def __init__(
         self,
@@ -76,6 +84,7 @@ class UIElementWithEnum(AbstractUIElement):
         super().__init__(type_=type_, required=required, ui=ui)
         self.enum = list(possible_values.keys())
         self.enum_names = list(possible_values.values())
+        self.possible_values = possible_values
 
 
 @dataclasses.dataclass
@@ -143,6 +152,13 @@ class BooleanInputWidget(AbstractWidget):
             placeholder=placeholder,
             grid=grid,
         )
+
+    def to_nested(self, name: str) -> str:
+        return f"{{{{inputs.parameters.{name}}}}}"
+
+    @property
+    def parameter_value(self) -> str:
+        return "false"
 
 
 @dataclass
@@ -356,6 +372,13 @@ class DateInputWidget(AbstractWidget):
         self.min_ = min_
         self.default = default
 
+    def to_nested(self, name: str) -> str:
+        return f"{{{{inputs.parameters.{name}}}}}"
+
+    @property
+    def parameter_value(self) -> str:
+        return "-1"
+
 
 @dataclass
 class DateInput(AbstractUIElement):
@@ -426,8 +449,6 @@ class DropDownWidget(AbstractWidget):
 
 @dataclass
 class DropDown(UIElementWithEnum):
-    possible_values: dict[str, str] = field(default_factory=dict)
-
     @validate_arguments()
     def __init__(
         self,
@@ -463,7 +484,6 @@ class DropDown(UIElementWithEnum):
             possible_values=possible_values,
             ui=widget,
         )
-        self.possible_values = possible_values
 
 
 @dataclasses.dataclass
@@ -486,6 +506,13 @@ class FileUploaderWidget(AbstractWidget):
             placeholder=placeholder,
         )
         self.file_types = file_types
+
+    def to_nested(self, name: str) -> str:
+        return f"/tmp/{name}/{{inputs.parameters.{name}}}"  # noqa: S108
+
+    @property
+    def parameter_value(self) -> str:
+        return '"argo-artifacts/atlan-update/last-run-timestamp.txt"'
 
 
 @dataclass
@@ -664,6 +691,13 @@ class NumericInputWidget(AbstractWidget):
             placeholder=placeholder,
             grid=grid,
         )
+
+    def to_nested(self, name: str) -> str:
+        return f"{{{{inputs.parameters.{name}}}}}"
+
+    @property
+    def parameter_value(self) -> str:
+        return "-1"
 
 
 @dataclass

@@ -166,6 +166,7 @@ class CustomPackage(BaseModel):
     preview: bool = False
     connector_type: Optional[AtlanConnectorType] = None
     category: str = "custom"
+    outputs: dict[str, str] = Field(default_factory=dict)
     _pkg: PackageDefinition = PrivateAttr()
     _name: str = PrivateAttr()
 
@@ -236,6 +237,7 @@ class PackageWriter(BaseModel):
         self._env = Environment(  # noqa: S701
             loader=PackageLoader("pyatlan.pkg", "templates")
         )
+        self._env.globals.update({"isinstanceof": isinstance})
 
     def create_package(self):
         self._root_dir.mkdir(parents=True, exist_ok=True)
