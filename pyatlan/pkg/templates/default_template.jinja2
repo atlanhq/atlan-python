@@ -31,9 +31,11 @@ spec:
 {%- if not ns.has_s3 %}
         artifacts: []
 {% endif %}
+{%-  for name, value in pkg.outputs.items()  %}
+    {%- if loop.first %}
       outputs:
         artifacts:
-{%-  for name, value in pkg.outputs.items()  %}
+    {%- endif %}
          - name: {{ name }}
            path: {{ value }}
 {%- endfor %}
