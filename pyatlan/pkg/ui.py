@@ -89,6 +89,9 @@ class UIStep:
         return json.dumps(inner, indent=2, default=pydantic_encoder)
 
 
+TUIRule = TypeVar("TUIRule", bound="UIRule")
+
+
 @dataclass()
 class UIRule:
     when_inputs: dict[str, str]
@@ -110,6 +113,9 @@ class UIRule:
         self.when_inputs = when_inputs
         self.required = required
         self.properties = {key: {"const": value} for key, value in when_inputs.items()}
+
+    def to_json(self: TUIRule) -> str:
+        return json.dumps(self.properties, indent=2, default=pydantic_encoder)
 
 
 @dataclass()

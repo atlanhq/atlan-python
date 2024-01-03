@@ -176,7 +176,7 @@ class TestUIStep:
                 TITLE,
                 {"qn_prefix": "oioi"},
                 "",
-                r"16 validation errors for Init\ninputs -> qn_prefix\n  instance of APITokenSelector, tuple or dict "
+                r"17 validation errors for Init\ninputs -> qn_prefix\n  instance of APITokenSelector, tuple or dict "
                 r"expected",
             ),
             (
