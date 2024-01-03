@@ -3,6 +3,7 @@
 from unittest.mock import Mock
 
 import pytest
+from pydantic import ValidationError
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.credential import CredentialClient
@@ -19,8 +20,16 @@ TEST_MISSING_TOKEN_ID = (
 TEST_INVALID_CREDENTIALS = (
     "ATLAN-PYTHON-400-043 Credentials provided did not work: failed"
 )
-TEST_INVALID_CRED_PARAMETER_TYPE = (
-    "ATLAN-PYTHON-400-048 Invalid parameter type for credential should be Credential"
+TEST_INVALID_GUID_GET_VALIDATION_ERR = (
+    "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
+)
+TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
+    "1 validation error for Test\ncredential\n  "
+    "value is not a valid dict (type=type_error.dict)"
+)
+TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = (
+    "1 validation error for TestAndUpdate\ncredential\n  "
+    "value is not a valid dict (type=type_error.dict)"
 )
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
@@ -79,39 +88,50 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
         CredentialClient(test_api_caller)
 
 
-@pytest.mark.parametrize("test_credentials", ["invalid_cred", None])
-def test_cred_test_wrong_params_raises_invalid_request_error(
+@pytest.mark.parametrize("test_guid", [[123], set(), dict()])
+def test_cred_get_wrong_params_raises_validation_error(
+    test_guid, client: CredentialClient
+):
+    with pytest.raises(ValidationError) as err:
+        client.get(guid=test_guid)
+    assert TEST_INVALID_GUID_GET_VALIDATION_ERR == str(err.value)
+
+
+@pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
+def test_cred_test_wrong_params_raises_validation_error(
     test_credentials, client: CredentialClient
 ):
-    with pytest.raises(
-        InvalidRequestError,
-        match=TEST_INVALID_CRED_PARAMETER_TYPE,
-    ):
+    with pytest.raises(ValidationError) as err:
         client.test(credential=test_credentials)
+    assert TEST_INVALID_CRED_TEST_VALIDATION_ERR == str(err.value)
+
+
+@pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
+def test_cred_test_and_update_wrong_params_raises_validation_error(
+    test_credentials, client: CredentialClient
+):
+    with pytest.raises(ValidationError) as err:
+        client.test_and_update(credential=test_credentials)
+    assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize(
     "test_credentials, test_response",
     [
-        ["invalid_cred", None],
-        [None, None],
         [Credential(), "successful"],
         [Credential(id="test-id"), "failed"],
     ],
 )
-def test_cred_test_update_wrong_params_raises_invalid_request_error(
+def test_cred_test_update_raises_invalid_request_error(
     test_credentials, test_response, mock_api_caller, client: CredentialClient
 ):
     mock_api_caller._call_api.return_value = {"message": test_response}
     with pytest.raises(InvalidRequestError) as err:
         client.test_and_update(credential=test_credentials)
-    if isinstance(test_credentials, Credential):
-        if test_response == "successful":
-            assert TEST_MISSING_TOKEN_ID in str(err.value)
-        else:
-            assert TEST_INVALID_CREDENTIALS in str(err.value)
+    if test_response == "successful":
+        assert TEST_MISSING_TOKEN_ID in str(err.value)
     else:
-        assert TEST_INVALID_CRED_PARAMETER_TYPE in str(err.value)
+        assert TEST_INVALID_CREDENTIALS in str(err.value)
 
 
 def test_cred_get_when_given_guid(

@@ -1,3 +1,5 @@
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     GET_CREDENTIAL_BY_GUID,
@@ -27,6 +29,7 @@ class CredentialClient:
             )
         self._client = client
 
+    @validate_arguments()
     def get(self, guid: str) -> CredentialResponse:
         """
         Retrieves a credential by its unique identifier (GUID).
@@ -42,6 +45,7 @@ class CredentialClient:
         )
         return CredentialResponse(**raw_json)
 
+    @validate_arguments()
     def test(self, credential: Credential) -> CredentialTestResponse:
         """
         Tests the given credential by sending it to Atlan for validation.
@@ -59,6 +63,7 @@ class CredentialClient:
         raw_json = self._client._call_api(TEST_CREDENTIAL, request_obj=credential)
         return CredentialTestResponse(**raw_json)
 
+    @validate_arguments()
     def test_and_update(self, credential: Credential) -> CredentialResponse:
         """
         Updates this credential in Atlan after first
