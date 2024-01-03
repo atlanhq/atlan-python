@@ -57,7 +57,7 @@ def mock_package_writer():
 def custom_package():
     text_input = TextInput(
         label="Qualified name prefix",
-        help_="Provide the starting name for schemas from which to propagate ownership",
+        help="Provide the starting name for schemas from which to propagate ownership",
         required=False,
         placeholder="default/snowflake/1234567890",
         grid=4,
@@ -188,13 +188,13 @@ def test_generate_parameter_validation(
         generate(pkg=good_or_bad_custom_package, path=path, operation=operation)
 
 
-def test_generate_with_package(mock_package_writer, custom_package):
+def test_generate_with_operation_package(mock_package_writer, custom_package):
     generate(pkg=custom_package, path="..", operation="package")
 
     mock_package_writer.create_package.assert_called()
 
 
-def test_generate_with_config(mock_package_writer, custom_package):
+def test_generate_with_operation_config(mock_package_writer, custom_package):
     generate(pkg=custom_package, path="..", operation="config")
 
-    mock_package_writer.create_config.assert_called()
+    mock_package_writer.create_configmaps.assert_called()

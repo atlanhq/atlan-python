@@ -1,8 +1,10 @@
+import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import Any, Optional, TypeVar, Union
 
 from pydantic import StrictStr, validate_arguments
+from pydantic.json import pydantic_encoder
 
 from pyatlan.pkg.widgets import (
     APITokenSelector,
@@ -44,6 +46,8 @@ UIElement = Union[
     TextInput,
 ]
 
+TUIStep = TypeVar("TUIStep", bound="UIStep")
+
 
 @dataclass()
 class UIStep:
@@ -65,6 +69,22 @@ class UIStep:
         self.description = description
         self.id = title.replace(" ", "_").lower()
         self.properties = list(self.inputs.keys())
+
+    def to_json(self: TUIStep) -> str:
+        @dataclass()
+        class Inner:
+            title: str
+            description: str = ""
+            id: str = ""
+            properties: list[str] = field(default_factory=list)
+
+        inner = Inner(
+            title=self.title,
+            description=self.description,
+            id=self.id,
+            properties=self.properties,
+        )
+        return json.dumps(inner, indent=2, default=pydantic_encoder)
 
 
 @dataclass()
@@ -106,5 +126,5 @@ class UIConfig:
         for step in steps:
             for key, value in step.inputs.items():
                 if key in self.properties:
-                    LOGGER.warning("Duplicate key found accross steps: %s", key)
+                    LOGGER.warning("Duplicate key found across steps: %s", key)
                 self.properties[key] = value

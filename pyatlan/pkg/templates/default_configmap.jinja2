@@ -10,11 +10,18 @@ data:
         "{{ key }}": {
           "type": {{ value.type_ }}
           "required": {{ value.required | tojson}}
-          "ui": {
-          }
+          "ui": {{ value.ui.to_json() | indent(10)}}
         }
-{% endfor %}
-
-      }
-
+{%- endfor %}
+      },
+      "anyOf": [
+{%- for rule in pkg.ui_config.rules %}
+         {{ rule.to_json() | indent(10) }}
+{%- endfor %}
+        ],
+      "steps": [
+{%- for step in pkg.ui_config.steps %}
+         {{ step.to_json() | indent(10) }}
+{%- endfor %}
+      ]
     }

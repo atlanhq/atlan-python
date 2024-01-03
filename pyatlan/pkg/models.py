@@ -269,4 +269,4 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
     if operation == "package":
         writer.create_package()
     else:
-        writer.create_config()
+        writer.create_configmaps()

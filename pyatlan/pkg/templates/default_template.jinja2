@@ -46,3 +46,14 @@ spec:
               secretKeyRef:
                 name: argo-client-creds
                 key: password
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+          - name: {{ name | upper }}
+            value: "{% raw %}{{inputs.parameters.{% endraw %}{{name}}{% raw %}}}{% endraw %}"
+{%- endfor %}
+          - name: NESTED_CONFIG
+            value: |-
+             {
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+             "{{ name }}": {% raw %}{{=toJson(inputs.parameters.{% endraw %}{{ name}}{% raw %})}}{% endraw %},
+{%- endfor %}
+             }

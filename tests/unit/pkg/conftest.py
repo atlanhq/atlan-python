@@ -64,7 +64,7 @@ def file_uploader() -> FileUploader:
         label=LABEL,
         file_types=["text/csv"],
         required=False,
-        help_=HELP,
+        help=HELP,
         placeholder=PLACEHOLDER,
     )
     return uploader

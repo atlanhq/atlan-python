@@ -1,12 +1,21 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 import abc
+import json
 from dataclasses import dataclass, field
 
 # from dataclasses import dataclass
 from typing import Optional, Union
 
-from pydantic import StrictBool, StrictInt, StrictStr, validate_arguments
+from pydantic import (
+    Field,
+    StrictBool,
+    StrictInt,
+    StrictStr,
+    dataclasses,
+    validate_arguments,
+)
+from pydantic.json import pydantic_encoder
 
 # from pydantic.dataclasses import dataclass
 
@@ -31,14 +40,17 @@ Widget = Union[
 ]
 
 
-@dataclass
+@dataclasses.dataclass
 class AbstractWidget(abc.ABC):
     widget: str
     label: str
     hidden: bool = False
-    help_: str = ""
+    help: str = Field(default="")
     placeholder: str = ""
     grid: int = 8
+
+    def to_json(self):
+        return json.dumps(self, indent=2, default=pydantic_encoder)
 
 
 @dataclass
@@ -66,20 +78,20 @@ class UIElementWithEnum(AbstractUIElement):
         self.enum_names = list(possible_values.values())
 
 
-@dataclass
+@dataclasses.dataclass
 class APITokenSelectorWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         grid: int = 4,
     ):
         super().__init__(
             widget="apiTokenSelect",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -92,7 +104,7 @@ class APITokenSelector(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 4,
     ):
         """
@@ -108,18 +120,18 @@ class APITokenSelector(AbstractUIElement):
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = APITokenSelectorWidget(
-            label=label, hidden=hidden, help_=help_, grid=grid
+            label=label, hidden=hidden, help=help, grid=grid
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class BooleanInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         placeholder: str = "",
         grid: int = 8,
     ):
@@ -127,7 +139,7 @@ class BooleanInputWidget(AbstractWidget):
             widget="boolean",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
         )
@@ -141,7 +153,7 @@ class BooleanInput(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -150,23 +162,23 @@ class BooleanInput(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
-        widget = BooleanInputWidget(label=label, hidden=hidden, help_=help_, grid=grid)
+        widget = BooleanInputWidget(label=label, hidden=hidden, help=help, grid=grid)
         super().__init__(type_="boolean", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class ConnectionCreatorWidget(AbstractWidget):
     def __init__(
-        self, label: str, hidden: bool = False, help_: str = "", placeholder: str = ""
+        self, label: str, hidden: bool = False, help: str = "", placeholder: str = ""
     ):
         super().__init__(
             widget="connection",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
         )
 
@@ -179,7 +191,7 @@ class ConnectionCreator(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         placeholder: StrictStr = "",
     ):
         """
@@ -189,16 +201,16 @@ class ConnectionCreator(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param placeholder: example text to place within the widget to exemplify its use
         """
         widget = ConnectionCreatorWidget(
-            label=label, hidden=hidden, help_=help_, placeholder=placeholder
+            label=label, hidden=hidden, help=help, placeholder=placeholder
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class ConnectionSelectorWidget(AbstractWidget):
     start: int = 1
 
@@ -206,7 +218,7 @@ class ConnectionSelectorWidget(AbstractWidget):
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         placeholder: str = "",
         grid: int = 4,
         start: int = 1,
@@ -215,7 +227,7 @@ class ConnectionSelectorWidget(AbstractWidget):
             widget="connectionSelector",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
         )
@@ -232,7 +244,7 @@ class ConnectionSelector(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         placeholder: StrictStr = "",
         grid: StrictInt = 4,
         start: StrictInt = 1,
@@ -244,7 +256,7 @@ class ConnectionSelector(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param placeholder: example text to place within the widget to exemplify its use
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         :param start: TBC
@@ -252,7 +264,7 @@ class ConnectionSelector(AbstractUIElement):
         widget = ConnectionSelectorWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
             start=start,
@@ -261,7 +273,7 @@ class ConnectionSelector(AbstractUIElement):
         self.start = start
 
 
-@dataclass
+@dataclasses.dataclass
 class ConnectorTypeSelectorWidget(AbstractWidget):
     start: int = 1
 
@@ -269,7 +281,7 @@ class ConnectorTypeSelectorWidget(AbstractWidget):
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         grid: int = 4,
         start: int = 1,
     ):
@@ -277,7 +289,7 @@ class ConnectorTypeSelectorWidget(AbstractWidget):
             widget="sourceConnectionSelector",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         self.start = start
@@ -291,7 +303,7 @@ class ConnectorTypeSelector(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 4,
         start: StrictInt = 1,
     ):
@@ -304,21 +316,21 @@ class ConnectorTypeSelector(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         :aram start: TBC
         """
         widget = ConnectorTypeSelectorWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
             start=start,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class DateInputWidget(AbstractWidget):
     min_: int = -14
     max_: int = 0
@@ -329,7 +341,7 @@ class DateInputWidget(AbstractWidget):
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         min_: int = -14,
         max_: int = 0,
         default: int = 0,
@@ -337,7 +349,7 @@ class DateInputWidget(AbstractWidget):
         grid: int = 4,
     ):
         super().__init__(
-            widget="date", label=label, hidden=hidden, help_=help_, grid=grid
+            widget="date", label=label, hidden=hidden, help=help, grid=grid
         )
         self.start = start
         self.max_ = max_
@@ -353,7 +365,7 @@ class DateInput(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         min_: StrictInt = -14,
         max_: StrictInt = 0,
         default: StrictInt = 0,
@@ -367,7 +379,7 @@ class DateInput(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param min_: an offset from today (0) that indicates how far back in the calendar can be selected
         (-1 is yesterday, 1 is tomorrow, and so on)
         :param max_: an offset from today (0) that indicates how far forward in the calendar can be selected
@@ -380,7 +392,7 @@ class DateInput(AbstractUIElement):
         widget = DateInputWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             min_=min_,
             max_=max_,
             default=default,
@@ -390,7 +402,7 @@ class DateInput(AbstractUIElement):
         super().__init__(type_="number", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class DropDownWidget(AbstractWidget):
     mode: str = ""
 
@@ -399,14 +411,14 @@ class DropDownWidget(AbstractWidget):
         label: str,
         mode: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         grid: int = 8,
     ):
         super().__init__(
             widget="select",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         self.mode = mode
@@ -423,7 +435,7 @@ class DropDown(UIElementWithEnum):
         possible_values: dict[str, str],
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         multi_select: StrictBool = False,
         grid: StrictInt = 8,
     ):
@@ -434,7 +446,7 @@ class DropDown(UIElementWithEnum):
         :param possible_values: map of option keys to the value that will be display for each option in the drop-down
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param multi_select: whether multiple options can be selected (true) or only a single option (false)
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
@@ -442,7 +454,7 @@ class DropDown(UIElementWithEnum):
             label=label,
             mode="multiple" if multi_select else "",
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(
@@ -454,7 +466,7 @@ class DropDown(UIElementWithEnum):
         self.possible_values = possible_values
 
 
-@dataclass
+@dataclasses.dataclass
 class FileUploaderWidget(AbstractWidget):
     file_types: list[str] = field(default_factory=list)
 
@@ -463,14 +475,14 @@ class FileUploaderWidget(AbstractWidget):
         label: str,
         file_types: list[str],
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         placeholder: str = "",
     ):
         super().__init__(
             widget="fileUpload",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
         )
         self.file_types = file_types
@@ -485,7 +497,7 @@ class FileUploader(AbstractUIElement):
         file_types: list[str],
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         placeholder: StrictStr = "",
     ):
         """
@@ -496,29 +508,27 @@ class FileUploader(AbstractUIElement):
         :param file_types: list of the mime-types of files that should be accepted
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param placeholder: placeholder example text to place within the widget to exemplify its use
         """
         widget = FileUploaderWidget(
             label=label,
             file_types=file_types,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class KeygenInputWidget(AbstractWidget):
-    def __init__(
-        self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
-    ):
+    def __init__(self, label: str, hidden: bool = False, help: str = "", grid: int = 8):
         super().__init__(
             widget="keygen",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -531,7 +541,7 @@ class KeygenInput(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -542,28 +552,26 @@ class KeygenInput(AbstractUIElement):
         :param label: name to show in the UI for the widge
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = KeygenInputWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class MultipleGroupsWidget(AbstractWidget):
-    def __init__(
-        self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
-    ):
+    def __init__(self, label: str, hidden: bool = False, help: str = "", grid: int = 8):
         super().__init__(
             widget="groupMultiple",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -576,7 +584,7 @@ class MultipleGroups(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -585,28 +593,26 @@ class MultipleGroups(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = MultipleGroupsWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class MultipleUsersWidget(AbstractWidget):
-    def __init__(
-        self, label: str, hidden: bool = False, help_: str = "", grid: int = 8
-    ):
+    def __init__(self, label: str, hidden: bool = False, help: str = "", grid: int = 8):
         super().__init__(
             widget="groupMultiple",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -619,7 +625,7 @@ class MultipleUsers(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -628,25 +634,25 @@ class MultipleUsers(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = MultipleUsersWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class NumericInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         placeholder: str = "",
         grid: int = 8,
     ):
@@ -654,7 +660,7 @@ class NumericInputWidget(AbstractWidget):
             widget="inputNumber",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
         )
@@ -668,7 +674,7 @@ class NumericInput(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         placeholder: StrictStr = "",
         grid: StrictInt = 8,
     ):
@@ -679,34 +685,34 @@ class NumericInput(AbstractUIElement):
         :param label name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param placeholder: example text to place within the widget to exemplify its use
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = NumericInputWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
         )
         super().__init__(type_="number", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class PasswordInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         grid: int = 8,
     ):
         super().__init__(
             widget="password",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -719,7 +725,7 @@ class PasswordInput(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -729,31 +735,31 @@ class PasswordInput(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = PasswordInputWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class RadioWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
     ):
         super().__init__(
             widget="radio",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
         )
 
 
@@ -767,7 +773,7 @@ class Radio(UIElementWithEnum):
         default: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
     ):
         """
         Widget that allows you to select just one option from a set of options, and returns the key of the selected
@@ -778,13 +784,13 @@ class Radio(UIElementWithEnum):
         :param default: the default value to select in the UI, given as the string key of the option
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
 
         """
         widget = RadioWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
         )
         super().__init__(
             type_="string",
@@ -795,20 +801,20 @@ class Radio(UIElementWithEnum):
         self.default = default
 
 
-@dataclass
+@dataclasses.dataclass
 class SingleGroupWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         grid: int = 8,
     ):
         super().__init__(
             widget="groups",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -821,7 +827,7 @@ class SingleGroup(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -830,32 +836,32 @@ class SingleGroup(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = SingleGroupWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class SingleUserWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         grid: int = 8,
     ):
         super().__init__(
             widget="users",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
 
@@ -868,7 +874,7 @@ class SingleUser(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         grid: StrictInt = 8,
     ):
         """
@@ -877,25 +883,25 @@ class SingleUser(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
         widget = SingleUserWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 
 
-@dataclass
+@dataclasses.dataclass
 class TextInputWidget(AbstractWidget):
     def __init__(
         self,
         label: str,
         hidden: bool = False,
-        help_: str = "",
+        help: str = "",
         placeholder: str = "",
         grid: int = 8,
     ):
@@ -903,7 +909,7 @@ class TextInputWidget(AbstractWidget):
             widget="input",
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
         )
@@ -917,7 +923,7 @@ class TextInput(AbstractUIElement):
         label: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,
-        help_: StrictStr = "",
+        help: StrictStr = "",
         placeholder: StrictStr = "",
         grid: StrictInt = 8,
     ):
@@ -928,7 +934,7 @@ class TextInput(AbstractUIElement):
         :param label: name to show in the UI for the widget
         :param required" whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help_: informational text to place in a hover-over to describe the use of the input
+        :param help: informational text to place in a hover-over to describe the use of the input
         :param placeholder: example text to place within the widget to exemplify its use
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
 
@@ -936,7 +942,7 @@ class TextInput(AbstractUIElement):
         widget = TextInputWidget(
             label=label,
             hidden=hidden,
-            help_=help_,
+            help=help,
             placeholder=placeholder,
             grid=grid,
         )

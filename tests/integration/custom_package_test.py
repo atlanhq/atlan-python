@@ -19,7 +19,7 @@ def test_custom_package():
                     inputs={
                         "qn_prefix": TextInput(
                             label="Qualified name prefix",
-                            help_="Provide the starting name for schemas from which to propagate ownership",
+                            help="Provide the starting name for schemas from which to propagate ownership",
                             required=False,
                             placeholder="default/snowflake/1234567890",
                             grid=4,
