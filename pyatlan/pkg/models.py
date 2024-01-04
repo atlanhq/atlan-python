@@ -95,7 +95,7 @@ class PackageDefinition(BaseModel):
         )
         self._package_definition = _PackageDefinition(
             name=self.package_id,
-            version="1.6.5",
+            version="1.9.0-SNAPSHOT",
             description=self.description,
             keywords=self.keywords,
             homepage=f"https://packages.atlan.com/-/web/detail/{self.package_id}",
