@@ -574,7 +574,9 @@
                 <span class="n">attribs</span> <span class="o">=</span> <span class="n">CustomMetadataDict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cm_name</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">attr_id</span><span class="p">,</span> <span class="n">properties</span> <span class="ow">in</span> <span class="n">cm_attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">attr_name</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_attr_name_for_id</span><span class="p">(</span><span class="n">cm_id</span><span class="p">,</span> <span class="n">attr_id</span><span class="p">)</span>
-                    <span class="n">attribs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
+                    <span class="c1"># Only set active custom metadata attributes</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">is_attr_archived</span><span class="p">(</span><span class="n">attr_id</span><span class="o">=</span><span class="n">attr_id</span><span class="p">):</span>
+                        <span class="n">attribs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
                 <span class="n">attribs</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">except</span> <span class="n">NotFoundError</span><span class="p">:</span>
                 <span class="n">cm_name</span> <span class="o">=</span> <span class="n">DELETED_</span>
