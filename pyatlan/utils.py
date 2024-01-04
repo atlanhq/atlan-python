@@ -36,7 +36,7 @@ def to_camel_case(s: str) -> str:
     return "".join([s[0].lower(), s[1:]])
 
 
-def get_epoch_timestamp() -> str:
+def get_epoch_timestamp() -> float:
     return datetime.now().timestamp()
 
 

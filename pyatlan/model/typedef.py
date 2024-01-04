@@ -147,6 +147,23 @@ _all_glossary_types: set[str] = {
 _all_other_types: set[str] = {"File"}
 
 
+def _get_all_qualified_names(asset_type: str) -> set[str]:
+    from pyatlan.client.atlan import AtlanClient
+    from pyatlan.model.assets import Asset
+    from pyatlan.model.fluent_search import FluentSearch
+
+    client = AtlanClient.get_default_client()
+    request = (
+        FluentSearch.select()
+        .where(Asset.TYPE_NAME.eq(asset_type))
+        .include_on_results(Asset.QUALIFIED_NAME)
+        .to_request()
+    )
+    results = client.asset.search(request)
+    names = [result.qualified_name or "" for result in results]
+    return set(names)
+
+
 class TypeDef(AtlanObject):
     category: AtlanTypeCategory = Field(description="Type of the type definition.")
     create_time: Optional[int] = Field(
@@ -643,6 +660,8 @@ class AttributeDef(AtlanObject):
         attr_def.applicable_asset_types = _complete_type_list
         attr_def.applicable_glossary_types = _all_glossary_types
         attr_def.applicable_other_asset_types = _all_other_types
+        attr_def.applicable_connections = _get_all_qualified_names("Connection")
+        attr_def.applicable_glossaries = _get_all_qualified_names("AtlasGlossary")
         return attr_def
 
     def is_archived(self) -> bool:
