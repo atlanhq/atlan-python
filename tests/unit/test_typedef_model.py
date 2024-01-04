@@ -3,6 +3,7 @@
 import json
 import random
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -273,10 +274,13 @@ def test_type_def_response(type_defs):
 class TestAttributeDef:
     @pytest.fixture()
     def sut(self) -> AttributeDef:
-        return AttributeDef.create(
-            display_name="My Count",
-            attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
-        )
+
+        with patch("pyatlan.model.typedef.get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            return AttributeDef.create(
+                display_name="My Count",
+                attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
+            )
 
     @pytest.mark.parametrize(
         "attribute, value",
