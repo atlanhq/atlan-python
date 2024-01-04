@@ -470,6 +470,13 @@ class ErrorCode(Enum):
         "Please invoke this method on a sub-class of Asset",
         InvalidRequestError,
     )
+    INVALID_CREDENTIALS = (
+        400,
+        "ATLAN-PYTHON-400-043",
+        "Credentials provided did not work: {0}.",
+        "Please double-check your credentials and test them again.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

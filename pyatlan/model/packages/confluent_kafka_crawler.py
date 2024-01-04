@@ -65,7 +65,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
             "extra": {
                 "security_protocol": "SASL_SSL" if encrypted else "SASL_PLAINTEXT"
             },
-            "connectorConfigName": "atlan-connectors-kafka-confluent-cloud",
+            "connector_config_name": "atlan-connectors-kafka-confluent-cloud",
         }
         self._credentials_body.update(local_creds)
         self._parameters.append(dict(name="extraction-method", value="direct"))
@@ -84,7 +84,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         :returns: crawler, set up to use API token-based authentication
         """
         local_creds = {
-            "authType": "basic",
+            "auth_type": "basic",
             "username": api_key,
             "password": api_secret,
         }
@@ -99,6 +99,8 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         regular expression will be included in crawling
         :returns: crawler, set to include only those topics specified
         """
+        if not regex:
+            return self
         self._parameters.append(dict(name="include-filter", value=regex))
         return self
 
@@ -111,6 +113,8 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         :returns: crawler, set to exclude any topics
         that match the provided regular expression
         """
+        if not regex:
+            return self
         self._parameters.append(dict(name="exclude-filter", value=regex))
         return self
 

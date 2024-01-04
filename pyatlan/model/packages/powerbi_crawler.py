@@ -134,8 +134,9 @@ class PowerBICrawler(AbstractCrawler):
         """
         include_workspaces = workspaces or []
         to_include = self.build_flat_filter(include_workspaces)
-        if to_include:
-            self._parameters.append(dict(name="include-filter", value=to_include))
+        self._parameters.append(
+            dict(name="include-filter", value=to_include if to_include else "{}")
+        )
         return self
 
     def exclude(self, workspaces: list[str]) -> "PowerBICrawler":
@@ -149,8 +150,9 @@ class PowerBICrawler(AbstractCrawler):
         """
         exclude_workspaces = workspaces or []
         to_exclude = self.build_flat_filter(exclude_workspaces)
-        if to_exclude:
-            self._parameters.append(dict(name="exclude-filter", value=to_exclude))
+        self._parameters.append(
+            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
+        )
         return self
 
     def direct_endorsements(self, enabled: bool = True) -> "PowerBICrawler":

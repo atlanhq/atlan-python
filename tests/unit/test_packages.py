@@ -80,6 +80,7 @@ def test_snowflake_package(
             warehouse="test-warehouse",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
         .lineage(True)
         .tags(True)
         .to_workflow()
@@ -105,6 +106,7 @@ def test_snowflake_package(
             warehouse="test-warehouse",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
         .lineage(True)
         .tags(False)
         .to_workflow()
@@ -137,6 +139,7 @@ def test_glue_package(
         )
         .direct(region="test-region")
         .include(assets=["test-asset-1", "test-asset-2"])
+        .exclude(assets=None)
         .to_workflow()
     )
     request_json = loads(glue_iam_user_auth.json(by_alias=True, exclude_none=True))
@@ -168,7 +171,8 @@ def test_tableau_package(
             username="test-username",
             password="test-password",
         )
-        .include(projects=["test-project-guid"])
+        .include(projects=["test-project-guid-1", "test-project-guid-2"])
+        .exclude(projects=None)
         .crawl_unpublished(True)
         .crawl_hidden_fields(False)
         .to_workflow()
@@ -188,7 +192,8 @@ def test_tableau_package(
             username="test-username",
             access_token="test-access-token",
         )
-        .include(projects=["test-project-guid"])
+        .include(projects=["test-project-guid-1", "test-project-guid-2"])
+        .exclude(projects=None)
         .crawl_unpublished(True)
         .crawl_hidden_fields(False)
         .to_workflow()
@@ -226,6 +231,7 @@ def test_powerbi_package(
             client_secret="test-client-secret",
         )
         .include(workspaces=["test-workspace-guid"])
+        .exclude(workspaces=None)
         .to_workflow()
     )
     request_json = loads(powerbi_delegated_user.json(by_alias=True, exclude_none=True))
@@ -245,6 +251,7 @@ def test_powerbi_package(
             client_secret="test-client-secret",
         )
         .include(workspaces=["test-workspace-guid"])
+        .exclude(workspaces=None)
         .to_workflow()
     )
     request_json = loads(
@@ -275,6 +282,7 @@ def test_confluent_kafka_package(
         .api_token(api_key="test-api-key", api_secret="test-api-secret")
         .skip_internal(False)
         .include(regex=".*_TEST")
+        .exclude(regex=None)
         .to_workflow()
     )
     request_json = loads(conf_kafka_direct.json(by_alias=True, exclude_none=True))
@@ -326,6 +334,7 @@ def test_dbt_package(
         )
         .limit_to_connection(connection_qualified_name="default/dbt/1234567890")
         .include(filter='{"1234":{"4321":{}}}')
+        .exclude(filter=None)
         .tags(True)
         .enrich_materialized_assets(False)
         .to_workflow()

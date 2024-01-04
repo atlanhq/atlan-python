@@ -27,6 +27,7 @@ class GlueCrawler(AbstractCrawler):
     _PACKAGE_NAME = "@atlan/glue"
     _PACKAGE_PREFIX = WorkflowPackage.GLUE.value
     _CONNECTOR_TYPE = AtlanConnectorType.GLUE
+    _AWS_DATA_CATALOG = "AwsDataCatalog"
     _PACKAGE_ICON = (
         "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
     )
@@ -69,7 +70,7 @@ class GlueCrawler(AbstractCrawler):
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "extra": {"region": region},
-            "connectorConfigName": f"atlan-connectors-{self._NAME}",
+            "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
         self._credentials_body.update(local_creds)
         return self
@@ -83,7 +84,7 @@ class GlueCrawler(AbstractCrawler):
         :returns: crawler, set up to use IAM user-based authentication
         """
         local_creds = {
-            "authType": "iam",
+            "auth_type": "iam",
             "username": access_key,
             "password": secret_key,
         }
@@ -92,16 +93,16 @@ class GlueCrawler(AbstractCrawler):
 
     def _build_asset_filter(self, filter_type: str, filter_assets: list[str]) -> None:
         if not filter_assets:
-            self._parameters.append({"name": f"{filter_type}-filter", "value": {}})
+            self._parameters.append({"name": f"{filter_type}-filter", "value": "{}"})
             return
-        filter_dict: dict = {"AwsDataCatalog": {}}
+        filter_dict: dict = {self._AWS_DATA_CATALOG: {}}
         try:
             for asset in filter_assets:
-                filter_dict["AwsDataCatalog"][asset] = {}
+                filter_dict[self._AWS_DATA_CATALOG][asset] = {}
                 filter_values = dumps(filter_dict)
-                self._parameters.append(
-                    {"name": f"{filter_type}-filter", "value": filter_values}
-                )
+            self._parameters.append(
+                {"name": f"{filter_type}-filter", "value": filter_values}
+            )
         except TypeError:
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 

@@ -59,6 +59,10 @@
                       "value": "{\"^test-include$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
                     },
                     {
+                      "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
                       "name": "enable-lineage",
                       "value": "true"
                     },
@@ -101,7 +105,7 @@
         "parameter": "credentialGuid",
         "type": "credential",
         "body": {
-          "hostname": "test-hostname",
+          "host": "test-hostname",
           "name": "default-snowflake-123456-0",
           "connectorConfigName": "atlan-connectors-snowflake",
           "port": 443,

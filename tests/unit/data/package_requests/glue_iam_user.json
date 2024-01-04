@@ -48,11 +48,11 @@
                   "parameters": [
                     {
                       "name": "include-filter",
-                      "value": "{\"AwsDataCatalog\": {\"test-asset-1\": {}}}"
+                      "value": "{\"AwsDataCatalog\": {\"test-asset-1\": {}, \"test-asset-2\": {}}}"
                     },
                     {
-                      "name": "include-filter",
-                      "value": "{\"AwsDataCatalog\": {\"test-asset-1\": {}, \"test-asset-2\": {}}}"
+                      "name": "exclude-filter",
+                      "value": "{}"
                     },
                     {
                       "name": "credentials-fetch-strategy",

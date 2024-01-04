@@ -387,6 +387,26 @@ WORKFLOW_RUN_API = "workflows?submit=true"
 WORKFLOW_RUN = API(
     WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+CREDENTIALS_API = "credentials"
+TEST_CREDENTIAL_API = CREDENTIALS_API + "/test"
+TEST_CREDENTIAL = API(
+    TEST_CREDENTIAL_API,
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+GET_CREDENTIAL_BY_GUID = API(
+    CREDENTIALS_API + "/{credential_guid}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+UPDATE_CREDENTIAL_BY_GUID = API(
+    CREDENTIALS_API + "/{credential_guid}",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
 AUDIT_API = "entity/auditSearch"
 AUDIT_SEARCH = API(AUDIT_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 SEARCH_LOG_API = "search/searchlog"

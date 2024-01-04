@@ -65,10 +65,10 @@ class SnowflakeCrawler(AbstractCrawler):
         local_creds = {
             "name": f"default-snowflake-{self._epoch}-0",
             "port": 443,
-            "authType": "basic",
+            "auth_type": "basic",
             "username": username,
             "password": password,
-            "extra": {"role": role, "warehouse": warehouse},
+            "extras": {"role": role, "warehouse": warehouse},
         }
         self._credentials_body.update(local_creds)
         return self
@@ -94,10 +94,10 @@ class SnowflakeCrawler(AbstractCrawler):
         local_creds = {
             "name": f"default-snowflake-{self._epoch}-0",
             "port": 443,
-            "authType": "keypair",
+            "auth_type": "keypair",
             "username": username,
             "password": private_key,
-            "extra": {
+            "extras": {
                 "role": role,
                 "warehouse": warehouse,
                 "private_key_password": private_key_password,
@@ -116,7 +116,7 @@ class SnowflakeCrawler(AbstractCrawler):
         local_creds = {
             "host": hostname,
             "name": f"default-snowflake-{self._epoch}-0",
-            "connectorConfigName": "atlan-connectors-snowflake",
+            "connector_config_name": "atlan-connectors-snowflake",
         }
         parameters = {"name": "extract-strategy", "value": "information-schema"}
         self._credentials_body.update(local_creds)
@@ -135,9 +135,9 @@ class SnowflakeCrawler(AbstractCrawler):
         :returns: crawler, set to extract using account usage
         """
         local_creds = {
-            "hostname": hostname,
+            "host": hostname,
             "name": f"default-snowflake-{self._epoch}-0",
-            "connectorConfigName": "atlan-connectors-snowflake",
+            "connector_config_name": "atlan-connectors-snowflake",
         }
         self._credentials_body.update(local_creds)
         self._parameters.append(
@@ -185,8 +185,9 @@ class SnowflakeCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        if to_include:
-            self._parameters.append(dict(name="include-filter", value=to_include))
+        self._parameters.append(
+            dict(name="include-filter", value=to_include if to_include else "{}")
+        )
         return self
 
     def exclude(self, assets: dict) -> "SnowflakeCrawler":
@@ -202,8 +203,9 @@ class SnowflakeCrawler(AbstractCrawler):
         """
         exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
-        if to_exclude:
-            self._parameters.append(dict(name="exclude-filter", value=to_exclude))
+        self._parameters.append(
+            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
+        )
         return self
 
     def _set_required_metadata_params(self):

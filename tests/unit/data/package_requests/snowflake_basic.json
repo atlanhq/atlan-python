@@ -55,6 +55,10 @@
                     "value": "{\"^test-include$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
                   },
                   {
+                    "name": "exclude-filter",
+                    "value": "{}"
+                  },
+                  {
                     "name": "enable-lineage",
                     "value": "true"
                   },
