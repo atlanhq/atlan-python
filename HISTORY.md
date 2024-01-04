@@ -8,6 +8,7 @@
 
 - Fix workflow client monitor method
 - Fix problem where Python SDK was not initializing applicableConnections and applicableGlossaries when creating new custom metadata sets
+- Fix handling of archived custom metadata attributes
 
 ## 1.8.3 (December 27, 2023)
 
