@@ -275,7 +275,7 @@ class TestAttributeDef:
     @pytest.fixture()
     def sut(self) -> AttributeDef:
 
-        with patch("pyatlan.model.typedef.get_all_qualified_names") as mock_get_qa:
+        with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
             return AttributeDef.create(
                 display_name="My Count",
