@@ -146,6 +146,15 @@ def test_cred_get_when_given_guid(
     _assert_cred_response(cred, credential_response)
 
 
+def test_cred_get_when_given_wrong_guid(
+    client: CredentialClient,
+    mock_api_caller,
+    credential_response: CredentialResponse,
+):
+    mock_api_caller._call_api.return_value = None
+    assert client.get(guid="test-wrong-id") is None
+
+
 def test_cred_test_when_given_cred(
     client: CredentialClient,
     mock_api_caller,

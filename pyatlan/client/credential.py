@@ -43,6 +43,8 @@ class CredentialClient:
         raw_json = self._client._call_api(
             GET_CREDENTIAL_BY_GUID.format_path({"credential_guid": guid})
         )
+        if not isinstance(raw_json, dict):
+            return raw_json
         return CredentialResponse(**raw_json)
 
     @validate_arguments()

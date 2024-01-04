@@ -195,7 +195,7 @@ class AtlanClient(BaseSettings):
         return self._workflow_client
 
     @property
-    def credential(self) -> CredentialClient:
+    def credentials(self) -> CredentialClient:
         if self._credential_client is None:
             self._credential_client = CredentialClient(client=self)
         return self._credential_client
