@@ -472,9 +472,16 @@ class ErrorCode(Enum):
     )
     INVALID_CREDENTIALS = (
         400,
-        "ATLAN-PYTHON-400-043",
+        "ATLAN-PYTHON-400-054",
         "Credentials provided did not work: {0}.",
         "Please double-check your credentials and test them again.",
+        InvalidRequestError,
+    )
+    MISSING_GLOSSARY_GUID = (
+        400,
+        "ATLAN-PYTHON-400-055",
+        "'glossary_guid' keyword argument is missing for asset type: {0}",
+        "Please double-check your method keyword arguments.",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (
