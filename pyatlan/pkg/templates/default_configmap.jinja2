@@ -8,10 +8,14 @@ data:
       "properties": {
 {%- for key, value in pkg.ui_config.properties.items() %}
         "{{ key }}": {
-          "type": {{ value.type_ }}
-          "required": {{ value.required | tojson}}
+          "type": "{{ value.type_ }}",
+          "required": {{ value.required | tojson}},
+    {%- if value.possible_values %}
+          "enum": [ {%- for val in value.possible_values.keys() %}{{ " " }}"{{ val }}"{%- if not loop.last %},{%- endif %}{% endfor -%}{{ " ]" }},
+          "enumNames": [ {%- for val in value.possible_values.values() %}{{ " " }}"{{ val }}"{%- if not loop.last %},{%- endif %}{% endfor -%}{{ " ]" }},
+    {%-  endif %}
           "ui": {{ value.ui.to_json() | indent(10)}}
-        }
+        }{%- if not loop.last %},{%- endif %}
 {%- endfor %}
       },
       "anyOf": [
@@ -21,7 +25,7 @@ data:
         ],
       "steps": [
 {%- for step in pkg.ui_config.steps %}
-         {{ step.to_json() | indent(10) }}
+         {{ step.to_json() | indent(10) }}{%- if not loop.last %},{%- endif %}
 {%- endfor %}
       ]
     }
