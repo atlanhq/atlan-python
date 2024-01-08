@@ -119,7 +119,9 @@ class CustomMetadataProxy:
                 attribs = CustomMetadataDict(name=cm_name)
                 for attr_id, properties in cm_attributes.items():
                     attr_name = CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id)
-                    attribs[attr_name] = properties
+                    # Only set active custom metadata attributes
+                    if not CustomMetadataCache.is_attr_archived(attr_id=attr_id):
+                        attribs[attr_name] = properties
                 attribs._modified = False
             except NotFoundError:
                 cm_name = DELETED_

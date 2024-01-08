@@ -202,6 +202,17 @@ class TestCustomMetadataProxy:
 
         assert len(sut.get_custom_metadata("(DELETED)")) == 0
 
+    def test_when_property_is_archived(self, mock_cache):
+        mock_cache.get_name_for_id.return_value = CM_NAME
+        mock_cache.get_attr_name_for_id.return_value = ATTR_FIRST_NAME
+        mock_cache.get_id_for_name.return_value = CM_ID
+        mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.is_attr_archived.return_value = True
+        ba = {CM_ID: {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME}}
+        sut = CustomMetadataProxy(business_attributes=ba)
+        assert sut.business_attributes is ba
+        assert sut.get_custom_metadata(CM_NAME) == {}
+
 
 class TestCustomMetadataRequest:
     def test_create(self, mock_cache):

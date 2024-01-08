@@ -32,6 +32,7 @@ from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageList
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
+from pyatlan.client.credential import CredentialClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
@@ -122,6 +123,7 @@ class AtlanClient(BaseSettings):
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
+    _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
     _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
     _search_log_client: Optional[SearchLogClient] = PrivateAttr(default=None)
@@ -191,6 +193,12 @@ class AtlanClient(BaseSettings):
         if self._workflow_client is None:
             self._workflow_client = WorkflowClient(client=self)
         return self._workflow_client
+
+    @property
+    def credentials(self) -> CredentialClient:
+        if self._credential_client is None:
+            self._credential_client = CredentialClient(client=self)
+        return self._credential_client
 
     @property
     def group(self) -> GroupClient:

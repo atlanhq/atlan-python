@@ -1,4 +1,10 @@
+from json import loads
+
+from pydantic import parse_obj_as
+
+from pyatlan.model.credential import Credential
 from pyatlan.model.workflow import (
+    NameValuePair,
     PackageParameter,
     Workflow,
     WorkflowDAG,
@@ -19,6 +25,10 @@ class AbstractPackage:
     _PACKAGE_NAME: str = ""
     _PACKAGE_PREFIX: str = ""
 
+    def __init__(self):
+        self._parameters: list = []
+        self._credentials_body: dict = {}
+
     def _get_metadata(self) -> WorkflowMetadata:
         raise NotImplementedError
 
@@ -34,7 +44,9 @@ class AbstractPackage:
                             WorkflowTask(
                                 name="run",
                                 arguments=WorkflowParameters(
-                                    parameters=self._parameters  # type: ignore
+                                    parameters=parse_obj_as(
+                                        list[NameValuePair], self._parameters
+                                    )
                                 ),
                                 template_ref=WorkflowTemplateRef(
                                     name=self._PACKAGE_PREFIX,
@@ -54,11 +66,15 @@ class AbstractPackage:
             PackageParameter(
                 parameter="credentialGuid",
                 type="credential",
-                body=self._credentials_body,  # type: ignore
+                body=loads(
+                    Credential(**self._credentials_body).json(
+                        by_alias=True, exclude_none=True
+                    )
+                ),
             )
         ]
         return Workflow(
             metadata=metadata,
             spec=spec,
-            payload=payload if self._credentials_body else [],  # type: ignore
+            payload=payload if self._credentials_body else [],
         )
