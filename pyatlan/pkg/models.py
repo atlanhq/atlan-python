@@ -91,7 +91,7 @@ class PackageDefinition(BaseModel):
         super().__init__(**data)
         source = self.connector_type.value if self.connector_type else "atlan"
         source_category = (
-            self.connector_type.value if self.connector_type else "utility"
+            self.connector_type.category.value if self.connector_type else "utility"
         )
         self._package_definition = _PackageDefinition(
             name=self.package_id,
