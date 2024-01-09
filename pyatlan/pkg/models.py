@@ -264,6 +264,12 @@ class PackageWriter(BaseModel):
         with (self._config_maps_dir / "default.yaml").open("w") as script:
             script.write(content)
 
+    def create_config_class(self):
+        template = self._env.get_template("package_config.jinja2")
+        content = template.render({"pkg": self.pkg})
+        with (self.path / f"{self.pkg.package_name}Cfg.py").open("w") as script:
+            script.write(content)
+
 
 @validate_arguments()
 def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "config"]):
@@ -271,4 +277,4 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
     if operation == "package":
         writer.create_package()
     else:
-        writer.create_configmaps()
+        writer.create_config_class()

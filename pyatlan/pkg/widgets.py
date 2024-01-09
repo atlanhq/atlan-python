@@ -66,6 +66,9 @@ class AbstractWidget(abc.ABC):
     def s3_artifact(self) -> bool:
         return False
 
+    def get_validator(self, name: str):
+        return f"{name}: str\n"
+
 
 @dataclass
 class AbstractUIElement(abc.ABC):
@@ -167,6 +170,9 @@ class BooleanInputWidget(AbstractWidget):
     def parameter_value(self) -> str:
         return "false"
 
+    def get_validator(self, name: str):
+        return f"{name}: bool = None\n"
+
 
 @dataclass
 class BooleanInput(AbstractUIElement):
@@ -203,6 +209,14 @@ class ConnectionCreatorWidget(AbstractWidget):
             hidden=hidden,
             help=help,
             placeholder=placeholder,
+        )
+
+    def get_validator(self, name: str):
+        return (
+            f'{name}: Optional[Connection] = None\n")'
+            f"_validate_{name} = validator("
+            "connection"
+            ', pre=True, allow_reuse=True)(validate_connection)\n")'
         )
 
 
@@ -317,6 +331,14 @@ class ConnectorTypeSelectorWidget(AbstractWidget):
         )
         self.start = start
 
+    def get_validator(self, name: str):
+        return (
+            f'{name}: ConnectorAndConnection = Field(alias="connectorType")\n'
+            f"_validate_{name} = validator("
+            "connection"
+            ', pre=True, allow_reuse=True)(validate_connector_and_connection)\n")'
+        )
+
 
 @dataclass
 class ConnectorTypeSelector(AbstractUIElement):
@@ -385,6 +407,9 @@ class DateInputWidget(AbstractWidget):
     @property
     def parameter_value(self) -> str:
         return "-1"
+
+    def get_validator(self, name: str):
+        return f"{name}: Optional[datetime] = None\n"
 
 
 @dataclass
@@ -620,6 +645,14 @@ class MultipleGroupsWidget(AbstractWidget):
             grid=grid,
         )
 
+    def get_validator(self, name: str):
+        return (
+            f'{name}:Optional[list[str]] = Field(default_factory=list)\n")'
+            f"_validate_{name} = validator("
+            "{name}"
+            ', pre=True, allow_reuse=True)(validate_multiselect)\n")'
+        )
+
 
 @dataclass
 class MultipleGroups(AbstractUIElement):
@@ -716,6 +749,9 @@ class NumericInputWidget(AbstractWidget):
     @property
     def parameter_value(self) -> str:
         return "-1"
+
+    def get_validator(self, name: str):
+        return f"{name}: Optional[Union[int,float]] = None\n"
 
 
 @dataclass
