@@ -65,6 +65,11 @@
           "timestamp": {
             "order": "asc"
           }
+        },
+        {
+          "__guid": {
+            "order": "asc"
+          }
         }
       ]
     },
