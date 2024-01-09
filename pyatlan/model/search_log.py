@@ -55,7 +55,10 @@ class SearchLogRequest(SearchRequest):
         return dict(
             size=size,
             from_=from_,
-            sort=[SortItem("timestamp", order=SortOrder.ASCENDING)],
+            sort=[
+                SortItem("timestamp", order=SortOrder.ASCENDING),
+                SortItem("entityGuidsAll", order=SortOrder.ASCENDING),
+            ],
             query=Bool(
                 filter=query_filter + cls._BASE_QUERY_FILTER,
                 must_not=[

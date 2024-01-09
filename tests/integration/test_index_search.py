@@ -323,7 +323,7 @@ def test_default_sorting(client: AtlanClient):
         FluentSearch().where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort
+    sort_options = response._criteria.dsl.sort # type: ignore
     assert response
     assert len(sort_options) == 1
     assert sort_options[0].field == TermAttributes.GUID.value
@@ -335,7 +335,7 @@ def test_default_sorting(client: AtlanClient):
         .sort(Asset.QUALIFIED_NAME.order(SortOrder.ASCENDING))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort
+    sort_options = response._criteria.dsl.sort # type: ignore
     assert response
     assert len(sort_options) == 2
     assert sort_options[0].field == QUALIFIED_NAME
@@ -348,7 +348,7 @@ def test_default_sorting(client: AtlanClient):
         .sort(Asset.GUID.order(SortOrder.ASCENDING))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort
+    sort_options = response._criteria.dsl.sort # type: ignore
     assert response
     assert len(sort_options) == 1
     assert sort_options[0].field == TermAttributes.GUID.value
@@ -361,7 +361,7 @@ def test_default_sorting(client: AtlanClient):
         .sort(Asset.GUID.order(SortOrder.ASCENDING))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort
+    sort_options = response._criteria.dsl.sort # type: ignore
     assert response
     assert len(sort_options) == 2
     assert sort_options[0].field == QUALIFIED_NAME

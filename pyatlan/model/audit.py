@@ -29,7 +29,9 @@ ATTRIBUTES = "attributes"
 
 TYPE_NAME = "type_name"
 
-LATEST_FIRST = [SortItem("created", order=SortOrder.DESCENDING)]
+LATEST_FIRST = SortItem("created", order=SortOrder.DESCENDING)
+SORT_BY_GUID = SortItem("entityId", order=SortOrder.ASCENDING)
+AUDIT_SEARCH_SORT = [LATEST_FIRST, SORT_BY_GUID]
 
 
 class AuditActionType(str, Enum):
@@ -72,7 +74,7 @@ class AuditSearchRequest(SearchRequest):
         """
         dsl = DSL(
             query=Bool(filter=[Term(field="entityId", value=guid)]),
-            sort=LATEST_FIRST,
+            sort=AUDIT_SEARCH_SORT,
             size=size,
             _from=_from,
         )
@@ -91,7 +93,7 @@ class AuditSearchRequest(SearchRequest):
         """
         dsl = DSL(
             query=Bool(filter=[Term(field="user", value=user)]),
-            sort=LATEST_FIRST,
+            sort=AUDIT_SEARCH_SORT,
             size=size,
             _from=_from,
         )
@@ -116,7 +118,7 @@ class AuditSearchRequest(SearchRequest):
                     Term(field="typeName", value=type_name),
                 ]
             ),
-            sort=LATEST_FIRST,
+            sort=AUDIT_SEARCH_SORT,
             size=size,
             _from=_from,
         )

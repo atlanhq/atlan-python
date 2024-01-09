@@ -92,7 +92,7 @@
           }
         },
         {
-          "__guid": {
+          "entityGuidsAll": {
             "order": "asc"
           }
         }

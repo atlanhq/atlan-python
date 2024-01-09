@@ -1831,9 +1831,15 @@ class DSL(AtlanObject):
     def set_sort(cls, sort):
         missing_guid_sort = True
         sort_by_guid = TermAttributes.GUID.value
+        auditsearch_sort_by_guid = "entityId"
+        searchlog_sort_by_guid = "entityGuidsAll"
         # Check if the sort by GUID is included
         for option in sort:
-            if option.field and option.field == sort_by_guid:
+            if option.field and option.field in (
+                sort_by_guid,
+                auditsearch_sort_by_guid,
+                searchlog_sort_by_guid,
+            ):
                 missing_guid_sort = False
                 break
         if missing_guid_sort:
