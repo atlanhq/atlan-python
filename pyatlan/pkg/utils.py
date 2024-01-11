@@ -7,6 +7,7 @@ from pathlib import Path
 from jinja2 import Environment, PackageLoader
 from pydantic import BaseModel, PrivateAttr
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.pkg.models import CustomPackage
 
 LOGGER = logging.getLogger(__name__)
@@ -46,10 +47,22 @@ class PackageWriter(BaseModel):
             script.write(content)
 
 
-def set_client(impersonate_user_id: str):
-    os.get("ATLAN_BASE_URL", "INTERNAL")
-    api_token = os.get("ATLAN_API_KEY", "")
-    os.get("ATLAN_USER_ID", impersonate_user_id)
-    if token_to_use := api_token:
+def set_client(impersonate_user_id: str) -> AtlanClient:
+
+    base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+    api_token = os.environ.get("ATLAN_API_KEY", "")
+    user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+    if api_token:
         LOGGER.info("Using provided API token for authentication.")
-    print(token_to_use)
+        api_key = api_token
+    elif user_id:
+        LOGGER.info("No API token found, attempting to impersonate user: %s", user_id)
+        api_key = AtlanClient(base_url=base_url, api_key="").impersonate.user(
+            user_id=user_id
+        )
+    else:
+        LOGGER.info(
+            "No API token or impersonation user, attempting short-lived escalation."
+        )
+        api_key = AtlanClient(base_url=base_url, api_key="").impersonate.escolate()
+    return AtlanClient(base_url=base_url, api_key=api_key)

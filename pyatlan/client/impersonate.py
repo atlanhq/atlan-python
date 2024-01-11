@@ -3,6 +3,7 @@
 
 import logging
 import os
+from typing import NamedTuple
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import GET_TOKEN
@@ -10,6 +11,11 @@ from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.response import AccessTokenResponse
 
 LOGGER = logging.getLogger(__name__)
+
+
+class ClientInfo(NamedTuple):
+    client_id: str
+    client_secret: str
 
 
 class ImpersonationClient:
@@ -33,14 +39,11 @@ class ImpersonationClient:
         :returns: a bearer token that impersonates the provided user
         :raises AtlanError: on any API communication issue
         """
-        client_id = os.getenv("CLIENT_ID")
-        client_secret = os.getenv("CLIENT_SECRET")
-        if not client_id or not client_secret:
-            raise ErrorCode.MISSING_CREDENTIALS.exception_with_parameters()
+        client_info = self._get_client_info()
         credentials = {
             "grant_type": "client_credentials",
-            "client_id": client_id,
-            "client_secret": client_secret,
+            "client_id": client_info.client_id,
+            "client_secret": client_info.client_secret,
         }
 
         LOGGER.debug("Getting token with client id and secret")
@@ -53,8 +56,8 @@ class ImpersonationClient:
         try:
             user_credentials = {
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "client_id": client_info.client_id,
+                "client_secret": client_info.client_secret,
                 "subject_token": argo_token,
                 "requested_subject": user_id,
             }
@@ -62,3 +65,32 @@ class ImpersonationClient:
             return AccessTokenResponse(**raw_json).access_token
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_IMPERSONATE.exception_with_parameters() from atlan_err
+
+    def _get_client_info(self) -> ClientInfo:
+        client_id = os.getenv("CLIENT_ID")
+        client_secret = os.getenv("CLIENT_SECRET")
+        if not client_id or not client_secret:
+            raise ErrorCode.MISSING_CREDENTIALS.exception_with_parameters()
+        client_info = ClientInfo(client_id=client_id, client_secret=client_secret)
+        return client_info
+
+    def escolate(self) -> str:
+        """
+        Escalate to a privileged user on a short-term basis.
+        Note: this is only possible from within the Atlan tenant, and only when given the appropriate credentials.
+
+        :returns: a short-lived bearer token with escalated privileges
+        :raises AtlanError: on any API communication issue
+        """
+        client_info = self._get_client_info()
+        credentials = {
+            "grant_type": "client_credentials",
+            "client_id": client_info.client_id,
+            "client_secret": client_info.client_secret,
+            "scope": "openid",
+        }
+        try:
+            raw_json = self._client._call_api(GET_TOKEN, request_obj=credentials)
+            return AccessTokenResponse(**raw_json).access_token
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE.exception_with_parameters() from atlan_err
