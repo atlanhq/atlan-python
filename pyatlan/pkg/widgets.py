@@ -213,10 +213,10 @@ class ConnectionCreatorWidget(AbstractWidget):
 
     def get_validator(self, name: str):
         return (
-            f'{name}: Optional[Connection] = None\n")'
-            f"_validate_{name} = validator("
-            "connection"
-            ', pre=True, allow_reuse=True)(validate_connection)\n")'
+            f"{name}: Optional[Connection] = None\n"
+            f"    _validate_{name} = validator("
+            '"connection"'
+            ", pre=True, allow_reuse=True)(validate_connection)\n"
         )
 
 

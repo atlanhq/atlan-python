@@ -110,6 +110,13 @@ DELETE_API_TOKEN = API(
     TOKENS_API, HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 
+GET_TOKEN = API(
+    "/auth/realms/default/protocol/openid-connect/token",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.IMPERSONATION,
+)
+
 ENTITY_API = "entity/"
 PREFIX_ATTR = "attr:"
 PREFIX_ATTR_ = "attr_"

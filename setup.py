@@ -60,7 +60,7 @@ setup(
         "Operating System :: OS Independent",
         "Development Status :: 5 - Production/Stable",
     ],
-    package_data={"pyatlan": ["py.typed"]},
+    package_data={"pyatlan": ["py.typed", "logging.conf"], "": ["*.jinja2"]},
     packages=find_packages(),
     install_requires=requirements,
     extra_requires={"dev": extra},

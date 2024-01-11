@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import logging
+import os
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
 from pydantic import BaseModel, PrivateAttr
 
 from pyatlan.pkg.models import CustomPackage
+
+LOGGER = logging.getLogger(__name__)
 
 
 class PackageWriter(BaseModel):
@@ -40,3 +44,12 @@ class PackageWriter(BaseModel):
         content = template.render({"pkg": self.pkg})
         with (self._templates_dir / "default.yaml").open("w") as script:
             script.write(content)
+
+
+def set_client(impersonate_user_id: str):
+    os.get("ATLAN_BASE_URL", "INTERNAL")
+    api_token = os.get("ATLAN_API_KEY", "")
+    os.get("ATLAN_USER_ID", impersonate_user_id)
+    if token_to_use := api_token:
+        LOGGER.info("Using provided API token for authentication.")
+    print(token_to_use)

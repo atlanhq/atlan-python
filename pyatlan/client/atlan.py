@@ -34,6 +34,7 @@ from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.group import GroupClient
+from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.token import TokenClient
@@ -133,6 +134,7 @@ class AtlanClient(BaseSettings):
     _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
+    _asset_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -216,6 +218,12 @@ class AtlanClient(BaseSettings):
     def asset(self) -> AssetClient:
         if self._asset_client is None:
             self._asset_client = AssetClient(client=self)
+        return self._asset_client
+
+    @property
+    def impersonate(self) -> ImpersonationClient:
+        if self._impersonate_client is None:
+            self._impersonate_client = ImpersonationClient(client=self)
         return self._asset_client
 
     @property

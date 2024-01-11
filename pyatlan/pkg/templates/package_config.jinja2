@@ -4,7 +4,13 @@ from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
 from typing import Any, Optional, Union
 import json
+import logging.config
 import os
+
+if resources.is_resource("pyatlan", "logging.conf"):
+    with resources.open_text("ernest", "logging.conf") as logging_conf:
+        logging.config.fileConfig(logging_conf)
+LOGGER = logging.getLogger(__name__)
 
 ENV = 'env'
 
@@ -38,38 +44,38 @@ class CustomConfig(BaseModel):
 {%- endfor %}
 
 class RuntimeConfig(BaseSettings):
-                    user_id:Optional[str] = Field(default="")
-                    agent:Optional[str] = Field(default="")
-                    agent_id:Optional[str] = Field(default="")
-                    agent_pkg:Optional[str] = Field(default="")
-                    agent_wfl:Optional[str] = Field(default="")
-                    custom_config:Optional[CustomConfig] = None
+    user_id:Optional[str] = Field(default="")
+    agent:Optional[str] = Field(default="")
+    agent_id:Optional[str] = Field(default="")
+    agent_pkg:Optional[str] = Field(default="")
+    agent_wfl:Optional[str] = Field(default="")
+    custom_config:Optional[CustomConfig] = None
 
-                    class Config:
-                        fields = {
-                            'user_id': {
-                                ENV: 'ATLAN_USER_ID',
-                            },
-                            'agent': {
-                                ENV: 'X_ATLAN_AGENT'
-                            },
-                            'agent_id': {
-                                ENV: 'X_ATLAN_AGENT_ID'
-                            },
-                            'agent_pkg': {
-                                ENV: 'X_ATLAN_AGENT_PACKAGE_NAME'
-                            },
-                            'custom_config': {
-                                ENV: 'NESTED_CONFIG'
-                            }
-                        }
-                        @classmethod
-                        def parse_env_var(cls, field_name:str, raw_value:str)->Any:
-                            if field_name == 'custom_config':
-                                return CustomConfig.parse_raw(raw_value)
-                            return cls.json_loads(raw_value)
+    class Config:
+        fields = {
+            'user_id': {
+                ENV: 'ATLAN_USER_ID',
+            },
+            'agent': {
+                ENV: 'X_ATLAN_AGENT'
+            },
+            'agent_id': {
+                ENV: 'X_ATLAN_AGENT_ID'
+            },
+            'agent_pkg': {
+                ENV: 'X_ATLAN_AGENT_PACKAGE_NAME'
+            },
+            'custom_config': {
+                ENV: 'NESTED_CONFIG'
+            }
+        }
+        @classmethod
+        def parse_env_var(cls, field_name:str, raw_value:str)->Any:
+            if field_name == 'custom_config':
+                return CustomConfig.parse_raw(raw_value)
+            return cls.json_loads(raw_value)
 
 if __name__ == "__main__":
-    print(os.environ["NESTED_CONFIG"])
+    LOGGER.info(os.environ["NESTED_CONFIG"])
     r = RuntimeConfig()
-    print(r.json())
+    LOGGER.info(r.json())

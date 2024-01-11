@@ -197,4 +197,4 @@ def test_generate_with_operation_package(mock_package_writer, custom_package):
 def test_generate_with_operation_config(mock_package_writer, custom_package):
     generate(pkg=custom_package, path="..", operation="config")
 
-    mock_package_writer.create_configmaps.assert_called()
+    mock_package_writer.create_config_class.assert_called()

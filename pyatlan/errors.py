@@ -477,6 +477,13 @@ class ErrorCode(Enum):
         "Please double-check your credentials and test them again.",
         InvalidRequestError,
     )
+    MISSING_CREDENTIALS = (
+        400,
+        "ATLAN-PYTHON-400-044",
+        "Missing privileged credentials to impersonate users.",
+        "You must have both CLIENT_ID and CLIENT_SECRET configured to be able to impersonate users.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
