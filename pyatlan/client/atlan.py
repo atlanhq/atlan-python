@@ -134,7 +134,7 @@ class AtlanClient(BaseSettings):
     _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
-    _asset_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
+    _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
