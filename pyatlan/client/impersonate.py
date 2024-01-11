@@ -25,7 +25,7 @@ class ImpersonationClient:
     def user(self, user_id: str) -> str:
         client_id = os.getenv("CLIENT_ID")
         client_secret = os.getenv("CLIENT_SECRET")
-        if not client_id or client_secret:
+        if not client_id or not client_secret:
             raise ErrorCode.MISSING_CREDENTIALS.exception_with_parameters()
         credentials = {
             "grant_type": "client_credentials",
