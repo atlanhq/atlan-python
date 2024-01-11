@@ -5343,6 +5343,7 @@ class ColumnProcess(Process):
                 connection_qualified_name=connection_qualified_name,
                 inputs=inputs,
                 outputs=outputs,
+                process=parent,
             )
 
     attributes: "ColumnProcess.Attributes" = Field(
