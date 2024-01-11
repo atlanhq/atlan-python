@@ -5221,6 +5221,28 @@ class Tag(Catalog):
 class ColumnProcess(Process):
     """Description"""
 
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: list["Catalog"],
+        outputs: list["Catalog"],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
+    ) -> ColumnProcess:
+        return ColumnProcess(
+            attributes=ColumnProcess.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+        )
+
     type_name: str = Field("ColumnProcess", allow_mutation=False)
 
     @validator("type_name")
@@ -5293,6 +5315,35 @@ class ColumnProcess(Process):
         inputs: Optional[list[Catalog]] = Field(
             None, description="", alias="inputs"
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            inputs: list["Catalog"],
+            outputs: list["Catalog"],
+            process_id: Optional[str] = None,
+            parent: Optional[Process] = None,
+        ) -> ColumnProcess.Attributes:
+            qualified_name = Process.Attributes.generate_qualified_name(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+            connector_name = connection_qualified_name.split("/")[1]
+            return ColumnProcess.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                inputs=inputs,
+                outputs=outputs,
+            )
 
     attributes: "ColumnProcess.Attributes" = Field(
         default_factory=lambda: ColumnProcess.Attributes(),
