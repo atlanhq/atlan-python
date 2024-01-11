@@ -48,7 +48,13 @@ class PackageWriter(BaseModel):
 
 
 def set_client(impersonate_user_id: str) -> AtlanClient:
+    """
+    Set up the default Atlan client, based on environment variables.
+    This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
+    ATLAN_API_KEY is empty.
 
+    :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate
+    """
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
     user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
