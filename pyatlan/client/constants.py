@@ -3,6 +3,7 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from pyatlan.utils import (
     API,
+    APPLICATION_ENCODED_FORM,
     APPLICATION_JSON,
     APPLICATION_OCTET_STREAM,
     MULTIPART_FORM_DATA,
@@ -115,6 +116,8 @@ GET_TOKEN = API(
     HTTPMethod.POST,
     HTTPStatus.OK,
     endpoint=EndPoint.IMPERSONATION,
+    consumes=APPLICATION_ENCODED_FORM,
+    produces=APPLICATION_ENCODED_FORM,
 )
 
 ENTITY_API = "entity/"

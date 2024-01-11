@@ -65,7 +65,13 @@ from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import API, AuthorizationFilter, HTTPStatus, RequestIdAdapter
+from pyatlan.utils import (
+    API,
+    APPLICATION_ENCODED_FORM,
+    AuthorizationFilter,
+    HTTPStatus,
+    RequestIdAdapter,
+)
 
 request_id_var = ContextVar("request_id", default=None)
 
@@ -359,6 +365,8 @@ class AtlanClient(BaseSettings):
                 params["data"] = request_obj.json(
                     by_alias=True, exclude_unset=exclude_unset
                 )
+            elif api.consumes == APPLICATION_ENCODED_FORM:
+                params["data"] = request_obj
             else:
                 params["data"] = json.dumps(request_obj)
         return params

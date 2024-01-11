@@ -93,6 +93,6 @@ class AccessTokenResponse(AtlanObject):
     refresh_expires_in: int
     refresh_token: str
     token_type: str
-    not_before_policy: int
+    not_before_policy: Optional[int] = Field(default=None)
     session_state: str
     scope: str
