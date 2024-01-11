@@ -535,6 +535,20 @@ class ErrorCode(Enum):
         "Check the details of the server's message to correct your request.",
         PermissionError,
     )
+    UNABLE_TO_ESCALATE = (
+        403,
+        "ATLAN-PYTHON-403-001",
+        "Unable to escalate to a privileged user.",
+        "Check the details of your configured privileged credentials.",
+        PermissionError,
+    )
+    UNABLE_TO_IMPERSONATE = (
+        403,
+        "ATLAN-PYTHON-403-002",
+        "Unable to impersonate requested user.",
+        "Check the details of your configured privileged credentials and the user you requested to impersonate.",
+        PermissionError,
+    )
     NOT_FOUND_PASSTHROUGH = (
         404,
         "ATLAN-PYTHON-404-000",
