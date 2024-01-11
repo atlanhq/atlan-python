@@ -224,7 +224,7 @@ class AtlanClient(BaseSettings):
     def impersonate(self) -> ImpersonationClient:
         if self._impersonate_client is None:
             self._impersonate_client = ImpersonationClient(client=self)
-        return self._asset_client
+        return self._impersonate_client
 
     @property
     def token(self) -> TokenClient:
