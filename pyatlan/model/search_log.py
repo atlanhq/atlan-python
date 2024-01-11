@@ -49,16 +49,19 @@ class SearchLogRequest(SearchRequest):
 
     @classmethod
     def _get_view_dsl_kwargs(
-        cls, size: int, from_: int, query_filter: Optional[list] = None
+        cls,
+        size: int,
+        from_: int,
+        query_filter: Optional[list] = None,
+        sort: Optional[list] = None,
     ) -> dict:
         query_filter = query_filter or []
+        sort = sort or []
+        BY_TIMESTAMP = [SortItem("timestamp", order=SortOrder.ASCENDING)]
         return dict(
             size=size,
             from_=from_,
-            sort=[
-                SortItem("timestamp", order=SortOrder.ASCENDING),
-                SortItem("entityGuidsAll", order=SortOrder.ASCENDING),
-            ],
+            sort=sort + BY_TIMESTAMP,
             query=Bool(
                 filter=query_filter + cls._BASE_QUERY_FILTER,
                 must_not=[
@@ -121,16 +124,12 @@ class SearchLogRequest(SearchRequest):
         cls,
         guid: str,
         max_users: int = 20,
-        size: int = 0,
-        from_: int = 0,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve views of an asset by its GUID.
 
         :param guid: unique identifier of the asset.
         :param max_users: maximum number of recent users to consider. Defaults to 20.
-        :param size: number of results to retrieve per page. Defaults to 0.
-        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
@@ -138,10 +137,9 @@ class SearchLogRequest(SearchRequest):
             Term(field="entityGuidsAll", value=guid, case_insensitive=False)
         ]
         dsl = DSL(
-            **cls._get_view_dsl_kwargs(
-                size=size, from_=from_, query_filter=query_filter
-            ),
+            **cls._get_view_dsl_kwargs(size=0, from_=0, query_filter=query_filter),
             aggregations=cls._get_recent_viewers_aggs(max_users),
+            req_class_name=cls.__name__,
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -150,25 +148,22 @@ class SearchLogRequest(SearchRequest):
         cls,
         max_assets: int = 10,
         by_different_user: bool = False,
-        size: int = 0,
-        from_: int = 0,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve most viewed assets.
 
-        :param max_assets: maximum number of assets to consider.
+        :param max_assets: maximum number of assets to consider. Defaults to 10.
         :param by_different_user: when True, will consider assets viewed by more users as more
         important than total view count, otherwise will consider total view count most important.
-        :param size: number of results to retrieve per page. Defaults to 20.
-        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
         dsl = DSL(
-            **cls._get_view_dsl_kwargs(size=size, from_=from_),
+            **cls._get_view_dsl_kwargs(size=0, from_=0),
             aggregations=cls._get_most_viewed_assets_aggs(
                 max_assets, by_different_user
             ),
+            req_class_name=cls.__name__,
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -178,6 +173,7 @@ class SearchLogRequest(SearchRequest):
         guid: str,
         size: int = 20,
         from_: int = 0,
+        sort: Optional[list[SortItem]] = None,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve recent search logs of an assets.
@@ -185,6 +181,7 @@ class SearchLogRequest(SearchRequest):
         :param guid: unique identifier of the asset.
         :param size: number of results to retrieve per page. Defaults to 20.
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
+        :param sort: properties by which to sort the results (optional).
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
@@ -193,8 +190,9 @@ class SearchLogRequest(SearchRequest):
         ]
         dsl = DSL(
             **cls._get_view_dsl_kwargs(
-                size=size, from_=from_, query_filter=query_filter
+                size=size, from_=from_, query_filter=query_filter, sort=sort
             ),
+            req_class_name=cls.__name__,
         )
         return SearchLogRequest(dsl=dsl)
 

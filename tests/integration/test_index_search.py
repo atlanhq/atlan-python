@@ -20,11 +20,11 @@ from pyatlan.model.search import (
     Range,
     Regexp,
     Term,
-    TermAttributes,
     Wildcard,
 )
 
 QUALIFIED_NAME = "qualifiedName"
+ASSET_GUID = Asset.GUID.keyword_field_name
 NOW_AS_TIMESTAMP = int(time() * 1000)
 NOW_AS_YYYY_MM_DD = datetime.today().strftime("%Y-%m-%d")
 
@@ -323,10 +323,10 @@ def test_default_sorting(client: AtlanClient):
         FluentSearch().where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort # type: ignore
+    sort_options = response._criteria.dsl.sort  # type: ignore
     assert response
     assert len(sort_options) == 1
-    assert sort_options[0].field == TermAttributes.GUID.value
+    assert sort_options[0].field == ASSET_GUID
 
     # Sort without GUID
     request = (
@@ -335,11 +335,11 @@ def test_default_sorting(client: AtlanClient):
         .sort(Asset.QUALIFIED_NAME.order(SortOrder.ASCENDING))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort # type: ignore
+    sort_options = response._criteria.dsl.sort  # type: ignore
     assert response
     assert len(sort_options) == 2
     assert sort_options[0].field == QUALIFIED_NAME
-    assert sort_options[1].field == TermAttributes.GUID.value
+    assert sort_options[1].field == ASSET_GUID
 
     # Sort with only GUID
     request = (
@@ -348,10 +348,10 @@ def test_default_sorting(client: AtlanClient):
         .sort(Asset.GUID.order(SortOrder.ASCENDING))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort # type: ignore
+    sort_options = response._criteria.dsl.sort  # type: ignore
     assert response
     assert len(sort_options) == 1
-    assert sort_options[0].field == TermAttributes.GUID.value
+    assert sort_options[0].field == ASSET_GUID
 
     # Sort with GUID and others
     request = (
@@ -361,8 +361,8 @@ def test_default_sorting(client: AtlanClient):
         .sort(Asset.GUID.order(SortOrder.ASCENDING))
     ).to_request()
     response = client.asset.search(criteria=request)
-    sort_options = response._criteria.dsl.sort # type: ignore
+    sort_options = response._criteria.dsl.sort  # type: ignore
     assert response
     assert len(sort_options) == 2
     assert sort_options[0].field == QUALIFIED_NAME
-    assert sort_options[1].field == TermAttributes.GUID.value
+    assert sort_options[1].field == ASSET_GUID

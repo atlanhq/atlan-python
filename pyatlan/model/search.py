@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from itertools import chain
 from json import dumps, loads
-from typing import Any, Literal, Optional, Union
+from typing import Any, ClassVar, Literal, Optional, Union
 
 from pydantic import (
     ConfigDict,
@@ -17,6 +17,7 @@ from pydantic import (
     StrictInt,
     StrictStr,
     constr,
+    root_validator,
     validate_arguments,
     validator,
 )
@@ -1804,6 +1805,7 @@ class DSL(AtlanObject):
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
     sort: list[SortItem] = Field(alias="sort", default_factory=list)
+    _req_class_name: ClassVar[str]
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1820,6 +1822,11 @@ class DSL(AtlanObject):
             ]
         )
 
+    @root_validator(pre=True)
+    def set_req_class_name(cls, values):
+        cls._req_class_name = values.get("req_class_name", "")
+        return values
+
     @validator("query", always=True)
     def validate_query(cls, v, values):
         if v or "post_filter" in values and values["post_filter"]:
@@ -1828,9 +1835,9 @@ class DSL(AtlanObject):
             raise ValueError("Either query or post_filter is required")
 
     @validator("sort", always=True)
-    def set_sort(cls, sort):
+    def set_sort_by_guid(cls, sort):
         missing_guid_sort = True
-        sort_by_guid = TermAttributes.GUID.value
+        sort_by_guid = "__guid"
         auditsearch_sort_by_guid = "entityId"
         searchlog_sort_by_guid = "entityGuidsAll"
         # Check if the sort by GUID is included
@@ -1843,7 +1850,13 @@ class DSL(AtlanObject):
                 missing_guid_sort = False
                 break
         if missing_guid_sort:
-            sort.append(SortItem(sort_by_guid))
+            if cls._req_class_name == "SearchLogRequest":
+                sort.append(SortItem(searchlog_sort_by_guid))
+            elif cls._req_class_name == "AuditSearchRequest":
+                sort.append(SortItem(auditsearch_sort_by_guid))
+            else:
+                # IndexSearchRequest
+                sort.append(SortItem(sort_by_guid))
         return sort
 
 
