@@ -1,0 +1,22 @@
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: list["Catalog"],
+        outputs: list["Catalog"],
+        parent: Process,
+        process_id: Optional[str] = None,
+    ) -> ColumnProcess:
+        return ColumnProcess(
+            attributes=ColumnProcess.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+        )
