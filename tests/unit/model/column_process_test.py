@@ -11,13 +11,14 @@ from tests.unit.model.constants import (
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, inputs, outputs, error_msg",
+    "name, connection_qualified_name, inputs, outputs, process, error_msg",
     [
         (
             None,
             CP_CONNECTION_QUALIFIED_NAME,
             [Column()],
             [Column()],
+            Process(),
             "name is required",
         ),
         (
@@ -25,6 +26,7 @@ from tests.unit.model.constants import (
             None,
             [Column()],
             [Column()],
+            Process(),
             "connection_qualified_name is required",
         ),
         (
@@ -32,6 +34,7 @@ from tests.unit.model.constants import (
             CP_CONNECTION_QUALIFIED_NAME,
             None,
             [Column()],
+            Process(),
             "inputs is required",
         ),
         (
@@ -39,7 +42,16 @@ from tests.unit.model.constants import (
             CP_CONNECTION_QUALIFIED_NAME,
             [Column()],
             None,
+            Process(),
             "outputs is required",
+        ),
+        (
+            CP_NAME,
+            CP_CONNECTION_QUALIFIED_NAME,
+            [Column()],
+            [Column()],
+            None,
+            "parent is required",
         ),
     ],
 )
@@ -48,6 +60,7 @@ def test_create_with_missing_parameters_raise_value_error(
     connection_qualified_name: str,
     inputs: list[Column],
     outputs: list[Column],
+    process: Process,
     error_msg: str,
 ):
     with pytest.raises(ValueError, match=error_msg):
@@ -56,6 +69,7 @@ def test_create_with_missing_parameters_raise_value_error(
             connection_qualified_name=connection_qualified_name,
             inputs=inputs,
             outputs=outputs,
+            parent=process,
         )
 
 

@@ -300,11 +300,16 @@ def cp_lineage_start(
         connection_qualified_name=connection.qualified_name,
         inputs=[Column.ref_by_guid(column1.guid)],
         outputs=[Column.ref_by_guid(column3.guid)],
+        parent=Process.ref_by_guid(lineage_start.guid),
     )
-    response = client.asset.save(to_create)
-    cp_ls = response.assets_created(asset_type=ColumnProcess)[0]
-    yield cp_ls
-    delete_asset(client, guid=cp_ls.guid, asset_type=ColumnProcess)
+    try:
+        response = client.asset.save(to_create)
+        cp_ls = response.assets_created(asset_type=ColumnProcess)[0]
+        assert len(response.assets_updated(asset_type=Process)) == 1
+        assert response.assets_updated(asset_type=Process)[0].guid == lineage_start.guid
+        yield cp_ls
+    finally:
+        delete_asset(client, guid=cp_ls.guid, asset_type=ColumnProcess)
 
 
 @pytest.fixture(scope="module")
@@ -346,11 +351,16 @@ def cp_lineage_end(
         connection_qualified_name=connection.qualified_name,
         inputs=[Column.ref_by_guid(column3.guid)],
         outputs=[Column.ref_by_guid(column5.guid)],
+        parent=Process.ref_by_guid(lineage_end.guid),
     )
-    response = client.asset.save(to_create)
-    cp_le = response.assets_created(asset_type=ColumnProcess)[0]
-    yield cp_le
-    delete_asset(client, guid=cp_le.guid, asset_type=ColumnProcess)
+    try:
+        response = client.asset.save(to_create)
+        cp_le = response.assets_created(asset_type=ColumnProcess)[0]
+        assert len(response.assets_updated(asset_type=Process)) == 1
+        assert response.assets_updated(asset_type=Process)[0].guid == lineage_end.guid
+        yield cp_le
+    finally:
+        delete_asset(client, guid=cp_le.guid, asset_type=ColumnProcess)
 
 
 def _assert_lineage(asset_1, asset_2, lineage):
