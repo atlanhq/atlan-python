@@ -12,6 +12,7 @@ from pyatlan.model.enums import (
     EntityStatus,
 )
 from pyatlan.model.response import AssetMutationResponse
+from pyatlan.utils import get_parent_qualified_name
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 from tests.integration.utils import block
@@ -98,13 +99,12 @@ def test_adls_container(
 
 @pytest.fixture(scope="module")
 def adls_object(
-    client: AtlanClient, adls_container: ADLSContainer, adls_account: ADLSAccount
+    client: AtlanClient, adls_container: ADLSContainer
 ) -> Generator[ADLSObject, None, None]:
     assert adls_container.qualified_name
     to_create = ADLSObject.create(
         name=OBJECT_NAME,
         adls_container_qualified_name=adls_container.qualified_name,
-        adls_account_qualified_name=adls_account.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSObject)[0]
@@ -123,6 +123,10 @@ def test_adls_object(
     assert adls_object.adls_container_qualified_name == adls_container.qualified_name
     assert adls_object.name == OBJECT_NAME
     assert adls_object.connector_name == AtlanConnectorType.ADLS.value
+    assert adls_container.qualified_name
+    assert adls_object.adls_account_qualified_name == get_parent_qualified_name(
+        adls_container.qualified_name
+    )
 
 
 def test_update_adls_object(

@@ -31,7 +31,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.utils import init_guid, validate_required_fields
+from pyatlan.utils import get_parent_qualified_name, init_guid, validate_required_fields
 
 from .asset35 import ADLS
 
@@ -631,16 +631,13 @@ class ADLSObject(ADLS):
         *,
         name: str,
         adls_container_qualified_name: str,
-        adls_account_qualified_name: str,
     ) -> ADLSObject:
         validate_required_fields(
-            ["name", "adls_container_qualified_name", "adls_account_qualified_name"],
-            [name, adls_container_qualified_name, adls_account_qualified_name],
+            ["name", "adls_container_qualified_name"],
+            [name, adls_container_qualified_name],
         )
         attributes = ADLSObject.Attributes.create(
-            name=name,
-            adls_container_qualified_name=adls_container_qualified_name,
-            adls_account_qualified_name=adls_account_qualified_name,
+            name=name, adls_container_qualified_name=adls_container_qualified_name
         )
         return cls(attributes=attributes)
 
@@ -1101,19 +1098,11 @@ class ADLSObject(ADLS):
         # @validate_arguments()
         @init_guid
         def create(
-            cls,
-            *,
-            name: str,
-            adls_container_qualified_name: str,
-            adls_account_qualified_name: str,
+            cls, *, name: str, adls_container_qualified_name: str
         ) -> ADLSObject.Attributes:
             validate_required_fields(
-                [
-                    "name",
-                    "adls_container_qualified_name",
-                    "adls_account_qualified_name",
-                ],
-                [name, adls_container_qualified_name, adls_account_qualified_name],
+                ["name", "adls_container_qualified_name"],
+                [name, adls_container_qualified_name],
             )
 
             # Split the qualified_name to extract necessary information
@@ -1125,6 +1114,9 @@ class ADLSObject(ADLS):
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
             except ValueError as e:
                 raise ValueError("Invalid qualified_name") from e
+            adls_account_qualified_name = get_parent_qualified_name(
+                adls_container_qualified_name
+            )
 
             return ADLSObject.Attributes(
                 name=name,
