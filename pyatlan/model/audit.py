@@ -75,6 +75,7 @@ class AuditSearchRequest(SearchRequest):
             sort=LATEST_FIRST,
             size=size,
             _from=_from,
+            req_class_name=cls.__name__,
         )
         return AuditSearchRequest(dsl=dsl)
 
@@ -94,6 +95,7 @@ class AuditSearchRequest(SearchRequest):
             sort=LATEST_FIRST,
             size=size,
             _from=_from,
+            req_class_name=cls.__name__,
         )
         return AuditSearchRequest(dsl=dsl)
 
@@ -119,6 +121,7 @@ class AuditSearchRequest(SearchRequest):
             sort=LATEST_FIRST,
             size=size,
             _from=_from,
+            req_class_name=cls.__name__,
         )
         return AuditSearchRequest(dsl=dsl)
 

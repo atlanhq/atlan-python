@@ -28,15 +28,22 @@ from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
     CertificateStatus,
+    SortOrder,
     UTMTags,
     WorkflowPackage,
 )
 from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.search import SortItem
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
 
 CLASSIFICATION_NAME = "Issue"
+SL_SORT_BY_TIMESTAMP = SortItem(field="timestamp", order=SortOrder.ASCENDING)
+SL_SORT_BY_GUID = SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING)
+SL_SORT_BY_QUALIFIED_NAME = SortItem(
+    field="entityQFNamesAll", order=SortOrder.ASCENDING
+)
 
 
 @dataclass()
@@ -656,3 +663,63 @@ def test_search_log_views_by_guid(client: AtlanClient, sl_glossary: AtlasGlossar
     assert log_entries[0].request_dsl_text
     assert log_entries[0].request_attributes is None
     assert log_entries[0].request_relation_attributes is None
+
+
+def test_search_log_default_sorting(client: AtlanClient, sl_glossary: AtlasGlossary):
+    # Empty sorting
+    request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=10, sort=[])
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 2
+    assert sort_options[0].field == SL_SORT_BY_TIMESTAMP.field
+    assert sort_options[1].field == SL_SORT_BY_GUID.field
+
+    # Sort without GUID
+    request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=10,
+        sort=[SL_SORT_BY_QUALIFIED_NAME],
+    )
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 3
+    assert sort_options[0].field == SL_SORT_BY_QUALIFIED_NAME.field
+    assert sort_options[1].field == SL_SORT_BY_TIMESTAMP.field
+    assert sort_options[2].field == SL_SORT_BY_GUID.field
+
+    # Sort with only GUID
+    request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=10,
+        sort=[SL_SORT_BY_GUID],
+    )
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 2
+    assert sort_options[0].field == SL_SORT_BY_GUID.field
+    assert sort_options[1].field == SL_SORT_BY_TIMESTAMP.field
+
+    # Sort with GUID and others
+    request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=10,
+        sort=[SL_SORT_BY_GUID, SL_SORT_BY_QUALIFIED_NAME],
+    )
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 3
+    assert sort_options[0].field == SL_SORT_BY_GUID.field
+    assert sort_options[1].field == SL_SORT_BY_QUALIFIED_NAME.field
+    assert sort_options[2].field == SL_SORT_BY_TIMESTAMP.field
