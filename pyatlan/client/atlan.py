@@ -250,6 +250,9 @@ class AtlanClient(BaseSettings):
             self._user_client = UserClient(client=self)
         return self._user_client
 
+    def update_headers(self, header: dict[str, str]):
+        self._session.headers.update(header)
+
     def _call_api_internal(self, api, path, params, binary_data=None):
         token = request_id_var.set(str(uuid.uuid4()))
         try:

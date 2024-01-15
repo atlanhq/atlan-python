@@ -5,7 +5,7 @@ import logging
 import textwrap
 from enum import Enum
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal, Optional, Protocol
 
 from jinja2 import Environment, PackageLoader
 from pydantic import BaseModel, Field, PrivateAttr, StrictStr, validate_arguments
@@ -14,6 +14,14 @@ from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.pkg.ui import UIConfig
 
 LOGGER = logging.getLogger(__name__)
+
+
+class RuntimeConfig(Protocol):
+    user_id: Optional[str]
+    agent: Optional[str]
+    agent_id: Optional[str]
+    agent_pkg: Optional[str]
+    agent_wfl: Optional[str]
 
 
 class PackageConfig(BaseModel):

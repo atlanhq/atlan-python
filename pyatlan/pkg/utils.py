@@ -8,7 +8,7 @@ from jinja2 import Environment, PackageLoader
 from pydantic import BaseModel, PrivateAttr
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.pkg.models import CustomPackage
+from pyatlan.pkg.models import CustomPackage, RuntimeConfig
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,13 +47,14 @@ class PackageWriter(BaseModel):
             script.write(content)
 
 
-def set_client(impersonate_user_id: str) -> AtlanClient:
+def get_client(impersonate_user_id: str) -> AtlanClient:
     """
     Set up the default Atlan client, based on environment variables.
     This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
     ATLAN_API_KEY is empty.
 
     :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate
+    :returns: an initialized client
     """
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
@@ -72,3 +73,19 @@ def set_client(impersonate_user_id: str) -> AtlanClient:
         )
         api_key = AtlanClient(base_url=base_url, api_key="").impersonate.escolate()
     return AtlanClient(base_url=base_url, api_key=api_key)
+
+
+def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
+    client = get_client(run_time_config.user_id or "")
+    if run_time_config.agent == "workflow":
+        headers: dict[str, str] = {}
+        if run_time_config.agent:
+            headers["x-atlan-agent"] = run_time_config.agent
+        if run_time_config.agent_pkg:
+            headers["x-atlan-agent-package-name"] = run_time_config.agent_pkg
+        if run_time_config.agent_wfl:
+            headers["x-atlan-agent-workflow-id"] = run_time_config.agent_wfl
+        if run_time_config.agent_id:
+            headers["x-atlan-agent-id"] = run_time_config.agent_id
+        client.update_headers(headers)
+    return client
