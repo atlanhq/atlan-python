@@ -188,7 +188,7 @@ class GroupClient:
         return UserResponse(**raw_json)
 
     @validate_arguments
-    def remove_users(self, guid: str, user_ids=list[str]) -> None:
+    def remove_users(self, guid: str, user_ids: Optional[list[str]] = None) -> None:
         """
         Remove one or more users from a group.
 
@@ -196,7 +196,7 @@ class GroupClient:
         :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
         :raises AtlanError: on any API communication issue
         """
-        rfgr = RemoveFromGroupRequest(users=user_ids)
+        rfgr = RemoveFromGroupRequest(users=user_ids or [])
         self._client._call_api(
             REMOVE_USERS_FROM_GROUP.format_path({"group_guid": guid}),
             request_obj=rfgr,
