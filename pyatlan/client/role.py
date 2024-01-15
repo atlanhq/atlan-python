@@ -2,6 +2,8 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import GET_ROLES
 from pyatlan.errors import ErrorCode
@@ -21,6 +23,7 @@ class RoleClient:
             )
         self._client = client
 
+    @validate_arguments
     def get(
         self,
         limit: int,
@@ -54,6 +57,7 @@ class RoleClient:
         )
         return RoleResponse(**raw_json)
 
+    @validate_arguments
     def get_all(self) -> RoleResponse:
         """
         Retrieves a RoleResponse which contains a list of all the roles defined in Atlan.

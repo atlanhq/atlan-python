@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from pydantic import ValidationError, parse_obj_as
+from pydantic import ValidationError, parse_obj_as, validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import AUDIT_SEARCH
@@ -23,6 +23,7 @@ class AuditClient:
             )
         self._client = client
 
+    @validate_arguments
     def search(self, criteria: AuditSearchRequest) -> AuditSearchResults:
         """
         Search for assets using the provided criteria.

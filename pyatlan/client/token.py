@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Optional
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import DELETE_API_TOKEN, GET_API_TOKENS, UPSERT_API_TOKEN
 from pyatlan.errors import ErrorCode
@@ -25,6 +27,7 @@ class TokenClient:
             )
         self._client = client
 
+    @validate_arguments
     def get(
         self,
         limit: Optional[int] = None,
@@ -59,6 +62,7 @@ class TokenClient:
         )
         return ApiTokenResponse(**raw_json)
 
+    @validate_arguments
     def get_by_name(self, display_name: str) -> Optional[ApiToken]:
         """
         Retrieves the API token with a name that exactly matches the provided string.
@@ -75,6 +79,7 @@ class TokenClient:
                 return response.records[0]
         return None
 
+    @validate_arguments
     def get_by_id(self, client_id: str) -> Optional[ApiToken]:
         """
         Retrieves the API token with a client ID that exactly matches the provided string.
@@ -93,6 +98,7 @@ class TokenClient:
                 return response.records[0]
         return None
 
+    @validate_arguments
     def create(
         self,
         display_name: str,
@@ -120,6 +126,7 @@ class TokenClient:
         raw_json = self._client._call_api(UPSERT_API_TOKEN, request_obj=request)
         return ApiToken(**raw_json)
 
+    @validate_arguments
     def update(
         self,
         guid: str,
@@ -149,6 +156,7 @@ class TokenClient:
         )
         return ApiToken(**raw_json)
 
+    @validate_arguments
     def purge(self, guid: str) -> None:
         """
         Delete (purge) the specified API token.

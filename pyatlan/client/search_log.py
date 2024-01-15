@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic import ValidationError, parse_obj_as
+from pydantic import ValidationError, parse_obj_as, validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import SEARCH_LOG
@@ -72,6 +72,7 @@ class SearchLogClient:
             request_obj=criteria,
         )
 
+    @validate_arguments
     def search(
         self, criteria: SearchLogRequest
     ) -> Union[SearchLogViewResults, SearchLogResults]:
