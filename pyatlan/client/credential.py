@@ -55,13 +55,9 @@ class CredentialClient:
         :param credential: The credential to be tested.
         :type credential: A CredentialTestResponse instance.
         :returns: The response indicating the test result.
-        :raises InvalidRequestException: If the provided credential is invalid type.
+        :raises ValidationError: If the provided credential is invalid type.
         :raises AtlanException: On any error during API invocation.
         """
-        if not isinstance(credential, Credential):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "credential", "Credential"
-            )
         raw_json = self._client._call_api(TEST_CREDENTIAL, request_obj=credential)
         return CredentialTestResponse(**raw_json)
 
@@ -71,18 +67,15 @@ class CredentialClient:
         Updates this credential in Atlan after first
         testing it to confirm its successful validation.
 
+        :param credential: The credential to be tested and updated.
         :returns: An updated CredentialResponse instance.
-        :raises InvalidRequestException: If the provided credential is invalid type.
+        :raises ValidationError: If the provided credential is invalid type.
         :raises InvalidRequestException: if the provided credentials
         cannot be validated successfully.
         :raises InvalidRequestException: If the provided credential
         does not have an ID.
         :raises AtlanException: on any error during API invocation.
         """
-        if not isinstance(credential, Credential):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "credential", "Credential"
-            )
         test_response = self.test(credential=credential)
         if not test_response.is_successful:
             raise ErrorCode.INVALID_CREDENTIALS.exception_with_parameters(
