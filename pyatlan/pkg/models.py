@@ -280,6 +280,12 @@ class PackageWriter(BaseModel):
         ).open("w") as script:
             script.write(content)
 
+    def create_logging_conf(self):
+        template = self._env.get_template("logging_conf.jinja2")
+        content = template.render({"pkg": self.pkg})
+        with (self.path / "logging.conf").open("w") as script:
+            script.write(content)
+
 
 @validate_arguments()
 def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "config"]):
@@ -288,3 +294,4 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
         writer.create_package()
     else:
         writer.create_config_class()
+        writer.create_logging_conf()

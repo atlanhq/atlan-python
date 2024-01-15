@@ -76,6 +76,12 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
 
 
 def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
+    """
+    Set up and processing options and configure the AtlanClient
+
+    :param run_time_config: the generated RuntimeConfig from the generated config module
+    :returns: an intialized AtlanClient that should be used for any calls to the SDK
+    """
     client = get_client(run_time_config.user_id or "")
     if run_time_config.agent == "workflow":
         headers: dict[str, str] = {}
