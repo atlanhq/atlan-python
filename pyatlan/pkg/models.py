@@ -4,6 +4,7 @@ import json
 import logging
 import textwrap
 from enum import Enum
+from importlib import resources
 from pathlib import Path
 from typing import Literal, Optional, Protocol
 
@@ -14,6 +15,8 @@ from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.pkg.ui import UIConfig
 
 LOGGER = logging.getLogger(__name__)
+
+VERSION = resources.read_text("pyatlan", "version.txt").strip()
 
 
 class RuntimeConfig(Protocol):
@@ -103,7 +106,7 @@ class PackageDefinition(BaseModel):
         )
         self._package_definition = _PackageDefinition(
             name=self.package_id,
-            version="1.9.0-SNAPSHOT",
+            version=VERSION,
             description=self.description,
             keywords=self.keywords,
             homepage=f"https://packages.atlan.com/-/web/detail/{self.package_id}",
