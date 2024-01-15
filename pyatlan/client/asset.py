@@ -858,8 +858,8 @@ class AssetClient:
     def _update_glossary_anchor(
         self,
         asset: Union[AtlasGlossaryTerm, AtlasGlossaryCategory],
-        glossary_guid: str,
         asset_type: str,
+        glossary_guid: Optional[str] = None,
     ) -> None:
         if not glossary_guid:
             raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(asset_type)
@@ -868,24 +868,12 @@ class AssetClient:
     @overload
     def update_certificate(
         self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        certificate_status: CertificateStatus,
-        message: Optional[str] = None,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
-
-    @overload
-    def update_certificate(
-        self,
         asset_type: Type[AtlasGlossaryTerm],
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
+        glossary_guid: str,
         message: Optional[str] = None,
-        glossary_guid: str = None,
     ) -> Optional[AtlasGlossaryTerm]:
         ...
 
@@ -896,9 +884,21 @@ class AssetClient:
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
+        glossary_guid: str,
         message: Optional[str] = None,
-        glossary_guid: str = None,
     ) -> Optional[AtlasGlossaryCategory]:
+        ...
+
+    @overload
+    def update_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        certificate_status: CertificateStatus,
+        glossary_guid: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> Optional[A]:
         ...
 
     @validate_arguments
@@ -908,8 +908,8 @@ class AssetClient:
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
-        message: Optional[str] = None,
         glossary_guid: Optional[str] = None,
+        message: Optional[str] = None,
     ) -> Optional[A]:
         """
         Update the certificate on an asset.
@@ -918,9 +918,9 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset on which to update the certificate
         :param name: the name of the asset on which to update the certificate
         :param certificate_status: specific certificate to set on the asset
-        :param message: (optional) message to set (or None for no message)
         :param glossary_guid: unique identifier of the glossary, required
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
+        :param message: (optional) message to set (or None for no message)
         :returns: the result of the update, or None if the update failed
         :raises AtlanError: on any API communication issue
         """
@@ -930,18 +930,8 @@ class AssetClient:
         asset.name = name
         asset.certificate_status_message = message
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
-
-    @overload
-    def remove_certificate(
-        self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
 
     @overload
     def remove_certificate(
@@ -961,6 +951,16 @@ class AssetClient:
         name: str,
         glossary_guid: str,
     ) -> Optional[AtlasGlossaryCategory]:
+        ...
+
+    @overload
+    def remove_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]:
         ...
 
     @validate_arguments
@@ -986,19 +986,8 @@ class AssetClient:
         asset.name = name
         asset.remove_certificate()
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
-
-    @overload
-    def update_announcement(
-        self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        announcement: Announcement,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
 
     @overload
     def update_announcement(
@@ -1020,6 +1009,17 @@ class AssetClient:
         announcement: Announcement,
         glossary_guid: str,
     ) -> Optional[AtlasGlossaryCategory]:
+        ...
+
+    @overload
+    def update_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        announcement: Announcement,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]:
         ...
 
     @validate_arguments
@@ -1047,18 +1047,8 @@ class AssetClient:
         asset.set_announcement(announcement)
         asset.name = name
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
-
-    @overload
-    def remove_announcement(
-        self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
 
     @overload
     def remove_announcement(
@@ -1078,6 +1068,16 @@ class AssetClient:
         name: str,
         glossary_guid: str,
     ) -> Optional[AtlasGlossaryCategory]:
+        ...
+
+    @overload
+    def remove_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]:
         ...
 
     @validate_arguments
@@ -1102,7 +1102,7 @@ class AssetClient:
         asset.name = name
         asset.remove_announcement()
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
