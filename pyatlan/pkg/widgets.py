@@ -516,12 +516,12 @@ class DropDown(UIElementWithEnum):
 
 @dataclasses.dataclass
 class FileUploaderWidget(AbstractWidget):
-    file_types: list[str] = field(default_factory=list)
+    accept: list[str] = field(default_factory=list)
 
     def __init__(
         self,
         label: str,
-        file_types: list[str],
+        accept: list[str],
         hidden: bool = False,
         help: str = "",
         placeholder: str = "",
@@ -533,7 +533,7 @@ class FileUploaderWidget(AbstractWidget):
             help=help,
             placeholder=placeholder,
         )
-        self.file_types = file_types
+        self.accept = accept
 
     def to_nested(self, name: str) -> str:
         return f'"/tmp/{name}/{{{{inputs.parameters.{name}}}}}"'  # noqa: S108
@@ -575,7 +575,7 @@ class FileUploader(AbstractUIElement):
         """
         widget = FileUploaderWidget(
             label=label,
-            file_types=file_types,
+            accept=file_types,
             hidden=hidden,
             help=help,
             placeholder=placeholder,

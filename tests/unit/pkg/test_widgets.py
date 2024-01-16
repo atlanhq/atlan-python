@@ -915,7 +915,7 @@ class TestFileUploader:
         assert isinstance(ui, FileUploaderWidget)
         assert ui.widget == "fileUpload"
         assert ui.label == LABEL
-        assert ui.file_types == FILE_TYPES
+        assert ui.accept == FILE_TYPES
         assert ui.hidden == IS_NOT_HIDDEN
         assert ui.help == ""
         assert ui.placeholder == ""
@@ -937,7 +937,7 @@ class TestFileUploader:
         assert isinstance(ui, FileUploaderWidget)
         assert ui.widget == "fileUpload"
         assert ui.label == LABEL
-        assert ui.file_types == FILE_TYPES
+        assert ui.accept == FILE_TYPES
         assert ui.hidden == IS_HIDDEN
         assert ui.help == HELP
         assert ui.placeholder == PLACE_HOLDER
