@@ -33,7 +33,7 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
         LOGGER.info(
             "No API token or impersonation user, attempting short-lived escalation."
         )
-        api_key = AtlanClient(base_url=base_url, api_key="").impersonate.escolate()
+        api_key = AtlanClient(base_url=base_url, api_key="").impersonate.escalate()
     return AtlanClient(base_url=base_url, api_key=api_key)
 
 

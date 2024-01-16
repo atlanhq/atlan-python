@@ -74,7 +74,7 @@ class ImpersonationClient:
         client_info = ClientInfo(client_id=client_id, client_secret=client_secret)
         return client_info
 
-    def escolate(self) -> str:
+    def escalate(self) -> str:
         """
         Escalate to a privileged user on a short-term basis.
         Note: this is only possible from within the Atlan tenant, and only when given the appropriate credentials.
