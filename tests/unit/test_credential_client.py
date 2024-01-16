@@ -18,7 +18,7 @@ TEST_MISSING_TOKEN_ID = (
     "ATLAN-PYTHON-400-032 No ID was provided when attempting to update the API token."
 )
 TEST_INVALID_CREDENTIALS = (
-    "ATLAN-PYTHON-400-043 Credentials provided did not work: failed"
+    "ATLAN-PYTHON-400-054 Credentials provided did not work: failed"
 )
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"

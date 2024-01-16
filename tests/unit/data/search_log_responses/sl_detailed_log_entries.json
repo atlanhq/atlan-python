@@ -65,6 +65,11 @@
           "timestamp": {
             "order": "asc"
           }
+        },
+        {
+          "entityGuidsAll": {
+            "order": "asc"
+          }
         }
       ]
     },

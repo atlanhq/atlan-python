@@ -1803,9 +1803,8 @@ class DSL(AtlanObject):
     track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
-    sort: list[SortItem] = Field(
-        alias="sort", default=[SortItem(TermAttributes.GUID.value)]
-    )
+    req_class_name: Optional[str] = Field(exclude=True)
+    sort: list[SortItem] = Field(alias="sort", default_factory=list)
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1828,6 +1827,32 @@ class DSL(AtlanObject):
             return v
         else:
             raise ValueError("Either query or post_filter is required")
+
+    @validator("sort", always=True)
+    def validate_sort(cls, sort, values):
+        missing_guid_sort = True
+        sort_by_guid = "__guid"
+        auditsearch_sort_by_guid = "entityId"
+        searchlog_sort_by_guid = "entityGuidsAll"
+        req_class_name = values.get("req_class_name")
+        # Check if the sort by GUID is included
+        for option in sort:
+            if option.field and option.field in (
+                sort_by_guid,
+                auditsearch_sort_by_guid,
+                searchlog_sort_by_guid,
+            ):
+                missing_guid_sort = False
+                break
+        if missing_guid_sort:
+            if req_class_name == "SearchLogRequest":
+                sort.append(SortItem(searchlog_sort_by_guid))
+            elif req_class_name == "AuditSearchRequest":
+                sort.append(SortItem(auditsearch_sort_by_guid))
+            else:
+                # IndexSearchRequest
+                sort.append(SortItem(sort_by_guid))
+        return sort
 
 
 class IndexSearchRequest(SearchRequest):

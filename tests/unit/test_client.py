@@ -16,6 +16,8 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Table,
 )
+from pyatlan.model.core import Announcement
+from pyatlan.model.enums import AnnouncementType, CertificateStatus
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
@@ -41,6 +43,15 @@ SEARCH_RESPONSES_DIR = Path(__file__).parent / "data" / "search_log_responses"
 SL_MOST_RECENT_VIEWERS_JSON = "sl_most_recent_viewers.json"
 SL_MOST_VIEWED_ASSETS_JSON = "sl_most_viewed_assets.json"
 SL_DETAILED_LOG_ENTRIES_JSON = "sl_detailed_log_entries.json"
+TEST_ANNOUNCEMENT = Announcement(
+    announcement_title="test-title",
+    announcement_message="test-msg",
+    announcement_type=AnnouncementType.INFORMATION,
+)
+TEST_MISSING_GLOSSARY_GUID_ERROR = (
+    "ATLAN-PYTHON-400-055 'glossary_guid' keyword "
+    "argument is missing for asset type: {0}"
+)
 
 
 @pytest.fixture(autouse=True)
@@ -1005,6 +1016,57 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     assert log_entries[0].request_dsl_text
     assert log_entries[0].request_attributes is None
     assert log_entries[0].request_relation_attributes
+
+
+@pytest.mark.parametrize(
+    "test_method, test_kwargs, test_asset_types",
+    [
+        [
+            "update_certificate",
+            {
+                "qualified_name": "test-qn",
+                "name": "test-name",
+                "certificate_status": CertificateStatus.VERIFIED,
+                "message": "test-message",
+            },
+            [AtlasGlossaryTerm, AtlasGlossaryCategory],
+        ],
+        [
+            "remove_certificate",
+            {
+                "qualified_name": "test-qn",
+                "name": "test-name",
+            },
+            [AtlasGlossaryTerm, AtlasGlossaryCategory],
+        ],
+        [
+            "update_announcement",
+            {
+                "qualified_name": "test-qn",
+                "name": "test-name",
+                "announcement": TEST_ANNOUNCEMENT,
+            },
+            [AtlasGlossaryTerm, AtlasGlossaryCategory],
+        ],
+        [
+            "remove_announcement",
+            {"qualified_name": "test-qn", "name": "test-name"},
+            [AtlasGlossaryTerm, AtlasGlossaryCategory],
+        ],
+    ],
+)
+def test_asset_client_missing_glossary_guid_raises_invalid_request_error(
+    test_method: str,
+    test_kwargs: dict,
+    test_asset_types,
+):
+    client = AtlanClient()
+    asset_client_method = getattr(client.asset, test_method)
+
+    for asset_type in test_asset_types:
+        test_error = TEST_MISSING_GLOSSARY_GUID_ERROR.format(asset_type.__name__)
+        with pytest.raises(InvalidRequestError, match=test_error):
+            asset_client_method(**test_kwargs, asset_type=asset_type)
 
 
 class TestBatch:

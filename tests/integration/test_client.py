@@ -1,6 +1,6 @@
 import time
 from dataclasses import dataclass
-from typing import Generator, Optional
+from typing import Generator, Optional, Type
 
 import pytest
 from pydantic import StrictStr
@@ -16,6 +16,7 @@ from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
+    AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Connection,
     Database,
@@ -27,15 +28,22 @@ from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
     CertificateStatus,
+    SortOrder,
     UTMTags,
     WorkflowPackage,
 )
 from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.search import SortItem
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
 
 CLASSIFICATION_NAME = "Issue"
+SL_SORT_BY_TIMESTAMP = SortItem(field="timestamp", order=SortOrder.ASCENDING)
+SL_SORT_BY_GUID = SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING)
+SL_SORT_BY_QUALIFIED_NAME = SortItem(
+    field="entityQFNamesAll", order=SortOrder.ASCENDING
+)
 
 
 @dataclass()
@@ -88,6 +96,100 @@ def sl_glossary(
     g = create_glossary(client, TestId.make_unique("test-sl-glossary"))
     yield g
     delete_asset(client, guid=g.guid, asset_type=AtlasGlossary)
+
+
+def _test_update_certificate(
+    client: AtlanClient,
+    test_asset: Asset,
+    test_asset_type: Type[Asset],
+    glossary_guid: Optional[str] = None,
+):
+    assert test_asset.qualified_name
+    assert test_asset.name
+    test_asset = client.asset.get_by_guid(
+        guid=test_asset.guid, asset_type=test_asset_type
+    )
+    assert test_asset.qualified_name
+    assert test_asset.name
+    assert test_asset.certificate_status is None
+    assert test_asset.certificate_status_message is None
+    message = "An important message"
+    client.asset.update_certificate(
+        asset_type=test_asset_type,
+        qualified_name=test_asset.qualified_name,
+        name=test_asset.name,
+        certificate_status=CertificateStatus.DRAFT,
+        message=message,
+        glossary_guid=glossary_guid if glossary_guid else None,
+    )
+    test_asset = client.asset.get_by_guid(
+        guid=test_asset.guid, asset_type=test_asset_type
+    )
+    assert test_asset.certificate_status == CertificateStatus.DRAFT
+    assert test_asset.certificate_status_message == message
+
+
+def _test_remove_certificate(
+    client: AtlanClient,
+    test_asset: Asset,
+    test_asset_type: Type[Asset],
+    glossary_guid: Optional[str] = None,
+):
+    assert test_asset.qualified_name
+    assert test_asset.name
+    client.asset.remove_certificate(
+        asset_type=test_asset_type,
+        qualified_name=test_asset.qualified_name,
+        name=test_asset.name,
+        glossary_guid=glossary_guid if glossary_guid else None,
+    )
+    test_asset = client.asset.get_by_guid(
+        guid=test_asset.guid, asset_type=test_asset_type
+    )
+    assert test_asset.certificate_status is None
+    assert test_asset.certificate_status_message is None
+
+
+def _test_update_announcement(
+    client: AtlanClient,
+    test_asset: Asset,
+    test_asset_type: Type[Asset],
+    test_announcement: Announcement,
+    glossary_guid: Optional[str] = None,
+):
+    assert test_asset.qualified_name
+    assert test_asset.name
+    client.asset.update_announcement(
+        asset_type=test_asset_type,
+        qualified_name=test_asset.qualified_name,
+        name=test_asset.name,
+        announcement=test_announcement,
+        glossary_guid=glossary_guid if glossary_guid else None,
+    )
+    test_asset = client.asset.get_by_guid(
+        guid=test_asset.guid, asset_type=test_asset_type
+    )
+    assert test_asset.get_announcment() == test_announcement
+
+
+def _test_remove_announcement(
+    client: AtlanClient,
+    test_asset: Asset,
+    test_asset_type: Type[Asset],
+    glossary_guid: Optional[str] = None,
+):
+    assert test_asset.qualified_name
+    assert test_asset.name
+    client.asset.remove_announcement(
+        asset_type=test_asset_type,
+        qualified_name=test_asset.qualified_name,
+        name=test_asset.name,
+        glossary_guid=glossary_guid if glossary_guid else None,
+    )
+    test_asset = client.asset.get_by_guid(
+        guid=test_asset.guid, asset_type=test_asset_type
+    )
+    assert test_asset.get_announcment() is None
 
 
 def test_append_terms_with_guid(
@@ -327,62 +429,86 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert not glossary_term.atlan_tags
 
 
-def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
-    assert glossary.qualified_name
-    assert glossary.name
-    message = "An important message"
-    client.asset.update_certificate(
-        asset_type=AtlasGlossary,
-        qualified_name=glossary.qualified_name,
-        name=glossary.name,
-        certificate_status=CertificateStatus.DRAFT,
-        message=message,
-    )
-    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
-    assert glossary.certificate_status == CertificateStatus.DRAFT
-    assert glossary.certificate_status_message == message
+def test_glossary_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
+    _test_update_certificate(client, glossary, AtlasGlossary)
 
 
-@pytest.mark.order(after="test_update_certificate")
-def test_remove_certificate(client: AtlanClient, glossary: AtlasGlossary):
-    assert glossary.qualified_name
-    assert glossary.name
-    client.asset.remove_certificate(
-        asset_type=AtlasGlossary,
-        qualified_name=glossary.qualified_name,
-        name=glossary.name,
-    )
-    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
-    assert glossary.certificate_status is None
-    assert glossary.certificate_status_message is None
+def test_glossary_term_update_certificate(
+    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
+):
+    _test_update_certificate(client, term1, AtlasGlossaryTerm, glossary.guid)
 
 
-def test_update_announcement(
+def test_glossary_category_update_certificate(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    _test_update_certificate(client, category, AtlasGlossaryCategory, glossary.guid)
+
+
+@pytest.mark.order(after="test_glossary_update_certificate")
+def test_glossary_remove_certificate(client: AtlanClient, glossary: AtlasGlossary):
+    _test_remove_certificate(client, glossary, AtlasGlossary)
+
+
+@pytest.mark.order(after="test_glossary_term_update_certificate")
+def test_glossary_term_remove_certificate(
+    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
+):
+    _test_remove_certificate(client, term1, AtlasGlossaryTerm, glossary.guid)
+
+
+@pytest.mark.order(after="test_glossary_category_update_certificate")
+def test_glossary_category_remove_certificate(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    _test_remove_certificate(client, category, AtlasGlossaryCategory, glossary.guid)
+
+
+def test_glossary_update_announcement(
     client: AtlanClient, glossary: AtlasGlossary, announcement: Announcement
 ):
-    assert glossary.qualified_name
-    assert glossary.name
-    client.asset.update_announcement(
-        asset_type=AtlasGlossary,
-        qualified_name=glossary.qualified_name,
-        name=glossary.name,
-        announcement=announcement,
-    )
-    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
-    assert glossary.get_announcment() == announcement
+    _test_update_announcement(client, glossary, AtlasGlossary, announcement)
 
 
-@pytest.mark.order(after="test_update_certificate")
-def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
-    assert glossary.qualified_name
-    assert glossary.name
-    client.asset.remove_announcement(
-        asset_type=AtlasGlossary,
-        qualified_name=glossary.qualified_name,
-        name=glossary.name,
+def test_glossary_term_update_announcement(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+    announcement: Announcement,
+):
+    _test_update_announcement(
+        client, term1, AtlasGlossaryTerm, announcement, glossary.guid
     )
-    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
-    assert glossary.get_announcment() is None
+
+
+def test_glossary_category_update_announcement(
+    client: AtlanClient,
+    category: AtlasGlossaryCategory,
+    glossary: AtlasGlossary,
+    announcement: Announcement,
+):
+    _test_update_announcement(
+        client, category, AtlasGlossaryCategory, announcement, glossary.guid
+    )
+
+
+@pytest.mark.order(after="test_glossary_update_announcement")
+def test_glossary_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
+    _test_remove_announcement(client, glossary, AtlasGlossary)
+
+
+@pytest.mark.order(after="test_glossary_term_update_announcement")
+def test_glossary_term_remove_announcement(
+    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
+):
+    _test_remove_announcement(client, term1, AtlasGlossaryTerm, glossary.guid)
+
+
+@pytest.mark.order(after="test_glossary_category_update_announcement")
+def test_glossary_category_remove_announcement(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    _test_remove_announcement(client, category, AtlasGlossaryCategory, glossary.guid)
 
 
 def test_workflow_find_by_type(client: AtlanClient):
@@ -537,3 +663,63 @@ def test_search_log_views_by_guid(client: AtlanClient, sl_glossary: AtlasGlossar
     assert log_entries[0].request_dsl_text
     assert log_entries[0].request_attributes is None
     assert log_entries[0].request_relation_attributes is None
+
+
+def test_search_log_default_sorting(client: AtlanClient, sl_glossary: AtlasGlossary):
+    # Empty sorting
+    request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=10, sort=[])
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 2
+    assert sort_options[0].field == SL_SORT_BY_TIMESTAMP.field
+    assert sort_options[1].field == SL_SORT_BY_GUID.field
+
+    # Sort without GUID
+    request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=10,
+        sort=[SL_SORT_BY_QUALIFIED_NAME],
+    )
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 3
+    assert sort_options[0].field == SL_SORT_BY_QUALIFIED_NAME.field
+    assert sort_options[1].field == SL_SORT_BY_TIMESTAMP.field
+    assert sort_options[2].field == SL_SORT_BY_GUID.field
+
+    # Sort with only GUID
+    request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=10,
+        sort=[SL_SORT_BY_GUID],
+    )
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 2
+    assert sort_options[0].field == SL_SORT_BY_GUID.field
+    assert sort_options[1].field == SL_SORT_BY_TIMESTAMP.field
+
+    # Sort with GUID and others
+    request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=10,
+        sort=[SL_SORT_BY_GUID, SL_SORT_BY_QUALIFIED_NAME],
+    )
+    response = client.search_log.search(request)
+    if not isinstance(response, SearchLogResults):
+        pytest.fail("Failed to retrieve asset detailed log entries")
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 3
+    assert sort_options[0].field == SL_SORT_BY_GUID.field
+    assert sort_options[1].field == SL_SORT_BY_QUALIFIED_NAME.field
+    assert sort_options[2].field == SL_SORT_BY_TIMESTAMP.field

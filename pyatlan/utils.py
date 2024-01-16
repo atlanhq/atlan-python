@@ -50,6 +50,15 @@ def next_id() -> str:
     return f"-{s_nextId}"
 
 
+def get_parent_qualified_name(qualified_name: str) -> str:
+    """
+    Returns qualified name of the parent asset
+    :param qualified_name: qualified of the asset
+    """
+    qn = qualified_name.split("/")
+    return "/".join(qn[:-1])
+
+
 def list_attributes_to_params(
     attributes_list: list, query_params: Optional[dict] = None
 ) -> dict:

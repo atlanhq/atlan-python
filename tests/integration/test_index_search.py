@@ -9,7 +9,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Table
-from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
+from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import (
     DSL,
@@ -23,6 +23,8 @@ from pyatlan.model.search import (
     Wildcard,
 )
 
+QUALIFIED_NAME = "qualifiedName"
+ASSET_GUID = Asset.GUID.keyword_field_name
 NOW_AS_TIMESTAMP = int(time() * 1000)
 NOW_AS_YYYY_MM_DD = datetime.today().strftime("%Y-%m-%d")
 
@@ -313,3 +315,54 @@ def test_metric_aggregation(client: AtlanClient):
     assert results.aggregations["min_columns"]
     assert results.aggregations["max_columns"]
     assert results.aggregations["sum_columns"]
+
+
+def test_default_sorting(client: AtlanClient):
+    # Empty sorting
+    request = (
+        FluentSearch().where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
+    ).to_request()
+    response = client.asset.search(criteria=request)
+    sort_options = response._criteria.dsl.sort  # type: ignore
+    assert response
+    assert len(sort_options) == 1
+    assert sort_options[0].field == ASSET_GUID
+
+    # Sort without GUID
+    request = (
+        FluentSearch()
+        .where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
+        .sort(Asset.QUALIFIED_NAME.order(SortOrder.ASCENDING))
+    ).to_request()
+    response = client.asset.search(criteria=request)
+    sort_options = response._criteria.dsl.sort  # type: ignore
+    assert response
+    assert len(sort_options) == 2
+    assert sort_options[0].field == QUALIFIED_NAME
+    assert sort_options[1].field == ASSET_GUID
+
+    # Sort with only GUID
+    request = (
+        FluentSearch()
+        .where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
+        .sort(Asset.GUID.order(SortOrder.ASCENDING))
+    ).to_request()
+    response = client.asset.search(criteria=request)
+    sort_options = response._criteria.dsl.sort  # type: ignore
+    assert response
+    assert len(sort_options) == 1
+    assert sort_options[0].field == ASSET_GUID
+
+    # Sort with GUID and others
+    request = (
+        FluentSearch()
+        .where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
+        .sort(Asset.QUALIFIED_NAME.order(SortOrder.ASCENDING))
+        .sort(Asset.GUID.order(SortOrder.ASCENDING))
+    ).to_request()
+    response = client.asset.search(criteria=request)
+    sort_options = response._criteria.dsl.sort  # type: ignore
+    assert response
+    assert len(sort_options) == 2
+    assert sort_options[0].field == QUALIFIED_NAME
+    assert sort_options[1].field == ASSET_GUID

@@ -17,6 +17,7 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
+from pyatlan.model.assets.asset00 import ColumnProcess
 from pyatlan.model.enums import AtlanConnectorType, EntityStatus, LineageDirection
 from pyatlan.model.lineage import FluentLineage, LineageRequest
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Prefix, Term
@@ -284,30 +285,31 @@ def lineage_start(
     delete_asset(client, guid=ls.guid, asset_type=Process)
 
 
-def test_lineage_start(
+@pytest.fixture(scope="module")
+def cp_lineage_start(
     client: AtlanClient,
     connection: Connection,
-    database: Database,
-    schema: Schema,
-    table: Table,
-    mview: MaterialisedView,
-    view: View,
+    column1: Column,
+    column3: Column,
     lineage_start: Process,
-):
-    assert lineage_start
-    assert lineage_start.guid
-    assert lineage_start.qualified_name
-    assert lineage_start.name == f"{table.name} >> {mview.name}"
-    assert lineage_start.inputs
-    assert len(lineage_start.inputs) == 1
-    assert lineage_start.inputs[0]
-    assert lineage_start.inputs[0].type_name == "Table"
-    assert lineage_start.inputs[0].guid == table.guid
-    assert lineage_start.outputs
-    assert len(lineage_start.outputs) == 1
-    assert lineage_start.outputs[0]
-    assert lineage_start.outputs[0].type_name == "MaterialisedView"
-    assert lineage_start.outputs[0].guid == mview.guid
+) -> Generator[ColumnProcess, None, None]:
+    col_process_name = f"{column1.name} >> {column3.name}"
+    assert connection.qualified_name
+    to_create = ColumnProcess.create(
+        name=col_process_name,
+        connection_qualified_name=connection.qualified_name,
+        inputs=[Column.ref_by_guid(column1.guid)],
+        outputs=[Column.ref_by_guid(column3.guid)],
+        parent=Process.ref_by_guid(lineage_start.guid),
+    )
+    try:
+        response = client.asset.save(to_create)
+        cp_ls = response.assets_created(asset_type=ColumnProcess)[0]
+        assert len(response.assets_updated(asset_type=Process)) == 1
+        assert response.assets_updated(asset_type=Process)[0].guid == lineage_start.guid
+        yield cp_ls
+    finally:
+        delete_asset(client, guid=cp_ls.guid, asset_type=ColumnProcess)
 
 
 @pytest.fixture(scope="module")
@@ -334,6 +336,175 @@ def lineage_end(
     delete_asset(client, guid=ls.guid, asset_type=Process)
 
 
+@pytest.fixture(scope="module")
+def cp_lineage_end(
+    client: AtlanClient,
+    connection: Connection,
+    column3: Column,
+    column5: Column,
+    lineage_end: Process,
+) -> Generator[ColumnProcess, None, None]:
+    col_process_name = f"{column3.name} >> {column5.name}"
+    assert connection.qualified_name
+    to_create = ColumnProcess.create(
+        name=col_process_name,
+        connection_qualified_name=connection.qualified_name,
+        inputs=[Column.ref_by_guid(column3.guid)],
+        outputs=[Column.ref_by_guid(column5.guid)],
+        parent=Process.ref_by_guid(lineage_end.guid),
+    )
+    try:
+        response = client.asset.save(to_create)
+        cp_le = response.assets_created(asset_type=ColumnProcess)[0]
+        assert len(response.assets_updated(asset_type=Process)) == 1
+        assert response.assets_updated(asset_type=Process)[0].guid == lineage_end.guid
+        yield cp_le
+    finally:
+        delete_asset(client, guid=cp_le.guid, asset_type=ColumnProcess)
+
+
+def _assert_lineage(asset_1, asset_2, lineage):
+    assert lineage
+    assert lineage.guid
+    assert lineage.qualified_name
+    assert lineage.name == f"{asset_1.name} >> {asset_2.name}"
+    assert lineage.inputs
+    assert len(lineage.inputs) == 1
+    assert lineage.inputs[0]
+    assert lineage.inputs[0].type_name == asset_1.__class__.__name__
+    assert lineage.inputs[0].guid == asset_1.guid
+    assert lineage.outputs
+    assert len(lineage.outputs) == 1
+    assert lineage.outputs[0]
+    assert lineage.outputs[0].type_name == asset_2.__class__.__name__
+    assert lineage.outputs[0].guid == asset_2.guid
+
+
+def _assert_lineage_middle(response, asset_1, asset_2, asset_3, ln_start, ln_end):
+    assert response
+    assert response.base_entity_guid == asset_2.guid
+    upstream_guids = response.get_upstream_asset_guids()
+    assert upstream_guids
+    assert len(upstream_guids) == 1
+    assert asset_1.guid in upstream_guids
+    upstream_assets = response.get_upstream_assets()
+    assert upstream_assets
+    assert len(upstream_assets) == 1
+    one = upstream_assets[0]
+    assert isinstance(one, asset_1.__class__)
+    assert one.qualified_name == asset_1.qualified_name
+    upstream_guids = response.get_upstream_process_guids()
+    assert len(upstream_guids) == 1
+    assert ln_start.guid in upstream_guids
+    downstream_guids = response.get_downstream_asset_guids()
+    assert downstream_guids
+    assert len(downstream_guids) == 1
+    assert asset_3.guid in downstream_guids
+    downstream_assets = response.get_downstream_assets()
+    assert len(downstream_assets) == 1
+    one = downstream_assets[0]
+    assert isinstance(one, asset_3.__class__)
+    assert one.qualified_name == asset_3.qualified_name
+    downstream_guids = response.get_downstream_process_guids()
+    assert downstream_guids
+    assert len(downstream_guids) == 1
+    assert ln_end.guid in downstream_guids
+    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
+    assert len(downstream_dfs) == 2
+    assert downstream_dfs[0] == asset_2.guid
+    assert downstream_dfs[1] == asset_3.guid
+    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
+    assert len(downstream_dfs_assets) == 2
+    assert downstream_dfs_assets[0].guid == asset_2.guid
+    assert downstream_dfs_assets[1].guid == asset_3.guid
+    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
+    assert len(upstream_dfs) == 2
+    assert upstream_dfs[0] == asset_2.guid
+    assert upstream_dfs[1] == asset_1.guid
+    upstream_dfs_assets = response.get_all_upstream_assets_dfs()
+    assert len(upstream_dfs_assets) == 2
+    assert upstream_dfs_assets[0].guid == asset_2.guid
+    assert upstream_dfs_assets[1].guid == asset_1.guid
+
+
+def _assert_fetch_lineage_start(response, asset_1, asset_2, asset_3):
+    assert response
+    assert response.base_entity_guid == asset_1.guid
+    assert not response.get_upstream_asset_guids()
+    downstream_guids = response.get_downstream_asset_guids()
+    assert downstream_guids
+    assert len(downstream_guids) == 1
+    assert asset_2.guid in downstream_guids
+    assert len(response.get_downstream_assets()) == 1
+    downstream_guids = response.get_downstream_process_guids()
+    assert downstream_guids
+    assert len(downstream_guids) == 1
+    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
+    assert len(downstream_dfs) == 3
+    assert downstream_dfs[0] == asset_1.guid
+    assert downstream_dfs[1] == asset_2.guid
+    assert downstream_dfs[2] == asset_3.guid
+    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
+    assert len(downstream_dfs_assets) == 3
+    assert downstream_dfs_assets[0].guid == asset_1.guid
+    assert downstream_dfs_assets[1].guid == asset_2.guid
+    assert downstream_dfs_assets[2].guid == asset_3.guid
+    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
+    assert len(upstream_dfs) == 1
+    assert upstream_dfs[0] == asset_1.guid
+
+
+def _assert_fetch_lineage_end(response, asset_1, asset_2, asset_3):
+    assert response
+    assert response.base_entity_guid == asset_3.guid
+    upstream_guids = response.get_upstream_asset_guids()
+    assert upstream_guids
+    assert len(upstream_guids) == 1
+    assert asset_2.guid in upstream_guids
+    upstream_guids = response.get_upstream_process_guids()
+    assert upstream_guids
+    assert len(upstream_guids) == 1
+    downstream_guids = response.get_downstream_asset_guids()
+    assert not downstream_guids
+    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
+    assert len(downstream_dfs) == 1
+    assert downstream_dfs[0] == asset_3.guid
+    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
+    assert len(downstream_dfs_assets) == 1
+    assert downstream_dfs_assets[0].guid == asset_3.guid
+    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
+    assert len(upstream_dfs) == 3
+    assert upstream_dfs[0] == asset_3.guid
+    assert upstream_dfs[1] == asset_2.guid
+    assert upstream_dfs[2] == asset_1.guid
+    upstream_dfs_assets = response.get_all_upstream_assets_dfs()
+    assert len(upstream_dfs_assets) == 3
+    assert upstream_dfs_assets[0].guid == asset_3.guid
+    assert upstream_dfs_assets[1].guid == asset_2.guid
+    assert upstream_dfs_assets[2].guid == asset_1.guid
+
+
+def test_lineage_start(
+    client: AtlanClient,
+    connection: Connection,
+    database: Database,
+    schema: Schema,
+    table: Table,
+    mview: MaterialisedView,
+    view: View,
+    lineage_start: Process,
+):
+    _assert_lineage(table, mview, lineage_start)
+
+
+def test_cp_lineage_start(
+    column1: Column,
+    column3: Column,
+    cp_lineage_start: ColumnProcess,
+):
+    _assert_lineage(column1, column3, cp_lineage_start)
+
+
 def test_lineage_end(
     client: AtlanClient,
     connection: Connection,
@@ -344,20 +515,15 @@ def test_lineage_end(
     view: View,
     lineage_end: Process,
 ):
-    assert lineage_end
-    assert lineage_end.guid
-    assert lineage_end.qualified_name
-    assert lineage_end.name == f"{mview.name} >> {view.name}"
-    assert lineage_end.inputs
-    assert len(lineage_end.inputs) == 1
-    assert lineage_end.inputs[0]
-    assert lineage_end.inputs[0].type_name == "MaterialisedView"
-    assert lineage_end.inputs[0].guid == mview.guid
-    assert lineage_end.outputs
-    assert len(lineage_end.outputs) == 1
-    assert lineage_end.outputs[0]
-    assert lineage_end.outputs[0].type_name == "View"
-    assert lineage_end.outputs[0].guid == view.guid
+    _assert_lineage(mview, view, lineage_end)
+
+
+def test_cp_lineage_end(
+    column3: Column,
+    column5: Column,
+    cp_lineage_end: ColumnProcess,
+):
+    _assert_lineage(column3, column5, cp_lineage_end)
 
 
 def test_fetch_lineage_start(
@@ -373,30 +539,80 @@ def test_fetch_lineage_start(
 ):
     lineage = LineageRequest(guid=table.guid, hide_process=True)
     response = client.asset.get_lineage(lineage)
-    assert response
-    assert response.base_entity_guid == table.guid
-    assert not response.get_upstream_asset_guids()
-    downstream_guids = response.get_downstream_asset_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    assert mview.guid in downstream_guids
-    assert len(response.get_downstream_assets()) == 1
-    downstream_guids = response.get_downstream_process_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
-    assert len(downstream_dfs) == 3
-    assert downstream_dfs[0] == table.guid
-    assert downstream_dfs[1] == mview.guid
-    assert downstream_dfs[2] == view.guid
-    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
-    assert len(downstream_dfs_assets) == 3
-    assert downstream_dfs_assets[0].guid == table.guid
-    assert downstream_dfs_assets[1].guid == mview.guid
-    assert downstream_dfs_assets[2].guid == view.guid
-    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
-    assert len(upstream_dfs) == 1
-    assert upstream_dfs[0] == table.guid
+    _assert_fetch_lineage_start(response, table, mview, view)
+
+
+def test_cp_fetch_lineage_start(
+    client: AtlanClient,
+    column1: Column,
+    column3: Column,
+    column5: Column,
+    cp_lineage_start: ColumnProcess,
+    cp_lineage_end: ColumnProcess,
+):
+    lineage = LineageRequest(guid=column1.guid, hide_process=True)
+    response = client.asset.get_lineage(lineage)
+    _assert_fetch_lineage_start(response, column1, column3, column5)
+
+
+def test_fetch_lineage_middle(
+    client: AtlanClient,
+    connection: Connection,
+    database: Database,
+    schema: Schema,
+    table: Table,
+    mview: MaterialisedView,
+    view: View,
+    lineage_start: Process,
+    lineage_end: Process,
+):
+    lineage = LineageRequest(guid=mview.guid, hide_process=True)
+    response = client.asset.get_lineage(lineage)
+    _assert_lineage_middle(response, table, mview, view, lineage_start, lineage_end)
+
+
+def test_cp_fetch_lineage_middle(
+    client: AtlanClient,
+    column1: Column,
+    column3: Column,
+    column5: Column,
+    cp_lineage_start: ColumnProcess,
+    cp_lineage_end: ColumnProcess,
+):
+    lineage = LineageRequest(guid=column3.guid, hide_process=True)
+    response = client.asset.get_lineage(lineage)
+    _assert_lineage_middle(
+        response, column1, column3, column5, cp_lineage_start, cp_lineage_end
+    )
+
+
+def test_fetch_lineage_end(
+    client: AtlanClient,
+    connection: Connection,
+    database: Database,
+    schema: Schema,
+    table: Table,
+    mview: MaterialisedView,
+    view: View,
+    lineage_start: Process,
+    lineage_end: Process,
+):
+    lineage = LineageRequest(guid=view.guid, hide_process=True)
+    response = client.asset.get_lineage(lineage)
+    _assert_fetch_lineage_end(response, table, mview, view)
+
+
+def test_cp_fetch_lineage_end(
+    client: AtlanClient,
+    column1: Column,
+    column3: Column,
+    column5: Column,
+    cp_lineage_start: ColumnProcess,
+    cp_lineage_end: ColumnProcess,
+):
+    lineage = LineageRequest(guid=column5.guid, hide_process=True)
+    response = client.asset.get_lineage(lineage)
+    _assert_fetch_lineage_end(response, column1, column3, column5)
 
 
 def test_fetch_lineage_start_list(
@@ -431,65 +647,6 @@ def test_fetch_lineage_start_list(
     response = client.asset.get_lineage_list(lineage)
     assert response
     assert not response.has_more
-
-
-def test_fetch_lineage_middle(
-    client: AtlanClient,
-    connection: Connection,
-    database: Database,
-    schema: Schema,
-    table: Table,
-    mview: MaterialisedView,
-    view: View,
-    lineage_start: Process,
-    lineage_end: Process,
-):
-    lineage = LineageRequest(guid=mview.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    assert response
-    assert response.base_entity_guid == mview.guid
-    upstream_guids = response.get_upstream_asset_guids()
-    assert upstream_guids
-    assert len(upstream_guids) == 1
-    assert table.guid in upstream_guids
-    upstream_assets = response.get_upstream_assets()
-    assert upstream_assets
-    assert len(upstream_assets) == 1
-    one = upstream_assets[0]
-    assert isinstance(one, Table)
-    assert one.qualified_name == table.qualified_name
-    upstream_guids = response.get_upstream_process_guids()
-    assert len(upstream_guids) == 1
-    assert lineage_start.guid in upstream_guids
-    downstream_guids = response.get_downstream_asset_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    assert view.guid in downstream_guids
-    downstream_assets = response.get_downstream_assets()
-    assert len(downstream_assets) == 1
-    one = downstream_assets[0]
-    assert isinstance(one, View)
-    assert one.qualified_name == view.qualified_name
-    downstream_guids = response.get_downstream_process_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    assert lineage_end.guid in downstream_guids
-    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
-    assert len(downstream_dfs) == 2
-    assert downstream_dfs[0] == mview.guid
-    assert downstream_dfs[1] == view.guid
-    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
-    assert len(downstream_dfs_assets) == 2
-    assert downstream_dfs_assets[0].guid == mview.guid
-    assert downstream_dfs_assets[1].guid == view.guid
-    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
-    assert len(upstream_dfs) == 2
-    assert upstream_dfs[0] == mview.guid
-    assert upstream_dfs[1] == table.guid
-    upstream_dfs_assets = response.get_all_upstream_assets_dfs()
-    assert len(upstream_dfs_assets) == 2
-    assert upstream_dfs_assets[0].guid == mview.guid
-    assert upstream_dfs_assets[1].guid == table.guid
 
 
 def test_fetch_lineage_middle_list(
@@ -527,49 +684,6 @@ def test_fetch_lineage_middle_list(
     assert isinstance(results[0], Process)
     assert isinstance(results[1], Table)
     assert results[1].guid == table.guid
-
-
-def test_fetch_lineage_end(
-    client: AtlanClient,
-    connection: Connection,
-    database: Database,
-    schema: Schema,
-    table: Table,
-    mview: MaterialisedView,
-    view: View,
-    lineage_start: Process,
-    lineage_end: Process,
-):
-    lineage = LineageRequest(guid=view.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    assert response
-    assert response.base_entity_guid == view.guid
-    upstream_guids = response.get_upstream_asset_guids()
-    assert upstream_guids
-    assert len(upstream_guids) == 1
-    assert mview.guid in upstream_guids
-    upstream_guids = response.get_upstream_process_guids()
-    assert upstream_guids
-    assert len(upstream_guids) == 1
-    assert lineage_end.guid in upstream_guids
-    downstream_guids = response.get_downstream_asset_guids()
-    assert not downstream_guids
-    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
-    assert len(downstream_dfs) == 1
-    assert downstream_dfs[0] == view.guid
-    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
-    assert len(downstream_dfs_assets) == 1
-    assert downstream_dfs_assets[0].guid == view.guid
-    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
-    assert len(upstream_dfs) == 3
-    assert upstream_dfs[0] == view.guid
-    assert upstream_dfs[1] == mview.guid
-    assert upstream_dfs[2] == table.guid
-    upstream_dfs_assets = response.get_all_upstream_assets_dfs()
-    assert len(upstream_dfs_assets) == 3
-    assert upstream_dfs_assets[0].guid == view.guid
-    assert upstream_dfs_assets[1].guid == mview.guid
-    assert upstream_dfs_assets[2].guid == table.guid
 
 
 def test_fetch_lineage_end_list(
@@ -637,17 +751,18 @@ def test_search_by_lineage(
         response = client.asset.search(index)
         count += 1
     assert response
-    assert response.count == 3
+    assert response.count == 6
     assets = []
     asset_types = []
     for t in response:
         assets.append(t)
         asset_types.append(t.type_name)
         assert t.has_lineage
-    assert len(assets) == 3
+    assert len(assets) == 6
     assert "Table" in asset_types
     assert "MaterialisedView" in asset_types
     assert "View" in asset_types
+    assert "Column" in asset_types
 
 
 @pytest.mark.order(
