@@ -20,7 +20,7 @@ data:
       },
       "anyOf": [
 {%- for rule in pkg.ui_config.rules %}
-         {{ rule.to_json() | indent(10) }}
+         {{ rule.to_json() | indent(10) }}{%- if not loop.last %},{%- endif %}
 {%- endfor %}
         ],
       "steps": [

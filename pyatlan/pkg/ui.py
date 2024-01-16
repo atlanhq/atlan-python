@@ -115,7 +115,11 @@ class UIRule:
         self.properties = {key: {"const": value} for key, value in when_inputs.items()}
 
     def to_json(self: TUIRule) -> str:
-        return json.dumps(self.properties, indent=2, default=pydantic_encoder)
+        return json.dumps(
+            {"properties": self.properties, "required": self.required},
+            indent=2,
+            default=pydantic_encoder,
+        )
 
 
 @dataclass()
