@@ -952,6 +952,13 @@
         <span class="s2">&quot;Please double-check your method keyword arguments.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">MISSING_CREDENTIALS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-056&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Missing privileged credentials to impersonate users.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;You must have both CLIENT_ID and CLIENT_SECRET configured to be able to impersonate users.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
@@ -1001,6 +1008,20 @@
         <span class="s2">&quot;ATLAN-PYTHON-403-000&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
+        <span class="ne">PermissionError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNABLE_TO_ESCALATE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">403</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-403-001&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to escalate to a privileged user.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Check the details of your configured privileged credentials.&quot;</span><span class="p">,</span>
+        <span class="ne">PermissionError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNABLE_TO_IMPERSONATE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">403</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-403-002&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to impersonate requested user.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Check the details of your configured privileged credentials and the user you requested to impersonate.&quot;</span><span class="p">,</span>
         <span class="ne">PermissionError</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">NOT_FOUND_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
