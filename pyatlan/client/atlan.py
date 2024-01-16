@@ -374,6 +374,7 @@ class AtlanClient(BaseSettings):
                 params["data"] = json.dumps(request_obj)
         return params
 
+    @validate_arguments
     def upload_image(self, file, filename: str) -> AtlanImage:
         """
         Uploads an image from the provided local file.
@@ -644,6 +645,7 @@ class AtlanClient(BaseSettings):
         )
         return self.user.get_by_username(username=username)
 
+    @validate_arguments
     def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """
         Parses the provided query to describe its component parts.
@@ -659,7 +661,7 @@ class AtlanClient(BaseSettings):
         )
         return ParsedQuery(**raw_json)
 
-    @validate_arguments()
+    @validate_arguments
     def get_asset_by_qualified_name(
         self,
         qualified_name: str,
@@ -681,7 +683,7 @@ class AtlanClient(BaseSettings):
             ignore_relationships=ignore_relationships,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def get_asset_by_guid(
         self,
         guid: str,
@@ -703,7 +705,7 @@ class AtlanClient(BaseSettings):
             ignore_relationships=ignore_relationships,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
         """Deprecated - use asset.retrieve_minimal() instead."""
         warn(
@@ -928,7 +930,7 @@ class AtlanClient(BaseSettings):
         )
         self.typedef.purge(name=name, typedef_type=typedef_type)
 
-    @validate_arguments()
+    @validate_arguments
     def add_atlan_tags(
         self,
         asset_type: Type[A],
@@ -954,7 +956,7 @@ class AtlanClient(BaseSettings):
             restrict_lineage_propagation=restrict_lineage_propagation,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def remove_atlan_tag(
         self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
     ) -> None:
@@ -971,7 +973,7 @@ class AtlanClient(BaseSettings):
             atlan_tag_name=atlan_tag_name,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def update_certificate(
         self,
         asset_type: Type[A],
@@ -995,7 +997,7 @@ class AtlanClient(BaseSettings):
             message=message,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def remove_certificate(
         self, asset_type: Type[A], qualified_name: str, name: str
     ) -> Optional[A]:
@@ -1010,7 +1012,7 @@ class AtlanClient(BaseSettings):
             asset_type=asset_type, qualified_name=qualified_name, name=name
         )
 
-    @validate_arguments()
+    @validate_arguments
     def update_announcement(
         self,
         asset_type: Type[A],
@@ -1032,7 +1034,7 @@ class AtlanClient(BaseSettings):
             announcement=announcement,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def remove_announcement(
         self, asset_type: Type[A], qualified_name: str, name: str
     ) -> Optional[A]:
@@ -1081,7 +1083,7 @@ class AtlanClient(BaseSettings):
         )
         self.asset.remove_custom_metadata(guid=guid, cm_name=cm_name)
 
-    @validate_arguments()
+    @validate_arguments
     def append_terms(
         self,
         asset_type: Type[A],
@@ -1099,7 +1101,7 @@ class AtlanClient(BaseSettings):
             asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name
         )
 
-    @validate_arguments()
+    @validate_arguments
     def replace_terms(
         self,
         asset_type: Type[A],
@@ -1118,7 +1120,7 @@ class AtlanClient(BaseSettings):
             asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name
         )
 
-    @validate_arguments()
+    @validate_arguments
     def remove_terms(
         self,
         asset_type: Type[A],
@@ -1136,7 +1138,7 @@ class AtlanClient(BaseSettings):
             asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_connections_by_name(
         self,
         name: str,
@@ -1315,7 +1317,7 @@ class AtlanClient(BaseSettings):
         )
         return self.admin.get_admin_events(admin_request=admin_request)
 
-    @validate_arguments()
+    @validate_arguments
     def find_personas_by_name(
         self,
         name: str,
@@ -1344,7 +1346,7 @@ class AtlanClient(BaseSettings):
         )
         return self.asset.find_purposes_by_name(name=name, attributes=attributes)
 
-    @validate_arguments()
+    @validate_arguments
     def find_glossary_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1359,7 +1361,7 @@ class AtlanClient(BaseSettings):
         )
         return self.asset.find_glossary_by_name(name=name, attributes=attributes)
 
-    @validate_arguments()
+    @validate_arguments
     def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1379,7 +1381,7 @@ class AtlanClient(BaseSettings):
             attributes=attributes,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_category_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1397,7 +1399,7 @@ class AtlanClient(BaseSettings):
             name=name, glossary_name=glossary_name, attributes=attributes
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1417,7 +1419,7 @@ class AtlanClient(BaseSettings):
             attributes=attributes,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_term_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore

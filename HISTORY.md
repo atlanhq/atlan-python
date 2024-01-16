@@ -9,7 +9,8 @@
 
 ### QOL Improvements
 
-- add an additional parameter to `create` method of `ADLSObject`
+- Add an additional parameter to `create` method of `ADLSObject`
+- Add type checking to AtlanClient save and other methods
 
 ## 1.8.4 (January 4, 2024)
 

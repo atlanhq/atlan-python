@@ -129,6 +129,9 @@ class AssetClient:
             )
         self._client = client
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
     def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
         """
         Search for assets using the provided criteria.
@@ -178,6 +181,9 @@ class AssetClient:
             aggregations = None
         return aggregations
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/pydantic/pydantic/issues/2901
     def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
         """
         Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
@@ -197,6 +203,9 @@ class AssetClient:
         )
         return LineageResponse(**raw_json)
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/pydantic/pydantic/issues/2901
     def get_lineage_list(
         self, lineage_request: LineageListRequest
     ) -> LineageListResults:
@@ -233,7 +242,7 @@ class AssetClient:
             assets=assets,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_personas_by_name(
         self,
         name: str,
@@ -262,6 +271,7 @@ class AssetClient:
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Persona)]
 
+    @validate_arguments
     def find_purposes_by_name(
         self,
         name: str,
@@ -290,7 +300,7 @@ class AssetClient:
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Purpose)]
 
-    @validate_arguments()
+    @validate_arguments
     def get_by_qualified_name(
         self,
         qualified_name: str,
@@ -329,7 +339,7 @@ class AssetClient:
             )
         return asset
 
-    @validate_arguments()
+    @validate_arguments
     def get_by_guid(
         self,
         guid: str,
@@ -377,7 +387,7 @@ class AssetClient:
         asset.is_incomplete = False
         return asset
 
-    @validate_arguments()
+    @validate_arguments
     def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
         """
         Retrieves an asset by its GUID, without any of its relationships.
@@ -394,6 +404,7 @@ class AssetClient:
             ignore_relationships=True,
         )
 
+    @validate_arguments
     def upsert(
         self,
         entity: Union[Asset, list[Asset]],
@@ -414,6 +425,7 @@ class AssetClient:
             overwrite_custom_metadata=overwrite_custom_metadata,
         )
 
+    @validate_arguments
     def save(
         self,
         entity: Union[Asset, list[Asset]],
@@ -462,6 +474,7 @@ class AssetClient:
                 self.retrieve_minimal(guid=guid, asset_type=Connection)
             LOGGER.debug("Finished waiting for connections")
 
+    @validate_arguments
     def upsert_merging_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -476,6 +489,7 @@ class AssetClient:
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
+    @validate_arguments
     def save_merging_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -495,6 +509,7 @@ class AssetClient:
             overwrite_custom_metadata=False,
         )
 
+    @validate_arguments
     def update_merging_cm(
         self, entity: Asset, replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -518,6 +533,7 @@ class AssetClient:
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
+    @validate_arguments
     def upsert_replacing_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
@@ -532,6 +548,7 @@ class AssetClient:
             entity=entity, replace_atlan_tags=replace_atlan_tagss
         )
 
+    @validate_arguments
     def save_replacing_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -564,6 +581,7 @@ class AssetClient:
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
 
+    @validate_arguments
     def update_replacing_cm(
         self, entity: Asset, replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -589,6 +607,7 @@ class AssetClient:
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
+    @validate_arguments
     def purge_by_guid(self, guid: Union[str, list[str]]) -> AssetMutationResponse:
         """
         Hard-deletes (purges) one or more assets by their unique identifier (GUID).
@@ -609,6 +628,7 @@ class AssetClient:
         )
         return AssetMutationResponse(**raw_json)
 
+    @validate_arguments
     def delete_by_guid(self, guid: Union[str, list[str]]) -> AssetMutationResponse:
         """
         Soft-deletes (archives) one or more assets by their unique identifier (GUID).
@@ -654,6 +674,7 @@ class AssetClient:
         except requests.exceptions.RetryError as err:
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
 
+    @validate_arguments
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """
         Restore an archived (soft-deleted) asset to active.
@@ -726,7 +747,7 @@ class AssetClient:
             atlan_tags,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def add_atlan_tags(
         self,
         asset_type: Type[A],
@@ -761,7 +782,7 @@ class AssetClient:
             restrict_lineage_propagation,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def update_atlan_tags(
         self,
         asset_type: Type[A],
@@ -796,7 +817,7 @@ class AssetClient:
             restrict_lineage_propagation,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def remove_atlan_tag(
         self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
     ) -> None:
@@ -846,8 +867,8 @@ class AssetClient:
     def _update_glossary_anchor(
         self,
         asset: Union[AtlasGlossaryTerm, AtlasGlossaryCategory],
-        glossary_guid: str,
         asset_type: str,
+        glossary_guid: Optional[str] = None,
     ) -> None:
         if not glossary_guid:
             raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(asset_type)
@@ -856,24 +877,12 @@ class AssetClient:
     @overload
     def update_certificate(
         self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        certificate_status: CertificateStatus,
-        message: Optional[str] = None,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
-
-    @overload
-    def update_certificate(
-        self,
         asset_type: Type[AtlasGlossaryTerm],
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
+        glossary_guid: str,
         message: Optional[str] = None,
-        glossary_guid: str = None,
     ) -> Optional[AtlasGlossaryTerm]:
         ...
 
@@ -884,20 +893,32 @@ class AssetClient:
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
+        glossary_guid: str,
         message: Optional[str] = None,
-        glossary_guid: str = None,
     ) -> Optional[AtlasGlossaryCategory]:
         ...
 
-    @validate_arguments()
+    @overload
     def update_certificate(
         self,
         asset_type: Type[A],
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
-        message: Optional[str] = None,
         glossary_guid: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> Optional[A]:
+        ...
+
+    @validate_arguments
+    def update_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        certificate_status: CertificateStatus,
+        glossary_guid: Optional[str] = None,
+        message: Optional[str] = None,
     ) -> Optional[A]:
         """
         Update the certificate on an asset.
@@ -906,9 +927,9 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset on which to update the certificate
         :param name: the name of the asset on which to update the certificate
         :param certificate_status: specific certificate to set on the asset
-        :param message: (optional) message to set (or None for no message)
         :param glossary_guid: unique identifier of the glossary, required
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
+        :param message: (optional) message to set (or None for no message)
         :returns: the result of the update, or None if the update failed
         :raises AtlanError: on any API communication issue
         """
@@ -918,18 +939,8 @@ class AssetClient:
         asset.name = name
         asset.certificate_status_message = message
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
-
-    @overload
-    def remove_certificate(
-        self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
 
     @overload
     def remove_certificate(
@@ -951,7 +962,17 @@ class AssetClient:
     ) -> Optional[AtlasGlossaryCategory]:
         ...
 
-    @validate_arguments()
+    @overload
+    def remove_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]:
+        ...
+
+    @validate_arguments
     def remove_certificate(
         self,
         asset_type: Type[A],
@@ -974,19 +995,8 @@ class AssetClient:
         asset.name = name
         asset.remove_certificate()
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
-
-    @overload
-    def update_announcement(
-        self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        announcement: Announcement,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
 
     @overload
     def update_announcement(
@@ -1010,7 +1020,18 @@ class AssetClient:
     ) -> Optional[AtlasGlossaryCategory]:
         ...
 
-    @validate_arguments()
+    @overload
+    def update_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        announcement: Announcement,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]:
+        ...
+
+    @validate_arguments
     def update_announcement(
         self,
         asset_type: Type[A],
@@ -1035,18 +1056,8 @@ class AssetClient:
         asset.set_announcement(announcement)
         asset.name = name
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
-
-    @overload
-    def remove_announcement(
-        self,
-        asset_type: Type[A],
-        qualified_name: str,
-        name: str,
-        glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
 
     @overload
     def remove_announcement(
@@ -1068,7 +1079,17 @@ class AssetClient:
     ) -> Optional[AtlasGlossaryCategory]:
         ...
 
-    @validate_arguments()
+    @overload
+    def remove_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]:
+        ...
+
+    @validate_arguments
     def remove_announcement(
         self,
         asset_type: Type[A],
@@ -1090,9 +1111,10 @@ class AssetClient:
         asset.name = name
         asset.remove_announcement()
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, glossary_guid, asset_type.__name__)
+            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def update_custom_metadata_attributes(
         self, guid: str, custom_metadata: CustomMetadataDict
     ):
@@ -1118,6 +1140,7 @@ class AssetClient:
             custom_metadata_request,
         )
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadataDict):
         """
         Replace specific custom metadata on the asset. This will replace everything within the named
@@ -1143,6 +1166,7 @@ class AssetClient:
             custom_metadata_request,
         )
 
+    @validate_arguments
     def remove_custom_metadata(self, guid: str, cm_name: str):
         """
         Remove specific custom metadata from an asset.
@@ -1168,7 +1192,7 @@ class AssetClient:
             custom_metadata_request,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def append_terms(
         self,
         asset_type: Type[A],
@@ -1212,7 +1236,7 @@ class AssetClient:
             return assets[0]
         return asset
 
-    @validate_arguments()
+    @validate_arguments
     def replace_terms(
         self,
         asset_type: Type[A],
@@ -1246,7 +1270,7 @@ class AssetClient:
             return assets[0]
         return asset
 
-    @validate_arguments()
+    @validate_arguments
     def remove_terms(
         self,
         asset_type: Type[A],
@@ -1293,7 +1317,7 @@ class AssetClient:
             return assets[0]
         return asset
 
-    @validate_arguments()
+    @validate_arguments
     def find_connections_by_name(
         self,
         name: str,
@@ -1325,7 +1349,7 @@ class AssetClient:
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Connection)]
 
-    @validate_arguments()
+    @validate_arguments
     def find_glossary_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1346,7 +1370,7 @@ class AssetClient:
             query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
         )[0]
 
-    @validate_arguments()
+    @validate_arguments
     def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1378,7 +1402,7 @@ class AssetClient:
             allow_multiple=True,
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_category_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1437,7 +1461,7 @@ class AssetClient:
             asset_type.__name__, name
         )
 
-    @validate_arguments()
+    @validate_arguments
     def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1464,7 +1488,7 @@ class AssetClient:
             query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
         )[0]
 
-    @validate_arguments()
+    @validate_arguments
     def find_term_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1490,6 +1514,9 @@ class AssetClient:
             attributes=attributes,
         )
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/pydantic/pydantic/issues/2901
     def get_hierarchy(
         self, glossary: AtlasGlossary, attributes: Optional[list[AtlanField]] = None
     ) -> CategoryHierarchy:
@@ -1782,6 +1809,7 @@ class Batch:
         """
         return self._updated
 
+    @validate_arguments
     def add(self, single: Asset) -> Optional[AssetMutationResponse]:
         """
         Add an asset to the batch to be processed.
@@ -1894,6 +1922,7 @@ class CategoryHierarchy:
                 self._categories[parent_guid] = full_parent
             self._categories[category.guid] = category
 
+    @validate_arguments
     def get_category(self, guid: str) -> AtlasGlossaryCategory:
         """
         Retrieve a specific category from anywhere in the hierarchy by its unique identifier (GUID).

@@ -2,6 +2,8 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     CREATE_GROUP,
@@ -35,6 +37,7 @@ class GroupClient:
             )
         self._client = client
 
+    @validate_arguments
     def create(
         self,
         group: AtlanGroup,
@@ -56,6 +59,7 @@ class GroupClient:
         )
         return CreateGroupResponse(**raw_json)
 
+    @validate_arguments
     def update(
         self,
         group: AtlanGroup,
@@ -72,6 +76,7 @@ class GroupClient:
             exclude_unset=True,
         )
 
+    @validate_arguments
     def purge(
         self,
         guid: str,
@@ -84,6 +89,7 @@ class GroupClient:
         """
         self._client._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
 
+    @validate_arguments
     def get(
         self,
         limit: Optional[int] = None,
@@ -118,6 +124,7 @@ class GroupClient:
         )
         return GroupResponse(**raw_json)
 
+    @validate_arguments
     def get_all(
         self,
         limit: int = 20,
@@ -142,6 +149,7 @@ class GroupClient:
                 response = None
         return groups
 
+    @validate_arguments
     def get_by_name(
         self,
         alias: str,
@@ -165,6 +173,7 @@ class GroupClient:
             return response.records
         return None
 
+    @validate_arguments
     def get_members(self, guid: str) -> UserResponse:
         """
         Retrieves a UserResponse object which contains a list of the members (users) of a group.
@@ -178,7 +187,8 @@ class GroupClient:
         )
         return UserResponse(**raw_json)
 
-    def remove_users(self, guid: str, user_ids=list[str]) -> None:
+    @validate_arguments
+    def remove_users(self, guid: str, user_ids: Optional[list[str]] = None) -> None:
         """
         Remove one or more users from a group.
 
@@ -186,7 +196,7 @@ class GroupClient:
         :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
         :raises AtlanError: on any API communication issue
         """
-        rfgr = RemoveFromGroupRequest(users=user_ids)
+        rfgr = RemoveFromGroupRequest(users=user_ids or [])
         self._client._call_api(
             REMOVE_USERS_FROM_GROUP.format_path({"group_guid": guid}),
             request_obj=rfgr,

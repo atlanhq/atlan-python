@@ -3,6 +3,7 @@
 from unittest.mock import Mock
 
 import pytest
+from pydantic import ValidationError
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH
@@ -92,15 +93,19 @@ def test_init_when_wrong_class_raises_exception(api_caller):
         WorkflowClient(api_caller)
 
 
-@pytest.mark.parametrize("prefix", ["abc", None])
-def test_find_by_type_when_given_wrong_parameters_raises_invalid_request_error(
-    prefix, client: WorkflowClient
+@pytest.mark.parametrize(
+    "prefix, error_msg",
+    [
+        ["abc", "value is not a valid enumeration member"],
+        [None, "none is not an allowed value"],
+    ],
+)
+def test_find_by_type_when_given_wrong_parameters_raises_validation_error(
+    prefix, error_msg, client: WorkflowClient
 ):
-    with pytest.raises(
-        InvalidRequestError,
-        match="ATLAN-PYTHON-400-048 Invalid parameter type for prefix should be WorkflowPackage",
-    ):
+    with pytest.raises(ValidationError) as err:
         client.find_by_type(prefix=prefix)
+    assert error_msg in str(err.value)
 
 
 def test_find_by_type(client: WorkflowClient, mock_api_caller):
@@ -115,16 +120,19 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     )
 
 
-@pytest.mark.parametrize("workflow", ["abc", None])
-def test_re_run_when_given_wrong_parameter_raises_invalid_request_error(
-    workflow, client: WorkflowClient
+@pytest.mark.parametrize(
+    "workflow, error_msg",
+    [
+        ["abc", "value is not a valid enumeration member"],
+        [None, "none is not an allowed value"],
+    ],
+)
+def test_re_run_when_given_wrong_parameter_raises_validation_error(
+    workflow, error_msg, client: WorkflowClient
 ):
-    with pytest.raises(
-        InvalidRequestError,
-        match="ATLAN-PYTHON-400-048 Invalid parameter type for workflow should be WorkflowPackage, "
-        "WorkflowSearchResult or WorkflowSearchResultDetail",
-    ):
-        client.rerun(workflow)
+    with pytest.raises(ValidationError) as err:
+        client.rerun(workflow=workflow)
+    assert error_msg in str(err.value)
 
 
 def test_re_run_when_given_workflowpackage_with_no_prior_runs_raises_invalid_request_error(
@@ -176,15 +184,24 @@ def test_re_run_when_given_workflowsearchresult(
     assert client.rerun(workflow=search_result) == rerun_response
 
 
-@pytest.mark.parametrize("workflow_response", ["abc", None])
-def test_monitor_when_given_wrong_parameter_raises_invalid_request_error(
-    workflow_response, client: WorkflowClient
+@pytest.mark.parametrize(
+    "workflow_response, logger, error_msg",
+    [
+        ["abc", "test-logger", "value is not a valid dict"],
+        [
+            WorkflowResponse(metadata=WorkflowMetadata(), spec=WorkflowSpec()),
+            "test-logger",
+            "instance of Logger expected",
+        ],
+        [None, "test-logger", "none is not an allowed value"],
+    ],
+)
+def test_monitor_when_given_wrong_parameter_raises_validation_error(
+    workflow_response, logger, error_msg, client: WorkflowClient
 ):
-    with pytest.raises(
-        InvalidRequestError,
-        match="ATLAN-PYTHON-400-048 Invalid parameter type for workflow_response should be WorkflowResponse",
-    ):
-        client.monitor(workflow_response)
+    with pytest.raises(ValidationError) as err:
+        client.monitor(workflow_response, logger=logger)
+    assert error_msg in str(err.value)
 
 
 def test_run_when_given_workflow(
@@ -204,12 +221,16 @@ def test_run_when_given_workflow(
     assert response == run_response
 
 
-@pytest.mark.parametrize("workflow", ["abc", None])
-def test_run_when_given_wrong_parameter_raises_invalid_request_error(
-    workflow, client: WorkflowClient
+@pytest.mark.parametrize(
+    "workflow, error_msg",
+    [
+        ["abc", "value is not a valid dict"],
+        [None, "none is not an allowed value"],
+    ],
+)
+def test_run_when_given_wrong_parameter_raises_validation_error(
+    workflow, error_msg, client: WorkflowClient
 ):
-    with pytest.raises(
-        InvalidRequestError,
-        match="ATLAN-PYTHON-400-048 Invalid parameter type for workflow should be Workflow",
-    ):
+    with pytest.raises(ValidationError) as err:
         client.run(workflow)
+    assert error_msg in str(err.value)
