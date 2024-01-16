@@ -1,3 +1,16 @@
+## 1.9.0 (January 16, 2024)
+
+### New Features
+
+- Add ability to update certificate, announcement for GlossaryTerm and GlossaryCategory
+- Add `create` method for `ColumnProcess`
+- Always include sort by `GUID` as final criteria in `IndexSearch`
+- (Experimental) Add classes to support custom package generation
+
+### QOL Improvements
+
+- add an additional parameter to `create` method of `ADLSObject`
+
 ## 1.8.4 (January 4, 2024)
 
 ### New Features
