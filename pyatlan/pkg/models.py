@@ -245,6 +245,10 @@ class PackageWriter(BaseModel):
         self.create_templates()
         self.create_configmaps()
 
+    def create_config(self):
+        self.create_config_class()
+        self.create_logging_conf()
+
     def create_templates(self):
         self._templates_dir.mkdir(parents=True, exist_ok=True)
         template = self._env.get_template("default_template.jinja2")
@@ -280,5 +284,4 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
     if operation == "package":
         writer.create_package()
     else:
-        writer.create_config_class()
-        writer.create_logging_conf()
+        writer.create_config()

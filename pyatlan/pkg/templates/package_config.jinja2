@@ -10,7 +10,6 @@ import os
 
 PARENT = Path(__file__).parent
 LOGGING_CONF = PARENT / "logging.conf"
-print("LOGGING_CONF.exists():", LOGGING_CONF.exists())
 if LOGGING_CONF.exists():
     logging.config.fileConfig(LOGGING_CONF)
 LOGGER = logging.getLogger(__name__)
@@ -80,8 +79,3 @@ class RuntimeConfig(BaseSettings):
             if field_name == 'custom_config':
                 return CustomConfig.parse_raw(raw_value)
             return cls.json_loads(raw_value)
-
-if __name__ == "__main__":
-    LOGGER.info(os.environ["NESTED_CONFIG"])
-    r = RuntimeConfig()
-    LOGGER.info(r.json())

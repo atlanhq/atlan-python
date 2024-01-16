@@ -1,11 +1,16 @@
-from pyatlan.pkg.models import CustomPackage
+import importlib.util
+from pathlib import Path
+
+import pytest
+
+from pyatlan.pkg.models import CustomPackage, generate
 from pyatlan.pkg.ui import UIConfig, UIStep
-from pyatlan.pkg.utils import PackageWriter
 from pyatlan.pkg.widgets import TextInput
 
 
-def test_custom_package():
-    pkg = CustomPackage(
+@pytest.fixture
+def custom_package():
+    return CustomPackage(
         package_id="@csa/owner-propagator",
         package_name="Owner Propagator",
         description="Propagate owners from schema downwards.",
@@ -31,6 +36,38 @@ def test_custom_package():
         container_image="ghcr.io/atlanhq/csa-owner-propagator:123",
         container_command=["/dumb-init", "--", "java", "OwnerPropagator"],
     )
-    writer = PackageWriter(path="../../generated_packages", pkg=pkg)
-    writer.create_package()
-    writer.create_templates()
+
+
+def test_generate_package(custom_package: CustomPackage, tmpdir):
+    dir = Path(tmpdir.mkdir("generated_packages"))
+
+    generate(pkg=custom_package, path=dir, operation="package")
+
+    package_dir = dir / "csa-owner-propagator"
+    assert package_dir.exists()
+    assert (package_dir / "index.js").exists()
+    assert (package_dir / "package.json").exists()
+    configmaps_dir = package_dir / "configmaps"
+    assert configmaps_dir.exists()
+    assert (configmaps_dir / "default.yaml").exists()
+    templates_dir = package_dir / "templates"
+    assert templates_dir.exists()
+    assert (templates_dir / "default.yaml").exists()
+
+
+def test_generate_config(custom_package: CustomPackage, tmpdir):
+    dir = Path(tmpdir)
+
+    generate(pkg=custom_package, path=dir, operation="config")
+
+    assert dir / "logging.conf"
+    config_name = "owner_propagator_cfg.py"
+    assert dir / config_name
+
+    spec = importlib.util.spec_from_file_location(
+        "owner_propagator_cfg", dir / config_name
+    )
+    assert spec is not None
+    module = importlib.util.module_from_spec(spec)
+    assert module is not None
+    spec.loader.exec_module(module)
