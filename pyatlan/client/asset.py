@@ -129,6 +129,9 @@ class AssetClient:
             )
         self._client = client
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
     def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
         """
         Search for assets using the provided criteria.
@@ -178,6 +181,9 @@ class AssetClient:
             aggregations = None
         return aggregations
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/pydantic/pydantic/issues/2901
     def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
         """
         Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
@@ -197,6 +203,9 @@ class AssetClient:
         )
         return LineageResponse(**raw_json)
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/pydantic/pydantic/issues/2901
     def get_lineage_list(
         self, lineage_request: LineageListRequest
     ) -> LineageListResults:
@@ -1505,6 +1514,9 @@ class AssetClient:
             attributes=attributes,
         )
 
+    # TODO: Try adding @validate_arguments to this method once
+    # the issue below is fixed or when we switch to pydantic v2
+    # https://github.com/pydantic/pydantic/issues/2901
     def get_hierarchy(
         self, glossary: AtlasGlossary, attributes: Optional[list[AtlanField]] = None
     ) -> CategoryHierarchy:
