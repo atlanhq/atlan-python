@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 
-from pydantic import ValidationError, parse_obj_as
+from pydantic import ValidationError, parse_obj_as, validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import ADMIN_EVENTS, KEYCLOAK_EVENTS
@@ -29,6 +29,7 @@ class AdminClient:
             )
         self._client = client
 
+    @validate_arguments
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
     ) -> KeycloakEventResponse:
@@ -60,6 +61,7 @@ class AdminClient:
             events=events,
         )
 
+    @validate_arguments
     def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
         """
         Retrieve admin events based on the supplied filters.

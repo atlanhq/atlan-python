@@ -111,7 +111,6 @@ class UserClient:
             exclude_unset=True,
         )
 
-    @validate_arguments
     def get_current(
         self,
     ) -> UserMinimalResponse:
@@ -246,6 +245,7 @@ class UserClient:
                 return response.records[0]
         return None
 
+    @validate_arguments
     def add_to_groups(
         self,
         guid: str,
@@ -265,6 +265,7 @@ class UserClient:
             exclude_unset=True,
         )
 
+    @validate_arguments
     def get_groups(
         self,
         guid: str,
@@ -281,6 +282,7 @@ class UserClient:
         )
         return GroupResponse(**raw_json)
 
+    @validate_arguments
     def add_as_admin(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:
@@ -303,6 +305,7 @@ class UserClient:
             keyword_field=Asset.ADMIN_USERS,
         )
 
+    @validate_arguments
     def add_as_viewer(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:

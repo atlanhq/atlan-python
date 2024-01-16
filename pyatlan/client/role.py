@@ -57,7 +57,6 @@ class RoleClient:
         )
         return RoleResponse(**raw_json)
 
-    @validate_arguments
     def get_all(self) -> RoleResponse:
         """
         Retrieves a RoleResponse which contains a list of all the roles defined in Atlan.
