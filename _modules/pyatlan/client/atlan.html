@@ -803,6 +803,7 @@
 
 <div class="viewcode-block" id="AtlanClient.upload_image">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upload_image">[docs]</a>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">upload_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlanImage</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Uploads an image from the provided local file.</span>
@@ -1136,6 +1137,7 @@
 
 <div class="viewcode-block" id="AtlanClient.parse_query">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.parse_query">[docs]</a>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">parse_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">QueryParserRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ParsedQuery</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parses the provided query to describe its component parts.</span>
@@ -1154,7 +1156,7 @@
 
 <div class="viewcode-block" id="AtlanClient.get_asset_by_qualified_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_asset_by_qualified_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">get_asset_by_qualified_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1179,7 +1181,7 @@
 
 <div class="viewcode-block" id="AtlanClient.get_asset_by_guid">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_asset_by_guid">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">get_asset_by_guid</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1204,7 +1206,7 @@
 
 <div class="viewcode-block" id="AtlanClient.retrieve_minimal">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.retrieve_minimal">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">retrieve_minimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.retrieve_minimal() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1483,7 +1485,7 @@
 
 <div class="viewcode-block" id="AtlanClient.add_atlan_tags">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.add_atlan_tags">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">add_atlan_tags</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -1512,7 +1514,7 @@
 
 <div class="viewcode-block" id="AtlanClient.remove_atlan_tag">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_atlan_tag">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">remove_atlan_tag</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">atlan_tag_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1532,7 +1534,7 @@
 
 <div class="viewcode-block" id="AtlanClient.update_certificate">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.update_certificate">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">update_certificate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -1559,7 +1561,7 @@
 
 <div class="viewcode-block" id="AtlanClient.remove_certificate">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_certificate">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">remove_certificate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
@@ -1577,7 +1579,7 @@
 
 <div class="viewcode-block" id="AtlanClient.update_announcement">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.update_announcement">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">update_announcement</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -1602,7 +1604,7 @@
 
 <div class="viewcode-block" id="AtlanClient.remove_announcement">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_announcement">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">remove_announcement</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
@@ -1663,7 +1665,7 @@
 
 <div class="viewcode-block" id="AtlanClient.append_terms">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.append_terms">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">append_terms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -1684,7 +1686,7 @@
 
 <div class="viewcode-block" id="AtlanClient.replace_terms">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.replace_terms">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">replace_terms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -1706,7 +1708,7 @@
 
 <div class="viewcode-block" id="AtlanClient.remove_terms">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_terms">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">remove_terms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -1727,7 +1729,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_connections_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_connections_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_connections_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1945,7 +1947,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_personas_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_personas_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_personas_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1980,7 +1982,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_glossary_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_glossary_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_glossary_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
@@ -1998,7 +2000,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_category_fast_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_category_fast_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_category_fast_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
@@ -2021,7 +2023,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_category_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_category_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_category_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
@@ -2042,7 +2044,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_term_fast_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_term_fast_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_term_fast_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
@@ -2065,7 +2067,7 @@
 
 <div class="viewcode-block" id="AtlanClient.find_term_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_term_by_name">[docs]</a>
-    <span class="nd">@validate_arguments</span><span class="p">()</span>
+    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">find_term_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
