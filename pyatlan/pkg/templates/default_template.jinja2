@@ -1,0 +1,119 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: {{ pkg.name }}
+spec:
+  templates:
+    - name: main
+      inputs:
+        parameters:
+        {%- if pkg.name %}
+            - name: output_prefix
+              value: {{ pkg.name }}
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+            - name: {{ name }}
+              value: {{ property.ui.parameter_value}}
+{%- endfor %}
+        {%- endif %}
+{%- set ns = namespace(has_s3=false) %}
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+    {%- if property.ui.s3_artifact %}
+        {%- if loop.first %}
+        artifacts:
+        {%- endif %}
+        {%-  set ns.has_s3 = true %}
+          - name: {{ name }}_s3
+            path: "/tmp/{{ name }}/{% raw %}{{inputs.parameters.{% endraw %}{{ name }}{% raw %}}}{% endraw %}"
+            s3:
+              key: "{% raw %}{{inputs.parameters.{% endraw %}{{ name }}{% raw %}}}{% endraw %}"
+    {%- endif  %}
+{%- endfor %}
+{%- if not ns.has_s3 %}
+        artifacts: []
+{% endif %}
+{%-  for name, value in pkg.outputs.items()  %}
+    {%- if loop.first %}
+      outputs:
+        artifacts:
+    {%- endif %}
+         - name: {{ name }}
+           path: {{ value }}
+{%- endfor %}
+      container:
+        image: {{ pkg.container_image }}
+        imagePullPolicy: {{ pkg.container_image_pull_policy.value }}
+        command:
+          - {{ pkg.container_command[0] }}
+        args:
+            {%- for cmd in pkg.container_command[1:] %}
+          - {{ cmd }}
+            {%- endfor %}
+        env:
+          - name: ATLAN_BASE_URL
+            value: INTERNAL
+          - name: ATLAN_USER_ID
+            value: "{% raw %}{{=sprig.dig('labels', 'workflows', 'argoproj', 'io/creator', '', workflow)}}{% endraw %}"
+          - name: X_ATLAN_AGENT
+            value: workflow
+          - name: X_ATLAN_AGENT_ID
+            value: "{% raw %}{{workflow.name}}{% endraw %}"
+          - name: X_ATLAN_AGENT_PACKAGE_NAME
+            value: "{% raw %}{{=sprig.dig('annotations', 'package', 'argoproj', 'io/name', '', workflow)}}{% endraw %}"
+          - name: X_ATLAN_AGENT_WORKFLOW_ID
+            value: "{% raw %}{{=sprig.dig('labels', 'workflows', 'argoproj', 'io/workflow-template', '', workflow)}}{% endraw %}"
+          - name: AWS_S3_BUCKET_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: bucket
+                name: atlan-defaults
+          - name: AWS_S3_REGION
+            valueFrom:
+              configMapKeyRef:
+                key: region
+                name: atlan-defaults
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: argo-client-creds
+                key: login
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: argo-client-creds
+                key: password
+          - name: SMTP_HOST
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: support-smtp-creds
+          - name: SMTP_PORT
+            valueFrom:
+              secretKeyRef:
+                key: port
+                name: support-smtp-creds
+          - name: SMTP_FROM
+            valueFrom:
+              secretKeyRef:
+                key: from
+                name: support-smtp-creds
+          - name: SMTP_USER
+            valueFrom:
+              secretKeyRef:
+                key: login
+                name: support-smtp-creds
+          - name: SMTP_PASS
+            valueFrom:
+              secretKeyRef:
+                key: smtp_password
+                name: workflow-parameter-store
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+          - name: {{ name | upper }}
+            value: "{{property.ui.to_env(name)}}"
+{%- endfor %}
+          - name: NESTED_CONFIG
+            value: |-
+             {
+{%-  for name, property in pkg.ui_config.properties.items()  %}
+             "{{ name }}": {{ property.ui.to_nested(name) }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+             }

@@ -23,6 +23,8 @@ from pyatlan.errors import ErrorCode
 REQUESTID = "requestid"
 
 APPLICATION_JSON = "application/json"
+APPLICATION_ENCODED_FORM = "application/x-www-form-urlencoded;charset=UTF-8"
+
 APPLICATION_OCTET_STREAM = "application/octet-stream"
 MULTIPART_FORM_DATA = "multipart/form-data"
 PREFIX_ATTR = "attr:"

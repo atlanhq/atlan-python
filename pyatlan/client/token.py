@@ -99,6 +99,21 @@ class TokenClient:
         return None
 
     @validate_arguments
+    def get_by_guid(self, guid: str) -> Optional[ApiToken]:
+        """
+        Retrieves the API token with a unique ID (GUID) that exactly matches the provided string.
+
+        :param guid: unique identifier by which to retrieve the API token
+        :returns: the API token whose clientId matches the provided string, or None if there is none
+        """
+        if response := self.get(
+            offset=0, limit=5, post_filter='{"id":"' + guid + '"}', sort="createdAt"
+        ):
+            if response.records and len(response.records) >= 1:
+                return response.records[0]
+        return None
+
+    @validate_arguments
     def create(
         self,
         display_name: str,

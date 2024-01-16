@@ -484,6 +484,13 @@ class ErrorCode(Enum):
         "Please double-check your method keyword arguments.",
         InvalidRequestError,
     )
+    MISSING_CREDENTIALS = (
+        400,
+        "ATLAN-PYTHON-400-056",
+        "Missing privileged credentials to impersonate users.",
+        "You must have both CLIENT_ID and CLIENT_SECRET configured to be able to impersonate users.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
@@ -533,6 +540,20 @@ class ErrorCode(Enum):
         "ATLAN-PYTHON-403-000",
         "Server responded with {0}: {1}",
         "Check the details of the server's message to correct your request.",
+        PermissionError,
+    )
+    UNABLE_TO_ESCALATE = (
+        403,
+        "ATLAN-PYTHON-403-001",
+        "Unable to escalate to a privileged user.",
+        "Check the details of your configured privileged credentials.",
+        PermissionError,
+    )
+    UNABLE_TO_IMPERSONATE = (
+        403,
+        "ATLAN-PYTHON-403-002",
+        "Unable to impersonate requested user.",
+        "Check the details of your configured privileged credentials and the user you requested to impersonate.",
         PermissionError,
     )
     NOT_FOUND_PASSTHROUGH = (

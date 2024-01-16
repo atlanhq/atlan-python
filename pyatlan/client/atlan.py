@@ -34,6 +34,7 @@ from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.group import GroupClient
+from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.token import TokenClient
@@ -64,7 +65,13 @@ from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import API, AuthorizationFilter, HTTPStatus, RequestIdAdapter
+from pyatlan.utils import (
+    API,
+    APPLICATION_ENCODED_FORM,
+    AuthorizationFilter,
+    HTTPStatus,
+    RequestIdAdapter,
+)
 
 request_id_var = ContextVar("request_id", default=None)
 
@@ -133,6 +140,7 @@ class AtlanClient(BaseSettings):
     _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
+    _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -219,6 +227,12 @@ class AtlanClient(BaseSettings):
         return self._asset_client
 
     @property
+    def impersonate(self) -> ImpersonationClient:
+        if self._impersonate_client is None:
+            self._impersonate_client = ImpersonationClient(client=self)
+        return self._impersonate_client
+
+    @property
     def token(self) -> TokenClient:
         if self._token_client is None:
             self._token_client = TokenClient(client=self)
@@ -235,6 +249,9 @@ class AtlanClient(BaseSettings):
         if self._user_client is None:
             self._user_client = UserClient(client=self)
         return self._user_client
+
+    def update_headers(self, header: dict[str, str]):
+        self._session.headers.update(header)
 
     def _call_api_internal(self, api, path, params, binary_data=None):
         token = request_id_var.set(str(uuid.uuid4()))
@@ -351,6 +368,8 @@ class AtlanClient(BaseSettings):
                 params["data"] = request_obj.json(
                     by_alias=True, exclude_unset=exclude_unset
                 )
+            elif api.consumes == APPLICATION_ENCODED_FORM:
+                params["data"] = request_obj
             else:
                 params["data"] = json.dumps(request_obj)
         return params
