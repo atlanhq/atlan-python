@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     ADD_USER_TO_GROUPS,
@@ -41,6 +43,7 @@ class UserClient:
             )
         self._client = client
 
+    @validate_arguments
     def create(
         self,
         users: list[AtlanUser],
@@ -65,6 +68,7 @@ class UserClient:
                 cur.users.append(to_create)
         self._client._call_api(CREATE_USERS, request_obj=cur, exclude_unset=True)
 
+    @validate_arguments
     def update(
         self,
         guid: str,
@@ -87,6 +91,7 @@ class UserClient:
         )
         return UserMinimalResponse(**raw_json)
 
+    @validate_arguments
     def change_role(
         self,
         guid: str,
@@ -118,6 +123,7 @@ class UserClient:
         raw_json = self._client._call_api(GET_CURRENT_USER)
         return UserMinimalResponse(**raw_json)
 
+    @validate_arguments
     def get(
         self,
         limit: Optional[int] = None,
@@ -171,6 +177,7 @@ class UserClient:
         )
         return UserResponse(**raw_json)
 
+    @validate_arguments
     def get_all(
         self,
         limit: int = 20,
@@ -195,6 +202,7 @@ class UserClient:
                 response = None
         return users
 
+    @validate_arguments
     def get_by_email(
         self,
         email: str,
@@ -219,6 +227,7 @@ class UserClient:
             return response.records
         return None
 
+    @validate_arguments
     def get_by_username(self, username: str) -> Optional[AtlanUser]:
         """
         Retrieves a user based on the username. (This attempts an exact match on username
@@ -236,6 +245,7 @@ class UserClient:
                 return response.records[0]
         return None
 
+    @validate_arguments
     def add_to_groups(
         self,
         guid: str,
@@ -255,6 +265,7 @@ class UserClient:
             exclude_unset=True,
         )
 
+    @validate_arguments
     def get_groups(
         self,
         guid: str,
@@ -271,6 +282,7 @@ class UserClient:
         )
         return GroupResponse(**raw_json)
 
+    @validate_arguments
     def add_as_admin(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:
@@ -293,6 +305,7 @@ class UserClient:
             keyword_field=Asset.ADMIN_USERS,
         )
 
+    @validate_arguments
     def add_as_viewer(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:

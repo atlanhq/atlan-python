@@ -2,6 +2,8 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Union
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     CREATE_TYPE_DEFS,
@@ -96,6 +98,7 @@ class TypeDefClient:
         raw_json = self._client._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
+    @validate_arguments
     def get(
         self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
     ) -> TypeDefResponse:
@@ -118,6 +121,7 @@ class TypeDefClient:
         )
         return TypeDefResponse(**raw_json)
 
+    @validate_arguments
     def create(self, typedef: TypeDef) -> TypeDefResponse:
         """
         Create a new type definition in Atlan.
@@ -137,6 +141,7 @@ class TypeDefClient:
         _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
+    @validate_arguments
     def update(self, typedef: TypeDef) -> TypeDefResponse:
         """
         Update an existing type definition in Atlan.
@@ -155,6 +160,7 @@ class TypeDefClient:
         _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
+    @validate_arguments
     def purge(self, name: str, typedef_type: type) -> None:
         """
         Delete the type definition.

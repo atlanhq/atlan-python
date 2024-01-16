@@ -2,6 +2,8 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import GET_ROLES
 from pyatlan.errors import ErrorCode
@@ -21,6 +23,7 @@ class RoleClient:
             )
         self._client = client
 
+    @validate_arguments
     def get(
         self,
         limit: int,

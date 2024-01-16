@@ -26,8 +26,8 @@ class AbstractPackage:
     _PACKAGE_PREFIX: str = ""
 
     def __init__(self):
-        self._parameters: list = []
-        self._credentials_body: dict = {}
+        self._parameters = []
+        self._credentials_body = {}
 
     def _get_metadata(self) -> WorkflowMetadata:
         raise NotImplementedError

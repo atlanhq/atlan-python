@@ -408,6 +408,10 @@ class Asset(Referenceable):
         if isinstance(data, Asset):
             return data
 
+        # Handle the case where asset data is a list
+        if isinstance(data, list):
+            return [cls._convert_to_real_type_(item) for item in data]
+
         data_type = (
             data.get("type_name") if "type_name" in data else data.get("typeName")
         )

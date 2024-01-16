@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import pytest
+from pydantic import ValidationError
 
 from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
 from pyatlan.client.atlan import AtlanClient
@@ -21,6 +22,17 @@ from pyatlan.model.enums import AnnouncementType, CertificateStatus
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
+from tests.unit.constants import (
+    TEST_ADMIN_CLIENT_METHODS,
+    TEST_ASSET_CLIENT_METHODS,
+    TEST_AUDIT_CLIENT_METHODS,
+    TEST_GROUP_CLIENT_METHODS,
+    TEST_ROLE_CLIENT_METHODS,
+    TEST_SL_CLIENT_METHODS,
+    TEST_TOKEN_CLIENT_METHODS,
+    TEST_TYPEDEF_CLIENT_METHODS,
+    TEST_USER_CLIENT_METHODS,
+)
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
@@ -63,6 +75,11 @@ def set_env(monkeypatch):
 @pytest.fixture()
 def client():
     return AtlanClient()
+
+
+@pytest.fixture
+def mock_asset_client():
+    return Mock(AssetClient)
 
 
 def load_json(filename):
@@ -1069,11 +1086,88 @@ def test_asset_client_missing_glossary_guid_raises_invalid_request_error(
             asset_client_method(**test_kwargs, asset_type=asset_type)
 
 
-class TestBatch:
-    @pytest.fixture
-    def mock_asset_client(self):
-        return Mock(AssetClient)
+@pytest.mark.parametrize("method, params", TEST_ASSET_CLIENT_METHODS.items())
+def test_asset_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.asset, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
 
+
+@pytest.mark.parametrize("method, params", TEST_ADMIN_CLIENT_METHODS.items())
+def test_admin_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.admin, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_AUDIT_CLIENT_METHODS.items())
+def test_audit_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.audit, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_GROUP_CLIENT_METHODS.items())
+def test_group_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.group, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_ROLE_CLIENT_METHODS.items())
+def test_role_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.role, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_SL_CLIENT_METHODS.items())
+def test_search_log_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.search_log, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_TOKEN_CLIENT_METHODS.items())
+def test_token_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.token, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_TYPEDEF_CLIENT_METHODS.items())
+def test_typedef_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.typedef, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+@pytest.mark.parametrize("method, params", TEST_USER_CLIENT_METHODS.items())
+def test_user_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.user, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError) as err:
+            client_method(*param_values)
+        assert error_msg in str(err.value)
+
+
+class TestBatch:
     def test_init(self, mock_asset_client):
         sut = Batch(client=mock_asset_client, max_size=10)
 

@@ -4,6 +4,8 @@ from logging import Logger
 from time import sleep
 from typing import Optional, Union, overload
 
+from pydantic import validate_arguments
+
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     WORKFLOW_INDEX_RUN_SEARCH,
@@ -41,6 +43,7 @@ class WorkflowClient:
             )
         self._client = client
 
+    @validate_arguments
     def find_by_type(
         self, prefix: WorkflowPackage, max_results: int = 10
     ) -> list[WorkflowSearchResult]:
@@ -50,11 +53,8 @@ class WorkflowClient:
         :param prefix: name of the specific workflow to find (for example CONNECTION_DELETE)
         :param max_results: the maximum number of results to retrieve
         :returns: the list of workflows of the provided type, with the most-recently created first
+        :raises ValidationError: If the provided prefix is invalid workflow package
         """
-        if not isinstance(prefix, WorkflowPackage):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "prefix", "WorkflowPackage"
-            )
         query = Bool(
             filter=[
                 NestedQuery(
@@ -106,6 +106,7 @@ class WorkflowClient:
     def rerun(self, workflow: WorkflowSearchResult) -> WorkflowRunResponse:
         ...
 
+    @validate_arguments
     def rerun(
         self,
         workflow: Union[
@@ -116,7 +117,8 @@ class WorkflowClient:
         Rerun the workflow immediately. Note: this must be a workflow that was previously run.
         :param workflow: The workflow to rerun.
         :returns: the details of the workflow run
-
+        :raises ValidationError: If the provided workflow is invalid
+        :raises InvalidRequestException: If no prior runs are available for the provided workflow
         """
         if isinstance(workflow, WorkflowPackage):
             if results := self.find_by_type(workflow):
@@ -127,15 +129,8 @@ class WorkflowClient:
                 )
         elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
-        elif isinstance(workflow, WorkflowSearchResultDetail):
-            detail = workflow
         else:
-            expected = (
-                "WorkflowPackage, WorkflowSearchResult or WorkflowSearchResultDetail"
-            )
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "workflow", expected
-            )
+            detail = workflow
 
         request = ReRunRequest(
             namespace=detail.metadata.namespace, resource_name=detail.metadata.name
@@ -146,6 +141,7 @@ class WorkflowClient:
         )
         return WorkflowRunResponse(**raw_json)
 
+    @validate_arguments
     def run(self, workflow: Workflow) -> WorkflowResponse:
         """
         Run the Atlan workflow with a specific configuration.
@@ -157,18 +153,15 @@ class WorkflowClient:
 
         :param workflow: The workflow to run.
         :returns: Details of the workflow run.
-        :raises ErrorCode.INVALID_PARAMETER_TYPE: If the provided 'workflow' parameter is not an instance of Workflow.
+        :raises ValidationError: If the provided `workflow` is invalid.
         """
-        if not isinstance(workflow, Workflow):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "workflow", "Workflow"
-            )
         raw_json = self._client._call_api(
             WORKFLOW_RUN,
             request_obj=workflow,
         )
         return WorkflowResponse(**raw_json)
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def monitor(
         self, workflow_response: WorkflowResponse, logger: Optional[Logger] = None
     ) -> Optional[AtlanWorkflowPhase]:
@@ -178,11 +171,8 @@ class WorkflowClient:
         :param logger: the logger to log status information (logging.INFO for summary info. logging:DEBUG for detail
         info)
         :returns: the status at completion or None if the workflow wasn't run
+        :raises ValidationError: If the provided `workflow_response`, `logger` is invalid
         """
-        if not isinstance(workflow_response, WorkflowResponse):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "workflow_response", "WorkflowResponse"
-            )
         if workflow_response.metadata and workflow_response.metadata.name:
             name = workflow_response.metadata.name
             status: Optional[AtlanWorkflowPhase] = None
