@@ -1212,7 +1212,7 @@ class TestMultipleUsers:
         ui = sut.ui
         assert ui
         assert isinstance(ui, MultipleUsersWidget)
-        assert ui.widget == "groupMultiple"
+        assert ui.widget == "userMultiple"
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
         assert ui.help == ""
@@ -1232,7 +1232,7 @@ class TestMultipleUsers:
         ui = sut.ui
         assert ui
         assert isinstance(ui, MultipleUsersWidget)
-        assert ui.widget == "groupMultiple"
+        assert ui.widget == "userMultiple"
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
         assert ui.help == HELP

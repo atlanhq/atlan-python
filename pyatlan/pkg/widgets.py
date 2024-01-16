@@ -3,8 +3,6 @@
 import abc
 import json
 from dataclasses import dataclass, field
-
-# from dataclasses import dataclass
 from typing import Optional, Union
 
 from pydantic import (
@@ -16,8 +14,6 @@ from pydantic import (
     validate_arguments,
 )
 from pydantic.json import pydantic_encoder
-
-# from pydantic.dataclasses import dataclass
 
 Widget = Union[
     "APITokenSelectorWidget",
@@ -687,7 +683,7 @@ class MultipleGroups(AbstractUIElement):
 class MultipleUsersWidget(AbstractWidget):
     def __init__(self, label: str, hidden: bool = False, help: str = "", grid: int = 8):
         super().__init__(
-            widget="groupMultiple",
+            widget="userMultiple",
             label=label,
             hidden=hidden,
             help=help,

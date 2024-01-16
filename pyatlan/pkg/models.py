@@ -217,20 +217,6 @@ class CustomPackage(BaseModel):
         """
         )
 
-    @staticmethod
-    def create_package(pkg: "CustomPackage", args: list[str]):
-        path = args[0]
-        root_dir = Path(path) / pkg.name
-        root_dir.mkdir(parents=True, exist_ok=True)
-        with (root_dir / "index.js").open("w") as index:
-            index.write(CustomPackage.indexJS())
-        with (root_dir / "package.json").open("w") as package:
-            package.write(pkg.packageJSON)
-        config_maps_dir = root_dir / "configmaps"
-        config_maps_dir.mkdir(parents=True, exist_ok=True)
-        templates_dir = root_dir / "templates"
-        templates_dir.mkdir(parents=True, exist_ok=True)
-
 
 class PackageWriter(BaseModel):
     path: Path
@@ -252,8 +238,6 @@ class PackageWriter(BaseModel):
 
     def create_package(self):
         self._root_dir.mkdir(parents=True, exist_ok=True)
-        with (self._root_dir / "index.js").open("w") as index:
-            index.write(CustomPackage.indexJS())
         with (self._root_dir / "index.js").open("w") as index:
             index.write(CustomPackage.indexJS())
         with (self._root_dir / "package.json").open("w") as package:
