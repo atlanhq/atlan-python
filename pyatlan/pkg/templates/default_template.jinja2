@@ -61,6 +61,16 @@ spec:
             value: "{% raw %}{{=sprig.dig('annotations', 'package', 'argoproj', 'io/name', '', workflow)}}{% endraw %}"
           - name: X_ATLAN_AGENT_WORKFLOW_ID
             value: "{% raw %}{{=sprig.dig('labels', 'workflows', 'argoproj', 'io/workflow-template', '', workflow)}}{% endraw %}"
+          - name: AWS_S3_BUCKET_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: bucket
+                name: atlan-defaults
+          - name: AWS_S3_REGION
+            valueFrom:
+              configMapKeyRef:
+                key: region
+                name: atlan-defaults
           - name: CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -71,6 +81,31 @@ spec:
               secretKeyRef:
                 name: argo-client-creds
                 key: password
+          - name: SMTP_HOST
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: support-smtp-creds
+          - name: SMTP_PORT
+            valueFrom:
+              secretKeyRef:
+                key: port
+                name: support-smtp-creds
+          - name: SMTP_FROM
+            valueFrom:
+              secretKeyRef:
+                key: from
+                name: support-smtp-creds
+          - name: SMTP_USER
+            valueFrom:
+              secretKeyRef:
+                key: login
+                name: support-smtp-creds
+          - name: SMTP_PASS
+            valueFrom:
+              secretKeyRef:
+                key: smtp_password
+                name: workflow-parameter-store
 {%-  for name, property in pkg.ui_config.properties.items()  %}
           - name: {{ name | upper }}
             value: "{{property.ui.to_env(name)}}"
