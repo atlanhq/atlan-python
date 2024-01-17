@@ -70,4 +70,5 @@ def test_generate_config(custom_package: CustomPackage, tmpdir):
     assert spec is not None
     module = importlib.util.module_from_spec(spec)
     assert module is not None
+    assert spec.loader is not None
     spec.loader.exec_module(module)
