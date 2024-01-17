@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Optional, overload
 
 from pydantic import Field, validator
 
@@ -25,15 +25,39 @@ from .asset34 import S3
 class S3Bucket(S3):
     """Description"""
 
+    @overload
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+    ) -> S3Bucket:
+        ...
+
+    @overload
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: Optional[str] = None,
+    ) -> S3Bucket:
+        ...
+
     @classmethod
     # @validate_arguments()
     @init_guid
     def create(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: str
+        cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
     ) -> S3Bucket:
         validate_required_fields(
-            ["name", "connection_qualified_name", "aws_arn"],
-            [name, connection_qualified_name, aws_arn],
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
         )
         attributes = S3Bucket.Attributes.create(
             name=name,
@@ -130,11 +154,15 @@ class S3Bucket(S3):
         # @validate_arguments()
         @init_guid
         def create(
-            cls, *, name: str, connection_qualified_name: str, aws_arn: str
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: Optional[str] = None,
         ) -> S3Bucket.Attributes:
             validate_required_fields(
-                ["name", "connection_qualified_name", "aws_arn"],
-                [name, connection_qualified_name, aws_arn],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
@@ -151,7 +179,7 @@ class S3Bucket(S3):
                 aws_arn=aws_arn,
                 name=name,
                 connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                qualified_name=f"{connection_qualified_name}/{aws_arn if aws_arn else name}",
                 connector_name=connector_type.value,
             )
 
@@ -189,6 +217,34 @@ class S3Object(S3):
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create_with_prefix(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        prefix: str,
+        s3_bucket_qualified_name: str,
+    ) -> S3Object:
+        validate_required_fields(
+            [
+                "name",
+                "connection_qualified_name",
+                "prefix",
+                "s3_bucket_qualified_name",
+            ],
+            [name, connection_qualified_name, prefix, s3_bucket_qualified_name],
+        )
+        attributes = S3Object.Attributes.create_with_prefix(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            prefix=prefix,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
@@ -463,6 +519,48 @@ class S3Object(S3):
                 name=name,
                 connection_qualified_name=connection_qualified_name,
                 qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
+                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
+            )
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create_with_prefix(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            prefix: str,
+            s3_bucket_qualified_name: str,
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "connection_qualified_name",
+                    "prefix",
+                    "s3_bucket_qualified_name",
+                ],
+                [name, connection_qualified_name, prefix, s3_bucket_qualified_name],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            object_key = f"{prefix}/{name}"
+            return S3Object.Attributes(
+                name=name,
+                s3_object_key=object_key,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{object_key}",
                 connector_name=connector_type.value,
                 s3_bucket_qualified_name=s3_bucket_qualified_name,
                 bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),

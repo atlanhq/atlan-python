@@ -72,7 +72,7 @@ class RuntimeConfig(BaseSettings):
         def parse_env_var(cls, field_name: str, raw_value: str) -> Any:
             if field_name == "custom_config":
                 return CustomConfig.parse_raw(raw_value)
-            return cls.json_loads(raw_value)
+            return json.loads(raw_value)
 
 
 if __name__ == "__main__":

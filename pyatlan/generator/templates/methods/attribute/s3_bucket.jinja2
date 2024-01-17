@@ -3,11 +3,15 @@
         # @validate_arguments()
         @init_guid
         def create(
-            cls, *, name: str, connection_qualified_name: str, aws_arn: str
-        ) -> {{ entity_def.name }}.Attributes:
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: Optional[str] = None,
+        ) -> S3Bucket.Attributes:
             validate_required_fields(
-                ["name", "connection_qualified_name", "aws_arn"],
-                [name, connection_qualified_name, aws_arn],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
@@ -20,10 +24,10 @@
                     raise ValueError("Connector type must be s3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
-            return {{ entity_def.name }}.Attributes(
+            return S3Bucket.Attributes(
                 aws_arn=aws_arn,
                 name=name,
                 connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                qualified_name=f"{connection_qualified_name}/{aws_arn if aws_arn else name}",
                 connector_name=connector_type.value,
             )

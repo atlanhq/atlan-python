@@ -5,45 +5,41 @@ from tests.unit.model.constants import (
     AWS_ARN,
     BUCKET_NAME,
     BUCKET_QUALIFIED_NAME,
+    BUCKET_WITH_NAME_QUALIFIED_NAME,
     S3_CONNECTION_QUALIFIED_NAME,
     S3_OBJECT_QUALIFIED_NAME,
 )
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn, msg",
+    "name, connection_qualified_name, msg",
     [
-        (None, S3_CONNECTION_QUALIFIED_NAME, "abc", "name is required"),
-        (BUCKET_NAME, None, "abc", "connection_qualified_name is required"),
-        ("", S3_CONNECTION_QUALIFIED_NAME, "abc", "name cannot be blank"),
-        (BUCKET_NAME, "", "abc", "connection_qualified_name cannot be blank"),
-        (BUCKET_NAME, "default/s3/", "abc", "Invalid connection_qualified_name"),
-        (BUCKET_NAME, "/s3/", "abc", "Invalid connection_qualified_name"),
+        (None, S3_CONNECTION_QUALIFIED_NAME, "name is required"),
+        (BUCKET_NAME, None, "connection_qualified_name is required"),
+        ("", S3_CONNECTION_QUALIFIED_NAME, "name cannot be blank"),
+        (BUCKET_NAME, "", "connection_qualified_name cannot be blank"),
+        (BUCKET_NAME, "default/s3/", "Invalid connection_qualified_name"),
+        (BUCKET_NAME, "/s3/", "Invalid connection_qualified_name"),
         (
             BUCKET_NAME,
             "default/s3/production/TestDb",
-            "abc",
             "Invalid connection_qualified_name",
         ),
-        (BUCKET_NAME, "s3/production", "abc", "Invalid connection_qualified_name"),
+        (BUCKET_NAME, "s3/production", "Invalid connection_qualified_name"),
         (
             BUCKET_NAME,
             "default/s33/production",
-            "abc",
             "Invalid connection_qualified_name",
         ),
-        (BUCKET_NAME, "default/s3", None, "aws_arn is required"),
-        (BUCKET_NAME, "default/s3", "", "aws_arn cannot be blank"),
     ],
 )
-def test__create_without_required_parameters_raises_validation_error(
-    name, connection_qualified_name, aws_arn, msg
+def test_create_without_required_parameters_raises_validation_error(
+    name, connection_qualified_name, msg
 ):
     with pytest.raises(ValueError, match=msg):
         S3Bucket.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
         )
 
 
@@ -51,9 +47,22 @@ def test_create_with_required_parameters():
     attributes = S3Bucket.create(
         name=BUCKET_NAME,
         connection_qualified_name=S3_CONNECTION_QUALIFIED_NAME,
+    )
+    assert attributes.name == BUCKET_NAME
+    assert attributes.aws_arn is None
+    assert attributes.connection_qualified_name == S3_CONNECTION_QUALIFIED_NAME
+    assert attributes.qualified_name == BUCKET_WITH_NAME_QUALIFIED_NAME
+    assert attributes.connector_name == S3_CONNECTION_QUALIFIED_NAME.split("/")[1]
+
+
+def test_create_with_aws_arn():
+    attributes = S3Bucket.create(
+        name=BUCKET_NAME,
+        connection_qualified_name=S3_CONNECTION_QUALIFIED_NAME,
         aws_arn=AWS_ARN,
     )
     assert attributes.name == BUCKET_NAME
+    assert attributes.aws_arn == AWS_ARN
     assert attributes.connection_qualified_name == S3_CONNECTION_QUALIFIED_NAME
     assert attributes.qualified_name == BUCKET_QUALIFIED_NAME
     assert attributes.connector_name == S3_CONNECTION_QUALIFIED_NAME.split("/")[1]

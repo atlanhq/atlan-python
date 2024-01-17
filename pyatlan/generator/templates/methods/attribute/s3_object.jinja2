@@ -34,3 +34,45 @@
                 s3_bucket_qualified_name=s3_bucket_qualified_name,
                 bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
             )
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create_with_prefix(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            prefix: str,
+            s3_bucket_qualified_name: str,
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "connection_qualified_name",
+                    "prefix",
+                    "s3_bucket_qualified_name",
+                ],
+                [name, connection_qualified_name, prefix, s3_bucket_qualified_name],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            object_key = f"{prefix}/{name}"
+            return S3Object.Attributes(
+                name=name,
+                s3_object_key=object_key,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{object_key}",
+                connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
+                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
+            )
