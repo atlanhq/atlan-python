@@ -21,11 +21,18 @@ VERSION = resources.read_text("pyatlan", "version.txt").strip()
 
 
 class RuntimeConfig(Protocol):
+    """Classes the provide runtime configuration will have these properties"""
+
     user_id: Optional[str]
+    """user through whom to impersonate any activities"""
     agent: Optional[str]
+    """type of agent being used (for example, workflow)"""
     agent_id: Optional[str]
+    """unique ID of the agent"""
     agent_pkg: Optional[str]
+    """unique name of the package that runs the agent"""
     agent_wfl: Optional[str]
+    """unique instance of the run of the package"""
 
 
 class PackageConfig(BaseModel):
@@ -46,42 +53,6 @@ class _PackageDefinition(BaseModel):
     license: str
     bugs: dict[str, str]
     config: PackageConfig
-
-
-class ConfigMap(BaseModel):
-    api_version: Literal["v1"] = "v1"
-    kind: Literal["ConfigMap"] = "ConfigMap"
-    metadata: dict[str, str] = Field(default_factory=dict)
-    data: dict[str, str] = Field(default_factory=dict)
-
-    def __init__(self, name: str, **data):
-        super().__init__(**data)
-        self.metadata = {"name": name}
-
-
-class NamePathS3Tuple:
-    name: str
-    path: str
-    s3: dict[str, str]
-
-    def __init__(self, input_name: str):
-        self.name = f"{input_name}_s3"
-        self.path = (
-            f"/tmp/{input_name}/{{{{inputs.parameters.{input_name}}}}}"  # noqa: S108
-        )
-        self.s3 = {"key": f"{{{{inputs.parameters.{input_name}}}}}"}
-
-
-class WorkflowInputs:
-    parameters: list[tuple[str, str]]
-    artifacts: list[NamePathS3Tuple]
-
-    @validate_arguments()
-    def __init__(self, config: UIConfig, pkg_name: str):
-        self.parameters = []
-        self.artifacts = []
-        for _key, value in config.properties.items():
-            value.ui
 
 
 class PackageDefinition(BaseModel):
@@ -163,6 +134,31 @@ class PullPolicy(str, Enum):
 
 
 class CustomPackage(BaseModel):
+    """
+    Single class through which you can define a custom package.
+
+    :ivar package_id str: unique identifier for the package, including its namespace
+    :ivar package_name str: display name for the package, as it should be shown in the UI
+    :ivar description str: description for the package, as it should be shown in the UI
+    :ivar icon_url str: link to an icon to use for the package, as it should be shown in the UI
+    :ivar docs_url str: link to an online document describing the package
+    :ivar ui_config UIConfig: configuration for the UI of the custom package
+    :ivar keywords list[str]: (optional) list of any keyword labels to apply to the package
+    :ivar container_image str: container image to run the logic of the custom package
+    :ivar container_image_pull_policy PullPolicy: (optional) override the default IfNotPresent policy
+    :ivar container_command list[str[: the full command to run in the container image, as a list rather than spaced
+    (must be provided if you have not specified the class above)
+    :ivar allow_schedule bool: (optional) whether to allow the package to be scheduled (default, true) or only run
+    immediately (false)
+    :ivar certified  bool: (optional) whether the package should be listed as certified (default, true) or not (false)
+    :ivar preview bool:(optional) whether the package should be labeled as an early preview in the UI (true)
+    or not (default, false)
+    :ivar connector_type Optional[AtlanConnectorType]: (optional) if the package needs to configure a connector,
+    specify its type here
+    :ivar category str:  name of the pill under which the package should be categorized in the marketplace in the UI
+    :ivar outputs dict[str,str]: (optional) any outputs that the custom package logic is expected to produce
+    """
+
     package_id: str
     package_name: str
     description: str
@@ -220,6 +216,10 @@ class CustomPackage(BaseModel):
 
 
 class PackageWriter(BaseModel):
+    """
+    The class that will be used to create the custom package or python module files
+    """
+
     path: Path
     pkg: CustomPackage
     _root_dir: Path = PrivateAttr()
@@ -283,6 +283,15 @@ class PackageWriter(BaseModel):
 
 @validate_arguments()
 def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "config"]):
+    """
+    Generate either the files needed to define the custom package or a java module containing the RuntimeConfig class
+    that can be used to provide runtime data from the custom package user interface.
+
+    :param pkg: the custom package that will be used as the source of information for the file generation
+    :param path: the path where the files should be created
+    :param operation: a string indicating which operation to perform either 'package' to generate the custom package
+    files or 'config' to generate the python module
+    """
     writer = PackageWriter(pkg=pkg, path=path)
     if operation == "package":
         writer.create_package()
