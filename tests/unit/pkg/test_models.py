@@ -4,13 +4,7 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from pyatlan.pkg.models import (
-    CustomPackage,
-    NamePathS3Tuple,
-    PackageConfig,
-    PackageWriter,
-    generate,
-)
+from pyatlan.pkg.models import CustomPackage, PackageConfig, PackageWriter, generate
 from pyatlan.pkg.ui import UIConfig, UIStep
 from pyatlan.pkg.widgets import TextInput
 
@@ -114,26 +108,6 @@ class TestPackageConfig:
         sut = PackageConfig(labels=labels, annotations=annotations)
         assert sut.labels == labels
         assert sut.annotations == annotations
-
-
-class TestNamePathS3Tuple:
-    def test_constructor(self):
-        sut = NamePathS3Tuple(input_name="something")
-
-        assert sut.name == "something_s3"
-        assert sut.path == "/tmp/something/{{inputs.parameters.something}}"
-        assert sut.s3 == {"key": "{{inputs.parameters.something}}"}
-
-
-class TestWorkflowInputs:
-    def test_constructor(self, ui_step):
-        pass
-        # config = UIConfig(steps=[
-        #     UIStep(title="Configuration",
-        #            description="Owner propagation configuration",
-        #            inputs={"assets_file": file_uploader})
-        # ])
-        # sut = WorkflowInputs(config=config, pkg_name="bob")bob
 
 
 class TestPackageWriter:
