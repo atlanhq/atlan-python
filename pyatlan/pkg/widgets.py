@@ -540,7 +540,7 @@ class FileUploaderWidget(AbstractWidget):
 
     @property
     def parameter_value(self) -> str:
-        return '"argo-artifacts/atlan-update/last-run-timestamp.txt"'
+        return '"argo-artifacts/atlan-update/@atlan-packages-last-safe-run.txt"'
 
     def to_env(self, name: str) -> str:
         return f"/tmp/{name}/{{{{inputs.parameters.{name}}}}}"  # noqa: S108

@@ -2,6 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 import json
 import logging
+import re
 import textwrap
 from enum import Enum
 from importlib import resources
@@ -266,8 +267,10 @@ class PackageWriter(BaseModel):
     def create_config_class(self):
         template = self._env.get_template("package_config.jinja2")
         content = template.render({"pkg": self.pkg})
+        file_name = re.sub(r"\W+", "_", self.pkg.package_name).lower()
+
         with (
-            self.path / f"{self.pkg.package_name.replace(' ','_').lower()}_cfg.py"
+            self.path / f"{file_name}{'' if file_name.endswith('_') else '_'}cfg.py"
         ).open("w") as script:
             script.write(content)
 
