@@ -12,6 +12,7 @@ from pyatlan.client.constants import (
     WORKFLOW_INDEX_SEARCH,
     WORKFLOW_RERUN,
     WORKFLOW_RUN,
+    WORKFLOW_UPDATE,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
@@ -54,6 +55,7 @@ class WorkflowClient:
         :param max_results: the maximum number of results to retrieve
         :returns: the list of workflows of the provided type, with the most-recently created first
         :raises ValidationError: If the provided prefix is invalid workflow package
+        :raises AtlanError: on any API communication issue
         """
         query = Bool(
             filter=[
@@ -119,6 +121,7 @@ class WorkflowClient:
         :returns: the details of the workflow run
         :raises ValidationError: If the provided workflow is invalid
         :raises InvalidRequestException: If no prior runs are available for the provided workflow
+        :raises AtlanError: on any API communication issue
         """
         if isinstance(workflow, WorkflowPackage):
             if results := self.find_by_type(workflow):
@@ -154,9 +157,26 @@ class WorkflowClient:
         :param workflow: The workflow to run.
         :returns: Details of the workflow run.
         :raises ValidationError: If the provided `workflow` is invalid.
+        :raises AtlanError: on any API communication issue.
         """
         raw_json = self._client._call_api(
             WORKFLOW_RUN,
+            request_obj=workflow,
+        )
+        return WorkflowResponse(**raw_json)
+
+    @validate_arguments
+    def update(self, workflow: Workflow) -> WorkflowResponse:
+        """
+        Update a given workflow's configuration.
+
+        :param workflow: request full details of the workflow's revised configuration.
+        :returns: the updated workflow configuration.
+        :raises ValidationError: If the provided `workflow` is invalid.
+        :raises AtlanError: on any API communication issue.
+        """
+        raw_json = self._client._call_api(
+            WORKFLOW_UPDATE.format_path({"workflow_name": workflow.metadata.name}),
             request_obj=workflow,
         )
         return WorkflowResponse(**raw_json)
@@ -168,10 +188,11 @@ class WorkflowClient:
         """
         Monitor the status of the workflow's run,
         :param workflow_response: The workflow_response returned from running the workflow
-        :param logger: the logger to log status information (logging.INFO for summary info. logging:DEBUG for detail
-        info)
+        :param logger: the logger to log status information
+        (logging.INFO for summary info. logging:DEBUG for detail info)
         :returns: the status at completion or None if the workflow wasn't run
         :raises ValidationError: If the provided `workflow_response`, `logger` is invalid
+        :raises AtlanError: on any API communication issue
         """
         if workflow_response.metadata and workflow_response.metadata.name:
             name = workflow_response.metadata.name
