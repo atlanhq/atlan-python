@@ -38,7 +38,7 @@ class CredentialClient:
 
         :param guid: GUID of the credential.
         :returns: A CredentialResponse instance.
-        :raises: AtlanException on any error during API invocation.
+        :raises: AtlanError on any error during API invocation.
         """
         raw_json = self._client._call_api(
             GET_CREDENTIAL_BY_GUID.format_path({"credential_guid": guid})
@@ -56,7 +56,7 @@ class CredentialClient:
         :type credential: A CredentialTestResponse instance.
         :returns: The response indicating the test result.
         :raises ValidationError: If the provided credential is invalid type.
-        :raises AtlanException: On any error during API invocation.
+        :raises AtlanError: On any error during API invocation.
         """
         raw_json = self._client._call_api(TEST_CREDENTIAL, request_obj=credential)
         return CredentialTestResponse(**raw_json)
@@ -74,7 +74,7 @@ class CredentialClient:
         cannot be validated successfully.
         :raises InvalidRequestException: If the provided credential
         does not have an ID.
-        :raises AtlanException: on any error during API invocation.
+        :raises AtlanError: on any error during API invocation.
         """
         test_response = self.test(credential=credential)
         if not test_response.is_successful:

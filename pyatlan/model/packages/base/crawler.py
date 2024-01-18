@@ -21,7 +21,7 @@ class AbstractCrawler(AbstractPackage):
     :param row_limit: maximum number of rows that can be returned by a query
     :param source_logo: logo to use for the source
 
-    :raises AtlanException: if there is not at least one role,
+    :raises AtlanError: if there is not at least one role,
     group, or user defined as an admin (or any of them are invalid)
     """
 

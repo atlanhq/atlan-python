@@ -84,6 +84,14 @@ def run_response() -> WorkflowResponse:
     )
 
 
+@pytest.fixture()
+def update_response() -> WorkflowResponse:
+    return WorkflowResponse(
+        metadata=WorkflowMetadata(name="name", namespace="namespace"),
+        spec=WorkflowSpec(),
+    )
+
+
 @pytest.mark.parametrize("api_caller", ["abc", None])
 def test_init_when_wrong_class_raises_exception(api_caller):
     with pytest.raises(
@@ -207,7 +215,6 @@ def test_monitor_when_given_wrong_parameter_raises_validation_error(
 def test_run_when_given_workflow(
     client: WorkflowClient,
     mock_api_caller,
-    search_result: WorkflowSearchResult,
     run_response: WorkflowResponse,
 ):
     mock_api_caller._call_api.return_value = run_response.dict()
@@ -233,4 +240,30 @@ def test_run_when_given_wrong_parameter_raises_validation_error(
 ):
     with pytest.raises(ValidationError) as err:
         client.run(workflow)
+    assert error_msg in str(err.value)
+
+
+def test_update_when_given_workflow(
+    client: WorkflowClient,
+    mock_api_caller,
+    search_result: WorkflowSearchResult,
+    update_response: WorkflowResponse,
+):
+    mock_api_caller._call_api.return_value = update_response.dict()
+    response = client.update(workflow=search_result.to_workflow())
+    assert response == update_response
+
+
+@pytest.mark.parametrize(
+    "workflow, error_msg",
+    [
+        ["abc", "value is not a valid dict"],
+        [None, "none is not an allowed value"],
+    ],
+)
+def test_update_when_given_wrong_parameter_raises_validation_error(
+    workflow, error_msg, client: WorkflowClient
+):
+    with pytest.raises(ValidationError) as err:
+        client.update(workflow=workflow)
     assert error_msg in str(err.value)

@@ -72,7 +72,7 @@ class WorkflowSpec(AtlanObject):
 class Workflow(AtlanObject):
     metadata: WorkflowMetadata
     spec: WorkflowSpec
-    payload: list[PackageParameter]
+    payload: list[PackageParameter] = Field(default_factory=list)
 
 
 class WorkflowSearchResultStatus(AtlanObject):
@@ -117,6 +117,9 @@ class WorkflowSearchResult(AtlanObject):
             if status := source.status:
                 return status.phase
         return None
+
+    def to_workflow(self) -> Workflow:
+        return Workflow(spec=self.source.spec, metadata=self.source.metadata)
 
 
 class WorkflowSearchHits(AtlanObject):

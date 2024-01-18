@@ -397,6 +397,13 @@ WORKFLOW_RUN_API = "workflows?submit=true"
 WORKFLOW_RUN = API(
     WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+WORKFLOW_UPDATE_API = "workflows"
+WORKFLOW_UPDATE = API(
+    WORKFLOW_UPDATE_API + "/{workflow_name}",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
 CREDENTIALS_API = "credentials"
 TEST_CREDENTIAL_API = CREDENTIALS_API + "/test"
 TEST_CREDENTIAL = API(
