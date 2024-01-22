@@ -146,7 +146,7 @@ class CustomPackage(BaseModel):
     :ivar keywords list[str]: (optional) list of any keyword labels to apply to the package
     :ivar container_image str: container image to run the logic of the custom package
     :ivar container_image_pull_policy PullPolicy: (optional) override the default IfNotPresent policy
-    :ivar container_command list[str[: the full command to run in the container image, as a list rather than spaced
+    :ivar container_command list[str]: the full command to run in the container image, as a list rather than spaced
     (must be provided if you have not specified the class above)
     :ivar allow_schedule bool: (optional) whether to allow the package to be scheduled (default, true) or only run
     immediately (false)
