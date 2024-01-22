@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Read the distributed test files from the JSON file
+DISTRIBUTED_TESTS=$(python3 st.py)
+
+TEST_FILES=$(echo $DISTRIBUTED_TESTS | jq -r --arg targetJob "job2" '.[$targetJob].test_files[]' | tr '\n' ' ')
+
+echo "pytest $TEST_FILES"

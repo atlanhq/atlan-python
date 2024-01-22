@@ -1,0 +1,37 @@
+name: Run tests parallel
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        job_id: ["job1", "job2"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y jq
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+      - name: Run pytest in parallel
+        env: # Test tenant environment variables
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+          MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
+          MARK_BASE_URL: https://mark.atlan.com
+        run: |
+          DISTRIBUTED_TESTS=$(python3 st.py)
+          TEST_FILES=$(echo "${DISTRIBUTED_TESTS}" | jq -r --arg targetJob "${{ matrix.job_id }}" '.[$targetJob].test_files[]' | tr '\n' ' ')
+          pytest ${TEST_FILES}
