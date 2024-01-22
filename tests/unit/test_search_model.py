@@ -1263,6 +1263,116 @@ def test_match_to_string(
 
 
 @pytest.mark.parametrize(
+    "parameters, expected",
+    [
+        (
+            {"field": "name", "value": "C_*_SK"},
+            {"wildcard": {"name": {"value": "C_*_SK"}}},
+        ),
+        (
+            {"field": "name", "value": "C_*_SK"},
+            {"wildcard": {"name": {"value": "C_*_SK"}}},
+        ),
+        (
+            {"field": "name", "value": "C_*_SK", "case_insensitive": True},
+            {"wildcard": {"name": {"value": "C_*_SK", "case_insensitive": True}}},
+        ),
+        (
+            {"field": "name", "value": "C_*_SK", "case_insensitive": False},
+            {"wildcard": {"name": {"value": "C_*_SK", "case_insensitive": False}}},
+        ),
+        (
+            {"field": "name", "value": "C_*_SK", "boost": 0.9},
+            {"wildcard": {"name": {"value": "C_*_SK", "boost": 0.9}}},
+        ),
+    ],
+)
+def test_wildcard_to_dict(parameters, expected):
+    wildcard = Wildcard(**parameters)
+    assert wildcard.to_dict() == expected
+
+
+@pytest.mark.parametrize(
+    "parameters, expected",
+    [
+        (
+            {"field": "name", "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK"},
+            {"regexp": {"name": {"value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK"}}},
+        ),
+        (
+            {"field": "name", "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK"},
+            {"regexp": {"name": {"value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK"}}},
+        ),
+        (
+            {
+                "field": "name",
+                "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                "case_insensitive": True,
+            },
+            {
+                "regexp": {
+                    "name": {
+                        "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                        "case_insensitive": True,
+                    }
+                }
+            },
+        ),
+        (
+            {
+                "field": "name",
+                "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                "case_insensitive": True,
+                "max_determinized_states": 1,
+            },
+            {
+                "regexp": {
+                    "name": {
+                        "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                        "case_insensitive": True,
+                        "max_determinized_states": 1,
+                    }
+                }
+            },
+        ),
+        (
+            {
+                "field": "name",
+                "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                "case_insensitive": False,
+            },
+            {
+                "regexp": {
+                    "name": {
+                        "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                        "case_insensitive": False,
+                    }
+                }
+            },
+        ),
+        (
+            {
+                "field": "name",
+                "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                "boost": 0.9,
+            },
+            {
+                "regexp": {
+                    "name": {
+                        "value": "C_[A-Za-z0-9_]*ADDR[A-Za-z0-9_]*_SK",
+                        "boost": 0.9,
+                    }
+                }
+            },
+        ),
+    ],
+)
+def test_regexp_to_dict(parameters, expected):
+    regexp = Regexp(**parameters)
+    assert regexp.to_dict() == expected
+
+
+@pytest.mark.parametrize(
     "name, message",
     [
         (

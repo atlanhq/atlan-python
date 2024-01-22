@@ -17,10 +17,12 @@ from pyatlan.model.search import (
     Prefix,
     Query,
     Range,
+    Regexp,
     SearchFieldType,
     SortItem,
     Term,
     Terms,
+    Wildcard,
 )
 from pyatlan.model.typedef import AttributeDef
 from pyatlan.utils import ComparisonCategory, is_comparable_type
@@ -213,6 +215,38 @@ class KeywordField(SearchableField):
                   the values provided
         """
         return Terms(field=self.keyword_field_name, values=values)
+
+    def wildcard(self, value: StrictStr, case_insensitive: bool = False) -> Query:
+        """
+        Returns a query that retrieves assets whose attribute value matches the
+        provided wildcard pattern. This function is particularly useful for searching
+        based on simple naming conventions.
+
+        :param value: The wildcard pattern to match against the asset's attribute value.
+        :param case_insensitive: If `True`, performs a case-insensitive match. Defaults to `False`.
+        :return: A query that matches assets with the specified wildcard pattern for the designated attribute.
+        """
+        return Wildcard(
+            field=self.keyword_field_name,
+            value=value,
+            case_insensitive=case_insensitive,
+        )
+
+    def regexp(self, value: StrictStr, case_insensitive: bool = False) -> Query:
+        """
+        Returns a query that retrieves assets whose attribute value matches the
+        provided regular expression. This function is particularly useful for
+        searching based on more complicated naming conventions.
+
+        :param value: The regular expression to match against the asset's attribute value.
+        :param case_insensitive: If `True`, performs a case-insensitive match. Defaults to `False`.
+        :return: A query that matches assets with the specified regex pattern for the designated attribute.
+        """
+        return Regexp(
+            field=self.keyword_field_name,
+            value=value,
+            case_insensitive=case_insensitive,
+        )
 
 
 class TextField(SearchableField):
