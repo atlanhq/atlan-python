@@ -455,10 +455,12 @@
     <span class="n">Prefix</span><span class="p">,</span>
     <span class="n">Query</span><span class="p">,</span>
     <span class="n">Range</span><span class="p">,</span>
+    <span class="n">Regexp</span><span class="p">,</span>
     <span class="n">SearchFieldType</span><span class="p">,</span>
     <span class="n">SortItem</span><span class="p">,</span>
     <span class="n">Term</span><span class="p">,</span>
     <span class="n">Terms</span><span class="p">,</span>
+    <span class="n">Wildcard</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">AttributeDef</span>
 <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">ComparisonCategory</span><span class="p">,</span> <span class="n">is_comparable_type</span>
@@ -685,6 +687,44 @@
 <span class="sd">                  the values provided</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Terms</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keyword_field_name</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeywordField.wildcard">
+<a class="viewcode-back" href="../../../../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField.wildcard">[docs]</a>
+    <span class="k">def</span> <span class="nf">wildcard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a query that retrieves assets whose attribute value matches the</span>
+<span class="sd">        provided wildcard pattern. This function is particularly useful for searching</span>
+<span class="sd">        based on simple naming conventions.</span>
+
+<span class="sd">        :param value: The wildcard pattern to match against the asset&#39;s attribute value.</span>
+<span class="sd">        :param case_insensitive: If `True`, performs a case-insensitive match. Defaults to `False`.</span>
+<span class="sd">        :return: A query that matches assets with the specified wildcard pattern for the designated attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Wildcard</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keyword_field_name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">case_insensitive</span><span class="o">=</span><span class="n">case_insensitive</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeywordField.regexp">
+<a class="viewcode-back" href="../../../../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField.regexp">[docs]</a>
+    <span class="k">def</span> <span class="nf">regexp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a query that retrieves assets whose attribute value matches the</span>
+<span class="sd">        provided regular expression. This function is particularly useful for</span>
+<span class="sd">        searching based on more complicated naming conventions.</span>
+
+<span class="sd">        :param value: The regular expression to match against the asset&#39;s attribute value.</span>
+<span class="sd">        :param case_insensitive: If `True`, performs a case-insensitive match. Defaults to `False`.</span>
+<span class="sd">        :return: A query that matches assets with the specified regex pattern for the designated attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Regexp</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keyword_field_name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">case_insensitive</span><span class="o">=</span><span class="n">case_insensitive</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </div>
 
 
