@@ -327,7 +327,7 @@ class AttributeDef(AtlanObject):
         )
         applicable_glossaries: Optional[str] = Field(
             description="Qualified names of glossaries to which to restrict the attribute. "
-            "Only glossary assets within one of these glossary will have this attribute available. "
+            "Only glossary assets within one of these glossaries will have this attribute available. "
             "To further restrict the types of assets within the glossaries, see applicable_glossary_types."
         )
         applicable_asset_types: Optional[str] = Field(
