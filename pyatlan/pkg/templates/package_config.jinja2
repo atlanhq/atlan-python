@@ -79,3 +79,11 @@ class RuntimeConfig(BaseSettings):
             if field_name == 'custom_config':
                 return CustomConfig.parse_raw(raw_value)
             return cls.json_loads(raw_value)
+
+    def set_environment_variables(self):
+        for key, value in RuntimeConfig.Config.fields.items():
+            if field_value := getattr(self, key):
+                if key == "custom_config":
+                    os.environ[value["env"]] = field_value.json()
+                else:
+                    os.environ[value["env"]] = field_value

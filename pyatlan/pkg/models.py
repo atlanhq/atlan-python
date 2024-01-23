@@ -248,7 +248,6 @@ class PackageWriter(BaseModel):
 
     def create_config(self):
         self.create_config_class()
-        self.create_logging_conf()
 
     def create_templates(self):
         self._templates_dir.mkdir(parents=True, exist_ok=True)
@@ -272,12 +271,6 @@ class PackageWriter(BaseModel):
         with (
             self.path / f"{file_name}{'' if file_name.endswith('_') else '_'}cfg.py"
         ).open("w") as script:
-            script.write(content)
-
-    def create_logging_conf(self):
-        template = self._env.get_template("logging_conf.jinja2")
-        content = template.render({"pkg": self.pkg})
-        with (self.path / "logging.conf").open("w") as script:
             script.write(content)
 
 
