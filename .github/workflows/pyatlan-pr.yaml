@@ -1,4 +1,4 @@
-name: pyatlan pull request
+name: Pyatlan pull request build
 
 on:
   pull_request:
@@ -82,7 +82,7 @@ jobs:
           MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           MARK_BASE_URL: https://mark.atlan.com
         run: |
-          DISTRIBUTED_TESTS=$(python3 st.py)
+          DISTRIBUTED_TESTS=$(python3 distribute_integration_tests.py)
           TEST_FILES=$(echo "${DISTRIBUTED_TESTS}" | jq -r --arg targetJob "${{ matrix.job_id }}" '.[$targetJob].test_files[]' | tr '\n' ' ')
           echo "Running ${TEST_FILES}" 
           pytest ${TEST_FILES}
