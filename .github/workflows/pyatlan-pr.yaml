@@ -1,14 +1,18 @@
-name: Pyatlan pull request build
+name: Pyatlan Pull Request Build
 
 on:
   pull_request:
   workflow_dispatch:
 
 jobs:
-  pyatlan-qa-checks-and-unit-tests:
+  qa-checks-and-unit-tests:
     runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.distribute-integration-test-files.outputs.files }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
@@ -32,37 +36,25 @@ jobs:
           MARK_BASE_URL: https://mark.atlan.com
         run: pytest tests/unit
 
-  pyatlan-integration-tests:
+      - name: Prepare integration tests distribution
+        id: distribute-integration-test-files
+        run: |
+          test_ignore_file=tests/integration/.testignore.txt
+          files=$(ls tests/integration/test_*.py tests/integration/*_test.py | grep -v -f $test_ignore_file | tr '\n' ' ')
+          json_files=$(echo "${files[@]}" | jq -R -c 'split(" ")[:-1]')
+          echo "files=$json_files" >> $GITHUB_OUTPUT
+
+  integration-tests:
+    needs: [qa-checks-and-unit-tests]
     runs-on: ubuntu-latest
-    needs: [pyatlan-qa-checks-and-unit-tests]
     strategy:
       fail-fast: false
       matrix:
-        job_id:
-          [
-            "job1",
-            "job2",
-            "job3",
-            "job4",
-            "job5",
-            "job6",
-            "job7",
-            "job8",
-            "job9",
-            "job10",
-            "job11",
-            "job12",
-            "job13",
-            "job14",
-            "job15",
-            "job16",
-            "job17",
-            "job18",
-            "job19",
-            "job20",
-          ]
+        test_file: ${{fromJson(needs.qa-checks-and-unit-tests.outputs.files)}}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
@@ -70,7 +62,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install -y jq
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
@@ -81,8 +72,4 @@ jobs:
           ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
           MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           MARK_BASE_URL: https://mark.atlan.com
-        run: |
-          DISTRIBUTED_TESTS=$(python3 distribute_integration_tests.py)
-          TEST_FILES=$(echo "${DISTRIBUTED_TESTS}" | jq -r --arg targetJob "${{ matrix.job_id }}" '.[$targetJob].test_files[]' | tr '\n' ' ')
-          echo "Running ${TEST_FILES}" 
-          pytest ${TEST_FILES}
+        run: pytest ${{ matrix.test_file }}

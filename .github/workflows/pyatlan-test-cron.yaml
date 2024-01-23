@@ -1,4 +1,4 @@
-name: Pyatlan cron job build
+name: Pyatlan Test Cron Job Build
 
 on:
   workflow_dispatch:
