@@ -1,7 +1,6 @@
-name: Python package
+name: Pytest cron job
 
 on:
-  pull_request:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *' # At 01:00 Daily
@@ -39,4 +38,23 @@ jobs:
           MARK_BASE_URL: https://mark.atlan.com
         run: |
           pytest tests/unit
-          pytest tests/integration --ignore tests/integration/data_mesh_test.py
+          pytest tests/integration/connection_test.py --ignore tests/integration/data_mesh_test.py --store-durations
+
+      - name: Check for changes in .test_durations
+        if: success()
+        run: |
+          if [ -n "$(git diff --exit-code .test_durations)" ]; then
+            echo "Changes detected in .test_durations"
+          else
+            echo "No changes in .test_durations, exiting."
+            exit 78  # 78 is used as a custom exit code to skip subsequent steps
+          fi
+
+      - name: Commit and push test durations on success
+        if: success()
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .test_durations
+          git commit -m "Update test durations"
+          git push
