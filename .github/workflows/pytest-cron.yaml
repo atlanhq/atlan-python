@@ -51,6 +51,7 @@ jobs:
             exit 78  # 78 is used as a custom exit code to skip subsequent steps
           fi
 
+      - uses: actions/checkout@v3
       - name: Commit and push test durations on success
         if: success()
         run: |
