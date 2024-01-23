@@ -474,6 +474,12 @@ class DropDownWidget(AbstractWidget):
         )
         self.mode = mode
 
+    def get_validator(self, name: str):
+        return f"""{name}: Optional[list[str]] = Field(default_factory=list)
+    _validate_{name} = validator(
+    "{name}", pre=True, allow_reuse=True
+    )(validate_multiselect)"""
+
 
 @dataclass
 class DropDown(UIElementWithEnum):
@@ -642,12 +648,10 @@ class MultipleGroupsWidget(AbstractWidget):
         )
 
     def get_validator(self, name: str):
-        return (
-            f'{name}:Optional[list[str]] = Field(default_factory=list)\n")'
-            f"_validate_{name} = validator("
-            "{name}"
-            ', pre=True, allow_reuse=True)(validate_multiselect)\n")'
-        )
+        return f"""{name}: Optional[list[str]] = Field(default_factory=list)
+    _validate_{name} = validator(
+    "{name}", pre=True, allow_reuse=True
+    )(validate_multiselect)"""
 
 
 @dataclass
