@@ -1,3 +1,10 @@
+## 1.9.2 (January 24, 2024)
+
+### Bug fixes
+
+- Fix problem with AssetUpdatePayload not being returned from AtlanEvent
+- Fix problem with sort order for AuditSearchRequest
+
 ## 1.9.1 (January 23, 2024)
 
 ### QOL Improvements
