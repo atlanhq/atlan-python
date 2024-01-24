@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
-from typing import Any, Optional
+from typing import Any, Literal, Optional, Union
 
 from pydantic import Field
 
@@ -23,9 +23,14 @@ class AtlanEventPayload(AtlanObject):
     event_type: Optional[str] = Field(
         description="Type of the event payload.", alias="type"
     )
-    operation_type: Optional[str] = Field(
-        description="Type of the operation the event contains a payload for."
-    )
+    operation_type: Literal[
+        "ENTITY_CREATE",
+        "ENTITY_UPDATE",
+        "ENTITY_DELETE",
+        "BUSINESS_ATTRIBUTE_UPDATE",
+        "CLASSIFICATION_ADD",
+        "CLASSIFICATION_DELETE",
+    ] = Field(description="Type of the operation the event contains a payload for.")
     event_time: Optional[int] = Field(
         description="Time (epoch) the event was triggered in the source system, in milliseconds."
     )
@@ -37,37 +42,48 @@ class AtlanEventPayload(AtlanObject):
     )
 
 
-class AssetCreatePayload(AtlanEventPayload, operation_type="ENTITY_CREATE"):
-    pass
+class AssetCreatePayload(AtlanEventPayload):
+    operation_type: Literal["ENTITY_CREATE"] = Field(
+        description="Type of the operation the event contains a payload for."
+    )
 
 
-class AssetUpdatePayload(AtlanEventPayload, operation_type="ENTITY_UPDATE"):
+class AssetUpdatePayload(AtlanEventPayload):
+    operation_type: Literal["ENTITY_UPDATE"] = Field(
+        description="Type of the operation the event contains a payload for."
+    )
     mutated_details: Optional[Asset] = Field(
         description="Details of what was updated on the asset."
     )
 
 
-class AssetDeletePayload(AtlanEventPayload, operation_type="ENTITY_DELETE"):
-    pass
+class AssetDeletePayload(AtlanEventPayload):
+    operation_type: Literal["ENTITY_DELETE"] = Field(
+        description="Type of the operation the event contains a payload for."
+    )
 
 
-# TODO
-# class CustomMetadataUpdatePayload(
-#     AtlanEventPayload,
-#     operation_type="BUSINESS_ATTRIBUTE_UPDATE",
-# ):
-#     mutated_details: Optional[dict[str, CustomMetadataDict]] = Field(
-#         description="Map of custom metadata attributes and values defined on the asset."
-#         "The map is keyed by the human-readable name of the custom metadata set,"
-#         "and the values are a further mapping from human-readable attribute name"
-#         "to the value for that attribute as provided when updating this asset."
-#     )
+class CustomMetadataUpdatePayload(
+    AtlanEventPayload,
+):
+    operation_type: Literal["BUSINESS_ATTRIBUTE_UPDATE"] = Field(
+        description="Type of the operation the event contains a payload for."
+    )
+    # TODO: Need to create a more specific type
+    mutated_details: Optional[dict[str, Any]] = Field(
+        description="Map of custom metadata attributes and values defined on the asset."
+        "The map is keyed by the human-readable name of the custom metadata set,"
+        "and the values are a further mapping from human-readable attribute name"
+        "to the value for that attribute as provided when updating this asset."
+    )
 
 
 class AtlanTagAddPayload(
     AtlanEventPayload,
-    operation_type="CLASSIFICATION_ADD",
 ):
+    operation_type: Literal["CLASSIFICATION_ADD"] = Field(
+        description="Type of the operation the event contains a payload for."
+    )
     mutated_details: Optional[AtlanTag] = Field(
         description="Atlan tags that were added to the asset by this event."
     )
@@ -75,8 +91,10 @@ class AtlanTagAddPayload(
 
 class AtlanTagDeletePayload(
     AtlanEventPayload,
-    operation_type="CLASSIFICATION_DELETE",
 ):
+    operation_type: Literal["CLASSIFICATION_DELETE"] = Field(
+        description="Type of the operation the event contains a payload for."
+    )
     mutated_details: Optional[AtlanTag] = Field(
         description="Atlan tags that were removed from the asset by this event."
     )
@@ -96,8 +114,18 @@ class AtlanEvent(AtlanObject):
         description="Timestamp (epoch) for when the event was created, in milliseconds."
     )
     spooled: Optional[bool] = Field(description="TBC")
-    payload: Optional[AtlanEventPayload] = Field(
-        description="Detailed contents (payload) of the event.", alias="message"
+    payload: Optional[
+        Union[
+            AssetCreatePayload,
+            AssetUpdatePayload,
+            CustomMetadataUpdatePayload,
+            AtlanTagAddPayload,
+            AtlanTagDeletePayload,
+        ]
+    ] = Field(
+        description="Detailed contents (payload) of the event.",
+        alias="message",
+        discriminator="operation_type",
     )
 
 
