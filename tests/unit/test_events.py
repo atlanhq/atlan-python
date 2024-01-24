@@ -4,7 +4,7 @@ import json
 
 from pyatlan.events.atlan_event_handler import is_validation_request, valid_signature
 from pyatlan.model.assets import AtlasGlossaryTerm
-from pyatlan.model.events import AtlanEvent
+from pyatlan.model.events import AssetUpdatePayload, AtlanEvent
 
 SIGNING = "abc123"
 
@@ -96,6 +96,154 @@ ACTUAL_PAYLOAD = {
     "isBase64Encoded": False,
 }
 
+JSON_ATLAN_EVENT = """
+{
+  "source": {
+  },
+  "version": {
+    "version": "1.0.0",
+    "versionParts": [
+      1
+    ]
+  },
+  "msgCompressionKind": "NONE",
+  "msgSplitIdx": 1,
+  "msgSplitCount": 1,
+  "msgSourceIP": "10.147.3.150",
+  "msgCreatedBy": "",
+  "msgCreationTime": 1705924521864,
+  "spooled": false,
+  "message": {
+    "type": "ENTITY_NOTIFICATION_V2",
+    "entity": {
+      "typeName": "AtlasGlossaryTerm",
+      "attributes": {
+        "popularityScore": 1.17549435e-38,
+        "assetMcMonitorNames": [
+        ],
+        "lastSyncRunAt": 0,
+        "assetSodaLastSyncRunAt": 0,
+        "starredCount": 0,
+        "adminUsers": [
+        ],
+        "assetMcIncidentQualifiedNames": [
+        ],
+        "assetMcIncidentTypes": [
+        ],
+        "assetSodaLastScanAt": 0,
+        "sourceUpdatedAt": 0,
+        "assetDbtJobLastRunArtifactsSaved": false,
+        "isEditable": true,
+        "announcementUpdatedAt": 0,
+        "sourceCreatedAt": 0,
+        "assetDbtJobLastRunDequedAt": 0,
+        "assetDbtTags": [
+        ],
+        "qualifiedName": "8Wi1jGldVz1vEBXhGivg3@79FD59qksQ4G3Y6h5ZWTO",
+        "assetDbtJobLastRunNotificationsSent": false,
+        "assetMcMonitorTypes": [
+        ],
+        "assetSodaCheckCount": 0,
+        "assetMcMonitorStatuses": [
+        ],
+        "starredBy": [],
+        "name": "new-term",
+        "certificateUpdatedAt": 1703077797628,
+        "assetMcIncidentSeverities": [
+        ],
+        "ownerUsers": [
+          "pskib"
+        ],
+        "certificateStatus": "DRAFT",
+        "assetDbtJobLastRunHasSourcesGenerated": false,
+        "assetMcIncidentSubTypes": [
+        ],
+        "isAIGenerated": false,
+        "assetDbtJobLastRunHasDocsGenerated": false,
+        "assetTags": [
+        ],
+        "assetMcIncidentStates": [
+        ],
+        "assetDbtJobLastRunUpdatedAt": 0,
+        "ownerGroups": [
+        ],
+        "certificateUpdatedBy": "pskib",
+        "assetMcMonitorQualifiedNames": [
+        ],
+        "assetDbtJobLastRunStartedAt": 0,
+        "isDiscoverable": true,
+        "isPartial": false,
+        "assetMcMonitorScheduleTypes": [
+        ],
+        "viewerUsers": [
+        ],
+        "assetMcIncidentNames": [
+        ],
+        "userDescription": "test",
+        "adminRoles": [
+        ],
+        "adminGroups": [
+        ],
+        "assetDbtJobLastRunCreatedAt": 0,
+        "assetDbtJobNextRun": 0,
+        "assetMcLastSyncRunAt": 0,
+        "viewerGroups": [
+        ],
+        "assetDbtJobLastRun": 0
+      },
+      "guid": "a5ed097d-93ea-4728-b3c3-ef441c3e6094",
+      "displayText": "new-term",
+      "isIncomplete": false,
+      "createdBy": "pskib",
+      "updatedBy": "pskib",
+      "createTime": 1703077797628,
+      "updateTime": 1705924521736,
+      "relationshipAttributes": {
+        "anchor": {
+          "guid": "579ae112-3f36-40ed-ad58-edcb6e719cf2",
+          "typeName": "AtlasGlossary",
+          "attributes": {
+            "certificateStatus": "DRAFT",
+            "__modifiedBy": "pskib",
+            "__state": "ACTIVE",
+            "__createdBy": "pskib",
+            "starredBy": [
+            ],
+            "__modificationTimestamp": 1703077797628,
+            "name": "Test-Glossary",
+            "isPartial": false,
+            "assetIcon": "atlanGlossary",
+            "__timestamp": 1702635066946,
+            "assetDbtJobLastRun": 0
+          },
+          "uniqueAttributes": {
+            "qualifiedName": "79FD59qksQ4G3Y6h5ZWTO"
+          }
+        }
+      }
+    },
+    "operationType": "ENTITY_UPDATE",
+    "eventTime": 1705924521736,
+    "mutatedDetails": {
+      "typeName": "AtlasGlossaryTerm",
+      "attributes": {
+        "userDescription": "test"
+      },
+      "guid": "a5ed097d-93ea-4728-b3c3-ef441c3e6094",
+      "isIncomplete": false,
+      "provenanceType": 0,
+      "updatedBy": "pskib",
+      "updateTime": 1705924521736,
+      "version": 0,
+      "proxy": false
+    },
+    "headers": {
+      "x-atlan-request-id": "e0a11772-8f4b-4141-08e1-4e74998cb0d2",
+      "x-atlan-via-ui": "true"
+    }
+  }
+}"""
+
 
 def test_validation_payload():
     body = VALIDATION_PAYLOAD.get("body")
@@ -117,3 +265,9 @@ def test_body():
     assert atlan_event
     assert atlan_event.payload
     assert isinstance(atlan_event.payload.asset, AtlasGlossaryTerm)
+
+
+def test_correct_payload_type_returned():
+    payload = json.loads(JSON_ATLAN_EVENT)
+    event = AtlanEvent(**payload)
+    assert isinstance(event.payload, AssetUpdatePayload)
