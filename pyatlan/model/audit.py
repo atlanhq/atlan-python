@@ -56,6 +56,13 @@ class AuditSearchRequest(SearchRequest):
     dsl: DSL
     attributes: list[str] = Field(default_factory=list, alias="attributes")
 
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        dsl = data.get("dsl")
+        class_name = __pydantic_self__.__class__.__name__
+        if dsl and isinstance(dsl, DSL) and not dsl.req_class_name:
+            data["dsl"] = DSL(req_class_name=class_name, **dsl.dict(exclude_unset=True))
+        super().__init__(**data)
+
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
@@ -75,7 +82,6 @@ class AuditSearchRequest(SearchRequest):
             sort=LATEST_FIRST,
             size=size,
             _from=_from,
-            req_class_name=cls.__name__,
         )
         return AuditSearchRequest(dsl=dsl)
 
@@ -95,7 +101,6 @@ class AuditSearchRequest(SearchRequest):
             sort=LATEST_FIRST,
             size=size,
             _from=_from,
-            req_class_name=cls.__name__,
         )
         return AuditSearchRequest(dsl=dsl)
 
@@ -121,7 +126,6 @@ class AuditSearchRequest(SearchRequest):
             sort=LATEST_FIRST,
             size=size,
             _from=_from,
-            req_class_name=cls.__name__,
         )
         return AuditSearchRequest(dsl=dsl)
 
