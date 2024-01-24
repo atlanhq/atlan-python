@@ -1849,8 +1849,7 @@ class DSL(AtlanObject):
                 sort.append(SortItem(searchlog_sort_by_guid))
             elif req_class_name == "AuditSearchRequest":
                 sort.append(SortItem(auditsearch_sort_by_guid))
-            else:
-                # IndexSearchRequest
+            elif req_class_name == "IndexSearchRequest":
                 sort.append(SortItem(sort_by_guid))
         return sort
 
@@ -1901,6 +1900,10 @@ class IndexSearchRequest(SearchRequest):
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
     def __init__(__pydantic_self__, **data: Any) -> None:
+        dsl = data.get("dsl")
+        class_name = __pydantic_self__.__class__.__name__
+        if dsl and isinstance(dsl, DSL) and not dsl.req_class_name:
+            data["dsl"] = DSL(req_class_name=class_name, **dsl.dict(exclude_unset=True))
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["request_metadata"])
 

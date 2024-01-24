@@ -253,7 +253,6 @@ def test_text_queries_factory(client: AtlanClient, text_query_value, method, cla
         dsl=dsl,
         attributes=["name"],
     )
-    # print(request.json(by_alias=True, exclude_none=True))
     results = client.asset.search(criteria=request)
     assert results.count >= 0
 

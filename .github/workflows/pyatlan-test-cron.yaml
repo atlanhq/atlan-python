@@ -1,7 +1,6 @@
-name: Python package
+name: Pyatlan Test Cron Job Build
 
 on:
-  pull_request:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *' # At 01:00 Daily

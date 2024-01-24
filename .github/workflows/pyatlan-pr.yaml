@@ -1,0 +1,75 @@
+name: Pyatlan Pull Request Build
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  qa-checks-and-unit-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.distribute-integration-test-files.outputs.files }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+      - name: QA checks (black, flake8, mypy)
+        run: |
+          ./qa-checks
+
+      - name: Run unit tests
+        env: # Test tenant environment variables
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+          MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
+          MARK_BASE_URL: https://mark.atlan.com
+        run: pytest tests/unit
+
+      - name: Prepare integration tests distribution
+        id: distribute-integration-test-files
+        run: |
+          test_ignore_file=tests/integration/.testignore.txt
+          files=$(ls tests/integration/test_*.py tests/integration/*_test.py | grep -v -f $test_ignore_file | tr '\n' ' ')
+          json_files=$(echo "${files[@]}" | jq -R -c 'split(" ")[:-1]')
+          echo "files=$json_files" >> $GITHUB_OUTPUT
+
+  integration-tests:
+    needs: [qa-checks-and-unit-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_file: ${{fromJson(needs.qa-checks-and-unit-tests.outputs.files)}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+      - name: Run integration tests
+        env: # Test tenant environment variables
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+          MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
+          MARK_BASE_URL: https://mark.atlan.com
+        run: pytest ${{ matrix.test_file }}

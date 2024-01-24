@@ -33,7 +33,7 @@ from pyatlan.model.enums import (
     WorkflowPackage,
 )
 from pyatlan.model.fluent_search import FluentSearch
-from pyatlan.model.search import SortItem
+from pyatlan.model.search import DSL, Bool, SortItem, Term
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
@@ -44,6 +44,8 @@ SL_SORT_BY_GUID = SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING)
 SL_SORT_BY_QUALIFIED_NAME = SortItem(
     field="entityQFNamesAll", order=SortOrder.ASCENDING
 )
+AUDIT_SORT_BY_GUID = SortItem(field="entityId", order=SortOrder.ASCENDING)
+AUDIT_SORT_BY_LATEST = SortItem("created", order=SortOrder.DESCENDING)
 
 
 @dataclass()
@@ -570,6 +572,66 @@ def test_audit_find_by_guid(client: AtlanClient, audit_info: AuditInfo):
     assert results.total_count > 0
     count = len(results.current_page())
     assert count > 0 and count <= size
+
+
+def test_audit_search_default_sorting(client: AtlanClient, audit_info: AuditInfo):
+    # Test empty sorting
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value=audit_info.guid)]),
+        sort=[],
+        size=10,
+        from_=0,
+    )
+    request = AuditSearchRequest(dsl=dsl)
+    response = client.audit.search(criteria=request)
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 1
+    assert sort_options[0].field == AUDIT_SORT_BY_GUID.field
+
+    # Sort without GUID
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value=audit_info.guid)]),
+        sort=[AUDIT_SORT_BY_LATEST],
+        size=10,
+        from_=0,
+    )
+    request = AuditSearchRequest(dsl=dsl)
+    response = client.audit.search(criteria=request)
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 2
+    assert sort_options[0].field == AUDIT_SORT_BY_LATEST.field
+    assert sort_options[1].field == AUDIT_SORT_BY_GUID.field
+
+    # Sort with only GUID
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value=audit_info.guid)]),
+        sort=[AUDIT_SORT_BY_GUID],
+        size=10,
+        from_=0,
+    )
+    request = AuditSearchRequest(dsl=dsl)
+    response = client.audit.search(criteria=request)
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 1
+    assert sort_options[0].field == AUDIT_SORT_BY_GUID.field
+
+    # Sort with GUID and others
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value=audit_info.guid)]),
+        sort=[AUDIT_SORT_BY_GUID, AUDIT_SORT_BY_LATEST],
+        size=10,
+        from_=0,
+    )
+    request = AuditSearchRequest(dsl=dsl)
+    response = client.audit.search(criteria=request)
+    assert response
+    sort_options = response._criteria.dsl.sort
+    assert len(sort_options) == 2
+    assert sort_options[0].field == AUDIT_SORT_BY_GUID.field
+    assert sort_options[1].field == AUDIT_SORT_BY_LATEST.field
 
 
 def _view_test_glossary_by_search(

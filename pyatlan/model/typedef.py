@@ -321,32 +321,34 @@ class AttributeDef(AtlanObject):
         is_append_on_partial_update: Optional[str] = Field(description="TBC")
         primitive_type: Optional[str] = Field(description="Type of the attribute.")
         applicable_connections: Optional[str] = Field(
-            description="Qualified names of glossaries to which to restrict the attribute. "
-            "Only glossary assets within one of these glossaries will have this attribute available."
-            "within the glossaries see applicable_asset_types."
+            description="Qualified names of connections to which to restrict the attribute. "
+            "Only assets within one of these connections will have this attribute available. "
+            "To further restrict the types of assets within the connections, see applicable_asset_types."
         )
         applicable_glossaries: Optional[str] = Field(
-            description="Qualified names of glossaries to which to restrict the attribute. Only assets within one of "
-            "these glossary will have this attribute available. To further restrict the types of assets "
-            "To further restrict the types of assets within the glossaries, see applicable_glossary_type."
+            description="Qualified names of glossaries to which to restrict the attribute. "
+            "Only glossary assets within one of these glossaries will have this attribute available. "
+            "To further restrict the types of assets within the glossaries, see applicable_glossary_types."
         )
         applicable_asset_types: Optional[str] = Field(
             alias="assetTypesList",
-            description="Asset type names to which to restrict the attribute. Only assets of one of these types will "
-            "have this attribute available.  To further restrict the assets for this custom metadata by"
+            description="Asset type names to which to restrict the attribute. "
+            "Only assets of one of these types will have this attribute available. "
+            "To further restrict the assets for this custom metadata by "
             "connection, see applicable_connections. ",
         )
         applicable_glossary_types: Optional[str] = Field(
             alias="glossaryTypeList",
-            description="Glossary type names to which to restrict the attribute. Only glossary assets of one of these "
-            "types will have this attribute available. To further restrict the glossary content for this "
+            description="Glossary type names to which to restrict the attribute. "
+            "Only glossary assets of one of these types will have this attribute available. "
+            "To further restrict the glossary content for this "
             "custom metadata by glossary, see applicable_glossaries.",
         )
         applicable_other_asset_types: Optional[str] = Field(
             alias="otherAssetTypeList",
-            description="Any other asset type names to which to restrict the attribute. These cover any asset type "
-            "that is not managed within a connection or a glossary. Only assets of one of these types will "
-            "have this attribute available.",
+            description="Any other asset type names to which to restrict the attribute. "
+            "These cover any asset type that is not managed within a connection or a glossary. "
+            "Only assets of one of these types will have this attribute available.",
         )
 
         @staticmethod
