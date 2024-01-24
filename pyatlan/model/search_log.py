@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Generator, Iterable, Optional
+from typing import Any, Generator, Iterable, Optional
 
 from pydantic import Field, ValidationError, parse_obj_as
 
@@ -46,6 +46,13 @@ class SearchLogRequest(SearchRequest):
             minimum_should_match=1,
         ),
     ]
+
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        dsl = data.get("dsl")
+        class_name = __pydantic_self__.__class__.__name__
+        if dsl and isinstance(dsl, DSL) and not dsl.req_class_name:
+            data["dsl"] = DSL(req_class_name=class_name, **dsl.dict(exclude_unset=True))
+        super().__init__(**data)
 
     @classmethod
     def _get_view_dsl_kwargs(
@@ -139,7 +146,6 @@ class SearchLogRequest(SearchRequest):
         dsl = DSL(
             **cls._get_view_dsl_kwargs(size=0, from_=0, query_filter=query_filter),
             aggregations=cls._get_recent_viewers_aggs(max_users),
-            req_class_name=cls.__name__,
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -163,7 +169,6 @@ class SearchLogRequest(SearchRequest):
             aggregations=cls._get_most_viewed_assets_aggs(
                 max_assets, by_different_user
             ),
-            req_class_name=cls.__name__,
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -192,7 +197,6 @@ class SearchLogRequest(SearchRequest):
             **cls._get_view_dsl_kwargs(
                 size=size, from_=from_, query_filter=query_filter, sort=sort
             ),
-            req_class_name=cls.__name__,
         )
         return SearchLogRequest(dsl=dsl)
 

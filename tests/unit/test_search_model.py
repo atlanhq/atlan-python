@@ -6,6 +6,7 @@ from typing import Literal, Union
 import pytest
 from pydantic import StrictBool, StrictStr, ValidationError
 
+from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
 from pyatlan.model.search import (
     DSL,
@@ -29,6 +30,7 @@ from pyatlan.model.search import (
     with_active_glossary,
     with_active_term,
 )
+from pyatlan.model.search_log import SearchLogRequest
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
@@ -267,7 +269,7 @@ def test_dsl():
         == '{"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
-        '{"__typeName.keyword": {"value": "Schema"}}}, "sort": [{"__guid": {"order": "asc"}}]}'
+        '{"__typeName.keyword": {"value": "Schema"}}}, "sort": []}'
     )
 
 
@@ -285,6 +287,38 @@ def test_index_search_request():
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": [], '
         '"requestMetadata": {"saveSearchLog": true, "utmTags": ["project_sdk_python"]}}'
+    )
+
+
+def test_audit_search_request():
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+    request = AuditSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
+    assert (
+        request.json(by_alias=True, exclude_none=True)
+        == '{"attributes": ["schemaName", "databaseName"],'
+        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        '"post_filter": {"term": {"databaseName.keyword": '
+        '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
+        '"sort": [{"entityId": {"order": "asc"}}]}}'
+    )
+
+
+def test_search_log_request():
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+    request = SearchLogRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
+    assert (
+        request.json(by_alias=True, exclude_none=True)
+        == '{"attributes": ["schemaName", "databaseName"],'
+        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        '"post_filter": {"term": {"databaseName.keyword": '
+        '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
+        '"sort": [{"entityGuidsAll": {"order": "asc"}}]}}'
     )
 
 
