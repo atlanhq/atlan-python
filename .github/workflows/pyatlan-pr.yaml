@@ -51,6 +51,9 @@ jobs:
       fail-fast: false
       matrix:
         test_file: ${{fromJson(needs.qa-checks-and-unit-tests.outputs.files)}}
+    concurrency:
+      group: ${{ matrix.test_file }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
