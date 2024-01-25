@@ -35,6 +35,7 @@ from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
+from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.token import TokenClient
@@ -141,6 +142,7 @@ class AtlanClient(BaseSettings):
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
     _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
+    _query_client: Optional[QueryClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -233,6 +235,12 @@ class AtlanClient(BaseSettings):
         return self._impersonate_client
 
     @property
+    def queries(self) -> QueryClient:
+        if self._query_client is None:
+            self._query_client = QueryClient(client=self)
+        return self._query_client
+
+    @property
     def token(self) -> TokenClient:
         if self._token_client is None:
             self._token_client = TokenClient(client=self)
@@ -255,11 +263,16 @@ class AtlanClient(BaseSettings):
 
     def _call_api_internal(self, api, path, params, binary_data=None):
         token = request_id_var.set(str(uuid.uuid4()))
+        EVENT_STREAM = "text/event-stream"
         try:
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
             if binary_data:
                 response = self._session.request(
                     api.method.value, path, data=binary_data, **params
+                )
+            elif api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
+                response = self._session.request(
+                    api.method.value, path, **params, stream=True
                 )
             else:
                 response = self._session.request(api.method.value, path, **params)
@@ -276,6 +289,7 @@ class AtlanClient(BaseSettings):
                         or response.status_code == HTTPStatus.NO_CONTENT
                     ):
                         return None
+                    events = []
                     if LOGGER.isEnabledFor(logging.DEBUG):
                         LOGGER.debug(
                             "<== __call_api(%s,%s), result = %s",
@@ -283,8 +297,13 @@ class AtlanClient(BaseSettings):
                             params,
                             response,
                         )
-                        LOGGER.debug(response.json())
-                    return response.json()
+                    if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
+                        for line in response.iter_lines(decode_unicode=True):
+                            if line and line.startswith("data: "):
+                                events.append(json.loads(line.split("data: ")[1]))
+                    response_json = events if events else response.json()
+                    LOGGER.debug(response_json)
+                    return response_json
                 except requests.exceptions.JSONDecodeError as e:
                     raise ErrorCode.JSON_ERROR.exception_with_parameters(
                         response.text, response.status_code, str(e)

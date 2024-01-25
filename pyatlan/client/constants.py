@@ -87,6 +87,17 @@ PARSE_QUERY = API(
     f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HEKA
 )
 
+# For running SQL queries
+EVENT_STREAM = "text/event-stream"
+RUN_QUERY = API(
+    f"{QUERY_API}/stream",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HEKA,
+    consumes=EVENT_STREAM,
+    produces=EVENT_STREAM,
+)
+
 # File upload APIs
 UPLOAD_IMAGE = API(
     IMAGE_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES

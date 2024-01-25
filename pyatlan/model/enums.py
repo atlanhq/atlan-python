@@ -1901,6 +1901,34 @@ class UTMTags(str, Enum):
     UI_MAIN_LIST = "ui_main_list"
 
 
+class HekaFlow(str, Enum):
+    BYPASS = "BYPASS_FLOW"
+    REWRITE = "REWRITE_FLOW"
+    PASSTHROUGH = "PASSTHROUGH_FLOW"
+
+
+class ParsingFlow(str, Enum):
+    GUDUSOFT = "GUDUSOFT_FLOW"
+    EXPLAIN_CALL = "EXPLAIN_CALL_FLOW"
+    CALCITE = "CALCITE_FLOW"
+    JSQL = "JSQL_FLOW"
+    NONE = "NO_PARSING"
+
+
+class QueryStatus(str, Enum):
+    # Query run has been requested, but not yet started or completed.
+    STARTED = "started"
+    # Query run is in progress (running).
+    IN_PROGRESS = "in-progress"
+    # Query has completed running, successfully.
+    COMPLETED = "completed"
+    # Some other operation on the query has completed successfully.
+    # For example: it has been aborted or was only testing a connection.
+    OK = "ok"
+    # There was an error running the query.
+    ERROR = "error"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************
