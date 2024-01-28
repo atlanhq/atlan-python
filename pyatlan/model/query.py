@@ -155,11 +155,12 @@ class QueryResponse(AtlanObject):
         self.rows = []
         self.columns = []
         for event in events:
-            rows = event.get("rows")
-            if rows is not None:
-                self.rows.extend(rows)
-            if not self.columns and "columns" in event:
-                self.columns = event.get("columns")
+            event_rows = event.get("rows")
+            event_columns = event.get("columns")
+            if event_rows:
+                self.rows.extend(event_rows)
+            if not self.columns and event_columns:
+                self.columns = event_columns
         last_event = events[-1]
         self.request_id = last_event.get("requestId")
         self.error_name = last_event.get("errorName")

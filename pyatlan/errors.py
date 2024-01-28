@@ -800,7 +800,7 @@ class ErrorCode(Enum):
     UNABLE_TO_DESERIALIZE = (
         500,
         "ATLAN-PYTHON-500-002",
-        "Unable to deserialize value: [0]",
+        "Unable to deserialize value: {0}",
         RAISE_GITHUB_ISSUE,
         LogicError,
     )

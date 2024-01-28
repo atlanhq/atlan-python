@@ -299,12 +299,18 @@ class AtlanClient(BaseSettings):
                         )
                     if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                         for line in response.iter_lines(decode_unicode=True):
-                            if line and line.startswith("data: "):
-                                events.append(json.loads(line.split("data: ")[1]))
+                            if not line.startswith("data: "):
+                                raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
+                                    line
+                                )
+                            events.append(json.loads(line.split("data: ")[1]))
                     response_json = events if events else response.json()
                     LOGGER.debug(response_json)
                     return response_json
-                except requests.exceptions.JSONDecodeError as e:
+                except (
+                    requests.exceptions.JSONDecodeError,
+                    json.decoder.JSONDecodeError,
+                ) as e:
                     raise ErrorCode.JSON_ERROR.exception_with_parameters(
                         response.text, response.status_code, str(e)
                     ) from e
