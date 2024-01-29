@@ -299,6 +299,8 @@ class AtlanClient(BaseSettings):
                         )
                     if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                         for line in response.iter_lines(decode_unicode=True):
+                            if not line:
+                                continue
                             if not line.startswith("data: "):
                                 raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
                                     line

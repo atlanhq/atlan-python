@@ -92,8 +92,19 @@ class UserCache:
         :param name: human-readable name of the user
         :returns: unique identifier (GUID) of the user
         """
-        if user_id := self.map_name_to_id.get(name):
+        user_id = self.map_name_to_id.get(name)
+        if user_id:
             return user_id
+        # If we are translating an API token,
+        # short-circuit any further cache refresh
+        if not user_id:
+            if name.startswith("service-account-"):
+                token = self.token_client.get_by_id(client_id=name)
+                if not token:
+                    # TODO: Add proper exception here
+                    raise
+                self.map_name_to_id[name] = token.guid
+                return token.guid
         self._refresh_cache()
         return self.map_name_to_id.get(name)
 
@@ -116,10 +127,19 @@ class UserCache:
         :param idstr: unique identifier (GUID) of the user
         :returns: username of the user
         """
-        if username := self.map_id_to_name.get(idstr):
+        username = self.map_id_to_name.get(idstr)
+        if username:
             return username
-        self._refresh_cache()
-        return self.map_id_to_name.get(idstr)
+        # If the username isn't found, check if it is an API token
+        if not username:
+            token = self.token_client.get_by_guid(guid=idstr)
+            if token:
+                username = f"service-account-{token.client_id}"
+                return username
+            else:
+                self._refresh_cache()
+                return self.map_id_to_name.get(idstr)
+        return username
 
     def _validate_names(self, names: Iterable[str]):
         """
