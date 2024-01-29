@@ -69,18 +69,24 @@ def atlan_tag_def(
 @pytest.fixture(scope="module")
 def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = client.token.create(API_TOKEN_NAME)
-    # After creating the token, assign it to the
-    # "Data Assets" persona to grant it query access
-    persona = client.asset.find_personas_by_name(PERSONA_NAME)[0]
-    client.token.update(
-        guid=token.guid,
-        display_name=token.display_name,
-        personas={persona.qualified_name},
-    )
-    # Note: need to read the token back again to see
-    # its associated personas -- will leave that to later...
-    yield token
-    client.token.purge(token.guid)
+    assert token
+    assert token.guid
+    assert token.display_name
+    try:
+        # After creating the token, assign it to the
+        # "Data Assets" persona to grant it query access
+        persona = client.asset.find_personas_by_name(PERSONA_NAME)[0]
+        assert persona.qualified_name
+        client.token.update(
+            guid=token.guid,
+            display_name=token.display_name,
+            personas={persona.qualified_name},
+        )
+        # Note: need to read the token back again to see
+        # its associated personas -- will leave that to later...
+        yield token
+    finally:
+        client.token.purge(token.guid)
 
 
 @pytest.fixture(scope="module")
@@ -209,7 +215,7 @@ def test_add_policies_to_purpose(
         name="Mask the data",
         purpose_id=purpose.guid,
         policy_type=AuthPolicyType.DATA_MASK,
-        policy_users=[f"{SERVICE_ACCOUNT_}{token.client_id}"],
+        policy_users={f"{SERVICE_ACCOUNT_}{token.client_id}"},
         all_users=False,
     )
     data.policy_mask_type = DataMaskingType.REDACT
@@ -313,6 +319,7 @@ def test_run_query_with_policy(client: AtlanClient, assign_tag_to_asset, token, 
         assert response
         assert response.details
         assert response.details.status
+        assert response.details.heka_flow
         status = response.details.status
         if status != QueryStatus.ERROR:
             found = response.details.heka_flow

@@ -103,7 +103,8 @@ class UserCache:
                 if not token:
                     # TODO: Add proper exception here
                     raise
-                self.map_name_to_id[name] = token.guid
+                if token.guid:
+                    self.map_name_to_id[name] = token.guid
                 return token.guid
         self._refresh_cache()
         return self.map_name_to_id.get(name)
