@@ -5,6 +5,7 @@ import dataclasses
 from typing import Optional, TypeVar, Union
 
 from pyatlan.client.asset import IndexSearchResults
+from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
@@ -99,6 +100,10 @@ class CompoundQuery:
             for name in with_one_of:
                 if tag_id := AtlanTagCache.get_id_for_name(name):
                     values.append(tag_id)
+                else:
+                    raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        name
+                    )
         if directly:
             if values:
                 return FluentSearch(
