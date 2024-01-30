@@ -369,8 +369,8 @@ class ConnectorTypeSelector(AbstractUIElement):
 
 @dataclasses.dataclass
 class DateInputWidget(AbstractWidget):
-    min_: int = -14
-    max_: int = 0
+    min: int = -14
+    max: int = 0
     default: int = 0
     start: int = 1
 
@@ -379,8 +379,8 @@ class DateInputWidget(AbstractWidget):
         label: str,
         hidden: bool = False,
         help: str = "",
-        min_: int = -14,
-        max_: int = 0,
+        min: int = -14,
+        max: int = 0,
         default: int = 0,
         start: int = 1,
         grid: int = 4,
@@ -389,8 +389,8 @@ class DateInputWidget(AbstractWidget):
             widget="date", label=label, hidden=hidden, help=help, grid=grid
         )
         self.start = start
-        self.max_ = max_
-        self.min_ = min_
+        self.max = max
+        self.min = min
         self.default = default
 
     def to_nested(self, name: str) -> str:
@@ -413,8 +413,8 @@ class DateInput(AbstractUIElement):
         required: StrictBool = False,
         hidden: StrictBool = False,
         help: StrictStr = "",
-        min_: StrictInt = -14,
-        max_: StrictInt = 0,
+        min: StrictInt = -14,
+        max: StrictInt = 0,
         default: StrictInt = 0,
         start: StrictInt = 1,
         grid: StrictInt = 8,
@@ -427,9 +427,9 @@ class DateInput(AbstractUIElement):
         :param required: whether a value must be selected to proceed with the UI setup
         :param hidden: whether the widget will be shown in the UI (false) or not (true)
         :param help: informational text to place in a hover-over to describe the use of the input
-        :param min_: an offset from today (0) that indicates how far back in the calendar can be selected
+        :param min: an offset from today (0) that indicates how far back in the calendar can be selected
         (-1 is yesterday, 1 is tomorrow, and so on)
-        :param max_: an offset from today (0) that indicates how far forward in the calendar can be selected
+        :param max: an offset from today (0) that indicates how far forward in the calendar can be selected
         (-1 is yesterday, 1 is tomorrow, and so on)
          :param default: an offset from today that indicates the default date that should be selected in the calendar
          (0 is today, -1 is yesterday, 1 is tomorrow, and so on)
@@ -440,8 +440,8 @@ class DateInput(AbstractUIElement):
             label=label,
             hidden=hidden,
             help=help,
-            min_=min_,
-            max_=max_,
+            min=min,
+            max=max,
             default=default,
             start=start,
             grid=grid,
@@ -542,7 +542,7 @@ class FileUploaderWidget(AbstractWidget):
 
     @property
     def parameter_value(self) -> str:
-        return '"argo-artifacts/atlan-update/@atlan-packages-last-safe-run.txt"'
+        return '"argo-artifacts/atlan-update/last-run-timestamp.txt"'
 
     def to_env(self, name: str) -> str:
         return f"/tmp/{name}/{{{{inputs.parameters.{name}}}}}"  # noqa: S108
