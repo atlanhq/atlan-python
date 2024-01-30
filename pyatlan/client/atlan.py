@@ -31,10 +31,11 @@ from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
-from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
+from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
+from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.token import TokenClient
@@ -74,8 +75,6 @@ from pyatlan.utils import (
 )
 
 request_id_var = ContextVar("request_id", default=None)
-
-SERVICE_ACCOUNT_ = "service-account-"
 
 
 def get_adapter() -> logging.LoggerAdapter:
@@ -141,6 +140,7 @@ class AtlanClient(BaseSettings):
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
     _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
+    _query_client: Optional[QueryClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -233,6 +233,12 @@ class AtlanClient(BaseSettings):
         return self._impersonate_client
 
     @property
+    def queries(self) -> QueryClient:
+        if self._query_client is None:
+            self._query_client = QueryClient(client=self)
+        return self._query_client
+
+    @property
     def token(self) -> TokenClient:
         if self._token_client is None:
             self._token_client = TokenClient(client=self)
@@ -261,6 +267,10 @@ class AtlanClient(BaseSettings):
                 response = self._session.request(
                     api.method.value, path, data=binary_data, **params
                 )
+            elif api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
+                response = self._session.request(
+                    api.method.value, path, **params, stream=True
+                )
             else:
                 response = self._session.request(api.method.value, path, **params)
             if response is not None:
@@ -276,6 +286,7 @@ class AtlanClient(BaseSettings):
                         or response.status_code == HTTPStatus.NO_CONTENT
                     ):
                         return None
+                    events = []
                     if LOGGER.isEnabledFor(logging.DEBUG):
                         LOGGER.debug(
                             "<== __call_api(%s,%s), result = %s",
@@ -283,9 +294,22 @@ class AtlanClient(BaseSettings):
                             params,
                             response,
                         )
-                        LOGGER.debug(response.json())
-                    return response.json()
-                except requests.exceptions.JSONDecodeError as e:
+                    if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
+                        for line in response.iter_lines(decode_unicode=True):
+                            if not line:
+                                continue
+                            if not line.startswith("data: "):
+                                raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
+                                    line
+                                )
+                            events.append(json.loads(line.split("data: ")[1]))
+                    response_json = events if events else response.json()
+                    LOGGER.debug(response_json)
+                    return response_json
+                except (
+                    requests.exceptions.JSONDecodeError,
+                    json.decoder.JSONDecodeError,
+                ) as e:
                     raise ErrorCode.JSON_ERROR.exception_with_parameters(
                         response.text, response.status_code, str(e)
                     ) from e

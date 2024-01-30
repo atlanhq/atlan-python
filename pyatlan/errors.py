@@ -760,6 +760,13 @@ class ErrorCode(Enum):
         "Verify the requested typedef exists in your Atlan environment.",
         NotFoundError,
     )
+    API_TOKEN_NOT_FOUND_BY_NAME = (
+        404,
+        "ATLAN-PYTHON-404-028",
+        "API token with name {0} does not exist.",
+        "Verify the API token provided is a valid username for that token.",
+        NotFoundError,
+    )
     CONFLICT_PASSTHROUGH = (
         409,
         "ATLAN-PYTHON-409-000",
@@ -800,7 +807,7 @@ class ErrorCode(Enum):
     UNABLE_TO_DESERIALIZE = (
         500,
         "ATLAN-PYTHON-500-002",
-        "Unable to deserialize value: [0]",
+        "Unable to deserialize value: {0}",
         RAISE_GITHUB_ISSUE,
         LogicError,
     )
