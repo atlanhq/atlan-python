@@ -2,7 +2,6 @@
 # Copyright 2023 Atlan Pte. Ltd.
 import json
 import logging
-import re
 import textwrap
 from enum import Enum
 from importlib import resources
@@ -146,7 +145,7 @@ class CustomPackage(BaseModel):
     :ivar keywords list[str]: (optional) list of any keyword labels to apply to the package
     :ivar container_image str: container image to run the logic of the custom package
     :ivar container_image_pull_policy PullPolicy: (optional) override the default IfNotPresent policy
-    :ivar container_command list[str[: the full command to run in the container image, as a list rather than spaced
+    :ivar container_command list[str]: the full command to run in the container image, as a list rather than spaced
     (must be provided if you have not specified the class above)
     :ivar allow_schedule bool: (optional) whether to allow the package to be scheduled (default, true) or only run
     immediately (false)
@@ -248,7 +247,6 @@ class PackageWriter(BaseModel):
 
     def create_config(self):
         self.create_config_class()
-        self.create_logging_conf()
 
     def create_templates(self):
         self._templates_dir.mkdir(parents=True, exist_ok=True)
@@ -267,17 +265,9 @@ class PackageWriter(BaseModel):
     def create_config_class(self):
         template = self._env.get_template("package_config.jinja2")
         content = template.render({"pkg": self.pkg})
-        file_name = re.sub(r"\W+", "_", self.pkg.package_name).lower()
+        file_name = f'{self.pkg.package_id[5:].replace("-","_")}_cfg.py'
 
-        with (
-            self.path / f"{file_name}{'' if file_name.endswith('_') else '_'}cfg.py"
-        ).open("w") as script:
-            script.write(content)
-
-    def create_logging_conf(self):
-        template = self._env.get_template("logging_conf.jinja2")
-        content = template.render({"pkg": self.pkg})
-        with (self.path / "logging.conf").open("w") as script:
+        with (self.path / file_name).open("w") as script:
             script.write(content)
 
 
@@ -297,3 +287,8 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
         writer.create_package()
     else:
         writer.create_config()
+
+
+class ConnectorAndConnection(BaseModel):
+    source: AtlanConnectorType
+    connections: list[str]

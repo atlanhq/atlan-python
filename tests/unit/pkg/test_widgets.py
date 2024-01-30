@@ -609,8 +609,8 @@ class TestDateInput:
         assert ui.label == LABEL
         assert ui.hidden == IS_NOT_HIDDEN
         assert ui.help == ""
-        assert ui.min_ == -14
-        assert ui.max_ == 0
+        assert ui.min == -14
+        assert ui.max == 0
         assert ui.default == 0
         assert ui.start == 1
         assert ui.grid == 8
@@ -621,8 +621,8 @@ class TestDateInput:
             required=IS_REQUIRED,
             hidden=IS_HIDDEN,
             help=HELP,
-            min_=(min_ := -2),
-            max_=(max_ := 3),
+            min=(min_ := -2),
+            max=(max_ := 3),
             default=(default := 1),
             start=(start := 10),
             grid=(grid := 2),
@@ -637,14 +637,14 @@ class TestDateInput:
         assert ui.label == LABEL
         assert ui.hidden == IS_HIDDEN
         assert ui.help == HELP
-        assert ui.min_ == min_
-        assert ui.max_ == max_
+        assert ui.min == min_
+        assert ui.max == max_
         assert ui.default == default
         assert ui.start == start
         assert ui.grid == grid
 
     @pytest.mark.parametrize(
-        "label, required, hidden, help_, min_, max_, default, start, grid, msg",
+        "label, required, hidden, help_, min, max, default, start, grid, msg",
         [
             (
                 None,
@@ -704,7 +704,7 @@ class TestDateInput:
                 1,
                 0,
                 4,
-                r"1 validation error for Init\nmin_\n  value is not a valid integer",
+                r"1 validation error for Init\nmin\n  value is not a valid integer",
             ),
             (
                 LABEL,
@@ -716,7 +716,7 @@ class TestDateInput:
                 1,
                 0,
                 4,
-                r"1 validation error for Init\nmax_\n  value is not a valid integer",
+                r"1 validation error for Init\nmax\n  value is not a valid integer",
             ),
             (
                 LABEL,
@@ -757,7 +757,7 @@ class TestDateInput:
         ],
     )
     def test_validation(
-        self, label, required, hidden, help_, min_, max_, default, start, grid, msg
+        self, label, required, hidden, help_, min, max, default, start, grid, msg
     ):
         with pytest.raises(ValidationError, match=msg):
             DateInput(
@@ -765,8 +765,8 @@ class TestDateInput:
                 required=required,
                 hidden=hidden,
                 help=help_,
-                min_=min_,
-                max_=max_,
+                min=min,
+                max=max,
                 default=default,
                 start=start,
                 grid=grid,
