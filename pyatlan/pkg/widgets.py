@@ -208,12 +208,10 @@ class ConnectionCreatorWidget(AbstractWidget):
         )
 
     def get_validator(self, name: str):
-        return (
-            f"{name}: Optional[Connection] = None\n"
-            f"    _validate_{name} = validator("
-            '"connection"'
-            ", pre=True, allow_reuse=True)(validate_connection)\n"
-        )
+        return f"""{name}: Optional[Connection] = None
+    _validate_{name} = validator(
+    "{name}", pre=True, allow_reuse=True
+    )(validate_connection)"""
 
 
 @dataclass
@@ -328,12 +326,10 @@ class ConnectorTypeSelectorWidget(AbstractWidget):
         self.start = start
 
     def get_validator(self, name: str):
-        return (
-            f'{name}: ConnectorAndConnection = Field(alias="connectorType")\n'
-            f"_validate_{name} = validator("
-            "connection"
-            ', pre=True, allow_reuse=True)(validate_connector_and_connection)\n")'
-        )
+        return f"""{name}: Optional[ConnectorAndConnection] = None
+    _validate_{name} = validator(
+    "{name}", pre=True, allow_reuse=True
+    )(validate_connector_and_connection)"""
 
 
 @dataclass

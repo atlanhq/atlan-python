@@ -266,7 +266,6 @@ class PackageWriter(BaseModel):
         template = self._env.get_template("package_config.jinja2")
         content = template.render({"pkg": self.pkg})
         file_name = f'{self.pkg.package_id[5:].replace("-","_")}_cfg.py'
-        # file_name = re.sub(r"\W+", "_", self.pkg.package_name).lower()
 
         with (self.path / file_name).open("w") as script:
             script.write(content)
@@ -288,3 +287,8 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
         writer.create_package()
     else:
         writer.create_config()
+
+
+class ConnectorAndConnection(BaseModel):
+    source: AtlanConnectorType
+    connections: list[str]

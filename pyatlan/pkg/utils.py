@@ -1,7 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+import json
 import logging
 import os
+
+from pydantic import parse_obj_as, parse_raw_as
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.pkg.models import RuntimeConfig
@@ -57,3 +60,34 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
             headers["x-atlan-agent-id"] = run_time_config.agent_id
         client.update_headers(headers)
     return client
+
+
+def validate_multiselect(v):
+    """
+    This method is used to marshal a multi-select value passed from the custom package ui
+    """
+    if isinstance(v, str):
+        if v.startswith("["):
+            data = json.loads(v)
+            v = parse_obj_as(list[str], data)
+        else:
+            v = [v]
+    return v
+
+
+def validate_connection(v):
+    """
+    This method is used to marshal a connection value passed from the custom package ui
+    """
+    from pyatlan.model.assets import Connection
+
+    return parse_raw_as(Connection, v)
+
+
+def validate_connector_and_connection(v):
+    """
+    This method is used to marshal a connector and connection value passed from the custom package ui
+    """
+    from pyatlan.pkg.models import ConnectorAndConnection
+
+    return parse_raw_as(ConnectorAndConnection, v)

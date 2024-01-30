@@ -142,18 +142,9 @@ def write_file(output_file: Path, data: Optional[str] = None):
             output.write(data)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please specify the python package name for the package")
-        exit(1)
-    if not re.fullmatch(r"\w+", sys.argv[1], re.ASCII):
-        print(
-            "The package name can only consist of alphanumeric characters and the underscore"
-        )
-
-    package_name = sys.argv[1]
+def main(package_name: str):
     output_dir = Path(package_name)
-    package_id = f"@csa/{sys.argv[1].replace('_','-')}"
+    package_id = f"@csa/{sys.argv[1].replace('_', '-')}"
     output_file = output_dir / FILE_NAME
     output_dir.mkdir(exist_ok=True)
     write_file(Path("requirements.txt"), REQUIREMENTS)
@@ -165,7 +156,19 @@ if __name__ == "__main__":
         CODE.format(
             package_id=package_id,
             package_name=package_name,
-            image=f"csa-{package_name.replace('_','-')}",
+            image=f"csa-{package_name.replace('_', '-')}",
         ),
     )
     write_file(Path(output_dir / "main.py"), MAIN.format(package_name=package_name))
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please specify the python package name for the package")
+        exit(1)
+    if not re.fullmatch(r"\w+", sys.argv[1], re.ASCII):
+        print(
+            "The package name can only consist of alphanumeric characters and the underscore"
+        )
+
+    main(sys.argv[1])
