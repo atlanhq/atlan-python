@@ -2,8 +2,9 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Iterable, Optional
 
-from pyatlan.client.token import TokenClient
+from pyatlan.client.token import SERVICE_ACCOUNT_, TokenClient
 from pyatlan.client.user import UserClient
+from pyatlan.errors import ErrorCode
 
 
 class UserCache:
@@ -97,15 +98,15 @@ class UserCache:
             return user_id
         # If we are translating an API token,
         # short-circuit any further cache refresh
-        if not user_id:
-            if name.startswith("service-account-"):
-                token = self.token_client.get_by_id(client_id=name)
-                if not token:
-                    # TODO: Add proper exception here
-                    raise
-                if token.guid:
-                    self.map_name_to_id[name] = token.guid
+        if name.startswith(SERVICE_ACCOUNT_):
+            token = self.token_client.get_by_id(client_id=name)
+            if token and token.guid:
+                self.map_name_to_id[name] = token.guid
                 return token.guid
+            else:
+                raise ErrorCode.API_TOKEN_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    name
+                )
         self._refresh_cache()
         return self.map_name_to_id.get(name)
 
@@ -132,15 +133,13 @@ class UserCache:
         if username:
             return username
         # If the username isn't found, check if it is an API token
-        if not username:
-            token = self.token_client.get_by_guid(guid=idstr)
-            if token:
-                username = f"service-account-{token.client_id}"
-                return username
-            else:
-                self._refresh_cache()
-                return self.map_id_to_name.get(idstr)
-        return username
+        token = self.token_client.get_by_guid(guid=idstr)
+        if token:
+            username = f"{SERVICE_ACCOUNT_}{token.client_id}"
+            return username
+        else:
+            self._refresh_cache()
+            return self.map_id_to_name.get(idstr)
 
     def _validate_names(self, names: Iterable[str]):
         """

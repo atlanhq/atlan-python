@@ -148,19 +148,27 @@ class QueryRequest(AtlanObject):
 
 
 class QueryResponse(AtlanObject):
+    """
+    Create a single consolidated response
+    from multiple events related to the same query.
+    """
+
     def __init__(self, events: Optional[list[dict[str, Any]]] = None):
         super().__init__()
         if not events:
             return
         self.rows = []
         self.columns = []
+        # Populate the results from all events that have rows
         for event in events:
             event_rows = event.get("rows")
             event_columns = event.get("columns")
             if event_rows:
                 self.rows.extend(event_rows)
             if not self.columns and event_columns:
+                # Only need to do this once
                 self.columns = event_columns
+        # Populate the remainder from the final event
         last_event = events[-1]
         self.request_id = last_event.get("requestId")
         self.error_name = last_event.get("errorName")

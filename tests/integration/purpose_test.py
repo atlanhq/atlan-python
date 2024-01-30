@@ -6,6 +6,7 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.token import SERVICE_ACCOUNT_
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import AuthPolicy, Purpose
 from pyatlan.model.assets.asset00 import Column
@@ -26,7 +27,6 @@ from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId, delete_asset
 
 MODULE_NAME = TestId.make_unique("Purpose")
-SERVICE_ACCOUNT_ = "service-account-"
 PERSONA_NAME = "Data Assets"
 DB_NAME = "RAW"
 TABLE_NAME = "PACKAGETYPES"
@@ -55,8 +55,8 @@ def atlan_tag_def(
     atlan_tag_def = AtlanTagDef.create(name=MODULE_NAME, color=AtlanTagColor.GREEN)
     typedef = client.typedef.create(atlan_tag_def)
     yield typedef.atlan_tag_defs[0]
-    # Client can be instantiate inside test cases eg. `test_run_query_with_policy`
-    # therefore, here we need to explicitly create the client
+    # The client can be re-instantiated inside test cases, e.g `test_run_query_with_policy`.
+    # Therefore, here we need to explicitly create the client
     client = AtlanClient()
     client.asset.remove_atlan_tag(
         asset_type=Column,
@@ -251,6 +251,7 @@ def test_retrieve_purpose(
     policies = one.policies
     assert policies
     assert len(policies) == 2
+
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
@@ -305,8 +306,9 @@ def test_run_query_with_policy(client: AtlanClient, assign_tag_to_asset, token, 
     redacted = AtlanClient(
         base_url=client.base_url, api_key=token.attributes.access_token
     )
-    # The policy will take some time to go into effect -- start by waiting a
-    # reasonable set amount of time (limit the same query re-running multiple times on data store)
+    # The policy will take some time to go into effect
+    # start by waiting a reasonable set amount of time
+    # (limit the same query re-running multiple times on data store)
     time.sleep(30)
     count = 0
     response = None

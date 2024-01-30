@@ -31,7 +31,7 @@ from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
-from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
+from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
@@ -75,8 +75,6 @@ from pyatlan.utils import (
 )
 
 request_id_var = ContextVar("request_id", default=None)
-
-SERVICE_ACCOUNT_ = "service-account-"
 
 
 def get_adapter() -> logging.LoggerAdapter:
@@ -263,7 +261,6 @@ class AtlanClient(BaseSettings):
 
     def _call_api_internal(self, api, path, params, binary_data=None):
         token = request_id_var.set(str(uuid.uuid4()))
-        EVENT_STREAM = "text/event-stream"
         try:
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
             if binary_data:
