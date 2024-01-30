@@ -1,3 +1,15 @@
+## 1.9.3 (January 30, 2024)
+
+### Bug fixes
+
+- raise exception if tag in query in FluentSearch does not exist
+- (Experimental) fix defects custom package generation
+
+### QOL Improvements
+
+- add api to assign a token to a purpose
+- add api to enable running sql queries
+
 ## 1.9.2 (January 24, 2024)
 
 ### Bug fixes
