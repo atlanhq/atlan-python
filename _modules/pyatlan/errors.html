@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>pyatlan.errors - pyatlan documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -1228,6 +1228,13 @@
         <span class="s2">&quot;Verify the requested typedef exists in your Atlan environment.&quot;</span><span class="p">,</span>
         <span class="n">NotFoundError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">API_TOKEN_NOT_FOUND_BY_NAME</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">404</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-404-028&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;API token with name </span><span class="si">{0}</span><span class="s2"> does not exist.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Verify the API token provided is a valid username for that token.&quot;</span><span class="p">,</span>
+        <span class="n">NotFoundError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">CONFLICT_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">409</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-409-000&quot;</span><span class="p">,</span>
@@ -1268,7 +1275,7 @@
     <span class="n">UNABLE_TO_DESERIALIZE</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">500</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-500-002&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Unable to deserialize value: [0]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to deserialize value: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">RAISE_GITHUB_ISSUE</span><span class="p">,</span>
         <span class="n">LogicError</span><span class="p">,</span>
     <span class="p">)</span>

@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>pyatlan.cache.user_cache - pyatlan documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -440,8 +440,9 @@
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.client.token</span> <span class="kn">import</span> <span class="n">TokenClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.token</span> <span class="kn">import</span> <span class="n">SERVICE_ACCOUNT_</span><span class="p">,</span> <span class="n">TokenClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.user</span> <span class="kn">import</span> <span class="n">UserClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 
 
 <div class="viewcode-block" id="UserCache">
@@ -546,6 +547,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">user_id</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">user_id</span>
+        <span class="c1"># If we are translating an API token,</span>
+        <span class="c1"># short-circuit any further cache refresh</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">SERVICE_ACCOUNT_</span><span class="p">):</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_client</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">token</span> <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">guid</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">guid</span>
+                <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">guid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">API_TOKEN_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                    <span class="n">name</span>
+                <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_cache</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
@@ -570,8 +582,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">username</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">username</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_cache</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span>
+        <span class="c1"># If the username isn&#39;t found, check if it is an API token</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_client</span><span class="o">.</span><span class="n">get_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">idstr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">client_id</span><span class="p">:</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SERVICE_ACCOUNT_</span><span class="si">}{</span><span class="n">token</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="n">username</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_cache</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
