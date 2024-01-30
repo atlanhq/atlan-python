@@ -134,7 +134,7 @@ class UserCache:
             return username
         # If the username isn't found, check if it is an API token
         token = self.token_client.get_by_guid(guid=idstr)
-        if token:
+        if token and token.client_id:
             username = f"{SERVICE_ACCOUNT_}{token.client_id}"
             return username
         else:
