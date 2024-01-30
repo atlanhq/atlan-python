@@ -93,8 +93,7 @@ class UserCache:
         :param name: human-readable name of the user
         :returns: unique identifier (GUID) of the user
         """
-        user_id = self.map_name_to_id.get(name)
-        if user_id:
+        if user_id := self.map_name_to_id.get(name):
             return user_id
         # If we are translating an API token,
         # short-circuit any further cache refresh
@@ -129,8 +128,7 @@ class UserCache:
         :param idstr: unique identifier (GUID) of the user
         :returns: username of the user
         """
-        username = self.map_id_to_name.get(idstr)
-        if username:
+        if username := self.map_id_to_name.get(idstr):
             return username
         # If the username isn't found, check if it is an API token
         token = self.token_client.get_by_guid(guid=idstr)

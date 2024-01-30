@@ -8,7 +8,7 @@ from pyatlan.model.query import QueryRequest, QueryResponse
 
 class QueryClient:
     """
-    A client for for running SQL queries.
+    A client for running SQL queries.
     """
 
     def __init__(self, client: ApiCaller):
