@@ -1929,6 +1929,12 @@ class QueryStatus(str, Enum):
     ERROR = "error"
 
 
+class SaveSemantic(Enum):
+    REPLACE = "REPLACE"
+    APPEND = "APPEND"
+    REMOVE = "REMOVE"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************

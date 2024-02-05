@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
@@ -17,7 +17,7 @@ from typing import Any, Generic, Optional, TypeVar
 from pydantic.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
-from pyatlan.model.enums import AnnouncementType, EntityStatus
+from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
 from pyatlan.model.structs import SourceTagAttachment
 
 
@@ -231,6 +231,47 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
+
+    @validator("entities", each_item=True)
+    def check(cls, asset):
+        from pyatlan.model.assets.asset00 import Referenceable
+
+        rel = []
+        app = []
+        rem = []
+        is_semantic = False
+        for attr in asset.attributes:
+            val = getattr(asset, attr[0], None)
+            if val and isinstance(val, Iterable):
+                for attri in val:
+                    if attri and isinstance(attri, Referenceable):
+                        if attri.semantic == SaveSemantic.REMOVE:
+                            is_semantic = True
+                            setattr(asset, attr[0], None)
+                            rem = rem + [attri]
+                            asset.remove_relationship_attributes = {
+                                to_camel_case(attr[0]): rem
+                            }
+                        elif attri.semantic == SaveSemantic.APPEND:
+                            is_semantic = True
+                            setattr(asset, attr[0], None)
+                            app = app + [attri]
+                            asset.append_relationship_attributes = {
+                                to_camel_case(attr[0]): app
+                            }
+                        else:
+                            rel = rel + [attri]
+                            setattr(asset.attributes, attr[0], rel)
+
+            # TODO: If the value is a relationship
+            elif val and isinstance(val, Referenceable):
+                pass
+        # print(asset.append_relationships)
+        if is_semantic:
+            asset = asset.__class__(
+                **asset.dict(by_alias=True, exclude_unset=True, exclude_none=True)
+            )
+        return asset
 
     @validator("entities", each_item=True)
     def flush_custom_metadata(cls, v):

@@ -392,6 +392,7 @@ class AtlanClient(BaseSettings):
                 params["data"] = request_obj.json(
                     by_alias=True, exclude_unset=exclude_unset
                 )
+                print(params["data"])
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
             else:
