@@ -2092,6 +2092,22 @@ class DataProductStatus(str, Enum):
     ARCHIVED = "Archived"
 
 
+class DynamoDBSecondaryIndexProjectionType(str, Enum):
+    KEYS_ONLY = "KEYS_ONLY"
+    INCLUDE = "INCLUDE"
+    ALL = "ALL"
+
+
+class DynamoDBStatus(str, Enum):
+    CREATING = "CREATING"
+    UPDATING = "UPDATING"
+    DELETING = "DELETING"
+    ACTIVE = "ACTIVE"
+    INACCESSIBLE_ENCRYPTION_CREDENTIALS = "INACCESSIBLE_ENCRYPTION_CREDENTIALS"
+    ARCHIVING = "ARCHIVING"
+    ARCHIVED = "ARCHIVED"
+
+
 class FileType(str, Enum):
     PDF = "pdf"
     DOC = "doc"

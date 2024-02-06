@@ -8,234 +8,138 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import KeywordTextField, NumericField
 
-from .asset18 import BI
+from .asset19 import BI
 
 
-class Mode(BI):
+class Preset(BI):
     """Description"""
 
-    type_name: str = Field("Mode", allow_mutation=False)
+    type_name: str = Field("Preset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Mode":
-            raise ValueError("must be Mode")
+        if v != "Preset":
+            raise ValueError("must be Preset")
         return v
 
     def __setattr__(self, name, value):
-        if name in Mode._convenience_properties:
+        if name in Preset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_ID: ClassVar[KeywordField] = KeywordField("modeId", "modeId")
-    """
-    TBC
-    """
-    MODE_TOKEN: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeToken", "modeToken", "modeToken.text"
+    PRESET_WORKSPACE_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceId", "presetWorkspaceId"
     )
     """
-    TBC
+    Identifier of the workspace in which this asset exists, in Preset.
     """
-    MODE_WORKSPACE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeWorkspaceName", "modeWorkspaceName.keyword", "modeWorkspaceName"
+    PRESET_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetWorkspaceQualifiedName",
+        "presetWorkspaceQualifiedName",
+        "presetWorkspaceQualifiedName.text",
     )
     """
-    TBC
+    Unique name of the workspace in which this asset exists.
     """
-    MODE_WORKSPACE_USERNAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
+    PRESET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
+        "presetDashboardId", "presetDashboardId"
     )
     """
-    TBC
+    Identifier of the dashboard in which this asset exists, in Preset.
     """
-    MODE_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeWorkspaceQualifiedName",
-        "modeWorkspaceQualifiedName",
-        "modeWorkspaceQualifiedName.text",
+    PRESET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetDashboardQualifiedName",
+        "presetDashboardQualifiedName",
+        "presetDashboardQualifiedName.text",
     )
     """
-    TBC
-    """
-    MODE_REPORT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeReportName", "modeReportName.keyword", "modeReportName"
-    )
-    """
-    TBC
-    """
-    MODE_REPORT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeReportQualifiedName",
-        "modeReportQualifiedName",
-        "modeReportQualifiedName.text",
-    )
-    """
-    TBC
-    """
-    MODE_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeQueryName", "modeQueryName.keyword", "modeQueryName"
-    )
-    """
-    TBC
-    """
-    MODE_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "modeQueryQualifiedName",
-        "modeQueryQualifiedName",
-        "modeQueryQualifiedName.text",
-    )
-    """
-    TBC
+    Unique name of the dashboard in which this asset exists.
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mode_id",
-        "mode_token",
-        "mode_workspace_name",
-        "mode_workspace_username",
-        "mode_workspace_qualified_name",
-        "mode_report_name",
-        "mode_report_qualified_name",
-        "mode_query_name",
-        "mode_query_qualified_name",
+        "preset_workspace_id",
+        "preset_workspace_qualified_name",
+        "preset_dashboard_id",
+        "preset_dashboard_qualified_name",
     ]
 
     @property
-    def mode_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_id
+    def preset_workspace_id(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.preset_workspace_id
 
-    @mode_id.setter
-    def mode_id(self, mode_id: Optional[str]):
+    @preset_workspace_id.setter
+    def preset_workspace_id(self, preset_workspace_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_id = mode_id
+        self.attributes.preset_workspace_id = preset_workspace_id
 
     @property
-    def mode_token(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_token
-
-    @mode_token.setter
-    def mode_token(self, mode_token: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_token = mode_token
-
-    @property
-    def mode_workspace_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_workspace_name
-
-    @mode_workspace_name.setter
-    def mode_workspace_name(self, mode_workspace_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_workspace_name = mode_workspace_name
-
-    @property
-    def mode_workspace_username(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mode_workspace_username
-        )
-
-    @mode_workspace_username.setter
-    def mode_workspace_username(self, mode_workspace_username: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_workspace_username = mode_workspace_username
-
-    @property
-    def mode_workspace_qualified_name(self) -> Optional[str]:
+    def preset_workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mode_workspace_qualified_name
+            else self.attributes.preset_workspace_qualified_name
         )
 
-    @mode_workspace_qualified_name.setter
-    def mode_workspace_qualified_name(
-        self, mode_workspace_qualified_name: Optional[str]
+    @preset_workspace_qualified_name.setter
+    def preset_workspace_qualified_name(
+        self, preset_workspace_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_workspace_qualified_name = mode_workspace_qualified_name
+        self.attributes.preset_workspace_qualified_name = (
+            preset_workspace_qualified_name
+        )
 
     @property
-    def mode_report_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_report_name
+    def preset_dashboard_id(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.preset_dashboard_id
 
-    @mode_report_name.setter
-    def mode_report_name(self, mode_report_name: Optional[str]):
+    @preset_dashboard_id.setter
+    def preset_dashboard_id(self, preset_dashboard_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report_name = mode_report_name
+        self.attributes.preset_dashboard_id = preset_dashboard_id
 
     @property
-    def mode_report_qualified_name(self) -> Optional[str]:
+    def preset_dashboard_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mode_report_qualified_name
+            else self.attributes.preset_dashboard_qualified_name
         )
 
-    @mode_report_qualified_name.setter
-    def mode_report_qualified_name(self, mode_report_qualified_name: Optional[str]):
+    @preset_dashboard_qualified_name.setter
+    def preset_dashboard_qualified_name(
+        self, preset_dashboard_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report_qualified_name = mode_report_qualified_name
-
-    @property
-    def mode_query_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_query_name
-
-    @mode_query_name.setter
-    def mode_query_name(self, mode_query_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_name = mode_query_name
-
-    @property
-    def mode_query_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mode_query_qualified_name
+        self.attributes.preset_dashboard_qualified_name = (
+            preset_dashboard_qualified_name
         )
-
-    @mode_query_qualified_name.setter
-    def mode_query_qualified_name(self, mode_query_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
     class Attributes(BI.Attributes):
-        mode_id: Optional[str] = Field(None, description="", alias="modeId")
-        mode_token: Optional[str] = Field(None, description="", alias="modeToken")
-        mode_workspace_name: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceName"
+        preset_workspace_id: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceId"
         )
-        mode_workspace_username: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceUsername"
+        preset_workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="presetWorkspaceQualifiedName"
         )
-        mode_workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceQualifiedName"
+        preset_dashboard_id: Optional[int] = Field(
+            None, description="", alias="presetDashboardId"
         )
-        mode_report_name: Optional[str] = Field(
-            None, description="", alias="modeReportName"
-        )
-        mode_report_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeReportQualifiedName"
-        )
-        mode_query_name: Optional[str] = Field(
-            None, description="", alias="modeQueryName"
-        )
-        mode_query_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeQueryQualifiedName"
+        preset_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="presetDashboardQualifiedName"
         )
 
-    attributes: "Mode.Attributes" = Field(
-        default_factory=lambda: Mode.Attributes(),
+    attributes: "Preset.Attributes" = Field(
+        default_factory=lambda: Preset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-Mode.Attributes.update_forward_refs()
+Preset.Attributes.update_forward_refs()

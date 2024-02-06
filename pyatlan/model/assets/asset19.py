@@ -11,23 +11,23 @@ from pydantic import Field, validator
 from .asset00 import Catalog
 
 
-class SaaS(Catalog):
+class BI(Catalog):
     """Description"""
 
-    type_name: str = Field("SaaS", allow_mutation=False)
+    type_name: str = Field("BI", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SaaS":
-            raise ValueError("must be SaaS")
+        if v != "BI":
+            raise ValueError("must be BI")
         return v
 
     def __setattr__(self, name, value):
-        if name in SaaS._convenience_properties:
+        if name in BI._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
 
 
-SaaS.Attributes.update_forward_refs()
+BI.Attributes.update_forward_refs()

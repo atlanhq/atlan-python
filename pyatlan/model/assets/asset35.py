@@ -9,150 +9,230 @@ from typing import ClassVar, Optional
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
-from pyatlan.model.structs import AzureTag
+from pyatlan.model.structs import AwsTag
 
-from .asset16 import ObjectStore
+from .asset17 import ObjectStore
 
 
-class ADLS(ObjectStore):
+class S3(ObjectStore):
     """Description"""
 
-    type_name: str = Field("ADLS", allow_mutation=False)
+    type_name: str = Field("S3", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ADLS":
-            raise ValueError("must be ADLS")
+        if v != "S3":
+            raise ValueError("must be S3")
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLS._convenience_properties:
+        if name in S3._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADLS_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsAccountQualifiedName",
-        "adlsAccountQualifiedName",
-        "adlsAccountQualifiedName.text",
+    S3E_TAG: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3ETag", "s3ETag", "s3ETag.text"
     )
     """
-    TBC
+    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.
+    """  # noqa: E501
+    S3ENCRYPTION: ClassVar[KeywordField] = KeywordField("s3Encryption", "s3Encryption")
     """
-    AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
-        "azureResourceId", "azureResourceId", "azureResourceId.text"
+
+    """
+    AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
+        "awsArn", "awsArn", "awsArn.text"
     )
     """
-    TBC
+    Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.
+    """  # noqa: E501
+    AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
     """
-    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "azureLocation", "azureLocation"
+    Group of AWS region and service objects.
+    """
+    AWS_SERVICE: ClassVar[KeywordField] = KeywordField("awsService", "awsService")
+    """
+    Type of service in which the asset exists.
+    """
+    AWS_REGION: ClassVar[KeywordField] = KeywordField("awsRegion", "awsRegion")
+    """
+    Physical region where the data center in which the asset exists is clustered.
+    """
+    AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
+        "awsAccountId", "awsAccountId"
     )
     """
-    TBC
+    12-digit number that uniquely identifies an AWS account.
     """
-    ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+    AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
+        "awsResourceId", "awsResourceId"
     )
     """
-    TBC
+    Unique resource ID assigned when a new resource is created.
     """
-    AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
+    AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+    )
     """
-    TBC
+    Root user's name.
+    """
+    AWS_OWNER_ID: ClassVar[KeywordField] = KeywordField("awsOwnerId", "awsOwnerId")
+    """
+    Root user's ID.
+    """
+    AWS_TAGS: ClassVar[KeywordField] = KeywordField("awsTags", "awsTags")
+    """
+    List of tags that have been applied to the asset in AWS.
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "adls_account_qualified_name",
-        "azure_resource_id",
-        "azure_location",
-        "adls_account_secondary_location",
-        "azure_tags",
+        "s3_e_tag",
+        "s3_encryption",
+        "aws_arn",
+        "aws_partition",
+        "aws_service",
+        "aws_region",
+        "aws_account_id",
+        "aws_resource_id",
+        "aws_owner_name",
+        "aws_owner_id",
+        "aws_tags",
     ]
 
     @property
-    def adls_account_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_qualified_name
-        )
+    def s3_e_tag(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_e_tag
 
-    @adls_account_qualified_name.setter
-    def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
+    @s3_e_tag.setter
+    def s3_e_tag(self, s3_e_tag: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_qualified_name = adls_account_qualified_name
+        self.attributes.s3_e_tag = s3_e_tag
 
     @property
-    def azure_resource_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.azure_resource_id
+    def s3_encryption(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_encryption
 
-    @azure_resource_id.setter
-    def azure_resource_id(self, azure_resource_id: Optional[str]):
+    @s3_encryption.setter
+    def s3_encryption(self, s3_encryption: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_resource_id = azure_resource_id
+        self.attributes.s3_encryption = s3_encryption
 
     @property
-    def azure_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.azure_location
+    def aws_arn(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_arn
 
-    @azure_location.setter
-    def azure_location(self, azure_location: Optional[str]):
+    @aws_arn.setter
+    def aws_arn(self, aws_arn: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_location = azure_location
+        self.attributes.aws_arn = aws_arn
 
     @property
-    def adls_account_secondary_location(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_secondary_location
-        )
+    def aws_partition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_partition
 
-    @adls_account_secondary_location.setter
-    def adls_account_secondary_location(
-        self, adls_account_secondary_location: Optional[str]
-    ):
+    @aws_partition.setter
+    def aws_partition(self, aws_partition: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_secondary_location = (
-            adls_account_secondary_location
-        )
+        self.attributes.aws_partition = aws_partition
 
     @property
-    def azure_tags(self) -> Optional[list[AzureTag]]:
-        return None if self.attributes is None else self.attributes.azure_tags
+    def aws_service(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_service
 
-    @azure_tags.setter
-    def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
+    @aws_service.setter
+    def aws_service(self, aws_service: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_tags = azure_tags
+        self.attributes.aws_service = aws_service
+
+    @property
+    def aws_region(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_region
+
+    @aws_region.setter
+    def aws_region(self, aws_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_region = aws_region
+
+    @property
+    def aws_account_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_account_id
+
+    @aws_account_id.setter
+    def aws_account_id(self, aws_account_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_account_id = aws_account_id
+
+    @property
+    def aws_resource_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_resource_id
+
+    @aws_resource_id.setter
+    def aws_resource_id(self, aws_resource_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_resource_id = aws_resource_id
+
+    @property
+    def aws_owner_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_owner_name
+
+    @aws_owner_name.setter
+    def aws_owner_name(self, aws_owner_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_owner_name = aws_owner_name
+
+    @property
+    def aws_owner_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.aws_owner_id
+
+    @aws_owner_id.setter
+    def aws_owner_id(self, aws_owner_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_owner_id = aws_owner_id
+
+    @property
+    def aws_tags(self) -> Optional[list[AwsTag]]:
+        return None if self.attributes is None else self.attributes.aws_tags
+
+    @aws_tags.setter
+    def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_tags = aws_tags
 
     class Attributes(ObjectStore.Attributes):
-        adls_account_qualified_name: Optional[str] = Field(
-            None, description="", alias="adlsAccountQualifiedName"
+        s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
+        s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
+        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
+        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
+        aws_service: Optional[str] = Field(None, description="", alias="awsService")
+        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
+        aws_account_id: Optional[str] = Field(
+            None, description="", alias="awsAccountId"
         )
-        azure_resource_id: Optional[str] = Field(
-            None, description="", alias="azureResourceId"
+        aws_resource_id: Optional[str] = Field(
+            None, description="", alias="awsResourceId"
         )
-        azure_location: Optional[str] = Field(
-            None, description="", alias="azureLocation"
+        aws_owner_name: Optional[str] = Field(
+            None, description="", alias="awsOwnerName"
         )
-        adls_account_secondary_location: Optional[str] = Field(
-            None, description="", alias="adlsAccountSecondaryLocation"
-        )
-        azure_tags: Optional[list[AzureTag]] = Field(
-            None, description="", alias="azureTags"
-        )
+        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
+        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
 
-    attributes: "ADLS.Attributes" = Field(
-        default_factory=lambda: ADLS.Attributes(),
+    attributes: "S3.Attributes" = Field(
+        default_factory=lambda: S3.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-ADLS.Attributes.update_forward_refs()
+S3.Attributes.update_forward_refs()

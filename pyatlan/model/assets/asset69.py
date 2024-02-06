@@ -4,591 +4,68 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
-    NumericField,
     RelationField,
 )
 
-from .asset43 import Looker
+from .asset43 import Tableau
 
 
-class LookerLook(Looker):
+class TableauWorkbook(Tableau):
     """Description"""
 
-    type_name: str = Field("LookerLook", allow_mutation=False)
+    type_name: str = Field("TableauWorkbook", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "LookerLook":
-            raise ValueError("must be LookerLook")
+        if v != "TableauWorkbook":
+            raise ValueError("must be TableauWorkbook")
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerLook._convenience_properties:
+        if name in TableauWorkbook._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
-    """
-    TBC
-    """
-    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
-        "sourceUserId", "sourceUserId"
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    TBC
+    Unique name of the site in which this workbook exists.
     """
-    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceViewCount", "sourceViewCount"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
     )
     """
-    TBC
+    Unique name of the project in which this workbook exists.
     """
-    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
-        "sourcelastUpdaterId", "sourcelastUpdaterId"
+    TOP_LEVEL_PROJECT_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectName", "topLevelProjectName"
     )
     """
-    TBC
+    Simple name of the top-level project in which this workbook exists.
     """
-    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastAccessedAt", "sourceLastAccessedAt"
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    TBC
+    Unique name of the top-level project in which this workbook exists.
     """
-    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastViewedAt", "sourceLastViewedAt"
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
     )
     """
-    TBC
-    """
-    SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceContentMetadataId", "sourceContentMetadataId"
-    )
-    """
-    TBC
-    """
-    SOURCE_QUERY_ID: ClassVar[NumericField] = NumericField(
-        "sourceQueryId", "sourceQueryId"
-    )
-    """
-    TBC
-    """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
-    """
-    TBC
+    List of top-level projects with their nested child projects.
     """
 
-    QUERY: ClassVar[RelationField] = RelationField("query")
-    """
-    TBC
-    """
-    FOLDER: ClassVar[RelationField] = RelationField("folder")
-    """
-    TBC
-    """
-    TILE: ClassVar[RelationField] = RelationField("tile")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "folder_name",
-        "source_user_id",
-        "source_view_count",
-        "sourcelast_updater_id",
-        "source_last_accessed_at",
-        "source_last_viewed_at",
-        "source_content_metadata_id",
-        "source_query_id",
-        "model_name",
-        "query",
-        "folder",
-        "tile",
-        "model",
-        "dashboard",
-    ]
-
-    @property
-    def folder_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.folder_name
-
-    @folder_name.setter
-    def folder_name(self, folder_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder_name = folder_name
-
-    @property
-    def source_user_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_user_id
-
-    @source_user_id.setter
-    def source_user_id(self, source_user_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_user_id = source_user_id
-
-    @property
-    def source_view_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_view_count
-
-    @source_view_count.setter
-    def source_view_count(self, source_view_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_view_count = source_view_count
-
-    @property
-    def sourcelast_updater_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.sourcelast_updater_id
-        )
-
-    @sourcelast_updater_id.setter
-    def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sourcelast_updater_id = sourcelast_updater_id
-
-    @property
-    def source_last_accessed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_accessed_at
-        )
-
-    @source_last_accessed_at.setter
-    def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_accessed_at = source_last_accessed_at
-
-    @property
-    def source_last_viewed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_viewed_at
-        )
-
-    @source_last_viewed_at.setter
-    def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_viewed_at = source_last_viewed_at
-
-    @property
-    def source_content_metadata_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.source_content_metadata_id
-        )
-
-    @source_content_metadata_id.setter
-    def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_content_metadata_id = source_content_metadata_id
-
-    @property
-    def source_query_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_query_id
-
-    @source_query_id.setter
-    def source_query_id(self, source_query_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_query_id = source_query_id
-
-    @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
-
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
-
-    @property
-    def query(self) -> Optional[LookerQuery]:
-        return None if self.attributes is None else self.attributes.query
-
-    @query.setter
-    def query(self, query: Optional[LookerQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query = query
-
-    @property
-    def folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.folder
-
-    @folder.setter
-    def folder(self, folder: Optional[LookerFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder = folder
-
-    @property
-    def tile(self) -> Optional[LookerTile]:
-        return None if self.attributes is None else self.attributes.tile
-
-    @tile.setter
-    def tile(self, tile: Optional[LookerTile]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tile = tile
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    @property
-    def dashboard(self) -> Optional[LookerDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[LookerDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(None, description="", alias="folderName")
-        source_user_id: Optional[int] = Field(
-            None, description="", alias="sourceUserId"
-        )
-        source_view_count: Optional[int] = Field(
-            None, description="", alias="sourceViewCount"
-        )
-        sourcelast_updater_id: Optional[int] = Field(
-            None, description="", alias="sourcelastUpdaterId"
-        )
-        source_last_accessed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastAccessedAt"
-        )
-        source_last_viewed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastViewedAt"
-        )
-        source_content_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceContentMetadataId"
-        )
-        source_query_id: Optional[int] = Field(
-            None, description="", alias="sourceQueryId"
-        )
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        query: Optional[LookerQuery] = Field(
-            None, description="", alias="query"
-        )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
-        )  # relationship
-        tile: Optional[LookerTile] = Field(
-            None, description="", alias="tile"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-
-    attributes: "LookerLook.Attributes" = Field(
-        default_factory=lambda: LookerLook.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerDashboard(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerDashboard":
-            raise ValueError("must be LookerDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerDashboard._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
-    """
-    TBC
-    """
-    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
-        "sourceUserId", "sourceUserId"
-    )
-    """
-    TBC
-    """
-    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceViewCount", "sourceViewCount"
-    )
-    """
-    TBC
-    """
-    SOURCE_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceMetadataId", "sourceMetadataId"
-    )
-    """
-    TBC
-    """
-    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
-        "sourcelastUpdaterId", "sourcelastUpdaterId"
-    )
-    """
-    TBC
-    """
-    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastAccessedAt", "sourceLastAccessedAt"
-    )
-    """
-    TBC
-    """
-    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastViewedAt", "sourceLastViewedAt"
-    )
-    """
-    TBC
-    """
-
-    TILES: ClassVar[RelationField] = RelationField("tiles")
-    """
-    TBC
-    """
-    LOOKS: ClassVar[RelationField] = RelationField("looks")
-    """
-    TBC
-    """
-    FOLDER: ClassVar[RelationField] = RelationField("folder")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "folder_name",
-        "source_user_id",
-        "source_view_count",
-        "source_metadata_id",
-        "sourcelast_updater_id",
-        "source_last_accessed_at",
-        "source_last_viewed_at",
-        "tiles",
-        "looks",
-        "folder",
-    ]
-
-    @property
-    def folder_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.folder_name
-
-    @folder_name.setter
-    def folder_name(self, folder_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder_name = folder_name
-
-    @property
-    def source_user_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_user_id
-
-    @source_user_id.setter
-    def source_user_id(self, source_user_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_user_id = source_user_id
-
-    @property
-    def source_view_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_view_count
-
-    @source_view_count.setter
-    def source_view_count(self, source_view_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_view_count = source_view_count
-
-    @property
-    def source_metadata_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_metadata_id
-
-    @source_metadata_id.setter
-    def source_metadata_id(self, source_metadata_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_metadata_id = source_metadata_id
-
-    @property
-    def sourcelast_updater_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.sourcelast_updater_id
-        )
-
-    @sourcelast_updater_id.setter
-    def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sourcelast_updater_id = sourcelast_updater_id
-
-    @property
-    def source_last_accessed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_accessed_at
-        )
-
-    @source_last_accessed_at.setter
-    def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_accessed_at = source_last_accessed_at
-
-    @property
-    def source_last_viewed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_viewed_at
-        )
-
-    @source_last_viewed_at.setter
-    def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_viewed_at = source_last_viewed_at
-
-    @property
-    def tiles(self) -> Optional[list[LookerTile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[LookerTile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
-
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looks = looks
-
-    @property
-    def folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.folder
-
-    @folder.setter
-    def folder(self, folder: Optional[LookerFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder = folder
-
-    class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(None, description="", alias="folderName")
-        source_user_id: Optional[int] = Field(
-            None, description="", alias="sourceUserId"
-        )
-        source_view_count: Optional[int] = Field(
-            None, description="", alias="sourceViewCount"
-        )
-        source_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceMetadataId"
-        )
-        sourcelast_updater_id: Optional[int] = Field(
-            None, description="", alias="sourcelastUpdaterId"
-        )
-        source_last_accessed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastAccessedAt"
-        )
-        source_last_viewed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastViewedAt"
-        )
-        tiles: Optional[list[LookerTile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
-        )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
-        )  # relationship
-
-    attributes: "LookerDashboard.Attributes" = Field(
-        default_factory=lambda: LookerDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerFolder(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerFolder", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerFolder":
-            raise ValueError("must be LookerFolder")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerFolder._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceContentMetadataId", "sourceContentMetadataId"
-    )
-    """
-    TBC
-    """
-    SOURCE_CREATOR_ID: ClassVar[NumericField] = NumericField(
-        "sourceCreatorId", "sourceCreatorId"
-    )
-    """
-    TBC
-    """
-    SOURCE_CHILD_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceChildCount", "sourceChildCount"
-    )
-    """
-    TBC
-    """
-    SOURCE_PARENT_ID: ClassVar[NumericField] = NumericField(
-        "sourceParentID", "sourceParentID"
-    )
-    """
-    TBC
-    """
-
-    LOOKER_SUB_FOLDERS: ClassVar[RelationField] = RelationField("lookerSubFolders")
+    PROJECT: ClassVar[RelationField] = RelationField("project")
     """
     TBC
     """
@@ -596,1215 +73,1263 @@ class LookerFolder(Looker):
     """
     TBC
     """
-    LOOKS: ClassVar[RelationField] = RelationField("looks")
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
     """
     TBC
     """
-    LOOKER_PARENT_FOLDER: ClassVar[RelationField] = RelationField("lookerParentFolder")
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_content_metadata_id",
-        "source_creator_id",
-        "source_child_count",
-        "source_parent_i_d",
-        "looker_sub_folders",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "project",
         "dashboards",
-        "looks",
-        "looker_parent_folder",
+        "worksheets",
+        "datasources",
     ]
 
     @property
-    def source_content_metadata_id(self) -> Optional[int]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.top_level_project_name
+        )
+
+    @top_level_project_name.setter
+    def top_level_project_name(self, top_level_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_name = top_level_project_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.source_content_metadata_id
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @source_content_metadata_id.setter
-    def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_content_metadata_id = source_content_metadata_id
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
     @property
-    def source_creator_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_creator_id
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
 
-    @source_creator_id.setter
-    def source_creator_id(self, source_creator_id: Optional[int]):
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_creator_id = source_creator_id
+        self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def source_child_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_child_count
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
 
-    @source_child_count.setter
-    def source_child_count(self, source_child_count: Optional[int]):
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_child_count = source_child_count
+        self.attributes.project = project
 
     @property
-    def source_parent_i_d(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_parent_i_d
-
-    @source_parent_i_d.setter
-    def source_parent_i_d(self, source_parent_i_d: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_parent_i_d = source_parent_i_d
-
-    @property
-    def looker_sub_folders(self) -> Optional[list[LookerFolder]]:
-        return None if self.attributes is None else self.attributes.looker_sub_folders
-
-    @looker_sub_folders.setter
-    def looker_sub_folders(self, looker_sub_folders: Optional[list[LookerFolder]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looker_sub_folders = looker_sub_folders
-
-    @property
-    def dashboards(self) -> Optional[list[LookerDashboard]]:
+    def dashboards(self) -> Optional[list[TableauDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
     @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[LookerDashboard]]):
+    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
 
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looks = looks
+        self.attributes.worksheets = worksheets
 
     @property
-    def looker_parent_folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.looker_parent_folder
+    def datasources(self) -> Optional[list[TableauDatasource]]:
+        return None if self.attributes is None else self.attributes.datasources
 
-    @looker_parent_folder.setter
-    def looker_parent_folder(self, looker_parent_folder: Optional[LookerFolder]):
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[TableauDatasource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_parent_folder = looker_parent_folder
+        self.attributes.datasources = datasources
 
-    class Attributes(Looker.Attributes):
-        source_content_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceContentMetadataId"
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        source_creator_id: Optional[int] = Field(
-            None, description="", alias="sourceCreatorId"
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
         )
-        source_child_count: Optional[int] = Field(
-            None, description="", alias="sourceChildCount"
+        top_level_project_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectName"
         )
-        source_parent_i_d: Optional[int] = Field(
-            None, description="", alias="sourceParentID"
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
         )
-        looker_sub_folders: Optional[list[LookerFolder]] = Field(
-            None, description="", alias="lookerSubFolders"
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
         )  # relationship
-        dashboards: Optional[list[LookerDashboard]] = Field(
+        dashboards: Optional[list[TableauDashboard]] = Field(
             None, description="", alias="dashboards"
         )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
         )  # relationship
-        looker_parent_folder: Optional[LookerFolder] = Field(
-            None, description="", alias="lookerParentFolder"
+        datasources: Optional[list[TableauDatasource]] = Field(
+            None, description="", alias="datasources"
         )  # relationship
 
-    attributes: "LookerFolder.Attributes" = Field(
-        default_factory=lambda: LookerFolder.Attributes(),
+    attributes: "TableauWorkbook.Attributes" = Field(
+        default_factory=lambda: TableauWorkbook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class LookerTile(Looker):
+class TableauDatasourceField(Tableau):
     """Description"""
 
-    type_name: str = Field("LookerTile", allow_mutation=False)
+    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "LookerTile":
-            raise ValueError("must be LookerTile")
+        if v != "TableauDatasourceField":
+            raise ValueError("must be TableauDatasourceField")
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerTile._convenience_properties:
+        if name in TableauDatasourceField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    LOOKML_LINK_ID: ClassVar[KeywordField] = KeywordField(
-        "lookmlLinkId", "lookmlLinkId"
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    TBC
+    Unique name of the site in which this datasource field exists.
     """
-    MERGE_RESULT_ID: ClassVar[KeywordField] = KeywordField(
-        "mergeResultId", "mergeResultId"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
     )
     """
-    TBC
+    Unique name of the project in which this datasource field exists.
     """
-    NOTE_TEXT: ClassVar[KeywordField] = KeywordField("noteText", "noteText")
-    """
-    TBC
-    """
-    QUERY_ID: ClassVar[NumericField] = NumericField("queryID", "queryID")
-    """
-    TBC
-    """
-    RESULT_MAKER_ID: ClassVar[NumericField] = NumericField(
-        "resultMakerID", "resultMakerID"
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    TBC
+    Unique name of the top-level project in which this datasource field exists.
     """
-    SUBTITLE_TEXT: ClassVar[KeywordField] = KeywordField("subtitleText", "subtitleText")
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
     """
-    TBC
+    Unique name of the workbook in which this datasource field exists.
     """
-    LOOK_ID: ClassVar[NumericField] = NumericField("lookId", "lookId")
+    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
     """
-    TBC
+    Unique name of the datasource in which this datasource field exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects and their nested child projects.
+    """
+    FULLY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "fullyQualifiedName", "fullyQualifiedName"
+    )
+    """
+    Name used internally in Tableau to uniquely identify this field.
+    """
+    TABLEAU_DATASOURCE_FIELD_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldDataCategory", "tableauDatasourceFieldDataCategory"
+    )
+    """
+    Data category of this field.
+    """
+    TABLEAU_DATASOURCE_FIELD_ROLE: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldRole", "tableauDatasourceFieldRole"
+    )
+    """
+    Role of this field, for example: 'dimension', 'measure', or 'unknown'.
+    """
+    TABLEAU_DATASOURCE_FIELD_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableauDatasourceFieldDataType",
+        "tableauDatasourceFieldDataType",
+        "tableauDatasourceFieldDataType.text",
+    )
+    """
+    Data type of this field.
+    """
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
+    """
+    Tables upstream to this datasource field.
+    """
+    TABLEAU_DATASOURCE_FIELD_FORMULA: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldFormula", "tableauDatasourceFieldFormula"
+    )
+    """
+    Formula for this field.
+    """
+    TABLEAU_DATASOURCE_FIELD_BIN_SIZE: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldBinSize", "tableauDatasourceFieldBinSize"
+    )
+    """
+    Bin size of this field.
+    """
+    UPSTREAM_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "upstreamColumns", "upstreamColumns"
+    )
+    """
+    Columns upstream to this field.
+    """
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
+    """
+    Fields upstream to this field.
+    """
+    DATASOURCE_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "datasourceFieldType", "datasourceFieldType"
+    )
+    """
+    Type of this datasource field.
     """
 
-    QUERY: ClassVar[RelationField] = RelationField("query")
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
     """
     TBC
     """
-    LOOK: ClassVar[RelationField] = RelationField("look")
-    """
-    TBC
-    """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    DATASOURCE: ClassVar[RelationField] = RelationField("datasource")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "lookml_link_id",
-        "merge_result_id",
-        "note_text",
-        "query_i_d",
-        "result_maker_i_d",
-        "subtitle_text",
-        "look_id",
-        "query",
-        "look",
-        "dashboard",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "datasource_qualified_name",
+        "project_hierarchy",
+        "fully_qualified_name",
+        "tableau_datasource_field_data_category",
+        "tableau_datasource_field_role",
+        "tableau_datasource_field_data_type",
+        "upstream_tables",
+        "tableau_datasource_field_formula",
+        "tableau_datasource_field_bin_size",
+        "upstream_columns",
+        "upstream_fields",
+        "datasource_field_type",
+        "worksheets",
+        "datasource",
     ]
 
     @property
-    def lookml_link_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.lookml_link_id
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
 
-    @lookml_link_id.setter
-    def lookml_link_id(self, lookml_link_id: Optional[str]):
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.lookml_link_id = lookml_link_id
+        self.attributes.site_qualified_name = site_qualified_name
 
     @property
-    def merge_result_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.merge_result_id
-
-    @merge_result_id.setter
-    def merge_result_id(self, merge_result_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.merge_result_id = merge_result_id
-
-    @property
-    def note_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.note_text
-
-    @note_text.setter
-    def note_text(self, note_text: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.note_text = note_text
-
-    @property
-    def query_i_d(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_i_d
-
-    @query_i_d.setter
-    def query_i_d(self, query_i_d: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_i_d = query_i_d
-
-    @property
-    def result_maker_i_d(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.result_maker_i_d
-
-    @result_maker_i_d.setter
-    def result_maker_i_d(self, result_maker_i_d: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.result_maker_i_d = result_maker_i_d
-
-    @property
-    def subtitle_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.subtitle_text
-
-    @subtitle_text.setter
-    def subtitle_text(self, subtitle_text: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.subtitle_text = subtitle_text
-
-    @property
-    def look_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.look_id
-
-    @look_id.setter
-    def look_id(self, look_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.look_id = look_id
-
-    @property
-    def query(self) -> Optional[LookerQuery]:
-        return None if self.attributes is None else self.attributes.query
-
-    @query.setter
-    def query(self, query: Optional[LookerQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query = query
-
-    @property
-    def look(self) -> Optional[LookerLook]:
-        return None if self.attributes is None else self.attributes.look
-
-    @look.setter
-    def look(self, look: Optional[LookerLook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.look = look
-
-    @property
-    def dashboard(self) -> Optional[LookerDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[LookerDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    class Attributes(Looker.Attributes):
-        lookml_link_id: Optional[str] = Field(
-            None, description="", alias="lookmlLinkId"
-        )
-        merge_result_id: Optional[str] = Field(
-            None, description="", alias="mergeResultId"
-        )
-        note_text: Optional[str] = Field(None, description="", alias="noteText")
-        query_i_d: Optional[int] = Field(None, description="", alias="queryID")
-        result_maker_i_d: Optional[int] = Field(
-            None, description="", alias="resultMakerID"
-        )
-        subtitle_text: Optional[str] = Field(None, description="", alias="subtitleText")
-        look_id: Optional[int] = Field(None, description="", alias="lookId")
-        query: Optional[LookerQuery] = Field(
-            None, description="", alias="query"
-        )  # relationship
-        look: Optional[LookerLook] = Field(
-            None, description="", alias="look"
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-
-    attributes: "LookerTile.Attributes" = Field(
-        default_factory=lambda: LookerTile.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerModel(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerModel", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerModel":
-            raise ValueError("must be LookerModel")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerModel._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    TBC
-    """
-
-    EXPLORES: ClassVar[RelationField] = RelationField("explores")
-    """
-    TBC
-    """
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    LOOK: ClassVar[RelationField] = RelationField("look")
-    """
-    TBC
-    """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "explores",
-        "project",
-        "look",
-        "queries",
-        "fields",
-    ]
-
-    @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
-
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
-
-    @property
-    def explores(self) -> Optional[list[LookerExplore]]:
-        return None if self.attributes is None else self.attributes.explores
-
-    @explores.setter
-    def explores(self, explores: Optional[list[LookerExplore]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.explores = explores
-
-    @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
-
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project = project
-
-    @property
-    def look(self) -> Optional[LookerLook]:
-        return None if self.attributes is None else self.attributes.look
-
-    @look.setter
-    def look(self, look: Optional[LookerLook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.look = look
-
-    @property
-    def queries(self) -> Optional[list[LookerQuery]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[LookerQuery]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        explores: Optional[list[LookerExplore]] = Field(
-            None, description="", alias="explores"
-        )  # relationship
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        look: Optional[LookerLook] = Field(
-            None, description="", alias="look"
-        )  # relationship
-        queries: Optional[list[LookerQuery]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-
-    attributes: "LookerModel.Attributes" = Field(
-        default_factory=lambda: LookerModel.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerExplore(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerExplore", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerExplore":
-            raise ValueError("must be LookerExplore")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerExplore._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    TBC
-    """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
-    """
-    TBC
-    """
-    SOURCE_CONNECTION_NAME: ClassVar[KeywordField] = KeywordField(
-        "sourceConnectionName", "sourceConnectionName"
-    )
-    """
-    TBC
-    """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
-    """
-    TBC
-    """
-    SQL_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
-        "sqlTableName", "sqlTableName"
-    )
-    """
-    TBC
-    """
-
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "model_name",
-        "source_connection_name",
-        "view_name",
-        "sql_table_name",
-        "project",
-        "model",
-        "fields",
-    ]
-
-    @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
-
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
-
-    @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
-
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
-
-    @property
-    def source_connection_name(self) -> Optional[str]:
+    def project_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.source_connection_name
+            None if self.attributes is None else self.attributes.project_qualified_name
         )
 
-    @source_connection_name.setter
-    def source_connection_name(self, source_connection_name: Optional[str]):
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_connection_name = source_connection_name
+        self.attributes.project_qualified_name = project_qualified_name
 
     @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def sql_table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sql_table_name
-
-    @sql_table_name.setter
-    def sql_table_name(self, sql_table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_table_name = sql_table_name
-
-    @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
-
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project = project
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        source_connection_name: Optional[str] = Field(
-            None, description="", alias="sourceConnectionName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        sql_table_name: Optional[str] = Field(
-            None, description="", alias="sqlTableName"
-        )
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-
-    attributes: "LookerExplore.Attributes" = Field(
-        default_factory=lambda: LookerExplore.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerProject(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerProject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerProject":
-            raise ValueError("must be LookerProject")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerProject._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    MODELS: ClassVar[RelationField] = RelationField("models")
-    """
-    TBC
-    """
-    EXPLORES: ClassVar[RelationField] = RelationField("explores")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
-    VIEWS: ClassVar[RelationField] = RelationField("views")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "models",
-        "explores",
-        "fields",
-        "views",
-    ]
-
-    @property
-    def models(self) -> Optional[list[LookerModel]]:
-        return None if self.attributes is None else self.attributes.models
-
-    @models.setter
-    def models(self, models: Optional[list[LookerModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.models = models
-
-    @property
-    def explores(self) -> Optional[list[LookerExplore]]:
-        return None if self.attributes is None else self.attributes.explores
-
-    @explores.setter
-    def explores(self, explores: Optional[list[LookerExplore]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.explores = explores
-
-    @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    @property
-    def views(self) -> Optional[list[LookerView]]:
-        return None if self.attributes is None else self.attributes.views
-
-    @views.setter
-    def views(self, views: Optional[list[LookerView]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.views = views
-
-    class Attributes(Looker.Attributes):
-        models: Optional[list[LookerModel]] = Field(
-            None, description="", alias="models"
-        )  # relationship
-        explores: Optional[list[LookerExplore]] = Field(
-            None, description="", alias="explores"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-        views: Optional[list[LookerView]] = Field(
-            None, description="", alias="views"
-        )  # relationship
-
-    attributes: "LookerProject.Attributes" = Field(
-        default_factory=lambda: LookerProject.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerQuery(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerQuery":
-            raise ValueError("must be LookerQuery")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerQuery._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinition", "sourceDefinition"
-    )
-    """
-    TBC
-    """
-    SOURCE_DEFINITION_DATABASE: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinitionDatabase", "sourceDefinitionDatabase"
-    )
-    """
-    TBC
-    """
-    SOURCE_DEFINITION_SCHEMA: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinitionSchema", "sourceDefinitionSchema"
-    )
-    """
-    TBC
-    """
-    FIELDS: ClassVar[KeywordField] = KeywordField("fields", "fields")
-    """
-    TBC
-    """
-
-    TILES: ClassVar[RelationField] = RelationField("tiles")
-    """
-    TBC
-    """
-    LOOKS: ClassVar[RelationField] = RelationField("looks")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "source_definition",
-        "source_definition_database",
-        "source_definition_schema",
-        "fields",
-        "tiles",
-        "looks",
-        "model",
-    ]
-
-    @property
-    def source_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_definition
-
-    @source_definition.setter
-    def source_definition(self, source_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_definition = source_definition
-
-    @property
-    def source_definition_database(self) -> Optional[str]:
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.source_definition_database
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @source_definition_database.setter
-    def source_definition_database(self, source_definition_database: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_definition_database = source_definition_database
-
-    @property
-    def source_definition_schema(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.source_definition_schema
-        )
-
-    @source_definition_schema.setter
-    def source_definition_schema(self, source_definition_schema: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_definition_schema = source_definition_schema
-
-    @property
-    def fields(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    @property
-    def tiles(self) -> Optional[list[LookerTile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[LookerTile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
-
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looks = looks
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    class Attributes(Looker.Attributes):
-        source_definition: Optional[str] = Field(
-            None, description="", alias="sourceDefinition"
-        )
-        source_definition_database: Optional[str] = Field(
-            None, description="", alias="sourceDefinitionDatabase"
-        )
-        source_definition_schema: Optional[str] = Field(
-            None, description="", alias="sourceDefinitionSchema"
-        )
-        fields: Optional[set[str]] = Field(None, description="", alias="fields")
-        tiles: Optional[list[LookerTile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
-
-    attributes: "LookerQuery.Attributes" = Field(
-        default_factory=lambda: LookerQuery.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerField(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerField":
-            raise ValueError("must be LookerField")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerField._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    TBC
-    """
-    LOOKER_EXPLORE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "lookerExploreQualifiedName",
-        "lookerExploreQualifiedName",
-        "lookerExploreQualifiedName.text",
-    )
-    """
-    TBC
-    """
-    LOOKER_VIEW_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "lookerViewQualifiedName",
-        "lookerViewQualifiedName",
-        "lookerViewQualifiedName.text",
-    )
-    """
-    TBC
-    """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
-    """
-    TBC
-    """
-    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinition", "sourceDefinition"
-    )
-    """
-    TBC
-    """
-    LOOKER_FIELD_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
-        "lookerFieldDataType", "lookerFieldDataType"
-    )
-    """
-    TBC
-    """
-    LOOKER_TIMES_USED: ClassVar[NumericField] = NumericField(
-        "lookerTimesUsed", "lookerTimesUsed"
-    )
-    """
-    TBC
-    """
-
-    EXPLORE: ClassVar[RelationField] = RelationField("explore")
-    """
-    TBC
-    """
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    VIEW: ClassVar[RelationField] = RelationField("view")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "looker_explore_qualified_name",
-        "looker_view_qualified_name",
-        "model_name",
-        "source_definition",
-        "looker_field_data_type",
-        "looker_times_used",
-        "explore",
-        "project",
-        "view",
-        "model",
-    ]
-
-    @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
-
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
-
-    @property
-    def looker_explore_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.looker_explore_qualified_name
-        )
-
-    @looker_explore_qualified_name.setter
-    def looker_explore_qualified_name(
-        self, looker_explore_qualified_name: Optional[str]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_explore_qualified_name = looker_explore_qualified_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
     @property
-    def looker_view_qualified_name(self) -> Optional[str]:
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def datasource_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.looker_view_qualified_name
+            else self.attributes.datasource_qualified_name
         )
 
-    @looker_view_qualified_name.setter
-    def looker_view_qualified_name(self, looker_view_qualified_name: Optional[str]):
+    @datasource_qualified_name.setter
+    def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_view_qualified_name = looker_view_qualified_name
+        self.attributes.datasource_qualified_name = datasource_qualified_name
 
     @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
 
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
+        self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def source_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_definition
+    def fully_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.fully_qualified_name
 
-    @source_definition.setter
-    def source_definition(self, source_definition: Optional[str]):
+    @fully_qualified_name.setter
+    def fully_qualified_name(self, fully_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_definition = source_definition
+        self.attributes.fully_qualified_name = fully_qualified_name
 
     @property
-    def looker_field_data_type(self) -> Optional[str]:
+    def tableau_datasource_field_data_category(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.looker_field_data_type
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_data_category
         )
 
-    @looker_field_data_type.setter
-    def looker_field_data_type(self, looker_field_data_type: Optional[str]):
+    @tableau_datasource_field_data_category.setter
+    def tableau_datasource_field_data_category(
+        self, tableau_datasource_field_data_category: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_field_data_type = looker_field_data_type
+        self.attributes.tableau_datasource_field_data_category = (
+            tableau_datasource_field_data_category
+        )
 
     @property
-    def looker_times_used(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.looker_times_used
+    def tableau_datasource_field_role(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_role
+        )
 
-    @looker_times_used.setter
-    def looker_times_used(self, looker_times_used: Optional[int]):
+    @tableau_datasource_field_role.setter
+    def tableau_datasource_field_role(
+        self, tableau_datasource_field_role: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_times_used = looker_times_used
+        self.attributes.tableau_datasource_field_role = tableau_datasource_field_role
 
     @property
-    def explore(self) -> Optional[LookerExplore]:
-        return None if self.attributes is None else self.attributes.explore
+    def tableau_datasource_field_data_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_data_type
+        )
 
-    @explore.setter
-    def explore(self, explore: Optional[LookerExplore]):
+    @tableau_datasource_field_data_type.setter
+    def tableau_datasource_field_data_type(
+        self, tableau_datasource_field_data_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.explore = explore
+        self.attributes.tableau_datasource_field_data_type = (
+            tableau_datasource_field_data_type
+        )
 
     @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
+    def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_tables
 
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
+    @upstream_tables.setter
+    def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.project = project
+        self.attributes.upstream_tables = upstream_tables
 
     @property
-    def view(self) -> Optional[LookerView]:
-        return None if self.attributes is None else self.attributes.view
+    def tableau_datasource_field_formula(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_formula
+        )
 
-    @view.setter
-    def view(self, view: Optional[LookerView]):
+    @tableau_datasource_field_formula.setter
+    def tableau_datasource_field_formula(
+        self, tableau_datasource_field_formula: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.view = view
+        self.attributes.tableau_datasource_field_formula = (
+            tableau_datasource_field_formula
+        )
 
     @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
+    def tableau_datasource_field_bin_size(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_bin_size
+        )
 
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
+    @tableau_datasource_field_bin_size.setter
+    def tableau_datasource_field_bin_size(
+        self, tableau_datasource_field_bin_size: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model = model
+        self.attributes.tableau_datasource_field_bin_size = (
+            tableau_datasource_field_bin_size
+        )
 
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        looker_explore_qualified_name: Optional[str] = Field(
-            None, description="", alias="lookerExploreQualifiedName"
+    @property
+    def upstream_columns(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_columns
+
+    @upstream_columns.setter
+    def upstream_columns(self, upstream_columns: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_columns = upstream_columns
+
+    @property
+    def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_fields
+
+    @upstream_fields.setter
+    def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_fields = upstream_fields
+
+    @property
+    def datasource_field_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.datasource_field_type
         )
-        looker_view_qualified_name: Optional[str] = Field(
-            None, description="", alias="lookerViewQualifiedName"
+
+    @datasource_field_type.setter
+    def datasource_field_type(self, datasource_field_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_field_type = datasource_field_type
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasource(self) -> Optional[TableauDatasource]:
+        return None if self.attributes is None else self.attributes.datasource
+
+    @datasource.setter
+    def datasource(self, datasource: Optional[TableauDatasource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource = datasource
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        source_definition: Optional[str] = Field(
-            None, description="", alias="sourceDefinition"
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
         )
-        looker_field_data_type: Optional[str] = Field(
-            None, description="", alias="lookerFieldDataType"
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
         )
-        looker_times_used: Optional[int] = Field(
-            None, description="", alias="lookerTimesUsed"
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
         )
-        explore: Optional[LookerExplore] = Field(
-            None, description="", alias="explore"
+        datasource_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasourceQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        fully_qualified_name: Optional[str] = Field(
+            None, description="", alias="fullyQualifiedName"
+        )
+        tableau_datasource_field_data_category: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldDataCategory"
+        )
+        tableau_datasource_field_role: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldRole"
+        )
+        tableau_datasource_field_data_type: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldDataType"
+        )
+        upstream_tables: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamTables"
+        )
+        tableau_datasource_field_formula: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldFormula"
+        )
+        tableau_datasource_field_bin_size: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldBinSize"
+        )
+        upstream_columns: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamColumns"
+        )
+        upstream_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamFields"
+        )
+        datasource_field_type: Optional[str] = Field(
+            None, description="", alias="datasourceFieldType"
+        )
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
         )  # relationship
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        view: Optional[LookerView] = Field(
-            None, description="", alias="view"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
+        datasource: Optional[TableauDatasource] = Field(
+            None, description="", alias="datasource"
         )  # relationship
 
-    attributes: "LookerField.Attributes" = Field(
-        default_factory=lambda: LookerField.Attributes(),
+    attributes: "TableauDatasourceField.Attributes" = Field(
+        default_factory=lambda: TableauDatasourceField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class LookerView(Looker):
+class TableauCalculatedField(Tableau):
     """Description"""
 
-    type_name: str = Field("LookerView", allow_mutation=False)
+    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "LookerView":
-            raise ValueError("must be LookerView")
+        if v != "TableauCalculatedField":
+            raise ValueError("must be TableauCalculatedField")
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerView._convenience_properties:
+        if name in TableauCalculatedField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this calculated field exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this calculated field exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this calculated field exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this calculated field exists.
+    """
+    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
+    """
+    Unique name of the datasource in which this calculated field exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects and their nested projects.
+    """
+    DATA_CATEGORY: ClassVar[KeywordField] = KeywordField("dataCategory", "dataCategory")
+    """
+    Data category of this field.
+    """
+    ROLE: ClassVar[KeywordField] = KeywordField("role", "role")
+    """
+    Role of this field, for example: 'dimension', 'measure', or 'unknown'.
+    """
+    TABLEAU_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableauDataType", "tableauDataType", "tableauDataType.text"
+    )
+    """
+    Data type of the field, from Tableau.
+    """
+    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    """
+    Formula for this calculated field.
+    """
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
+    """
+    List of fields that are upstream to this calculated field.
+    """
+
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
     """
     TBC
     """
-    LOOKER_VIEW_FILE_PATH: ClassVar[KeywordField] = KeywordField(
-        "lookerViewFilePath", "lookerViewFilePath"
-    )
+    DATASOURCE: ClassVar[RelationField] = RelationField("datasource")
     """
-    File path of the looker view in the project
-    """
-    LOOKER_VIEW_FILE_NAME: ClassVar[KeywordField] = KeywordField(
-        "lookerViewFileName", "lookerViewFileName"
-    )
-    """
-    File name of the looker view in the project
+    TBC
     """
 
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "datasource_qualified_name",
+        "project_hierarchy",
+        "data_category",
+        "role",
+        "tableau_data_type",
+        "formula",
+        "upstream_fields",
+        "worksheets",
+        "datasource",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def datasource_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.datasource_qualified_name
+        )
+
+    @datasource_qualified_name.setter
+    def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_qualified_name = datasource_qualified_name
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def data_category(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_category
+
+    @data_category.setter
+    def data_category(self, data_category: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_category = data_category
+
+    @property
+    def role(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.role
+
+    @role.setter
+    def role(self, role: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.role = role
+
+    @property
+    def tableau_data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.tableau_data_type
+
+    @tableau_data_type.setter
+    def tableau_data_type(self, tableau_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_data_type = tableau_data_type
+
+    @property
+    def formula(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.formula
+
+    @formula.setter
+    def formula(self, formula: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.formula = formula
+
+    @property
+    def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_fields
+
+    @upstream_fields.setter
+    def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_fields = upstream_fields
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasource(self) -> Optional[TableauDatasource]:
+        return None if self.attributes is None else self.attributes.datasource
+
+    @datasource.setter
+    def datasource(self, datasource: Optional[TableauDatasource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource = datasource
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        datasource_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasourceQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        data_category: Optional[str] = Field(None, description="", alias="dataCategory")
+        role: Optional[str] = Field(None, description="", alias="role")
+        tableau_data_type: Optional[str] = Field(
+            None, description="", alias="tableauDataType"
+        )
+        formula: Optional[str] = Field(None, description="", alias="formula")
+        upstream_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamFields"
+        )
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
+        )  # relationship
+        datasource: Optional[TableauDatasource] = Field(
+            None, description="", alias="datasource"
+        )  # relationship
+
+    attributes: "TableauCalculatedField.Attributes" = Field(
+        default_factory=lambda: TableauCalculatedField.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class TableauProject(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauProject":
+            raise ValueError("must be TableauProject")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauProject._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this project exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this project exists, if this is a nested project.
+    """
+    IS_TOP_LEVEL_PROJECT: ClassVar[BooleanField] = BooleanField(
+        "isTopLevelProject", "isTopLevelProject"
+    )
+    """
+    Whether this project is a top-level project (true) or not (false).
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+
+    PARENT_PROJECT: ClassVar[RelationField] = RelationField("parentProject")
+    """
+    TBC
+    """
+    WORKBOOKS: ClassVar[RelationField] = RelationField("workbooks")
+    """
+    TBC
+    """
+    SITE: ClassVar[RelationField] = RelationField("site")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
+    """
+    TBC
+    """
+    FLOWS: ClassVar[RelationField] = RelationField("flows")
+    """
+    TBC
+    """
+    CHILD_PROJECTS: ClassVar[RelationField] = RelationField("childProjects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "top_level_project_qualified_name",
+        "is_top_level_project",
+        "project_hierarchy",
+        "parent_project",
+        "workbooks",
+        "site",
+        "datasources",
+        "flows",
+        "child_projects",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def is_top_level_project(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_top_level_project
+
+    @is_top_level_project.setter
+    def is_top_level_project(self, is_top_level_project: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_top_level_project = is_top_level_project
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def parent_project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.parent_project
+
+    @parent_project.setter
+    def parent_project(self, parent_project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_project = parent_project
+
+    @property
+    def workbooks(self) -> Optional[list[TableauWorkbook]]:
+        return None if self.attributes is None else self.attributes.workbooks
+
+    @workbooks.setter
+    def workbooks(self, workbooks: Optional[list[TableauWorkbook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbooks = workbooks
+
+    @property
+    def site(self) -> Optional[TableauSite]:
+        return None if self.attributes is None else self.attributes.site
+
+    @site.setter
+    def site(self, site: Optional[TableauSite]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site = site
+
+    @property
+    def datasources(self) -> Optional[list[TableauDatasource]]:
+        return None if self.attributes is None else self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    @property
+    def flows(self) -> Optional[list[TableauFlow]]:
+        return None if self.attributes is None else self.attributes.flows
+
+    @flows.setter
+    def flows(self, flows: Optional[list[TableauFlow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flows = flows
+
+    @property
+    def child_projects(self) -> Optional[list[TableauProject]]:
+        return None if self.attributes is None else self.attributes.child_projects
+
+    @child_projects.setter
+    def child_projects(self, child_projects: Optional[list[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.child_projects = child_projects
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        is_top_level_project: Optional[bool] = Field(
+            None, description="", alias="isTopLevelProject"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        parent_project: Optional[TableauProject] = Field(
+            None, description="", alias="parentProject"
+        )  # relationship
+        workbooks: Optional[list[TableauWorkbook]] = Field(
+            None, description="", alias="workbooks"
+        )  # relationship
+        site: Optional[TableauSite] = Field(
+            None, description="", alias="site"
+        )  # relationship
+        datasources: Optional[list[TableauDatasource]] = Field(
+            None, description="", alias="datasources"
+        )  # relationship
+        flows: Optional[list[TableauFlow]] = Field(
+            None, description="", alias="flows"
+        )  # relationship
+        child_projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="childProjects"
+        )  # relationship
+
+    attributes: "TableauProject.Attributes" = Field(
+        default_factory=lambda: TableauProject.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class TableauSite(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauSite._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    PROJECTS: ClassVar[RelationField] = RelationField("projects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "projects",
+    ]
+
+    @property
+    def projects(self) -> Optional[list[TableauProject]]:
+        return None if self.attributes is None else self.attributes.projects
+
+    @projects.setter
+    def projects(self, projects: Optional[list[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.projects = projects
+
+    class Attributes(Tableau.Attributes):
+        projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="projects"
+        )  # relationship
+
+    attributes: "TableauSite.Attributes" = Field(
+        default_factory=lambda: TableauSite.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class TableauDatasource(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDatasource":
+            raise ValueError("must be TableauDatasource")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauDatasource._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this datasource exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this datasource exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this datasource exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this datasource exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+    IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("isPublished", "isPublished")
+    """
+    Whether this datasource is published (true) or embedded (false).
+    """
+    HAS_EXTRACTS: ClassVar[BooleanField] = BooleanField("hasExtracts", "hasExtracts")
+    """
+    Whether this datasource has extracts (true) or not (false).
+    """
+    IS_CERTIFIED: ClassVar[BooleanField] = BooleanField("isCertified", "isCertified")
+    """
+    Whether this datasource is certified in Tableau (true) or not (false).
+    """
+    CERTIFIER: ClassVar[KeywordField] = KeywordField("certifier", "certifier")
+    """
+    Users that have marked this datasource as cerified, in Tableau.
+    """
+    CERTIFICATION_NOTE: ClassVar[KeywordField] = KeywordField(
+        "certificationNote", "certificationNote"
+    )
+    """
+    Notes related to this datasource being cerfified, in Tableau.
+    """
+    CERTIFIER_DISPLAY_NAME: ClassVar[KeywordField] = KeywordField(
+        "certifierDisplayName", "certifierDisplayName"
+    )
+    """
+    Name of the user who cerified this datasource, in Tableau.
+    """
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
+    """
+    List of tables that are upstream of this datasource.
+    """
+    UPSTREAM_DATASOURCES: ClassVar[KeywordField] = KeywordField(
+        "upstreamDatasources", "upstreamDatasources"
+    )
+    """
+    List of datasources that are upstream of this datasource.
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
     PROJECT: ClassVar[RelationField] = RelationField("project")
     """
     TBC
@@ -1815,114 +1340,861 @@ class LookerView(Looker):
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "looker_view_file_path",
-        "looker_view_file_name",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "project_hierarchy",
+        "is_published",
+        "has_extracts",
+        "is_certified",
+        "certifier",
+        "certification_note",
+        "certifier_display_name",
+        "upstream_tables",
+        "upstream_datasources",
+        "workbook",
         "project",
         "fields",
     ]
 
     @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
 
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
+        self.attributes.site_qualified_name = site_qualified_name
 
     @property
-    def looker_view_file_path(self) -> Optional[str]:
+    def project_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.looker_view_file_path
+            None if self.attributes is None else self.attributes.project_qualified_name
         )
 
-    @looker_view_file_path.setter
-    def looker_view_file_path(self, looker_view_file_path: Optional[str]):
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_view_file_path = looker_view_file_path
+        self.attributes.project_qualified_name = project_qualified_name
 
     @property
-    def looker_view_file_name(self) -> Optional[str]:
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.looker_view_file_name
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @looker_view_file_name.setter
-    def looker_view_file_name(self, looker_view_file_name: Optional[str]):
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_view_file_name = looker_view_file_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
     @property
-    def project(self) -> Optional[LookerProject]:
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def is_published(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_published
+
+    @is_published.setter
+    def is_published(self, is_published: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_published = is_published
+
+    @property
+    def has_extracts(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.has_extracts
+
+    @has_extracts.setter
+    def has_extracts(self, has_extracts: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.has_extracts = has_extracts
+
+    @property
+    def is_certified(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_certified
+
+    @is_certified.setter
+    def is_certified(self, is_certified: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_certified = is_certified
+
+    @property
+    def certifier(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.certifier
+
+    @certifier.setter
+    def certifier(self, certifier: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.certifier = certifier
+
+    @property
+    def certification_note(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.certification_note
+
+    @certification_note.setter
+    def certification_note(self, certification_note: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.certification_note = certification_note
+
+    @property
+    def certifier_display_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.certifier_display_name
+        )
+
+    @certifier_display_name.setter
+    def certifier_display_name(self, certifier_display_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.certifier_display_name = certifier_display_name
+
+    @property
+    def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_tables
+
+    @upstream_tables.setter
+    def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_tables = upstream_tables
+
+    @property
+    def upstream_datasources(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_datasources
+
+    @upstream_datasources.setter
+    def upstream_datasources(
+        self, upstream_datasources: Optional[list[dict[str, str]]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_datasources = upstream_datasources
+
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
+
+    @property
+    def project(self) -> Optional[TableauProject]:
         return None if self.attributes is None else self.attributes.project
 
     @project.setter
-    def project(self, project: Optional[LookerProject]):
+    def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project = project
 
     @property
-    def fields(self) -> Optional[list[LookerField]]:
+    def fields(self) -> Optional[list[TableauDatasourceField]]:
         return None if self.attributes is None else self.attributes.fields
 
     @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
+    def fields(self, fields: Optional[list[TableauDatasourceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        looker_view_file_path: Optional[str] = Field(
-            None, description="", alias="lookerViewFilePath"
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        looker_view_file_name: Optional[str] = Field(
-            None, description="", alias="lookerViewFileName"
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
         )
-        project: Optional[LookerProject] = Field(
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        is_published: Optional[bool] = Field(None, description="", alias="isPublished")
+        has_extracts: Optional[bool] = Field(None, description="", alias="hasExtracts")
+        is_certified: Optional[bool] = Field(None, description="", alias="isCertified")
+        certifier: Optional[dict[str, str]] = Field(
+            None, description="", alias="certifier"
+        )
+        certification_note: Optional[str] = Field(
+            None, description="", alias="certificationNote"
+        )
+        certifier_display_name: Optional[str] = Field(
+            None, description="", alias="certifierDisplayName"
+        )
+        upstream_tables: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamTables"
+        )
+        upstream_datasources: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamDatasources"
+        )
+        workbook: Optional[TableauWorkbook] = Field(
+            None, description="", alias="workbook"
+        )  # relationship
+        project: Optional[TableauProject] = Field(
             None, description="", alias="project"
         )  # relationship
-        fields: Optional[list[LookerField]] = Field(
+        fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="fields"
         )  # relationship
 
-    attributes: "LookerView.Attributes" = Field(
-        default_factory=lambda: LookerView.Attributes(),
+    attributes: "TableauDatasource.Attributes" = Field(
+        default_factory=lambda: TableauDatasource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-LookerLook.Attributes.update_forward_refs()
+class TableauDashboard(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDashboard":
+            raise ValueError("must be TableauDashboard")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauDashboard._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this dashboard exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this dashboard exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this dashboard exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this dashboard exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects and their nested child projects.
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "workbook_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "workbook",
+        "worksheets",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        workbook: Optional[TableauWorkbook] = Field(
+            None, description="", alias="workbook"
+        )  # relationship
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
+        )  # relationship
+
+    attributes: "TableauDashboard.Attributes" = Field(
+        default_factory=lambda: TableauDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-LookerDashboard.Attributes.update_forward_refs()
+class TableauFlow(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauFlow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauFlow":
+            raise ValueError("must be TableauFlow")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauFlow._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this flow exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this flow exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this flow exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+    INPUT_FIELDS: ClassVar[KeywordField] = KeywordField("inputFields", "inputFields")
+    """
+    List of fields that are inputs to this flow.
+    """
+    OUTPUT_FIELDS: ClassVar[KeywordField] = KeywordField("outputFields", "outputFields")
+    """
+    List of fields that are outputs from this flow.
+    """
+    OUTPUT_STEPS: ClassVar[KeywordField] = KeywordField("outputSteps", "outputSteps")
+    """
+    List of steps that are outputs from this flow.
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "input_fields",
+        "output_fields",
+        "output_steps",
+        "project",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def input_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.input_fields
+
+    @input_fields.setter
+    def input_fields(self, input_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_fields = input_fields
+
+    @property
+    def output_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.output_fields
+
+    @output_fields.setter
+    def output_fields(self, output_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_fields = output_fields
+
+    @property
+    def output_steps(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.output_steps
+
+    @output_steps.setter
+    def output_steps(self, output_steps: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_steps = output_steps
+
+    @property
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        input_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="inputFields"
+        )
+        output_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="outputFields"
+        )
+        output_steps: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="outputSteps"
+        )
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
+        )  # relationship
+
+    attributes: "TableauFlow.Attributes" = Field(
+        default_factory=lambda: TableauFlow.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-LookerFolder.Attributes.update_forward_refs()
+class TableauWorksheet(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauWorksheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauWorksheet":
+            raise ValueError("must be TableauWorksheet")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauWorksheet._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this worksheet exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this worksheet exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this worksheet exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this worksheet exists.
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    DATASOURCE_FIELDS: ClassVar[RelationField] = RelationField("datasourceFields")
+    """
+    TBC
+    """
+    CALCULATED_FIELDS: ClassVar[RelationField] = RelationField("calculatedFields")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "workbook_qualified_name",
+        "workbook",
+        "datasource_fields",
+        "calculated_fields",
+        "dashboards",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
+
+    @property
+    def datasource_fields(self) -> Optional[list[TableauDatasourceField]]:
+        return None if self.attributes is None else self.attributes.datasource_fields
+
+    @datasource_fields.setter
+    def datasource_fields(
+        self, datasource_fields: Optional[list[TableauDatasourceField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_fields = datasource_fields
+
+    @property
+    def calculated_fields(self) -> Optional[list[TableauCalculatedField]]:
+        return None if self.attributes is None else self.attributes.calculated_fields
+
+    @calculated_fields.setter
+    def calculated_fields(
+        self, calculated_fields: Optional[list[TableauCalculatedField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculated_fields = calculated_fields
+
+    @property
+    def dashboards(self) -> Optional[list[TableauDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        workbook: Optional[TableauWorkbook] = Field(
+            None, description="", alias="workbook"
+        )  # relationship
+        datasource_fields: Optional[list[TableauDatasourceField]] = Field(
+            None, description="", alias="datasourceFields"
+        )  # relationship
+        calculated_fields: Optional[list[TableauCalculatedField]] = Field(
+            None, description="", alias="calculatedFields"
+        )  # relationship
+        dashboards: Optional[list[TableauDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+
+    attributes: "TableauWorksheet.Attributes" = Field(
+        default_factory=lambda: TableauWorksheet.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-LookerTile.Attributes.update_forward_refs()
+TableauWorkbook.Attributes.update_forward_refs()
 
 
-LookerModel.Attributes.update_forward_refs()
+TableauDatasourceField.Attributes.update_forward_refs()
 
 
-LookerExplore.Attributes.update_forward_refs()
+TableauCalculatedField.Attributes.update_forward_refs()
 
 
-LookerProject.Attributes.update_forward_refs()
+TableauProject.Attributes.update_forward_refs()
 
 
-LookerQuery.Attributes.update_forward_refs()
+TableauSite.Attributes.update_forward_refs()
 
 
-LookerField.Attributes.update_forward_refs()
+TableauDatasource.Attributes.update_forward_refs()
 
 
-LookerView.Attributes.update_forward_refs()
+TableauDashboard.Attributes.update_forward_refs()
+
+
+TableauFlow.Attributes.update_forward_refs()
+
+
+TableauWorksheet.Attributes.update_forward_refs()

@@ -8,64 +8,148 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import NumericField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .asset44 import Redash
+from .asset43 import Tableau
+from .asset69 import TableauProject
 
 
-class RedashDashboard(Redash):
+class TableauMetric(Tableau):
     """Description"""
 
-    type_name: str = Field("RedashDashboard", allow_mutation=False)
+    type_name: str = Field("TableauMetric", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "RedashDashboard":
-            raise ValueError("must be RedashDashboard")
+        if v != "TableauMetric":
+            raise ValueError("must be TableauMetric")
         return v
 
     def __setattr__(self, name, value):
-        if name in RedashDashboard._convenience_properties:
+        if name in TableauMetric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    REDASH_DASHBOARD_WIDGET_COUNT: ClassVar[NumericField] = NumericField(
-        "redashDashboardWidgetCount", "redashDashboardWidgetCount"
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Number of widgets in the Redash Dashboard
+    Unique name of the site in which this metric exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this metric exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this metric exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "redash_dashboard_widget_count",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "project",
     ]
 
     @property
-    def redash_dashboard_widget_count(self) -> Optional[int]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.redash_dashboard_widget_count
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @redash_dashboard_widget_count.setter
-    def redash_dashboard_widget_count(
-        self, redash_dashboard_widget_count: Optional[int]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_dashboard_widget_count = redash_dashboard_widget_count
-
-    class Attributes(Redash.Attributes):
-        redash_dashboard_widget_count: Optional[int] = Field(
-            None, description="", alias="redashDashboardWidgetCount"
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
         )
 
-    attributes: "RedashDashboard.Attributes" = Field(
-        default_factory=lambda: RedashDashboard.Attributes(),
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
+        )  # relationship
+
+    attributes: "TableauMetric.Attributes" = Field(
+        default_factory=lambda: TableauMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-RedashDashboard.Attributes.update_forward_refs()
+TableauMetric.Attributes.update_forward_refs()

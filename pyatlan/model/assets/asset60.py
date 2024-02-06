@@ -4,8 +4,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import ClassVar, Optional, overload
+from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
@@ -14,566 +13,513 @@ from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
-    NumericField,
     RelationField,
+    TextField,
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset34 import S3
+from .asset28 import API
 
 
-class S3Bucket(S3):
+class APISpec(API):
     """Description"""
-
-    @overload
-    @classmethod
-    @init_guid
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        aws_arn: str,
-    ) -> S3Bucket:
-        ...
-
-    @overload
-    @classmethod
-    @init_guid
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        aws_arn: Optional[str] = None,
-    ) -> S3Bucket:
-        ...
 
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
-    ) -> S3Bucket:
+    def create(cls, *, name: str, connection_qualified_name: str) -> APISpec:
         validate_required_fields(
-            ["name", "connection_qualified_name"],
-            [name, connection_qualified_name],
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = S3Bucket.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
+        attributes = APISpec.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("S3Bucket", allow_mutation=False)
+    type_name: str = Field("APISpec", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "S3Bucket":
-            raise ValueError("must be S3Bucket")
+        if v != "APISpec":
+            raise ValueError("must be APISpec")
         return v
 
     def __setattr__(self, name, value):
-        if name in S3Bucket._convenience_properties:
+        if name in APISpec._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField(
-        "s3ObjectCount", "s3ObjectCount"
+    API_SPEC_TERMS_OF_SERVICE_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecTermsOfServiceURL",
+        "apiSpecTermsOfServiceURL",
+        "apiSpecTermsOfServiceURL.text",
     )
     """
-    TBC
+    URL to the terms of service for the API specification.
     """
-    S3BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
-        "s3BucketVersioningEnabled", "s3BucketVersioningEnabled"
+    API_SPEC_CONTACT_EMAIL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactEmail", "apiSpecContactEmail", "apiSpecContactEmail.text"
     )
     """
-    TBC
+    Email address for a contact responsible for the API specification.
+    """
+    API_SPEC_CONTACT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactName", "apiSpecContactName.keyword", "apiSpecContactName"
+    )
+    """
+    Name of the contact responsible for the API specification.
+    """
+    API_SPEC_CONTACT_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactURL", "apiSpecContactURL", "apiSpecContactURL.text"
+    )
+    """
+    URL pointing to the contact information.
+    """
+    API_SPEC_LICENSE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecLicenseName", "apiSpecLicenseName.keyword", "apiSpecLicenseName"
+    )
+    """
+    Name of the license under which the API specification is available.
+    """
+    API_SPEC_LICENSE_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecLicenseURL", "apiSpecLicenseURL", "apiSpecLicenseURL.text"
+    )
+    """
+    URL to the license under which the API specification is available.
+    """
+    API_SPEC_CONTRACT_VERSION: ClassVar[KeywordField] = KeywordField(
+        "apiSpecContractVersion", "apiSpecContractVersion"
+    )
+    """
+    Version of the contract for the API specification.
+    """
+    API_SPEC_SERVICE_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecServiceAlias", "apiSpecServiceAlias", "apiSpecServiceAlias.text"
+    )
+    """
+    Service alias for the API specification.
     """
 
-    OBJECTS: ClassVar[RelationField] = RelationField("objects")
+    API_PATHS: ClassVar[RelationField] = RelationField("apiPaths")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "s3_object_count",
-        "s3_bucket_versioning_enabled",
-        "objects",
+        "api_spec_terms_of_service_url",
+        "api_spec_contact_email",
+        "api_spec_contact_name",
+        "api_spec_contact_url",
+        "api_spec_license_name",
+        "api_spec_license_url",
+        "api_spec_contract_version",
+        "api_spec_service_alias",
+        "api_paths",
     ]
 
     @property
-    def s3_object_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.s3_object_count
-
-    @s3_object_count.setter
-    def s3_object_count(self, s3_object_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_count = s3_object_count
-
-    @property
-    def s3_bucket_versioning_enabled(self) -> Optional[bool]:
+    def api_spec_terms_of_service_url(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.s3_bucket_versioning_enabled
+            else self.attributes.api_spec_terms_of_service_url
         )
 
-    @s3_bucket_versioning_enabled.setter
-    def s3_bucket_versioning_enabled(
-        self, s3_bucket_versioning_enabled: Optional[bool]
+    @api_spec_terms_of_service_url.setter
+    def api_spec_terms_of_service_url(
+        self, api_spec_terms_of_service_url: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
+        self.attributes.api_spec_terms_of_service_url = api_spec_terms_of_service_url
 
     @property
-    def objects(self) -> Optional[list[S3Object]]:
-        return None if self.attributes is None else self.attributes.objects
+    def api_spec_contact_email(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_contact_email
+        )
 
-    @objects.setter
-    def objects(self, objects: Optional[list[S3Object]]):
+    @api_spec_contact_email.setter
+    def api_spec_contact_email(self, api_spec_contact_email: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.objects = objects
+        self.attributes.api_spec_contact_email = api_spec_contact_email
 
-    class Attributes(S3.Attributes):
-        s3_object_count: Optional[int] = Field(
-            None, description="", alias="s3ObjectCount"
+    @property
+    def api_spec_contact_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_contact_name
         )
-        s3_bucket_versioning_enabled: Optional[bool] = Field(
-            None, description="", alias="s3BucketVersioningEnabled"
+
+    @api_spec_contact_name.setter
+    def api_spec_contact_name(self, api_spec_contact_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contact_name = api_spec_contact_name
+
+    @property
+    def api_spec_contact_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_spec_contact_url
+
+    @api_spec_contact_url.setter
+    def api_spec_contact_url(self, api_spec_contact_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contact_url = api_spec_contact_url
+
+    @property
+    def api_spec_license_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_license_name
         )
-        objects: Optional[list[S3Object]] = Field(
-            None, description="", alias="objects"
+
+    @api_spec_license_name.setter
+    def api_spec_license_name(self, api_spec_license_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_license_name = api_spec_license_name
+
+    @property
+    def api_spec_license_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_spec_license_url
+
+    @api_spec_license_url.setter
+    def api_spec_license_url(self, api_spec_license_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_license_url = api_spec_license_url
+
+    @property
+    def api_spec_contract_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_spec_contract_version
+        )
+
+    @api_spec_contract_version.setter
+    def api_spec_contract_version(self, api_spec_contract_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contract_version = api_spec_contract_version
+
+    @property
+    def api_spec_service_alias(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_service_alias
+        )
+
+    @api_spec_service_alias.setter
+    def api_spec_service_alias(self, api_spec_service_alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_service_alias = api_spec_service_alias
+
+    @property
+    def api_paths(self) -> Optional[list[APIPath]]:
+        return None if self.attributes is None else self.attributes.api_paths
+
+    @api_paths.setter
+    def api_paths(self, api_paths: Optional[list[APIPath]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_paths = api_paths
+
+    class Attributes(API.Attributes):
+        api_spec_terms_of_service_url: Optional[str] = Field(
+            None, description="", alias="apiSpecTermsOfServiceURL"
+        )
+        api_spec_contact_email: Optional[str] = Field(
+            None, description="", alias="apiSpecContactEmail"
+        )
+        api_spec_contact_name: Optional[str] = Field(
+            None, description="", alias="apiSpecContactName"
+        )
+        api_spec_contact_url: Optional[str] = Field(
+            None, description="", alias="apiSpecContactURL"
+        )
+        api_spec_license_name: Optional[str] = Field(
+            None, description="", alias="apiSpecLicenseName"
+        )
+        api_spec_license_url: Optional[str] = Field(
+            None, description="", alias="apiSpecLicenseURL"
+        )
+        api_spec_contract_version: Optional[str] = Field(
+            None, description="", alias="apiSpecContractVersion"
+        )
+        api_spec_service_alias: Optional[str] = Field(
+            None, description="", alias="apiSpecServiceAlias"
+        )
+        api_paths: Optional[list[APIPath]] = Field(
+            None, description="", alias="apiPaths"
         )  # relationship
 
         @classmethod
         # @validate_arguments()
         @init_guid
         def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            aws_arn: Optional[str] = None,
-        ) -> S3Bucket.Attributes:
+            cls, *, name: str, connection_qualified_name: str
+        ) -> APISpec.Attributes:
             validate_required_fields(
-                ["name", "connection_qualified_name"],
-                [name, connection_qualified_name],
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
+
+            # Split the connection_qualified_name to extract necessary information
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
                 raise ValueError("Invalid connection_qualified_name")
+
             try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
-            return S3Bucket.Attributes(
-                aws_arn=aws_arn,
+
+            return APISpec.Attributes(
                 name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn if aws_arn else name}",
                 connector_name=connector_type.value,
             )
 
-    attributes: "S3Bucket.Attributes" = Field(
-        default_factory=lambda: S3Bucket.Attributes(),
+    attributes: "APISpec.Attributes" = Field(
+        default_factory=lambda: APISpec.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class S3Object(S3):
+class APIPath(API):
     """Description"""
 
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        aws_arn: str,
-        s3_bucket_qualified_name: str,
-    ) -> S3Object:
+    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         validate_required_fields(
-            [
-                "name",
-                "connection_qualified_name",
-                "aws_arn",
-                "s3_bucket_qualified_name",
-            ],
-            [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
+            ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
         )
-        attributes = S3Object.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-            s3_bucket_qualified_name=s3_bucket_qualified_name,
+        attributes = APIPath.Attributes.create(
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
         )
         return cls(attributes=attributes)
 
-    @classmethod
-    # @validate_arguments()
-    @init_guid
-    def create_with_prefix(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        prefix: str,
-        s3_bucket_qualified_name: str,
-    ) -> S3Object:
-        validate_required_fields(
-            [
-                "name",
-                "connection_qualified_name",
-                "prefix",
-                "s3_bucket_qualified_name",
-            ],
-            [name, connection_qualified_name, prefix, s3_bucket_qualified_name],
-        )
-        attributes = S3Object.Attributes.create_with_prefix(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            prefix=prefix,
-            s3_bucket_qualified_name=s3_bucket_qualified_name,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("S3Object", allow_mutation=False)
+    type_name: str = Field("APIPath", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "S3Object":
-            raise ValueError("must be S3Object")
+        if v != "APIPath":
+            raise ValueError("must be APIPath")
         return v
 
     def __setattr__(self, name, value):
-        if name in S3Object._convenience_properties:
+        if name in APIPath._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    S3OBJECT_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
-        "s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime"
+    API_PATH_SUMMARY: ClassVar[TextField] = TextField(
+        "apiPathSummary", "apiPathSummary"
     )
     """
-    TBC
+    Descriptive summary intended to apply to all operations in this path.
     """
-    S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "s3BucketName", "s3BucketName", "s3BucketName.text"
+    API_PATH_RAW_URI: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiPathRawURI", "apiPathRawURI", "apiPathRawURI.text"
     )
     """
-    TBC
+    Absolute path to an individual endpoint.
     """
-    S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "s3BucketQualifiedName", "s3BucketQualifiedName"
+    API_PATH_IS_TEMPLATED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsTemplated", "apiPathIsTemplated"
     )
     """
-    TBC
+    Whether the endpoint's path contains replaceable parameters (true) or not (false).
     """
-    S3OBJECT_SIZE: ClassVar[NumericField] = NumericField("s3ObjectSize", "s3ObjectSize")
-    """
-    TBC
-    """
-    S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectStorageClass", "s3ObjectStorageClass"
+    API_PATH_AVAILABLE_OPERATIONS: ClassVar[KeywordField] = KeywordField(
+        "apiPathAvailableOperations", "apiPathAvailableOperations"
     )
     """
-    TBC
+    List of the operations available on the endpoint.
     """
-    S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
-        "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
+    API_PATH_AVAILABLE_RESPONSE_CODES: ClassVar[KeywordField] = KeywordField(
+        "apiPathAvailableResponseCodes", "apiPathAvailableResponseCodes"
     )
     """
-    TBC
+    Response codes available on the path across all operations.
     """
-    S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectContentType", "s3ObjectContentType"
+    API_PATH_IS_INGRESS_EXPOSED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsIngressExposed", "apiPathIsIngressExposed"
     )
     """
-    TBC
-    """
-    S3OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectContentDisposition", "s3ObjectContentDisposition"
-    )
-    """
-    TBC
-    """
-    S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectVersionId", "s3ObjectVersionId"
-    )
-    """
-    TBC
+    Whether the path is exposed as an ingress (true) or not (false).
     """
 
-    BUCKET: ClassVar[RelationField] = RelationField("bucket")
+    API_SPEC: ClassVar[RelationField] = RelationField("apiSpec")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "s3_object_last_modified_time",
-        "s3_bucket_name",
-        "s3_bucket_qualified_name",
-        "s3_object_size",
-        "s3_object_storage_class",
-        "s3_object_key",
-        "s3_object_content_type",
-        "s3_object_content_disposition",
-        "s3_object_version_id",
-        "bucket",
+        "api_path_summary",
+        "api_path_raw_u_r_i",
+        "api_path_is_templated",
+        "api_path_available_operations",
+        "api_path_available_response_codes",
+        "api_path_is_ingress_exposed",
+        "api_spec",
     ]
 
     @property
-    def s3_object_last_modified_time(self) -> Optional[datetime]:
+    def api_path_summary(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_path_summary
+
+    @api_path_summary.setter
+    def api_path_summary(self, api_path_summary: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_summary = api_path_summary
+
+    @property
+    def api_path_raw_u_r_i(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_path_raw_u_r_i
+
+    @api_path_raw_u_r_i.setter
+    def api_path_raw_u_r_i(self, api_path_raw_u_r_i: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_raw_u_r_i = api_path_raw_u_r_i
+
+    @property
+    def api_path_is_templated(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.api_path_is_templated
+        )
+
+    @api_path_is_templated.setter
+    def api_path_is_templated(self, api_path_is_templated: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_is_templated = api_path_is_templated
+
+    @property
+    def api_path_available_operations(self) -> Optional[set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.s3_object_last_modified_time
+            else self.attributes.api_path_available_operations
         )
 
-    @s3_object_last_modified_time.setter
-    def s3_object_last_modified_time(
-        self, s3_object_last_modified_time: Optional[datetime]
+    @api_path_available_operations.setter
+    def api_path_available_operations(
+        self, api_path_available_operations: Optional[set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
+        self.attributes.api_path_available_operations = api_path_available_operations
 
     @property
-    def s3_bucket_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_bucket_name
-
-    @s3_bucket_name.setter
-    def s3_bucket_name(self, s3_bucket_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_bucket_name = s3_bucket_name
-
-    @property
-    def s3_bucket_qualified_name(self) -> Optional[str]:
+    def api_path_available_response_codes(self) -> Optional[dict[str, str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.s3_bucket_qualified_name
+            else self.attributes.api_path_available_response_codes
         )
 
-    @s3_bucket_qualified_name.setter
-    def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
-
-    @property
-    def s3_object_size(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.s3_object_size
-
-    @s3_object_size.setter
-    def s3_object_size(self, s3_object_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_size = s3_object_size
-
-    @property
-    def s3_object_storage_class(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.s3_object_storage_class
-        )
-
-    @s3_object_storage_class.setter
-    def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_storage_class = s3_object_storage_class
-
-    @property
-    def s3_object_key(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_object_key
-
-    @s3_object_key.setter
-    def s3_object_key(self, s3_object_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_key = s3_object_key
-
-    @property
-    def s3_object_content_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.s3_object_content_type
-        )
-
-    @s3_object_content_type.setter
-    def s3_object_content_type(self, s3_object_content_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_content_type = s3_object_content_type
-
-    @property
-    def s3_object_content_disposition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_object_content_disposition
-        )
-
-    @s3_object_content_disposition.setter
-    def s3_object_content_disposition(
-        self, s3_object_content_disposition: Optional[str]
+    @api_path_available_response_codes.setter
+    def api_path_available_response_codes(
+        self, api_path_available_response_codes: Optional[dict[str, str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_object_content_disposition = s3_object_content_disposition
+        self.attributes.api_path_available_response_codes = (
+            api_path_available_response_codes
+        )
 
     @property
-    def s3_object_version_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_object_version_id
+    def api_path_is_ingress_exposed(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_is_ingress_exposed
+        )
 
-    @s3_object_version_id.setter
-    def s3_object_version_id(self, s3_object_version_id: Optional[str]):
+    @api_path_is_ingress_exposed.setter
+    def api_path_is_ingress_exposed(self, api_path_is_ingress_exposed: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_object_version_id = s3_object_version_id
+        self.attributes.api_path_is_ingress_exposed = api_path_is_ingress_exposed
 
     @property
-    def bucket(self) -> Optional[S3Bucket]:
-        return None if self.attributes is None else self.attributes.bucket
+    def api_spec(self) -> Optional[APISpec]:
+        return None if self.attributes is None else self.attributes.api_spec
 
-    @bucket.setter
-    def bucket(self, bucket: Optional[S3Bucket]):
+    @api_spec.setter
+    def api_spec(self, api_spec: Optional[APISpec]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.bucket = bucket
+        self.attributes.api_spec = api_spec
 
-    class Attributes(S3.Attributes):
-        s3_object_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="s3ObjectLastModifiedTime"
+    class Attributes(API.Attributes):
+        api_path_summary: Optional[str] = Field(
+            None, description="", alias="apiPathSummary"
         )
-        s3_bucket_name: Optional[str] = Field(
-            None, description="", alias="s3BucketName"
+        api_path_raw_u_r_i: Optional[str] = Field(
+            None, description="", alias="apiPathRawURI"
         )
-        s3_bucket_qualified_name: Optional[str] = Field(
-            None, description="", alias="s3BucketQualifiedName"
+        api_path_is_templated: Optional[bool] = Field(
+            None, description="", alias="apiPathIsTemplated"
         )
-        s3_object_size: Optional[int] = Field(
-            None, description="", alias="s3ObjectSize"
+        api_path_available_operations: Optional[set[str]] = Field(
+            None, description="", alias="apiPathAvailableOperations"
         )
-        s3_object_storage_class: Optional[str] = Field(
-            None, description="", alias="s3ObjectStorageClass"
+        api_path_available_response_codes: Optional[dict[str, str]] = Field(
+            None, description="", alias="apiPathAvailableResponseCodes"
         )
-        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
-        s3_object_content_type: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentType"
+        api_path_is_ingress_exposed: Optional[bool] = Field(
+            None, description="", alias="apiPathIsIngressExposed"
         )
-        s3_object_content_disposition: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentDisposition"
-        )
-        s3_object_version_id: Optional[str] = Field(
-            None, description="", alias="s3ObjectVersionId"
-        )
-        bucket: Optional[S3Bucket] = Field(
-            None, description="", alias="bucket"
+        api_spec: Optional[APISpec] = Field(
+            None, description="", alias="apiSpec"
         )  # relationship
 
         @classmethod
         # @validate_arguments()
         @init_guid
         def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            aws_arn: str,
-            s3_bucket_qualified_name: str,
-        ) -> S3Object.Attributes:
+            cls, *, path_raw_uri: str, spec_qualified_name: str
+        ) -> APIPath.Attributes:
             validate_required_fields(
-                [
-                    "name",
-                    "connection_qualified_name",
-                    "aws_arn",
-                    "s3_bucket_qualified_name",
-                ],
-                [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return S3Object.Attributes(
-                aws_arn=aws_arn,
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
-                connector_name=connector_type.value,
-                s3_bucket_qualified_name=s3_bucket_qualified_name,
-                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
+                ["path_raw_uri", "spec_qualified_name"],
+                [path_raw_uri, spec_qualified_name],
             )
 
-        @classmethod
-        # @validate_arguments()
-        @init_guid
-        def create_with_prefix(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            prefix: str,
-            s3_bucket_qualified_name: str,
-        ) -> S3Object.Attributes:
-            validate_required_fields(
-                [
-                    "name",
-                    "connection_qualified_name",
-                    "prefix",
-                    "s3_bucket_qualified_name",
-                ],
-                [name, connection_qualified_name, prefix, s3_bucket_qualified_name],
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
+            # Split the spec_qualified_name to extract necessary information
+            fields = spec_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid spec_qualified_name")
+
             try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
             except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            object_key = f"{prefix}/{name}"
-            return S3Object.Attributes(
-                name=name,
-                s3_object_key=object_key,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{object_key}",
+                raise ValueError("Invalid spec_qualified_name") from e
+
+            return APIPath.Attributes(
+                api_path_raw_u_r_i=path_raw_uri,
+                name=path_raw_uri,
+                api_spec_qualified_name=spec_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{spec_qualified_name}{path_raw_uri}",
                 connector_name=connector_type.value,
-                s3_bucket_qualified_name=s3_bucket_qualified_name,
-                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
+                apiSpec=APISpec.ref_by_qualified_name(spec_qualified_name),
             )
 
-    attributes: "S3Object.Attributes" = Field(
-        default_factory=lambda: S3Object.Attributes(),
+    attributes: "APIPath.Attributes" = Field(
+        default_factory=lambda: APIPath.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-S3Bucket.Attributes.update_forward_refs()
+APISpec.Attributes.update_forward_refs()
 
 
-S3Object.Attributes.update_forward_refs()
+APIPath.Attributes.update_forward_refs()

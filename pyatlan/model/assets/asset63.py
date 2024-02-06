@@ -4,912 +4,325 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import (
+    ADLSAccessTier,
+    ADLSAccountStatus,
+    ADLSEncryptionTypes,
+    ADLSLeaseState,
+    ADLSLeaseStatus,
+    ADLSObjectArchiveStatus,
+    ADLSObjectType,
+    ADLSPerformance,
+    ADLSProvisionState,
+    ADLSReplicationType,
+    ADLSStorageKind,
+    AtlanConnectorType,
+)
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
-    KeywordTextStemmedField,
     NumericField,
     RelationField,
     TextField,
 )
-from pyatlan.utils import init_guid, validate_required_fields
+from pyatlan.utils import get_parent_qualified_name, init_guid, validate_required_fields
 
-from .asset39 import Preset
+from .asset36 import ADLS
 
 
-class PresetChart(Preset):
+class ADLSAccount(ADLS):
     """Description"""
 
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, name: str, preset_dashboard_qualified_name: str) -> PresetChart:
-        validate_required_fields(
-            ["name", "preset_dashboard_qualified_name"],
-            [name, preset_dashboard_qualified_name],
-        )
-        attributes = PresetChart.Attributes.create(
-            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("PresetChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetChart":
-            raise ValueError("must be PresetChart")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetChart._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PRESET_CHART_DESCRIPTION_MARKDOWN: ClassVar[TextField] = TextField(
-        "presetChartDescriptionMarkdown", "presetChartDescriptionMarkdown"
-    )
-    """
-    TBC
-    """
-    PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
-        "presetChartFormData", "presetChartFormData"
-    )
-    """
-    TBC
-    """
-
-    PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "preset_chart_description_markdown",
-        "preset_chart_form_data",
-        "preset_dashboard",
-    ]
-
-    @property
-    def preset_chart_description_markdown(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_chart_description_markdown
-        )
-
-    @preset_chart_description_markdown.setter
-    def preset_chart_description_markdown(
-        self, preset_chart_description_markdown: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_chart_description_markdown = (
-            preset_chart_description_markdown
-        )
-
-    @property
-    def preset_chart_form_data(self) -> Optional[dict[str, str]]:
-        return (
-            None if self.attributes is None else self.attributes.preset_chart_form_data
-        )
-
-    @preset_chart_form_data.setter
-    def preset_chart_form_data(self, preset_chart_form_data: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_chart_form_data = preset_chart_form_data
-
-    @property
-    def preset_dashboard(self) -> Optional[PresetDashboard]:
-        return None if self.attributes is None else self.attributes.preset_dashboard
-
-    @preset_dashboard.setter
-    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard = preset_dashboard
-
-    class Attributes(Preset.Attributes):
-        preset_chart_description_markdown: Optional[str] = Field(
-            None, description="", alias="presetChartDescriptionMarkdown"
-        )
-        preset_chart_form_data: Optional[dict[str, str]] = Field(
-            None, description="", alias="presetChartFormData"
-        )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        @init_guid
-        def create(
-            cls, *, name: str, preset_dashboard_qualified_name: str
-        ) -> PresetChart.Attributes:
-            validate_required_fields(
-                ["name", "preset_dashboard_qualified_name"],
-                [name, preset_dashboard_qualified_name],
-            )
-
-            # Split the preset_dashboard_qualified_name to extract necessary information
-            fields = preset_dashboard_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid preset_dashboard_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid preset_dashboard_qualified_name") from e
-
-            return PresetChart.Attributes(
-                name=name,
-                preset_dashboard_qualified_name=preset_dashboard_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{preset_dashboard_qualified_name}/{name}",
-                connector_name=connector_type.value,
-                preset_dashboard=PresetDashboard.ref_by_qualified_name(
-                    preset_dashboard_qualified_name
-                ),
-            )
-
-    attributes: "PresetChart.Attributes" = Field(
-        default_factory=lambda: PresetChart.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PresetDataset(Preset):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    @init_guid
-    def create(
-        cls, *, name: str, preset_dashboard_qualified_name: str
-    ) -> PresetDataset:
-        validate_required_fields(
-            ["name", "preset_dashboard_qualified_name"],
-            [name, preset_dashboard_qualified_name],
-        )
-        attributes = PresetDataset.Attributes.create(
-            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("PresetDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetDataset":
-            raise ValueError("must be PresetDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetDataset._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PRESET_DATASET_DATASOURCE_NAME: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.keyword",
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.stemmed",
-    )
-    """
-    TBC
-    """
-    PRESET_DATASET_ID: ClassVar[NumericField] = NumericField(
-        "presetDatasetId", "presetDatasetId"
-    )
-    """
-    TBC
-    """
-    PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
-        "presetDatasetType", "presetDatasetType"
-    )
-    """
-    TBC
-    """
-
-    PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "preset_dataset_datasource_name",
-        "preset_dataset_id",
-        "preset_dataset_type",
-        "preset_dashboard",
-    ]
-
-    @property
-    def preset_dataset_datasource_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dataset_datasource_name
-        )
-
-    @preset_dataset_datasource_name.setter
-    def preset_dataset_datasource_name(
-        self, preset_dataset_datasource_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dataset_datasource_name = preset_dataset_datasource_name
-
-    @property
-    def preset_dataset_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.preset_dataset_id
-
-    @preset_dataset_id.setter
-    def preset_dataset_id(self, preset_dataset_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dataset_id = preset_dataset_id
-
-    @property
-    def preset_dataset_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dataset_type
-
-    @preset_dataset_type.setter
-    def preset_dataset_type(self, preset_dataset_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dataset_type = preset_dataset_type
-
-    @property
-    def preset_dashboard(self) -> Optional[PresetDashboard]:
-        return None if self.attributes is None else self.attributes.preset_dashboard
-
-    @preset_dashboard.setter
-    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard = preset_dashboard
-
-    class Attributes(Preset.Attributes):
-        preset_dataset_datasource_name: Optional[str] = Field(
-            None, description="", alias="presetDatasetDatasourceName"
-        )
-        preset_dataset_id: Optional[int] = Field(
-            None, description="", alias="presetDatasetId"
-        )
-        preset_dataset_type: Optional[str] = Field(
-            None, description="", alias="presetDatasetType"
-        )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        @init_guid
-        def create(
-            cls, *, name: str, preset_dashboard_qualified_name: str
-        ) -> PresetDataset.Attributes:
-            validate_required_fields(
-                ["name", "preset_dashboard_qualified_name"],
-                [name, preset_dashboard_qualified_name],
-            )
-
-            # Split the preset_dashboard_qualified_name to extract necessary information
-            fields = preset_dashboard_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid preset_dashboard_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid preset_dashboard_qualified_name") from e
-
-            return PresetDataset.Attributes(
-                name=name,
-                preset_dashboard_qualified_name=preset_dashboard_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{preset_dashboard_qualified_name}/{name}",
-                connector_name=connector_type.value,
-                preset_dashboard=PresetDashboard.ref_by_qualified_name(
-                    preset_dashboard_qualified_name
-                ),
-            )
-
-    attributes: "PresetDataset.Attributes" = Field(
-        default_factory=lambda: PresetDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PresetDashboard(Preset):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    @init_guid
-    def create(
-        cls, *, name: str, preset_workspace_qualified_name: str
-    ) -> PresetDashboard:
-        validate_required_fields(
-            ["name", "preset_workspace_qualified_name"],
-            [name, preset_workspace_qualified_name],
-        )
-        attributes = PresetDashboard.Attributes.create(
-            name=name, preset_workspace_qualified_name=preset_workspace_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("PresetDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetDashboard":
-            raise ValueError("must be PresetDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetDashboard._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.keyword",
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.stemmed",
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
-        "presetDashboardChangedByURL", "presetDashboardChangedByURL"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY: ClassVar[BooleanField] = BooleanField(
-        "presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
-        "presetDashboardIsPublished", "presetDashboardIsPublished"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
-        "presetDashboardThumbnailURL", "presetDashboardThumbnailURL"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_CHART_COUNT: ClassVar[NumericField] = NumericField(
-        "presetDashboardChartCount", "presetDashboardChartCount"
-    )
-    """
-    TBC
-    """
-
-    PRESET_DATASETS: ClassVar[RelationField] = RelationField("presetDatasets")
-    """
-    TBC
-    """
-    PRESET_CHARTS: ClassVar[RelationField] = RelationField("presetCharts")
-    """
-    TBC
-    """
-    PRESET_WORKSPACE: ClassVar[RelationField] = RelationField("presetWorkspace")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "preset_dashboard_changed_by_name",
-        "preset_dashboard_changed_by_url",
-        "preset_dashboard_is_managed_externally",
-        "preset_dashboard_is_published",
-        "preset_dashboard_thumbnail_url",
-        "preset_dashboard_chart_count",
-        "preset_datasets",
-        "preset_charts",
-        "preset_workspace",
-    ]
-
-    @property
-    def preset_dashboard_changed_by_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_changed_by_name
-        )
-
-    @preset_dashboard_changed_by_name.setter
-    def preset_dashboard_changed_by_name(
-        self, preset_dashboard_changed_by_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_name = (
-            preset_dashboard_changed_by_name
-        )
-
-    @property
-    def preset_dashboard_changed_by_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_changed_by_url
-        )
-
-    @preset_dashboard_changed_by_url.setter
-    def preset_dashboard_changed_by_url(
-        self, preset_dashboard_changed_by_url: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_url = (
-            preset_dashboard_changed_by_url
-        )
-
-    @property
-    def preset_dashboard_is_managed_externally(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_is_managed_externally
-        )
-
-    @preset_dashboard_is_managed_externally.setter
-    def preset_dashboard_is_managed_externally(
-        self, preset_dashboard_is_managed_externally: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_managed_externally = (
-            preset_dashboard_is_managed_externally
-        )
-
-    @property
-    def preset_dashboard_is_published(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_is_published
-        )
-
-    @preset_dashboard_is_published.setter
-    def preset_dashboard_is_published(
-        self, preset_dashboard_is_published: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_published = preset_dashboard_is_published
-
-    @property
-    def preset_dashboard_thumbnail_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_thumbnail_url
-        )
-
-    @preset_dashboard_thumbnail_url.setter
-    def preset_dashboard_thumbnail_url(
-        self, preset_dashboard_thumbnail_url: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_thumbnail_url = preset_dashboard_thumbnail_url
-
-    @property
-    def preset_dashboard_chart_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_chart_count
-        )
-
-    @preset_dashboard_chart_count.setter
-    def preset_dashboard_chart_count(self, preset_dashboard_chart_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
-
-    @property
-    def preset_datasets(self) -> Optional[list[PresetDataset]]:
-        return None if self.attributes is None else self.attributes.preset_datasets
-
-    @preset_datasets.setter
-    def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_datasets = preset_datasets
-
-    @property
-    def preset_charts(self) -> Optional[list[PresetChart]]:
-        return None if self.attributes is None else self.attributes.preset_charts
-
-    @preset_charts.setter
-    def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_charts = preset_charts
-
-    @property
-    def preset_workspace(self) -> Optional[PresetWorkspace]:
-        return None if self.attributes is None else self.attributes.preset_workspace
-
-    @preset_workspace.setter
-    def preset_workspace(self, preset_workspace: Optional[PresetWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace = preset_workspace
-
-    class Attributes(Preset.Attributes):
-        preset_dashboard_changed_by_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByName"
-        )
-        preset_dashboard_changed_by_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByURL"
-        )
-        preset_dashboard_is_managed_externally: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsManagedExternally"
-        )
-        preset_dashboard_is_published: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsPublished"
-        )
-        preset_dashboard_thumbnail_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardThumbnailURL"
-        )
-        preset_dashboard_chart_count: Optional[int] = Field(
-            None, description="", alias="presetDashboardChartCount"
-        )
-        preset_datasets: Optional[list[PresetDataset]] = Field(
-            None, description="", alias="presetDatasets"
-        )  # relationship
-        preset_charts: Optional[list[PresetChart]] = Field(
-            None, description="", alias="presetCharts"
-        )  # relationship
-        preset_workspace: Optional[PresetWorkspace] = Field(
-            None, description="", alias="presetWorkspace"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        @init_guid
-        def create(
-            cls, *, name: str, preset_workspace_qualified_name: str
-        ) -> PresetDashboard.Attributes:
-            validate_required_fields(
-                ["name", "preset_workspace_qualified_name"],
-                [name, preset_workspace_qualified_name],
-            )
-
-            # Split the preset_workspace_qualified_name to extract necessary information
-            fields = preset_workspace_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid preset_workspace_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid preset_workspace_qualified_name") from e
-
-            return PresetDashboard.Attributes(
-                name=name,
-                preset_workspace_qualified_name=preset_workspace_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{preset_workspace_qualified_name}/{name}",
-                connector_name=connector_type.value,
-                preset_workspace=PresetWorkspace.ref_by_qualified_name(
-                    preset_workspace_qualified_name
-                ),
-            )
-
-    attributes: "PresetDashboard.Attributes" = Field(
-        default_factory=lambda: PresetDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PresetWorkspace(Preset):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    @init_guid
-    def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
+    def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = PresetWorkspace.Attributes.create(
+        attributes = ADLSAccount.Attributes.create(
             name=name, connection_qualified_name=connection_qualified_name
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("PresetWorkspace", allow_mutation=False)
+    type_name: str = Field("ADLSAccount", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PresetWorkspace":
-            raise ValueError("must be PresetWorkspace")
+        if v != "ADLSAccount":
+            raise ValueError("must be ADLSAccount")
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetWorkspace._convenience_properties:
+        if name in ADLSAccount._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_WORKSPACE_PUBLIC_DASHBOARDS_ALLOWED: ClassVar[BooleanField] = BooleanField(
-        "presetWorkspacePublicDashboardsAllowed",
-        "presetWorkspacePublicDashboardsAllowed",
+    ADLS_E_TAG: ClassVar[KeywordField] = KeywordField("adlsETag", "adlsETag")
+    """
+    Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.
+    """  # noqa: E501
+    ADLS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adlsEncryptionType", "adlsEncryptionType"
     )
     """
-    TBC
+    Type of encryption for this account.
     """
-    PRESET_WORKSPACE_CLUSTER_ID: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceClusterId", "presetWorkspaceClusterId"
+    ADLS_ACCOUNT_RESOURCE_GROUP: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountResourceGroup",
+        "adlsAccountResourceGroup.keyword",
+        "adlsAccountResourceGroup",
     )
     """
-    TBC
+    Resource group for this account.
     """
-    PRESET_WORKSPACE_HOSTNAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "presetWorkspaceHostname",
-        "presetWorkspaceHostname",
-        "presetWorkspaceHostname.text",
+    ADLS_ACCOUNT_SUBSCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountSubscription",
+        "adlsAccountSubscription.keyword",
+        "adlsAccountSubscription",
     )
     """
-    TBC
+    Subscription for this account.
     """
-    PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE: ClassVar[BooleanField] = BooleanField(
-        "presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode"
+    ADLS_ACCOUNT_PERFORMANCE: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountPerformance", "adlsAccountPerformance"
     )
     """
-    TBC
+    Performance of this account.
     """
-    PRESET_WORKSPACE_REGION: ClassVar[KeywordTextField] = KeywordTextField(
-        "presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text"
+    ADLS_ACCOUNT_REPLICATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountReplication", "adlsAccountReplication"
     )
     """
-    TBC
+    Replication of this account.
     """
-    PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField(
-        "presetWorkspaceStatus", "presetWorkspaceStatus"
+    ADLS_ACCOUNT_KIND: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountKind", "adlsAccountKind"
     )
     """
-    TBC
+    Kind of this account.
     """
-    PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
+    ADLS_PRIMARY_DISK_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsPrimaryDiskState", "adlsPrimaryDiskState"
     )
     """
-    TBC
+    Primary disk state of this account.
     """
-    PRESET_WORKSPACE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
+    ADLS_ACCOUNT_PROVISION_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountProvisionState", "adlsAccountProvisionState"
     )
     """
-    TBC
+    Provision state of this account.
     """
-    PRESET_WORKSPACE_DATASET_COUNT: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount"
+    ADLS_ACCOUNT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountAccessTier", "adlsAccountAccessTier"
     )
     """
-    TBC
+    Access tier of this account.
     """
 
-    PRESET_DASHBOARDS: ClassVar[RelationField] = RelationField("presetDashboards")
+    ADLS_CONTAINERS: ClassVar[RelationField] = RelationField("adlsContainers")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "preset_workspace_public_dashboards_allowed",
-        "preset_workspace_cluster_id",
-        "preset_workspace_hostname",
-        "preset_workspace_is_in_maintenance_mode",
-        "preset_workspace_region",
-        "preset_workspace_status",
-        "preset_workspace_deployment_id",
-        "preset_workspace_dashboard_count",
-        "preset_workspace_dataset_count",
-        "preset_dashboards",
+        "adls_e_tag",
+        "adls_encryption_type",
+        "adls_account_resource_group",
+        "adls_account_subscription",
+        "adls_account_performance",
+        "adls_account_replication",
+        "adls_account_kind",
+        "adls_primary_disk_state",
+        "adls_account_provision_state",
+        "adls_account_access_tier",
+        "adls_containers",
     ]
 
     @property
-    def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
+    def adls_e_tag(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.adls_e_tag
+
+    @adls_e_tag.setter
+    def adls_e_tag(self, adls_e_tag: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_e_tag = adls_e_tag
+
+    @property
+    def adls_encryption_type(self) -> Optional[ADLSEncryptionTypes]:
+        return None if self.attributes is None else self.attributes.adls_encryption_type
+
+    @adls_encryption_type.setter
+    def adls_encryption_type(self, adls_encryption_type: Optional[ADLSEncryptionTypes]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_encryption_type = adls_encryption_type
+
+    @property
+    def adls_account_resource_group(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_workspace_public_dashboards_allowed
+            else self.attributes.adls_account_resource_group
         )
 
-    @preset_workspace_public_dashboards_allowed.setter
-    def preset_workspace_public_dashboards_allowed(
-        self, preset_workspace_public_dashboards_allowed: Optional[bool]
+    @adls_account_resource_group.setter
+    def adls_account_resource_group(self, adls_account_resource_group: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account_resource_group = adls_account_resource_group
+
+    @property
+    def adls_account_subscription(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_subscription
+        )
+
+    @adls_account_subscription.setter
+    def adls_account_subscription(self, adls_account_subscription: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account_subscription = adls_account_subscription
+
+    @property
+    def adls_account_performance(self) -> Optional[ADLSPerformance]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_performance
+        )
+
+    @adls_account_performance.setter
+    def adls_account_performance(
+        self, adls_account_performance: Optional[ADLSPerformance]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_public_dashboards_allowed = (
-            preset_workspace_public_dashboards_allowed
-        )
+        self.attributes.adls_account_performance = adls_account_performance
 
     @property
-    def preset_workspace_cluster_id(self) -> Optional[int]:
+    def adls_account_replication(self) -> Optional[ADLSReplicationType]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_workspace_cluster_id
+            else self.attributes.adls_account_replication
         )
 
-    @preset_workspace_cluster_id.setter
-    def preset_workspace_cluster_id(self, preset_workspace_cluster_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_cluster_id = preset_workspace_cluster_id
-
-    @property
-    def preset_workspace_hostname(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_hostname
-        )
-
-    @preset_workspace_hostname.setter
-    def preset_workspace_hostname(self, preset_workspace_hostname: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_hostname = preset_workspace_hostname
-
-    @property
-    def preset_workspace_is_in_maintenance_mode(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_is_in_maintenance_mode
-        )
-
-    @preset_workspace_is_in_maintenance_mode.setter
-    def preset_workspace_is_in_maintenance_mode(
-        self, preset_workspace_is_in_maintenance_mode: Optional[bool]
+    @adls_account_replication.setter
+    def adls_account_replication(
+        self, adls_account_replication: Optional[ADLSReplicationType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_is_in_maintenance_mode = (
-            preset_workspace_is_in_maintenance_mode
-        )
+        self.attributes.adls_account_replication = adls_account_replication
 
     @property
-    def preset_workspace_region(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_region
-        )
+    def adls_account_kind(self) -> Optional[ADLSStorageKind]:
+        return None if self.attributes is None else self.attributes.adls_account_kind
 
-    @preset_workspace_region.setter
-    def preset_workspace_region(self, preset_workspace_region: Optional[str]):
+    @adls_account_kind.setter
+    def adls_account_kind(self, adls_account_kind: Optional[ADLSStorageKind]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_region = preset_workspace_region
+        self.attributes.adls_account_kind = adls_account_kind
 
     @property
-    def preset_workspace_status(self) -> Optional[str]:
+    def adls_primary_disk_state(self) -> Optional[ADLSAccountStatus]:
         return (
-            None if self.attributes is None else self.attributes.preset_workspace_status
+            None if self.attributes is None else self.attributes.adls_primary_disk_state
         )
 
-    @preset_workspace_status.setter
-    def preset_workspace_status(self, preset_workspace_status: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_status = preset_workspace_status
-
-    @property
-    def preset_workspace_deployment_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_deployment_id
-        )
-
-    @preset_workspace_deployment_id.setter
-    def preset_workspace_deployment_id(
-        self, preset_workspace_deployment_id: Optional[int]
+    @adls_primary_disk_state.setter
+    def adls_primary_disk_state(
+        self, adls_primary_disk_state: Optional[ADLSAccountStatus]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
+        self.attributes.adls_primary_disk_state = adls_primary_disk_state
 
     @property
-    def preset_workspace_dashboard_count(self) -> Optional[int]:
+    def adls_account_provision_state(self) -> Optional[ADLSProvisionState]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_workspace_dashboard_count
+            else self.attributes.adls_account_provision_state
         )
 
-    @preset_workspace_dashboard_count.setter
-    def preset_workspace_dashboard_count(
-        self, preset_workspace_dashboard_count: Optional[int]
+    @adls_account_provision_state.setter
+    def adls_account_provision_state(
+        self, adls_account_provision_state: Optional[ADLSProvisionState]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dashboard_count = (
-            preset_workspace_dashboard_count
-        )
+        self.attributes.adls_account_provision_state = adls_account_provision_state
 
     @property
-    def preset_workspace_dataset_count(self) -> Optional[int]:
+    def adls_account_access_tier(self) -> Optional[ADLSAccessTier]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_workspace_dataset_count
+            else self.attributes.adls_account_access_tier
         )
 
-    @preset_workspace_dataset_count.setter
-    def preset_workspace_dataset_count(
-        self, preset_workspace_dataset_count: Optional[int]
+    @adls_account_access_tier.setter
+    def adls_account_access_tier(
+        self, adls_account_access_tier: Optional[ADLSAccessTier]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
+        self.attributes.adls_account_access_tier = adls_account_access_tier
 
     @property
-    def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
-        return None if self.attributes is None else self.attributes.preset_dashboards
+    def adls_containers(self) -> Optional[list[ADLSContainer]]:
+        return None if self.attributes is None else self.attributes.adls_containers
 
-    @preset_dashboards.setter
-    def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
+    @adls_containers.setter
+    def adls_containers(self, adls_containers: Optional[list[ADLSContainer]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboards = preset_dashboards
+        self.attributes.adls_containers = adls_containers
 
-    class Attributes(Preset.Attributes):
-        preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
-            None, description="", alias="presetWorkspacePublicDashboardsAllowed"
+    class Attributes(ADLS.Attributes):
+        adls_e_tag: Optional[str] = Field(None, description="", alias="adlsETag")
+        adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
+            None, description="", alias="adlsEncryptionType"
         )
-        preset_workspace_cluster_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceClusterId"
+        adls_account_resource_group: Optional[str] = Field(
+            None, description="", alias="adlsAccountResourceGroup"
         )
-        preset_workspace_hostname: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceHostname"
+        adls_account_subscription: Optional[str] = Field(
+            None, description="", alias="adlsAccountSubscription"
         )
-        preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
-            None, description="", alias="presetWorkspaceIsInMaintenanceMode"
+        adls_account_performance: Optional[ADLSPerformance] = Field(
+            None, description="", alias="adlsAccountPerformance"
         )
-        preset_workspace_region: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceRegion"
+        adls_account_replication: Optional[ADLSReplicationType] = Field(
+            None, description="", alias="adlsAccountReplication"
         )
-        preset_workspace_status: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceStatus"
+        adls_account_kind: Optional[ADLSStorageKind] = Field(
+            None, description="", alias="adlsAccountKind"
         )
-        preset_workspace_deployment_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDeploymentId"
+        adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
+            None, description="", alias="adlsPrimaryDiskState"
         )
-        preset_workspace_dashboard_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDashboardCount"
+        adls_account_provision_state: Optional[ADLSProvisionState] = Field(
+            None, description="", alias="adlsAccountProvisionState"
         )
-        preset_workspace_dataset_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDatasetCount"
+        adls_account_access_tier: Optional[ADLSAccessTier] = Field(
+            None, description="", alias="adlsAccountAccessTier"
         )
-        preset_dashboards: Optional[list[PresetDashboard]] = Field(
-            None, description="", alias="presetDashboards"
+        adls_containers: Optional[list[ADLSContainer]] = Field(
+            None, description="", alias="adlsContainers"
         )  # relationship
 
         @classmethod
@@ -917,7 +330,7 @@ class PresetWorkspace(Preset):
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str
-        ) -> PresetWorkspace.Attributes:
+        ) -> ADLSAccount.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
@@ -932,27 +345,802 @@ class PresetWorkspace(Preset):
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
 
-            return PresetWorkspace.Attributes(
+            return ADLSAccount.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_type.value,
             )
 
-    attributes: "PresetWorkspace.Attributes" = Field(
-        default_factory=lambda: PresetWorkspace.Attributes(),
+    attributes: "ADLSAccount.Attributes" = Field(
+        default_factory=lambda: ADLSAccount.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-PresetChart.Attributes.update_forward_refs()
+class ADLSContainer(ADLS):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
+        validate_required_fields(
+            ["name", "adls_account_qualified_name"], [name, adls_account_qualified_name]
+        )
+        attributes = ADLSContainer.Attributes.create(
+            name=name, adls_account_qualified_name=adls_account_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("ADLSContainer", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSContainer":
+            raise ValueError("must be ADLSContainer")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in ADLSContainer._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    ADLS_CONTAINER_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsContainerUrl", "adlsContainerUrl.keyword", "adlsContainerUrl"
+    )
+    """
+    URL of this container.
+    """
+    ADLS_CONTAINER_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsContainerLeaseState", "adlsContainerLeaseState"
+    )
+    """
+    Lease state of this container.
+    """
+    ADLS_CONTAINER_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "adlsContainerLeaseStatus", "adlsContainerLeaseStatus"
+    )
+    """
+    Lease status of this container.
+    """
+    ADLS_CONTAINER_ENCRYPTION_SCOPE: ClassVar[KeywordField] = KeywordField(
+        "adlsContainerEncryptionScope", "adlsContainerEncryptionScope"
+    )
+    """
+    Encryption scope of this container.
+    """
+    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
+        BooleanField
+    ] = BooleanField(
+        "adlsContainerVersionLevelImmutabilitySupport",
+        "adlsContainerVersionLevelImmutabilitySupport",
+    )
+    """
+    Whether this container supports version-level immutability (true) or not (false).
+    """
+    ADLS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "adlsObjectCount", "adlsObjectCount"
+    )
+    """
+    Number of objects that exist within this container.
+    """
+
+    ADLS_OBJECTS: ClassVar[RelationField] = RelationField("adlsObjects")
+    """
+    TBC
+    """
+    ADLS_ACCOUNT: ClassVar[RelationField] = RelationField("adlsAccount")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "adls_container_url",
+        "adls_container_lease_state",
+        "adls_container_lease_status",
+        "adls_container_encryption_scope",
+        "adls_container_version_level_immutability_support",
+        "adls_object_count",
+        "adls_objects",
+        "adls_account",
+    ]
+
+    @property
+    def adls_container_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.adls_container_url
+
+    @adls_container_url.setter
+    def adls_container_url(self, adls_container_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_url = adls_container_url
+
+    @property
+    def adls_container_lease_state(self) -> Optional[ADLSLeaseState]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_container_lease_state
+        )
+
+    @adls_container_lease_state.setter
+    def adls_container_lease_state(
+        self, adls_container_lease_state: Optional[ADLSLeaseState]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_lease_state = adls_container_lease_state
+
+    @property
+    def adls_container_lease_status(self) -> Optional[ADLSLeaseStatus]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_container_lease_status
+        )
+
+    @adls_container_lease_status.setter
+    def adls_container_lease_status(
+        self, adls_container_lease_status: Optional[ADLSLeaseStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_lease_status = adls_container_lease_status
+
+    @property
+    def adls_container_encryption_scope(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_container_encryption_scope
+        )
+
+    @adls_container_encryption_scope.setter
+    def adls_container_encryption_scope(
+        self, adls_container_encryption_scope: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_encryption_scope = (
+            adls_container_encryption_scope
+        )
+
+    @property
+    def adls_container_version_level_immutability_support(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_container_version_level_immutability_support
+        )
+
+    @adls_container_version_level_immutability_support.setter
+    def adls_container_version_level_immutability_support(
+        self, adls_container_version_level_immutability_support: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_version_level_immutability_support = (
+            adls_container_version_level_immutability_support
+        )
+
+    @property
+    def adls_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.adls_object_count
+
+    @adls_object_count.setter
+    def adls_object_count(self, adls_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_count = adls_object_count
+
+    @property
+    def adls_objects(self) -> Optional[list[ADLSObject]]:
+        return None if self.attributes is None else self.attributes.adls_objects
+
+    @adls_objects.setter
+    def adls_objects(self, adls_objects: Optional[list[ADLSObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_objects = adls_objects
+
+    @property
+    def adls_account(self) -> Optional[ADLSAccount]:
+        return None if self.attributes is None else self.attributes.adls_account
+
+    @adls_account.setter
+    def adls_account(self, adls_account: Optional[ADLSAccount]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account = adls_account
+
+    class Attributes(ADLS.Attributes):
+        adls_container_url: Optional[str] = Field(
+            None, description="", alias="adlsContainerUrl"
+        )
+        adls_container_lease_state: Optional[ADLSLeaseState] = Field(
+            None, description="", alias="adlsContainerLeaseState"
+        )
+        adls_container_lease_status: Optional[ADLSLeaseStatus] = Field(
+            None, description="", alias="adlsContainerLeaseStatus"
+        )
+        adls_container_encryption_scope: Optional[str] = Field(
+            None, description="", alias="adlsContainerEncryptionScope"
+        )
+        adls_container_version_level_immutability_support: Optional[bool] = Field(
+            None, description="", alias="adlsContainerVersionLevelImmutabilitySupport"
+        )
+        adls_object_count: Optional[int] = Field(
+            None, description="", alias="adlsObjectCount"
+        )
+        adls_objects: Optional[list[ADLSObject]] = Field(
+            None, description="", alias="adlsObjects"
+        )  # relationship
+        adls_account: Optional[ADLSAccount] = Field(
+            None, description="", alias="adlsAccount"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, adls_account_qualified_name: str
+        ) -> ADLSContainer.Attributes:
+            validate_required_fields(
+                ["name", "adls_account_qualified_name"],
+                [name, adls_account_qualified_name],
+            )
+
+            # Split the adls_account_qualified_name to extract necessary information
+            fields = adls_account_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid adls_account_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid adls_account_qualified_name") from e
+
+            return ADLSContainer.Attributes(
+                name=name,
+                adls_account_qualified_name=adls_account_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{adls_account_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                adls_account=ADLSAccount.ref_by_qualified_name(
+                    adls_account_qualified_name
+                ),
+            )
+
+    attributes: "ADLSContainer.Attributes" = Field(
+        default_factory=lambda: ADLSContainer.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-PresetDataset.Attributes.update_forward_refs()
+class ADLSObject(ADLS):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+    ) -> ADLSObject:
+        validate_required_fields(
+            ["name", "adls_container_qualified_name"],
+            [name, adls_container_qualified_name],
+        )
+        attributes = ADLSObject.Attributes.create(
+            name=name, adls_container_qualified_name=adls_container_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("ADLSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSObject":
+            raise ValueError("must be ADLSObject")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in ADLSObject._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    ADLS_OBJECT_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsObjectUrl", "adlsObjectUrl.keyword", "adlsObjectUrl"
+    )
+    """
+    URL of this object.
+    """
+    ADLS_OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectVersionId", "adlsObjectVersionId"
+    )
+    """
+    Identifier of the version of this object, from ADLS.
+    """
+    ADLS_OBJECT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectType", "adlsObjectType"
+    )
+    """
+    Type of this object.
+    """
+    ADLS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
+        "adlsObjectSize", "adlsObjectSize"
+    )
+    """
+    Size of this object.
+    """
+    ADLS_OBJECT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectAccessTier", "adlsObjectAccessTier"
+    )
+    """
+    Access tier of this object.
+    """
+    ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "adlsObjectAccessTierLastModifiedTime", "adlsObjectAccessTierLastModifiedTime"
+    )
+    """
+    Time (epoch) when the acccess tier for this object was last modified, in milliseconds.
+    """
+    ADLS_OBJECT_ARCHIVE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectArchiveStatus", "adlsObjectArchiveStatus"
+    )
+    """
+    Archive status of this object.
+    """
+    ADLS_OBJECT_SERVER_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
+        "adlsObjectServerEncrypted", "adlsObjectServerEncrypted"
+    )
+    """
+    Whether this object is server encrypted (true) or not (false).
+    """
+    ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
+        BooleanField
+    ] = BooleanField(
+        "adlsObjectVersionLevelImmutabilitySupport",
+        "adlsObjectVersionLevelImmutabilitySupport",
+    )
+    """
+    Whether this object supports version-level immutability (true) or not (false).
+    """
+    ADLS_OBJECT_CACHE_CONTROL: ClassVar[TextField] = TextField(
+        "adlsObjectCacheControl", "adlsObjectCacheControl"
+    )
+    """
+    Cache control of this object.
+    """
+    ADLS_OBJECT_CONTENT_TYPE: ClassVar[TextField] = TextField(
+        "adlsObjectContentType", "adlsObjectContentType"
+    )
+    """
+    Content type of this object.
+    """
+    ADLS_OBJECT_CONTENT_MD5HASH: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectContentMD5Hash", "adlsObjectContentMD5Hash"
+    )
+    """
+    MD5 hash of this object's contents.
+    """
+    ADLS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsObjectContentLanguage",
+        "adlsObjectContentLanguage.keyword",
+        "adlsObjectContentLanguage",
+    )
+    """
+    Language of this object's contents.
+    """
+    ADLS_OBJECT_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectLeaseStatus", "adlsObjectLeaseStatus"
+    )
+    """
+    Status of this object's lease.
+    """
+    ADLS_OBJECT_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectLeaseState", "adlsObjectLeaseState"
+    )
+    """
+    State of this object's lease.
+    """
+    ADLS_OBJECT_METADATA: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectMetadata", "adlsObjectMetadata"
+    )
+    """
+    Metadata associated with this object, from ADLS.
+    """
+    ADLS_CONTAINER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsContainerQualifiedName",
+        "adlsContainerQualifiedName",
+        "adlsContainerQualifiedName.text",
+    )
+    """
+    Unique name of the container this object exists within.
+    """
+
+    ADLS_CONTAINER: ClassVar[RelationField] = RelationField("adlsContainer")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "adls_object_url",
+        "adls_object_version_id",
+        "adls_object_type",
+        "adls_object_size",
+        "adls_object_access_tier",
+        "adls_object_access_tier_last_modified_time",
+        "adls_object_archive_status",
+        "adls_object_server_encrypted",
+        "adls_object_version_level_immutability_support",
+        "adls_object_cache_control",
+        "adls_object_content_type",
+        "adls_object_content_m_d5_hash",
+        "adls_object_content_language",
+        "adls_object_lease_status",
+        "adls_object_lease_state",
+        "adls_object_metadata",
+        "adls_container_qualified_name",
+        "adls_container",
+    ]
+
+    @property
+    def adls_object_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.adls_object_url
+
+    @adls_object_url.setter
+    def adls_object_url(self, adls_object_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_url = adls_object_url
+
+    @property
+    def adls_object_version_id(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.adls_object_version_id
+        )
+
+    @adls_object_version_id.setter
+    def adls_object_version_id(self, adls_object_version_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_version_id = adls_object_version_id
+
+    @property
+    def adls_object_type(self) -> Optional[ADLSObjectType]:
+        return None if self.attributes is None else self.attributes.adls_object_type
+
+    @adls_object_type.setter
+    def adls_object_type(self, adls_object_type: Optional[ADLSObjectType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_type = adls_object_type
+
+    @property
+    def adls_object_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.adls_object_size
+
+    @adls_object_size.setter
+    def adls_object_size(self, adls_object_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_size = adls_object_size
+
+    @property
+    def adls_object_access_tier(self) -> Optional[ADLSAccessTier]:
+        return (
+            None if self.attributes is None else self.attributes.adls_object_access_tier
+        )
+
+    @adls_object_access_tier.setter
+    def adls_object_access_tier(
+        self, adls_object_access_tier: Optional[ADLSAccessTier]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_access_tier = adls_object_access_tier
+
+    @property
+    def adls_object_access_tier_last_modified_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_access_tier_last_modified_time
+        )
+
+    @adls_object_access_tier_last_modified_time.setter
+    def adls_object_access_tier_last_modified_time(
+        self, adls_object_access_tier_last_modified_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_access_tier_last_modified_time = (
+            adls_object_access_tier_last_modified_time
+        )
+
+    @property
+    def adls_object_archive_status(self) -> Optional[ADLSObjectArchiveStatus]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_archive_status
+        )
+
+    @adls_object_archive_status.setter
+    def adls_object_archive_status(
+        self, adls_object_archive_status: Optional[ADLSObjectArchiveStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_archive_status = adls_object_archive_status
+
+    @property
+    def adls_object_server_encrypted(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_server_encrypted
+        )
+
+    @adls_object_server_encrypted.setter
+    def adls_object_server_encrypted(
+        self, adls_object_server_encrypted: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_server_encrypted = adls_object_server_encrypted
+
+    @property
+    def adls_object_version_level_immutability_support(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_version_level_immutability_support
+        )
+
+    @adls_object_version_level_immutability_support.setter
+    def adls_object_version_level_immutability_support(
+        self, adls_object_version_level_immutability_support: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_version_level_immutability_support = (
+            adls_object_version_level_immutability_support
+        )
+
+    @property
+    def adls_object_cache_control(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_cache_control
+        )
+
+    @adls_object_cache_control.setter
+    def adls_object_cache_control(self, adls_object_cache_control: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_cache_control = adls_object_cache_control
+
+    @property
+    def adls_object_content_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_content_type
+        )
+
+    @adls_object_content_type.setter
+    def adls_object_content_type(self, adls_object_content_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_content_type = adls_object_content_type
+
+    @property
+    def adls_object_content_m_d5_hash(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_content_m_d5_hash
+        )
+
+    @adls_object_content_m_d5_hash.setter
+    def adls_object_content_m_d5_hash(
+        self, adls_object_content_m_d5_hash: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_content_m_d5_hash = adls_object_content_m_d5_hash
+
+    @property
+    def adls_object_content_language(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_content_language
+        )
+
+    @adls_object_content_language.setter
+    def adls_object_content_language(self, adls_object_content_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_content_language = adls_object_content_language
+
+    @property
+    def adls_object_lease_status(self) -> Optional[ADLSLeaseStatus]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_object_lease_status
+        )
+
+    @adls_object_lease_status.setter
+    def adls_object_lease_status(
+        self, adls_object_lease_status: Optional[ADLSLeaseStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_lease_status = adls_object_lease_status
+
+    @property
+    def adls_object_lease_state(self) -> Optional[ADLSLeaseState]:
+        return (
+            None if self.attributes is None else self.attributes.adls_object_lease_state
+        )
+
+    @adls_object_lease_state.setter
+    def adls_object_lease_state(
+        self, adls_object_lease_state: Optional[ADLSLeaseState]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_lease_state = adls_object_lease_state
+
+    @property
+    def adls_object_metadata(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.adls_object_metadata
+
+    @adls_object_metadata.setter
+    def adls_object_metadata(self, adls_object_metadata: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_metadata = adls_object_metadata
+
+    @property
+    def adls_container_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_container_qualified_name
+        )
+
+    @adls_container_qualified_name.setter
+    def adls_container_qualified_name(
+        self, adls_container_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_qualified_name = adls_container_qualified_name
+
+    @property
+    def adls_container(self) -> Optional[ADLSContainer]:
+        return None if self.attributes is None else self.attributes.adls_container
+
+    @adls_container.setter
+    def adls_container(self, adls_container: Optional[ADLSContainer]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container = adls_container
+
+    class Attributes(ADLS.Attributes):
+        adls_object_url: Optional[str] = Field(
+            None, description="", alias="adlsObjectUrl"
+        )
+        adls_object_version_id: Optional[str] = Field(
+            None, description="", alias="adlsObjectVersionId"
+        )
+        adls_object_type: Optional[ADLSObjectType] = Field(
+            None, description="", alias="adlsObjectType"
+        )
+        adls_object_size: Optional[int] = Field(
+            None, description="", alias="adlsObjectSize"
+        )
+        adls_object_access_tier: Optional[ADLSAccessTier] = Field(
+            None, description="", alias="adlsObjectAccessTier"
+        )
+        adls_object_access_tier_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="adlsObjectAccessTierLastModifiedTime"
+        )
+        adls_object_archive_status: Optional[ADLSObjectArchiveStatus] = Field(
+            None, description="", alias="adlsObjectArchiveStatus"
+        )
+        adls_object_server_encrypted: Optional[bool] = Field(
+            None, description="", alias="adlsObjectServerEncrypted"
+        )
+        adls_object_version_level_immutability_support: Optional[bool] = Field(
+            None, description="", alias="adlsObjectVersionLevelImmutabilitySupport"
+        )
+        adls_object_cache_control: Optional[str] = Field(
+            None, description="", alias="adlsObjectCacheControl"
+        )
+        adls_object_content_type: Optional[str] = Field(
+            None, description="", alias="adlsObjectContentType"
+        )
+        adls_object_content_m_d5_hash: Optional[str] = Field(
+            None, description="", alias="adlsObjectContentMD5Hash"
+        )
+        adls_object_content_language: Optional[str] = Field(
+            None, description="", alias="adlsObjectContentLanguage"
+        )
+        adls_object_lease_status: Optional[ADLSLeaseStatus] = Field(
+            None, description="", alias="adlsObjectLeaseStatus"
+        )
+        adls_object_lease_state: Optional[ADLSLeaseState] = Field(
+            None, description="", alias="adlsObjectLeaseState"
+        )
+        adls_object_metadata: Optional[dict[str, str]] = Field(
+            None, description="", alias="adlsObjectMetadata"
+        )
+        adls_container_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsContainerQualifiedName"
+        )
+        adls_container: Optional[ADLSContainer] = Field(
+            None, description="", alias="adlsContainer"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, adls_container_qualified_name: str
+        ) -> ADLSObject.Attributes:
+            validate_required_fields(
+                ["name", "adls_container_qualified_name"],
+                [name, adls_container_qualified_name],
+            )
+
+            # Split the qualified_name to extract necessary information
+            fields = adls_container_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid qualified_name") from e
+            adls_account_qualified_name = get_parent_qualified_name(
+                adls_container_qualified_name
+            )
+
+            return ADLSObject.Attributes(
+                name=name,
+                adls_container_qualified_name=adls_container_qualified_name,
+                qualified_name=f"{adls_container_qualified_name}/{name}",
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connector_name=connector_type.value,
+                adls_container=ADLSContainer.ref_by_qualified_name(
+                    adls_container_qualified_name
+                ),
+                adls_account_qualified_name=adls_account_qualified_name,
+            )
+
+    attributes: "ADLSObject.Attributes" = Field(
+        default_factory=lambda: ADLSObject.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-PresetDashboard.Attributes.update_forward_refs()
+ADLSAccount.Attributes.update_forward_refs()
 
 
-PresetWorkspace.Attributes.update_forward_refs()
+ADLSContainer.Attributes.update_forward_refs()
+
+
+ADLSObject.Attributes.update_forward_refs()
