@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="EventStore" href="eventstore.html" /><link rel="prev" title="DbtTag" href="dbttag.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="DynamoDB" href="dynamodb.html" /><link rel="prev" title="DbtTag" href="dbttag.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>DbtTest - pyatlan documentation</title>
@@ -204,6 +204,11 @@
 <li class="toctree-l2"><a class="reference internal" href="dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttag.html">DbtTag</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eventstore.html">EventStore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="folder.html">Folder</a></li>
@@ -358,6 +363,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tableauworkbook.html">TableauWorkbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tableauworksheet.html">TableauWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotanswer.html">ThoughtspotAnswer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
@@ -464,49 +470,49 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_COMPILED_CODE">
 <span class="sig-name descname"><span class="pre">DBT_TEST_COMPILED_CODE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_COMPILED_CODE" title="Link to this definition">#</a></dt>
-<dd><p>The compiled code of a test ( tests in dbt can be defined using python )</p>
+<dd><p>Compiled code of the test (when the test is defined using Python).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_COMPILED_SQL">
 <span class="sig-name descname"><span class="pre">DBT_TEST_COMPILED_SQL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_COMPILED_SQL" title="Link to this definition">#</a></dt>
-<dd><p>The compiled sql of a test</p>
+<dd><p>Compiled SQL of the test.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_ERROR">
 <span class="sig-name descname"><span class="pre">DBT_TEST_ERROR</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_ERROR" title="Link to this definition">#</a></dt>
-<dd><p>The error message in the case of state being “error”</p>
+<dd><p>Error message in the case of state being “error”.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_LANGUAGE">
 <span class="sig-name descname"><span class="pre">DBT_TEST_LANGUAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_LANGUAGE" title="Link to this definition">#</a></dt>
-<dd><p>The language in which a dbt test is written. Example: sql,python</p>
+<dd><p>Language in which the test is written, for example: SQL or Python.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_RAW_CODE">
 <span class="sig-name descname"><span class="pre">DBT_TEST_RAW_CODE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_RAW_CODE" title="Link to this definition">#</a></dt>
-<dd><p>The raw code of a test ( tests in dbt can be defined using python )</p>
+<dd><p>Raw code of the test (when the test is defined using Python).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_RAW_SQL">
 <span class="sig-name descname"><span class="pre">DBT_TEST_RAW_SQL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_RAW_SQL" title="Link to this definition">#</a></dt>
-<dd><p>The raw sql of a test</p>
+<dd><p>Raw SQL of the test.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_STATE">
 <span class="sig-name descname"><span class="pre">DBT_TEST_STATE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_STATE" title="Link to this definition">#</a></dt>
-<dd><p>The test results. Can be one of, in order of severity, “error”, “fail”, “warn”, “pass”</p>
+<dd><p>Test results. Can be one of, in order of severity, “error”, “fail”, “warn”, “pass”.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DbtTest.DBT_TEST_STATUS">
 <span class="sig-name descname"><span class="pre">DBT_TEST_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DbtTest.DBT_TEST_STATUS" title="Link to this definition">#</a></dt>
-<dd><p>Status provides the details of the results of a test. For errors, it reads “ERROR”.</p>
+<dd><p>Details of the results of the test. For errors, it reads “ERROR”.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -524,12 +530,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="eventstore.html">
+          <a class="next-page" href="dynamodb.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">EventStore</div>
+                <div class="title">DynamoDB</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

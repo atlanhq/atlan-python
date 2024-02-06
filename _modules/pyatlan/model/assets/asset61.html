@@ -203,6 +203,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/eventstore.html">EventStore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/folder.html">Folder</a></li>
@@ -357,6 +362,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauworkbook.html">TableauWorkbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauworksheet.html">TableauWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
@@ -442,337 +448,345 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ADLSAccessTier</span><span class="p">,</span>
-    <span class="n">ADLSAccountStatus</span><span class="p">,</span>
-    <span class="n">ADLSEncryptionTypes</span><span class="p">,</span>
-    <span class="n">ADLSLeaseState</span><span class="p">,</span>
-    <span class="n">ADLSLeaseStatus</span><span class="p">,</span>
-    <span class="n">ADLSObjectArchiveStatus</span><span class="p">,</span>
-    <span class="n">ADLSObjectType</span><span class="p">,</span>
-    <span class="n">ADLSPerformance</span><span class="p">,</span>
-    <span class="n">ADLSProvisionState</span><span class="p">,</span>
-    <span class="n">ADLSReplicationType</span><span class="p">,</span>
-    <span class="n">ADLSStorageKind</span><span class="p">,</span>
-    <span class="n">AtlanConnectorType</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span><span class="p">,</span> <span class="n">GoogleDatastudioAssetType</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BooleanField</span><span class="p">,</span>
     <span class="n">KeywordField</span><span class="p">,</span>
     <span class="n">KeywordTextField</span><span class="p">,</span>
+    <span class="n">KeywordTextStemmedField</span><span class="p">,</span>
     <span class="n">NumericField</span><span class="p">,</span>
-    <span class="n">RelationField</span><span class="p">,</span>
-    <span class="n">TextField</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">get_parent_qualified_name</span><span class="p">,</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.structs</span> <span class="kn">import</span> <span class="n">GoogleLabel</span><span class="p">,</span> <span class="n">GoogleTag</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
-<span class="kn">from</span> <span class="nn">.asset35</span> <span class="kn">import</span> <span class="n">ADLS</span>
+<span class="kn">from</span> <span class="nn">.asset47</span> <span class="kn">import</span> <span class="n">DataStudio</span>
 
 
-<div class="viewcode-block" id="ADLSAccount">
-<a class="viewcode-back" href="../../../../asset/adlsaccount.html#pyatlan.model.assets.ADLSAccount">[docs]</a>
-<span class="k">class</span> <span class="nc">ADLSAccount</span><span class="p">(</span><span class="n">ADLS</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStudioAsset">
+<a class="viewcode-back" href="../../../../asset/datastudioasset.html#pyatlan.model.assets.DataStudioAsset">[docs]</a>
+<span class="k">class</span> <span class="nc">DataStudioAsset</span><span class="p">(</span><span class="n">DataStudio</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
     <span class="c1"># @validate_arguments()</span>
     <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSAccount</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">GoogleDatastudioAssetType</span><span class="p">,</span>
+        <span class="n">gdsid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataStudioAsset</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">ADLSAccount</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span>
+        <span class="k">if</span> <span class="n">gdsid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gdsid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
+            <span class="n">data_studio_asset_type</span><span class="o">=</span><span class="n">data_studio_asset_type</span><span class="p">,</span>
+            <span class="n">gdsid</span><span class="o">=</span><span class="n">gdsid</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ADLSAccount&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;DataStudioAsset&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ADLSAccount&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ADLSAccount&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;DataStudioAsset&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be DataStudioAsset&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ADLSAccount</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">ADLS_E_TAG</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;adlsETag&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsETag&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ENCRYPTION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsEncryptionType&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsEncryptionType&quot;</span>
+    <span class="n">DATA_STUDIO_ASSET_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dataStudioAssetType&quot;</span><span class="p">,</span> <span class="s2">&quot;dataStudioAssetType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_RESOURCE_GROUP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountResourceGroup&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsAccountResourceGroup.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsAccountResourceGroup&quot;</span><span class="p">,</span>
+    <span class="n">DATA_STUDIO_ASSET_TITLE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
+        <span class="n">KeywordTextStemmedField</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextStemmedField</span><span class="p">(</span>
+        <span class="s2">&quot;dataStudioAssetTitle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataStudioAssetTitle.keyword&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataStudioAssetTitle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataStudioAssetTitle.stemmed&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Title of the Google Data Studio asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_SUBSCRIPTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountSubscription&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsAccountSubscription.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsAccountSubscription&quot;</span><span class="p">,</span>
+    <span class="n">DATA_STUDIO_ASSET_OWNER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dataStudioAssetOwner&quot;</span><span class="p">,</span> <span class="s2">&quot;dataStudioAssetOwner&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Owner of the asset, from Google Data Studio.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_PERFORMANCE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountPerformance&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountPerformance&quot;</span>
+    <span class="n">IS_TRASHED_DATA_STUDIO_ASSET</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;isTrashedDataStudioAsset&quot;</span><span class="p">,</span> <span class="s2">&quot;isTrashedDataStudioAsset&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Whether the Google Data Studio asset has been trashed (true) or not (false).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_REPLICATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountReplication&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountReplication&quot;</span>
+    <span class="n">GOOGLE_SERVICE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;googleService&quot;</span><span class="p">,</span> <span class="s2">&quot;googleService&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Service in Google in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_KIND</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountKind&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountKind&quot;</span>
+    <span class="n">GOOGLE_PROJECT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;googleProjectName&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectName&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectName.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Name of the project in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_PRIMARY_DISK_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsPrimaryDiskState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsPrimaryDiskState&quot;</span>
+    <span class="n">GOOGLE_PROJECT_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;googleProjectId&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectId&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectId.text&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    ID of the project in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_PROVISION_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountProvisionState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountProvisionState&quot;</span>
+    <span class="n">GOOGLE_PROJECT_NUMBER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;googleProjectNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;googleProjectNumber&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of the project in which the asset exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT_ACCESS_TIER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsAccountAccessTier&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsAccountAccessTier&quot;</span>
+    <span class="n">GOOGLE_LOCATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;googleLocation&quot;</span><span class="p">,</span> <span class="s2">&quot;googleLocation&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Location of this asset in Google.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ADLS_CONTAINERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsContainers&quot;</span><span class="p">)</span>
+    <span class="n">GOOGLE_LOCATION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;googleLocationType&quot;</span><span class="p">,</span> <span class="s2">&quot;googleLocationType&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Type of location of this asset in Google.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GOOGLE_LABELS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;googleLabels&quot;</span><span class="p">,</span> <span class="s2">&quot;googleLabels&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of labels that have been applied to the asset in Google.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GOOGLE_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;googleTags&quot;</span><span class="p">,</span> <span class="s2">&quot;googleTags&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of tags that have been applied to the asset in Google.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;adls_e_tag&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_encryption_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_resource_group&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_subscription&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_performance&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_replication&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_kind&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_primary_disk_state&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_provision_state&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account_access_tier&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_containers&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_studio_asset_title&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_studio_asset_owner&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_trashed_data_studio_asset&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_service&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_project_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_project_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_project_number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_location&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_location_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_labels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;google_tags&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_e_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_e_tag</span>
-
-    <span class="nd">@adls_e_tag</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_e_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_e_tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_e_tag</span> <span class="o">=</span> <span class="n">adls_e_tag</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_encryption_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSEncryptionTypes</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_encryption_type</span>
-
-    <span class="nd">@adls_encryption_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_encryption_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_encryption_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSEncryptionTypes</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_encryption_type</span> <span class="o">=</span> <span class="n">adls_encryption_type</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_resource_group</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GoogleDatastudioAssetType</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_resource_group</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_type</span>
         <span class="p">)</span>
 
-    <span class="nd">@adls_account_resource_group</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_resource_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_resource_group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_resource_group</span> <span class="o">=</span> <span class="n">adls_account_resource_group</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_subscription</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_subscription</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_account_subscription</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_subscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_subscription</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_subscription</span> <span class="o">=</span> <span class="n">adls_account_subscription</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSPerformance</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_performance</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_account_performance</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_performance</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_performance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSPerformance</span><span class="p">]</span>
+    <span class="nd">@data_studio_asset_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GoogleDatastudioAssetType</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_performance</span> <span class="o">=</span> <span class="n">adls_account_performance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_type</span> <span class="o">=</span> <span class="n">data_studio_asset_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_replication</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSReplicationType</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_title</span>
+        <span class="p">)</span>
+
+    <span class="nd">@data_studio_asset_title</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_studio_asset_title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_title</span> <span class="o">=</span> <span class="n">data_studio_asset_title</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_owner</span>
+        <span class="p">)</span>
+
+    <span class="nd">@data_studio_asset_owner</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_studio_asset_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_studio_asset_owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_studio_asset_owner</span> <span class="o">=</span> <span class="n">data_studio_asset_owner</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_trashed_data_studio_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_replication</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_trashed_data_studio_asset</span>
         <span class="p">)</span>
 
-    <span class="nd">@adls_account_replication</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_replication</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_replication</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSReplicationType</span><span class="p">]</span>
+    <span class="nd">@is_trashed_data_studio_asset</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_trashed_data_studio_asset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">is_trashed_data_studio_asset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_replication</span> <span class="o">=</span> <span class="n">adls_account_replication</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_trashed_data_studio_asset</span> <span class="o">=</span> <span class="n">is_trashed_data_studio_asset</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSStorageKind</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_kind</span>
+    <span class="k">def</span> <span class="nf">google_service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_service</span>
 
-    <span class="nd">@adls_account_kind</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSStorageKind</span><span class="p">]):</span>
+    <span class="nd">@google_service</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_kind</span> <span class="o">=</span> <span class="n">adls_account_kind</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_service</span> <span class="o">=</span> <span class="n">google_service</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_primary_disk_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccountStatus</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">google_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_name</span>
+
+    <span class="nd">@google_project_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_name</span> <span class="o">=</span> <span class="n">google_project_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_project_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_id</span>
+
+    <span class="nd">@google_project_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_project_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_project_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_id</span> <span class="o">=</span> <span class="n">google_project_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_project_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_primary_disk_state</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_number</span>
         <span class="p">)</span>
 
-    <span class="nd">@adls_primary_disk_state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_primary_disk_state</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_primary_disk_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccountStatus</span><span class="p">]</span>
-    <span class="p">):</span>
+    <span class="nd">@google_project_number</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_project_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_project_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_primary_disk_state</span> <span class="o">=</span> <span class="n">adls_primary_disk_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_project_number</span> <span class="o">=</span> <span class="n">google_project_number</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_provision_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSProvisionState</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_provision_state</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">google_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location</span>
 
-    <span class="nd">@adls_account_provision_state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_provision_state</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_provision_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSProvisionState</span><span class="p">]</span>
-    <span class="p">):</span>
+    <span class="nd">@google_location</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_provision_state</span> <span class="o">=</span> <span class="n">adls_account_provision_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location</span> <span class="o">=</span> <span class="n">google_location</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account_access_tier</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccessTier</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_access_tier</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">google_location_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location_type</span>
 
-    <span class="nd">@adls_account_access_tier</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account_access_tier</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_account_access_tier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccessTier</span><span class="p">]</span>
-    <span class="p">):</span>
+    <span class="nd">@google_location_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_location_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_location_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account_access_tier</span> <span class="o">=</span> <span class="n">adls_account_access_tier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_location_type</span> <span class="o">=</span> <span class="n">google_location_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_containers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ADLSContainer</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_containers</span>
+    <span class="k">def</span> <span class="nf">google_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleLabel</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_labels</span>
 
-    <span class="nd">@adls_containers</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_containers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_containers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ADLSContainer</span><span class="p">]]):</span>
+    <span class="nd">@google_labels</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleLabel</span><span class="p">]]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_containers</span> <span class="o">=</span> <span class="n">adls_containers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_labels</span> <span class="o">=</span> <span class="n">google_labels</span>
 
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">ADLS</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">adls_e_tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsETag&quot;</span><span class="p">)</span>
-        <span class="n">adls_encryption_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSEncryptionTypes</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsEncryptionType&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">google_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleTag</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_tags</span>
+
+    <span class="nd">@google_tags</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">google_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">google_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleTag</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">google_tags</span> <span class="o">=</span> <span class="n">google_tags</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">DataStudio</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GoogleDatastudioAssetType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dataStudioAssetType&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_resource_group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountResourceGroup&quot;</span>
+        <span class="n">data_studio_asset_title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dataStudioAssetTitle&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_subscription</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountSubscription&quot;</span>
+        <span class="n">data_studio_asset_owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;dataStudioAssetOwner&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_performance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSPerformance</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountPerformance&quot;</span>
+        <span class="n">is_trashed_data_studio_asset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;isTrashedDataStudioAsset&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_replication</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSReplicationType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountReplication&quot;</span>
+        <span class="n">google_service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleService&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSStorageKind</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountKind&quot;</span>
+        <span class="n">google_project_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleProjectName&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_primary_disk_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccountStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsPrimaryDiskState&quot;</span>
+        <span class="n">google_project_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleProjectId&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_provision_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSProvisionState</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountProvisionState&quot;</span>
+        <span class="n">google_project_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleProjectNumber&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_account_access_tier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccessTier</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccountAccessTier&quot;</span>
+        <span class="n">google_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleLocation&quot;</span>
         <span class="p">)</span>
-        <span class="n">adls_containers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ADLSContainer</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainers&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">google_location_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleLocationType&quot;</span>
+        <span class="p">)</span>
+        <span class="n">google_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleLabel</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleLabels&quot;</span>
+        <span class="p">)</span>
+        <span class="n">google_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GoogleTag</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;googleTags&quot;</span>
+        <span class="p">)</span>
 
         <span class="nd">@classmethod</span>
         <span class="c1"># @validate_arguments()</span>
         <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSAccount</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">data_studio_asset_type</span><span class="p">:</span> <span class="n">GoogleDatastudioAssetType</span><span class="p">,</span>
+            <span class="n">gdsid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;data_studio_asset_type&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">data_studio_asset_type</span><span class="p">],</span>
             <span class="p">)</span>
 
             <span class="c1"># Split the connection_qualified_name to extract necessary information</span>
@@ -785,812 +799,23 @@
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
-            <span class="k">return</span> <span class="n">ADLSAccount</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
+            <span class="k">return</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">gdsid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
                 <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">data_studio_asset_type</span><span class="o">=</span><span class="n">data_studio_asset_type</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ADLSAccount.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ADLSAccount</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;DataStudioAsset.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
         <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="ADLSContainer">
-<a class="viewcode-back" href="../../../../asset/adlscontainer.html#pyatlan.model.assets.ADLSContainer">[docs]</a>
-<span class="k">class</span> <span class="nc">ADLSContainer</span><span class="p">(</span><span class="n">ADLS</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="c1"># @validate_arguments()</span>
-    <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSContainer</span><span class="p">:</span>
-        <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_account_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">ADLSContainer</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="o">=</span><span class="n">adls_account_qualified_name</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ADLSContainer&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ADLSContainer&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ADLSContainer&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ADLSContainer</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="n">ADLS_CONTAINER_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsContainerUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerUrl.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerUrl&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_CONTAINER_LEASE_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsContainerLeaseState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerLeaseState&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_CONTAINER_LEASE_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsContainerLeaseStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerLeaseStatus&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_CONTAINER_ENCRYPTION_SCOPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsContainerEncryptionScope&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsContainerEncryptionScope&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">BooleanField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsContainerVersionLevelImmutabilitySupport&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsContainerVersionLevelImmutabilitySupport&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectCount&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectCount&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ADLS_OBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsObjects&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_ACCOUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsAccount&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;adls_container_url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_container_lease_state&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_container_lease_status&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_container_encryption_scope&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_container_version_level_immutability_support&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_count&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_objects&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_account&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_url</span>
-
-    <span class="nd">@adls_container_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_container_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_url</span> <span class="o">=</span> <span class="n">adls_container_url</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container_lease_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseState</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_lease_state</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_container_lease_state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container_lease_state</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_container_lease_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseState</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_lease_state</span> <span class="o">=</span> <span class="n">adls_container_lease_state</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container_lease_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseStatus</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_lease_status</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_container_lease_status</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container_lease_status</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_container_lease_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseStatus</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_lease_status</span> <span class="o">=</span> <span class="n">adls_container_lease_status</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container_encryption_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_encryption_scope</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_container_encryption_scope</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container_encryption_scope</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_container_encryption_scope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_encryption_scope</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">adls_container_encryption_scope</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container_version_level_immutability_support</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_version_level_immutability_support</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_container_version_level_immutability_support</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container_version_level_immutability_support</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_container_version_level_immutability_support</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_version_level_immutability_support</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">adls_container_version_level_immutability_support</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_count</span>
-
-    <span class="nd">@adls_object_count</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_count</span> <span class="o">=</span> <span class="n">adls_object_count</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ADLSObject</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_objects</span>
-
-    <span class="nd">@adls_objects</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_objects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ADLSObject</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_objects</span> <span class="o">=</span> <span class="n">adls_objects</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_account</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccount</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account</span>
-
-    <span class="nd">@adls_account</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_account</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccount</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_account</span> <span class="o">=</span> <span class="n">adls_account</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">ADLS</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">adls_container_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainerUrl&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_container_lease_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseState</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainerLeaseState&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_container_lease_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainerLeaseStatus&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_container_encryption_scope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainerEncryptionScope&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_container_version_level_immutability_support</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainerVersionLevelImmutabilitySupport&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectCount&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_objects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ADLSObject</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjects&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">adls_account</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccount</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsAccount&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-
-        <span class="nd">@classmethod</span>
-        <span class="c1"># @validate_arguments()</span>
-        <span class="nd">@init_guid</span>
-        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSContainer</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
-            <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_account_qualified_name&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_account_qualified_name</span><span class="p">],</span>
-            <span class="p">)</span>
-
-            <span class="c1"># Split the adls_account_qualified_name to extract necessary information</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">adls_account_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid adls_account_qualified_name&quot;</span><span class="p">)</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid adls_account_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-
-            <span class="k">return</span> <span class="n">ADLSContainer</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">adls_account_qualified_name</span><span class="o">=</span><span class="n">adls_account_qualified_name</span><span class="p">,</span>
-                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">adls_account_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="n">adls_account</span><span class="o">=</span><span class="n">ADLSAccount</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span>
-                    <span class="n">adls_account_qualified_name</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ADLSContainer.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ADLSContainer</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="ADLSObject">
-<a class="viewcode-back" href="../../../../asset/adlsobject.html#pyatlan.model.assets.ADLSObject">[docs]</a>
-<span class="k">class</span> <span class="nc">ADLSObject</span><span class="p">(</span><span class="n">ADLS</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="c1"># @validate_arguments()</span>
-    <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSObject</span><span class="p">:</span>
-        <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">],</span>
-        <span class="p">)</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="o">=</span><span class="n">adls_container_qualified_name</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;ADLSObject&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;ADLSObject&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be ADLSObject&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="n">ADLS_OBJECT_URL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectUrl.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectUrl&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_VERSION_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectVersionId&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectVersionId&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectType&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectType&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_SIZE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectSize&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectSize&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_ACCESS_TIER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectAccessTier&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectAccessTier&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectAccessTierLastModifiedTime&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectAccessTierLastModifiedTime&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_ARCHIVE_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectArchiveStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectArchiveStatus&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_SERVER_ENCRYPTED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectServerEncrypted&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectServerEncrypted&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">BooleanField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectVersionLevelImmutabilitySupport&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsObjectVersionLevelImmutabilitySupport&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_CACHE_CONTROL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectCacheControl&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectCacheControl&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_CONTENT_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectContentType&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectContentType&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_CONTENT_MD5HASH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectContentMD5Hash&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectContentMD5Hash&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_CONTENT_LANGUAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectContentLanguage&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsObjectContentLanguage.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsObjectContentLanguage&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_LEASE_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectLeaseStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectLeaseStatus&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_LEASE_STATE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectLeaseState&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectLeaseState&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_OBJECT_METADATA</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsObjectMetadata&quot;</span><span class="p">,</span> <span class="s2">&quot;adlsObjectMetadata&quot;</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ADLS_CONTAINER_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;adlsContainerQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsContainerQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adlsContainerQualifiedName.text&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ADLS_CONTAINER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;adlsContainer&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;adls_object_url&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_version_id&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_size&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_access_tier&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_access_tier_last_modified_time&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_archive_status&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_server_encrypted&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_version_level_immutability_support&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_cache_control&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_content_type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_content_m_d5_hash&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_content_language&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_lease_status&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_lease_state&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_object_metadata&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;adls_container&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_url</span>
-
-    <span class="nd">@adls_object_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_url</span> <span class="o">=</span> <span class="n">adls_object_url</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_version_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_version_id</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_version_id</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_version_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_version_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_version_id</span> <span class="o">=</span> <span class="n">adls_object_version_id</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSObjectType</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_type</span>
-
-    <span class="nd">@adls_object_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSObjectType</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_type</span> <span class="o">=</span> <span class="n">adls_object_type</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_size</span>
-
-    <span class="nd">@adls_object_size</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_size</span> <span class="o">=</span> <span class="n">adls_object_size</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_access_tier</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccessTier</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_access_tier</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_access_tier</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_access_tier</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_access_tier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccessTier</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_access_tier</span> <span class="o">=</span> <span class="n">adls_object_access_tier</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_access_tier_last_modified_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_access_tier_last_modified_time</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_access_tier_last_modified_time</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_access_tier_last_modified_time</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_access_tier_last_modified_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_access_tier_last_modified_time</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">adls_object_access_tier_last_modified_time</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_archive_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSObjectArchiveStatus</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_archive_status</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_archive_status</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_archive_status</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_archive_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSObjectArchiveStatus</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_archive_status</span> <span class="o">=</span> <span class="n">adls_object_archive_status</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_server_encrypted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_server_encrypted</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_server_encrypted</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_server_encrypted</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_server_encrypted</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_server_encrypted</span> <span class="o">=</span> <span class="n">adls_object_server_encrypted</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_version_level_immutability_support</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_version_level_immutability_support</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_version_level_immutability_support</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_version_level_immutability_support</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_version_level_immutability_support</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_version_level_immutability_support</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">adls_object_version_level_immutability_support</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_cache_control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_cache_control</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_cache_control</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_cache_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_cache_control</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_cache_control</span> <span class="o">=</span> <span class="n">adls_object_cache_control</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_content_type</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_content_type</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_content_type</span> <span class="o">=</span> <span class="n">adls_object_content_type</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_content_m_d5_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_content_m_d5_hash</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_content_m_d5_hash</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_content_m_d5_hash</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_content_m_d5_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_content_m_d5_hash</span> <span class="o">=</span> <span class="n">adls_object_content_m_d5_hash</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_content_language</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_content_language</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_content_language</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_content_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_content_language</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_content_language</span> <span class="o">=</span> <span class="n">adls_object_content_language</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_lease_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseStatus</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_lease_status</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_lease_status</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_lease_status</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_lease_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseStatus</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_lease_status</span> <span class="o">=</span> <span class="n">adls_object_lease_status</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_lease_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseState</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_lease_state</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_object_lease_state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_lease_state</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_lease_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseState</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_lease_state</span> <span class="o">=</span> <span class="n">adls_object_lease_state</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_object_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_metadata</span>
-
-    <span class="nd">@adls_object_metadata</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_object_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_object_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_object_metadata</span> <span class="o">=</span> <span class="n">adls_object_metadata</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_qualified_name</span>
-        <span class="p">)</span>
-
-    <span class="nd">@adls_container_qualified_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container_qualified_name</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container_qualified_name</span> <span class="o">=</span> <span class="n">adls_container_qualified_name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">adls_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSContainer</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container</span>
-
-    <span class="nd">@adls_container</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">adls_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adls_container</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSContainer</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">adls_container</span> <span class="o">=</span> <span class="n">adls_container</span>
-
-    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">ADLS</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">adls_object_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectUrl&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_version_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectVersionId&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSObjectType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectType&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectSize&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_access_tier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSAccessTier</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectAccessTier&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_access_tier_last_modified_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectAccessTierLastModifiedTime&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_archive_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSObjectArchiveStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectArchiveStatus&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_server_encrypted</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectServerEncrypted&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_version_level_immutability_support</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectVersionLevelImmutabilitySupport&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_cache_control</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectCacheControl&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectContentType&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_content_m_d5_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectContentMD5Hash&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_content_language</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectContentLanguage&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_lease_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectLeaseStatus&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_lease_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSLeaseState</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectLeaseState&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_object_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsObjectMetadata&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainerQualifiedName&quot;</span>
-        <span class="p">)</span>
-        <span class="n">adls_container</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ADLSContainer</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;adlsContainer&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-
-        <span class="nd">@classmethod</span>
-        <span class="c1"># @validate_arguments()</span>
-        <span class="nd">@init_guid</span>
-        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
-            <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;adls_container_qualified_name&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">adls_container_qualified_name</span><span class="p">],</span>
-            <span class="p">)</span>
-
-            <span class="c1"># Split the qualified_name to extract necessary information</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">adls_container_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid qualified_name&quot;</span><span class="p">)</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-            <span class="n">adls_account_qualified_name</span> <span class="o">=</span> <span class="n">get_parent_qualified_name</span><span class="p">(</span>
-                <span class="n">adls_container_qualified_name</span>
-            <span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">adls_container_qualified_name</span><span class="o">=</span><span class="n">adls_container_qualified_name</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">adls_container_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="n">adls_container</span><span class="o">=</span><span class="n">ADLSContainer</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span>
-                    <span class="n">adls_container_qualified_name</span>
-                <span class="p">),</span>
-                <span class="n">adls_account_qualified_name</span><span class="o">=</span><span class="n">adls_account_qualified_name</span><span class="p">,</span>
-            <span class="p">)</span>
-
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;ADLSObject.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<span class="n">ADLSAccount</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
-
-
-<span class="n">ADLSContainer</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
-
-
-<span class="n">ADLSObject</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
+<span class="n">DataStudioAsset</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>

@@ -202,6 +202,11 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/eventstore.html">EventStore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/folder.html">Folder</a></li>
@@ -356,6 +361,7 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/tableauworkbook.html">TableauWorkbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/tableauworksheet.html">TableauWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
@@ -623,9 +629,13 @@
 </li>
         <li><a href="asset/airflowtask.html#pyatlan.model.assets.AirflowTask">AirflowTask (class in pyatlan.model.assets)</a>
 </li>
-        <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.ALIAS">ALIAS (pyatlan.model.assets.MaterialisedView attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.ALIAS">ALIAS (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.ALIAS">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.ALIAS">(pyatlan.model.assets.MaterialisedView attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.ALIAS">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.ALIAS">(pyatlan.model.assets.Table attribute)</a>
@@ -727,10 +737,10 @@
 </li>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_glossary_types">applicable_glossary_types (pyatlan.model.typedef.AttributeDef property)</a>
 </li>
-        <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_other_asset_types">applicable_other_asset_types (pyatlan.model.typedef.AttributeDef property)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_other_asset_types">applicable_other_asset_types (pyatlan.model.typedef.AttributeDef property)</a>
+</li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset">Asset (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/link.html#pyatlan.model.assets.Link.ASSET">ASSET (pyatlan.model.assets.Link attribute)</a>
@@ -1187,9 +1197,13 @@
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_AVERAGE_LENGTH">COLUMN_AVERAGE_LENGTH (pyatlan.model.assets.Column attribute)</a>
 </li>
-        <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.COLUMN_COUNT">COLUMN_COUNT (pyatlan.model.assets.MaterialisedView attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.COLUMN_COUNT">COLUMN_COUNT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.COLUMN_COUNT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.COLUMN_COUNT">(pyatlan.model.assets.MaterialisedView attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.COLUMN_COUNT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.COLUMN_COUNT">(pyatlan.model.assets.Table attribute)</a>
@@ -1217,10 +1231,10 @@
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_MAXIMUM_STRING_LENGTH">COLUMN_MAXIMUM_STRING_LENGTH (pyatlan.model.assets.Column attribute)</a>
 </li>
-        <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_MAXS">COLUMN_MAXS (pyatlan.model.assets.Column attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_MAXS">COLUMN_MAXS (pyatlan.model.assets.Column attribute)</a>
+</li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_MEAN">COLUMN_MEAN (pyatlan.model.assets.Column attribute)</a>
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_MEDIAN">COLUMN_MEDIAN (pyatlan.model.assets.Column attribute)</a>
@@ -1397,9 +1411,13 @@
 </li>
         <li><a href="asset/schema.html#pyatlan.model.assets.Schema.DATABASE">DATABASE (pyatlan.model.assets.Schema attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.DATABASE_NAME">DATABASE_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DATABASE_NAME">DATABASE_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DATABASE_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.DATABASE_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.DATABASE_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.DATABASE_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -1407,9 +1425,13 @@
           <li><a href="asset/sql.html#pyatlan.model.assets.SQL.DATABASE_NAME">(pyatlan.model.assets.SQL attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.DATABASE_QUALIFIED_NAME">DATABASE_QUALIFIED_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DATABASE_QUALIFIED_NAME">DATABASE_QUALIFIED_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DATABASE_QUALIFIED_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.DATABASE_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.DATABASE_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.DATABASE_QUALIFIED_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -1621,8 +1643,6 @@
           <li><a href="asset/dbttag.html#pyatlan.model.assets.DbtTag.DBT_JOB_SCHEDULE">(pyatlan.model.assets.DbtTag attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbt.html#pyatlan.model.assets.Dbt.DBT_JOB_SCHEDULE_CRON_HUMANIZED">DBT_JOB_SCHEDULE_CRON_HUMANIZED (pyatlan.model.assets.Dbt attribute)</a>
 
         <ul>
@@ -1647,6 +1667,8 @@
           <li><a href="asset/dbttag.html#pyatlan.model.assets.DbtTag.DBT_JOB_STATUS">(pyatlan.model.assets.DbtTag attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbtmodel.html#pyatlan.model.assets.DbtModel.DBT_MATERIALIZATION_TYPE">DBT_MATERIALIZATION_TYPE (pyatlan.model.assets.DbtModel attribute)</a>
 </li>
         <li><a href="asset/dbt.html#pyatlan.model.assets.Dbt.DBT_META">DBT_META (pyatlan.model.assets.Dbt attribute)</a>
@@ -1887,6 +1909,72 @@
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.DISPLAY_NAME">DISPLAY_NAME (pyatlan.model.assets.Asset attribute)</a>
 </li>
+        <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_GLOBAL_SECONDARY_INDEXES">DYNAMO_DB_GLOBAL_SECONDARY_INDEXES (pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_LOCAL_SECONDARY_INDEXES">DYNAMO_DB_LOCAL_SECONDARY_INDEXES (pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        <li><a href="asset/dynamodb.html#pyatlan.model.assets.DynamoDB.DYNAMO_DB_PARTITION_KEY">DYNAMO_DB_PARTITION_KEY (pyatlan.model.assets.DynamoDB attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DYNAMO_DB_PARTITION_KEY">(pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_PARTITION_KEY">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/dynamodb.html#pyatlan.model.assets.DynamoDB.DYNAMO_DB_READ_CAPACITY_UNITS">DYNAMO_DB_READ_CAPACITY_UNITS (pyatlan.model.assets.DynamoDB attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DYNAMO_DB_READ_CAPACITY_UNITS">(pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_READ_CAPACITY_UNITS">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE">DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+        <li><a href="asset/dynamodb.html#pyatlan.model.assets.DynamoDB.DYNAMO_DB_SORT_KEY">DYNAMO_DB_SORT_KEY (pyatlan.model.assets.DynamoDB attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DYNAMO_DB_SORT_KEY">(pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_SORT_KEY">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/dynamodb.html#pyatlan.model.assets.DynamoDB.DYNAMO_DB_STATUS">DYNAMO_DB_STATUS (pyatlan.model.assets.DynamoDB attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DYNAMO_DB_STATUS">(pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_STATUS">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/dynamodbglobalsecondaryindex.html#pyatlan.model.assets.DynamoDBGlobalSecondaryIndex.DYNAMO_DB_TABLE">DYNAMO_DB_TABLE (pyatlan.model.assets.DynamoDBGlobalSecondaryIndex attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodblocalsecondaryindex.html#pyatlan.model.assets.DynamoDBLocalSecondaryIndex.DYNAMO_DB_TABLE">(pyatlan.model.assets.DynamoDBLocalSecondaryIndex attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_TABLE_GSI_COUNT">DYNAMO_DB_TABLE_GSI_COUNT (pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_TABLE_LSI_COUNT">DYNAMO_DB_TABLE_LSI_COUNT (pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        <li><a href="asset/dynamodb.html#pyatlan.model.assets.DynamoDB.DYNAMO_DB_WRITE_CAPACITY_UNITS">DYNAMO_DB_WRITE_CAPACITY_UNITS (pyatlan.model.assets.DynamoDB attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.DYNAMO_DB_WRITE_CAPACITY_UNITS">(pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_WRITE_CAPACITY_UNITS">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/dynamodb.html#pyatlan.model.assets.DynamoDB">DynamoDB (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/dynamodbglobalsecondaryindex.html#pyatlan.model.assets.DynamoDBGlobalSecondaryIndex">DynamoDBGlobalSecondaryIndex (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/dynamodblocalsecondaryindex.html#pyatlan.model.assets.DynamoDBLocalSecondaryIndex">DynamoDBLocalSecondaryIndex (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex">DynamoDBSecondaryIndex (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable">DynamoDBTable (class in pyatlan.model.assets)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -1921,8 +2009,6 @@
         </ul></li>
         <li><a href="asset/eventstore.html#pyatlan.model.assets.EventStore">EventStore (class in pyatlan.model.assets)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm.EXAMPLES">EXAMPLES (pyatlan.model.assets.AtlasGlossaryTerm attribute)</a>
 </li>
         <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.EXPLORE">EXPLORE (pyatlan.model.assets.LookerField attribute)</a>
@@ -1933,25 +2019,39 @@
           <li><a href="asset/lookerproject.html#pyatlan.model.assets.LookerProject.EXPLORES">(pyatlan.model.assets.LookerProject attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.EXTERNAL_LOCATION">EXTERNAL_LOCATION (pyatlan.model.assets.MongoDBCollection attribute)</a>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.EXTERNAL_LOCATION">EXTERNAL_LOCATION (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.EXTERNAL_LOCATION">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.EXTERNAL_LOCATION">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.EXTERNAL_LOCATION">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION">(pyatlan.model.assets.TablePartition attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.EXTERNAL_LOCATION_FORMAT">EXTERNAL_LOCATION_FORMAT (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.EXTERNAL_LOCATION_FORMAT">EXTERNAL_LOCATION_FORMAT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.EXTERNAL_LOCATION_FORMAT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.EXTERNAL_LOCATION_FORMAT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.EXTERNAL_LOCATION_FORMAT">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION_FORMAT">(pyatlan.model.assets.TablePartition attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.EXTERNAL_LOCATION_REGION">EXTERNAL_LOCATION_REGION (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.EXTERNAL_LOCATION_REGION">EXTERNAL_LOCATION_REGION (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.EXTERNAL_LOCATION_REGION">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.EXTERNAL_LOCATION_REGION">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.EXTERNAL_LOCATION_REGION">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.EXTERNAL_LOCATION_REGION">(pyatlan.model.assets.TablePartition attribute)</a>
@@ -2489,8 +2589,6 @@
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.IS_EDITABLE">IS_EDITABLE (pyatlan.model.assets.Asset attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/salesforcefield.html#pyatlan.model.assets.SalesforceField.IS_ENCRYPTED">IS_ENCRYPTED (pyatlan.model.assets.SalesforceField attribute)</a>
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.IS_FOREIGN">IS_FOREIGN (pyatlan.model.assets.Column attribute)</a>
@@ -2499,6 +2597,8 @@
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.IS_INDEXED">IS_INDEXED (pyatlan.model.assets.Column attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/salesforceobject.html#pyatlan.model.assets.SalesforceObject.IS_MERGABLE">IS_MERGABLE (pyatlan.model.assets.SalesforceObject attribute)</a>
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.IS_NULLABLE">IS_NULLABLE (pyatlan.model.assets.Column attribute)</a>
@@ -2511,9 +2611,13 @@
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.IS_PARTITION">IS_PARTITION (pyatlan.model.assets.Column attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_PARTITIONED">IS_PARTITIONED (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.IS_PARTITIONED">IS_PARTITIONED (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.IS_PARTITIONED">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_PARTITIONED">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.IS_PARTITIONED">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.IS_PARTITIONED">(pyatlan.model.assets.TablePartition attribute)</a>
@@ -2529,9 +2633,13 @@
 </li>
         <li><a href="asset/query.html#pyatlan.model.assets.Query.IS_PRIVATE">IS_PRIVATE (pyatlan.model.assets.Query attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_PROFILED">IS_PROFILED (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.IS_PROFILED">IS_PROFILED (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.IS_PROFILED">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_PROFILED">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.IS_PROFILED">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.IS_PROFILED">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -2541,9 +2649,13 @@
         </ul></li>
         <li><a href="asset/tableaudatasource.html#pyatlan.model.assets.TableauDatasource.IS_PUBLISHED">IS_PUBLISHED (pyatlan.model.assets.TableauDatasource attribute)</a>
 </li>
-        <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.IS_QUERY_PREVIEW">IS_QUERY_PREVIEW (pyatlan.model.assets.MaterialisedView attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.IS_QUERY_PREVIEW">IS_QUERY_PREVIEW (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.IS_QUERY_PREVIEW">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.IS_QUERY_PREVIEW">(pyatlan.model.assets.MaterialisedView attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_QUERY_PREVIEW">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.IS_QUERY_PREVIEW">(pyatlan.model.assets.Table attribute)</a>
@@ -2563,9 +2675,13 @@
 </li>
         <li><a href="asset/query.html#pyatlan.model.assets.Query.IS_SQL_SNIPPET">IS_SQL_SNIPPET (pyatlan.model.assets.Query attribute)</a>
 </li>
-        <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.IS_TEMPORARY">IS_TEMPORARY (pyatlan.model.assets.MaterialisedView attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.IS_TEMPORARY">IS_TEMPORARY (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.IS_TEMPORARY">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.IS_TEMPORARY">(pyatlan.model.assets.MaterialisedView attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_TEMPORARY">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.IS_TEMPORARY">(pyatlan.model.assets.Table attribute)</a>
@@ -2669,9 +2785,13 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/atlasglossary.html#pyatlan.model.assets.AtlasGlossary.LANGUAGE">LANGUAGE (pyatlan.model.assets.AtlasGlossary attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.LAST_PROFILED_AT">LAST_PROFILED_AT (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.LAST_PROFILED_AT">LAST_PROFILED_AT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.LAST_PROFILED_AT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.LAST_PROFILED_AT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.LAST_PROFILED_AT">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.LAST_PROFILED_AT">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -2727,10 +2847,10 @@
 </li>
         <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.LOOKER_EXPLORE_QUALIFIED_NAME">LOOKER_EXPLORE_QUALIFIED_NAME (pyatlan.model.assets.LookerField attribute)</a>
 </li>
-        <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.LOOKER_FIELD_DATA_TYPE">LOOKER_FIELD_DATA_TYPE (pyatlan.model.assets.LookerField attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.LOOKER_FIELD_DATA_TYPE">LOOKER_FIELD_DATA_TYPE (pyatlan.model.assets.LookerField attribute)</a>
+</li>
         <li><a href="asset/lookerfolder.html#pyatlan.model.assets.LookerFolder.LOOKER_PARENT_FOLDER">LOOKER_PARENT_FOLDER (pyatlan.model.assets.LookerFolder attribute)</a>
 </li>
         <li><a href="asset/lookerfolder.html#pyatlan.model.assets.LookerFolder.LOOKER_SUB_FOLDERS">LOOKER_SUB_FOLDERS (pyatlan.model.assets.LookerFolder attribute)</a>
@@ -3379,12 +3499,24 @@
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.NESTED_COLUMNS">NESTED_COLUMNS (pyatlan.model.assets.Column attribute)</a>
 </li>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.NO_SQL_SCHEMA_DEFINITION">NO_SQL_SCHEMA_DEFINITION (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.NO_SQL_SCHEMA_DEFINITION">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.NO_SQL_SCHEMA_DEFINITION">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
+          <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.NO_SQL_SCHEMA_DEFINITION">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
+</li>
+          <li><a href="asset/nosql.html#pyatlan.model.assets.NoSQL.NO_SQL_SCHEMA_DEFINITION">(pyatlan.model.assets.NoSQL attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/nosql.html#pyatlan.model.assets.NoSQL">NoSQL (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/lookertile.html#pyatlan.model.assets.LookerTile.NOTE_TEXT">NOTE_TEXT (pyatlan.model.assets.LookerTile attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="exceptions.html#pyatlan.errors.NotFoundError">NotFoundError</a>
 </li>
         <li><a href="field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField.numeric_field_name">numeric_field_name (pyatlan.model.fields.atlan_fields.NumericField property)</a>
@@ -3543,17 +3675,25 @@
 </li>
         <li><a href="client.html#pyatlan.client.atlan.AtlanClient.parse_query">parse_query() (pyatlan.client.atlan.AtlanClient method)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.PARTITION_COUNT">PARTITION_COUNT (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.PARTITION_COUNT">PARTITION_COUNT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.PARTITION_COUNT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.PARTITION_COUNT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.PARTITION_COUNT">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.PARTITION_COUNT">(pyatlan.model.assets.TablePartition attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.PARTITION_LIST">PARTITION_LIST (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.PARTITION_LIST">PARTITION_LIST (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.PARTITION_LIST">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.PARTITION_LIST">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.PARTITION_LIST">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.PARTITION_LIST">(pyatlan.model.assets.TablePartition attribute)</a>
@@ -3561,9 +3701,13 @@
         </ul></li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.PARTITION_ORDER">PARTITION_ORDER (pyatlan.model.assets.Column attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.PARTITION_STRATEGY">PARTITION_STRATEGY (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.PARTITION_STRATEGY">PARTITION_STRATEGY (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.PARTITION_STRATEGY">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.PARTITION_STRATEGY">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.PARTITION_STRATEGY">(pyatlan.model.assets.Table attribute)</a>
 </li>
           <li><a href="asset/tablepartition.html#pyatlan.model.assets.TablePartition.PARTITION_STRATEGY">(pyatlan.model.assets.TablePartition attribute)</a>
@@ -3612,6 +3756,8 @@
         <li><a href="asset/authpolicy.html#pyatlan.model.assets.AuthPolicy.POLICY_SERVICE_NAME">POLICY_SERVICE_NAME (pyatlan.model.assets.AuthPolicy attribute)</a>
 </li>
         <li><a href="asset/connection.html#pyatlan.model.assets.Connection.POLICY_STRATEGY">POLICY_STRATEGY (pyatlan.model.assets.Connection attribute)</a>
+</li>
+        <li><a href="asset/connection.html#pyatlan.model.assets.Connection.POLICY_STRATEGY_FOR_SAMPLE_PREVIEW">POLICY_STRATEGY_FOR_SAMPLE_PREVIEW (pyatlan.model.assets.Connection attribute)</a>
 </li>
         <li><a href="asset/authpolicy.html#pyatlan.model.assets.AuthPolicy.POLICY_SUB_CATEGORY">POLICY_SUB_CATEGORY (pyatlan.model.assets.AuthPolicy attribute)</a>
 </li>
@@ -3673,6 +3819,8 @@
 </li>
         <li><a href="asset/powerbitable.html#pyatlan.model.assets.PowerBITable">PowerBITable (class in pyatlan.model.assets)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/powerbitile.html#pyatlan.model.assets.PowerBITile">PowerBITile (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/powerbiworkspace.html#pyatlan.model.assets.PowerBIWorkspace">PowerBIWorkspace (class in pyatlan.model.assets)</a>
@@ -3683,8 +3831,6 @@
           <li><a href="asset/salesforcefield.html#pyatlan.model.assets.SalesforceField.PRECISION">(pyatlan.model.assets.SalesforceField attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm.PREFERRED_TERMS">PREFERRED_TERMS (pyatlan.model.assets.AtlasGlossaryTerm attribute)</a>
 </li>
         <li><a href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm.PREFERRED_TO_TERMS">PREFERRED_TO_TERMS (pyatlan.model.assets.AtlasGlossaryTerm attribute)</a>
@@ -3969,9 +4115,13 @@
         </ul></li>
         <li><a href="asset/connection.html#pyatlan.model.assets.Connection.QUERY_CONFIG">QUERY_CONFIG (pyatlan.model.assets.Connection attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_COUNT">QUERY_COUNT (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.QUERY_COUNT">QUERY_COUNT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.QUERY_COUNT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_COUNT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.QUERY_COUNT">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.QUERY_COUNT">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -3979,9 +4129,13 @@
           <li><a href="asset/sql.html#pyatlan.model.assets.SQL.QUERY_COUNT">(pyatlan.model.assets.SQL attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_COUNT_UPDATED_AT">QUERY_COUNT_UPDATED_AT (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.QUERY_COUNT_UPDATED_AT">QUERY_COUNT_UPDATED_AT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.QUERY_COUNT_UPDATED_AT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_COUNT_UPDATED_AT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.QUERY_COUNT_UPDATED_AT">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.QUERY_COUNT_UPDATED_AT">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -3996,6 +4150,10 @@
         <li><a href="asset/connection.html#pyatlan.model.assets.Connection.QUERY_PREVIEW_CONFIG">QUERY_PREVIEW_CONFIG (pyatlan.model.assets.Connection attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.QUERY_PREVIEW_CONFIG">(pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+</li>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.QUERY_PREVIEW_CONFIG">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
           <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.QUERY_PREVIEW_CONFIG">(pyatlan.model.assets.MaterialisedView attribute)</a>
 </li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_PREVIEW_CONFIG">(pyatlan.model.assets.MongoDBCollection attribute)</a>
@@ -4009,9 +4167,13 @@
         </ul></li>
         <li><a href="asset/connection.html#pyatlan.model.assets.Connection.QUERY_TIMEOUT">QUERY_TIMEOUT (pyatlan.model.assets.Connection attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_USER_COUNT">QUERY_USER_COUNT (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.QUERY_USER_COUNT">QUERY_USER_COUNT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.QUERY_USER_COUNT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_USER_COUNT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.QUERY_USER_COUNT">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.QUERY_USER_COUNT">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -4019,9 +4181,13 @@
           <li><a href="asset/sql.html#pyatlan.model.assets.SQL.QUERY_USER_COUNT">(pyatlan.model.assets.SQL attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_USER_MAP">QUERY_USER_MAP (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.QUERY_USER_MAP">QUERY_USER_MAP (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.QUERY_USER_MAP">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.QUERY_USER_MAP">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.QUERY_USER_MAP">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.QUERY_USER_MAP">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -4187,10 +4353,10 @@
         </ul></li>
         <li><a href="field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField">RelationField (class in pyatlan.model.fields.atlan_fields)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.RelationshipAttributeDef">RelationshipAttributeDef (class in pyatlan.model.typedef)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.RelationshipDef">RelationshipDef (class in pyatlan.model.typedef)</a>
 </li>
         <li><a href="client.html#pyatlan.client.atlan.AtlanClient.remove_announcement">remove_announcement() (pyatlan.client.atlan.AtlanClient method)</a>
@@ -4255,9 +4421,13 @@
 </li>
         <li><a href="cache/role_cache.html#pyatlan.cache.role_cache.RoleCache">RoleCache (class in pyatlan.cache.role_cache)</a>
 </li>
-        <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.ROW_COUNT">ROW_COUNT (pyatlan.model.assets.MaterialisedView attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.ROW_COUNT">ROW_COUNT (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.ROW_COUNT">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.ROW_COUNT">(pyatlan.model.assets.MaterialisedView attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.ROW_COUNT">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.ROW_COUNT">(pyatlan.model.assets.Table attribute)</a>
@@ -4341,9 +4511,13 @@
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.SCHEMA_COUNT">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.SCHEMA_NAME">SCHEMA_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.SCHEMA_NAME">SCHEMA_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.SCHEMA_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.SCHEMA_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.SCHEMA_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.SCHEMA_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -4351,9 +4525,13 @@
           <li><a href="asset/sql.html#pyatlan.model.assets.SQL.SCHEMA_NAME">(pyatlan.model.assets.SQL attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.SCHEMA_QUALIFIED_NAME">SCHEMA_QUALIFIED_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.SCHEMA_QUALIFIED_NAME">SCHEMA_QUALIFIED_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.SCHEMA_QUALIFIED_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.SCHEMA_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.SCHEMA_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.SCHEMA_QUALIFIED_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -4589,9 +4767,13 @@
           <li><a href="asset/tableauworksheet.html#pyatlan.model.assets.TableauWorksheet.SITE_QUALIFIED_NAME">(pyatlan.model.assets.TableauWorksheet attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.SIZE_BYTES">SIZE_BYTES (pyatlan.model.assets.MaterialisedView attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.SIZE_BYTES">SIZE_BYTES (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.SIZE_BYTES">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/materialisedview.html#pyatlan.model.assets.MaterialisedView.SIZE_BYTES">(pyatlan.model.assets.MaterialisedView attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.SIZE_BYTES">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/table.html#pyatlan.model.assets.Table.SIZE_BYTES">(pyatlan.model.assets.Table attribute)</a>
@@ -4869,9 +5051,13 @@
         </ul></li>
         <li><a href="asset/schema.html#pyatlan.model.assets.Schema.TABLE_COUNT">TABLE_COUNT (pyatlan.model.assets.Schema attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.TABLE_NAME">TABLE_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.TABLE_NAME">TABLE_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.TABLE_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.TABLE_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.TABLE_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.TABLE_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -4881,9 +5067,13 @@
         </ul></li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.TABLE_PARTITION">TABLE_PARTITION (pyatlan.model.assets.Column attribute)</a>
 </li>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.TABLE_QUALIFIED_NAME">TABLE_QUALIFIED_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.TABLE_QUALIFIED_NAME">TABLE_QUALIFIED_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.TABLE_QUALIFIED_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.TABLE_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.TABLE_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.TABLE_QUALIFIED_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>
@@ -4945,6 +5135,8 @@
           <li><a href="asset/tag.html#pyatlan.model.assets.Tag.TAG_ALLOWED_VALUES">(pyatlan.model.assets.Tag attribute)</a>
 </li>
         </ul></li>
+        <li><a href="asset/tagattachment.html#pyatlan.model.assets.TagAttachment.TAG_ATTACHMENT_STRING_VALUE">TAG_ATTACHMENT_STRING_VALUE (pyatlan.model.assets.TagAttachment attribute)</a>
+</li>
         <li><a href="asset/dbttag.html#pyatlan.model.assets.DbtTag.TAG_ATTRIBUTES">TAG_ATTRIBUTES (pyatlan.model.assets.DbtTag attribute)</a>
 
         <ul>
@@ -4953,6 +5145,8 @@
           <li><a href="asset/tag.html#pyatlan.model.assets.Tag.TAG_ATTRIBUTES">(pyatlan.model.assets.Tag attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbttag.html#pyatlan.model.assets.DbtTag.TAG_ID">TAG_ID (pyatlan.model.assets.DbtTag attribute)</a>
 
         <ul>
@@ -4961,9 +5155,11 @@
           <li><a href="asset/tag.html#pyatlan.model.assets.Tag.TAG_ID">(pyatlan.model.assets.Tag attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="asset/tagattachment.html#pyatlan.model.assets.TagAttachment.TAG_QUALIFIED_NAME">TAG_QUALIFIED_NAME (pyatlan.model.assets.TagAttachment attribute)</a>
+</li>
         <li><a href="asset/authservice.html#pyatlan.model.assets.AuthService.TAG_SERVICE">TAG_SERVICE (pyatlan.model.assets.AuthService attribute)</a>
+</li>
+        <li><a href="asset/tagattachment.html#pyatlan.model.assets.TagAttachment">TagAttachment (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.TENANT_ID">TENANT_ID (pyatlan.model.assets.Asset attribute)</a>
 </li>
@@ -5161,9 +5357,13 @@
           <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.VIEW">(pyatlan.model.assets.LookerField attribute)</a>
 </li>
         </ul></li>
-        <li><a href="asset/lookerexplore.html#pyatlan.model.assets.LookerExplore.VIEW_NAME">VIEW_NAME (pyatlan.model.assets.LookerExplore attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.VIEW_NAME">VIEW_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.VIEW_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/lookerexplore.html#pyatlan.model.assets.LookerExplore.VIEW_NAME">(pyatlan.model.assets.LookerExplore attribute)</a>
+</li>
           <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.VIEW_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
 </li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.VIEW_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
@@ -5175,9 +5375,13 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.VIEW_QUALIFIED_NAME">VIEW_QUALIFIED_NAME (pyatlan.model.assets.MongoDBCollection attribute)</a>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.VIEW_QUALIFIED_NAME">VIEW_QUALIFIED_NAME (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
 
         <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.VIEW_QUALIFIED_NAME">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.VIEW_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
           <li><a href="asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase.VIEW_QUALIFIED_NAME">(pyatlan.model.assets.MongoDBDatabase attribute)</a>
 </li>
           <li><a href="asset/snowflaketag.html#pyatlan.model.assets.SnowflakeTag.VIEW_QUALIFIED_NAME">(pyatlan.model.assets.SnowflakeTag attribute)</a>

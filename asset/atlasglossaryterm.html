@@ -204,6 +204,11 @@
 <li class="toctree-l2"><a class="reference internal" href="dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eventstore.html">EventStore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="folder.html">Folder</a></li>
@@ -358,6 +363,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tableauworkbook.html">TableauWorkbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tableauworksheet.html">TableauWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotanswer.html">ThoughtspotAnswer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
@@ -446,13 +452,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.AtlasGlossaryTerm.ABBREVIATION">
 <span class="sig-name descname"><span class="pre">ABBREVIATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.AtlasGlossaryTerm.ABBREVIATION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unused. Abbreviation of the term.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.AtlasGlossaryTerm.ADDITIONAL_ATTRIBUTES">
 <span class="sig-name descname"><span class="pre">ADDITIONAL_ATTRIBUTES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.AtlasGlossaryTerm.ADDITIONAL_ATTRIBUTES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unused. Arbitrary set of additional attributes for the terrm.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -488,7 +494,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.AtlasGlossaryTerm.EXAMPLES">
 <span class="sig-name descname"><span class="pre">EXAMPLES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.AtlasGlossaryTerm.EXAMPLES" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unused. Exmaples of the term.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -500,7 +506,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.AtlasGlossaryTerm.LONG_DESCRIPTION">
 <span class="sig-name descname"><span class="pre">LONG_DESCRIPTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.AtlasGlossaryTerm.LONG_DESCRIPTION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unused. Detailed definition of the term. See ‘readme’ instead.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -536,7 +542,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.AtlasGlossaryTerm.SHORT_DESCRIPTION">
 <span class="sig-name descname"><span class="pre">SHORT_DESCRIPTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.AtlasGlossaryTerm.SHORT_DESCRIPTION" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unused. Brief summary of the term. See ‘description’ and ‘userDescription’ instead.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -566,7 +572,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.AtlasGlossaryTerm.USAGE">
 <span class="sig-name descname"><span class="pre">USAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.AtlasGlossaryTerm.USAGE" title="Link to this definition">#</a></dt>
-<dd><p>TBC</p>
+<dd><p>Unused. Intended usage for the term.</p>
 </dd></dl>
 
 <dl class="py attribute">

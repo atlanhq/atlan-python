@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>pyatlan.model.assets.asset83 - pyatlan documentation</title>
+        <title>pyatlan.model.assets.asset87 - pyatlan documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -203,6 +203,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/eventstore.html">EventStore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/folder.html">Folder</a></li>
@@ -357,6 +362,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauworkbook.html">TableauWorkbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauworksheet.html">TableauWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
@@ -435,7 +441,7 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for pyatlan.model.assets.asset83</h1><div class="highlight"><pre>
+          <h1>Source code for pyatlan.model.assets.asset87</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
 
@@ -455,7 +461,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.structs</span> <span class="kn">import</span> <span class="n">KafkaTopicConsumption</span>
 
-<span class="kn">from</span> <span class="nn">.asset55</span> <span class="kn">import</span> <span class="n">Kafka</span>
+<span class="kn">from</span> <span class="nn">.asset56</span> <span class="kn">import</span> <span class="n">Kafka</span>
 
 
 <div class="viewcode-block" id="KafkaTopic">
@@ -480,55 +486,55 @@
         <span class="s2">&quot;kafkaTopicIsInternal&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicIsInternal&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Whether this topic is an internal topic (true) or not (false).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_COMPRESSION_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicCompressionType&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicCompressionType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Type of compression used for this topic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_REPLICATION_FACTOR</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicReplicationFactor&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicReplicationFactor&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Replication factor for this topic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_SEGMENT_BYTES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicSegmentBytes&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicSegmentBytes&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Segment size for this topic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_RETENTION_TIME_IN_MS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicRetentionTimeInMs&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicRetentionTimeInMs&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Amount of time messages will be retained in this topic, in milliseconds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_PARTITIONS_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicPartitionsCount&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicPartitionsCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of partitions for this topic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_SIZE_IN_BYTES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicSizeInBytes&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicSizeInBytes&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Size of this topic, in bytes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_RECORD_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicRecordCount&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicRecordCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of (unexpired) messages in this topic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_CLEANUP_POLICY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicCleanupPolicy&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicCleanupPolicy&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Cleanup policy for this topic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">KAFKA_CONSUMER_GROUPS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
@@ -764,25 +770,25 @@
         <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    List of consumption properties for Kafka topics, for this consumer group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_CONSUMER_GROUP_MEMBER_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaConsumerGroupMemberCount&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaConsumerGroupMemberCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Number of members in this consumer group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicNames&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicNames&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Simple names of the topics consumed by this consumer group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">KAFKA_TOPIC_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;kafkaTopicQualifiedNames&quot;</span><span class="p">,</span> <span class="s2">&quot;kafkaTopicQualifiedNames&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
+<span class="sd">    Unique names of the topics consumed by this consumer group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">KAFKA_TOPICS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;kafkaTopics&quot;</span><span class="p">)</span>

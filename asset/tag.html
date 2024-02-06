@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Thoughtspot" href="thoughtspot.html" /><link rel="prev" title="TableauWorksheet" href="tableauworksheet.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="TagAttachment" href="tagattachment.html" /><link rel="prev" title="TableauWorksheet" href="tableauworksheet.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>Tag - pyatlan documentation</title>
@@ -204,6 +204,11 @@
 <li class="toctree-l2"><a class="reference internal" href="dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eventstore.html">EventStore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="folder.html">Folder</a></li>
@@ -358,6 +363,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tableauworkbook.html">TableauWorkbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tableauworksheet.html">TableauWorksheet</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotanswer.html">ThoughtspotAnswer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
@@ -446,25 +452,25 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.MAPPED_CLASSIFICATION_NAME">
 <span class="sig-name descname"><span class="pre">MAPPED_CLASSIFICATION_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.MAPPED_CLASSIFICATION_NAME" title="Link to this definition">#</a></dt>
-<dd><p>Mapped atlan classification name</p>
+<dd><p>Name of the classification in Atlan that is mapped to this tag.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.TAG_ALLOWED_VALUES">
 <span class="sig-name descname"><span class="pre">TAG_ALLOWED_VALUES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.TAG_ALLOWED_VALUES" title="Link to this definition">#</a></dt>
-<dd><p>Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying</p>
+<dd><p>Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.TAG_ATTRIBUTES">
 <span class="sig-name descname"><span class="pre">TAG_ATTRIBUTES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.TAG_ATTRIBUTES" title="Link to this definition">#</a></dt>
-<dd><p>Source tag attributes</p>
+<dd><p>Attributes associated with the tag in the source system.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Tag.TAG_ID">
 <span class="sig-name descname"><span class="pre">TAG_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Tag.TAG_ID" title="Link to this definition">#</a></dt>
-<dd><p>Unique source tag identifier</p>
+<dd><p>Unique identifier of the tag in the source system.</p>
 </dd></dl>
 
 </dd></dl>
@@ -476,12 +482,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="thoughtspot.html">
+          <a class="next-page" href="tagattachment.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Thoughtspot</div>
+                <div class="title">TagAttachment</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
