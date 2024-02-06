@@ -236,7 +236,6 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     def check(cls, asset):
         from pyatlan.model.assets.asset00 import Referenceable
 
-        rel = []
         app = []
         rem = []
         is_semantic = False
@@ -259,14 +258,11 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
                             asset.append_relationship_attributes = {
                                 to_camel_case(attr[0]): app
                             }
-                        else:
-                            rel = rel + [attri]
-                            setattr(asset.attributes, attr[0], rel)
 
             # TODO: If the value is a relationship
             elif val and isinstance(val, Referenceable):
                 pass
-        # print(asset.append_relationships)
+
         if is_semantic:
             asset = asset.__class__(
                 **asset.dict(by_alias=True, exclude_unset=True, exclude_none=True)
