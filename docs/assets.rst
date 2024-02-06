@@ -55,6 +55,11 @@ You can interact with all of the following different kinds of assets:
     asset/dbtsource
     asset/dbttag
     asset/dbttest
+    asset/dynamodb
+    asset/dynamodbglobalsecondaryindex
+    asset/dynamodblocalsecondaryindex
+    asset/dynamodbsecondaryindex
+    asset/dynamodbtable
     asset/eventstore
     asset/file
     asset/folder
@@ -209,6 +214,7 @@ You can interact with all of the following different kinds of assets:
     asset/tableauworkbook
     asset/tableauworksheet
     asset/tag
+    asset/tagattachment
     asset/thoughtspot
     asset/thoughtspotanswer
     asset/thoughtspotdashlet

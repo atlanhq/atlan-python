@@ -17,7 +17,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import KafkaTopicConsumption
 
-from .asset55 import Kafka
+from .asset56 import Kafka
 
 
 class KafkaTopic(Kafka):
@@ -40,55 +40,55 @@ class KafkaTopic(Kafka):
         "kafkaTopicIsInternal", "kafkaTopicIsInternal"
     )
     """
-    TBC
+    Whether this topic is an internal topic (true) or not (false).
     """
     KAFKA_TOPIC_COMPRESSION_TYPE: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicCompressionType", "kafkaTopicCompressionType"
     )
     """
-    TBC
+    Type of compression used for this topic.
     """
     KAFKA_TOPIC_REPLICATION_FACTOR: ClassVar[NumericField] = NumericField(
         "kafkaTopicReplicationFactor", "kafkaTopicReplicationFactor"
     )
     """
-    TBC
+    Replication factor for this topic.
     """
     KAFKA_TOPIC_SEGMENT_BYTES: ClassVar[NumericField] = NumericField(
         "kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes"
     )
     """
-    TBC
+    Segment size for this topic.
     """
     KAFKA_TOPIC_RETENTION_TIME_IN_MS: ClassVar[NumericField] = NumericField(
         "kafkaTopicRetentionTimeInMs", "kafkaTopicRetentionTimeInMs"
     )
     """
-    TBC
+    Amount of time messages will be retained in this topic, in milliseconds.
     """
     KAFKA_TOPIC_PARTITIONS_COUNT: ClassVar[NumericField] = NumericField(
         "kafkaTopicPartitionsCount", "kafkaTopicPartitionsCount"
     )
     """
-    TBC
+    Number of partitions for this topic.
     """
     KAFKA_TOPIC_SIZE_IN_BYTES: ClassVar[NumericField] = NumericField(
         "kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes"
     )
     """
-    TBC
+    Size of this topic, in bytes.
     """
     KAFKA_TOPIC_RECORD_COUNT: ClassVar[NumericField] = NumericField(
         "kafkaTopicRecordCount", "kafkaTopicRecordCount"
     )
     """
-    TBC
+    Number of (unexpired) messages in this topic.
     """
     KAFKA_TOPIC_CLEANUP_POLICY: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicCleanupPolicy", "kafkaTopicCleanupPolicy"
     )
     """
-    TBC
+    Cleanup policy for this topic.
     """
 
     KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField(
@@ -321,25 +321,25 @@ class KafkaConsumerGroup(Kafka):
         "kafkaConsumerGroupTopicConsumptionProperties",
     )
     """
-    TBC
+    List of consumption properties for Kafka topics, for this consumer group.
     """
     KAFKA_CONSUMER_GROUP_MEMBER_COUNT: ClassVar[NumericField] = NumericField(
         "kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount"
     )
     """
-    TBC
+    Number of members in this consumer group.
     """
     KAFKA_TOPIC_NAMES: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicNames", "kafkaTopicNames"
     )
     """
-    TBC
+    Simple names of the topics consumed by this consumer group.
     """
     KAFKA_TOPIC_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
         "kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames"
     )
     """
-    TBC
+    Unique names of the topics consumed by this consumer group.
     """
 
     KAFKA_TOPICS: ClassVar[RelationField] = RelationField("kafkaTopics")

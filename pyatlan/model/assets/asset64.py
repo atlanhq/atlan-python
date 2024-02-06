@@ -9,593 +9,715 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset40 import Mode
+from .asset37 import GCS
 
 
-class ModeReport(Mode):
+class GCSObject(GCS):
     """Description"""
 
-    type_name: str = Field("ModeReport", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+        validate_required_fields(
+            ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+        )
+        attributes = GCSObject.Attributes.create(
+            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("GCSObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ModeReport":
-            raise ValueError("must be ModeReport")
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeReport._convenience_properties:
+        if name in GCSObject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_COLLECTION_TOKEN: ClassVar[KeywordField] = KeywordField(
-        "modeCollectionToken", "modeCollectionToken"
+    GCS_BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsBucketName", "gcsBucketName.keyword", "gcsBucketName"
     )
     """
-    TBC
+    Simple name of the bucket in which this object exists.
     """
-    MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField(
-        "modeReportPublishedAt", "modeReportPublishedAt"
+    GCS_BUCKET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsBucketQualifiedName",
+        "gcsBucketQualifiedName",
+        "gcsBucketQualifiedName.text",
     )
     """
-    TBC
+    Unique name of the bucket in which this object exists.
     """
-    MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField(
-        "modeQueryCount", "modeQueryCount"
+    GCS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
+        "gcsObjectSize", "gcsObjectSize"
     )
     """
-    TBC
+    Object size in bytes.
     """
-    MODE_CHART_COUNT: ClassVar[NumericField] = NumericField(
-        "modeChartCount", "modeChartCount"
+    GCS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text"
     )
     """
-    TBC
+    Key of this object, in GCS.
     """
-    MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField(
-        "modeQueryPreview", "modeQueryPreview"
+    GCS_OBJECT_MEDIA_LINK: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectMediaLink", "gcsObjectMediaLink", "gcsObjectMediaLink.text"
     )
     """
-    TBC
+    Media link to this object.
     """
-    MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField(
-        "modeIsPublic", "modeIsPublic"
+    GCS_OBJECT_HOLD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectHoldType", "gcsObjectHoldType"
     )
     """
-    TBC
+    Type of hold on this object.
     """
-    MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField(
-        "modeIsShared", "modeIsShared"
+    GCS_OBJECT_GENERATION_ID: ClassVar[NumericField] = NumericField(
+        "gcsObjectGenerationId", "gcsObjectGenerationId"
     )
     """
-    TBC
+    Generation ID of this object.
+    """
+    GCS_OBJECT_CRC32C_HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectCRC32CHash", "gcsObjectCRC32CHash"
+    )
+    """
+    CRC32C hash of this object.
+    """
+    GCS_OBJECT_MD5HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectMD5Hash", "gcsObjectMD5Hash"
+    )
+    """
+    MD5 hash of this object.
+    """
+    GCS_OBJECT_DATA_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "gcsObjectDataLastModifiedTime", "gcsObjectDataLastModifiedTime"
+    )
+    """
+    Time (epoch) at which this object's data was last modified, in milliseconds.
+    """
+    GCS_OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentType", "gcsObjectContentType"
+    )
+    """
+    Type of content in this object.
+    """
+    GCS_OBJECT_CONTENT_ENCODING: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentEncoding", "gcsObjectContentEncoding"
+    )
+    """
+    Content encoding of this object.
+    """
+    GCS_OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentDisposition", "gcsObjectContentDisposition"
+    )
+    """
+    Information about how this object's content should be presented.
+    """
+    GCS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentLanguage", "gcsObjectContentLanguage"
+    )
+    """
+    Language of this object's contents.
+    """
+    GCS_OBJECT_RETENTION_EXPIRATION_DATE: ClassVar[NumericField] = NumericField(
+        "gcsObjectRetentionExpirationDate", "gcsObjectRetentionExpirationDate"
+    )
+    """
+    Retention expiration date of this object.
     """
 
-    MODE_QUERIES: ClassVar[RelationField] = RelationField("modeQueries")
-    """
-    TBC
-    """
-    MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
+    GCS_BUCKET: ClassVar[RelationField] = RelationField("gcsBucket")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mode_collection_token",
-        "mode_report_published_at",
-        "mode_query_count",
-        "mode_chart_count",
-        "mode_query_preview",
-        "mode_is_public",
-        "mode_is_shared",
-        "mode_queries",
-        "mode_collections",
+        "gcs_bucket_name",
+        "gcs_bucket_qualified_name",
+        "gcs_object_size",
+        "gcs_object_key",
+        "gcs_object_media_link",
+        "gcs_object_hold_type",
+        "gcs_object_generation_id",
+        "gcs_object_c_r_c32_c_hash",
+        "gcs_object_m_d5_hash",
+        "gcs_object_data_last_modified_time",
+        "gcs_object_content_type",
+        "gcs_object_content_encoding",
+        "gcs_object_content_disposition",
+        "gcs_object_content_language",
+        "gcs_object_retention_expiration_date",
+        "gcs_bucket",
     ]
 
     @property
-    def mode_collection_token(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mode_collection_token
-        )
+    def gcs_bucket_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_bucket_name
 
-    @mode_collection_token.setter
-    def mode_collection_token(self, mode_collection_token: Optional[str]):
+    @gcs_bucket_name.setter
+    def gcs_bucket_name(self, gcs_bucket_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collection_token = mode_collection_token
+        self.attributes.gcs_bucket_name = gcs_bucket_name
 
     @property
-    def mode_report_published_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mode_report_published_at
-        )
-
-    @mode_report_published_at.setter
-    def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_report_published_at = mode_report_published_at
-
-    @property
-    def mode_query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.mode_query_count
-
-    @mode_query_count.setter
-    def mode_query_count(self, mode_query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_count = mode_query_count
-
-    @property
-    def mode_chart_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.mode_chart_count
-
-    @mode_chart_count.setter
-    def mode_chart_count(self, mode_chart_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_chart_count = mode_chart_count
-
-    @property
-    def mode_query_preview(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_query_preview
-
-    @mode_query_preview.setter
-    def mode_query_preview(self, mode_query_preview: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_preview = mode_query_preview
-
-    @property
-    def mode_is_public(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.mode_is_public
-
-    @mode_is_public.setter
-    def mode_is_public(self, mode_is_public: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_is_public = mode_is_public
-
-    @property
-    def mode_is_shared(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.mode_is_shared
-
-    @mode_is_shared.setter
-    def mode_is_shared(self, mode_is_shared: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_is_shared = mode_is_shared
-
-    @property
-    def mode_queries(self) -> Optional[list[ModeQuery]]:
-        return None if self.attributes is None else self.attributes.mode_queries
-
-    @mode_queries.setter
-    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_queries = mode_queries
-
-    @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return None if self.attributes is None else self.attributes.mode_collections
-
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
-
-    class Attributes(Mode.Attributes):
-        mode_collection_token: Optional[str] = Field(
-            None, description="", alias="modeCollectionToken"
-        )
-        mode_report_published_at: Optional[datetime] = Field(
-            None, description="", alias="modeReportPublishedAt"
-        )
-        mode_query_count: Optional[int] = Field(
-            None, description="", alias="modeQueryCount"
-        )
-        mode_chart_count: Optional[int] = Field(
-            None, description="", alias="modeChartCount"
-        )
-        mode_query_preview: Optional[str] = Field(
-            None, description="", alias="modeQueryPreview"
-        )
-        mode_is_public: Optional[bool] = Field(
-            None, description="", alias="modeIsPublic"
-        )
-        mode_is_shared: Optional[bool] = Field(
-            None, description="", alias="modeIsShared"
-        )
-        mode_queries: Optional[list[ModeQuery]] = Field(
-            None, description="", alias="modeQueries"
-        )  # relationship
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
-        )  # relationship
-
-    attributes: "ModeReport.Attributes" = Field(
-        default_factory=lambda: ModeReport.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeQuery(Mode):
-    """Description"""
-
-    type_name: str = Field("ModeQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeQuery":
-            raise ValueError("must be ModeQuery")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ModeQuery._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    MODE_RAW_QUERY: ClassVar[TextField] = TextField("modeRawQuery", "modeRawQuery")
-    """
-    TBC
-    """
-    MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField(
-        "modeReportImportCount", "modeReportImportCount"
-    )
-    """
-    TBC
-    """
-
-    MODE_CHARTS: ClassVar[RelationField] = RelationField("modeCharts")
-    """
-    TBC
-    """
-    MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "mode_raw_query",
-        "mode_report_import_count",
-        "mode_charts",
-        "mode_report",
-    ]
-
-    @property
-    def mode_raw_query(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_raw_query
-
-    @mode_raw_query.setter
-    def mode_raw_query(self, mode_raw_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_raw_query = mode_raw_query
-
-    @property
-    def mode_report_import_count(self) -> Optional[int]:
+    def gcs_bucket_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mode_report_import_count
+            else self.attributes.gcs_bucket_qualified_name
         )
 
-    @mode_report_import_count.setter
-    def mode_report_import_count(self, mode_report_import_count: Optional[int]):
+    @gcs_bucket_qualified_name.setter
+    def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report_import_count = mode_report_import_count
+        self.attributes.gcs_bucket_qualified_name = gcs_bucket_qualified_name
 
     @property
-    def mode_charts(self) -> Optional[list[ModeChart]]:
-        return None if self.attributes is None else self.attributes.mode_charts
+    def gcs_object_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.gcs_object_size
 
-    @mode_charts.setter
-    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
+    @gcs_object_size.setter
+    def gcs_object_size(self, gcs_object_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_charts = mode_charts
+        self.attributes.gcs_object_size = gcs_object_size
 
     @property
-    def mode_report(self) -> Optional[ModeReport]:
-        return None if self.attributes is None else self.attributes.mode_report
+    def gcs_object_key(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_key
 
-    @mode_report.setter
-    def mode_report(self, mode_report: Optional[ModeReport]):
+    @gcs_object_key.setter
+    def gcs_object_key(self, gcs_object_key: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report = mode_report
-
-    class Attributes(Mode.Attributes):
-        mode_raw_query: Optional[str] = Field(
-            None, description="", alias="modeRawQuery"
-        )
-        mode_report_import_count: Optional[int] = Field(
-            None, description="", alias="modeReportImportCount"
-        )
-        mode_charts: Optional[list[ModeChart]] = Field(
-            None, description="", alias="modeCharts"
-        )  # relationship
-        mode_report: Optional[ModeReport] = Field(
-            None, description="", alias="modeReport"
-        )  # relationship
-
-    attributes: "ModeQuery.Attributes" = Field(
-        default_factory=lambda: ModeQuery.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeChart(Mode):
-    """Description"""
-
-    type_name: str = Field("ModeChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeChart":
-            raise ValueError("must be ModeChart")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ModeChart._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    MODE_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
-        "modeChartType", "modeChartType"
-    )
-    """
-    TBC
-    """
-
-    MODE_QUERY: ClassVar[RelationField] = RelationField("modeQuery")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "mode_chart_type",
-        "mode_query",
-    ]
+        self.attributes.gcs_object_key = gcs_object_key
 
     @property
-    def mode_chart_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_chart_type
-
-    @mode_chart_type.setter
-    def mode_chart_type(self, mode_chart_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_chart_type = mode_chart_type
-
-    @property
-    def mode_query(self) -> Optional[ModeQuery]:
-        return None if self.attributes is None else self.attributes.mode_query
-
-    @mode_query.setter
-    def mode_query(self, mode_query: Optional[ModeQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query = mode_query
-
-    class Attributes(Mode.Attributes):
-        mode_chart_type: Optional[str] = Field(
-            None, description="", alias="modeChartType"
-        )
-        mode_query: Optional[ModeQuery] = Field(
-            None, description="", alias="modeQuery"
-        )  # relationship
-
-    attributes: "ModeChart.Attributes" = Field(
-        default_factory=lambda: ModeChart.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeWorkspace(Mode):
-    """Description"""
-
-    type_name: str = Field("ModeWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeWorkspace":
-            raise ValueError("must be ModeWorkspace")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ModeWorkspace._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    MODE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
-        "modeCollectionCount", "modeCollectionCount"
-    )
-    """
-    TBC
-    """
-
-    MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "mode_collection_count",
-        "mode_collections",
-    ]
-
-    @property
-    def mode_collection_count(self) -> Optional[int]:
+    def gcs_object_media_link(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.mode_collection_count
+            None if self.attributes is None else self.attributes.gcs_object_media_link
         )
 
-    @mode_collection_count.setter
-    def mode_collection_count(self, mode_collection_count: Optional[int]):
+    @gcs_object_media_link.setter
+    def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collection_count = mode_collection_count
+        self.attributes.gcs_object_media_link = gcs_object_media_link
 
     @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return None if self.attributes is None else self.attributes.mode_collections
+    def gcs_object_hold_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_hold_type
 
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+    @gcs_object_hold_type.setter
+    def gcs_object_hold_type(self, gcs_object_hold_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
+        self.attributes.gcs_object_hold_type = gcs_object_hold_type
 
-    class Attributes(Mode.Attributes):
-        mode_collection_count: Optional[int] = Field(
-            None, description="", alias="modeCollectionCount"
+    @property
+    def gcs_object_generation_id(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_generation_id
         )
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+
+    @gcs_object_generation_id.setter
+    def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_generation_id = gcs_object_generation_id
+
+    @property
+    def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_c_r_c32_c_hash
+        )
+
+    @gcs_object_c_r_c32_c_hash.setter
+    def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_c_r_c32_c_hash = gcs_object_c_r_c32_c_hash
+
+    @property
+    def gcs_object_m_d5_hash(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_m_d5_hash
+
+    @gcs_object_m_d5_hash.setter
+    def gcs_object_m_d5_hash(self, gcs_object_m_d5_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_m_d5_hash = gcs_object_m_d5_hash
+
+    @property
+    def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_data_last_modified_time
+        )
+
+    @gcs_object_data_last_modified_time.setter
+    def gcs_object_data_last_modified_time(
+        self, gcs_object_data_last_modified_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_data_last_modified_time = (
+            gcs_object_data_last_modified_time
+        )
+
+    @property
+    def gcs_object_content_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.gcs_object_content_type
+        )
+
+    @gcs_object_content_type.setter
+    def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_type = gcs_object_content_type
+
+    @property
+    def gcs_object_content_encoding(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_encoding
+        )
+
+    @gcs_object_content_encoding.setter
+    def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_encoding = gcs_object_content_encoding
+
+    @property
+    def gcs_object_content_disposition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_disposition
+        )
+
+    @gcs_object_content_disposition.setter
+    def gcs_object_content_disposition(
+        self, gcs_object_content_disposition: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
+
+    @property
+    def gcs_object_content_language(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_language
+        )
+
+    @gcs_object_content_language.setter
+    def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_language = gcs_object_content_language
+
+    @property
+    def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_retention_expiration_date
+        )
+
+    @gcs_object_retention_expiration_date.setter
+    def gcs_object_retention_expiration_date(
+        self, gcs_object_retention_expiration_date: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_retention_expiration_date = (
+            gcs_object_retention_expiration_date
+        )
+
+    @property
+    def gcs_bucket(self) -> Optional[GCSBucket]:
+        return None if self.attributes is None else self.attributes.gcs_bucket
+
+    @gcs_bucket.setter
+    def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket = gcs_bucket
+
+    class Attributes(GCS.Attributes):
+        gcs_bucket_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketName"
+        )
+        gcs_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketQualifiedName"
+        )
+        gcs_object_size: Optional[int] = Field(
+            None, description="", alias="gcsObjectSize"
+        )
+        gcs_object_key: Optional[str] = Field(
+            None, description="", alias="gcsObjectKey"
+        )
+        gcs_object_media_link: Optional[str] = Field(
+            None, description="", alias="gcsObjectMediaLink"
+        )
+        gcs_object_hold_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectHoldType"
+        )
+        gcs_object_generation_id: Optional[int] = Field(
+            None, description="", alias="gcsObjectGenerationId"
+        )
+        gcs_object_c_r_c32_c_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectCRC32CHash"
+        )
+        gcs_object_m_d5_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectMD5Hash"
+        )
+        gcs_object_data_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectDataLastModifiedTime"
+        )
+        gcs_object_content_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentType"
+        )
+        gcs_object_content_encoding: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentEncoding"
+        )
+        gcs_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentDisposition"
+        )
+        gcs_object_content_language: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentLanguage"
+        )
+        gcs_object_retention_expiration_date: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectRetentionExpirationDate"
+        )
+        gcs_bucket: Optional[GCSBucket] = Field(
+            None, description="", alias="gcsBucket"
         )  # relationship
 
-    attributes: "ModeWorkspace.Attributes" = Field(
-        default_factory=lambda: ModeWorkspace.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, gcs_bucket_qualified_name: str
+        ) -> GCSObject.Attributes:
+            validate_required_fields(
+                ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+            )
+
+            # Split the gcs_bucket_qualified_name to extract necessary information
+            fields = gcs_bucket_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid gcs_bucket_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid gcs_bucket_qualified_name") from e
+
+            return GCSObject.Attributes(
+                name=name,
+                gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{gcs_bucket_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
+            )
+
+    attributes: "GCSObject.Attributes" = Field(
+        default_factory=lambda: GCSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ModeCollection(Mode):
+class GCSBucket(GCS):
     """Description"""
 
-    type_name: str = Field("ModeCollection", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = GCSBucket.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("GCSBucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ModeCollection":
-            raise ValueError("must be ModeCollection")
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeCollection._convenience_properties:
+        if name in GCSBucket._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_COLLECTION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "modeCollectionType", "modeCollectionType"
+    GCS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "gcsObjectCount", "gcsObjectCount"
     )
     """
-    TBC
+    Number of objects within the bucket.
     """
-    MODE_COLLECTION_STATE: ClassVar[KeywordField] = KeywordField(
-        "modeCollectionState", "modeCollectionState"
+    GCS_BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "gcsBucketVersioningEnabled", "gcsBucketVersioningEnabled"
     )
     """
-    TBC
+    Whether versioning is enabled on the bucket (true) or not (false).
+    """
+    GCS_BUCKET_RETENTION_LOCKED: ClassVar[BooleanField] = BooleanField(
+        "gcsBucketRetentionLocked", "gcsBucketRetentionLocked"
+    )
+    """
+    Whether retention is locked for this bucket (true) or not (false).
+    """
+    GCS_BUCKET_RETENTION_PERIOD: ClassVar[NumericField] = NumericField(
+        "gcsBucketRetentionPeriod", "gcsBucketRetentionPeriod"
+    )
+    """
+    Retention period for objects in this bucket.
+    """
+    GCS_BUCKET_RETENTION_EFFECTIVE_TIME: ClassVar[NumericField] = NumericField(
+        "gcsBucketRetentionEffectiveTime", "gcsBucketRetentionEffectiveTime"
+    )
+    """
+    Effective time for retention of objects in this bucket.
+    """
+    GCS_BUCKET_LIFECYCLE_RULES: ClassVar[TextField] = TextField(
+        "gcsBucketLifecycleRules", "gcsBucketLifecycleRules"
+    )
+    """
+    Lifecycle rules for this bucket.
+    """
+    GCS_BUCKET_RETENTION_POLICY: ClassVar[TextField] = TextField(
+        "gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy"
+    )
+    """
+    Retention policy for this bucket.
     """
 
-    MODE_WORKSPACE: ClassVar[RelationField] = RelationField("modeWorkspace")
-    """
-    TBC
-    """
-    MODE_REPORTS: ClassVar[RelationField] = RelationField("modeReports")
+    GCS_OBJECTS: ClassVar[RelationField] = RelationField("gcsObjects")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mode_collection_type",
-        "mode_collection_state",
-        "mode_workspace",
-        "mode_reports",
+        "gcs_object_count",
+        "gcs_bucket_versioning_enabled",
+        "gcs_bucket_retention_locked",
+        "gcs_bucket_retention_period",
+        "gcs_bucket_retention_effective_time",
+        "gcs_bucket_lifecycle_rules",
+        "gcs_bucket_retention_policy",
+        "gcs_objects",
     ]
 
     @property
-    def mode_collection_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_collection_type
+    def gcs_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.gcs_object_count
 
-    @mode_collection_type.setter
-    def mode_collection_type(self, mode_collection_type: Optional[str]):
+    @gcs_object_count.setter
+    def gcs_object_count(self, gcs_object_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collection_type = mode_collection_type
+        self.attributes.gcs_object_count = gcs_object_count
 
     @property
-    def mode_collection_state(self) -> Optional[str]:
+    def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
         return (
-            None if self.attributes is None else self.attributes.mode_collection_state
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_versioning_enabled
         )
 
-    @mode_collection_state.setter
-    def mode_collection_state(self, mode_collection_state: Optional[str]):
+    @gcs_bucket_versioning_enabled.setter
+    def gcs_bucket_versioning_enabled(
+        self, gcs_bucket_versioning_enabled: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collection_state = mode_collection_state
+        self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
 
     @property
-    def mode_workspace(self) -> Optional[ModeWorkspace]:
-        return None if self.attributes is None else self.attributes.mode_workspace
+    def gcs_bucket_retention_locked(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_locked
+        )
 
-    @mode_workspace.setter
-    def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
+    @gcs_bucket_retention_locked.setter
+    def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_workspace = mode_workspace
+        self.attributes.gcs_bucket_retention_locked = gcs_bucket_retention_locked
 
     @property
-    def mode_reports(self) -> Optional[list[ModeReport]]:
-        return None if self.attributes is None else self.attributes.mode_reports
+    def gcs_bucket_retention_period(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_period
+        )
 
-    @mode_reports.setter
-    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
+    @gcs_bucket_retention_period.setter
+    def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_reports = mode_reports
+        self.attributes.gcs_bucket_retention_period = gcs_bucket_retention_period
 
-    class Attributes(Mode.Attributes):
-        mode_collection_type: Optional[str] = Field(
-            None, description="", alias="modeCollectionType"
+    @property
+    def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_effective_time
         )
-        mode_collection_state: Optional[str] = Field(
-            None, description="", alias="modeCollectionState"
+
+    @gcs_bucket_retention_effective_time.setter
+    def gcs_bucket_retention_effective_time(
+        self, gcs_bucket_retention_effective_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_effective_time = (
+            gcs_bucket_retention_effective_time
         )
-        mode_workspace: Optional[ModeWorkspace] = Field(
-            None, description="", alias="modeWorkspace"
-        )  # relationship
-        mode_reports: Optional[list[ModeReport]] = Field(
-            None, description="", alias="modeReports"
+
+    @property
+    def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_lifecycle_rules
+        )
+
+    @gcs_bucket_lifecycle_rules.setter
+    def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_lifecycle_rules = gcs_bucket_lifecycle_rules
+
+    @property
+    def gcs_bucket_retention_policy(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_policy
+        )
+
+    @gcs_bucket_retention_policy.setter
+    def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
+
+    @property
+    def gcs_objects(self) -> Optional[list[GCSObject]]:
+        return None if self.attributes is None else self.attributes.gcs_objects
+
+    @gcs_objects.setter
+    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_objects = gcs_objects
+
+    class Attributes(GCS.Attributes):
+        gcs_object_count: Optional[int] = Field(
+            None, description="", alias="gcsObjectCount"
+        )
+        gcs_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="gcsBucketVersioningEnabled"
+        )
+        gcs_bucket_retention_locked: Optional[bool] = Field(
+            None, description="", alias="gcsBucketRetentionLocked"
+        )
+        gcs_bucket_retention_period: Optional[int] = Field(
+            None, description="", alias="gcsBucketRetentionPeriod"
+        )
+        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
+            None, description="", alias="gcsBucketRetentionEffectiveTime"
+        )
+        gcs_bucket_lifecycle_rules: Optional[str] = Field(
+            None, description="", alias="gcsBucketLifecycleRules"
+        )
+        gcs_bucket_retention_policy: Optional[str] = Field(
+            None, description="", alias="gcsBucketRetentionPolicy"
+        )
+        gcs_objects: Optional[list[GCSObject]] = Field(
+            None, description="", alias="gcsObjects"
         )  # relationship
 
-    attributes: "ModeCollection.Attributes" = Field(
-        default_factory=lambda: ModeCollection.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> GCSBucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return GCSBucket.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+            )
+
+    attributes: "GCSBucket.Attributes" = Field(
+        default_factory=lambda: GCSBucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-ModeReport.Attributes.update_forward_refs()
+GCSObject.Attributes.update_forward_refs()
 
 
-ModeQuery.Attributes.update_forward_refs()
-
-
-ModeChart.Attributes.update_forward_refs()
-
-
-ModeWorkspace.Attributes.update_forward_refs()
-
-
-ModeCollection.Attributes.update_forward_refs()
+GCSBucket.Attributes.update_forward_refs()

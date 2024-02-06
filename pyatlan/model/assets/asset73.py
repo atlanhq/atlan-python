@@ -4,399 +4,342 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
 )
 
-from .asset47 import Metabase
+from .asset45 import Redash
 
 
-class MetabaseQuestion(Metabase):
+class RedashQuery(Redash):
     """Description"""
 
-    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+    type_name: str = Field("RedashQuery", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MetabaseQuestion":
-            raise ValueError("must be MetabaseQuestion")
+        if v != "RedashQuery":
+            raise ValueError("must be RedashQuery")
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseQuestion._convenience_properties:
+        if name in RedashQuery._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
-        "metabaseDashboardCount", "metabaseDashboardCount"
+    REDASH_QUERY_SQL: ClassVar[KeywordField] = KeywordField(
+        "redashQuerySQL", "redashQuerySQL"
     )
     """
-    TBC
+    SQL code of this query.
     """
-    METABASE_QUERY_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
+    REDASH_QUERY_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+        "redashQueryParameters", "redashQueryParameters"
     )
     """
-    TBC
+    Parameters of this query.
     """
-    METABASE_QUERY: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseQuery", "metabaseQuery.keyword", "metabaseQuery"
+    REDASH_QUERY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "redashQuerySchedule", "redashQuerySchedule"
     )
     """
-    TBC
+    Schedule for this query.
+    """
+    REDASH_QUERY_LAST_EXECUTION_RUNTIME: ClassVar[NumericField] = NumericField(
+        "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
+    )
+    """
+    Elapsed time of the last execution of this query.
+    """
+    REDASH_QUERY_LAST_EXECUTED_AT: ClassVar[NumericField] = NumericField(
+        "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
+    )
+    """
+    Time (epoch) when this query was last executed, in milliseconds.
+    """
+    REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryScheduleHumanized",
+        "redashQueryScheduleHumanized",
+        "redashQueryScheduleHumanized.text",
+    )
+    """
+    Schdule for this query in readable text for overview tab and filtering.
     """
 
-    METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
-    """
-    TBC
-    """
-    METABASE_COLLECTION: ClassVar[RelationField] = RelationField("metabaseCollection")
+    REDASH_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "redashVisualizations"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "metabase_dashboard_count",
-        "metabase_query_type",
-        "metabase_query",
-        "metabase_dashboards",
-        "metabase_collection",
+        "redash_query_s_q_l",
+        "redash_query_parameters",
+        "redash_query_schedule",
+        "redash_query_last_execution_runtime",
+        "redash_query_last_executed_at",
+        "redash_query_schedule_humanized",
+        "redash_visualizations",
     ]
 
     @property
-    def metabase_dashboard_count(self) -> Optional[int]:
+    def redash_query_s_q_l(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.redash_query_s_q_l
+
+    @redash_query_s_q_l.setter
+    def redash_query_s_q_l(self, redash_query_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_s_q_l = redash_query_s_q_l
+
+    @property
+    def redash_query_parameters(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.redash_query_parameters
+        )
+
+    @redash_query_parameters.setter
+    def redash_query_parameters(self, redash_query_parameters: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_parameters = redash_query_parameters
+
+    @property
+    def redash_query_schedule(self) -> Optional[dict[str, str]]:
+        return (
+            None if self.attributes is None else self.attributes.redash_query_schedule
+        )
+
+    @redash_query_schedule.setter
+    def redash_query_schedule(self, redash_query_schedule: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_schedule = redash_query_schedule
+
+    @property
+    def redash_query_last_execution_runtime(self) -> Optional[float]:
         return (
             None
             if self.attributes is None
-            else self.attributes.metabase_dashboard_count
+            else self.attributes.redash_query_last_execution_runtime
         )
 
-    @metabase_dashboard_count.setter
-    def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_dashboard_count = metabase_dashboard_count
-
-    @property
-    def metabase_query_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_query_type
-
-    @metabase_query_type.setter
-    def metabase_query_type(self, metabase_query_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_query_type = metabase_query_type
-
-    @property
-    def metabase_query(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_query
-
-    @metabase_query.setter
-    def metabase_query(self, metabase_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_query = metabase_query
-
-    @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
-        return None if self.attributes is None else self.attributes.metabase_dashboards
-
-    @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    @redash_query_last_execution_runtime.setter
+    def redash_query_last_execution_runtime(
+        self, redash_query_last_execution_runtime: Optional[float]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_dashboards = metabase_dashboards
-
-    @property
-    def metabase_collection(self) -> Optional[MetabaseCollection]:
-        return None if self.attributes is None else self.attributes.metabase_collection
-
-    @metabase_collection.setter
-    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_collection = metabase_collection
-
-    class Attributes(Metabase.Attributes):
-        metabase_dashboard_count: Optional[int] = Field(
-            None, description="", alias="metabaseDashboardCount"
+        self.attributes.redash_query_last_execution_runtime = (
+            redash_query_last_execution_runtime
         )
-        metabase_query_type: Optional[str] = Field(
-            None, description="", alias="metabaseQueryType"
-        )
-        metabase_query: Optional[str] = Field(
-            None, description="", alias="metabaseQuery"
-        )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
-        )  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
-        )  # relationship
-
-    attributes: "MetabaseQuestion.Attributes" = Field(
-        default_factory=lambda: MetabaseQuestion.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class MetabaseCollection(Metabase):
-    """Description"""
-
-    type_name: str = Field("MetabaseCollection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseCollection":
-            raise ValueError("must be MetabaseCollection")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in MetabaseCollection._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    METABASE_SLUG: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseSlug", "metabaseSlug", "metabaseSlug.text"
-    )
-    """
-    TBC
-    """
-    METABASE_COLOR: ClassVar[KeywordField] = KeywordField(
-        "metabaseColor", "metabaseColor"
-    )
-    """
-    TBC
-    """
-    METABASE_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseNamespace", "metabaseNamespace", "metabaseNamespace.text"
-    )
-    """
-    TBC
-    """
-    METABASE_IS_PERSONAL_COLLECTION: ClassVar[BooleanField] = BooleanField(
-        "metabaseIsPersonalCollection", "metabaseIsPersonalCollection"
-    )
-    """
-    TBC
-    """
-
-    METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
-    """
-    TBC
-    """
-    METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "metabase_slug",
-        "metabase_color",
-        "metabase_namespace",
-        "metabase_is_personal_collection",
-        "metabase_dashboards",
-        "metabase_questions",
-    ]
 
     @property
-    def metabase_slug(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_slug
-
-    @metabase_slug.setter
-    def metabase_slug(self, metabase_slug: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_slug = metabase_slug
-
-    @property
-    def metabase_color(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_color
-
-    @metabase_color.setter
-    def metabase_color(self, metabase_color: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_color = metabase_color
-
-    @property
-    def metabase_namespace(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_namespace
-
-    @metabase_namespace.setter
-    def metabase_namespace(self, metabase_namespace: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_namespace = metabase_namespace
-
-    @property
-    def metabase_is_personal_collection(self) -> Optional[bool]:
+    def redash_query_last_executed_at(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.metabase_is_personal_collection
+            else self.attributes.redash_query_last_executed_at
         )
 
-    @metabase_is_personal_collection.setter
-    def metabase_is_personal_collection(
-        self, metabase_is_personal_collection: Optional[bool]
+    @redash_query_last_executed_at.setter
+    def redash_query_last_executed_at(
+        self, redash_query_last_executed_at: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_is_personal_collection = (
-            metabase_is_personal_collection
-        )
+        self.attributes.redash_query_last_executed_at = redash_query_last_executed_at
 
     @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
-        return None if self.attributes is None else self.attributes.metabase_dashboards
+    def redash_query_schedule_humanized(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.redash_query_schedule_humanized
+        )
 
-    @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    @redash_query_schedule_humanized.setter
+    def redash_query_schedule_humanized(
+        self, redash_query_schedule_humanized: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_dashboards = metabase_dashboards
+        self.attributes.redash_query_schedule_humanized = (
+            redash_query_schedule_humanized
+        )
 
     @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
-        return None if self.attributes is None else self.attributes.metabase_questions
+    def redash_visualizations(self) -> Optional[list[RedashVisualization]]:
+        return (
+            None if self.attributes is None else self.attributes.redash_visualizations
+        )
 
-    @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+    @redash_visualizations.setter
+    def redash_visualizations(
+        self, redash_visualizations: Optional[list[RedashVisualization]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_questions = metabase_questions
+        self.attributes.redash_visualizations = redash_visualizations
 
-    class Attributes(Metabase.Attributes):
-        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
-        metabase_color: Optional[str] = Field(
-            None, description="", alias="metabaseColor"
+    class Attributes(Redash.Attributes):
+        redash_query_s_q_l: Optional[str] = Field(
+            None, description="", alias="redashQuerySQL"
         )
-        metabase_namespace: Optional[str] = Field(
-            None, description="", alias="metabaseNamespace"
+        redash_query_parameters: Optional[str] = Field(
+            None, description="", alias="redashQueryParameters"
         )
-        metabase_is_personal_collection: Optional[bool] = Field(
-            None, description="", alias="metabaseIsPersonalCollection"
+        redash_query_schedule: Optional[dict[str, str]] = Field(
+            None, description="", alias="redashQuerySchedule"
         )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
-        )  # relationship
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+        redash_query_last_execution_runtime: Optional[float] = Field(
+            None, description="", alias="redashQueryLastExecutionRuntime"
+        )
+        redash_query_last_executed_at: Optional[datetime] = Field(
+            None, description="", alias="redashQueryLastExecutedAt"
+        )
+        redash_query_schedule_humanized: Optional[str] = Field(
+            None, description="", alias="redashQueryScheduleHumanized"
+        )
+        redash_visualizations: Optional[list[RedashVisualization]] = Field(
+            None, description="", alias="redashVisualizations"
         )  # relationship
 
-    attributes: "MetabaseCollection.Attributes" = Field(
-        default_factory=lambda: MetabaseCollection.Attributes(),
+    attributes: "RedashQuery.Attributes" = Field(
+        default_factory=lambda: RedashQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MetabaseDashboard(Metabase):
+class RedashVisualization(Redash):
     """Description"""
 
-    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+    type_name: str = Field("RedashVisualization", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MetabaseDashboard":
-            raise ValueError("must be MetabaseDashboard")
+        if v != "RedashVisualization":
+            raise ValueError("must be RedashVisualization")
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseDashboard._convenience_properties:
+        if name in RedashVisualization._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_QUESTION_COUNT: ClassVar[NumericField] = NumericField(
-        "metabaseQuestionCount", "metabaseQuestionCount"
+    REDASH_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "redashVisualizationType", "redashVisualizationType"
     )
     """
-    TBC
+    Type of this visualization.
+    """
+    REDASH_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryName", "redashQueryName.keyword", "redashQueryName"
+    )
+    """
+    Simple name of the query from which this visualization is created.
+    """
+    REDASH_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryQualifiedName",
+        "redashQueryQualifiedName",
+        "redashQueryQualifiedName.text",
+    )
+    """
+    Unique name of the query from which this visualization is created.
     """
 
-    METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")
-    """
-    TBC
-    """
-    METABASE_COLLECTION: ClassVar[RelationField] = RelationField("metabaseCollection")
+    REDASH_QUERY: ClassVar[RelationField] = RelationField("redashQuery")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "metabase_question_count",
-        "metabase_questions",
-        "metabase_collection",
+        "redash_visualization_type",
+        "redash_query_name",
+        "redash_query_qualified_name",
+        "redash_query",
     ]
 
     @property
-    def metabase_question_count(self) -> Optional[int]:
+    def redash_visualization_type(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.metabase_question_count
+            None
+            if self.attributes is None
+            else self.attributes.redash_visualization_type
         )
 
-    @metabase_question_count.setter
-    def metabase_question_count(self, metabase_question_count: Optional[int]):
+    @redash_visualization_type.setter
+    def redash_visualization_type(self, redash_visualization_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_question_count = metabase_question_count
+        self.attributes.redash_visualization_type = redash_visualization_type
 
     @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
-        return None if self.attributes is None else self.attributes.metabase_questions
+    def redash_query_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.redash_query_name
 
-    @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+    @redash_query_name.setter
+    def redash_query_name(self, redash_query_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_questions = metabase_questions
+        self.attributes.redash_query_name = redash_query_name
 
     @property
-    def metabase_collection(self) -> Optional[MetabaseCollection]:
-        return None if self.attributes is None else self.attributes.metabase_collection
-
-    @metabase_collection.setter
-    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_collection = metabase_collection
-
-    class Attributes(Metabase.Attributes):
-        metabase_question_count: Optional[int] = Field(
-            None, description="", alias="metabaseQuestionCount"
+    def redash_query_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.redash_query_qualified_name
         )
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
-        )  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
+
+    @redash_query_qualified_name.setter
+    def redash_query_qualified_name(self, redash_query_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_qualified_name = redash_query_qualified_name
+
+    @property
+    def redash_query(self) -> Optional[RedashQuery]:
+        return None if self.attributes is None else self.attributes.redash_query
+
+    @redash_query.setter
+    def redash_query(self, redash_query: Optional[RedashQuery]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query = redash_query
+
+    class Attributes(Redash.Attributes):
+        redash_visualization_type: Optional[str] = Field(
+            None, description="", alias="redashVisualizationType"
+        )
+        redash_query_name: Optional[str] = Field(
+            None, description="", alias="redashQueryName"
+        )
+        redash_query_qualified_name: Optional[str] = Field(
+            None, description="", alias="redashQueryQualifiedName"
+        )
+        redash_query: Optional[RedashQuery] = Field(
+            None, description="", alias="redashQuery"
         )  # relationship
 
-    attributes: "MetabaseDashboard.Attributes" = Field(
-        default_factory=lambda: MetabaseDashboard.Attributes(),
+    attributes: "RedashVisualization.Attributes" = Field(
+        default_factory=lambda: RedashVisualization.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MetabaseQuestion.Attributes.update_forward_refs()
+RedashQuery.Attributes.update_forward_refs()
 
 
-MetabaseCollection.Attributes.update_forward_refs()
-
-
-MetabaseDashboard.Attributes.update_forward_refs()
+RedashVisualization.Attributes.update_forward_refs()

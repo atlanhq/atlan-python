@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
+{% from 'macros.jinja2' import gen_properties %}
+{% from 'macros.jinja2' import gen_property_class_vars %}
+{% from 'macros.jinja2' import gen_property_relationship_class_vars %}
+
+{% include 'imports.jinja2' %}
+{% for import in module.imports%}
+{{ import }}
+{% endfor %}
+{% for asset_info in module.ordered_asset_infos %}
+    {% set entity_def = asset_info.entity_def %}
+    {% set file_name = 'methods/imports/' + entity_def.name | to_snake_case + '.jinja2' %}
+    {%  if existz('templates/' + file_name) %}
+{% include file_name %}
+    {% endif %}
+{% endfor %}
+{%  if module_name == 'asset00' %}
+{% include 'globals.jinja2' %}
+{% endif %}
+
+{% for asset_info in module.ordered_asset_infos %}
+    {% set entity_def = asset_info.entity_def %}
+{%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types %}
+
+class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
+    """Description"""
+{% if entity_def.name == "Referenceable" %}
+    {% include 'referenceable_methods.jinja2' %}
+    {% include 'properties.jinja2' %}
+    {% include 'referenceable_attributes.jinja2' %}
+{%- else %}
+    {% set file_name = 'methods/asset/' + entity_def.name | to_snake_case + '.jinja2' %}
+    {%  if existz('templates/' + file_name) %}
+        {% include file_name %}
+    {% endif %}
+
+    type_name: str = Field("{{ entity_def.name }}", allow_mutation=False)
+
+    @validator('type_name')
+    def validate_type_name(cls, v):
+        if v != "{{ entity_def.name }}":
+            raise ValueError('must be {{ entity_def.name }}')
+        return v
+
+    {% include 'properties.jinja2' %}
+    {%- if entity_def.attribute_defs or entity_def.relationship_attribute_defs %}
+    class Attributes({{super_classes[0]}}.Attributes):
+        {%- for attribute_def in entity_def.attribute_defs %}
+        {%- set type = attribute_def.typeName | get_type %}
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}] = Field(None, description='' , alias='{{attribute_def.name}}')
+        {%- endfor %}
+        {%- for attribute_def in entity_def.relationship_attribute_defs %}
+        {%- set type = attribute_def.typeName | get_type %}
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}]= Field(None, description='',  alias='{{attribute_def.name}}') # relationship
+        {%- endfor %}
+        {% set file_name = 'methods/attribute/' + entity_def.name | to_snake_case + '.jinja2' %}
+        {%  if existz('templates/' + file_name) %}
+            {% include file_name %}
+        {% endif %}
+    attributes: '{{entity_def.name}}.Attributes' = Field(
+        default_factory = lambda: {{entity_def.name}}.Attributes(),
+        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
+                    'type, so are described in the sub-types of this schema.\n',
+    )
+    {%- endif %}
+{% endif %}
+{% endfor %}
+
+{% for asset_info in module.ordered_asset_infos %}
+    {% set entity_def = asset_info.entity_def %}
+{{entity_def.name}}.Attributes.update_forward_refs()
+{% endfor %}

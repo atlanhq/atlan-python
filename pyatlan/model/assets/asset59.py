@@ -4,368 +4,500 @@
 
 from __future__ import annotations
 
-import uuid
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType, GoogleDatastudioAssetType
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
-    KeywordTextStemmedField,
     NumericField,
 )
-from pyatlan.model.structs import GoogleLabel, GoogleTag
-from pyatlan.utils import init_guid, validate_required_fields
+from pyatlan.model.structs import SourceTagAttribute
 
-from .asset46 import DataStudio
+from .asset00 import Dbt
 
 
-class DataStudioAsset(DataStudio):
+class DbtTag(Dbt):
     """Description"""
 
-    @classmethod
-    # @validate_arguments()
-    @init_guid
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        data_studio_asset_type: GoogleDatastudioAssetType,
-        gdsid: Optional[str] = None,
-    ) -> DataStudioAsset:
-        validate_required_fields(
-            ["name", "connection_qualified_name", "data_studio_asset_type"],
-            [name, connection_qualified_name, data_studio_asset_type],
-        )
-        if gdsid is None:
-            gdsid = str(uuid.uuid4())
-        attributes = DataStudioAsset.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            data_studio_asset_type=data_studio_asset_type,
-            gdsid=gdsid,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("DataStudioAsset", allow_mutation=False)
+    type_name: str = Field("DbtTag", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DataStudioAsset":
-            raise ValueError("must be DataStudioAsset")
+        if v != "DbtTag":
+            raise ValueError("must be DbtTag")
         return v
 
     def __setattr__(self, name, value):
-        if name in DataStudioAsset._convenience_properties:
+        if name in DbtTag._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_STUDIO_ASSET_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dataStudioAssetType", "dataStudioAssetType"
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-    TBC
+
     """
-    DATA_STUDIO_ASSET_TITLE: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "dataStudioAssetTitle",
-        "dataStudioAssetTitle.keyword",
-        "dataStudioAssetTitle",
-        "dataStudioAssetTitle.stemmed",
+    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    """
+
+    """
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-    TBC
+
     """
-    DATA_STUDIO_ASSET_OWNER: ClassVar[KeywordField] = KeywordField(
-        "dataStudioAssetOwner", "dataStudioAssetOwner"
+    DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-    TBC
+
     """
-    IS_TRASHED_DATA_STUDIO_ASSET: ClassVar[BooleanField] = BooleanField(
-        "isTrashedDataStudioAsset", "isTrashedDataStudioAsset"
+    DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-    TBC
+
     """
-    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
-        "googleService", "googleService"
+    DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-    TBC
+
     """
-    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-    TBC
+
     """
-    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
-        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-    TBC
+
     """
-    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
-        "googleProjectNumber", "googleProjectNumber"
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtJobStatus", "dbtJobStatus"
     )
     """
-    TBC
+
     """
-    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "googleLocation", "googleLocation"
+    DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobScheduleCronHumanized",
+        "dbtJobScheduleCronHumanized.keyword",
+        "dbtJobScheduleCronHumanized",
     )
     """
-    TBC
+
     """
-    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "googleLocationType", "googleLocationType"
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-    TBC
+
     """
-    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobNextRun", "dbtJobNextRun"
+    )
     """
-    TBC
+
     """
-    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
+    DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobNextRunHumanized",
+        "dbtJobNextRunHumanized.keyword",
+        "dbtJobNextRunHumanized",
+    )
     """
-    TBC
+
+    """
+    DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
+    )
+    """
+
+    """
+    DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentDbtVersion",
+        "dbtEnvironmentDbtVersion.keyword",
+        "dbtEnvironmentDbtVersion",
+    )
+    """
+
+    """
+    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    """
+
+    """
+    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+        "dbtConnectionContext", "dbtConnectionContext"
+    )
+    """
+
+    """
+    DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
+        "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+    )
+    """
+
+    """
+    TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
+    """
+    Unique identifier of the tag in the source system.
+    """
+    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "tagAttributes", "tagAttributes"
+    )
+    """
+    Attributes associated with the tag in the source system.
+    """
+    TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
+        "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+    )
+    """
+    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.
+    """
+    MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
+        "mappedClassificationName", "mappedClassificationName"
+    )
+    """
+    Name of the classification in Atlan that is mapped to this tag.
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "data_studio_asset_type",
-        "data_studio_asset_title",
-        "data_studio_asset_owner",
-        "is_trashed_data_studio_asset",
-        "google_service",
-        "google_project_name",
-        "google_project_id",
-        "google_project_number",
-        "google_location",
-        "google_location_type",
-        "google_labels",
-        "google_tags",
+        "dbt_alias",
+        "dbt_meta",
+        "dbt_unique_id",
+        "dbt_account_name",
+        "dbt_project_name",
+        "dbt_package_name",
+        "dbt_job_name",
+        "dbt_job_schedule",
+        "dbt_job_status",
+        "dbt_job_schedule_cron_humanized",
+        "dbt_job_last_run",
+        "dbt_job_next_run",
+        "dbt_job_next_run_humanized",
+        "dbt_environment_name",
+        "dbt_environment_dbt_version",
+        "dbt_tags",
+        "dbt_connection_context",
+        "dbt_semantic_layer_proxy_url",
+        "tag_id",
+        "tag_attributes",
+        "tag_allowed_values",
+        "mapped_atlan_tag_name",
     ]
 
     @property
-    def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
-        return (
-            None if self.attributes is None else self.attributes.data_studio_asset_type
-        )
+    def dbt_alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_alias
 
-    @data_studio_asset_type.setter
-    def data_studio_asset_type(
-        self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
-    ):
+    @dbt_alias.setter
+    def dbt_alias(self, dbt_alias: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.data_studio_asset_type = data_studio_asset_type
+        self.attributes.dbt_alias = dbt_alias
 
     @property
-    def data_studio_asset_title(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.data_studio_asset_title
-        )
+    def dbt_meta(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_meta
 
-    @data_studio_asset_title.setter
-    def data_studio_asset_title(self, data_studio_asset_title: Optional[str]):
+    @dbt_meta.setter
+    def dbt_meta(self, dbt_meta: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.data_studio_asset_title = data_studio_asset_title
+        self.attributes.dbt_meta = dbt_meta
 
     @property
-    def data_studio_asset_owner(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.data_studio_asset_owner
-        )
+    def dbt_unique_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_unique_id
 
-    @data_studio_asset_owner.setter
-    def data_studio_asset_owner(self, data_studio_asset_owner: Optional[str]):
+    @dbt_unique_id.setter
+    def dbt_unique_id(self, dbt_unique_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.data_studio_asset_owner = data_studio_asset_owner
+        self.attributes.dbt_unique_id = dbt_unique_id
 
     @property
-    def is_trashed_data_studio_asset(self) -> Optional[bool]:
+    def dbt_account_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_account_name
+
+    @dbt_account_name.setter
+    def dbt_account_name(self, dbt_account_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_account_name = dbt_account_name
+
+    @property
+    def dbt_project_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_project_name
+
+    @dbt_project_name.setter
+    def dbt_project_name(self, dbt_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_project_name = dbt_project_name
+
+    @property
+    def dbt_package_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_package_name
+
+    @dbt_package_name.setter
+    def dbt_package_name(self, dbt_package_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_package_name = dbt_package_name
+
+    @property
+    def dbt_job_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_job_name
+
+    @dbt_job_name.setter
+    def dbt_job_name(self, dbt_job_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_name = dbt_job_name
+
+    @property
+    def dbt_job_schedule(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_job_schedule
+
+    @dbt_job_schedule.setter
+    def dbt_job_schedule(self, dbt_job_schedule: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_schedule = dbt_job_schedule
+
+    @property
+    def dbt_job_status(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_job_status
+
+    @dbt_job_status.setter
+    def dbt_job_status(self, dbt_job_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_status = dbt_job_status
+
+    @property
+    def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.is_trashed_data_studio_asset
+            else self.attributes.dbt_job_schedule_cron_humanized
         )
 
-    @is_trashed_data_studio_asset.setter
-    def is_trashed_data_studio_asset(
-        self, is_trashed_data_studio_asset: Optional[bool]
+    @dbt_job_schedule_cron_humanized.setter
+    def dbt_job_schedule_cron_humanized(
+        self, dbt_job_schedule_cron_humanized: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.is_trashed_data_studio_asset = is_trashed_data_studio_asset
+        self.attributes.dbt_job_schedule_cron_humanized = (
+            dbt_job_schedule_cron_humanized
+        )
 
     @property
-    def google_service(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_service
+    def dbt_job_last_run(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.dbt_job_last_run
 
-    @google_service.setter
-    def google_service(self, google_service: Optional[str]):
+    @dbt_job_last_run.setter
+    def dbt_job_last_run(self, dbt_job_last_run: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_service = google_service
+        self.attributes.dbt_job_last_run = dbt_job_last_run
 
     @property
-    def google_project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_project_name
+    def dbt_job_next_run(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.dbt_job_next_run
 
-    @google_project_name.setter
-    def google_project_name(self, google_project_name: Optional[str]):
+    @dbt_job_next_run.setter
+    def dbt_job_next_run(self, dbt_job_next_run: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_name = google_project_name
+        self.attributes.dbt_job_next_run = dbt_job_next_run
 
     @property
-    def google_project_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_project_id
-
-    @google_project_id.setter
-    def google_project_id(self, google_project_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_id = google_project_id
-
-    @property
-    def google_project_number(self) -> Optional[int]:
+    def dbt_job_next_run_humanized(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.google_project_number
+            None
+            if self.attributes is None
+            else self.attributes.dbt_job_next_run_humanized
         )
 
-    @google_project_number.setter
-    def google_project_number(self, google_project_number: Optional[int]):
+    @dbt_job_next_run_humanized.setter
+    def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_number = google_project_number
+        self.attributes.dbt_job_next_run_humanized = dbt_job_next_run_humanized
 
     @property
-    def google_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_location
+    def dbt_environment_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_environment_name
 
-    @google_location.setter
-    def google_location(self, google_location: Optional[str]):
+    @dbt_environment_name.setter
+    def dbt_environment_name(self, dbt_environment_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_location = google_location
+        self.attributes.dbt_environment_name = dbt_environment_name
 
     @property
-    def google_location_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_location_type
+    def dbt_environment_dbt_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_environment_dbt_version
+        )
 
-    @google_location_type.setter
-    def google_location_type(self, google_location_type: Optional[str]):
+    @dbt_environment_dbt_version.setter
+    def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_location_type = google_location_type
+        self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
-        return None if self.attributes is None else self.attributes.google_labels
+    def dbt_tags(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.dbt_tags
 
-    @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+    @dbt_tags.setter
+    def dbt_tags(self, dbt_tags: Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_labels = google_labels
+        self.attributes.dbt_tags = dbt_tags
 
     @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
-        return None if self.attributes is None else self.attributes.google_tags
+    def dbt_connection_context(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_connection_context
+        )
 
-    @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+    @dbt_connection_context.setter
+    def dbt_connection_context(self, dbt_connection_context: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_tags = google_tags
+        self.attributes.dbt_connection_context = dbt_connection_context
 
-    class Attributes(DataStudio.Attributes):
-        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
-            None, description="", alias="dataStudioAssetType"
-        )
-        data_studio_asset_title: Optional[str] = Field(
-            None, description="", alias="dataStudioAssetTitle"
-        )
-        data_studio_asset_owner: Optional[str] = Field(
-            None, description="", alias="dataStudioAssetOwner"
-        )
-        is_trashed_data_studio_asset: Optional[bool] = Field(
-            None, description="", alias="isTrashedDataStudioAsset"
-        )
-        google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
+    @property
+    def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_semantic_layer_proxy_url
         )
 
-        @classmethod
-        # @validate_arguments()
-        @init_guid
-        def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            data_studio_asset_type: GoogleDatastudioAssetType,
-            gdsid: str,
-        ) -> DataStudioAsset.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name", "data_studio_asset_type"],
-                [name, connection_qualified_name, data_studio_asset_type],
-            )
+    @dbt_semantic_layer_proxy_url.setter
+    def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
-            # Split the connection_qualified_name to extract necessary information
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
+    @property
+    def tag_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.tag_id
 
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
+    @tag_id.setter
+    def tag_id(self, tag_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_id = tag_id
 
-            return DataStudioAsset.Attributes(
-                name=name,
-                qualified_name=f"{connection_qualified_name}/{gdsid}",
-                connection_qualified_name=connection_qualified_name,
-                connector_name=connector_type.value,
-                data_studio_asset_type=data_studio_asset_type,
-            )
+    @property
+    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        return None if self.attributes is None else self.attributes.tag_attributes
 
-    attributes: "DataStudioAsset.Attributes" = Field(
-        default_factory=lambda: DataStudioAsset.Attributes(),
+    @tag_attributes.setter
+    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_attributes = tag_attributes
+
+    @property
+    def tag_allowed_values(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.tag_allowed_values
+
+    @tag_allowed_values.setter
+    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_allowed_values = tag_allowed_values
+
+    @property
+    def mapped_atlan_tag_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
+        )
+
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
+
+    class Attributes(Dbt.Attributes):
+        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
+        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
+        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_account_name: Optional[str] = Field(
+            None, description="", alias="dbtAccountName"
+        )
+        dbt_project_name: Optional[str] = Field(
+            None, description="", alias="dbtProjectName"
+        )
+        dbt_package_name: Optional[str] = Field(
+            None, description="", alias="dbtPackageName"
+        )
+        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+        dbt_job_schedule: Optional[str] = Field(
+            None, description="", alias="dbtJobSchedule"
+        )
+        dbt_job_status: Optional[str] = Field(
+            None, description="", alias="dbtJobStatus"
+        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobScheduleCronHumanized"
+        )
+        dbt_job_last_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobLastRun"
+        )
+        dbt_job_next_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobNextRun"
+        )
+        dbt_job_next_run_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobNextRunHumanized"
+        )
+        dbt_environment_name: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentName"
+        )
+        dbt_environment_dbt_version: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentDbtVersion"
+        )
+        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
+        dbt_connection_context: Optional[str] = Field(
+            None, description="", alias="dbtConnectionContext"
+        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            None, description="", alias="dbtSemanticLayerProxyUrl"
+        )
+        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+            None, description="", alias="tagAttributes"
+        )
+        tag_allowed_values: Optional[set[str]] = Field(
+            None, description="", alias="tagAllowedValues"
+        )
+        mapped_atlan_tag_name: Optional[str] = Field(
+            None, description="", alias="mappedClassificationName"
+        )
+
+    attributes: "DbtTag.Attributes" = Field(
+        default_factory=lambda: DbtTag.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-DataStudioAsset.Attributes.update_forward_refs()
+DbtTag.Attributes.update_forward_refs()
