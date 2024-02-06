@@ -1,13 +1,10 @@
-# Copyright 2022 Atlan Pte. Ltd.
+# # Copyright 2022 Atlan Pte. Ltd.
 from .asset00 import (
     SQL,
     Airflow,
     AirflowDag,
     AirflowTask,
     Asset,
-    AtlasGlossary,
-    AtlasGlossaryCategory,
-    AtlasGlossaryTerm,
     Catalog,
     Column,
     ColumnProcess,
@@ -195,3 +192,6 @@ from .asset83 import KafkaConsumerGroup, KafkaTopic
 from .asset84 import QlikStream
 from .asset85 import AzureEventHub
 from .asset86 import AzureEventHubConsumerGroup
+from .atlas_glossary import AtlasGlossary
+from .atlas_glossary_category import AtlasGlossaryCategory
+from .atlas_glossary_term import AtlasGlossaryTerm
