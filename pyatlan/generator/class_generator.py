@@ -617,7 +617,7 @@ class Generator:
         self.render_init(modules)
 
     def render_module(self, module: ModuleInfo):
-        template = self.environment.get_template("module.jinja2")
+        template = self.environment.get_template("modules.jinja2")
         content = template.render(
             {
                 "module": module,
