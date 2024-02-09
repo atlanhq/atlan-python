@@ -508,8 +508,8 @@
         <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
         <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
         <span class="n">relation_attributes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;guid&quot;</span><span class="p">],</span>
-        <span class="n">exclude_meanings</span><span class="o">=~</span><span class="n">include_meanings</span><span class="p">,</span>
-        <span class="n">exclude_atlan_tags</span><span class="o">=~</span><span class="n">include_atlan_tags</span><span class="p">,</span>
+        <span class="n">exclude_meanings</span><span class="o">=</span><span class="ow">not</span> <span class="n">include_meanings</span><span class="p">,</span>
+        <span class="n">exclude_atlan_tags</span><span class="o">=</span><span class="ow">not</span> <span class="n">include_atlan_tags</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">criteria</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
