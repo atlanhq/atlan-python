@@ -64,8 +64,8 @@ def get_current_view_of_asset(
         dsl=dsl,
         attributes=attributes,
         relation_attributes=["guid"],
-        exclude_meanings=~include_meanings,
-        exclude_atlan_tags=~include_atlan_tags,
+        exclude_meanings=not include_meanings,
+        exclude_atlan_tags=not include_atlan_tags,
     )
     response = client.asset.search(criteria=request)
     return (
