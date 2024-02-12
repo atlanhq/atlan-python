@@ -17,7 +17,7 @@ from typing import Any, Generic, Optional, TypeVar
 from pydantic.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
-from pyatlan.model.enums import AnnouncementType, EntityStatus
+from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
 from pyatlan.model.structs import SourceTagAttachment
 
 
@@ -233,9 +233,84 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
 
     @validator("entities", each_item=True)
-    def flush_custom_metadata(cls, v):
+    def process_attributes_and_flush_cm(cls, asset):
         from pyatlan.model.assets import Asset
 
-        if isinstance(v, Asset):
-            v.flush_custom_metadata()
-        return v
+        if not isinstance(asset, Asset):
+            return asset
+
+        # Manually need to set these to "None" so that we can exclude
+        # them from the request playload when they're not set by the user
+        asset.remove_relationship_attributes = None
+        asset.append_relationship_attributes = None
+        for attribute in asset.attributes:
+            asset = cls.process_relationship_attributes(asset, attribute)
+
+        # Flush custom metadata
+        asset.flush_custom_metadata()
+        return asset.__class__(
+            **asset.dict(by_alias=True, exclude_unset=True, exclude_none=True)
+        )
+
+    @classmethod
+    def process_relationship_attributes(cls, asset, attribute):
+        from pyatlan.model.assets import Asset
+
+        append_attributes = []
+        remove_attributes = []
+        replace_attributes = []
+
+        attribute_name, attribute_value = attribute[0], getattr(
+            asset, attribute[0], None
+        )
+
+        # Process list of relationship attributes
+        if attribute_value and isinstance(attribute_value, list):
+            for value in attribute_value:
+                if value and isinstance(value, Asset):
+                    if value.semantic == SaveSemantic.REMOVE:
+                        remove_attributes.append(value)
+                    elif value.semantic == SaveSemantic.APPEND:
+                        append_attributes.append(value)
+                    else:
+                        replace_attributes.append(value)
+
+            # Update asset based on processed relationship attributes
+            if remove_attributes:
+                asset.remove_relationship_attributes = {
+                    to_camel_case(attribute_name): remove_attributes
+                }
+            if append_attributes:
+                asset.append_relationship_attributes = {
+                    to_camel_case(attribute_name): append_attributes
+                }
+            if replace_attributes:
+                setattr(asset, attribute_name, replace_attributes)
+
+            # If only remove or append attributes are present without any replace attributes,
+            # set the attribute to `None` to exclude it from the bulk request payload
+            # This avoids including unwanted replace attributes that could alter the request behavior
+            if (remove_attributes or append_attributes) and not replace_attributes:
+                setattr(asset, attribute_name, None)
+
+        # Process single relationship attribute
+        elif attribute_value and isinstance(attribute_value, Asset):
+            if attribute_value.semantic == SaveSemantic.REMOVE:
+                # Set the replace attribute to "None" so that we exclude it
+                # from the request payload's "attributes" property
+                # We only want to pass this attribute under
+                # "remove_relationship_attributes," not both
+                setattr(asset, attribute_name, None)
+                asset.remove_relationship_attributes = {
+                    to_camel_case(attribute_name): attribute_value
+                }
+            elif attribute_value.semantic == SaveSemantic.APPEND:
+                # Set the replace attribute to "None" so that we exclude it
+                # from the request payload's "attributes" property
+                # We only want to pass this attribute under
+                # "append_relationship_attributes," not both
+                setattr(asset, attribute_name, None)
+                asset.append_relationship_attributes = {
+                    to_camel_case(attribute_name): attribute_value
+                }
+        return asset

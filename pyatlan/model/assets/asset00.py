@@ -33,6 +33,7 @@ from pyatlan.model.enums import (
     IconType,
     MatillionJobType,
     OpenLineageRunState,
+    SaveSemantic,
     SchemaRegistrySchemaCompatibility,
     SchemaRegistrySchemaType,
     SourceCostUnitType,
@@ -336,6 +337,24 @@ class Referenceable(AtlanObject):
 
     unique_attributes: Optional[dict[str, Any]] = Field(None)
 
+    append_relationship_attributes: Optional[dict[str, Any]] = Field(
+        None,
+        alias="appendRelationshipAttributes",
+        description="Map of append relationship attributes.",
+    )
+    remove_relationship_attributes: Optional[dict[str, Any]] = Field(
+        None,
+        alias="removeRelationshipAttributes",
+        description="Map of remove relationship attributes.",
+    )
+    semantic: Optional[SaveSemantic] = Field(
+        exclude=True,
+        description=(
+            "Semantic for how this relationship should be saved, "
+            "if used in an asset request on which `.save()` is called."
+        ),
+    )
+
 
 class Asset(Referenceable):
     """Description"""
@@ -386,17 +405,25 @@ class Asset(Referenceable):
         return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
 
     @classmethod
-    def ref_by_guid(cls: type[SelfAsset], guid: str) -> SelfAsset:
+    def ref_by_guid(
+        cls: type[SelfAsset], guid: str, semantic: SaveSemantic = SaveSemantic.REPLACE
+    ) -> SelfAsset:
         retval: SelfAsset = cls(attributes=cls.Attributes())
         retval.guid = guid
+        retval.semantic = semantic
         return retval
 
     @classmethod
-    def ref_by_qualified_name(cls: type[SelfAsset], qualified_name: str) -> SelfAsset:
+    def ref_by_qualified_name(
+        cls: type[SelfAsset],
+        qualified_name: str,
+        semantic: SaveSemantic = SaveSemantic.REPLACE,
+    ) -> SelfAsset:
         ret_value: SelfAsset = cls(
             attributes=cls.Attributes(name="", qualified_name=qualified_name)
         )
         ret_value.unique_attributes = {"qualifiedName": qualified_name}
+        ret_value.semantic = semantic
         return ret_value
 
     @classmethod

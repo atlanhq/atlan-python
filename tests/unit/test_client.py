@@ -17,8 +17,8 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Table,
 )
-from pyatlan.model.core import Announcement
-from pyatlan.model.enums import AnnouncementType, CertificateStatus
+from pyatlan.model.core import Announcement, BulkRequest
+from pyatlan.model.enums import AnnouncementType, CertificateStatus, SaveSemantic
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
@@ -1302,3 +1302,185 @@ class TestBatch:
         assert 0 == len(sut.failures)
         assert 0 == len(sut.created)
         assert 0 == len(sut.updated)
+
+
+class TestBulkRequest:
+    SEE_ALSO = "seeAlso"
+    REMOVE = "removeRelationshipAttributes"
+    APPEND = "appendRelationshipAttributes"
+
+    @pytest.fixture(scope="class")
+    def glossary(self):
+        return GLOSSARY
+
+    @pytest.fixture(scope="class")
+    def term1(self):
+        return GLOSSARY_TERM
+
+    @pytest.fixture(scope="class")
+    def term2(self):
+        return AtlasGlossaryTerm(guid="term-2-guid")
+
+    @pytest.fixture(scope="class")
+    def term3(self):
+        return AtlasGlossaryTerm(guid="term-3-guid")
+
+    def to_json(self, request):
+        return request.dict(by_alias=True, exclude_unset=True)["entities"][0]
+
+    def test_process_relationship_attributes(self, glossary, term1, term2, term3):
+        # Test replace (list)
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid,
+            ),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.SEE_ALSO in request_json["attributes"]
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 2
+        assert replace_attributes[0]["guid"] == term2.guid
+        assert replace_attributes[1]["guid"] == term3.guid
+        assert self.APPEND not in request_json
+        assert self.REMOVE not in request_json
+
+        # Test replace and append (list)
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.SEE_ALSO in request_json["attributes"]
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 1
+        assert replace_attributes[0]["guid"] == term2.guid
+        assert self.APPEND in request_json
+        assert self.SEE_ALSO in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
+        assert self.REMOVE not in request_json
+
+        # Test append and replace (list)
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term2.guid, semantic=SaveSemantic.APPEND
+            ),
+            AtlasGlossaryTerm.ref_by_guid(guid=term3.guid),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.SEE_ALSO in request_json["attributes"]
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 1
+        assert replace_attributes[0]["guid"] == term3.guid
+        assert self.APPEND in request_json
+        assert self.SEE_ALSO in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term2.guid
+        assert self.REMOVE not in request_json
+
+        # Test remove and append (list)
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term2.guid, semantic=SaveSemantic.REMOVE
+            ),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.APPEND in request_json
+        assert self.SEE_ALSO in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
+        assert self.REMOVE in request_json
+        assert self.SEE_ALSO in request_json[self.REMOVE]
+        remove_attributes = request_json[self.REMOVE][self.SEE_ALSO]
+        assert len(remove_attributes) == 1
+        assert remove_attributes[0]["guid"] == term2.guid
+        assert self.SEE_ALSO not in request_json["attributes"]
+
+        # Test same semantic (list)
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term2.guid, semantic=SaveSemantic.APPEND
+            ),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.APPEND in request_json
+        assert self.SEE_ALSO in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 2
+        assert append_attributes[0]["guid"] == term2.guid
+        assert append_attributes[1]["guid"] == term3.guid
+        assert self.REMOVE not in request_json
+        assert self.SEE_ALSO not in request_json["attributes"]
+
+        # Test empty (list)
+        term1.attributes.see_also = []
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.SEE_ALSO in request_json["attributes"]
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 0
+        assert self.APPEND not in request_json
+        assert self.REMOVE not in request_json
+
+        # Test replace
+        term1.attributes.anchor = AtlasGlossary.ref_by_guid(guid=glossary.guid)
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert "anchor" in request_json["attributes"]
+        replace_attributes = request_json["attributes"]["anchor"]
+        assert replace_attributes
+        assert replace_attributes["guid"] == glossary.guid
+        assert self.APPEND not in request_json
+        assert self.REMOVE not in request_json
+
+        # Test append
+        term1.attributes.anchor = AtlasGlossary.ref_by_guid(
+            guid=glossary.guid, semantic=SaveSemantic.APPEND
+        )
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.APPEND in request_json
+        assert "anchor" in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND]["anchor"]
+        assert append_attributes["guid"] == glossary.guid
+        assert self.REMOVE not in request_json
+        assert "anchor" not in request_json["attributes"]
+
+        # Test remove
+        term1.attributes.anchor = AtlasGlossary.ref_by_guid(
+            guid=glossary.guid, semantic=SaveSemantic.REMOVE
+        )
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.REMOVE in request_json
+        assert "anchor" in request_json[self.REMOVE]
+        remove_attributes = request_json[self.REMOVE]["anchor"]
+        assert remove_attributes["guid"] == glossary.guid
+        assert self.APPEND not in request_json
+        assert "anchor" not in request_json["attributes"]

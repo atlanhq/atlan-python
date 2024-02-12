@@ -12,6 +12,7 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fi
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
+from pyatlan.model.enums import SaveSemantic
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, IndexSearchRequest
 from tests.integration.client import TestId, delete_asset
@@ -22,6 +23,8 @@ MODULE_NAME = TestId.make_unique("GLS")
 
 TERM_NAME1 = f"{MODULE_NAME}1"
 TERM_NAME2 = f"{MODULE_NAME}2"
+TERM_NAME3 = f"{MODULE_NAME}3"
+TERM_NAME4 = f"{MODULE_NAME}4"
 
 
 def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
@@ -315,11 +318,63 @@ def test_term2(
     assert t.attributes.anchor.guid == glossary.guid
 
 
+@pytest.fixture(scope="module")
+def term3(
+    client: AtlanClient, glossary: AtlasGlossary
+) -> Generator[AtlasGlossaryTerm, None, None]:
+    t = create_term(client, name=TERM_NAME3, glossary_guid=glossary.guid)
+    yield t
+    delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+
+
+def test_term3(
+    client: AtlanClient,
+    term3: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term3.guid
+    assert term3.name == TERM_NAME3
+    assert term3.qualified_name
+    assert term3.qualified_name != TERM_NAME3
+    t = client.asset.get_by_guid(term3.guid, asset_type=AtlasGlossaryTerm)
+    assert t
+    assert t.guid == term3.guid
+    assert t.attributes.anchor
+    assert t.attributes.anchor.guid == glossary.guid
+
+
+@pytest.fixture(scope="module")
+def term4(
+    client: AtlanClient, glossary: AtlasGlossary
+) -> Generator[AtlasGlossaryTerm, None, None]:
+    t = create_term(client, name=TERM_NAME4, glossary_guid=glossary.guid)
+    yield t
+    delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+
+
+def test_term4(
+    client: AtlanClient,
+    term4: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term4.guid
+    assert term4.name == TERM_NAME4
+    assert term4.qualified_name
+    assert term4.qualified_name != TERM_NAME4
+    t = client.asset.get_by_guid(term4.guid, asset_type=AtlasGlossaryTerm)
+    assert t
+    assert t.guid == term4.guid
+    assert t.attributes.anchor
+    assert t.attributes.anchor.guid == glossary.guid
+
+
 def test_read_glossary(
     client: AtlanClient,
     glossary: AtlasGlossary,
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    term4: AtlasGlossaryTerm,
 ):
     g = client.asset.get_by_guid(glossary.guid, asset_type=AtlasGlossary)
     assert g
@@ -329,7 +384,7 @@ def test_read_glossary(
     assert g.name == glossary.name
     terms = g.terms
     assert terms
-    assert len(terms) == 2
+    assert len(terms) == 4
 
 
 def test_compound_queries(
@@ -337,6 +392,8 @@ def test_compound_queries(
     glossary: AtlasGlossary,
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    term4: AtlasGlossaryTerm,
 ):
     assert glossary.qualified_name
     cq = (
@@ -349,7 +406,7 @@ def test_compound_queries(
     request = IndexSearchRequest(dsl=DSL(query=cq))
     response = client.asset.search(request)
     assert response
-    assert response.count == 2
+    assert response.count == 4
     assert glossary.qualified_name
     assert term2.name
 
@@ -364,7 +421,7 @@ def test_compound_queries(
     request = IndexSearchRequest(dsl=DSL(query=cq))
     response = client.asset.search(request)
     assert response
-    assert response.count == 1
+    assert response.count == 3
 
 
 def test_fluent_search(
@@ -372,6 +429,8 @@ def test_fluent_search(
     glossary: AtlasGlossary,
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    term4: AtlasGlossaryTerm,
 ):
     assert glossary.qualified_name
     terms = (
@@ -385,13 +444,13 @@ def test_fluent_search(
         .include_on_relations(AtlasGlossary.NAME)
     )
 
-    assert terms.count(client) == 2
+    assert terms.count(client) == 4
 
     guids_chained = []
     g_sorted = []
     for asset in filter(
         lambda x: isinstance(x, AtlasGlossaryTerm),
-        itertools.islice(terms.execute(client), 2),
+        itertools.islice(terms.execute(client), 4),
     ):
         guids_chained.append(asset.guid)
         g_sorted.append(asset.guid)
@@ -635,3 +694,175 @@ def test_hierarchy(
     assert "leaf" in category_names[9]
     assert "mid" in category_names[10]
     assert "leaf" in category_names[11]
+
+
+def test_create_relationship(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term1
+    assert term1.name
+    assert term1.qualified_name
+
+    term = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term1.qualified_name,
+        name=term1.name,
+        glossary_guid=glossary.guid,
+    )
+    term.see_also = [
+        AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+        AtlasGlossaryTerm.ref_by_guid(guid=term3.guid),
+    ]
+    response = client.asset.save(term)
+
+    assert response
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    assert result
+    assert result.see_also
+    assert len(result.see_also) == 2
+    related_guids = []
+    for term in result.see_also:
+        assert term.guid
+        related_guids.append(term.guid)
+    assert term2.guid in related_guids
+    assert term3.guid in related_guids
+
+
+@pytest.mark.order(after="test_create_relationship")
+def test_remove_relationship(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term1
+    assert term1.name
+    assert term1.qualified_name
+
+    term = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term1.qualified_name,
+        name=term1.name,
+        glossary_guid=glossary.guid,
+    )
+    term.see_also = [
+        AtlasGlossaryTerm.ref_by_guid(guid=term2.guid, semantic=SaveSemantic.REMOVE),
+    ]
+    response = client.asset.save(term)
+
+    assert response
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    assert result
+    assert result.see_also
+    active_relationships = []
+    for term in result.see_also:
+        assert term.guid
+        if term.relationship_status == "ACTIVE":
+            active_relationships.append(term)
+    assert len(active_relationships) == 1
+    assert term3.guid == active_relationships[0].guid
+
+
+@pytest.mark.order(after="test_remove_relationship")
+def test_append_relationship(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    term4: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term1
+    assert term1.name
+    assert term1.qualified_name
+
+    term = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term1.qualified_name,
+        name=term1.name,
+        glossary_guid=glossary.guid,
+    )
+    term.see_also = [
+        AtlasGlossaryTerm.ref_by_guid(guid=term4.guid, semantic=SaveSemantic.APPEND),
+    ]
+    response = client.asset.save(term)
+
+    assert response
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    assert result
+    assert result.see_also
+    active_relationships = []
+    for term in result.see_also:
+        assert term.guid
+        if term.relationship_status == "ACTIVE":
+            active_relationships.append(term.guid)
+    assert len(active_relationships) == 2
+    assert term3.guid in active_relationships
+    assert term4.guid in active_relationships
+
+
+@pytest.mark.order(after="test_append_relationship")
+def test_append_relationship_again(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    term4: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term1
+    assert term1.name
+    assert term1.qualified_name
+
+    term = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term1.qualified_name,
+        name=term1.name,
+        glossary_guid=glossary.guid,
+    )
+    term.see_also = [
+        AtlasGlossaryTerm.ref_by_guid(guid=term4.guid, semantic=SaveSemantic.APPEND),
+    ]
+    response = client.asset.save(term)
+
+    assert response
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    assert result
+    assert result.see_also
+    active_relationships = []
+    for term in result.see_also:
+        assert term.guid
+        if term.relationship_status == "ACTIVE":
+            active_relationships.append(term.guid)
+    assert len(active_relationships) == 2
+    assert term3.guid in active_relationships
+    assert term4.guid in active_relationships
+
+
+@pytest.mark.order(after="test_append_relationship_again")
+def test_remove_unrelated_relationship(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+):
+    assert term1
+    assert term1.name
+    assert term1.qualified_name
+
+    term = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term1.qualified_name,
+        name=term1.name,
+        glossary_guid=glossary.guid,
+    )
+    term.see_also = [
+        AtlasGlossaryTerm.ref_by_guid(guid=term2.guid, semantic=SaveSemantic.REMOVE),
+    ]
+    with pytest.raises(NotFoundError) as err:
+        client.asset.save(term)
+
+    EXPECTED_ERR = (
+        "ATLAN-PYTHON-404-000 Server responded with ATLAS-409-00-0021: "
+        "relationship AtlasGlossaryRelatedTerm does "
+        f"not exist between entities {term2.guid} and {term1.guid}"
+    )
+    assert EXPECTED_ERR == str(err.value)
