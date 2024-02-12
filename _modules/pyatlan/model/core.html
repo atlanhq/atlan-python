@@ -461,7 +461,7 @@
 <span class="kn">from</span> <span class="nn">pydantic.generics</span> <span class="kn">import</span> <span class="n">GenericModel</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.constants</span> <span class="kn">import</span> <span class="n">DELETED_</span><span class="p">,</span> <span class="n">DELETED_SENTINEL</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AnnouncementType</span><span class="p">,</span> <span class="n">EntityStatus</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AnnouncementType</span><span class="p">,</span> <span class="n">EntityStatus</span><span class="p">,</span> <span class="n">SaveSemantic</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.structs</span> <span class="kn">import</span> <span class="n">SourceTagAttachment</span>
 
 
@@ -703,12 +703,87 @@
     <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">]</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;entities&quot;</span><span class="p">,</span> <span class="n">each_item</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">flush_custom_metadata</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_attributes_and_flush_cm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="n">Asset</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Asset</span><span class="p">):</span>
-            <span class="n">v</span><span class="o">.</span><span class="n">flush_custom_metadata</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">v</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Asset</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">asset</span>
+
+        <span class="c1"># Manually need to set these to &quot;None&quot; so that we can exclude</span>
+        <span class="c1"># them from the request playload when they&#39;re not set by the user</span>
+        <span class="n">asset</span><span class="o">.</span><span class="n">remove_relationship_attributes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">asset</span><span class="o">.</span><span class="n">append_relationship_attributes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">asset</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+            <span class="n">asset</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">process_relationship_attributes</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+
+        <span class="c1"># Flush custom metadata</span>
+        <span class="n">asset</span><span class="o">.</span><span class="n">flush_custom_metadata</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">asset</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+            <span class="o">**</span><span class="n">asset</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">process_relationship_attributes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">asset</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="n">Asset</span>
+
+        <span class="n">append_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">remove_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">replace_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">attribute_name</span><span class="p">,</span> <span class="n">attribute_value</span> <span class="o">=</span> <span class="n">attribute</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">asset</span><span class="p">,</span> <span class="n">attribute</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Process list of relationship attributes</span>
+        <span class="k">if</span> <span class="n">attribute_value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute_value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attribute_value</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Asset</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">semantic</span> <span class="o">==</span> <span class="n">SaveSemantic</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">:</span>
+                        <span class="n">remove_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">semantic</span> <span class="o">==</span> <span class="n">SaveSemantic</span><span class="o">.</span><span class="n">APPEND</span><span class="p">:</span>
+                        <span class="n">append_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">replace_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># Update asset based on processed relationship attributes</span>
+            <span class="k">if</span> <span class="n">remove_attributes</span><span class="p">:</span>
+                <span class="n">asset</span><span class="o">.</span><span class="n">remove_relationship_attributes</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">to_camel_case</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">):</span> <span class="n">remove_attributes</span>
+                <span class="p">}</span>
+            <span class="k">if</span> <span class="n">append_attributes</span><span class="p">:</span>
+                <span class="n">asset</span><span class="o">.</span><span class="n">append_relationship_attributes</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">to_camel_case</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">):</span> <span class="n">append_attributes</span>
+                <span class="p">}</span>
+            <span class="k">if</span> <span class="n">replace_attributes</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="n">replace_attributes</span><span class="p">)</span>
+
+            <span class="c1"># If only remove or append attributes are present without any replace attributes,</span>
+            <span class="c1"># set the attribute to `None` to exclude it from the bulk request payload</span>
+            <span class="c1"># This avoids including unwanted replace attributes that could alter the request behavior</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">remove_attributes</span> <span class="ow">or</span> <span class="n">append_attributes</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace_attributes</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Process single relationship attribute</span>
+        <span class="k">elif</span> <span class="n">attribute_value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute_value</span><span class="p">,</span> <span class="n">Asset</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">attribute_value</span><span class="o">.</span><span class="n">semantic</span> <span class="o">==</span> <span class="n">SaveSemantic</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">:</span>
+                <span class="c1"># Set the replace attribute to &quot;None&quot; so that we exclude it</span>
+                <span class="c1"># from the request payload&#39;s &quot;attributes&quot; property</span>
+                <span class="c1"># We only want to pass this attribute under</span>
+                <span class="c1"># &quot;remove_relationship_attributes,&quot; not both</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">asset</span><span class="o">.</span><span class="n">remove_relationship_attributes</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">to_camel_case</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">):</span> <span class="n">attribute_value</span>
+                <span class="p">}</span>
+            <span class="k">elif</span> <span class="n">attribute_value</span><span class="o">.</span><span class="n">semantic</span> <span class="o">==</span> <span class="n">SaveSemantic</span><span class="o">.</span><span class="n">APPEND</span><span class="p">:</span>
+                <span class="c1"># Set the replace attribute to &quot;None&quot; so that we exclude it</span>
+                <span class="c1"># from the request payload&#39;s &quot;attributes&quot; property</span>
+                <span class="c1"># We only want to pass this attribute under</span>
+                <span class="c1"># &quot;append_relationship_attributes,&quot; not both</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">asset</span><span class="o">.</span><span class="n">append_relationship_attributes</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">to_camel_case</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">):</span> <span class="n">attribute_value</span>
+                <span class="p">}</span>
+        <span class="k">return</span> <span class="n">asset</span></div>
 
 </pre></div>
         </article>
