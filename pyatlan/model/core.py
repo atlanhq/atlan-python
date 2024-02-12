@@ -296,21 +296,21 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         # Process single relationship attribute
         elif attribute_value and isinstance(attribute_value, Asset):
             if attribute_value.semantic == SaveSemantic.REMOVE:
-                # Set the attribute to "None" so that we exclude it
+                # Set the replace attribute to "None" so that we exclude it
                 # from the request payload's "attributes" property
                 # We only want to pass this attribute under
                 # "remove_relationship_attributes," not both
                 setattr(asset, attribute_name, None)
                 asset.remove_relationship_attributes = {
-                    to_camel_case(attribute_name): [attribute_value]
+                    to_camel_case(attribute_name): attribute_value
                 }
             elif attribute_value.semantic == SaveSemantic.APPEND:
-                # Set the attribute to "None" so that we exclude it
+                # Set the replace attribute to "None" so that we exclude it
                 # from the request payload's "attributes" property
                 # We only want to pass this attribute under
                 # "append_relationship_attributes," not both
                 setattr(asset, attribute_name, None)
                 asset.append_relationship_attributes = {
-                    to_camel_case(attribute_name): [attribute_value]
+                    to_camel_case(attribute_name): attribute_value
                 }
         return asset

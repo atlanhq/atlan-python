@@ -1340,7 +1340,10 @@ class TestBulkRequest:
         request_json = self.to_json(request)
         assert request_json
         assert self.SEE_ALSO in request_json["attributes"]
-        assert len(request_json["attributes"][self.SEE_ALSO]) == 2
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 2
+        assert replace_attributes[0]["guid"] == term2.guid
+        assert replace_attributes[1]["guid"] == term3.guid
         assert self.APPEND not in request_json
         assert self.REMOVE not in request_json
 
@@ -1355,10 +1358,14 @@ class TestBulkRequest:
         request_json = self.to_json(request)
         assert request_json
         assert self.SEE_ALSO in request_json["attributes"]
-        assert len(request_json["attributes"][self.SEE_ALSO]) == 1
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 1
+        assert replace_attributes[0]["guid"] == term2.guid
         assert self.APPEND in request_json
         assert self.SEE_ALSO in request_json[self.APPEND]
-        assert len(request_json[self.APPEND][self.SEE_ALSO]) == 1
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
         assert self.REMOVE not in request_json
 
         # Test append and replace (list)
@@ -1372,10 +1379,14 @@ class TestBulkRequest:
         request_json = self.to_json(request)
         assert request_json
         assert self.SEE_ALSO in request_json["attributes"]
-        assert len(request_json["attributes"][self.SEE_ALSO]) == 1
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 1
+        assert replace_attributes[0]["guid"] == term3.guid
         assert self.APPEND in request_json
         assert self.SEE_ALSO in request_json[self.APPEND]
-        assert len(request_json[self.APPEND][self.SEE_ALSO]) == 1
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term2.guid
         assert self.REMOVE not in request_json
 
         # Test remove and append (list)
@@ -1392,10 +1403,14 @@ class TestBulkRequest:
         assert request_json
         assert self.APPEND in request_json
         assert self.SEE_ALSO in request_json[self.APPEND]
-        assert len(request_json[self.APPEND][self.SEE_ALSO]) == 1
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
         assert self.REMOVE in request_json
         assert self.SEE_ALSO in request_json[self.REMOVE]
-        assert len(request_json[self.REMOVE][self.SEE_ALSO]) == 1
+        remove_attributes = request_json[self.REMOVE][self.SEE_ALSO]
+        assert len(remove_attributes) == 1
+        assert remove_attributes[0]["guid"] == term2.guid
         assert self.SEE_ALSO not in request_json["attributes"]
 
         # Test same semantic (list)
@@ -1412,7 +1427,10 @@ class TestBulkRequest:
         assert request_json
         assert self.APPEND in request_json
         assert self.SEE_ALSO in request_json[self.APPEND]
-        assert len(request_json[self.APPEND][self.SEE_ALSO]) == 2
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 2
+        assert append_attributes[0]["guid"] == term2.guid
+        assert append_attributes[1]["guid"] == term3.guid
         assert self.REMOVE not in request_json
         assert self.SEE_ALSO not in request_json["attributes"]
 
@@ -1422,7 +1440,8 @@ class TestBulkRequest:
         request_json = self.to_json(request)
         assert request_json
         assert self.SEE_ALSO in request_json["attributes"]
-        assert len(request_json["attributes"][self.SEE_ALSO]) == 0
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 0
         assert self.APPEND not in request_json
         assert self.REMOVE not in request_json
 
@@ -1432,7 +1451,9 @@ class TestBulkRequest:
         request_json = self.to_json(request)
         assert request_json
         assert "anchor" in request_json["attributes"]
-        assert request_json["attributes"]["anchor"]
+        replace_attributes = request_json["attributes"]["anchor"]
+        assert replace_attributes
+        assert replace_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
         assert self.REMOVE not in request_json
 
@@ -1445,7 +1466,8 @@ class TestBulkRequest:
         assert request_json
         assert self.APPEND in request_json
         assert "anchor" in request_json[self.APPEND]
-        assert len(request_json[self.APPEND]["anchor"]) == 1
+        append_attributes = request_json[self.APPEND]["anchor"]
+        assert append_attributes["guid"] == glossary.guid
         assert self.REMOVE not in request_json
         assert "anchor" not in request_json["attributes"]
 
@@ -1458,6 +1480,7 @@ class TestBulkRequest:
         assert request_json
         assert self.REMOVE in request_json
         assert "anchor" in request_json[self.REMOVE]
-        assert len(request_json[self.REMOVE]["anchor"]) == 1
+        remove_attributes = request_json[self.REMOVE]["anchor"]
+        assert remove_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
         assert "anchor" not in request_json["attributes"]

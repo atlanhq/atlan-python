@@ -337,9 +337,16 @@ class Referenceable(AtlanObject):
 
     unique_attributes: Optional[dict[str, Any]] = Field(None)
 
-    append_relationship_attributes: Optional[dict[str, Any]] = Field(None)
-    remove_relationship_attributes: Optional[dict[str, Any]] = Field(None)
-
+    append_relationship_attributes: Optional[dict[str, Any]] = Field(
+        None,
+        alias="appendRelationshipAttributes",
+        description="Map of append relationship attributes.",
+    )
+    remove_relationship_attributes: Optional[dict[str, Any]] = Field(
+        None,
+        alias="removeRelationshipAttributes",
+        description="Map of remove relationship attributes.",
+    )
     semantic: Optional[SaveSemantic] = Field(
         exclude=True,
         description=(
