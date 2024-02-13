@@ -3946,7 +3946,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             validate_required_fields(["name"], [name])
             icon_str = icon.value if icon is not None else None
             return AtlasGlossary.Attributes(
-                name=name, qualified_name=next_id(), icon=icon_str
+                name=name, qualified_name=next_id(), asset_icon=icon_str
             )
 
     attributes: "AtlasGlossary.Attributes" = Field(
@@ -6676,7 +6676,7 @@ class DataDomain(DataMesh):
                 name=name,
                 parent_domain=parent_domain,
                 qualified_name=qualified_name,
-                icon=icon_str,
+                asset_icon=icon_str,
             )
 
     attributes: "DataDomain.Attributes" = Field(
@@ -6937,7 +6937,7 @@ class DataProduct(DataMesh):
                 data_product_assets_d_s_l=assets_dsl,
                 data_domain=domain,
                 qualified_name=f"default/product/{camel_case_name}",
-                icon=icon_str,
+                asset_icon=icon_str,
             )
 
     attributes: "DataProduct.Attributes" = Field(

@@ -25,7 +25,7 @@ from pyatlan.model.typedef import (
 def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
     if isinstance(typedef, AtlanTagDef):
         # Set up the request payload...
-        payload = TypeDefResponse(
+        payload = TypeDefResponse(  # type: ignore[call-arg]
             atlan_tag_defs=[typedef],
             enum_defs=[],
             struct_defs=[],
@@ -35,7 +35,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
         )
     elif isinstance(typedef, CustomMetadataDef):
         # Set up the request payload...
-        payload = TypeDefResponse(
+        payload = TypeDefResponse(  # type: ignore[call-arg]
             atlan_tag_defs=[],
             enum_defs=[],
             struct_defs=[],
@@ -45,7 +45,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
         )
     elif isinstance(typedef, EnumDef):
         # Set up the request payload...
-        payload = TypeDefResponse(
+        payload = TypeDefResponse(  # type: ignore[call-arg]
             atlan_tag_defs=[],
             enum_defs=[typedef],
             struct_defs=[],

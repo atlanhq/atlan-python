@@ -11,6 +11,7 @@ from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import WorkflowPackage
 from pyatlan.model.workflow import (
+    PackageParameter,
     Workflow,
     WorkflowMetadata,
     WorkflowResponse,
@@ -47,7 +48,7 @@ def search_result_detail() -> WorkflowSearchResultDetail:
 
 @pytest.fixture()
 def search_result(search_result_detail) -> WorkflowSearchResult:
-    return WorkflowSearchResult(
+    return WorkflowSearchResult(  # type: ignore[call-arg]
         index="index",
         type="type",
         id="id",
@@ -60,7 +61,7 @@ def search_result(search_result_detail) -> WorkflowSearchResult:
 
 @pytest.fixture()
 def search_response(search_result: WorkflowSearchResult) -> WorkflowSearchResponse:
-    return WorkflowSearchResponse(
+    return WorkflowSearchResponse(  # type: ignore[call-arg]
         hits=WorkflowSearchHits(total={"dummy": "dummy"}, hits=[search_result]),
         shards={"dummy": "dummy"},
     )
@@ -80,7 +81,7 @@ def run_response() -> WorkflowResponse:
     return WorkflowResponse(
         metadata=WorkflowMetadata(name="name", namespace="namespace"),
         spec=WorkflowSpec(),
-        payload=[{"parameter": "test-param", "type": "test-type", "body": {}}],
+        payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
     )
 
 
@@ -219,10 +220,12 @@ def test_run_when_given_workflow(
 ):
     mock_api_caller._call_api.return_value = run_response.dict()
     response = client.run(
-        Workflow(
+        Workflow(  # type: ignore[call-arg]
             metadata=WorkflowMetadata(name="name", namespace="namespace"),
             spec=WorkflowSpec(),
-            payload=[{"parameter": "test-param", "type": "test-type", "body": {}}],
+            payload=[
+                PackageParameter(parameter="test-param", type="test-type", body={})
+            ],
         )
     )
     assert response == run_response

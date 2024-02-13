@@ -489,7 +489,7 @@ class APIPath(API):
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
                 qualified_name=f"{spec_qualified_name}{path_raw_uri}",
                 connector_name=connector_type.value,
-                apiSpec=APISpec.ref_by_qualified_name(spec_qualified_name),
+                api_spec=APISpec.ref_by_qualified_name(spec_qualified_name),
             )
 
     attributes: "APIPath.Attributes" = Field(

@@ -29,7 +29,7 @@ class Purpose(AccessControl):
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, name: str, atlan_tags: list[str]) -> Purpose:
+    def create(cls, *, name: str, atlan_tags: list[AtlanTagName]) -> Purpose:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
         attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
@@ -214,7 +214,9 @@ class Purpose(AccessControl):
         @classmethod
         # @validate_arguments()
         @init_guid
-        def create(cls, name: str, atlan_tags: list[str]) -> Purpose.Attributes:
+        def create(
+            cls, name: str, atlan_tags: list[AtlanTagName]
+        ) -> Purpose.Attributes:
             validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(
                 qualified_name=name,
