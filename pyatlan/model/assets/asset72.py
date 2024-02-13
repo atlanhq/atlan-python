@@ -16,7 +16,7 @@ from .asset45 import Redash
 class RedashDashboard(Redash):
     """Description"""
 
-    type_name: str = Field("RedashDashboard", allow_mutation=False)
+    type_name: str = Field(default="RedashDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -58,7 +58,7 @@ class RedashDashboard(Redash):
 
     class Attributes(Redash.Attributes):
         redash_dashboard_widget_count: Optional[int] = Field(
-            None, description="", alias="redashDashboardWidgetCount"
+            default=None, description=""
         )
 
     attributes: "RedashDashboard.Attributes" = Field(

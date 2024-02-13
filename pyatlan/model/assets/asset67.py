@@ -95,13 +95,11 @@ class SigmaDatasetColumn(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaDatasetQualifiedName"
+            default=None, description=""
         )
-        sigma_dataset_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaDatasetName"
-        )
+        sigma_dataset_name: Optional[str] = Field(default=None, description="")
         sigma_dataset: Optional[SigmaDataset] = Field(
-            None, description="", alias="sigmaDataset"
+            default=None, description=""
         )  # relationship
 
     attributes: "SigmaDatasetColumn.Attributes" = Field(
@@ -175,11 +173,9 @@ class SigmaDataset(Sigma):
         self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
     class Attributes(Sigma.Attributes):
-        sigma_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="sigmaDatasetColumnCount"
-        )
+        sigma_dataset_column_count: Optional[int] = Field(default=None, description="")
         sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
-            None, description="", alias="sigmaDatasetColumns"
+            default=None, description=""
         )  # relationship
 
     attributes: "SigmaDataset.Attributes" = Field(

@@ -17,7 +17,7 @@ from .asset00 import Namespace
 class Collection(Namespace):
     """Description"""
 
-    type_name: str = Field("Collection", allow_mutation=False)
+    type_name: str = Field(default="Collection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -65,10 +65,8 @@ class Collection(Namespace):
         self.attributes.icon_type = icon_type
 
     class Attributes(Namespace.Attributes):
-        icon: Optional[str] = Field(default=None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(
-            default=None, description="", alias="iconType"
-        )
+        icon: Optional[str] = Field(default=None, description="")
+        icon_type: Optional[IconType] = Field(default=None, description="")
 
     attributes: "Collection.Attributes" = Field(
         default_factory=lambda: Collection.Attributes(),

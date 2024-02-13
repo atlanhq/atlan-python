@@ -52,7 +52,7 @@ class ThoughtspotLiveboard(Thoughtspot):
 
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
-            None, description="", alias="thoughtspotDashlets"
+            default=None, description=""
         )  # relationship
 
     attributes: "ThoughtspotLiveboard.Attributes" = Field(
@@ -155,14 +155,12 @@ class ThoughtspotDashlet(Thoughtspot):
         self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
 
     class Attributes(Thoughtspot.Attributes):
-        thoughtspot_liveboard_name: Optional[str] = Field(
-            default=None, description="", alias="thoughtspotLiveboardName"
-        )
+        thoughtspot_liveboard_name: Optional[str] = Field(default=None, description="")
         thoughtspot_liveboard_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="thoughtspotLiveboardQualifiedName"
+            default=None, description=""
         )
         thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
-            None, description="", alias="thoughtspotLiveboard"
+            default=None, description=""
         )  # relationship
 
     attributes: "ThoughtspotDashlet.Attributes" = Field(

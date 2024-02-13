@@ -14,7 +14,7 @@ from .asset23 import EventStore
 class Kafka(EventStore):
     """Description"""
 
-    type_name: str = Field("Kafka", allow_mutation=False)
+    type_name: str = Field(default="Kafka", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

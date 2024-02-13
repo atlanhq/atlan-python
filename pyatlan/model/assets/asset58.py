@@ -14,7 +14,7 @@ from .asset24 import NoSQL
 class MongoDB(NoSQL):
     """Description"""
 
-    type_name: str = Field("MongoDB", allow_mutation=False)
+    type_name: str = Field(default="MongoDB", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

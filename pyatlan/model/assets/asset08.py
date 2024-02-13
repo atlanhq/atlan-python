@@ -16,7 +16,7 @@ from .asset00 import Asset
 class AuthService(Asset, type_name="AuthService"):
     """Description"""
 
-    type_name: str = Field("AuthService", allow_mutation=False)
+    type_name: str = Field(default="AuthService", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -125,20 +125,14 @@ class AuthService(Asset, type_name="AuthService"):
         self.attributes.auth_service_policy_last_sync = auth_service_policy_last_sync
 
     class Attributes(Asset.Attributes):
-        auth_service_type: Optional[str] = Field(
-            default=None, description="", alias="authServiceType"
-        )
-        tag_service: Optional[str] = Field(
-            default=None, description="", alias="tagService"
-        )
-        auth_service_is_enabled: Optional[bool] = Field(
-            None, description="", alias="authServiceIsEnabled"
-        )
+        auth_service_type: Optional[str] = Field(default=None, description="")
+        tag_service: Optional[str] = Field(default=None, description="")
+        auth_service_is_enabled: Optional[bool] = Field(default=None, description="")
         auth_service_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="authServiceConfig"
+            default=None, description=""
         )
         auth_service_policy_last_sync: Optional[int] = Field(
-            None, description="", alias="authServicePolicyLastSync"
+            default=None, description=""
         )
 
     attributes: "AuthService.Attributes" = Field(

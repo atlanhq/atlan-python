@@ -14,7 +14,7 @@ from .asset19 import BI
 class Tableau(BI):
     """Description"""
 
-    type_name: str = Field("Tableau", allow_mutation=False)
+    type_name: str = Field(default="Tableau", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

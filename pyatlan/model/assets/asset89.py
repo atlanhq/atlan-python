@@ -53,9 +53,7 @@ class AzureEventHub(KafkaTopic):
         self.attributes.azure_event_hub_status = azure_event_hub_status
 
     class Attributes(KafkaTopic.Attributes):
-        azure_event_hub_status: Optional[str] = Field(
-            default=None, description="", alias="azureEventHubStatus"
-        )
+        azure_event_hub_status: Optional[str] = Field(default=None, description="")
 
     attributes: "AzureEventHub.Attributes" = Field(
         default_factory=lambda: AzureEventHub.Attributes(),

@@ -14,7 +14,7 @@ from .asset00 import Catalog
 class EventStore(Catalog):
     """Description"""
 
-    type_name: str = Field("EventStore", allow_mutation=False)
+    type_name: str = Field(default="EventStore", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

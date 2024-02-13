@@ -293,38 +293,32 @@ class ADLSAccount(ADLS):
         self.attributes.adls_containers = adls_containers
 
     class Attributes(ADLS.Attributes):
-        adls_e_tag: Optional[str] = Field(
-            default=None, description="", alias="adlsETag"
-        )
+        adls_e_tag: Optional[str] = Field(default=None, description="")
         adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
-            None, description="", alias="adlsEncryptionType"
+            default=None, description=""
         )
-        adls_account_resource_group: Optional[str] = Field(
-            default=None, description="", alias="adlsAccountResourceGroup"
-        )
-        adls_account_subscription: Optional[str] = Field(
-            default=None, description="", alias="adlsAccountSubscription"
-        )
+        adls_account_resource_group: Optional[str] = Field(default=None, description="")
+        adls_account_subscription: Optional[str] = Field(default=None, description="")
         adls_account_performance: Optional[ADLSPerformance] = Field(
-            None, description="", alias="adlsAccountPerformance"
+            default=None, description=""
         )
         adls_account_replication: Optional[ADLSReplicationType] = Field(
-            None, description="", alias="adlsAccountReplication"
+            default=None, description=""
         )
         adls_account_kind: Optional[ADLSStorageKind] = Field(
-            None, description="", alias="adlsAccountKind"
+            default=None, description=""
         )
         adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
-            None, description="", alias="adlsPrimaryDiskState"
+            default=None, description=""
         )
         adls_account_provision_state: Optional[ADLSProvisionState] = Field(
-            None, description="", alias="adlsAccountProvisionState"
+            default=None, description=""
         )
         adls_account_access_tier: Optional[ADLSAccessTier] = Field(
-            None, description="", alias="adlsAccountAccessTier"
+            default=None, description=""
         )
         adls_containers: Optional[list[ADLSContainer]] = Field(
-            None, description="", alias="adlsContainers"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -558,29 +552,25 @@ class ADLSContainer(ADLS):
         self.attributes.adls_account = adls_account
 
     class Attributes(ADLS.Attributes):
-        adls_container_url: Optional[str] = Field(
-            default=None, description="", alias="adlsContainerUrl"
-        )
+        adls_container_url: Optional[str] = Field(default=None, description="")
         adls_container_lease_state: Optional[ADLSLeaseState] = Field(
-            None, description="", alias="adlsContainerLeaseState"
+            default=None, description=""
         )
         adls_container_lease_status: Optional[ADLSLeaseStatus] = Field(
-            None, description="", alias="adlsContainerLeaseStatus"
+            default=None, description=""
         )
         adls_container_encryption_scope: Optional[str] = Field(
-            default=None, description="", alias="adlsContainerEncryptionScope"
+            default=None, description=""
         )
         adls_container_version_level_immutability_support: Optional[bool] = Field(
-            None, description="", alias="adlsContainerVersionLevelImmutabilitySupport"
+            default=None, description=""
         )
-        adls_object_count: Optional[int] = Field(
-            None, description="", alias="adlsObjectCount"
-        )
+        adls_object_count: Optional[int] = Field(default=None, description="")
         adls_objects: Optional[list[ADLSObject]] = Field(
-            None, description="", alias="adlsObjects"
+            default=None, description=""
         )  # relationship
         adls_account: Optional[ADLSAccount] = Field(
-            None, description="", alias="adlsAccount"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -1041,64 +1031,47 @@ class ADLSObject(ADLS):
         self.attributes.adls_container = adls_container
 
     class Attributes(ADLS.Attributes):
-        adls_object_url: Optional[str] = Field(
-            default=None,
-            description="",
-        )
-        adls_object_version_id: Optional[str] = Field(
-            default=None,
-            description="",
-        )
-        adls_object_type: Optional[ADLSObjectType] = Field(
-            default=None,
-            description="",
-        )
-        adls_object_size: Optional[int] = Field(
-            default=None, description="", alias="adlsObjectSize"
-        )
+        adls_object_url: Optional[str] = Field(default=None, description="")
+        adls_object_version_id: Optional[str] = Field(default=None, description="")
+        adls_object_type: Optional[ADLSObjectType] = Field(default=None, description="")
+        adls_object_size: Optional[int] = Field(default=None, description="")
         adls_object_access_tier: Optional[ADLSAccessTier] = Field(
-            default=None, description="", alias="adlsObjectAccessTier"
+            default=None, description=""
         )
         adls_object_access_tier_last_modified_time: Optional[datetime] = Field(
-            default=None, description="", alias="adlsObjectAccessTierLastModifiedTime"
+            default=None, description=""
         )
         adls_object_archive_status: Optional[ADLSObjectArchiveStatus] = Field(
-            default=None, description="", alias="adlsObjectArchiveStatus"
+            default=None, description=""
         )
         adls_object_server_encrypted: Optional[bool] = Field(
-            default=None, description="", alias="adlsObjectServerEncrypted"
+            default=None, description=""
         )
         adls_object_version_level_immutability_support: Optional[bool] = Field(
-            default=None,
-            description="",
-            alias="adlsObjectVersionLevelImmutabilitySupport",
+            default=None, description=""
         )
-        adls_object_cache_control: Optional[str] = Field(
-            default=None, description="", alias="adlsObjectCacheControl"
-        )
-        adls_object_content_type: Optional[str] = Field(
-            default=None, description="", alias="adlsObjectContentType"
-        )
+        adls_object_cache_control: Optional[str] = Field(default=None, description="")
+        adls_object_content_type: Optional[str] = Field(default=None, description="")
         adls_object_content_m_d5_hash: Optional[str] = Field(
-            default=None, description="", alias="adlsObjectContentMD5Hash"
+            default=None, description=""
         )
         adls_object_content_language: Optional[str] = Field(
-            default=None, description="", alias="adlsObjectContentLanguage"
+            default=None, description=""
         )
         adls_object_lease_status: Optional[ADLSLeaseStatus] = Field(
-            default=None, description="", alias="adlsObjectLeaseStatus"
+            default=None, description=""
         )
         adls_object_lease_state: Optional[ADLSLeaseState] = Field(
-            default=None, description="", alias="adlsObjectLeaseState"
+            default=None, description=""
         )
         adls_object_metadata: Optional[dict[str, str]] = Field(
-            default=None, description="", alias="adlsObjectMetadata"
+            default=None, description=""
         )
         adls_container_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="adlsContainerQualifiedName"
+            default=None, description=""
         )
         adls_container: Optional[ADLSContainer] = Field(
-            default=None, description="", alias="adlsContainer"
+            default=None, description=""
         )  # relationship
 
         @classmethod

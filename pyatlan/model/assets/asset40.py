@@ -16,7 +16,7 @@ from .asset19 import BI
 class Preset(BI):
     """Description"""
 
-    type_name: str = Field("Preset", allow_mutation=False)
+    type_name: str = Field(default="Preset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -122,17 +122,13 @@ class Preset(BI):
         )
 
     class Attributes(BI.Attributes):
-        preset_workspace_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceId"
-        )
+        preset_workspace_id: Optional[int] = Field(default=None, description="")
         preset_workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="presetWorkspaceQualifiedName"
+            default=None, description=""
         )
-        preset_dashboard_id: Optional[int] = Field(
-            None, description="", alias="presetDashboardId"
-        )
+        preset_dashboard_id: Optional[int] = Field(default=None, description="")
         preset_dashboard_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="presetDashboardQualifiedName"
+            default=None, description=""
         )
 
     attributes: "Preset.Attributes" = Field(

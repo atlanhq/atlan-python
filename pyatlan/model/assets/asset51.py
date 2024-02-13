@@ -21,7 +21,7 @@ from .asset19 import BI
 class PowerBI(BI):
     """Description"""
 
-    type_name: str = Field("PowerBI", allow_mutation=False)
+    type_name: str = Field(default="PowerBI", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -121,17 +121,13 @@ class PowerBI(BI):
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
     class Attributes(BI.Attributes):
-        power_b_i_is_hidden: Optional[bool] = Field(
-            None, description="", alias="powerBIIsHidden"
-        )
+        power_b_i_is_hidden: Optional[bool] = Field(default=None, description="")
         power_b_i_table_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="powerBITableQualifiedName"
+            default=None, description=""
         )
-        power_b_i_format_string: Optional[str] = Field(
-            default=None, description="", alias="powerBIFormatString"
-        )
+        power_b_i_format_string: Optional[str] = Field(default=None, description="")
         power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
-            None, description="", alias="powerBIEndorsement"
+            default=None, description=""
         )
 
     attributes: "PowerBI.Attributes" = Field(

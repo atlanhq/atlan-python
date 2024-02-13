@@ -21,7 +21,7 @@ from .asset09 import Cloud
 class Google(Cloud):
     """Description"""
 
-    type_name: str = Field("Google", allow_mutation=False)
+    type_name: str = Field(default="Google", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -173,30 +173,14 @@ class Google(Cloud):
         self.attributes.google_tags = google_tags
 
     class Attributes(Cloud.Attributes):
-        google_service: Optional[str] = Field(
-            default=None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            default=None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            default=None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            default=None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            default=None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
-        )
+        google_service: Optional[str] = Field(default=None, description="")
+        google_project_name: Optional[str] = Field(default=None, description="")
+        google_project_id: Optional[str] = Field(default=None, description="")
+        google_project_number: Optional[int] = Field(default=None, description="")
+        google_location: Optional[str] = Field(default=None, description="")
+        google_location_type: Optional[str] = Field(default=None, description="")
+        google_labels: Optional[list[GoogleLabel]] = Field(default=None, description="")
+        google_tags: Optional[list[GoogleTag]] = Field(default=None, description="")
 
     attributes: "Google.Attributes" = Field(
         default_factory=lambda: Google.Attributes(),

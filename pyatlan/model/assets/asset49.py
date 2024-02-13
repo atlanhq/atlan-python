@@ -16,7 +16,7 @@ from .asset19 import BI
 class QuickSight(BI):
     """Description"""
 
-    type_name: str = Field("QuickSight", allow_mutation=False)
+    type_name: str = Field(default="QuickSight", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -87,15 +87,9 @@ class QuickSight(BI):
         self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
 
     class Attributes(BI.Attributes):
-        quick_sight_id: Optional[str] = Field(
-            default=None, description="", alias="quickSightId"
-        )
-        quick_sight_sheet_id: Optional[str] = Field(
-            default=None, description="", alias="quickSightSheetId"
-        )
-        quick_sight_sheet_name: Optional[str] = Field(
-            default=None, description="", alias="quickSightSheetName"
-        )
+        quick_sight_id: Optional[str] = Field(default=None, description="")
+        quick_sight_sheet_id: Optional[str] = Field(default=None, description="")
+        quick_sight_sheet_name: Optional[str] = Field(default=None, description="")
 
     attributes: "QuickSight.Attributes" = Field(
         default_factory=lambda: QuickSight.Attributes(),

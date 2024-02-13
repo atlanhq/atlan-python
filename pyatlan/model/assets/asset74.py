@@ -23,7 +23,7 @@ from .asset46 import Sisense
 class SisenseFolder(Sisense):
     """Description"""
 
-    type_name: str = Field("SisenseFolder", allow_mutation=False)
+    type_name: str = Field(default="SisenseFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -142,19 +142,19 @@ class SisenseFolder(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sisenseFolderParentFolderQualifiedName"
+            default=None, description=""
         )
         sisense_child_folders: Optional[list[SisenseFolder]] = Field(
-            None, description="", alias="sisenseChildFolders"
+            default=None, description=""
         )  # relationship
         sisense_widgets: Optional[list[SisenseWidget]] = Field(
-            None, description="", alias="sisenseWidgets"
+            default=None, description=""
         )  # relationship
         sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
-            None, description="", alias="sisenseDashboards"
+            default=None, description=""
         )  # relationship
         sisense_parent_folder: Optional[SisenseFolder] = Field(
-            None, description="", alias="sisenseParentFolder"
+            default=None, description=""
         )  # relationship
 
     attributes: "SisenseFolder.Attributes" = Field(
@@ -167,7 +167,7 @@ class SisenseFolder(Sisense):
 class SisenseWidget(Sisense):
     """Description"""
 
-    type_name: str = Field("SisenseWidget", allow_mutation=False)
+    type_name: str = Field(default="SisenseWidget", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -352,29 +352,23 @@ class SisenseWidget(Sisense):
         self.attributes.sisense_dashboard = sisense_dashboard
 
     class Attributes(Sisense.Attributes):
-        sisense_widget_column_count: Optional[int] = Field(
-            None, description="", alias="sisenseWidgetColumnCount"
-        )
-        sisense_widget_sub_type: Optional[str] = Field(
-            default=None, description="", alias="sisenseWidgetSubType"
-        )
-        sisense_widget_size: Optional[str] = Field(
-            default=None, description="", alias="sisenseWidgetSize"
-        )
+        sisense_widget_column_count: Optional[int] = Field(default=None, description="")
+        sisense_widget_sub_type: Optional[str] = Field(default=None, description="")
+        sisense_widget_size: Optional[str] = Field(default=None, description="")
         sisense_widget_dashboard_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sisenseWidgetDashboardQualifiedName"
+            default=None, description=""
         )
         sisense_widget_folder_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sisenseWidgetFolderQualifiedName"
+            default=None, description=""
         )
         sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
-            None, description="", alias="sisenseDatamodelTables"
+            default=None, description=""
         )  # relationship
         sisense_folder: Optional[SisenseFolder] = Field(
-            None, description="", alias="sisenseFolder"
+            default=None, description=""
         )  # relationship
         sisense_dashboard: Optional[SisenseDashboard] = Field(
-            None, description="", alias="sisenseDashboard"
+            default=None, description=""
         )  # relationship
 
     attributes: "SisenseWidget.Attributes" = Field(
@@ -387,7 +381,7 @@ class SisenseWidget(Sisense):
 class SisenseDatamodel(Sisense):
     """Description"""
 
-    type_name: str = Field("SisenseDatamodel", allow_mutation=False)
+    type_name: str = Field(default="SisenseDatamodel", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -630,34 +624,28 @@ class SisenseDatamodel(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_datamodel_table_count: Optional[int] = Field(
-            None, description="", alias="sisenseDatamodelTableCount"
+            default=None, description=""
         )
-        sisense_datamodel_server: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelServer"
-        )
-        sisense_datamodel_revision: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelRevision"
-        )
+        sisense_datamodel_server: Optional[str] = Field(default=None, description="")
+        sisense_datamodel_revision: Optional[str] = Field(default=None, description="")
         sisense_datamodel_last_build_time: Optional[datetime] = Field(
-            None, description="", alias="sisenseDatamodelLastBuildTime"
+            default=None, description=""
         )
         sisense_datamodel_last_successful_build_time: Optional[datetime] = Field(
-            None, description="", alias="sisenseDatamodelLastSuccessfulBuildTime"
+            default=None, description=""
         )
         sisense_datamodel_last_publish_time: Optional[datetime] = Field(
-            None, description="", alias="sisenseDatamodelLastPublishTime"
+            default=None, description=""
         )
-        sisense_datamodel_type: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelType"
-        )
+        sisense_datamodel_type: Optional[str] = Field(default=None, description="")
         sisense_datamodel_relation_type: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelRelationType"
+            default=None, description=""
         )
         sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
-            None, description="", alias="sisenseDatamodelTables"
+            default=None, description=""
         )  # relationship
         sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
-            None, description="", alias="sisenseDashboards"
+            default=None, description=""
         )  # relationship
 
     attributes: "SisenseDatamodel.Attributes" = Field(
@@ -670,7 +658,7 @@ class SisenseDatamodel(Sisense):
 class SisenseDatamodelTable(Sisense):
     """Description"""
 
-    type_name: str = Field("SisenseDatamodelTable", allow_mutation=False)
+    type_name: str = Field(default="SisenseDatamodelTable", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -919,34 +907,34 @@ class SisenseDatamodelTable(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_datamodel_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelQualifiedName"
+            default=None, description=""
         )
         sisense_datamodel_table_column_count: Optional[int] = Field(
-            None, description="", alias="sisenseDatamodelTableColumnCount"
+            default=None, description=""
         )
         sisense_datamodel_table_type: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelTableType"
+            default=None, description=""
         )
         sisense_datamodel_table_expression: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelTableExpression"
+            default=None, description=""
         )
         sisense_datamodel_table_is_materialized: Optional[bool] = Field(
-            None, description="", alias="sisenseDatamodelTableIsMaterialized"
+            default=None, description=""
         )
         sisense_datamodel_table_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sisenseDatamodelTableIsHidden"
+            default=None, description=""
         )
         sisense_datamodel_table_schedule: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelTableSchedule"
+            default=None, description=""
         )
         sisense_datamodel_table_live_query_settings: Optional[str] = Field(
-            default=None, description="", alias="sisenseDatamodelTableLiveQuerySettings"
+            default=None, description=""
         )
         sisense_datamodel: Optional[SisenseDatamodel] = Field(
-            None, description="", alias="sisenseDatamodel"
+            default=None, description=""
         )  # relationship
         sisense_widgets: Optional[list[SisenseWidget]] = Field(
-            None, description="", alias="sisenseWidgets"
+            default=None, description=""
         )  # relationship
 
     attributes: "SisenseDatamodelTable.Attributes" = Field(
@@ -959,7 +947,7 @@ class SisenseDatamodelTable(Sisense):
 class SisenseDashboard(Sisense):
     """Description"""
 
-    type_name: str = Field("SisenseDashboard", allow_mutation=False)
+    type_name: str = Field(default="SisenseDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1076,19 +1064,19 @@ class SisenseDashboard(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_dashboard_folder_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sisenseDashboardFolderQualifiedName"
+            default=None, description=""
         )
         sisense_dashboard_widget_count: Optional[int] = Field(
-            None, description="", alias="sisenseDashboardWidgetCount"
+            default=None, description=""
         )
         sisense_datamodels: Optional[list[SisenseDatamodel]] = Field(
-            None, description="", alias="sisenseDatamodels"
+            default=None, description=""
         )  # relationship
         sisense_widgets: Optional[list[SisenseWidget]] = Field(
-            None, description="", alias="sisenseWidgets"
+            default=None, description=""
         )  # relationship
         sisense_folder: Optional[SisenseFolder] = Field(
-            None, description="", alias="sisenseFolder"
+            default=None, description=""
         )  # relationship
 
     attributes: "SisenseDashboard.Attributes" = Field(

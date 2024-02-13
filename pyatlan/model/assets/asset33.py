@@ -17,7 +17,7 @@ from .asset09 import Cloud
 class AWS(Cloud):
     """Description"""
 
-    type_name: str = Field("AWS", allow_mutation=False)
+    type_name: str = Field(default="AWS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -178,31 +178,15 @@ class AWS(Cloud):
         self.attributes.aws_tags = aws_tags
 
     class Attributes(Cloud.Attributes):
-        aws_arn: Optional[str] = Field(default=None, description="", alias="awsArn")
-        aws_partition: Optional[str] = Field(
-            default=None, description="", alias="awsPartition"
-        )
-        aws_service: Optional[str] = Field(
-            default=None, description="", alias="awsService"
-        )
-        aws_region: Optional[str] = Field(
-            default=None, description="", alias="awsRegion"
-        )
-        aws_account_id: Optional[str] = Field(
-            default=None, description="", alias="awsAccountId"
-        )
-        aws_resource_id: Optional[str] = Field(
-            default=None, description="", alias="awsResourceId"
-        )
-        aws_owner_name: Optional[str] = Field(
-            default=None, description="", alias="awsOwnerName"
-        )
-        aws_owner_id: Optional[str] = Field(
-            default=None, description="", alias="awsOwnerId"
-        )
-        aws_tags: Optional[list[AwsTag]] = Field(
-            default=None, description="", alias="awsTags"
-        )
+        aws_arn: Optional[str] = Field(default=None, description="")
+        aws_partition: Optional[str] = Field(default=None, description="")
+        aws_service: Optional[str] = Field(default=None, description="")
+        aws_region: Optional[str] = Field(default=None, description="")
+        aws_account_id: Optional[str] = Field(default=None, description="")
+        aws_resource_id: Optional[str] = Field(default=None, description="")
+        aws_owner_name: Optional[str] = Field(default=None, description="")
+        aws_owner_id: Optional[str] = Field(default=None, description="")
+        aws_tags: Optional[list[AwsTag]] = Field(default=None, description="")
 
     attributes: "AWS.Attributes" = Field(
         default_factory=lambda: AWS.Attributes(),

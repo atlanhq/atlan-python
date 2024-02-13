@@ -16,7 +16,7 @@ from .asset19 import BI
 class Sigma(BI):
     """Description"""
 
-    type_name: str = Field("Sigma", allow_mutation=False)
+    type_name: str = Field(default="Sigma", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -163,23 +163,15 @@ class Sigma(BI):
 
     class Attributes(BI.Attributes):
         sigma_workbook_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaWorkbookQualifiedName"
+            default=None, description=""
         )
-        sigma_workbook_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaWorkbookName"
-        )
-        sigma_page_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaPageQualifiedName"
-        )
-        sigma_page_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaPageName"
-        )
+        sigma_workbook_name: Optional[str] = Field(default=None, description="")
+        sigma_page_qualified_name: Optional[str] = Field(default=None, description="")
+        sigma_page_name: Optional[str] = Field(default=None, description="")
         sigma_data_element_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaDataElementQualifiedName"
+            default=None, description=""
         )
-        sigma_data_element_name: Optional[str] = Field(
-            default=None, description="", alias="sigmaDataElementName"
-        )
+        sigma_data_element_name: Optional[str] = Field(default=None, description="")
 
     attributes: "Sigma.Attributes" = Field(
         default_factory=lambda: Sigma.Attributes(),

@@ -24,7 +24,7 @@ from .asset00 import Table
 class DynamoDBSecondaryIndex(Table):
     """Description"""
 
-    type_name: str = Field("DynamoDBSecondaryIndex", allow_mutation=False)
+    type_name: str = Field(default="DynamoDBSecondaryIndex", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -674,105 +674,49 @@ class DynamoDBSecondaryIndex(Table):
     class Attributes(Table.Attributes):
         dynamo_d_b_secondary_index_projection_type: Optional[
             DynamoDBSecondaryIndexProjectionType
-        ] = Field(
-            default=None, description="", alias="dynamoDBSecondaryIndexProjectionType"
-        )
-        column_count: Optional[int] = Field(
-            default=None, description="", alias="columnCount"
-        )
-        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(
-            default=None, description="", alias="sizeBytes"
-        )
-        alias: Optional[str] = Field(default=None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(
-            default=None, description="", alias="isTemporary"
-        )
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
+        ] = Field(default=None, description="")
+        column_count: Optional[int] = Field(default=None, description="")
+        row_count: Optional[int] = Field(default=None, description="")
+        size_bytes: Optional[int] = Field(default=None, description="")
+        alias: Optional[str] = Field(default=None, description="")
+        is_temporary: Optional[bool] = Field(default=None, description="")
+        is_query_preview: Optional[bool] = Field(default=None, description="")
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description=""
         )
-        external_location: Optional[str] = Field(
-            default=None, description="", alias="externalLocation"
-        )
-        external_location_region: Optional[str] = Field(
-            default=None, description="", alias="externalLocationRegion"
-        )
-        external_location_format: Optional[str] = Field(
-            default=None, description="", alias="externalLocationFormat"
-        )
-        is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
-        )
-        partition_strategy: Optional[str] = Field(
-            default=None, description="", alias="partitionStrategy"
-        )
-        partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
-        )
-        partition_list: Optional[str] = Field(
-            default=None, description="", alias="partitionList"
-        )
-        query_count: Optional[int] = Field(
-            default=None, description="", alias="queryCount"
-        )
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
-        )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
-        )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
-        )
-        database_name: Optional[str] = Field(
-            default=None, description="", alias="databaseName"
-        )
-        database_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="databaseQualifiedName"
-        )
-        schema_name: Optional[str] = Field(
-            default=None, description="", alias="schemaName"
-        )
-        schema_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="schemaQualifiedName"
-        )
-        table_name: Optional[str] = Field(
-            default=None, description="", alias="tableName"
-        )
-        table_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(default=None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(
-            default=None, description="", alias="isProfiled"
-        )
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
+        external_location: Optional[str] = Field(default=None, description="")
+        external_location_region: Optional[str] = Field(default=None, description="")
+        external_location_format: Optional[str] = Field(default=None, description="")
+        is_partitioned: Optional[bool] = Field(default=None, description="")
+        partition_strategy: Optional[str] = Field(default=None, description="")
+        partition_count: Optional[int] = Field(default=None, description="")
+        partition_list: Optional[str] = Field(default=None, description="")
+        query_count: Optional[int] = Field(default=None, description="")
+        query_user_count: Optional[int] = Field(default=None, description="")
+        query_user_map: Optional[dict[str, int]] = Field(default=None, description="")
+        query_count_updated_at: Optional[datetime] = Field(default=None, description="")
+        database_name: Optional[str] = Field(default=None, description="")
+        database_qualified_name: Optional[str] = Field(default=None, description="")
+        schema_name: Optional[str] = Field(default=None, description="")
+        schema_qualified_name: Optional[str] = Field(default=None, description="")
+        table_name: Optional[str] = Field(default=None, description="")
+        table_qualified_name: Optional[str] = Field(default=None, description="")
+        view_name: Optional[str] = Field(default=None, description="")
+        view_qualified_name: Optional[str] = Field(default=None, description="")
+        is_profiled: Optional[bool] = Field(default=None, description="")
+        last_profiled_at: Optional[datetime] = Field(default=None, description="")
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
-            None, description="", alias="dynamoDBStatus"
+            default=None, description=""
         )
-        dynamo_d_b_partition_key: Optional[str] = Field(
-            default=None, description="", alias="dynamoDBPartitionKey"
-        )
-        dynamo_d_b_sort_key: Optional[str] = Field(
-            default=None, description="", alias="dynamoDBSortKey"
-        )
+        dynamo_d_b_partition_key: Optional[str] = Field(default=None, description="")
+        dynamo_d_b_sort_key: Optional[str] = Field(default=None, description="")
         dynamo_d_b_read_capacity_units: Optional[int] = Field(
-            None, description="", alias="dynamoDBReadCapacityUnits"
+            default=None, description=""
         )
         dynamo_d_b_write_capacity_units: Optional[int] = Field(
-            None, description="", alias="dynamoDBWriteCapacityUnits"
+            default=None, description=""
         )
-        no_s_q_l_schema_definition: Optional[str] = Field(
-            default=None, description="", alias="noSQLSchemaDefinition"
-        )
+        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
 
     attributes: "DynamoDBSecondaryIndex.Attributes" = Field(
         default_factory=lambda: DynamoDBSecondaryIndex.Attributes(),

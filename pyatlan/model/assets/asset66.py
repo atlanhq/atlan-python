@@ -197,32 +197,20 @@ class ModeReport(Mode):
         self.attributes.mode_collections = mode_collections
 
     class Attributes(Mode.Attributes):
-        mode_collection_token: Optional[str] = Field(
-            default=None, description="", alias="modeCollectionToken"
-        )
+        mode_collection_token: Optional[str] = Field(default=None, description="")
         mode_report_published_at: Optional[datetime] = Field(
-            None, description="", alias="modeReportPublishedAt"
+            default=None, description=""
         )
-        mode_query_count: Optional[int] = Field(
-            None, description="", alias="modeQueryCount"
-        )
-        mode_chart_count: Optional[int] = Field(
-            None, description="", alias="modeChartCount"
-        )
-        mode_query_preview: Optional[str] = Field(
-            default=None, description="", alias="modeQueryPreview"
-        )
-        mode_is_public: Optional[bool] = Field(
-            None, description="", alias="modeIsPublic"
-        )
-        mode_is_shared: Optional[bool] = Field(
-            None, description="", alias="modeIsShared"
-        )
+        mode_query_count: Optional[int] = Field(default=None, description="")
+        mode_chart_count: Optional[int] = Field(default=None, description="")
+        mode_query_preview: Optional[str] = Field(default=None, description="")
+        mode_is_public: Optional[bool] = Field(default=None, description="")
+        mode_is_shared: Optional[bool] = Field(default=None, description="")
         mode_queries: Optional[list[ModeQuery]] = Field(
-            None, description="", alias="modeQueries"
+            default=None, description=""
         )  # relationship
         mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+            default=None, description=""
         )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
@@ -320,17 +308,13 @@ class ModeQuery(Mode):
         self.attributes.mode_report = mode_report
 
     class Attributes(Mode.Attributes):
-        mode_raw_query: Optional[str] = Field(
-            default=None, description="", alias="modeRawQuery"
-        )
-        mode_report_import_count: Optional[int] = Field(
-            None, description="", alias="modeReportImportCount"
-        )
+        mode_raw_query: Optional[str] = Field(default=None, description="")
+        mode_report_import_count: Optional[int] = Field(default=None, description="")
         mode_charts: Optional[list[ModeChart]] = Field(
-            None, description="", alias="modeCharts"
+            default=None, description=""
         )  # relationship
         mode_report: Optional[ModeReport] = Field(
-            None, description="", alias="modeReport"
+            default=None, description=""
         )  # relationship
 
     attributes: "ModeQuery.Attributes" = Field(
@@ -394,11 +378,9 @@ class ModeChart(Mode):
         self.attributes.mode_query = mode_query
 
     class Attributes(Mode.Attributes):
-        mode_chart_type: Optional[str] = Field(
-            default=None, description="", alias="modeChartType"
-        )
+        mode_chart_type: Optional[str] = Field(default=None, description="")
         mode_query: Optional[ModeQuery] = Field(
-            None, description="", alias="modeQuery"
+            default=None, description=""
         )  # relationship
 
     attributes: "ModeChart.Attributes" = Field(
@@ -464,11 +446,9 @@ class ModeWorkspace(Mode):
         self.attributes.mode_collections = mode_collections
 
     class Attributes(Mode.Attributes):
-        mode_collection_count: Optional[int] = Field(
-            None, description="", alias="modeCollectionCount"
-        )
+        mode_collection_count: Optional[int] = Field(default=None, description="")
         mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+            default=None, description=""
         )  # relationship
 
     attributes: "ModeWorkspace.Attributes" = Field(
@@ -566,17 +546,13 @@ class ModeCollection(Mode):
         self.attributes.mode_reports = mode_reports
 
     class Attributes(Mode.Attributes):
-        mode_collection_type: Optional[str] = Field(
-            default=None, description="", alias="modeCollectionType"
-        )
-        mode_collection_state: Optional[str] = Field(
-            default=None, description="", alias="modeCollectionState"
-        )
+        mode_collection_type: Optional[str] = Field(default=None, description="")
+        mode_collection_state: Optional[str] = Field(default=None, description="")
         mode_workspace: Optional[ModeWorkspace] = Field(
-            None, description="", alias="modeWorkspace"
+            default=None, description=""
         )  # relationship
         mode_reports: Optional[list[ModeReport]] = Field(
-            None, description="", alias="modeReports"
+            default=None, description=""
         )  # relationship
 
     attributes: "ModeCollection.Attributes" = Field(

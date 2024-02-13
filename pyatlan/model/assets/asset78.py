@@ -14,7 +14,7 @@ from .asset50 import Thoughtspot
 class ThoughtspotAnswer(Thoughtspot):
     """Description"""
 
-    type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
+    type_name: str = Field(default="ThoughtspotAnswer", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

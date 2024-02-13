@@ -16,7 +16,7 @@ from .asset00 import Catalog
 class NoSQL(Catalog):
     """Description"""
 
-    type_name: str = Field("NoSQL", allow_mutation=False)
+    type_name: str = Field(default="NoSQL", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -55,9 +55,7 @@ class NoSQL(Catalog):
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
 
     class Attributes(Catalog.Attributes):
-        no_s_q_l_schema_definition: Optional[str] = Field(
-            default=None, description="", alias="noSQLSchemaDefinition"
-        )
+        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
 
     attributes: "NoSQL.Attributes" = Field(
         default_factory=lambda: NoSQL.Attributes(),

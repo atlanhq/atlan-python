@@ -147,19 +147,19 @@ class QuickSightFolder(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            None, description="", alias="quickSightFolderType"
+            default=None, description=""
         )
         quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="quickSightFolderHierarchy"
+            default=None, description=""
         )
         quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
-            None, description="", alias="quickSightDashboards"
+            default=None, description=""
         )  # relationship
         quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
-            None, description="", alias="quickSightDatasets"
+            default=None, description=""
         )  # relationship
         quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightFolder.Attributes" = Field(
@@ -240,10 +240,10 @@ class QuickSightDashboardVisual(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="quickSightDashboardQualifiedName"
+            default=None, description=""
         )
         quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            None, description="", alias="quickSightDashboard"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightDashboardVisual.Attributes" = Field(
@@ -318,10 +318,10 @@ class QuickSightAnalysisVisual(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="quickSightAnalysisQualifiedName"
+            default=None, description=""
         )
         quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            None, description="", alias="quickSightAnalysis"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightAnalysisVisual.Attributes" = Field(
@@ -419,13 +419,13 @@ class QuickSightDatasetField(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
-            None, description="", alias="quickSightDatasetFieldType"
+            default=None, description=""
         )
         quick_sight_dataset_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="quickSightDatasetQualifiedName"
+            default=None, description=""
         )
         quick_sight_dataset: Optional[QuickSightDataset] = Field(
-            None, description="", alias="quickSightDataset"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightDatasetField.Attributes" = Field(
@@ -603,22 +603,22 @@ class QuickSightAnalysis(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
+            default=None, description=""
         )
         quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
+            default=None, description=""
         )
         quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
+            default=None, description=""
         )
         quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
+            default=None, description=""
         )
         quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
+            default=None, description=""
         )  # relationship
         quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightAnalysis.Attributes" = Field(
@@ -752,18 +752,18 @@ class QuickSightDashboard(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_published_version_number: Optional[int] = Field(
-            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+            default=None, description=""
         )
         quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
-            None, description="", alias="quickSightDashboardLastPublishedTime"
+            default=None, description=""
         )
         quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDashboardFolders"
+            default=None, description=""
         )  # relationship
         quick_sight_dashboard_visuals: Optional[
             list[QuickSightDashboardVisual]
         ] = Field(
-            None, description="", alias="quickSightDashboardVisuals"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightDashboard.Attributes" = Field(
@@ -892,16 +892,16 @@ class QuickSightDataset(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
-            None, description="", alias="quickSightDatasetImportMode"
+            default=None, description=""
         )
         quick_sight_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="quickSightDatasetColumnCount"
+            default=None, description=""
         )
         quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDatasetFolders"
+            default=None, description=""
         )  # relationship
         quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
-            None, description="", alias="quickSightDatasetFields"
+            default=None, description=""
         )  # relationship
 
     attributes: "QuickSightDataset.Attributes" = Field(

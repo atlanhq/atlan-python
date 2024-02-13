@@ -14,7 +14,7 @@ from .asset00 import Asset
 class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
-    type_name: str = Field("Cloud", allow_mutation=False)
+    type_name: str = Field(default="Cloud", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

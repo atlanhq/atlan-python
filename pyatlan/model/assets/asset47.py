@@ -23,7 +23,7 @@ from .asset31 import Google
 class DataStudio(Google):
     """Description"""
 
-    type_name: str = Field("DataStudio", allow_mutation=False)
+    type_name: str = Field(default="DataStudio", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -254,41 +254,25 @@ class DataStudio(Google):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Google.Attributes):
-        google_service: Optional[str] = Field(
-            default=None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            default=None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            default=None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            default=None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            default=None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            default=None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            default=None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            default=None, description="", alias="googleTags"
-        )
+        google_service: Optional[str] = Field(default=None, description="")
+        google_project_name: Optional[str] = Field(default=None, description="")
+        google_project_id: Optional[str] = Field(default=None, description="")
+        google_project_number: Optional[int] = Field(default=None, description="")
+        google_location: Optional[str] = Field(default=None, description="")
+        google_location_type: Optional[str] = Field(default=None, description="")
+        google_labels: Optional[list[GoogleLabel]] = Field(default=None, description="")
+        google_tags: Optional[list[GoogleTag]] = Field(default=None, description="")
         input_to_processes: Optional[list[Process]] = Field(
-            default=None, description="", alias="inputToProcesses"
+            default=None, description=""
         )  # relationship
         output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            default=None, description="", alias="outputFromAirflowTasks"
+            default=None, description=""
         )  # relationship
         input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            default=None, description="", alias="inputToAirflowTasks"
+            default=None, description=""
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
-            default=None, description="", alias="outputFromProcesses"
+            default=None, description=""
         )  # relationship
 
     attributes: "DataStudio.Attributes" = Field(

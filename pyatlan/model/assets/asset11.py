@@ -16,7 +16,7 @@ from .asset00 import Catalog, Process
 class BIProcess(Process):
     """Description"""
 
-    type_name: str = Field("BIProcess", allow_mutation=False)
+    type_name: str = Field(default="BIProcess", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -65,10 +65,10 @@ class BIProcess(Process):
 
     class Attributes(Process.Attributes):
         outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
+            default=None, description=""
         )  # relationship
         inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
+            default=None, description=""
         )  # relationship
 
     attributes: "BIProcess.Attributes" = Field(

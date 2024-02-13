@@ -20,7 +20,7 @@ from .asset19 import BI
 class Qlik(BI):
     """Description"""
 
-    type_name: str = Field("Qlik", allow_mutation=False)
+    type_name: str = Field(default="Qlik", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -174,26 +174,14 @@ class Qlik(BI):
         self.attributes.qlik_is_published = qlik_is_published
 
     class Attributes(BI.Attributes):
-        qlik_id: Optional[str] = Field(default=None, description="", alias="qlikId")
-        qlik_q_r_i: Optional[str] = Field(default=None, description="", alias="qlikQRI")
-        qlik_space_id: Optional[str] = Field(
-            default=None, description="", alias="qlikSpaceId"
-        )
-        qlik_space_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="qlikSpaceQualifiedName"
-        )
-        qlik_app_id: Optional[str] = Field(
-            default=None, description="", alias="qlikAppId"
-        )
-        qlik_app_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="qlikAppQualifiedName"
-        )
-        qlik_owner_id: Optional[str] = Field(
-            default=None, description="", alias="qlikOwnerId"
-        )
-        qlik_is_published: Optional[bool] = Field(
-            None, description="", alias="qlikIsPublished"
-        )
+        qlik_id: Optional[str] = Field(default=None, description="")
+        qlik_q_r_i: Optional[str] = Field(default=None, description="")
+        qlik_space_id: Optional[str] = Field(default=None, description="")
+        qlik_space_qualified_name: Optional[str] = Field(default=None, description="")
+        qlik_app_id: Optional[str] = Field(default=None, description="")
+        qlik_app_qualified_name: Optional[str] = Field(default=None, description="")
+        qlik_owner_id: Optional[str] = Field(default=None, description="")
+        qlik_is_published: Optional[bool] = Field(default=None, description="")
 
     attributes: "Qlik.Attributes" = Field(
         default_factory=lambda: Qlik.Attributes(),

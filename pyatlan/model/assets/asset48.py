@@ -16,7 +16,7 @@ from .asset19 import BI
 class Metabase(BI):
     """Description"""
 
-    type_name: str = Field("Metabase", allow_mutation=False)
+    type_name: str = Field(default="Metabase", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -84,11 +84,9 @@ class Metabase(BI):
         )
 
     class Attributes(BI.Attributes):
-        metabase_collection_name: Optional[str] = Field(
-            default=None, description="", alias="metabaseCollectionName"
-        )
+        metabase_collection_name: Optional[str] = Field(default=None, description="")
         metabase_collection_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="metabaseCollectionQualifiedName"
+            default=None, description=""
         )
 
     attributes: "Metabase.Attributes" = Field(

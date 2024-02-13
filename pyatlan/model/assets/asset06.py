@@ -377,59 +377,29 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self.attributes.access_control = access_control
 
     class Attributes(Asset.Attributes):
-        policy_type: Optional[AuthPolicyType] = Field(
-            None, description="", alias="policyType"
-        )
-        policy_service_name: Optional[str] = Field(
-            default=None, description="", alias="policyServiceName"
-        )
-        policy_category: Optional[str] = Field(
-            default=None, description="", alias="policyCategory"
-        )
-        policy_sub_category: Optional[str] = Field(
-            default=None, description="", alias="policySubCategory"
-        )
-        policy_users: Optional[set[str]] = Field(
-            None, description="", alias="policyUsers"
-        )
-        policy_groups: Optional[set[str]] = Field(
-            None, description="", alias="policyGroups"
-        )
-        policy_roles: Optional[set[str]] = Field(
-            None, description="", alias="policyRoles"
-        )
-        policy_actions: Optional[set[str]] = Field(
-            None, description="", alias="policyActions"
-        )
-        policy_resources: Optional[set[str]] = Field(
-            None, description="", alias="policyResources"
-        )
-        policy_resource_category: Optional[str] = Field(
-            default=None, description="", alias="policyResourceCategory"
-        )
-        policy_priority: Optional[int] = Field(
-            None, description="", alias="policyPriority"
-        )
-        is_policy_enabled: Optional[bool] = Field(
-            None, description="", alias="isPolicyEnabled"
-        )
-        policy_mask_type: Optional[str] = Field(
-            default=None, description="", alias="policyMaskType"
-        )
+        policy_type: Optional[AuthPolicyType] = Field(default=None, description="")
+        policy_service_name: Optional[str] = Field(default=None, description="")
+        policy_category: Optional[str] = Field(default=None, description="")
+        policy_sub_category: Optional[str] = Field(default=None, description="")
+        policy_users: Optional[set[str]] = Field(default=None, description="")
+        policy_groups: Optional[set[str]] = Field(default=None, description="")
+        policy_roles: Optional[set[str]] = Field(default=None, description="")
+        policy_actions: Optional[set[str]] = Field(default=None, description="")
+        policy_resources: Optional[set[str]] = Field(default=None, description="")
+        policy_resource_category: Optional[str] = Field(default=None, description="")
+        policy_priority: Optional[int] = Field(default=None, description="")
+        is_policy_enabled: Optional[bool] = Field(default=None, description="")
+        policy_mask_type: Optional[str] = Field(default=None, description="")
         policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]] = Field(
-            None, description="", alias="policyValiditySchedule"
+            default=None, description=""
         )
-        policy_resource_signature: Optional[str] = Field(
-            default=None, description="", alias="policyResourceSignature"
-        )
-        policy_delegate_admin: Optional[bool] = Field(
-            None, description="", alias="policyDelegateAdmin"
-        )
+        policy_resource_signature: Optional[str] = Field(default=None, description="")
+        policy_delegate_admin: Optional[bool] = Field(default=None, description="")
         policy_conditions: Optional[list[AuthPolicyCondition]] = Field(
-            None, description="", alias="policyConditions"
+            default=None, description=""
         )
         access_control: Optional[AccessControl] = Field(
-            None, description="", alias="accessControl"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -509,6 +479,12 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
+    DISPLAY_PREFERENCES: ClassVar[KeywordField] = KeywordField(
+        "displayPreferences", "displayPreferences"
+    )
+    """
+    TBC
+    """
 
     POLICIES: ClassVar[RelationField] = RelationField("policies")
     """
@@ -524,6 +500,7 @@ class AccessControl(Asset, type_name="AccessControl"):
         "deny_asset_types",
         "deny_navigation_pages",
         "default_navigation",
+        "display_preferences",
         "policies",
     ]
 
@@ -620,6 +597,16 @@ class AccessControl(Asset, type_name="AccessControl"):
         self.attributes.default_navigation = default_navigation
 
     @property
+    def display_preferences(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.display_preferences
+
+    @display_preferences.setter
+    def display_preferences(self, display_preferences: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.display_preferences = display_preferences
+
+    @property
     def policies(self) -> Optional[list[AuthPolicy]]:
         return None if self.attributes is None else self.attributes.policies
 
@@ -630,32 +617,19 @@ class AccessControl(Asset, type_name="AccessControl"):
         self.attributes.policies = policies
 
     class Attributes(Asset.Attributes):
-        is_access_control_enabled: Optional[bool] = Field(
-            None, description="", alias="isAccessControlEnabled"
-        )
+        is_access_control_enabled: Optional[bool] = Field(default=None, description="")
         deny_custom_metadata_guids: Optional[set[str]] = Field(
-            None, description="", alias="denyCustomMetadataGuids"
+            default=None, description=""
         )
-        deny_asset_tabs: Optional[set[str]] = Field(
-            None, description="", alias="denyAssetTabs"
-        )
-        deny_asset_filters: Optional[set[str]] = Field(
-            None, description="", alias="denyAssetFilters"
-        )
-        channel_link: Optional[str] = Field(
-            default=None, description="", alias="channelLink"
-        )
-        deny_asset_types: Optional[set[str]] = Field(
-            None, description="", alias="denyAssetTypes"
-        )
-        deny_navigation_pages: Optional[set[str]] = Field(
-            None, description="", alias="denyNavigationPages"
-        )
-        default_navigation: Optional[str] = Field(
-            default=None, description="", alias="defaultNavigation"
-        )
+        deny_asset_tabs: Optional[set[str]] = Field(default=None, description="")
+        deny_asset_filters: Optional[set[str]] = Field(default=None, description="")
+        channel_link: Optional[str] = Field(default=None, description="")
+        deny_asset_types: Optional[set[str]] = Field(default=None, description="")
+        deny_navigation_pages: Optional[set[str]] = Field(default=None, description="")
+        default_navigation: Optional[str] = Field(default=None, description="")
+        display_preferences: Optional[set[str]] = Field(default=None, description="")
         policies: Optional[list[AuthPolicy]] = Field(
-            None, description="", alias="policies"
+            default=None, description=""
         )  # relationship
 
     attributes: "AccessControl.Attributes" = Field(

@@ -192,26 +192,22 @@ class RedashQuery(Redash):
         self.attributes.redash_visualizations = redash_visualizations
 
     class Attributes(Redash.Attributes):
-        redash_query_s_q_l: Optional[str] = Field(
-            default=None, description="", alias="redashQuerySQL"
-        )
-        redash_query_parameters: Optional[str] = Field(
-            default=None, description="", alias="redashQueryParameters"
-        )
+        redash_query_s_q_l: Optional[str] = Field(default=None, description="")
+        redash_query_parameters: Optional[str] = Field(default=None, description="")
         redash_query_schedule: Optional[dict[str, str]] = Field(
-            None, description="", alias="redashQuerySchedule"
+            default=None, description=""
         )
         redash_query_last_execution_runtime: Optional[float] = Field(
-            None, description="", alias="redashQueryLastExecutionRuntime"
+            default=None, description=""
         )
         redash_query_last_executed_at: Optional[datetime] = Field(
-            None, description="", alias="redashQueryLastExecutedAt"
+            default=None, description=""
         )
         redash_query_schedule_humanized: Optional[str] = Field(
-            default=None, description="", alias="redashQueryScheduleHumanized"
+            default=None, description=""
         )
         redash_visualizations: Optional[list[RedashVisualization]] = Field(
-            None, description="", alias="redashVisualizations"
+            default=None, description=""
         )  # relationship
 
     attributes: "RedashQuery.Attributes" = Field(
@@ -319,17 +315,11 @@ class RedashVisualization(Redash):
         self.attributes.redash_query = redash_query
 
     class Attributes(Redash.Attributes):
-        redash_visualization_type: Optional[str] = Field(
-            default=None, description="", alias="redashVisualizationType"
-        )
-        redash_query_name: Optional[str] = Field(
-            default=None, description="", alias="redashQueryName"
-        )
-        redash_query_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="redashQueryQualifiedName"
-        )
+        redash_visualization_type: Optional[str] = Field(default=None, description="")
+        redash_query_name: Optional[str] = Field(default=None, description="")
+        redash_query_qualified_name: Optional[str] = Field(default=None, description="")
         redash_query: Optional[RedashQuery] = Field(
-            None, description="", alias="redashQuery"
+            default=None, description=""
         )  # relationship
 
     attributes: "RedashVisualization.Attributes" = Field(

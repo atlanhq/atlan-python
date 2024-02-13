@@ -16,7 +16,7 @@ from .asset19 import BI
 class Thoughtspot(BI):
     """Description"""
 
-    type_name: str = Field("Thoughtspot", allow_mutation=False)
+    type_name: str = Field(default="Thoughtspot", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -74,12 +74,8 @@ class Thoughtspot(BI):
         self.attributes.thoughtspot_question_text = thoughtspot_question_text
 
     class Attributes(BI.Attributes):
-        thoughtspot_chart_type: Optional[str] = Field(
-            default=None, description="", alias="thoughtspotChartType"
-        )
-        thoughtspot_question_text: Optional[str] = Field(
-            default=None, description="", alias="thoughtspotQuestionText"
-        )
+        thoughtspot_chart_type: Optional[str] = Field(default=None, description="")
+        thoughtspot_question_text: Optional[str] = Field(default=None, description="")
 
     attributes: "Thoughtspot.Attributes" = Field(
         default_factory=lambda: Thoughtspot.Attributes(),

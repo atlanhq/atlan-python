@@ -14,7 +14,7 @@ from .asset00 import Catalog
 class SaaS(Catalog):
     """Description"""
 
-    type_name: str = Field("SaaS", allow_mutation=False)
+    type_name: str = Field(default="SaaS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

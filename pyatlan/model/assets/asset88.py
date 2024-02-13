@@ -14,7 +14,7 @@ from .asset81 import QlikSpace
 class QlikStream(QlikSpace):
     """Description"""
 
-    type_name: str = Field("QlikStream", allow_mutation=False)
+    type_name: str = Field(default="QlikStream", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

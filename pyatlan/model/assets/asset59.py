@@ -22,7 +22,7 @@ from .asset00 import Dbt
 class DbtTag(Dbt):
     """Description"""
 
-    type_name: str = Field("DbtTag", allow_mutation=False)
+    type_name: str = Field(default="DbtTag", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -438,66 +438,34 @@ class DbtTag(Dbt):
         self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     class Attributes(Dbt.Attributes):
-        dbt_alias: Optional[str] = Field(default=None, description="", alias="dbtAlias")
-        dbt_meta: Optional[str] = Field(default=None, description="", alias="dbtMeta")
-        dbt_unique_id: Optional[str] = Field(
-            default=None, description="", alias="dbtUniqueId"
-        )
-        dbt_account_name: Optional[str] = Field(
-            default=None, description="", alias="dbtAccountName"
-        )
-        dbt_project_name: Optional[str] = Field(
-            default=None, description="", alias="dbtProjectName"
-        )
-        dbt_package_name: Optional[str] = Field(
-            default=None, description="", alias="dbtPackageName"
-        )
-        dbt_job_name: Optional[str] = Field(
-            default=None, description="", alias="dbtJobName"
-        )
-        dbt_job_schedule: Optional[str] = Field(
-            default=None, description="", alias="dbtJobSchedule"
-        )
-        dbt_job_status: Optional[str] = Field(
-            default=None, description="", alias="dbtJobStatus"
-        )
+        dbt_alias: Optional[str] = Field(default=None, description="")
+        dbt_meta: Optional[str] = Field(default=None, description="")
+        dbt_unique_id: Optional[str] = Field(default=None, description="")
+        dbt_account_name: Optional[str] = Field(default=None, description="")
+        dbt_project_name: Optional[str] = Field(default=None, description="")
+        dbt_package_name: Optional[str] = Field(default=None, description="")
+        dbt_job_name: Optional[str] = Field(default=None, description="")
+        dbt_job_schedule: Optional[str] = Field(default=None, description="")
+        dbt_job_status: Optional[str] = Field(default=None, description="")
         dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            default=None, description="", alias="dbtJobScheduleCronHumanized"
+            default=None, description=""
         )
-        dbt_job_last_run: Optional[datetime] = Field(
-            None, description="", alias="dbtJobLastRun"
-        )
-        dbt_job_next_run: Optional[datetime] = Field(
-            None, description="", alias="dbtJobNextRun"
-        )
-        dbt_job_next_run_humanized: Optional[str] = Field(
-            default=None, description="", alias="dbtJobNextRunHumanized"
-        )
-        dbt_environment_name: Optional[str] = Field(
-            default=None, description="", alias="dbtEnvironmentName"
-        )
-        dbt_environment_dbt_version: Optional[str] = Field(
-            default=None, description="", alias="dbtEnvironmentDbtVersion"
-        )
-        dbt_tags: Optional[set[str]] = Field(
-            default=None, description="", alias="dbtTags"
-        )
-        dbt_connection_context: Optional[str] = Field(
-            default=None, description="", alias="dbtConnectionContext"
-        )
+        dbt_job_last_run: Optional[datetime] = Field(default=None, description="")
+        dbt_job_next_run: Optional[datetime] = Field(default=None, description="")
+        dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
+        dbt_environment_name: Optional[str] = Field(default=None, description="")
+        dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
+        dbt_tags: Optional[set[str]] = Field(default=None, description="")
+        dbt_connection_context: Optional[str] = Field(default=None, description="")
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            default=None, description="", alias="dbtSemanticLayerProxyUrl"
+            default=None, description=""
         )
-        tag_id: Optional[str] = Field(default=None, description="", alias="tagId")
+        tag_id: Optional[str] = Field(default=None, description="")
         tag_attributes: Optional[list[SourceTagAttribute]] = Field(
-            None, description="", alias="tagAttributes"
+            default=None, description=""
         )
-        tag_allowed_values: Optional[set[str]] = Field(
-            None, description="", alias="tagAllowedValues"
-        )
-        mapped_atlan_tag_name: Optional[str] = Field(
-            default=None, description="", alias="mappedClassificationName"
-        )
+        tag_allowed_values: Optional[set[str]] = Field(default=None, description="")
+        mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
 
     attributes: "DbtTag.Attributes" = Field(
         default_factory=lambda: DbtTag.Attributes(),

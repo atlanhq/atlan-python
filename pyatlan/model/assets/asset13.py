@@ -234,13 +234,9 @@ class Persona(AccessControl):
         self.attributes.role_id = role_id
 
     class Attributes(AccessControl.Attributes):
-        persona_groups: Optional[set[str]] = Field(
-            None, description="", alias="personaGroups"
-        )
-        persona_users: Optional[set[str]] = Field(
-            None, description="", alias="personaUsers"
-        )
-        role_id: Optional[str] = Field(default=None, description="", alias="roleId")
+        persona_groups: Optional[set[str]] = Field(default=None, description="")
+        persona_users: Optional[set[str]] = Field(default=None, description="")
+        role_id: Optional[str] = Field(default=None, description="")
 
         @classmethod
         # @validate_arguments()

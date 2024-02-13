@@ -24,7 +24,7 @@ from .asset31 import Google
 class GCS(Google):
     """Description"""
 
-    type_name: str = Field("GCS", allow_mutation=False)
+    type_name: str = Field(default="GCS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -357,57 +357,31 @@ class GCS(Google):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Google.Attributes):
-        gcs_storage_class: Optional[str] = Field(
-            default=None, description="", alias="gcsStorageClass"
-        )
-        gcs_encryption_type: Optional[str] = Field(
-            default=None, description="", alias="gcsEncryptionType"
-        )
-        gcs_e_tag: Optional[str] = Field(default=None, description="", alias="gcsETag")
-        gcs_requester_pays: Optional[bool] = Field(
-            None, description="", alias="gcsRequesterPays"
-        )
-        gcs_access_control: Optional[str] = Field(
-            default=None, description="", alias="gcsAccessControl"
-        )
-        gcs_meta_generation_id: Optional[int] = Field(
-            None, description="", alias="gcsMetaGenerationId"
-        )
-        google_service: Optional[str] = Field(
-            default=None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            default=None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            default=None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            default=None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            default=None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
-        )
+        gcs_storage_class: Optional[str] = Field(default=None, description="")
+        gcs_encryption_type: Optional[str] = Field(default=None, description="")
+        gcs_e_tag: Optional[str] = Field(default=None, description="")
+        gcs_requester_pays: Optional[bool] = Field(default=None, description="")
+        gcs_access_control: Optional[str] = Field(default=None, description="")
+        gcs_meta_generation_id: Optional[int] = Field(default=None, description="")
+        google_service: Optional[str] = Field(default=None, description="")
+        google_project_name: Optional[str] = Field(default=None, description="")
+        google_project_id: Optional[str] = Field(default=None, description="")
+        google_project_number: Optional[int] = Field(default=None, description="")
+        google_location: Optional[str] = Field(default=None, description="")
+        google_location_type: Optional[str] = Field(default=None, description="")
+        google_labels: Optional[list[GoogleLabel]] = Field(default=None, description="")
+        google_tags: Optional[list[GoogleTag]] = Field(default=None, description="")
         input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
+            default=None, description=""
         )  # relationship
         output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="outputFromAirflowTasks"
+            default=None, description=""
         )  # relationship
         input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="inputToAirflowTasks"
+            default=None, description=""
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
+            default=None, description=""
         )  # relationship
 
     attributes: "GCS.Attributes" = Field(
