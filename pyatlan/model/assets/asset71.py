@@ -275,47 +275,29 @@ class LookerLook(Looker):
         self.attributes.dashboard = dashboard
 
     class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(
-            default=None, description="", alias="folderName"
-        )
-        source_user_id: Optional[int] = Field(
-            None, description="", alias="sourceUserId"
-        )
-        source_view_count: Optional[int] = Field(
-            None, description="", alias="sourceViewCount"
-        )
-        sourcelast_updater_id: Optional[int] = Field(
-            None, description="", alias="sourcelastUpdaterId"
-        )
+        folder_name: Optional[str] = Field(default=None, description="")
+        source_user_id: Optional[int] = Field(default=None, description="")
+        source_view_count: Optional[int] = Field(default=None, description="")
+        sourcelast_updater_id: Optional[int] = Field(default=None, description="")
         source_last_accessed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastAccessedAt"
+            default=None, description=""
         )
-        source_last_viewed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastViewedAt"
-        )
-        source_content_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceContentMetadataId"
-        )
-        source_query_id: Optional[int] = Field(
-            None, description="", alias="sourceQueryId"
-        )
-        model_name: Optional[str] = Field(
-            default=None, description="", alias="modelName"
-        )
+        source_last_viewed_at: Optional[datetime] = Field(default=None, description="")
+        source_content_metadata_id: Optional[int] = Field(default=None, description="")
+        source_query_id: Optional[int] = Field(default=None, description="")
+        model_name: Optional[str] = Field(default=None, description="")
         query: Optional[LookerQuery] = Field(
-            None, description="", alias="query"
+            default=None, description=""
         )  # relationship
         folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
+            default=None, description=""
         )  # relationship
-        tile: Optional[LookerTile] = Field(
-            None, description="", alias="tile"
-        )  # relationship
+        tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
         model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
+            default=None, description=""
         )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
-            None, description="", alias="dashboard"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerLook.Attributes" = Field(
@@ -515,35 +497,23 @@ class LookerDashboard(Looker):
         self.attributes.folder = folder
 
     class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(
-            default=None, description="", alias="folderName"
-        )
-        source_user_id: Optional[int] = Field(
-            None, description="", alias="sourceUserId"
-        )
-        source_view_count: Optional[int] = Field(
-            None, description="", alias="sourceViewCount"
-        )
-        source_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceMetadataId"
-        )
-        sourcelast_updater_id: Optional[int] = Field(
-            None, description="", alias="sourcelastUpdaterId"
-        )
+        folder_name: Optional[str] = Field(default=None, description="")
+        source_user_id: Optional[int] = Field(default=None, description="")
+        source_view_count: Optional[int] = Field(default=None, description="")
+        source_metadata_id: Optional[int] = Field(default=None, description="")
+        sourcelast_updater_id: Optional[int] = Field(default=None, description="")
         source_last_accessed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastAccessedAt"
+            default=None, description=""
         )
-        source_last_viewed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastViewedAt"
-        )
+        source_last_viewed_at: Optional[datetime] = Field(default=None, description="")
         tiles: Optional[list[LookerTile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description=""
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
+            default=None, description=""
         )  # relationship
         folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerDashboard.Attributes" = Field(
@@ -707,29 +677,21 @@ class LookerFolder(Looker):
         self.attributes.looker_parent_folder = looker_parent_folder
 
     class Attributes(Looker.Attributes):
-        source_content_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceContentMetadataId"
-        )
-        source_creator_id: Optional[int] = Field(
-            None, description="", alias="sourceCreatorId"
-        )
-        source_child_count: Optional[int] = Field(
-            None, description="", alias="sourceChildCount"
-        )
-        source_parent_i_d: Optional[int] = Field(
-            None, description="", alias="sourceParentID"
-        )
+        source_content_metadata_id: Optional[int] = Field(default=None, description="")
+        source_creator_id: Optional[int] = Field(default=None, description="")
+        source_child_count: Optional[int] = Field(default=None, description="")
+        source_parent_i_d: Optional[int] = Field(default=None, description="")
         looker_sub_folders: Optional[list[LookerFolder]] = Field(
-            None, description="", alias="lookerSubFolders"
+            default=None, description=""
         )  # relationship
         dashboards: Optional[list[LookerDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description=""
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
+            default=None, description=""
         )  # relationship
         looker_parent_folder: Optional[LookerFolder] = Field(
-            None, description="", alias="lookerParentFolder"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerFolder.Attributes" = Field(
@@ -917,29 +879,19 @@ class LookerTile(Looker):
         self.attributes.dashboard = dashboard
 
     class Attributes(Looker.Attributes):
-        lookml_link_id: Optional[str] = Field(
-            default=None, description="", alias="lookmlLinkId"
-        )
-        merge_result_id: Optional[str] = Field(
-            default=None, description="", alias="mergeResultId"
-        )
-        note_text: Optional[str] = Field(default=None, description="", alias="noteText")
-        query_i_d: Optional[int] = Field(default=None, description="", alias="queryID")
-        result_maker_i_d: Optional[int] = Field(
-            None, description="", alias="resultMakerID"
-        )
-        subtitle_text: Optional[str] = Field(
-            default=None, description="", alias="subtitleText"
-        )
-        look_id: Optional[int] = Field(default=None, description="", alias="lookId")
+        lookml_link_id: Optional[str] = Field(default=None, description="")
+        merge_result_id: Optional[str] = Field(default=None, description="")
+        note_text: Optional[str] = Field(default=None, description="")
+        query_i_d: Optional[int] = Field(default=None, description="")
+        result_maker_i_d: Optional[int] = Field(default=None, description="")
+        subtitle_text: Optional[str] = Field(default=None, description="")
+        look_id: Optional[int] = Field(default=None, description="")
         query: Optional[LookerQuery] = Field(
-            None, description="", alias="query"
+            default=None, description=""
         )  # relationship
-        look: Optional[LookerLook] = Field(
-            None, description="", alias="look"
-        )  # relationship
+        look: Optional[LookerLook] = Field(default=None, description="")  # relationship
         dashboard: Optional[LookerDashboard] = Field(
-            None, description="", alias="dashboard"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerTile.Attributes" = Field(
@@ -1061,23 +1013,19 @@ class LookerModel(Looker):
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(
-            default=None, description="", alias="projectName"
-        )
+        project_name: Optional[str] = Field(default=None, description="")
         explores: Optional[list[LookerExplore]] = Field(
-            None, description="", alias="explores"
+            default=None, description=""
         )  # relationship
         project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
+            default=None, description=""
         )  # relationship
-        look: Optional[LookerLook] = Field(
-            None, description="", alias="look"
-        )  # relationship
+        look: Optional[LookerLook] = Field(default=None, description="")  # relationship
         queries: Optional[list[LookerQuery]] = Field(
-            None, description="", alias="queries"
+            default=None, description=""
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerModel.Attributes" = Field(
@@ -1237,27 +1185,19 @@ class LookerExplore(Looker):
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(
-            default=None, description="", alias="projectName"
-        )
-        model_name: Optional[str] = Field(
-            default=None, description="", alias="modelName"
-        )
-        source_connection_name: Optional[str] = Field(
-            default=None, description="", alias="sourceConnectionName"
-        )
-        view_name: Optional[str] = Field(default=None, description="", alias="viewName")
-        sql_table_name: Optional[str] = Field(
-            default=None, description="", alias="sqlTableName"
-        )
+        project_name: Optional[str] = Field(default=None, description="")
+        model_name: Optional[str] = Field(default=None, description="")
+        source_connection_name: Optional[str] = Field(default=None, description="")
+        view_name: Optional[str] = Field(default=None, description="")
+        sql_table_name: Optional[str] = Field(default=None, description="")
         project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
+            default=None, description=""
         )  # relationship
         model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
+            default=None, description=""
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerExplore.Attributes" = Field(
@@ -1349,16 +1289,16 @@ class LookerProject(Looker):
 
     class Attributes(Looker.Attributes):
         models: Optional[list[LookerModel]] = Field(
-            None, description="", alias="models"
+            default=None, description=""
         )  # relationship
         explores: Optional[list[LookerExplore]] = Field(
-            None, description="", alias="explores"
+            default=None, description=""
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
+            default=None, description=""
         )  # relationship
         views: Optional[list[LookerView]] = Field(
-            None, description="", alias="views"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerProject.Attributes" = Field(
@@ -1509,24 +1449,18 @@ class LookerQuery(Looker):
         self.attributes.model = model
 
     class Attributes(Looker.Attributes):
-        source_definition: Optional[str] = Field(
-            default=None, description="", alias="sourceDefinition"
-        )
-        source_definition_database: Optional[str] = Field(
-            default=None, description="", alias="sourceDefinitionDatabase"
-        )
-        source_definition_schema: Optional[str] = Field(
-            default=None, description="", alias="sourceDefinitionSchema"
-        )
-        fields: Optional[set[str]] = Field(default=None, description="", alias="fields")
+        source_definition: Optional[str] = Field(default=None, description="")
+        source_definition_database: Optional[str] = Field(default=None, description="")
+        source_definition_schema: Optional[str] = Field(default=None, description="")
+        fields: Optional[set[str]] = Field(default=None, description="")
         tiles: Optional[list[LookerTile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description=""
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
+            default=None, description=""
         )  # relationship
         model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerQuery.Attributes" = Field(
@@ -1749,38 +1683,24 @@ class LookerField(Looker):
         self.attributes.model = model
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(
-            default=None, description="", alias="projectName"
-        )
+        project_name: Optional[str] = Field(default=None, description="")
         looker_explore_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="lookerExploreQualifiedName"
+            default=None, description=""
         )
-        looker_view_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="lookerViewQualifiedName"
-        )
-        model_name: Optional[str] = Field(
-            default=None, description="", alias="modelName"
-        )
-        source_definition: Optional[str] = Field(
-            default=None, description="", alias="sourceDefinition"
-        )
-        looker_field_data_type: Optional[str] = Field(
-            default=None, description="", alias="lookerFieldDataType"
-        )
-        looker_times_used: Optional[int] = Field(
-            None, description="", alias="lookerTimesUsed"
-        )
+        looker_view_qualified_name: Optional[str] = Field(default=None, description="")
+        model_name: Optional[str] = Field(default=None, description="")
+        source_definition: Optional[str] = Field(default=None, description="")
+        looker_field_data_type: Optional[str] = Field(default=None, description="")
+        looker_times_used: Optional[int] = Field(default=None, description="")
         explore: Optional[LookerExplore] = Field(
-            None, description="", alias="explore"
+            default=None, description=""
         )  # relationship
         project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
+            default=None, description=""
         )  # relationship
-        view: Optional[LookerView] = Field(
-            None, description="", alias="view"
-        )  # relationship
+        view: Optional[LookerView] = Field(default=None, description="")  # relationship
         model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerField.Attributes" = Field(
@@ -1895,20 +1815,14 @@ class LookerView(Looker):
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(
-            default=None, description="", alias="projectName"
-        )
-        looker_view_file_path: Optional[str] = Field(
-            default=None, description="", alias="lookerViewFilePath"
-        )
-        looker_view_file_name: Optional[str] = Field(
-            default=None, description="", alias="lookerViewFileName"
-        )
+        project_name: Optional[str] = Field(default=None, description="")
+        looker_view_file_path: Optional[str] = Field(default=None, description="")
+        looker_view_file_name: Optional[str] = Field(default=None, description="")
         project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
+            default=None, description=""
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
+            default=None, description=""
         )  # relationship
 
     attributes: "LookerView.Attributes" = Field(

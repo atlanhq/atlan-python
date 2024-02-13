@@ -51,7 +51,7 @@ class DataStudioAsset(DataStudio):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("DataStudioAsset", allow_mutation=False)
+    type_name: str = Field(default="DataStudioAsset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -291,41 +291,21 @@ class DataStudioAsset(DataStudio):
 
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
-            default=None, description="", alias="dataStudioAssetType"
+            default=None, description=""
         )
-        data_studio_asset_title: Optional[str] = Field(
-            default=None, description="", alias="dataStudioAssetTitle"
-        )
-        data_studio_asset_owner: Optional[str] = Field(
-            default=None, description="", alias="dataStudioAssetOwner"
-        )
+        data_studio_asset_title: Optional[str] = Field(default=None, description="")
+        data_studio_asset_owner: Optional[str] = Field(default=None, description="")
         is_trashed_data_studio_asset: Optional[bool] = Field(
-            default=None, description="", alias="isTrashedDataStudioAsset"
+            default=None, description=""
         )
-        google_service: Optional[str] = Field(
-            default=None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            default=None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            default=None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            default=None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            default=None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            default=None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            default=None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            default=None, description="", alias="googleTags"
-        )
+        google_service: Optional[str] = Field(default=None, description="")
+        google_project_name: Optional[str] = Field(default=None, description="")
+        google_project_id: Optional[str] = Field(default=None, description="")
+        google_project_number: Optional[int] = Field(default=None, description="")
+        google_location: Optional[str] = Field(default=None, description="")
+        google_location_type: Optional[str] = Field(default=None, description="")
+        google_labels: Optional[list[GoogleLabel]] = Field(default=None, description="")
+        google_tags: Optional[list[GoogleTag]] = Field(default=None, description="")
 
         @classmethod
         # @validate_arguments()

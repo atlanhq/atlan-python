@@ -73,11 +73,9 @@ class SigmaWorkbook(Sigma):
         self.attributes.sigma_pages = sigma_pages
 
     class Attributes(Sigma.Attributes):
-        sigma_page_count: Optional[int] = Field(
-            None, description="", alias="sigmaPageCount"
-        )
+        sigma_page_count: Optional[int] = Field(default=None, description="")
         sigma_pages: Optional[list[SigmaPage]] = Field(
-            None, description="", alias="sigmaPages"
+            default=None, description=""
         )  # relationship
 
     attributes: "SigmaWorkbook.Attributes" = Field(
@@ -175,13 +173,13 @@ class SigmaDataElementField(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_field_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sigmaDataElementFieldIsHidden"
+            default=None, description=""
         )
         sigma_data_element_field_formula: Optional[str] = Field(
-            default=None, description="", alias="sigmaDataElementFieldFormula"
+            default=None, description=""
         )
         sigma_data_element: Optional[SigmaDataElement] = Field(
-            None, description="", alias="sigmaDataElement"
+            default=None, description=""
         )  # relationship
 
     attributes: "SigmaDataElementField.Attributes" = Field(
@@ -266,14 +264,12 @@ class SigmaPage(Sigma):
         self.attributes.sigma_workbook = sigma_workbook
 
     class Attributes(Sigma.Attributes):
-        sigma_data_element_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementCount"
-        )
+        sigma_data_element_count: Optional[int] = Field(default=None, description="")
         sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
-            None, description="", alias="sigmaDataElements"
+            default=None, description=""
         )  # relationship
         sigma_workbook: Optional[SigmaWorkbook] = Field(
-            None, description="", alias="sigmaWorkbook"
+            default=None, description=""
         )  # relationship
 
     attributes: "SigmaPage.Attributes" = Field(
@@ -406,20 +402,16 @@ class SigmaDataElement(Sigma):
         self.attributes.sigma_data_element_fields = sigma_data_element_fields
 
     class Attributes(Sigma.Attributes):
-        sigma_data_element_query: Optional[str] = Field(
-            default=None, description="", alias="sigmaDataElementQuery"
-        )
-        sigma_data_element_type: Optional[str] = Field(
-            default=None, description="", alias="sigmaDataElementType"
-        )
+        sigma_data_element_query: Optional[str] = Field(default=None, description="")
+        sigma_data_element_type: Optional[str] = Field(default=None, description="")
         sigma_data_element_field_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementFieldCount"
+            default=None, description=""
         )
         sigma_page: Optional[SigmaPage] = Field(
-            None, description="", alias="sigmaPage"
+            default=None, description=""
         )  # relationship
         sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
-            None, description="", alias="sigmaDataElementFields"
+            default=None, description=""
         )  # relationship
 
     attributes: "SigmaDataElement.Attributes" = Field(

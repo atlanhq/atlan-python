@@ -22,7 +22,7 @@ from .asset19 import BI
 class MicroStrategy(BI):
     """Description"""
 
-    type_name: str = Field("MicroStrategy", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategy", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -283,34 +283,30 @@ class MicroStrategy(BI):
 
     class Attributes(BI.Attributes):
         micro_strategy_project_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="microStrategyProjectQualifiedName"
+            default=None, description=""
         )
-        micro_strategy_project_name: Optional[str] = Field(
-            default=None, description="", alias="microStrategyProjectName"
-        )
+        micro_strategy_project_name: Optional[str] = Field(default=None, description="")
         micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeQualifiedNames"
+            default=None, description=""
         )
         micro_strategy_cube_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeNames"
+            default=None, description=""
         )
         micro_strategy_report_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportQualifiedNames"
+            default=None, description=""
         )
         micro_strategy_report_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportNames"
+            default=None, description=""
         )
         micro_strategy_is_certified: Optional[bool] = Field(
-            None, description="", alias="microStrategyIsCertified"
+            default=None, description=""
         )
-        micro_strategy_certified_by: Optional[str] = Field(
-            default=None, description="", alias="microStrategyCertifiedBy"
-        )
+        micro_strategy_certified_by: Optional[str] = Field(default=None, description="")
         micro_strategy_certified_at: Optional[datetime] = Field(
-            None, description="", alias="microStrategyCertifiedAt"
+            default=None, description=""
         )
         micro_strategy_location: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="microStrategyLocation"
+            default=None, description=""
         )
 
     attributes: "MicroStrategy.Attributes" = Field(

@@ -16,7 +16,7 @@ from .asset00 import Asset
 class TagAttachment(Asset, type_name="TagAttachment"):
     """Description"""
 
-    type_name: str = Field("TagAttachment", allow_mutation=False)
+    type_name: str = Field(default="TagAttachment", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -74,12 +74,8 @@ class TagAttachment(Asset, type_name="TagAttachment"):
         self.attributes.tag_attachment_string_value = tag_attachment_string_value
 
     class Attributes(Asset.Attributes):
-        tag_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="tagQualifiedName"
-        )
-        tag_attachment_string_value: Optional[str] = Field(
-            default=None, description="", alias="tagAttachmentStringValue"
-        )
+        tag_qualified_name: Optional[str] = Field(default=None, description="")
+        tag_attachment_string_value: Optional[str] = Field(default=None, description="")
 
     attributes: "TagAttachment.Attributes" = Field(
         default_factory=lambda: TagAttachment.Attributes(),

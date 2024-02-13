@@ -17,7 +17,7 @@ from .asset24 import NoSQL
 class DynamoDB(NoSQL):
     """Description"""
 
-    type_name: str = Field("DynamoDB", allow_mutation=False)
+    type_name: str = Field(default="DynamoDB", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -139,19 +139,15 @@ class DynamoDB(NoSQL):
 
     class Attributes(NoSQL.Attributes):
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
-            None, description="", alias="dynamoDBStatus"
+            default=None, description=""
         )
-        dynamo_d_b_partition_key: Optional[str] = Field(
-            default=None, description="", alias="dynamoDBPartitionKey"
-        )
-        dynamo_d_b_sort_key: Optional[str] = Field(
-            default=None, description="", alias="dynamoDBSortKey"
-        )
+        dynamo_d_b_partition_key: Optional[str] = Field(default=None, description="")
+        dynamo_d_b_sort_key: Optional[str] = Field(default=None, description="")
         dynamo_d_b_read_capacity_units: Optional[int] = Field(
-            None, description="", alias="dynamoDBReadCapacityUnits"
+            default=None, description=""
         )
         dynamo_d_b_write_capacity_units: Optional[int] = Field(
-            None, description="", alias="dynamoDBWriteCapacityUnits"
+            default=None, description=""
         )
 
     attributes: "DynamoDB.Attributes" = Field(

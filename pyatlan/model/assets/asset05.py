@@ -97,11 +97,9 @@ class Badge(Asset, type_name="Badge"):
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
-            default=None, description="", alias="badgeConditions"
+            default=None, description=""
         )
-        badge_metadata_attribute: Optional[str] = Field(
-            default=None, description="", alias="badgeMetadataAttribute"
-        )
+        badge_metadata_attribute: Optional[str] = Field(default=None, description="")
 
         @classmethod
         # @validate_arguments()

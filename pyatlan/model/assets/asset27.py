@@ -14,7 +14,7 @@ from .asset00 import Catalog
 class Insight(Catalog):
     """Description"""
 
-    type_name: str = Field("Insight", allow_mutation=False)
+    type_name: str = Field(default="Insight", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

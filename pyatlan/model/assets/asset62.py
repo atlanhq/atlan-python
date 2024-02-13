@@ -140,14 +140,12 @@ class S3Bucket(S3):
         self.attributes.objects = objects
 
     class Attributes(S3.Attributes):
-        s3_object_count: Optional[int] = Field(
-            None, description="", alias="s3ObjectCount"
-        )
+        s3_object_count: Optional[int] = Field(default=None, description="")
         s3_bucket_versioning_enabled: Optional[bool] = Field(
-            None, description="", alias="s3BucketVersioningEnabled"
+            default=None, description=""
         )
         objects: Optional[list[S3Object]] = Field(
-            None, description="", alias="objects"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -455,35 +453,19 @@ class S3Object(S3):
 
     class Attributes(S3.Attributes):
         s3_object_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="s3ObjectLastModifiedTime"
+            default=None, description=""
         )
-        s3_bucket_name: Optional[str] = Field(
-            default=None, description="", alias="s3BucketName"
-        )
-        s3_bucket_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="s3BucketQualifiedName"
-        )
-        s3_object_size: Optional[int] = Field(
-            None, description="", alias="s3ObjectSize"
-        )
-        s3_object_storage_class: Optional[str] = Field(
-            default=None, description="", alias="s3ObjectStorageClass"
-        )
-        s3_object_key: Optional[str] = Field(
-            default=None, description="", alias="s3ObjectKey"
-        )
-        s3_object_content_type: Optional[str] = Field(
-            default=None, description="", alias="s3ObjectContentType"
-        )
+        s3_bucket_name: Optional[str] = Field(default=None, description="")
+        s3_bucket_qualified_name: Optional[str] = Field(default=None, description="")
+        s3_object_size: Optional[int] = Field(default=None, description="")
+        s3_object_storage_class: Optional[str] = Field(default=None, description="")
+        s3_object_key: Optional[str] = Field(default=None, description="")
+        s3_object_content_type: Optional[str] = Field(default=None, description="")
         s3_object_content_disposition: Optional[str] = Field(
-            default=None, description="", alias="s3ObjectContentDisposition"
+            default=None, description=""
         )
-        s3_object_version_id: Optional[str] = Field(
-            default=None, description="", alias="s3ObjectVersionId"
-        )
-        bucket: Optional[S3Bucket] = Field(
-            None, description="", alias="bucket"
-        )  # relationship
+        s3_object_version_id: Optional[str] = Field(default=None, description="")
+        bucket: Optional[S3Bucket] = Field(default=None, description="")  # relationship
 
         @classmethod
         # @validate_arguments()

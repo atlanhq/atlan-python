@@ -227,31 +227,17 @@ class APISpec(API):
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
-            default=None, description="", alias="apiSpecTermsOfServiceURL"
+            default=None, description=""
         )
-        api_spec_contact_email: Optional[str] = Field(
-            default=None, description="", alias="apiSpecContactEmail"
-        )
-        api_spec_contact_name: Optional[str] = Field(
-            default=None, description="", alias="apiSpecContactName"
-        )
-        api_spec_contact_url: Optional[str] = Field(
-            default=None, description="", alias="apiSpecContactURL"
-        )
-        api_spec_license_name: Optional[str] = Field(
-            default=None, description="", alias="apiSpecLicenseName"
-        )
-        api_spec_license_url: Optional[str] = Field(
-            default=None, description="", alias="apiSpecLicenseURL"
-        )
-        api_spec_contract_version: Optional[str] = Field(
-            default=None, description="", alias="apiSpecContractVersion"
-        )
-        api_spec_service_alias: Optional[str] = Field(
-            default=None, description="", alias="apiSpecServiceAlias"
-        )
+        api_spec_contact_email: Optional[str] = Field(default=None, description="")
+        api_spec_contact_name: Optional[str] = Field(default=None, description="")
+        api_spec_contact_url: Optional[str] = Field(default=None, description="")
+        api_spec_license_name: Optional[str] = Field(default=None, description="")
+        api_spec_license_url: Optional[str] = Field(default=None, description="")
+        api_spec_contract_version: Optional[str] = Field(default=None, description="")
+        api_spec_service_alias: Optional[str] = Field(default=None, description="")
         api_paths: Optional[list[APIPath]] = Field(
-            None, description="", alias="apiPaths"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -459,26 +445,20 @@ class APIPath(API):
         self.attributes.api_spec = api_spec
 
     class Attributes(API.Attributes):
-        api_path_summary: Optional[str] = Field(
-            default=None, description="", alias="apiPathSummary"
-        )
-        api_path_raw_u_r_i: Optional[str] = Field(
-            default=None, description="", alias="apiPathRawURI"
-        )
-        api_path_is_templated: Optional[bool] = Field(
-            None, description="", alias="apiPathIsTemplated"
-        )
+        api_path_summary: Optional[str] = Field(default=None, description="")
+        api_path_raw_u_r_i: Optional[str] = Field(default=None, description="")
+        api_path_is_templated: Optional[bool] = Field(default=None, description="")
         api_path_available_operations: Optional[set[str]] = Field(
-            None, description="", alias="apiPathAvailableOperations"
+            default=None, description=""
         )
         api_path_available_response_codes: Optional[dict[str, str]] = Field(
-            None, description="", alias="apiPathAvailableResponseCodes"
+            default=None, description=""
         )
         api_path_is_ingress_exposed: Optional[bool] = Field(
-            None, description="", alias="apiPathIsIngressExposed"
+            default=None, description=""
         )
         api_spec: Optional[APISpec] = Field(
-            None, description="", alias="apiSpec"
+            default=None, description=""
         )  # relationship
 
         @classmethod

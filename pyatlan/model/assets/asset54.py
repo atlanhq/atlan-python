@@ -16,7 +16,7 @@ from .asset20 import SaaS
 class Salesforce(SaaS):
     """Description"""
 
-    type_name: str = Field("Salesforce", allow_mutation=False)
+    type_name: str = Field(default="Salesforce", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -72,10 +72,8 @@ class Salesforce(SaaS):
         self.attributes.api_name = api_name
 
     class Attributes(SaaS.Attributes):
-        organization_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="organizationQualifiedName"
-        )
-        api_name: Optional[str] = Field(default=None, description="", alias="apiName")
+        organization_qualified_name: Optional[str] = Field(default=None, description="")
+        api_name: Optional[str] = Field(default=None, description="")
 
     attributes: "Salesforce.Attributes" = Field(
         default_factory=lambda: Salesforce.Attributes(),

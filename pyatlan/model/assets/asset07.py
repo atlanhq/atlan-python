@@ -14,7 +14,7 @@ from .asset00 import Asset
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
-    type_name: str = Field("ProcessExecution", allow_mutation=False)
+    type_name: str = Field(default="ProcessExecution", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

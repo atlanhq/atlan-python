@@ -14,7 +14,7 @@ from .asset19 import BI
 class Sisense(BI):
     """Description"""
 
-    type_name: str = Field("Sisense", allow_mutation=False)
+    type_name: str = Field(default="Sisense", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

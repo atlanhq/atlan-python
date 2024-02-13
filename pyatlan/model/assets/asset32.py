@@ -17,7 +17,7 @@ from .asset09 import Cloud
 class Azure(Cloud):
     """Description"""
 
-    type_name: str = Field("Azure", allow_mutation=False)
+    type_name: str = Field(default="Azure", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -109,18 +109,12 @@ class Azure(Cloud):
         self.attributes.azure_tags = azure_tags
 
     class Attributes(Cloud.Attributes):
-        azure_resource_id: Optional[str] = Field(
-            default=None, description="", alias="azureResourceId"
-        )
-        azure_location: Optional[str] = Field(
-            default=None, description="", alias="azureLocation"
-        )
+        azure_resource_id: Optional[str] = Field(default=None, description="")
+        azure_location: Optional[str] = Field(default=None, description="")
         adls_account_secondary_location: Optional[str] = Field(
-            default=None, description="", alias="adlsAccountSecondaryLocation"
+            default=None, description=""
         )
-        azure_tags: Optional[list[AzureTag]] = Field(
-            None, description="", alias="azureTags"
-        )
+        azure_tags: Optional[list[AzureTag]] = Field(default=None, description="")
 
     attributes: "Azure.Attributes" = Field(
         default_factory=lambda: Azure.Attributes(),

@@ -16,7 +16,7 @@ from .asset19 import BI
 class Mode(BI):
     """Description"""
 
-    type_name: str = Field("Mode", allow_mutation=False)
+    type_name: str = Field(default="Mode", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -207,31 +207,17 @@ class Mode(BI):
         self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
     class Attributes(BI.Attributes):
-        mode_id: Optional[str] = Field(default=None, description="", alias="modeId")
-        mode_token: Optional[str] = Field(
-            default=None, description="", alias="modeToken"
-        )
-        mode_workspace_name: Optional[str] = Field(
-            default=None, description="", alias="modeWorkspaceName"
-        )
-        mode_workspace_username: Optional[str] = Field(
-            default=None, description="", alias="modeWorkspaceUsername"
-        )
+        mode_id: Optional[str] = Field(default=None, description="")
+        mode_token: Optional[str] = Field(default=None, description="")
+        mode_workspace_name: Optional[str] = Field(default=None, description="")
+        mode_workspace_username: Optional[str] = Field(default=None, description="")
         mode_workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="modeWorkspaceQualifiedName"
+            default=None, description=""
         )
-        mode_report_name: Optional[str] = Field(
-            default=None, description="", alias="modeReportName"
-        )
-        mode_report_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="modeReportQualifiedName"
-        )
-        mode_query_name: Optional[str] = Field(
-            default=None, description="", alias="modeQueryName"
-        )
-        mode_query_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="modeQueryQualifiedName"
-        )
+        mode_report_name: Optional[str] = Field(default=None, description="")
+        mode_report_qualified_name: Optional[str] = Field(default=None, description="")
+        mode_query_name: Optional[str] = Field(default=None, description="")
+        mode_query_qualified_name: Optional[str] = Field(default=None, description="")
 
     attributes: "Mode.Attributes" = Field(
         default_factory=lambda: Mode.Attributes(),

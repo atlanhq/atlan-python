@@ -172,7 +172,7 @@ class Purpose(AccessControl):
             )
         )
 
-    type_name: str = Field("Purpose", allow_mutation=False)
+    type_name: str = Field(default="Purpose", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -208,7 +208,7 @@ class Purpose(AccessControl):
 
     class Attributes(AccessControl.Attributes):
         purpose_atlan_tags: Optional[list[AtlanTagName]] = Field(
-            None, description="", alias="purposeClassifications"
+            default=None, description=""
         )
 
         @classmethod

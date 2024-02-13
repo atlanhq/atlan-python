@@ -125,17 +125,15 @@ class MicroStrategyReport(MicroStrategy):
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_report_type: Optional[str] = Field(
-            default=None, description="", alias="microStrategyReportType"
-        )
+        micro_strategy_report_type: Optional[str] = Field(default=None, description="")
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyReport.Attributes" = Field(
@@ -335,30 +333,30 @@ class MicroStrategyProject(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+            default=None, description=""
         )  # relationship
         micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
-            None, description="", alias="microStrategyFacts"
+            default=None, description=""
         )  # relationship
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description=""
         )  # relationship
         micro_strategy_visualizations: Optional[
             list[MicroStrategyVisualization]
         ] = Field(
-            None, description="", alias="microStrategyVisualizations"
+            default=None, description=""
         )  # relationship
         micro_strategy_documents: Optional[list[MicroStrategyDocument]] = Field(
-            None, description="", alias="microStrategyDocuments"
+            default=None, description=""
         )  # relationship
         micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+            default=None, description=""
         )  # relationship
         micro_strategy_dossiers: Optional[list[MicroStrategyDossier]] = Field(
-            None, description="", alias="microStrategyDossiers"
+            default=None, description=""
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyProject.Attributes" = Field(
@@ -721,46 +719,46 @@ class MicroStrategyMetric(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_metric_expression: Optional[str] = Field(
-            default=None, description="", alias="microStrategyMetricExpression"
+            default=None, description=""
         )
         micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyAttributeQualifiedNames"
+            default=None, description=""
         )
         micro_strategy_attribute_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyAttributeNames"
+            default=None, description=""
         )
         micro_strategy_fact_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactQualifiedNames"
+            default=None, description=""
         )
         micro_strategy_fact_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactNames"
+            default=None, description=""
         )
         micro_strategy_metric_parent_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyMetricParentQualifiedNames"
+            default=None, description=""
         )
         micro_strategy_metric_parent_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyMetricParentNames"
+            default=None, description=""
         )
         micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetricParents"
+            default=None, description=""
         )  # relationship
         micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
-            None, description="", alias="microStrategyFacts"
+            default=None, description=""
         )  # relationship
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+            default=None, description=""
         )  # relationship
         micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+            default=None, description=""
         )  # relationship
         micro_strategy_metric_children: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetricChildren"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyMetric.Attributes" = Field(
@@ -899,20 +897,16 @@ class MicroStrategyCube(MicroStrategy):
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_cube_type: Optional[str] = Field(
-            default=None, description="", alias="microStrategyCubeType"
-        )
-        micro_strategy_cube_query: Optional[str] = Field(
-            default=None, description="", alias="microStrategyCubeQuery"
-        )
+        micro_strategy_cube_type: Optional[str] = Field(default=None, description="")
+        micro_strategy_cube_query: Optional[str] = Field(default=None, description="")
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyCube.Attributes" = Field(
@@ -1016,15 +1010,15 @@ class MicroStrategyDossier(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyDossierChapterNames"
+            default=None, description=""
         )
         micro_strategy_visualizations: Optional[
             list[MicroStrategyVisualization]
         ] = Field(
-            None, description="", alias="microStrategyVisualizations"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyDossier.Attributes" = Field(
@@ -1124,13 +1118,13 @@ class MicroStrategyFact(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_fact_expressions: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactExpressions"
+            default=None, description=""
         )
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyFact.Attributes" = Field(
@@ -1183,7 +1177,7 @@ class MicroStrategyDocument(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyDocument.Attributes" = Field(
@@ -1319,19 +1313,19 @@ class MicroStrategyAttribute(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_attribute_forms: Optional[str] = Field(
-            default=None, description="", alias="microStrategyAttributeForms"
+            default=None, description=""
         )
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+            default=None, description=""
         )  # relationship
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description=""
         )  # relationship
         micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyAttribute.Attributes" = Field(
@@ -1483,19 +1477,17 @@ class MicroStrategyVisualization(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_visualization_type: Optional[str] = Field(
-            default=None, description="", alias="microStrategyVisualizationType"
+            default=None, description=""
         )
         micro_strategy_dossier_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="microStrategyDossierQualifiedName"
+            default=None, description=""
         )
-        micro_strategy_dossier_name: Optional[str] = Field(
-            default=None, description="", alias="microStrategyDossierName"
-        )
+        micro_strategy_dossier_name: Optional[str] = Field(default=None, description="")
         micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
-            None, description="", alias="microStrategyDossier"
+            default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description=""
         )  # relationship
 
     attributes: "MicroStrategyVisualization.Attributes" = Field(

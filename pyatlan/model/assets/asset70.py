@@ -17,7 +17,7 @@ from .asset69 import TableauProject
 class TableauMetric(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauMetric", allow_mutation=False)
+    type_name: str = Field(default="TableauMetric", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -129,20 +129,16 @@ class TableauMetric(Tableau):
         self.attributes.project = project
 
     class Attributes(Tableau.Attributes):
-        site_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="siteQualifiedName"
-        )
-        project_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="projectQualifiedName"
-        )
+        site_qualified_name: Optional[str] = Field(default=None, description="")
+        project_qualified_name: Optional[str] = Field(default=None, description="")
         top_level_project_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description=""
         )
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description=""
         )
         project: Optional[TableauProject] = Field(
-            None, description="", alias="project"
+            default=None, description=""
         )  # relationship
 
     attributes: "TableauMetric.Attributes" = Field(

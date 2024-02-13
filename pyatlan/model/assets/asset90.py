@@ -14,7 +14,7 @@ from .asset87 import KafkaConsumerGroup
 class AzureEventHubConsumerGroup(KafkaConsumerGroup):
     """Description"""
 
-    type_name: str = Field("AzureEventHubConsumerGroup", allow_mutation=False)
+    type_name: str = Field(default="AzureEventHubConsumerGroup", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

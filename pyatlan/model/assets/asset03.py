@@ -47,7 +47,7 @@ class Connection(Asset, type_name="Connection"):
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
         return cls(attributes=attr)
 
-    type_name: str = Field("Connection", allow_mutation=False)
+    type_name: str = Field(default="Connection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -587,81 +587,51 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.vector_embeddings_updated_at = vector_embeddings_updated_at
 
     class Attributes(Asset.Attributes):
-        category: Optional[str] = Field(default=None, description="", alias="category")
-        sub_category: Optional[str] = Field(
-            default=None, description="", alias="subCategory"
-        )
-        host: Optional[str] = Field(default=None, description="", alias="host")
-        port: Optional[int] = Field(default=None, description="", alias="port")
-        allow_query: Optional[bool] = Field(
-            default=None, description="", alias="allowQuery"
-        )
-        allow_query_preview: Optional[bool] = Field(
-            None, description="", alias="allowQueryPreview"
-        )
+        category: Optional[str] = Field(default=None, description="")
+        sub_category: Optional[str] = Field(default=None, description="")
+        host: Optional[str] = Field(default=None, description="")
+        port: Optional[int] = Field(default=None, description="")
+        allow_query: Optional[bool] = Field(default=None, description="")
+        allow_query_preview: Optional[bool] = Field(default=None, description="")
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description=""
         )
-        query_config: Optional[str] = Field(
-            default=None, description="", alias="queryConfig"
-        )
-        credential_strategy: Optional[str] = Field(
-            default=None, description="", alias="credentialStrategy"
-        )
-        preview_credential_strategy: Optional[str] = Field(
-            default=None, description="", alias="previewCredentialStrategy"
-        )
-        policy_strategy: Optional[str] = Field(
-            default=None, description="", alias="policyStrategy"
-        )
+        query_config: Optional[str] = Field(default=None, description="")
+        credential_strategy: Optional[str] = Field(default=None, description="")
+        preview_credential_strategy: Optional[str] = Field(default=None, description="")
+        policy_strategy: Optional[str] = Field(default=None, description="")
         policy_strategy_for_sample_preview: Optional[str] = Field(
-            default=None, description="", alias="policyStrategyForSamplePreview"
+            default=None, description=""
         )
         query_username_strategy: Optional[QueryUsernameStrategy] = Field(
-            None, description="", alias="queryUsernameStrategy"
+            default=None, description=""
         )
-        row_limit: Optional[int] = Field(default=None, description="", alias="rowLimit")
-        query_timeout: Optional[int] = Field(
-            default=None, description="", alias="queryTimeout"
-        )
-        default_credential_guid: Optional[str] = Field(
-            default=None, description="", alias="defaultCredentialGuid"
-        )
-        connector_icon: Optional[str] = Field(
-            default=None, description="", alias="connectorIcon"
-        )
-        connector_image: Optional[str] = Field(
-            default=None, description="", alias="connectorImage"
-        )
-        source_logo: Optional[str] = Field(
-            default=None, description="", alias="sourceLogo"
-        )
+        row_limit: Optional[int] = Field(default=None, description="")
+        query_timeout: Optional[int] = Field(default=None, description="")
+        default_credential_guid: Optional[str] = Field(default=None, description="")
+        connector_icon: Optional[str] = Field(default=None, description="")
+        connector_image: Optional[str] = Field(default=None, description="")
+        source_logo: Optional[str] = Field(default=None, description="")
         is_sample_data_preview_enabled: Optional[bool] = Field(
-            None, description="", alias="isSampleDataPreviewEnabled"
+            default=None, description=""
         )
         popularity_insights_timeframe: Optional[int] = Field(
-            None, description="", alias="popularityInsightsTimeframe"
+            default=None, description=""
         )
-        has_popularity_insights: Optional[bool] = Field(
-            None, description="", alias="hasPopularityInsights"
-        )
+        has_popularity_insights: Optional[bool] = Field(default=None, description="")
         connection_dbt_environments: Optional[set[str]] = Field(
-            None, description="", alias="connectionDbtEnvironments"
+            default=None, description=""
         )
         connection_s_s_o_credential_guid: Optional[str] = Field(
-            default=None, description="", alias="connectionSSOCredentialGuid"
+            default=None, description=""
         )
-        use_object_storage: Optional[bool] = Field(
-            None, description="", alias="useObjectStorage"
-        )
+        use_object_storage: Optional[bool] = Field(default=None, description="")
         object_storage_upload_threshold: Optional[int] = Field(
-            None, description="", alias="objectStorageUploadThreshold"
+            default=None, description=""
         )
-        vector_embeddings_enabled: Optional[bool] = Field(
-            None, description="", alias="vectorEmbeddingsEnabled"
-        )
+        vector_embeddings_enabled: Optional[bool] = Field(default=None, description="")
         vector_embeddings_updated_at: Optional[datetime] = Field(
-            None, description="", alias="vectorEmbeddingsUpdatedAt"
+            default=None, description=""
         )
 
         is_loaded: bool = Field(default=True)

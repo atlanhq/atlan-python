@@ -17,7 +17,7 @@ from .asset17 import ObjectStore
 class S3(ObjectStore):
     """Description"""
 
-    type_name: str = Field("S3", allow_mutation=False)
+    type_name: str = Field(default="S3", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -210,35 +210,17 @@ class S3(ObjectStore):
         self.attributes.aws_tags = aws_tags
 
     class Attributes(ObjectStore.Attributes):
-        s3_e_tag: Optional[str] = Field(default=None, description="", alias="s3ETag")
-        s3_encryption: Optional[str] = Field(
-            default=None, description="", alias="s3Encryption"
-        )
+        s3_e_tag: Optional[str] = Field(default=None, description="")
+        s3_encryption: Optional[str] = Field(default=None, description="")
         aws_arn: Optional[str] = Field(default=None, description="")
-        aws_partition: Optional[str] = Field(
-            default=None, description="", alias="awsPartition"
-        )
-        aws_service: Optional[str] = Field(
-            default=None, description="", alias="awsService"
-        )
-        aws_region: Optional[str] = Field(
-            default=None, description="", alias="awsRegion"
-        )
-        aws_account_id: Optional[str] = Field(
-            default=None, description="", alias="awsAccountId"
-        )
-        aws_resource_id: Optional[str] = Field(
-            default=None, description="", alias="awsResourceId"
-        )
-        aws_owner_name: Optional[str] = Field(
-            default=None, description="", alias="awsOwnerName"
-        )
-        aws_owner_id: Optional[str] = Field(
-            default=None, description="", alias="awsOwnerId"
-        )
-        aws_tags: Optional[list[AwsTag]] = Field(
-            default=None, description="", alias="awsTags"
-        )
+        aws_partition: Optional[str] = Field(default=None, description="")
+        aws_service: Optional[str] = Field(default=None, description="")
+        aws_region: Optional[str] = Field(default=None, description="")
+        aws_account_id: Optional[str] = Field(default=None, description="")
+        aws_resource_id: Optional[str] = Field(default=None, description="")
+        aws_owner_name: Optional[str] = Field(default=None, description="")
+        aws_owner_id: Optional[str] = Field(default=None, description="")
+        aws_tags: Optional[list[AwsTag]] = Field(default=None, description="")
 
     attributes: "S3.Attributes" = Field(
         default_factory=lambda: S3.Attributes(),

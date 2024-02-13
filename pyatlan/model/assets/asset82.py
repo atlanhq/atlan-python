@@ -147,26 +147,18 @@ class SalesforceObject(Salesforce):
         self.attributes.fields = fields
 
     class Attributes(Salesforce.Attributes):
-        is_custom: Optional[bool] = Field(
-            default=None, description="", alias="isCustom"
-        )
-        is_mergable: Optional[bool] = Field(
-            default=None, description="", alias="isMergable"
-        )
-        is_queryable: Optional[bool] = Field(
-            default=None, description="", alias="isQueryable"
-        )
-        field_count: Optional[int] = Field(
-            default=None, description="", alias="fieldCount"
-        )
+        is_custom: Optional[bool] = Field(default=None, description="")
+        is_mergable: Optional[bool] = Field(default=None, description="")
+        is_queryable: Optional[bool] = Field(default=None, description="")
+        field_count: Optional[int] = Field(default=None, description="")
         lookup_fields: Optional[list[SalesforceField]] = Field(
-            None, description="", alias="lookupFields"
+            default=None, description=""
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+            default=None, description=""
         )  # relationship
         fields: Optional[list[SalesforceField]] = Field(
-            None, description="", alias="fields"
+            default=None, description=""
         )  # relationship
 
     attributes: "SalesforceObject.Attributes" = Field(
@@ -490,53 +482,27 @@ class SalesforceField(Salesforce):
         self.attributes.object = object
 
     class Attributes(Salesforce.Attributes):
-        data_type: Optional[str] = Field(default=None, description="", alias="dataType")
-        object_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="objectQualifiedName"
-        )
-        order: Optional[int] = Field(default=None, description="", alias="order")
-        inline_help_text: Optional[str] = Field(
-            default=None, description="", alias="inlineHelpText"
-        )
-        is_calculated: Optional[bool] = Field(
-            None, description="", alias="isCalculated"
-        )
-        formula: Optional[str] = Field(default=None, description="", alias="formula")
-        is_case_sensitive: Optional[bool] = Field(
-            None, description="", alias="isCaseSensitive"
-        )
-        is_encrypted: Optional[bool] = Field(
-            default=None, description="", alias="isEncrypted"
-        )
-        max_length: Optional[int] = Field(
-            default=None, description="", alias="maxLength"
-        )
-        is_nullable: Optional[bool] = Field(
-            default=None, description="", alias="isNullable"
-        )
-        precision: Optional[int] = Field(
-            default=None, description="", alias="precision"
-        )
-        numeric_scale: Optional[float] = Field(
-            None, description="", alias="numericScale"
-        )
-        is_unique: Optional[bool] = Field(
-            default=None, description="", alias="isUnique"
-        )
-        picklist_values: Optional[set[str]] = Field(
-            None, description="", alias="picklistValues"
-        )
-        is_polymorphic_foreign_key: Optional[bool] = Field(
-            None, description="", alias="isPolymorphicForeignKey"
-        )
-        default_value_formula: Optional[str] = Field(
-            default=None, description="", alias="defaultValueFormula"
-        )
+        data_type: Optional[str] = Field(default=None, description="")
+        object_qualified_name: Optional[str] = Field(default=None, description="")
+        order: Optional[int] = Field(default=None, description="")
+        inline_help_text: Optional[str] = Field(default=None, description="")
+        is_calculated: Optional[bool] = Field(default=None, description="")
+        formula: Optional[str] = Field(default=None, description="")
+        is_case_sensitive: Optional[bool] = Field(default=None, description="")
+        is_encrypted: Optional[bool] = Field(default=None, description="")
+        max_length: Optional[int] = Field(default=None, description="")
+        is_nullable: Optional[bool] = Field(default=None, description="")
+        precision: Optional[int] = Field(default=None, description="")
+        numeric_scale: Optional[float] = Field(default=None, description="")
+        is_unique: Optional[bool] = Field(default=None, description="")
+        picklist_values: Optional[set[str]] = Field(default=None, description="")
+        is_polymorphic_foreign_key: Optional[bool] = Field(default=None, description="")
+        default_value_formula: Optional[str] = Field(default=None, description="")
         lookup_objects: Optional[list[SalesforceObject]] = Field(
-            None, description="", alias="lookupObjects"
+            default=None, description=""
         )  # relationship
         object: Optional[SalesforceObject] = Field(
-            None, description="", alias="object"
+            default=None, description=""
         )  # relationship
 
     attributes: "SalesforceField.Attributes" = Field(
@@ -628,15 +594,15 @@ class SalesforceOrganization(Salesforce):
         self.attributes.dashboards = dashboards
 
     class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(default=None, description="", alias="sourceId")
+        source_id: Optional[str] = Field(default=None, description="")
         reports: Optional[list[SalesforceReport]] = Field(
-            None, description="", alias="reports"
+            default=None, description=""
         )  # relationship
         objects: Optional[list[SalesforceObject]] = Field(
-            None, description="", alias="objects"
+            default=None, description=""
         )  # relationship
         dashboards: Optional[list[SalesforceDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description=""
         )  # relationship
 
     attributes: "SalesforceOrganization.Attributes" = Field(
@@ -745,18 +711,14 @@ class SalesforceDashboard(Salesforce):
         self.attributes.organization = organization
 
     class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(default=None, description="", alias="sourceId")
-        dashboard_type: Optional[str] = Field(
-            default=None, description="", alias="dashboardType"
-        )
-        report_count: Optional[int] = Field(
-            default=None, description="", alias="reportCount"
-        )
+        source_id: Optional[str] = Field(default=None, description="")
+        dashboard_type: Optional[str] = Field(default=None, description="")
+        report_count: Optional[int] = Field(default=None, description="")
         reports: Optional[list[SalesforceReport]] = Field(
-            None, description="", alias="reports"
+            default=None, description=""
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+            default=None, description=""
         )  # relationship
 
     attributes: "SalesforceDashboard.Attributes" = Field(
@@ -865,18 +827,14 @@ class SalesforceReport(Salesforce):
         self.attributes.organization = organization
 
     class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(default=None, description="", alias="sourceId")
-        report_type: Optional[dict[str, str]] = Field(
-            None, description="", alias="reportType"
-        )
-        detail_columns: Optional[set[str]] = Field(
-            None, description="", alias="detailColumns"
-        )
+        source_id: Optional[str] = Field(default=None, description="")
+        report_type: Optional[dict[str, str]] = Field(default=None, description="")
+        detail_columns: Optional[set[str]] = Field(default=None, description="")
         dashboards: Optional[list[SalesforceDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description=""
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+            default=None, description=""
         )  # relationship
 
     attributes: "SalesforceReport.Attributes" = Field(

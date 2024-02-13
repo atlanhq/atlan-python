@@ -43,6 +43,7 @@ class AtlanGroup(AtlanObject):
         default=None, description="Name of the group as it appears in the UI."
     )
     attributes: Optional[AtlanGroup.Attributes] = Field(
+        default=None,
         description="Detailed attributes of the group."
     )
     decentralized_roles: Optional[list[Any]] = Field(default=None, description="TBC")
@@ -125,12 +126,14 @@ class GroupResponse(AtlanObject):
 class CreateGroupRequest(AtlanObject):
     group: AtlanGroup = Field(description="Group to be created.")
     users: Optional[list[str]] = Field(
+        default=None,
         description="List of users (their GUIDs) to be included in the group."
     )
 
 
 class RemoveFromGroupRequest(AtlanObject):
     users: Optional[list[str]] = Field(
+        default=None,
         description="List of users (their GUIDs) to remove from the group."
     )
 
@@ -138,6 +141,7 @@ class RemoveFromGroupRequest(AtlanObject):
 class CreateGroupResponse(AtlanObject):
     class UserStatus(AtlanObject):
         status: Optional[int] = Field(
+             default=None,
             description="Response code for the association (200 is success)."
         )
         status_message: Optional[str] = Field(
@@ -154,5 +158,6 @@ class CreateGroupResponse(AtlanObject):
         description="Unique identifier (GUID) of the group that was created."
     )
     users: Optional[dict[str, CreateGroupResponse.UserStatus]] = Field(
+         default=None,
         description="Map of user association statuses, keyed by unique identifier (GUID) of the user."
     )

@@ -17,7 +17,7 @@ from .asset00 import Resource
 class ReadmeTemplate(Resource):
     """Description"""
 
-    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+    type_name: str = Field(default="ReadmeTemplate", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -65,10 +65,8 @@ class ReadmeTemplate(Resource):
         self.attributes.icon_type = icon_type
 
     class Attributes(Resource.Attributes):
-        icon: Optional[str] = Field(default=None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(
-            default=None, description="", alias="iconType"
-        )
+        icon: Optional[str] = Field(default=None, description="")
+        icon_type: Optional[IconType] = Field(default=None, description="")
 
     attributes: "ReadmeTemplate.Attributes" = Field(
         default_factory=lambda: ReadmeTemplate.Attributes(),

@@ -171,27 +171,21 @@ class PowerBIReport(PowerBI):
         self.attributes.dataset = dataset
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="datasetQualifiedName"
-        )
-        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
-        page_count: Optional[int] = Field(
-            default=None, description="", alias="pageCount"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        dataset_qualified_name: Optional[str] = Field(default=None, description="")
+        web_url: Optional[str] = Field(default=None, description="")
+        page_count: Optional[int] = Field(default=None, description="")
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description=""
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description=""
         )  # relationship
         pages: Optional[list[PowerBIPage]] = Field(
-            None, description="", alias="pages"
+            default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIReport.Attributes" = Field(
@@ -322,20 +316,16 @@ class PowerBIMeasure(PowerBI):
         self.attributes.table = table
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="datasetQualifiedName"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        dataset_qualified_name: Optional[str] = Field(default=None, description="")
         power_b_i_measure_expression: Optional[str] = Field(
-            default=None, description="", alias="powerBIMeasureExpression"
+            default=None, description=""
         )
         power_b_i_is_external_measure: Optional[bool] = Field(
-            None, description="", alias="powerBIIsExternalMeasure"
+            default=None, description=""
         )
         table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIMeasure.Attributes" = Field(
@@ -510,26 +500,18 @@ class PowerBIColumn(PowerBI):
         self.attributes.table = table
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="datasetQualifiedName"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        dataset_qualified_name: Optional[str] = Field(default=None, description="")
         power_b_i_column_data_category: Optional[str] = Field(
-            default=None, description="", alias="powerBIColumnDataCategory"
+            default=None, description=""
         )
-        power_b_i_column_data_type: Optional[str] = Field(
-            default=None, description="", alias="powerBIColumnDataType"
-        )
-        power_b_i_sort_by_column: Optional[str] = Field(
-            default=None, description="", alias="powerBISortByColumn"
-        )
+        power_b_i_column_data_type: Optional[str] = Field(default=None, description="")
+        power_b_i_sort_by_column: Optional[str] = Field(default=None, description="")
         power_b_i_column_summarize_by: Optional[str] = Field(
-            default=None, description="", alias="powerBIColumnSummarizeBy"
+            default=None, description=""
         )
         table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIColumn.Attributes" = Field(
@@ -715,29 +697,25 @@ class PowerBITable(PowerBI):
         self.attributes.dataset = dataset
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="datasetQualifiedName"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        dataset_qualified_name: Optional[str] = Field(default=None, description="")
         power_b_i_table_source_expressions: Optional[set[str]] = Field(
-            None, description="", alias="powerBITableSourceExpressions"
+            default=None, description=""
         )
         power_b_i_table_column_count: Optional[int] = Field(
-            None, description="", alias="powerBITableColumnCount"
+            default=None, description=""
         )
         power_b_i_table_measure_count: Optional[int] = Field(
-            None, description="", alias="powerBITableMeasureCount"
+            default=None, description=""
         )
         columns: Optional[list[PowerBIColumn]] = Field(
-            None, description="", alias="columns"
+            default=None, description=""
         )  # relationship
         measures: Optional[list[PowerBIMeasure]] = Field(
-            None, description="", alias="measures"
+            default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBITable.Attributes" = Field(
@@ -856,20 +834,16 @@ class PowerBITile(PowerBI):
         self.attributes.dashboard = dashboard
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        dashboard_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="dashboardQualifiedName"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        dashboard_qualified_name: Optional[str] = Field(default=None, description="")
         report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
+            default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+            default=None, description=""
         )  # relationship
         dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBITile.Attributes" = Field(
@@ -934,10 +908,10 @@ class PowerBIDatasource(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
-            None, description="", alias="connectionDetails"
+            default=None, description=""
         )
         datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIDatasource.Attributes" = Field(
@@ -1108,30 +1082,22 @@ class PowerBIWorkspace(PowerBI):
         self.attributes.dataflows = dataflows
 
     class Attributes(PowerBI.Attributes):
-        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
-        report_count: Optional[int] = Field(
-            default=None, description="", alias="reportCount"
-        )
-        dashboard_count: Optional[int] = Field(
-            None, description="", alias="dashboardCount"
-        )
-        dataset_count: Optional[int] = Field(
-            default=None, description="", alias="datasetCount"
-        )
-        dataflow_count: Optional[int] = Field(
-            None, description="", alias="dataflowCount"
-        )
+        web_url: Optional[str] = Field(default=None, description="")
+        report_count: Optional[int] = Field(default=None, description="")
+        dashboard_count: Optional[int] = Field(default=None, description="")
+        dataset_count: Optional[int] = Field(default=None, description="")
+        dataflow_count: Optional[int] = Field(default=None, description="")
         reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
+            default=None, description=""
         )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+            default=None, description=""
         )  # relationship
         dashboards: Optional[list[PowerBIDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description=""
         )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIWorkspace.Attributes" = Field(
@@ -1289,27 +1255,25 @@ class PowerBIDataset(PowerBI):
         self.attributes.datasources = datasources
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        web_url: Optional[str] = Field(default=None, description="")
         reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
+            default=None, description=""
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description=""
         )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
+            default=None, description=""
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description=""
         )  # relationship
         tables: Optional[list[PowerBITable]] = Field(
-            None, description="", alias="tables"
+            default=None, description=""
         )  # relationship
         datasources: Optional[list[PowerBIDatasource]] = Field(
-            None, description="", alias="datasources"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIDataset.Attributes" = Field(
@@ -1422,18 +1386,14 @@ class PowerBIDashboard(PowerBI):
         self.attributes.tiles = tiles
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
-        tile_count: Optional[int] = Field(
-            default=None, description="", alias="tileCount"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        web_url: Optional[str] = Field(default=None, description="")
+        tile_count: Optional[int] = Field(default=None, description="")
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description=""
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
@@ -1531,15 +1491,13 @@ class PowerBIDataflow(PowerBI):
         self.attributes.datasets = datasets
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        web_url: Optional[str] = Field(default=None, description="")
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description=""
         )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIDataflow.Attributes" = Field(
@@ -1626,14 +1584,10 @@ class PowerBIPage(PowerBI):
         self.attributes.report = report
 
     class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="workspaceQualifiedName"
-        )
-        report_qualified_name: Optional[str] = Field(
-            default=None, description="", alias="reportQualifiedName"
-        )
+        workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        report_qualified_name: Optional[str] = Field(default=None, description="")
         report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
+            default=None, description=""
         )  # relationship
 
     attributes: "PowerBIPage.Attributes" = Field(

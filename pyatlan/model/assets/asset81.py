@@ -167,26 +167,16 @@ class QlikApp(Qlik):
         self.attributes.qlik_sheets = qlik_sheets
 
     class Attributes(Qlik.Attributes):
-        qlik_has_section_access: Optional[bool] = Field(
-            None, description="", alias="qlikHasSectionAccess"
-        )
-        qlik_origin_app_id: Optional[str] = Field(
-            default=None, description="", alias="qlikOriginAppId"
-        )
-        qlik_is_encrypted: Optional[bool] = Field(
-            None, description="", alias="qlikIsEncrypted"
-        )
-        qlik_is_direct_query_mode: Optional[bool] = Field(
-            None, description="", alias="qlikIsDirectQueryMode"
-        )
-        qlik_app_static_byte_size: Optional[int] = Field(
-            None, description="", alias="qlikAppStaticByteSize"
-        )
+        qlik_has_section_access: Optional[bool] = Field(default=None, description="")
+        qlik_origin_app_id: Optional[str] = Field(default=None, description="")
+        qlik_is_encrypted: Optional[bool] = Field(default=None, description="")
+        qlik_is_direct_query_mode: Optional[bool] = Field(default=None, description="")
+        qlik_app_static_byte_size: Optional[int] = Field(default=None, description="")
         qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
+            default=None, description=""
         )  # relationship
         qlik_sheets: Optional[list[QlikSheet]] = Field(
-            None, description="", alias="qlikSheets"
+            default=None, description=""
         )  # relationship
 
     attributes: "QlikApp.Attributes" = Field(
@@ -303,20 +293,12 @@ class QlikChart(Qlik):
         self.attributes.qlik_sheet = qlik_sheet
 
     class Attributes(Qlik.Attributes):
-        qlik_chart_subtitle: Optional[str] = Field(
-            default=None, description="", alias="qlikChartSubtitle"
-        )
-        qlik_chart_footnote: Optional[str] = Field(
-            default=None, description="", alias="qlikChartFootnote"
-        )
-        qlik_chart_orientation: Optional[str] = Field(
-            default=None, description="", alias="qlikChartOrientation"
-        )
-        qlik_chart_type: Optional[str] = Field(
-            default=None, description="", alias="qlikChartType"
-        )
+        qlik_chart_subtitle: Optional[str] = Field(default=None, description="")
+        qlik_chart_footnote: Optional[str] = Field(default=None, description="")
+        qlik_chart_orientation: Optional[str] = Field(default=None, description="")
+        qlik_chart_type: Optional[str] = Field(default=None, description="")
         qlik_sheet: Optional[QlikSheet] = Field(
-            None, description="", alias="qlikSheet"
+            default=None, description=""
         )  # relationship
 
     attributes: "QlikChart.Attributes" = Field(
@@ -437,20 +419,12 @@ class QlikDataset(Qlik):
         self.attributes.qlik_space = qlik_space
 
     class Attributes(Qlik.Attributes):
-        qlik_dataset_technical_name: Optional[str] = Field(
-            default=None, description="", alias="qlikDatasetTechnicalName"
-        )
-        qlik_dataset_type: Optional[str] = Field(
-            default=None, description="", alias="qlikDatasetType"
-        )
-        qlik_dataset_uri: Optional[str] = Field(
-            default=None, description="", alias="qlikDatasetUri"
-        )
-        qlik_dataset_subtype: Optional[str] = Field(
-            default=None, description="", alias="qlikDatasetSubtype"
-        )
+        qlik_dataset_technical_name: Optional[str] = Field(default=None, description="")
+        qlik_dataset_type: Optional[str] = Field(default=None, description="")
+        qlik_dataset_uri: Optional[str] = Field(default=None, description="")
+        qlik_dataset_subtype: Optional[str] = Field(default=None, description="")
         qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
+            default=None, description=""
         )  # relationship
 
     attributes: "QlikDataset.Attributes" = Field(
@@ -531,14 +505,12 @@ class QlikSheet(Qlik):
         self.attributes.qlik_charts = qlik_charts
 
     class Attributes(Qlik.Attributes):
-        qlik_sheet_is_approved: Optional[bool] = Field(
-            None, description="", alias="qlikSheetIsApproved"
-        )
+        qlik_sheet_is_approved: Optional[bool] = Field(default=None, description="")
         qlik_app: Optional[QlikApp] = Field(
-            None, description="", alias="qlikApp"
+            default=None, description=""
         )  # relationship
         qlik_charts: Optional[list[QlikChart]] = Field(
-            None, description="", alias="qlikCharts"
+            default=None, description=""
         )  # relationship
 
     attributes: "QlikSheet.Attributes" = Field(
@@ -617,14 +589,12 @@ class QlikSpace(Qlik):
         self.attributes.qlik_apps = qlik_apps
 
     class Attributes(Qlik.Attributes):
-        qlik_space_type: Optional[str] = Field(
-            default=None, description="", alias="qlikSpaceType"
-        )
+        qlik_space_type: Optional[str] = Field(default=None, description="")
         qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
+            default=None, description=""
         )  # relationship
         qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
+            default=None, description=""
         )  # relationship
 
     attributes: "QlikSpace.Attributes" = Field(

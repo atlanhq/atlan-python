@@ -128,20 +128,14 @@ class MetabaseQuestion(Metabase):
         self.attributes.metabase_collection = metabase_collection
 
     class Attributes(Metabase.Attributes):
-        metabase_dashboard_count: Optional[int] = Field(
-            None, description="", alias="metabaseDashboardCount"
-        )
-        metabase_query_type: Optional[str] = Field(
-            default=None, description="", alias="metabaseQueryType"
-        )
-        metabase_query: Optional[str] = Field(
-            default=None, description="", alias="metabaseQuery"
-        )
+        metabase_dashboard_count: Optional[int] = Field(default=None, description="")
+        metabase_query_type: Optional[str] = Field(default=None, description="")
+        metabase_query: Optional[str] = Field(default=None, description="")
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
+            default=None, description=""
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
+            default=None, description=""
         )  # relationship
 
     attributes: "MetabaseQuestion.Attributes" = Field(
@@ -281,23 +275,17 @@ class MetabaseCollection(Metabase):
         self.attributes.metabase_questions = metabase_questions
 
     class Attributes(Metabase.Attributes):
-        metabase_slug: Optional[str] = Field(
-            default=None, description="", alias="metabaseSlug"
-        )
-        metabase_color: Optional[str] = Field(
-            default=None, description="", alias="metabaseColor"
-        )
-        metabase_namespace: Optional[str] = Field(
-            default=None, description="", alias="metabaseNamespace"
-        )
+        metabase_slug: Optional[str] = Field(default=None, description="")
+        metabase_color: Optional[str] = Field(default=None, description="")
+        metabase_namespace: Optional[str] = Field(default=None, description="")
         metabase_is_personal_collection: Optional[bool] = Field(
-            None, description="", alias="metabaseIsPersonalCollection"
+            default=None, description=""
         )
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
+            default=None, description=""
         )  # relationship
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+            default=None, description=""
         )  # relationship
 
     attributes: "MetabaseCollection.Attributes" = Field(
@@ -378,14 +366,12 @@ class MetabaseDashboard(Metabase):
         self.attributes.metabase_collection = metabase_collection
 
     class Attributes(Metabase.Attributes):
-        metabase_question_count: Optional[int] = Field(
-            None, description="", alias="metabaseQuestionCount"
-        )
+        metabase_question_count: Optional[int] = Field(default=None, description="")
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+            default=None, description=""
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
+            default=None, description=""
         )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(

@@ -118,13 +118,13 @@ class PresetChart(Preset):
 
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
-            default=None, description="", alias="presetChartDescriptionMarkdown"
+            default=None, description=""
         )
         preset_chart_form_data: Optional[dict[str, str]] = Field(
-            None, description="", alias="presetChartFormData"
+            default=None, description=""
         )
         preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -281,16 +281,12 @@ class PresetDataset(Preset):
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
-            default=None, description="", alias="presetDatasetDatasourceName"
+            default=None, description=""
         )
-        preset_dataset_id: Optional[int] = Field(
-            None, description="", alias="presetDatasetId"
-        )
-        preset_dataset_type: Optional[str] = Field(
-            default=None, description="", alias="presetDatasetType"
-        )
+        preset_dataset_id: Optional[int] = Field(default=None, description="")
+        preset_dataset_type: Optional[str] = Field(default=None, description="")
         preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -562,31 +558,31 @@ class PresetDashboard(Preset):
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
-            default=None, description="", alias="presetDashboardChangedByName"
+            default=None, description=""
         )
         preset_dashboard_changed_by_url: Optional[str] = Field(
-            default=None, description="", alias="presetDashboardChangedByURL"
+            default=None, description=""
         )
         preset_dashboard_is_managed_externally: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsManagedExternally"
+            default=None, description=""
         )
         preset_dashboard_is_published: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsPublished"
+            default=None, description=""
         )
         preset_dashboard_thumbnail_url: Optional[str] = Field(
-            default=None, description="", alias="presetDashboardThumbnailURL"
+            default=None, description=""
         )
         preset_dashboard_chart_count: Optional[int] = Field(
-            None, description="", alias="presetDashboardChartCount"
+            default=None, description=""
         )
         preset_datasets: Optional[list[PresetDataset]] = Field(
-            None, description="", alias="presetDatasets"
+            default=None, description=""
         )  # relationship
         preset_charts: Optional[list[PresetChart]] = Field(
-            None, description="", alias="presetCharts"
+            default=None, description=""
         )  # relationship
         preset_workspace: Optional[PresetWorkspace] = Field(
-            None, description="", alias="presetWorkspace"
+            default=None, description=""
         )  # relationship
 
         @classmethod
@@ -882,34 +878,26 @@ class PresetWorkspace(Preset):
 
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
-            None, description="", alias="presetWorkspacePublicDashboardsAllowed"
+            default=None, description=""
         )
-        preset_workspace_cluster_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceClusterId"
-        )
-        preset_workspace_hostname: Optional[str] = Field(
-            default=None, description="", alias="presetWorkspaceHostname"
-        )
+        preset_workspace_cluster_id: Optional[int] = Field(default=None, description="")
+        preset_workspace_hostname: Optional[str] = Field(default=None, description="")
         preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
-            None, description="", alias="presetWorkspaceIsInMaintenanceMode"
+            default=None, description=""
         )
-        preset_workspace_region: Optional[str] = Field(
-            default=None, description="", alias="presetWorkspaceRegion"
-        )
-        preset_workspace_status: Optional[str] = Field(
-            default=None, description="", alias="presetWorkspaceStatus"
-        )
+        preset_workspace_region: Optional[str] = Field(default=None, description="")
+        preset_workspace_status: Optional[str] = Field(default=None, description="")
         preset_workspace_deployment_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDeploymentId"
+            default=None, description=""
         )
         preset_workspace_dashboard_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDashboardCount"
+            default=None, description=""
         )
         preset_workspace_dataset_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDatasetCount"
+            default=None, description=""
         )
         preset_dashboards: Optional[list[PresetDashboard]] = Field(
-            None, description="", alias="presetDashboards"
+            default=None, description=""
         )  # relationship
 
         @classmethod

@@ -16,7 +16,7 @@ from .asset19 import BI
 class Redash(BI):
     """Description"""
 
-    type_name: str = Field("Redash", allow_mutation=False)
+    type_name: str = Field(default="Redash", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -51,9 +51,7 @@ class Redash(BI):
         self.attributes.redash_is_published = redash_is_published
 
     class Attributes(BI.Attributes):
-        redash_is_published: Optional[bool] = Field(
-            None, description="", alias="redashIsPublished"
-        )
+        redash_is_published: Optional[bool] = Field(default=None, description="")
 
     attributes: "Redash.Attributes" = Field(
         default_factory=lambda: Redash.Attributes(),
