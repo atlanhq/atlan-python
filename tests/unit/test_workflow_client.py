@@ -48,7 +48,7 @@ def search_result_detail() -> WorkflowSearchResultDetail:
 
 @pytest.fixture()
 def search_result(search_result_detail) -> WorkflowSearchResult:
-    return WorkflowSearchResult(  # type: ignore[call-arg]
+    return WorkflowSearchResult(
         index="index",
         type="type",
         id="id",
@@ -56,15 +56,15 @@ def search_result(search_result_detail) -> WorkflowSearchResult:
         primary_term=2,
         sort=["sort"],
         source=search_result_detail,
-    )
+    )  # type: ignore[call-arg]
 
 
 @pytest.fixture()
 def search_response(search_result: WorkflowSearchResult) -> WorkflowSearchResponse:
-    return WorkflowSearchResponse(  # type: ignore[call-arg]
+    return WorkflowSearchResponse(
         hits=WorkflowSearchHits(total={"dummy": "dummy"}, hits=[search_result]),
         shards={"dummy": "dummy"},
-    )
+    )  # type: ignore[call-arg]
 
 
 @pytest.fixture()
@@ -220,13 +220,13 @@ def test_run_when_given_workflow(
 ):
     mock_api_caller._call_api.return_value = run_response.dict()
     response = client.run(
-        Workflow(  # type: ignore[call-arg]
+        Workflow(
             metadata=WorkflowMetadata(name="name", namespace="namespace"),
             spec=WorkflowSpec(),
             payload=[
                 PackageParameter(parameter="test-param", type="test-type", body={})
             ],
-        )
+        )  # type: ignore[call-arg]
     )
     assert response == run_response
 

@@ -302,7 +302,7 @@ class LineageListRequest(SearchRequest):
             ["guid"],
             [guid],
         )
-        return LineageListRequest(  # type: ignore[call-arg]
+        return LineageListRequest(
             guid=guid,
             depth=1000000,
             direction=LineageDirection.DOWNSTREAM,
@@ -310,7 +310,7 @@ class LineageListRequest(SearchRequest):
             size=10,
             exclude_meanings=True,
             exclude_classifications=True,
-        )
+        )  # type: ignore[call-arg]
 
 
 class FluentLineage:
@@ -508,7 +508,9 @@ class FluentLineage:
                 )
                 for _filter in self._where_assets
             ]
-            request.entity_traversal_filters = FilterList()  # type: ignore[call-arg]
+            request.entity_traversal_filters = FilterList(
+                condition="AND", criteria=criteria
+            )  # type: ignore[call-arg]
         if self._where_relationships:
             criteria = [
                 EntityFilter(
@@ -518,7 +520,7 @@ class FluentLineage:
                 )
                 for _filter in self._where_relationships
             ]
-            request.relationship_traversal_filters = FilterList(  # type: ignore[call-arg]
+            request.relationship_traversal_filters = FilterList(
                 condition="AND", criteria=criteria
-            )
+            )  # type: ignore[call-arg]
         return request
