@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Generator, Iterable, Optional
 
-from pydantic import Field, ValidationError, parse_obj_as
+from pydantic.v1 import Field, ValidationError, parse_obj_as
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import SEARCH_LOG

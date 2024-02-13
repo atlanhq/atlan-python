@@ -3,7 +3,7 @@
 from unittest.mock import Mock
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH

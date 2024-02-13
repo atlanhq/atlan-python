@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Literal, Union
 
 import pytest
-from pydantic import StrictBool, StrictStr, ValidationError
+from pydantic.v1 import StrictBool, StrictStr, ValidationError
 
 from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus

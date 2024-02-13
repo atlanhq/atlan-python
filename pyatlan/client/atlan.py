@@ -16,7 +16,7 @@ from urllib.parse import urljoin
 from warnings import warn
 
 import requests
-from pydantic import (
+from pydantic.v1 import (
     BaseSettings,
     HttpUrl,
     PrivateAttr,

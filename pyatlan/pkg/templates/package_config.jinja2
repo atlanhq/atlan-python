@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-from pydantic import BaseModel, BaseSettings, Field, validator
+from pydantic.v1 import BaseModel, BaseSettings, Field, validator
 from pyatlan.model.assets import Connection
 from pyatlan.pkg.models import ConnectorAndConnection
 from pyatlan.pkg.utils import validate_connection, validate_multiselect, validate_connector_and_connection

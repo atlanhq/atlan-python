@@ -6,12 +6,12 @@ import copy
 from collections import deque
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from pydantic import Field, StrictBool, StrictInt, StrictStr, validate_arguments
+from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr, validate_arguments
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
-    from pydantic.dataclasses import dataclass
+    from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset

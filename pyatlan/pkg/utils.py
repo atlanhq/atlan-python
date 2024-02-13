@@ -4,7 +4,7 @@ import json
 import logging
 import os
 
-from pydantic import parse_obj_as, parse_raw_as
+from pydantic.v1 import parse_obj_as, parse_raw_as
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.pkg.models import RuntimeConfig

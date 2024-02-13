@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Any, Optional
 
-from pydantic import BaseModel, BaseSettings, Field, parse_obj_as
+from pydantic.v1 import BaseModel, BaseSettings, Field, parse_obj_as
 
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType

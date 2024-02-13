@@ -12,7 +12,7 @@ from io import StringIO
 from typing import TYPE_CHECKING, Any, ClassVar, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
-from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic.v1 import Field, PrivateAttr, StrictStr, root_validator, validator
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning

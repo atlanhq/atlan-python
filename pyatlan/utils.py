@@ -15,8 +15,8 @@ from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Mapping, Optional
 
-from pydantic import HttpUrl
-from pydantic.dataclasses import dataclass
+from pydantic.v1 import HttpUrl
+from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.errors import ErrorCode
 

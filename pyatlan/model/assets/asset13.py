@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional, Set
 
-from pydantic import Field, validator
+from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import (
     AuthPolicyCategory,

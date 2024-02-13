@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
-from pydantic import (
+from pydantic.v1 import (
     Field,
     StrictBool,
     StrictInt,
@@ -13,7 +13,7 @@ from pydantic import (
     dataclasses,
     validate_arguments,
 )
-from pydantic.json import pydantic_encoder
+from pydantic.v1.json import pydantic_encoder
 
 Widget = Union[
     "APITokenSelectorWidget",

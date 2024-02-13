@@ -7,7 +7,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import DynamoDBSecondaryIndexProjectionType, DynamoDBStatus
 from pyatlan.model.fields.atlan_fields import (

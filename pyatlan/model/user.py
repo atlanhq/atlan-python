@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Optional, Protocol
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.core import AtlanObject

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Generator, Optional, Type
 
 import pytest
-from pydantic import StrictStr
+from pydantic.v1 import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.search_log import (
