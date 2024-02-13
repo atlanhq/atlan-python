@@ -3,18 +3,18 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
-    from pydantic.dataclasses import dataclass
+    from pydantic.v1.dataclasses import dataclass
 
 from typing import Any, Generic, Optional, TypeVar
 
-from pydantic.generics import GenericModel
+from pydantic.v1.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic

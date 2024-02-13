@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Generator
 
 import pytest
-from pydantic import StrictStr
+from pydantic.v1 import StrictStr
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient

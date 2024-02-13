@@ -4,7 +4,7 @@ import json
 import time
 from typing import Any, Callable, ClassVar, Optional, cast
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.atlan_image import AtlanImage

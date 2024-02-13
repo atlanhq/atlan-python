@@ -9,7 +9,7 @@ from itertools import chain
 from json import dumps, loads
 from typing import Any, Literal, Optional, Union
 
-from pydantic import (
+from pydantic.v1 import (
     ConfigDict,
     Field,
     StrictBool,
@@ -20,8 +20,8 @@ from pydantic import (
     validate_arguments,
     validator,
 )
-from pydantic.config import Extra
-from pydantic.dataclasses import dataclass
+from pydantic.v1.config import Extra
+from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject, SearchRequest

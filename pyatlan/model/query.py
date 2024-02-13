@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (

@@ -3,7 +3,7 @@
 import json
 from typing import Any, Optional
 
-from pydantic import Field, root_validator
+from pydantic.v1 import Field, root_validator
 
 from pyatlan.model.core import AtlanObject
 

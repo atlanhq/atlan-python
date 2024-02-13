@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, StrictStr, validator
+from pydantic.v1 import Field, StrictStr, validator
 
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import KeywordField

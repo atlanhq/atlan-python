@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from pydantic import ValidationError, parse_obj_as, validate_arguments
+from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import AUDIT_SEARCH

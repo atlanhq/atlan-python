@@ -2,7 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 from typing import Any, Literal, Optional, Union
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, AtlanTag

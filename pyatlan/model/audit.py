@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Generator, Iterable, Optional, Union
 
-from pydantic import Field, ValidationError, parse_obj_as, root_validator
+from pydantic.v1 import Field, ValidationError, parse_obj_as, root_validator
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.common import ApiCaller

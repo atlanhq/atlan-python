@@ -9,7 +9,7 @@ from unittest.mock import create_autospec
 import pytest
 
 # from deepdiff import DeepDiff
-from pydantic.error_wrappers import ValidationError
+from pydantic.v1.error_wrappers import ValidationError
 
 import pyatlan.cache.atlan_tag_cache
 from pyatlan.errors import InvalidRequestError

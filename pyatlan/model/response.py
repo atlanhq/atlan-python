@@ -3,7 +3,7 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from typing import Optional, Type, TypeVar
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject
