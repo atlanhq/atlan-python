@@ -53,7 +53,7 @@ def upstream_certified_sources(guid: str) -> list[Asset]:
         Asset.NAME.atlan_field_name,
         Asset.CERTIFICATE_STATUS.atlan_field_name,
     ]
-    request.entity_filters = FilterList(  # type: ignore[call-arg]
+    request.entity_filters = FilterList(
         condition="AND",
         criteria=[
             EntityFilter(
@@ -62,7 +62,7 @@ def upstream_certified_sources(guid: str) -> list[Asset]:
                 attribute_value=CertificateStatus.VERIFIED.value,
             )
         ],
-    )
+    )  # type: ignore[call-arg]
     response = client.asset.get_lineage_list(request)
     verified_assets: list[Asset] = [
         asset

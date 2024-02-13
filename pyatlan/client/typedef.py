@@ -25,34 +25,34 @@ from pyatlan.model.typedef import (
 def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
     if isinstance(typedef, AtlanTagDef):
         # Set up the request payload...
-        payload = TypeDefResponse(  # type: ignore[call-arg]
+        payload = TypeDefResponse(
             atlan_tag_defs=[typedef],
             enum_defs=[],
             struct_defs=[],
             entity_defs=[],
             relationship_defs=[],
             custom_metadata_defs=[],
-        )
+        )  # type: ignore[call-arg]
     elif isinstance(typedef, CustomMetadataDef):
         # Set up the request payload...
-        payload = TypeDefResponse(  # type: ignore[call-arg]
+        payload = TypeDefResponse(
             atlan_tag_defs=[],
             enum_defs=[],
             struct_defs=[],
             entity_defs=[],
             relationship_defs=[],
             custom_metadata_defs=[typedef],
-        )
+        )  # type: ignore[call-arg]
     elif isinstance(typedef, EnumDef):
         # Set up the request payload...
-        payload = TypeDefResponse(  # type: ignore[call-arg]
+        payload = TypeDefResponse(
             atlan_tag_defs=[],
             enum_defs=[typedef],
             struct_defs=[],
             entity_defs=[],
             relationship_defs=[],
             custom_metadata_defs=[],
-        )
+        )  # type: ignore[call-arg]
     else:
         raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
             typedef.category.value

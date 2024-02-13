@@ -9,6 +9,7 @@ CAMEL_CASE_OVERRIDES = {
     "sql_dbt_sources": "sqlDBTSources",
     "purpose_atlan_tags": "purposeClassifications",
     "mapped_atlan_tag_name": "mappedClassificationName",
+    "has_lineage": "__hasLineage",
 }
 
 
