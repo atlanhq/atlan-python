@@ -184,10 +184,10 @@ class EntityAudit(AtlanObject):
     )
     user: str = Field(description="User who carried out the activity.")
     action: AuditActionType = Field(description="The type of activity that was done.")
-    details: Optional[Any] = Field(description="Unused.")
+    details: Optional[Any] = Field(default=None, description="Unused.")
     event_key: str = Field(description="Unique identifier of the activity.")
-    entity: Optional[Any] = Field(description="Unused.")
-    type: Optional[Any] = Field(description="Unused.")
+    entity: Optional[Any] = Field(default=None, description="Unused.")
+    type: Optional[Any] = Field(default=None, description="Unused.")
     detail: Optional[
         Union[
             CustomMetadataAttributesAuditDetail,

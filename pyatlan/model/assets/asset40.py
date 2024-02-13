@@ -126,13 +126,13 @@ class Preset(BI):
             None, description="", alias="presetWorkspaceId"
         )
         preset_workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceQualifiedName"
+            default=None, description="", alias="presetWorkspaceQualifiedName"
         )
         preset_dashboard_id: Optional[int] = Field(
             None, description="", alias="presetDashboardId"
         )
         preset_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardQualifiedName"
+            default=None, description="", alias="presetDashboardQualifiedName"
         )
 
     attributes: "Preset.Attributes" = Field(

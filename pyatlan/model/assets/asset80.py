@@ -20,7 +20,7 @@ from .asset52 import MicroStrategy
 class MicroStrategyReport(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -126,7 +126,7 @@ class MicroStrategyReport(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_report_type: Optional[str] = Field(
-            None, description="", alias="microStrategyReportType"
+            default=None, description="", alias="microStrategyReportType"
         )
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
             None, description="", alias="microStrategyMetrics"
@@ -148,7 +148,7 @@ class MicroStrategyReport(MicroStrategy):
 class MicroStrategyProject(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyProject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -371,7 +371,7 @@ class MicroStrategyProject(MicroStrategy):
 class MicroStrategyMetric(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyMetric", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -721,7 +721,7 @@ class MicroStrategyMetric(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_metric_expression: Optional[str] = Field(
-            None, description="", alias="microStrategyMetricExpression"
+            default=None, description="", alias="microStrategyMetricExpression"
         )
         micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
             None, description="", alias="microStrategyAttributeQualifiedNames"
@@ -773,7 +773,7 @@ class MicroStrategyMetric(MicroStrategy):
 class MicroStrategyCube(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyCube", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -900,10 +900,10 @@ class MicroStrategyCube(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_cube_type: Optional[str] = Field(
-            None, description="", alias="microStrategyCubeType"
+            default=None, description="", alias="microStrategyCubeType"
         )
         micro_strategy_cube_query: Optional[str] = Field(
-            None, description="", alias="microStrategyCubeQuery"
+            default=None, description="", alias="microStrategyCubeQuery"
         )
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
             None, description="", alias="microStrategyMetrics"
@@ -925,7 +925,7 @@ class MicroStrategyCube(MicroStrategy):
 class MicroStrategyDossier(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyDossier", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1037,7 +1037,7 @@ class MicroStrategyDossier(MicroStrategy):
 class MicroStrategyFact(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyFact", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1143,7 +1143,7 @@ class MicroStrategyFact(MicroStrategy):
 class MicroStrategyDocument(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyDocument", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1196,7 +1196,7 @@ class MicroStrategyDocument(MicroStrategy):
 class MicroStrategyAttribute(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyAttribute", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1319,7 +1319,7 @@ class MicroStrategyAttribute(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_attribute_forms: Optional[str] = Field(
-            None, description="", alias="microStrategyAttributeForms"
+            default=None, description="", alias="microStrategyAttributeForms"
         )
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
             None, description="", alias="microStrategyReports"
@@ -1344,7 +1344,7 @@ class MicroStrategyAttribute(MicroStrategy):
 class MicroStrategyVisualization(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+    type_name: str = Field(default="MicroStrategyVisualization", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1483,13 +1483,13 @@ class MicroStrategyVisualization(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_visualization_type: Optional[str] = Field(
-            None, description="", alias="microStrategyVisualizationType"
+            default=None, description="", alias="microStrategyVisualizationType"
         )
         micro_strategy_dossier_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyDossierQualifiedName"
+            default=None, description="", alias="microStrategyDossierQualifiedName"
         )
         micro_strategy_dossier_name: Optional[str] = Field(
-            None, description="", alias="microStrategyDossierName"
+            default=None, description="", alias="microStrategyDossierName"
         )
         micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
             None, description="", alias="microStrategyDossier"

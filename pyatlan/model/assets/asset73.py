@@ -22,7 +22,7 @@ from .asset45 import Redash
 class RedashQuery(Redash):
     """Description"""
 
-    type_name: str = Field("RedashQuery", allow_mutation=False)
+    type_name: str = Field(default="RedashQuery", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -193,10 +193,10 @@ class RedashQuery(Redash):
 
     class Attributes(Redash.Attributes):
         redash_query_s_q_l: Optional[str] = Field(
-            None, description="", alias="redashQuerySQL"
+            default=None, description="", alias="redashQuerySQL"
         )
         redash_query_parameters: Optional[str] = Field(
-            None, description="", alias="redashQueryParameters"
+            default=None, description="", alias="redashQueryParameters"
         )
         redash_query_schedule: Optional[dict[str, str]] = Field(
             None, description="", alias="redashQuerySchedule"
@@ -208,7 +208,7 @@ class RedashQuery(Redash):
             None, description="", alias="redashQueryLastExecutedAt"
         )
         redash_query_schedule_humanized: Optional[str] = Field(
-            None, description="", alias="redashQueryScheduleHumanized"
+            default=None, description="", alias="redashQueryScheduleHumanized"
         )
         redash_visualizations: Optional[list[RedashVisualization]] = Field(
             None, description="", alias="redashVisualizations"
@@ -224,7 +224,7 @@ class RedashQuery(Redash):
 class RedashVisualization(Redash):
     """Description"""
 
-    type_name: str = Field("RedashVisualization", allow_mutation=False)
+    type_name: str = Field(default="RedashVisualization", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -320,13 +320,13 @@ class RedashVisualization(Redash):
 
     class Attributes(Redash.Attributes):
         redash_visualization_type: Optional[str] = Field(
-            None, description="", alias="redashVisualizationType"
+            default=None, description="", alias="redashVisualizationType"
         )
         redash_query_name: Optional[str] = Field(
-            None, description="", alias="redashQueryName"
+            default=None, description="", alias="redashQueryName"
         )
         redash_query_qualified_name: Optional[str] = Field(
-            None, description="", alias="redashQueryQualifiedName"
+            default=None, description="", alias="redashQueryQualifiedName"
         )
         redash_query: Optional[RedashQuery] = Field(
             None, description="", alias="redashQuery"

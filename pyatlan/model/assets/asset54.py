@@ -73,9 +73,9 @@ class Salesforce(SaaS):
 
     class Attributes(SaaS.Attributes):
         organization_qualified_name: Optional[str] = Field(
-            None, description="", alias="organizationQualifiedName"
+            default=None, description="", alias="organizationQualifiedName"
         )
-        api_name: Optional[str] = Field(None, description="", alias="apiName")
+        api_name: Optional[str] = Field(default=None, description="", alias="apiName")
 
     attributes: "Salesforce.Attributes" = Field(
         default_factory=lambda: Salesforce.Attributes(),

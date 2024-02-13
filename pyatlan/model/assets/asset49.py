@@ -88,13 +88,13 @@ class QuickSight(BI):
 
     class Attributes(BI.Attributes):
         quick_sight_id: Optional[str] = Field(
-            None, description="", alias="quickSightId"
+            default=None, description="", alias="quickSightId"
         )
         quick_sight_sheet_id: Optional[str] = Field(
-            None, description="", alias="quickSightSheetId"
+            default=None, description="", alias="quickSightSheetId"
         )
         quick_sight_sheet_name: Optional[str] = Field(
-            None, description="", alias="quickSightSheetName"
+            default=None, description="", alias="quickSightSheetName"
         )
 
     attributes: "QuickSight.Attributes" = Field(

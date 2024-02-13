@@ -751,11 +751,17 @@ class DynamoDBTable(Table):
         dynamo_dbtable_l_s_i_count: Optional[int] = Field(
             None, description="", alias="dynamoDBTableLSICount"
         )
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        column_count: Optional[int] = Field(
+            default=None, description="", alias="columnCount"
+        )
+        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
+        size_bytes: Optional[int] = Field(
+            default=None, description="", alias="sizeBytes"
+        )
+        alias: Optional[str] = Field(default=None, description="", alias="alias")
+        is_temporary: Optional[bool] = Field(
+            default=None, description="", alias="isTemporary"
+        )
         is_query_preview: Optional[bool] = Field(
             None, description="", alias="isQueryPreview"
         )
@@ -763,27 +769,29 @@ class DynamoDBTable(Table):
             None, description="", alias="queryPreviewConfig"
         )
         external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
+            default=None, description="", alias="externalLocation"
         )
         external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
+            default=None, description="", alias="externalLocationRegion"
         )
         external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
+            default=None, description="", alias="externalLocationFormat"
         )
         is_partitioned: Optional[bool] = Field(
             None, description="", alias="isPartitioned"
         )
         partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
+            default=None, description="", alias="partitionStrategy"
         )
         partition_count: Optional[int] = Field(
             None, description="", alias="partitionCount"
         )
         partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
+            default=None, description="", alias="partitionList"
         )
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
+        query_count: Optional[int] = Field(
+            default=None, description="", alias="queryCount"
+        )
         query_user_count: Optional[int] = Field(
             None, description="", alias="queryUserCount"
         )
@@ -793,23 +801,31 @@ class DynamoDBTable(Table):
         query_count_updated_at: Optional[datetime] = Field(
             None, description="", alias="queryCountUpdatedAt"
         )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
+        database_name: Optional[str] = Field(
+            default=None, description="", alias="databaseName"
+        )
         database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
+            default=None, description="", alias="databaseQualifiedName"
         )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
+        schema_name: Optional[str] = Field(
+            default=None, description="", alias="schemaName"
+        )
         schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
+            default=None, description="", alias="schemaQualifiedName"
         )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
+        table_name: Optional[str] = Field(
+            default=None, description="", alias="tableName"
+        )
         table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
+            default=None, description="", alias="tableQualifiedName"
         )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
+        view_name: Optional[str] = Field(default=None, description="", alias="viewName")
         view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
+            default=None, description="", alias="viewQualifiedName"
         )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+        is_profiled: Optional[bool] = Field(
+            default=None, description="", alias="isProfiled"
+        )
         last_profiled_at: Optional[datetime] = Field(
             None, description="", alias="lastProfiledAt"
         )
@@ -817,10 +833,10 @@ class DynamoDBTable(Table):
             None, description="", alias="dynamoDBStatus"
         )
         dynamo_d_b_partition_key: Optional[str] = Field(
-            None, description="", alias="dynamoDBPartitionKey"
+            default=None, description="", alias="dynamoDBPartitionKey"
         )
         dynamo_d_b_sort_key: Optional[str] = Field(
-            None, description="", alias="dynamoDBSortKey"
+            default=None, description="", alias="dynamoDBSortKey"
         )
         dynamo_d_b_read_capacity_units: Optional[int] = Field(
             None, description="", alias="dynamoDBReadCapacityUnits"
@@ -829,7 +845,7 @@ class DynamoDBTable(Table):
             None, description="", alias="dynamoDBWriteCapacityUnits"
         )
         no_s_q_l_schema_definition: Optional[str] = Field(
-            None, description="", alias="noSQLSchemaDefinition"
+            default=None, description="", alias="noSQLSchemaDefinition"
         )
         dynamo_d_b_local_secondary_indexes: Optional[
             list[DynamoDBLocalSecondaryIndex]

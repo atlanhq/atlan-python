@@ -130,13 +130,13 @@ class TableauMetric(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"

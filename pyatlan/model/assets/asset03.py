@@ -587,45 +587,55 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.vector_embeddings_updated_at = vector_embeddings_updated_at
 
     class Attributes(Asset.Attributes):
-        category: Optional[str] = Field(None, description="", alias="category")
-        sub_category: Optional[str] = Field(None, description="", alias="subCategory")
-        host: Optional[str] = Field(None, description="", alias="host")
-        port: Optional[int] = Field(None, description="", alias="port")
-        allow_query: Optional[bool] = Field(None, description="", alias="allowQuery")
+        category: Optional[str] = Field(default=None, description="", alias="category")
+        sub_category: Optional[str] = Field(
+            default=None, description="", alias="subCategory"
+        )
+        host: Optional[str] = Field(default=None, description="", alias="host")
+        port: Optional[int] = Field(default=None, description="", alias="port")
+        allow_query: Optional[bool] = Field(
+            default=None, description="", alias="allowQuery"
+        )
         allow_query_preview: Optional[bool] = Field(
             None, description="", alias="allowQueryPreview"
         )
         query_preview_config: Optional[dict[str, str]] = Field(
             None, description="", alias="queryPreviewConfig"
         )
-        query_config: Optional[str] = Field(None, description="", alias="queryConfig")
+        query_config: Optional[str] = Field(
+            default=None, description="", alias="queryConfig"
+        )
         credential_strategy: Optional[str] = Field(
-            None, description="", alias="credentialStrategy"
+            default=None, description="", alias="credentialStrategy"
         )
         preview_credential_strategy: Optional[str] = Field(
-            None, description="", alias="previewCredentialStrategy"
+            default=None, description="", alias="previewCredentialStrategy"
         )
         policy_strategy: Optional[str] = Field(
-            None, description="", alias="policyStrategy"
+            default=None, description="", alias="policyStrategy"
         )
         policy_strategy_for_sample_preview: Optional[str] = Field(
-            None, description="", alias="policyStrategyForSamplePreview"
+            default=None, description="", alias="policyStrategyForSamplePreview"
         )
         query_username_strategy: Optional[QueryUsernameStrategy] = Field(
             None, description="", alias="queryUsernameStrategy"
         )
-        row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
-        query_timeout: Optional[int] = Field(None, description="", alias="queryTimeout")
+        row_limit: Optional[int] = Field(default=None, description="", alias="rowLimit")
+        query_timeout: Optional[int] = Field(
+            default=None, description="", alias="queryTimeout"
+        )
         default_credential_guid: Optional[str] = Field(
-            None, description="", alias="defaultCredentialGuid"
+            default=None, description="", alias="defaultCredentialGuid"
         )
         connector_icon: Optional[str] = Field(
-            None, description="", alias="connectorIcon"
+            default=None, description="", alias="connectorIcon"
         )
         connector_image: Optional[str] = Field(
-            None, description="", alias="connectorImage"
+            default=None, description="", alias="connectorImage"
         )
-        source_logo: Optional[str] = Field(None, description="", alias="sourceLogo")
+        source_logo: Optional[str] = Field(
+            default=None, description="", alias="sourceLogo"
+        )
         is_sample_data_preview_enabled: Optional[bool] = Field(
             None, description="", alias="isSampleDataPreviewEnabled"
         )
@@ -639,7 +649,7 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="connectionDbtEnvironments"
         )
         connection_s_s_o_credential_guid: Optional[str] = Field(
-            None, description="", alias="connectionSSOCredentialGuid"
+            default=None, description="", alias="connectionSSOCredentialGuid"
         )
         use_object_storage: Optional[bool] = Field(
             None, description="", alias="useObjectStorage"

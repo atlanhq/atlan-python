@@ -142,10 +142,10 @@ class DynamoDB(NoSQL):
             None, description="", alias="dynamoDBStatus"
         )
         dynamo_d_b_partition_key: Optional[str] = Field(
-            None, description="", alias="dynamoDBPartitionKey"
+            default=None, description="", alias="dynamoDBPartitionKey"
         )
         dynamo_d_b_sort_key: Optional[str] = Field(
-            None, description="", alias="dynamoDBSortKey"
+            default=None, description="", alias="dynamoDBSortKey"
         )
         dynamo_d_b_read_capacity_units: Optional[int] = Field(
             None, description="", alias="dynamoDBReadCapacityUnits"

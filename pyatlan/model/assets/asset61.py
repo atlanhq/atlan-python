@@ -291,40 +291,40 @@ class DataStudioAsset(DataStudio):
 
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
-            None, description="", alias="dataStudioAssetType"
+            default=None, description="", alias="dataStudioAssetType"
         )
         data_studio_asset_title: Optional[str] = Field(
-            None, description="", alias="dataStudioAssetTitle"
+            default=None, description="", alias="dataStudioAssetTitle"
         )
         data_studio_asset_owner: Optional[str] = Field(
-            None, description="", alias="dataStudioAssetOwner"
+            default=None, description="", alias="dataStudioAssetOwner"
         )
         is_trashed_data_studio_asset: Optional[bool] = Field(
-            None, description="", alias="isTrashedDataStudioAsset"
+            default=None, description="", alias="isTrashedDataStudioAsset"
         )
         google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
+            default=None, description="", alias="googleService"
         )
         google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
+            default=None, description="", alias="googleProjectName"
         )
         google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
+            default=None, description="", alias="googleProjectId"
         )
         google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
+            default=None, description="", alias="googleProjectNumber"
         )
         google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
+            default=None, description="", alias="googleLocation"
         )
         google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
+            default=None, description="", alias="googleLocationType"
         )
         google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
+            default=None, description="", alias="googleLabels"
         )
         google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
+            default=None, description="", alias="googleTags"
         )
 
         @classmethod

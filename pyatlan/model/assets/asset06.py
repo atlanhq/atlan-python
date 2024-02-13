@@ -46,7 +46,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             " and then update it in its entirety."
         )
 
-    type_name: str = Field("AuthPolicy", allow_mutation=False)
+    type_name: str = Field(default="AuthPolicy", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -381,13 +381,13 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             None, description="", alias="policyType"
         )
         policy_service_name: Optional[str] = Field(
-            None, description="", alias="policyServiceName"
+            default=None, description="", alias="policyServiceName"
         )
         policy_category: Optional[str] = Field(
-            None, description="", alias="policyCategory"
+            default=None, description="", alias="policyCategory"
         )
         policy_sub_category: Optional[str] = Field(
-            None, description="", alias="policySubCategory"
+            default=None, description="", alias="policySubCategory"
         )
         policy_users: Optional[set[str]] = Field(
             None, description="", alias="policyUsers"
@@ -405,7 +405,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             None, description="", alias="policyResources"
         )
         policy_resource_category: Optional[str] = Field(
-            None, description="", alias="policyResourceCategory"
+            default=None, description="", alias="policyResourceCategory"
         )
         policy_priority: Optional[int] = Field(
             None, description="", alias="policyPriority"
@@ -414,13 +414,13 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             None, description="", alias="isPolicyEnabled"
         )
         policy_mask_type: Optional[str] = Field(
-            None, description="", alias="policyMaskType"
+            default=None, description="", alias="policyMaskType"
         )
         policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]] = Field(
             None, description="", alias="policyValiditySchedule"
         )
         policy_resource_signature: Optional[str] = Field(
-            None, description="", alias="policyResourceSignature"
+            default=None, description="", alias="policyResourceSignature"
         )
         policy_delegate_admin: Optional[bool] = Field(
             None, description="", alias="policyDelegateAdmin"
@@ -450,7 +450,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 class AccessControl(Asset, type_name="AccessControl"):
     """Description"""
 
-    type_name: str = Field("AccessControl", allow_mutation=False)
+    type_name: str = Field(default="AccessControl", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -642,7 +642,9 @@ class AccessControl(Asset, type_name="AccessControl"):
         deny_asset_filters: Optional[set[str]] = Field(
             None, description="", alias="denyAssetFilters"
         )
-        channel_link: Optional[str] = Field(None, description="", alias="channelLink")
+        channel_link: Optional[str] = Field(
+            default=None, description="", alias="channelLink"
+        )
         deny_asset_types: Optional[set[str]] = Field(
             None, description="", alias="denyAssetTypes"
         )
@@ -650,7 +652,7 @@ class AccessControl(Asset, type_name="AccessControl"):
             None, description="", alias="denyNavigationPages"
         )
         default_navigation: Optional[str] = Field(
-            None, description="", alias="defaultNavigation"
+            default=None, description="", alias="defaultNavigation"
         )
         policies: Optional[list[AuthPolicy]] = Field(
             None, description="", alias="policies"

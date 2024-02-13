@@ -16,7 +16,7 @@ from .asset87 import KafkaTopic
 class AzureEventHub(KafkaTopic):
     """Description"""
 
-    type_name: str = Field("AzureEventHub", allow_mutation=False)
+    type_name: str = Field(default="AzureEventHub", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -54,7 +54,7 @@ class AzureEventHub(KafkaTopic):
 
     class Attributes(KafkaTopic.Attributes):
         azure_event_hub_status: Optional[str] = Field(
-            None, description="", alias="azureEventHubStatus"
+            default=None, description="", alias="azureEventHubStatus"
         )
 
     attributes: "AzureEventHub.Attributes" = Field(

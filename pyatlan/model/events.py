@@ -21,7 +21,7 @@ class AtlanEventPayload(AtlanObject):
         __pydantic_self__.__fields_set__.update(["type", "operation_type"])
 
     event_type: Optional[str] = Field(
-        description="Type of the event payload.", alias="type"
+        default=None, description="Type of the event payload.", alias="type"
     )
     operation_type: Literal[
         "ENTITY_CREATE",
@@ -103,13 +103,13 @@ class AtlanTagDeletePayload(
 class AtlanEvent(AtlanObject):
     source: Optional[Any] = Field(description="TBC")
     version: Optional[Any] = Field(description="TBC")
-    msg_compression_kind: Optional[str] = Field(description="TBC")
+    msg_compression_kind: Optional[str] = Field(default=None, description="TBC")
     msg_split_idx: Optional[int] = Field(description="TBC")
     msg_split_count: Optional[int] = Field(description="TBC")
     msg_source_ip: Optional[str] = Field(
-        description="Originating IP address for the event."
+        default=None, description="Originating IP address for the event."
     )
-    msg_created_by: Optional[str] = Field(description="TBC")
+    msg_created_by: Optional[str] = Field(default=None, description="TBC")
     msg_creation_time: Optional[int] = Field(
         description="Timestamp (epoch) for when the event was created, in milliseconds."
     )
@@ -131,17 +131,18 @@ class AtlanEvent(AtlanObject):
 
 class AwsRequestContext(AtlanObject):
     account_id: Optional[str] = Field(
-        description="Account from which the request originated."
+        default=None, description="Account from which the request originated."
     )
-    api_id: Optional[str] = Field(description="TBC")
-    domain_name: Optional[str] = Field(description="TBC")
-    domain_prefix: Optional[str] = Field(description="TBC")
+    api_id: Optional[str] = Field(default=None, description="TBC")
+    domain_name: Optional[str] = Field(default=None, description="TBC")
+    domain_prefix: Optional[str] = Field(default=None, description="TBC")
     http: Optional[dict[str, str]] = Field(description="TBC")
-    request_id: Optional[str] = Field(description="TBC")
-    route_key: Optional[str] = Field(description="TBC")
-    stage: Optional[str] = Field(description="TBC")
+    request_id: Optional[str] = Field(default=None, description="TBC")
+    route_key: Optional[str] = Field(default=None, description="TBC")
+    stage: Optional[str] = Field(default=None, description="TBC")
     time: Optional[str] = Field(
-        description="Time at which the event was received, as a formatted string."
+        default=None,
+        description="Time at which the event was received, as a formatted string.",
     )
     time_epoch: Optional[int] = Field(
         description="Time at which the event was received, epoch-based, in milliseconds."
@@ -149,16 +150,16 @@ class AwsRequestContext(AtlanObject):
 
 
 class AwsEventWrapper(AtlanObject):
-    version: Optional[str] = Field(description="TBC")
-    route_key: Optional[str] = Field(description="TBC")
-    raw_path: Optional[str] = Field(description="TBC")
-    raw_query_string: Optional[str] = Field(description="TBC")
+    version: Optional[str] = Field(default=None, description="TBC")
+    route_key: Optional[str] = Field(default=None, description="TBC")
+    raw_path: Optional[str] = Field(default=None, description="TBC")
+    raw_query_string: Optional[str] = Field(default=None, description="TBC")
     headers: Optional[dict[str, str]] = Field(
         description="Headers that were used when sending the event through to the Lambda URL."
     )
     request_context: Optional[AwsRequestContext] = Field(description="TBC")
     body: Optional[str] = Field(
-        description="Actual contents of the event that was sent by Atlan."
+        default=None, description="Actual contents of the event that was sent by Atlan."
     )
     is_base_64_encoded: Optional[bool] = Field(
         description="Whether the contents are base64-encoded (True) or plain text (False)."

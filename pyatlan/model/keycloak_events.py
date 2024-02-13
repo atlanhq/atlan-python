@@ -12,30 +12,34 @@ from pyatlan.model.enums import AdminOperationType, AdminResourceType, KeycloakE
 
 class AuthDetails(AtlanObject):
     client_id: Optional[str] = Field(
-        description="Unique identifier (GUID) of the client that carried out the operation."
+        default=None,
+        description="Unique identifier (GUID) of the client that carried out the operation.",
     )
     ip_address: Optional[str] = Field(
-        description="IP address from which the operation was carried out."
+        default=None, description="IP address from which the operation was carried out."
     )
     realm_id: Optional[str] = Field(
-        description="Unique name of the realm from which the operation was carried out."
+        default=None,
+        description="Unique name of the realm from which the operation was carried out.",
     )
     user_id: Optional[str] = Field(
+        default=None,
         description="Unique identifier (GUID) of the user who carried out the operation.",
     )
 
 
 class KeycloakEvent(AtlanObject):
     client_id: Optional[str] = Field(
-        description="Where the login occurred (usually 'atlan-frontend')."
+        default=None, description="Where the login occurred (usually 'atlan-frontend')."
     )
     details: Any = Field(description="TBC")
     ip_address: Optional[str] = Field(
-        description="IP address from which the user logged in."
+        default=None, description="IP address from which the user logged in."
     )
-    realm_id: Optional[str] = Field(description="TBC")
+    realm_id: Optional[str] = Field(default=None, description="TBC")
     session_id: Optional[str] = Field(
-        description="Unique identifier (GUID) of the session for the login."
+        default=None,
+        description="Unique identifier (GUID) of the session for the login.",
     )
     time: Optional[int] = Field(
         description="Time (epoch) when the login occurred, in milliseconds."
@@ -44,56 +48,65 @@ class KeycloakEvent(AtlanObject):
         description="Type of login event that occurred (usually 'LOGIN')."
     )
     user_id: Optional[str] = Field(
-        description="Unique identifier (GUID) of the user that logged in."
+        default=None, description="Unique identifier (GUID) of the user that logged in."
     )
 
 
 class AdminEvent(AtlanObject):
     operation_type: Optional[AdminOperationType] = Field(
-        description="Type of admin operation that occurred."
+        default=None, description="Type of admin operation that occurred."
     )
     realm_id: Optional[str] = Field(
-        description="Unique identifier of the realm in which the event occurred (usually 'default')."
+        default=None,
+        description="Unique identifier of the realm in which the event occurred (usually 'default').",
     )
     representation: Optional[str] = Field(
-        description="Detailed resource that was created or changed as a result of the operation."
+        default=None,
+        description="Detailed resource that was created or changed as a result of the operation.",
     )
     resource_path: Optional[str] = Field(
-        description="Location of the resource that was created or changed as a result of the operation."
+        default=None,
+        description="Location of the resource that was created or changed as a result of the operation.",
     )
     resource_type: Optional[AdminResourceType] = Field(
-        description="Type of resource for the admin operation that occurred."
+        default=None,
+        description="Type of resource for the admin operation that occurred.",
     )
     time: Optional[int] = Field(
         description="Time (epoch) when the admin operation occurred, in milliseconds."
     )
     auth_details: Optional[AuthDetails] = Field(
-        description="Details of who carried out the operation."
+        default=None, description="Details of who carried out the operation."
     )
 
 
 class KeycloakEventRequest(AtlanObject):
-    client: Optional[str] = Field(description="Application or OAuth client name.")
+    client: Optional[str] = Field(
+        default=None, description="Application or OAuth client name."
+    )
     ip_address: Optional[str] = Field(
-        description="IP address from which the event was triggered."
+        default=None, description="IP address from which the event was triggered."
     )
     date_from: Optional[str] = Field(
-        description="Earliest date from which to include events (format: yyyy-MM-dd)."
+        default=None,
+        description="Earliest date from which to include events (format: yyyy-MM-dd).",
     )
     date_to: Optional[str] = Field(
-        description="Latest date up to which to include events (format: yyyy-MM-dd)."
+        default=None,
+        description="Latest date up to which to include events (format: yyyy-MM-dd).",
     )
     offset: Optional[int] = Field(
-        description="Starting point for the events (for paging)."
+        default=None, description="Starting point for the events (for paging)."
     )
     size: Optional[int] = Field(
-        description="Maximum number of events to retrieve (per page)."
+        default=None, description="Maximum number of events to retrieve (per page)."
     )
     types: Optional[list[KeycloakEventType]] = Field(
-        description="Include events only of the supplied types."
+        default=None, description="Include events only of the supplied types."
     )
     user_id: Optional[str] = Field(
-        description="Unique identifier (GUID) of the user who triggered the event."
+        default=None,
+        description="Unique identifier (GUID) of the user who triggered the event.",
     )
 
     @property
@@ -162,37 +175,44 @@ class KeycloakEventResponse(object):
 
 class AdminEventRequest(AtlanObject):
     client_id: Optional[str] = Field(
-        description="Unique identifier (GUID) of the client that carried out the operation."
+        default=None,
+        description="Unique identifier (GUID) of the client that carried out the operation.",
     )
     ip_address: Optional[str] = Field(
-        description="IP address from which the operation was carried out."
+        default=None, description="IP address from which the operation was carried out."
     )
     realm_id: Optional[str] = Field(
-        description="Unique name of the realm from which the operation was carried out."
+        default=None,
+        description="Unique name of the realm from which the operation was carried out.",
     )
     user_id: Optional[str] = Field(
-        description="Unique identifier (GUID) of the user who carried out the operation."
+        default=None,
+        description="Unique identifier (GUID) of the user who carried out the operation.",
     )
     date_from: Optional[str] = Field(
-        description="Earliest date from which to include events (format: yyyy-MM-dd)."
+        default=None,
+        description="Earliest date from which to include events (format: yyyy-MM-dd).",
     )
     date_to: Optional[str] = Field(
-        description="Latest date up to which to include events (format: yyyy-MM-dd)."
+        default=None,
+        description="Latest date up to which to include events (format: yyyy-MM-dd).",
     )
     offset: Optional[int] = Field(
-        description="Starting point for the events (for paging)."
+        default=None, description="Starting point for the events (for paging)."
     )
     size: Optional[int] = Field(
-        description="Maximum number of events to retrieve (per page)."
+        default=None, description="Maximum number of events to retrieve (per page)."
     )
     operation_types: Optional[list[AdminOperationType]] = Field(
-        description="Include events only with the supplied types of operations."
+        default=None,
+        description="Include events only with the supplied types of operations.",
     )
     resource_path: Optional[str] = Field(
-        description="Include events only against the supplied resource."
+        default=None, description="Include events only against the supplied resource."
     )
     resource_types: Optional[list[AdminResourceType]] = Field(
-        description="Include events only against the supplied types of resources."
+        default=None,
+        description="Include events only against the supplied types of resources.",
     )
 
     @property

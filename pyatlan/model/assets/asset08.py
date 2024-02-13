@@ -126,9 +126,11 @@ class AuthService(Asset, type_name="AuthService"):
 
     class Attributes(Asset.Attributes):
         auth_service_type: Optional[str] = Field(
-            None, description="", alias="authServiceType"
+            default=None, description="", alias="authServiceType"
         )
-        tag_service: Optional[str] = Field(None, description="", alias="tagService")
+        tag_service: Optional[str] = Field(
+            default=None, description="", alias="tagService"
+        )
         auth_service_is_enabled: Optional[bool] = Field(
             None, description="", alias="authServiceIsEnabled"
         )

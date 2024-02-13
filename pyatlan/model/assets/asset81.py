@@ -23,7 +23,7 @@ from .asset53 import Qlik
 class QlikApp(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikApp", allow_mutation=False)
+    type_name: str = Field(default="QlikApp", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -171,7 +171,7 @@ class QlikApp(Qlik):
             None, description="", alias="qlikHasSectionAccess"
         )
         qlik_origin_app_id: Optional[str] = Field(
-            None, description="", alias="qlikOriginAppId"
+            default=None, description="", alias="qlikOriginAppId"
         )
         qlik_is_encrypted: Optional[bool] = Field(
             None, description="", alias="qlikIsEncrypted"
@@ -199,7 +199,7 @@ class QlikApp(Qlik):
 class QlikChart(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikChart", allow_mutation=False)
+    type_name: str = Field(default="QlikChart", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -304,16 +304,16 @@ class QlikChart(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_chart_subtitle: Optional[str] = Field(
-            None, description="", alias="qlikChartSubtitle"
+            default=None, description="", alias="qlikChartSubtitle"
         )
         qlik_chart_footnote: Optional[str] = Field(
-            None, description="", alias="qlikChartFootnote"
+            default=None, description="", alias="qlikChartFootnote"
         )
         qlik_chart_orientation: Optional[str] = Field(
-            None, description="", alias="qlikChartOrientation"
+            default=None, description="", alias="qlikChartOrientation"
         )
         qlik_chart_type: Optional[str] = Field(
-            None, description="", alias="qlikChartType"
+            default=None, description="", alias="qlikChartType"
         )
         qlik_sheet: Optional[QlikSheet] = Field(
             None, description="", alias="qlikSheet"
@@ -329,7 +329,7 @@ class QlikChart(Qlik):
 class QlikDataset(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikDataset", allow_mutation=False)
+    type_name: str = Field(default="QlikDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -438,16 +438,16 @@ class QlikDataset(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_dataset_technical_name: Optional[str] = Field(
-            None, description="", alias="qlikDatasetTechnicalName"
+            default=None, description="", alias="qlikDatasetTechnicalName"
         )
         qlik_dataset_type: Optional[str] = Field(
-            None, description="", alias="qlikDatasetType"
+            default=None, description="", alias="qlikDatasetType"
         )
         qlik_dataset_uri: Optional[str] = Field(
-            None, description="", alias="qlikDatasetUri"
+            default=None, description="", alias="qlikDatasetUri"
         )
         qlik_dataset_subtype: Optional[str] = Field(
-            None, description="", alias="qlikDatasetSubtype"
+            default=None, description="", alias="qlikDatasetSubtype"
         )
         qlik_space: Optional[QlikSpace] = Field(
             None, description="", alias="qlikSpace"
@@ -463,7 +463,7 @@ class QlikDataset(Qlik):
 class QlikSheet(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikSheet", allow_mutation=False)
+    type_name: str = Field(default="QlikSheet", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -551,7 +551,7 @@ class QlikSheet(Qlik):
 class QlikSpace(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikSpace", allow_mutation=False)
+    type_name: str = Field(default="QlikSpace", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -618,7 +618,7 @@ class QlikSpace(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_space_type: Optional[str] = Field(
-            None, description="", alias="qlikSpaceType"
+            default=None, description="", alias="qlikSpaceType"
         )
         qlik_datasets: Optional[list[QlikDataset]] = Field(
             None, description="", alias="qlikDatasets"

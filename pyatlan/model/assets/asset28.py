@@ -140,13 +140,17 @@ class API(Catalog):
         self.attributes.api_is_auth_optional = api_is_auth_optional
 
     class Attributes(Catalog.Attributes):
-        api_spec_type: Optional[str] = Field(None, description="", alias="apiSpecType")
-        api_spec_version: Optional[str] = Field(
-            None, description="", alias="apiSpecVersion"
+        api_spec_type: Optional[str] = Field(
+            default=None, description="", alias="apiSpecType"
         )
-        api_spec_name: Optional[str] = Field(None, description="", alias="apiSpecName")
+        api_spec_version: Optional[str] = Field(
+            default=None, description="", alias="apiSpecVersion"
+        )
+        api_spec_name: Optional[str] = Field(
+            default=None, description="", alias="apiSpecName"
+        )
         api_spec_qualified_name: Optional[str] = Field(
-            None, description="", alias="apiSpecQualifiedName"
+            default=None, description="", alias="apiSpecQualifiedName"
         )
         api_external_docs: Optional[dict[str, str]] = Field(
             None, description="", alias="apiExternalDocs"

@@ -22,7 +22,7 @@ from .asset42 import Sigma
 class SigmaWorkbook(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
+    type_name: str = Field(default="SigmaWorkbook", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -90,7 +90,7 @@ class SigmaWorkbook(Sigma):
 class SigmaDataElementField(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+    type_name: str = Field(default="SigmaDataElementField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -178,7 +178,7 @@ class SigmaDataElementField(Sigma):
             None, description="", alias="sigmaDataElementFieldIsHidden"
         )
         sigma_data_element_field_formula: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementFieldFormula"
+            default=None, description="", alias="sigmaDataElementFieldFormula"
         )
         sigma_data_element: Optional[SigmaDataElement] = Field(
             None, description="", alias="sigmaDataElement"
@@ -194,7 +194,7 @@ class SigmaDataElementField(Sigma):
 class SigmaPage(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaPage", allow_mutation=False)
+    type_name: str = Field(default="SigmaPage", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -286,7 +286,7 @@ class SigmaPage(Sigma):
 class SigmaDataElement(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+    type_name: str = Field(default="SigmaDataElement", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -407,10 +407,10 @@ class SigmaDataElement(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_query: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQuery"
+            default=None, description="", alias="sigmaDataElementQuery"
         )
         sigma_data_element_type: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementType"
+            default=None, description="", alias="sigmaDataElementType"
         )
         sigma_data_element_field_count: Optional[int] = Field(
             None, description="", alias="sigmaDataElementFieldCount"

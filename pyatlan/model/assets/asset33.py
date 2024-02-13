@@ -178,21 +178,31 @@ class AWS(Cloud):
         self.attributes.aws_tags = aws_tags
 
     class Attributes(Cloud.Attributes):
-        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
-        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
-        aws_service: Optional[str] = Field(None, description="", alias="awsService")
-        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
+        aws_arn: Optional[str] = Field(default=None, description="", alias="awsArn")
+        aws_partition: Optional[str] = Field(
+            default=None, description="", alias="awsPartition"
+        )
+        aws_service: Optional[str] = Field(
+            default=None, description="", alias="awsService"
+        )
+        aws_region: Optional[str] = Field(
+            default=None, description="", alias="awsRegion"
+        )
         aws_account_id: Optional[str] = Field(
-            None, description="", alias="awsAccountId"
+            default=None, description="", alias="awsAccountId"
         )
         aws_resource_id: Optional[str] = Field(
-            None, description="", alias="awsResourceId"
+            default=None, description="", alias="awsResourceId"
         )
         aws_owner_name: Optional[str] = Field(
-            None, description="", alias="awsOwnerName"
+            default=None, description="", alias="awsOwnerName"
         )
-        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
-        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
+        aws_owner_id: Optional[str] = Field(
+            default=None, description="", alias="awsOwnerId"
+        )
+        aws_tags: Optional[list[AwsTag]] = Field(
+            default=None, description="", alias="awsTags"
+        )
 
     attributes: "AWS.Attributes" = Field(
         default_factory=lambda: AWS.Attributes(),

@@ -65,8 +65,10 @@ class Collection(Namespace):
         self.attributes.icon_type = icon_type
 
     class Attributes(Namespace.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+        icon: Optional[str] = Field(default=None, description="", alias="icon")
+        icon_type: Optional[IconType] = Field(
+            default=None, description="", alias="iconType"
+        )
 
     attributes: "Collection.Attributes" = Field(
         default_factory=lambda: Collection.Attributes(),

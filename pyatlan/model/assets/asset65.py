@@ -39,7 +39,7 @@ class PresetChart(Preset):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("PresetChart", allow_mutation=False)
+    type_name: str = Field(default="PresetChart", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -118,7 +118,7 @@ class PresetChart(Preset):
 
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
-            None, description="", alias="presetChartDescriptionMarkdown"
+            default=None, description="", alias="presetChartDescriptionMarkdown"
         )
         preset_chart_form_data: Optional[dict[str, str]] = Field(
             None, description="", alias="presetChartFormData"
@@ -184,7 +184,7 @@ class PresetDataset(Preset):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("PresetDataset", allow_mutation=False)
+    type_name: str = Field(default="PresetDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -281,13 +281,13 @@ class PresetDataset(Preset):
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
-            None, description="", alias="presetDatasetDatasourceName"
+            default=None, description="", alias="presetDatasetDatasourceName"
         )
         preset_dataset_id: Optional[int] = Field(
             None, description="", alias="presetDatasetId"
         )
         preset_dataset_type: Optional[str] = Field(
-            None, description="", alias="presetDatasetType"
+            default=None, description="", alias="presetDatasetType"
         )
         preset_dashboard: Optional[PresetDashboard] = Field(
             None, description="", alias="presetDashboard"
@@ -350,7 +350,7 @@ class PresetDashboard(Preset):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("PresetDashboard", allow_mutation=False)
+    type_name: str = Field(default="PresetDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -562,10 +562,10 @@ class PresetDashboard(Preset):
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByName"
+            default=None, description="", alias="presetDashboardChangedByName"
         )
         preset_dashboard_changed_by_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByURL"
+            default=None, description="", alias="presetDashboardChangedByURL"
         )
         preset_dashboard_is_managed_externally: Optional[bool] = Field(
             None, description="", alias="presetDashboardIsManagedExternally"
@@ -574,7 +574,7 @@ class PresetDashboard(Preset):
             None, description="", alias="presetDashboardIsPublished"
         )
         preset_dashboard_thumbnail_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardThumbnailURL"
+            default=None, description="", alias="presetDashboardThumbnailURL"
         )
         preset_dashboard_chart_count: Optional[int] = Field(
             None, description="", alias="presetDashboardChartCount"
@@ -643,7 +643,7 @@ class PresetWorkspace(Preset):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("PresetWorkspace", allow_mutation=False)
+    type_name: str = Field(default="PresetWorkspace", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -888,16 +888,16 @@ class PresetWorkspace(Preset):
             None, description="", alias="presetWorkspaceClusterId"
         )
         preset_workspace_hostname: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceHostname"
+            default=None, description="", alias="presetWorkspaceHostname"
         )
         preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
             None, description="", alias="presetWorkspaceIsInMaintenanceMode"
         )
         preset_workspace_region: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceRegion"
+            default=None, description="", alias="presetWorkspaceRegion"
         )
         preset_workspace_status: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceStatus"
+            default=None, description="", alias="presetWorkspaceStatus"
         )
         preset_workspace_deployment_id: Optional[int] = Field(
             None, description="", alias="presetWorkspaceDeploymentId"

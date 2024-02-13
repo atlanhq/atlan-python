@@ -66,7 +66,7 @@ class S3Bucket(S3):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("S3Bucket", allow_mutation=False)
+    type_name: str = Field(default="S3Bucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -249,7 +249,7 @@ class S3Object(S3):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("S3Object", allow_mutation=False)
+    type_name: str = Field(default="S3Object", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -458,26 +458,28 @@ class S3Object(S3):
             None, description="", alias="s3ObjectLastModifiedTime"
         )
         s3_bucket_name: Optional[str] = Field(
-            None, description="", alias="s3BucketName"
+            default=None, description="", alias="s3BucketName"
         )
         s3_bucket_qualified_name: Optional[str] = Field(
-            None, description="", alias="s3BucketQualifiedName"
+            default=None, description="", alias="s3BucketQualifiedName"
         )
         s3_object_size: Optional[int] = Field(
             None, description="", alias="s3ObjectSize"
         )
         s3_object_storage_class: Optional[str] = Field(
-            None, description="", alias="s3ObjectStorageClass"
+            default=None, description="", alias="s3ObjectStorageClass"
         )
-        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
+        s3_object_key: Optional[str] = Field(
+            default=None, description="", alias="s3ObjectKey"
+        )
         s3_object_content_type: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentType"
+            default=None, description="", alias="s3ObjectContentType"
         )
         s3_object_content_disposition: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentDisposition"
+            default=None, description="", alias="s3ObjectContentDisposition"
         )
         s3_object_version_id: Optional[str] = Field(
-            None, description="", alias="s3ObjectVersionId"
+            default=None, description="", alias="s3ObjectVersionId"
         )
         bucket: Optional[S3Bucket] = Field(
             None, description="", alias="bucket"

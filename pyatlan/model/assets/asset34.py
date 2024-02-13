@@ -529,29 +529,33 @@ class DbtColumnProcess(Dbt):
 
     class Attributes(Dbt.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
-            None, description="", alias="dbtColumnProcessJobStatus"
+            default=None, description="", alias="dbtColumnProcessJobStatus"
         )
-        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
-        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
-        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_alias: Optional[str] = Field(default=None, description="", alias="dbtAlias")
+        dbt_meta: Optional[str] = Field(default=None, description="", alias="dbtMeta")
+        dbt_unique_id: Optional[str] = Field(
+            default=None, description="", alias="dbtUniqueId"
+        )
         dbt_account_name: Optional[str] = Field(
-            None, description="", alias="dbtAccountName"
+            default=None, description="", alias="dbtAccountName"
         )
         dbt_project_name: Optional[str] = Field(
-            None, description="", alias="dbtProjectName"
+            default=None, description="", alias="dbtProjectName"
         )
         dbt_package_name: Optional[str] = Field(
-            None, description="", alias="dbtPackageName"
+            default=None, description="", alias="dbtPackageName"
         )
-        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+        dbt_job_name: Optional[str] = Field(
+            default=None, description="", alias="dbtJobName"
+        )
         dbt_job_schedule: Optional[str] = Field(
-            None, description="", alias="dbtJobSchedule"
+            default=None, description="", alias="dbtJobSchedule"
         )
         dbt_job_status: Optional[str] = Field(
-            None, description="", alias="dbtJobStatus"
+            default=None, description="", alias="dbtJobStatus"
         )
         dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            None, description="", alias="dbtJobScheduleCronHumanized"
+            default=None, description="", alias="dbtJobScheduleCronHumanized"
         )
         dbt_job_last_run: Optional[datetime] = Field(
             None, description="", alias="dbtJobLastRun"
@@ -560,26 +564,32 @@ class DbtColumnProcess(Dbt):
             None, description="", alias="dbtJobNextRun"
         )
         dbt_job_next_run_humanized: Optional[str] = Field(
-            None, description="", alias="dbtJobNextRunHumanized"
+            default=None, description="", alias="dbtJobNextRunHumanized"
         )
         dbt_environment_name: Optional[str] = Field(
-            None, description="", alias="dbtEnvironmentName"
+            default=None, description="", alias="dbtEnvironmentName"
         )
         dbt_environment_dbt_version: Optional[str] = Field(
-            None, description="", alias="dbtEnvironmentDbtVersion"
+            default=None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
+        dbt_tags: Optional[set[str]] = Field(
+            default=None, description="", alias="dbtTags"
+        )
         dbt_connection_context: Optional[str] = Field(
-            None, description="", alias="dbtConnectionContext"
+            default=None, description="", alias="dbtConnectionContext"
         )
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            None, description="", alias="dbtSemanticLayerProxyUrl"
+            default=None, description="", alias="dbtSemanticLayerProxyUrl"
         )
-        inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
-        outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
-        code: Optional[str] = Field(None, description="", alias="code")
-        sql: Optional[str] = Field(None, description="", alias="sql")
-        ast: Optional[str] = Field(None, description="", alias="ast")
+        inputs: Optional[list[Catalog]] = Field(
+            default=None, description="", alias="inputs"
+        )
+        outputs: Optional[list[Catalog]] = Field(
+            default=None, description="", alias="outputs"
+        )
+        code: Optional[str] = Field(default=None, description="", alias="code")
+        sql: Optional[str] = Field(default=None, description="", alias="sql")
+        ast: Optional[str] = Field(default=None, description="", alias="ast")
         matillion_component: Optional[MatillionComponent] = Field(
             None, description="", alias="matillionComponent"
         )  # relationship
