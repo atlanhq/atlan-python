@@ -40,7 +40,7 @@ class Badge(Asset, type_name="Badge"):
             ),
         )
 
-    type_name: str = Field("Badge", allow_mutation=False)
+    type_name: str = Field(default="Badge", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -97,10 +97,10 @@ class Badge(Asset, type_name="Badge"):
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
-            None, description="", alias="badgeConditions"
+            default=None, description="", alias="badgeConditions"
         )
         badge_metadata_attribute: Optional[str] = Field(
-            None, description="", alias="badgeMetadataAttribute"
+            default=None, description="", alias="badgeMetadataAttribute"
         )
 
         @classmethod

@@ -36,7 +36,7 @@ class APISpec(API):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("APISpec", allow_mutation=False)
+    type_name: str = Field(default="APISpec", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -227,28 +227,28 @@ class APISpec(API):
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
-            None, description="", alias="apiSpecTermsOfServiceURL"
+            default=None, description="", alias="apiSpecTermsOfServiceURL"
         )
         api_spec_contact_email: Optional[str] = Field(
-            None, description="", alias="apiSpecContactEmail"
+            default=None, description="", alias="apiSpecContactEmail"
         )
         api_spec_contact_name: Optional[str] = Field(
-            None, description="", alias="apiSpecContactName"
+            default=None, description="", alias="apiSpecContactName"
         )
         api_spec_contact_url: Optional[str] = Field(
-            None, description="", alias="apiSpecContactURL"
+            default=None, description="", alias="apiSpecContactURL"
         )
         api_spec_license_name: Optional[str] = Field(
-            None, description="", alias="apiSpecLicenseName"
+            default=None, description="", alias="apiSpecLicenseName"
         )
         api_spec_license_url: Optional[str] = Field(
-            None, description="", alias="apiSpecLicenseURL"
+            default=None, description="", alias="apiSpecLicenseURL"
         )
         api_spec_contract_version: Optional[str] = Field(
-            None, description="", alias="apiSpecContractVersion"
+            default=None, description="", alias="apiSpecContractVersion"
         )
         api_spec_service_alias: Optional[str] = Field(
-            None, description="", alias="apiSpecServiceAlias"
+            default=None, description="", alias="apiSpecServiceAlias"
         )
         api_paths: Optional[list[APIPath]] = Field(
             None, description="", alias="apiPaths"
@@ -303,7 +303,7 @@ class APIPath(API):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("APIPath", allow_mutation=False)
+    type_name: str = Field(default="APIPath", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -460,10 +460,10 @@ class APIPath(API):
 
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
-            None, description="", alias="apiPathSummary"
+            default=None, description="", alias="apiPathSummary"
         )
         api_path_raw_u_r_i: Optional[str] = Field(
-            None, description="", alias="apiPathRawURI"
+            default=None, description="", alias="apiPathRawURI"
         )
         api_path_is_templated: Optional[bool] = Field(
             None, description="", alias="apiPathIsTemplated"

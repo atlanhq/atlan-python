@@ -75,10 +75,10 @@ class Thoughtspot(BI):
 
     class Attributes(BI.Attributes):
         thoughtspot_chart_type: Optional[str] = Field(
-            None, description="", alias="thoughtspotChartType"
+            default=None, description="", alias="thoughtspotChartType"
         )
         thoughtspot_question_text: Optional[str] = Field(
-            None, description="", alias="thoughtspotQuestionText"
+            default=None, description="", alias="thoughtspotQuestionText"
         )
 
     attributes: "Thoughtspot.Attributes" = Field(

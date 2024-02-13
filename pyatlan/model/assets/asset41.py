@@ -207,28 +207,30 @@ class Mode(BI):
         self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
     class Attributes(BI.Attributes):
-        mode_id: Optional[str] = Field(None, description="", alias="modeId")
-        mode_token: Optional[str] = Field(None, description="", alias="modeToken")
+        mode_id: Optional[str] = Field(default=None, description="", alias="modeId")
+        mode_token: Optional[str] = Field(
+            default=None, description="", alias="modeToken"
+        )
         mode_workspace_name: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceName"
+            default=None, description="", alias="modeWorkspaceName"
         )
         mode_workspace_username: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceUsername"
+            default=None, description="", alias="modeWorkspaceUsername"
         )
         mode_workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceQualifiedName"
+            default=None, description="", alias="modeWorkspaceQualifiedName"
         )
         mode_report_name: Optional[str] = Field(
-            None, description="", alias="modeReportName"
+            default=None, description="", alias="modeReportName"
         )
         mode_report_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeReportQualifiedName"
+            default=None, description="", alias="modeReportQualifiedName"
         )
         mode_query_name: Optional[str] = Field(
-            None, description="", alias="modeQueryName"
+            default=None, description="", alias="modeQueryName"
         )
         mode_query_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeQueryQualifiedName"
+            default=None, description="", alias="modeQueryQualifiedName"
         )
 
     attributes: "Mode.Attributes" = Field(

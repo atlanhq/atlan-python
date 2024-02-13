@@ -75,10 +75,10 @@ class TagAttachment(Asset, type_name="TagAttachment"):
 
     class Attributes(Asset.Attributes):
         tag_qualified_name: Optional[str] = Field(
-            None, description="", alias="tagQualifiedName"
+            default=None, description="", alias="tagQualifiedName"
         )
         tag_attachment_string_value: Optional[str] = Field(
-            None, description="", alias="tagAttachmentStringValue"
+            default=None, description="", alias="tagAttachmentStringValue"
         )
 
     attributes: "TagAttachment.Attributes" = Field(

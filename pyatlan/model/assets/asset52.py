@@ -283,10 +283,10 @@ class MicroStrategy(BI):
 
     class Attributes(BI.Attributes):
         micro_strategy_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectQualifiedName"
+            default=None, description="", alias="microStrategyProjectQualifiedName"
         )
         micro_strategy_project_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectName"
+            default=None, description="", alias="microStrategyProjectName"
         )
         micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
             None, description="", alias="microStrategyCubeQualifiedNames"
@@ -304,7 +304,7 @@ class MicroStrategy(BI):
             None, description="", alias="microStrategyIsCertified"
         )
         micro_strategy_certified_by: Optional[str] = Field(
-            None, description="", alias="microStrategyCertifiedBy"
+            default=None, description="", alias="microStrategyCertifiedBy"
         )
         micro_strategy_certified_at: Optional[datetime] = Field(
             None, description="", alias="microStrategyCertifiedAt"

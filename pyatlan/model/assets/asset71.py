@@ -22,7 +22,7 @@ from .asset44 import Looker
 class LookerLook(Looker):
     """Description"""
 
-    type_name: str = Field("LookerLook", allow_mutation=False)
+    type_name: str = Field(default="LookerLook", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -275,7 +275,9 @@ class LookerLook(Looker):
         self.attributes.dashboard = dashboard
 
     class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(None, description="", alias="folderName")
+        folder_name: Optional[str] = Field(
+            default=None, description="", alias="folderName"
+        )
         source_user_id: Optional[int] = Field(
             None, description="", alias="sourceUserId"
         )
@@ -297,7 +299,9 @@ class LookerLook(Looker):
         source_query_id: Optional[int] = Field(
             None, description="", alias="sourceQueryId"
         )
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
+        model_name: Optional[str] = Field(
+            default=None, description="", alias="modelName"
+        )
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
         )  # relationship
@@ -324,7 +328,7 @@ class LookerLook(Looker):
 class LookerDashboard(Looker):
     """Description"""
 
-    type_name: str = Field("LookerDashboard", allow_mutation=False)
+    type_name: str = Field(default="LookerDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -511,7 +515,9 @@ class LookerDashboard(Looker):
         self.attributes.folder = folder
 
     class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(None, description="", alias="folderName")
+        folder_name: Optional[str] = Field(
+            default=None, description="", alias="folderName"
+        )
         source_user_id: Optional[int] = Field(
             None, description="", alias="sourceUserId"
         )
@@ -550,7 +556,7 @@ class LookerDashboard(Looker):
 class LookerFolder(Looker):
     """Description"""
 
-    type_name: str = Field("LookerFolder", allow_mutation=False)
+    type_name: str = Field(default="LookerFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -736,7 +742,7 @@ class LookerFolder(Looker):
 class LookerTile(Looker):
     """Description"""
 
-    type_name: str = Field("LookerTile", allow_mutation=False)
+    type_name: str = Field(default="LookerTile", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -912,18 +918,20 @@ class LookerTile(Looker):
 
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(
-            None, description="", alias="lookmlLinkId"
+            default=None, description="", alias="lookmlLinkId"
         )
         merge_result_id: Optional[str] = Field(
-            None, description="", alias="mergeResultId"
+            default=None, description="", alias="mergeResultId"
         )
-        note_text: Optional[str] = Field(None, description="", alias="noteText")
-        query_i_d: Optional[int] = Field(None, description="", alias="queryID")
+        note_text: Optional[str] = Field(default=None, description="", alias="noteText")
+        query_i_d: Optional[int] = Field(default=None, description="", alias="queryID")
         result_maker_i_d: Optional[int] = Field(
             None, description="", alias="resultMakerID"
         )
-        subtitle_text: Optional[str] = Field(None, description="", alias="subtitleText")
-        look_id: Optional[int] = Field(None, description="", alias="lookId")
+        subtitle_text: Optional[str] = Field(
+            default=None, description="", alias="subtitleText"
+        )
+        look_id: Optional[int] = Field(default=None, description="", alias="lookId")
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
         )  # relationship
@@ -944,7 +952,7 @@ class LookerTile(Looker):
 class LookerModel(Looker):
     """Description"""
 
-    type_name: str = Field("LookerModel", allow_mutation=False)
+    type_name: str = Field(default="LookerModel", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1053,7 +1061,9 @@ class LookerModel(Looker):
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
+        project_name: Optional[str] = Field(
+            default=None, description="", alias="projectName"
+        )
         explores: Optional[list[LookerExplore]] = Field(
             None, description="", alias="explores"
         )  # relationship
@@ -1080,7 +1090,7 @@ class LookerModel(Looker):
 class LookerExplore(Looker):
     """Description"""
 
-    type_name: str = Field("LookerExplore", allow_mutation=False)
+    type_name: str = Field(default="LookerExplore", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1227,14 +1237,18 @@ class LookerExplore(Looker):
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        source_connection_name: Optional[str] = Field(
-            None, description="", alias="sourceConnectionName"
+        project_name: Optional[str] = Field(
+            default=None, description="", alias="projectName"
         )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
+        model_name: Optional[str] = Field(
+            default=None, description="", alias="modelName"
+        )
+        source_connection_name: Optional[str] = Field(
+            default=None, description="", alias="sourceConnectionName"
+        )
+        view_name: Optional[str] = Field(default=None, description="", alias="viewName")
         sql_table_name: Optional[str] = Field(
-            None, description="", alias="sqlTableName"
+            default=None, description="", alias="sqlTableName"
         )
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
@@ -1256,7 +1270,7 @@ class LookerExplore(Looker):
 class LookerProject(Looker):
     """Description"""
 
-    type_name: str = Field("LookerProject", allow_mutation=False)
+    type_name: str = Field(default="LookerProject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1357,7 +1371,7 @@ class LookerProject(Looker):
 class LookerQuery(Looker):
     """Description"""
 
-    type_name: str = Field("LookerQuery", allow_mutation=False)
+    type_name: str = Field(default="LookerQuery", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1496,15 +1510,15 @@ class LookerQuery(Looker):
 
     class Attributes(Looker.Attributes):
         source_definition: Optional[str] = Field(
-            None, description="", alias="sourceDefinition"
+            default=None, description="", alias="sourceDefinition"
         )
         source_definition_database: Optional[str] = Field(
-            None, description="", alias="sourceDefinitionDatabase"
+            default=None, description="", alias="sourceDefinitionDatabase"
         )
         source_definition_schema: Optional[str] = Field(
-            None, description="", alias="sourceDefinitionSchema"
+            default=None, description="", alias="sourceDefinitionSchema"
         )
-        fields: Optional[set[str]] = Field(None, description="", alias="fields")
+        fields: Optional[set[str]] = Field(default=None, description="", alias="fields")
         tiles: Optional[list[LookerTile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
@@ -1525,7 +1539,7 @@ class LookerQuery(Looker):
 class LookerField(Looker):
     """Description"""
 
-    type_name: str = Field("LookerField", allow_mutation=False)
+    type_name: str = Field(default="LookerField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1735,19 +1749,23 @@ class LookerField(Looker):
         self.attributes.model = model
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
+        project_name: Optional[str] = Field(
+            default=None, description="", alias="projectName"
+        )
         looker_explore_qualified_name: Optional[str] = Field(
-            None, description="", alias="lookerExploreQualifiedName"
+            default=None, description="", alias="lookerExploreQualifiedName"
         )
         looker_view_qualified_name: Optional[str] = Field(
-            None, description="", alias="lookerViewQualifiedName"
+            default=None, description="", alias="lookerViewQualifiedName"
         )
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
+        model_name: Optional[str] = Field(
+            default=None, description="", alias="modelName"
+        )
         source_definition: Optional[str] = Field(
-            None, description="", alias="sourceDefinition"
+            default=None, description="", alias="sourceDefinition"
         )
         looker_field_data_type: Optional[str] = Field(
-            None, description="", alias="lookerFieldDataType"
+            default=None, description="", alias="lookerFieldDataType"
         )
         looker_times_used: Optional[int] = Field(
             None, description="", alias="lookerTimesUsed"
@@ -1775,7 +1793,7 @@ class LookerField(Looker):
 class LookerView(Looker):
     """Description"""
 
-    type_name: str = Field("LookerView", allow_mutation=False)
+    type_name: str = Field(default="LookerView", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -1877,12 +1895,14 @@ class LookerView(Looker):
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
+        project_name: Optional[str] = Field(
+            default=None, description="", alias="projectName"
+        )
         looker_view_file_path: Optional[str] = Field(
-            None, description="", alias="lookerViewFilePath"
+            default=None, description="", alias="lookerViewFilePath"
         )
         looker_view_file_name: Optional[str] = Field(
-            None, description="", alias="lookerViewFileName"
+            default=None, description="", alias="lookerViewFileName"
         )
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"

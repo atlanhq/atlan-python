@@ -20,7 +20,7 @@ from .asset42 import Sigma
 class SigmaDatasetColumn(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+    type_name: str = Field(default="SigmaDatasetColumn", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -95,10 +95,10 @@ class SigmaDatasetColumn(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetQualifiedName"
+            default=None, description="", alias="sigmaDatasetQualifiedName"
         )
         sigma_dataset_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetName"
+            default=None, description="", alias="sigmaDatasetName"
         )
         sigma_dataset: Optional[SigmaDataset] = Field(
             None, description="", alias="sigmaDataset"
@@ -114,7 +114,7 @@ class SigmaDatasetColumn(Sigma):
 class SigmaDataset(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDataset", allow_mutation=False)
+    type_name: str = Field(default="SigmaDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

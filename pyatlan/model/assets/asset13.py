@@ -169,7 +169,7 @@ class Persona(AccessControl):
             )
         )
 
-    type_name: str = Field("Persona", allow_mutation=False)
+    type_name: str = Field(default="Persona", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -240,7 +240,7 @@ class Persona(AccessControl):
         persona_users: Optional[set[str]] = Field(
             None, description="", alias="personaUsers"
         )
-        role_id: Optional[str] = Field(None, description="", alias="roleId")
+        role_id: Optional[str] = Field(default=None, description="", alias="roleId")
 
         @classmethod
         # @validate_arguments()

@@ -23,7 +23,7 @@ from .asset56 import Kafka
 class KafkaTopic(Kafka):
     """Description"""
 
-    type_name: str = Field("KafkaTopic", allow_mutation=False)
+    type_name: str = Field(default="KafkaTopic", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -301,7 +301,7 @@ class KafkaTopic(Kafka):
 class KafkaConsumerGroup(Kafka):
     """Description"""
 
-    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+    type_name: str = Field(default="KafkaConsumerGroup", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

@@ -174,17 +174,23 @@ class Qlik(BI):
         self.attributes.qlik_is_published = qlik_is_published
 
     class Attributes(BI.Attributes):
-        qlik_id: Optional[str] = Field(None, description="", alias="qlikId")
-        qlik_q_r_i: Optional[str] = Field(None, description="", alias="qlikQRI")
-        qlik_space_id: Optional[str] = Field(None, description="", alias="qlikSpaceId")
+        qlik_id: Optional[str] = Field(default=None, description="", alias="qlikId")
+        qlik_q_r_i: Optional[str] = Field(default=None, description="", alias="qlikQRI")
+        qlik_space_id: Optional[str] = Field(
+            default=None, description="", alias="qlikSpaceId"
+        )
         qlik_space_qualified_name: Optional[str] = Field(
-            None, description="", alias="qlikSpaceQualifiedName"
+            default=None, description="", alias="qlikSpaceQualifiedName"
         )
-        qlik_app_id: Optional[str] = Field(None, description="", alias="qlikAppId")
+        qlik_app_id: Optional[str] = Field(
+            default=None, description="", alias="qlikAppId"
+        )
         qlik_app_qualified_name: Optional[str] = Field(
-            None, description="", alias="qlikAppQualifiedName"
+            default=None, description="", alias="qlikAppQualifiedName"
         )
-        qlik_owner_id: Optional[str] = Field(None, description="", alias="qlikOwnerId")
+        qlik_owner_id: Optional[str] = Field(
+            default=None, description="", alias="qlikOwnerId"
+        )
         qlik_is_published: Optional[bool] = Field(
             None, description="", alias="qlikIsPublished"
         )

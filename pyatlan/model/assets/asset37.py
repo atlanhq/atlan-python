@@ -358,38 +358,38 @@ class GCS(Google):
 
     class Attributes(Google.Attributes):
         gcs_storage_class: Optional[str] = Field(
-            None, description="", alias="gcsStorageClass"
+            default=None, description="", alias="gcsStorageClass"
         )
         gcs_encryption_type: Optional[str] = Field(
-            None, description="", alias="gcsEncryptionType"
+            default=None, description="", alias="gcsEncryptionType"
         )
-        gcs_e_tag: Optional[str] = Field(None, description="", alias="gcsETag")
+        gcs_e_tag: Optional[str] = Field(default=None, description="", alias="gcsETag")
         gcs_requester_pays: Optional[bool] = Field(
             None, description="", alias="gcsRequesterPays"
         )
         gcs_access_control: Optional[str] = Field(
-            None, description="", alias="gcsAccessControl"
+            default=None, description="", alias="gcsAccessControl"
         )
         gcs_meta_generation_id: Optional[int] = Field(
             None, description="", alias="gcsMetaGenerationId"
         )
         google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
+            default=None, description="", alias="googleService"
         )
         google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
+            default=None, description="", alias="googleProjectName"
         )
         google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
+            default=None, description="", alias="googleProjectId"
         )
         google_project_number: Optional[int] = Field(
             None, description="", alias="googleProjectNumber"
         )
         google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
+            default=None, description="", alias="googleLocation"
         )
         google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
+            default=None, description="", alias="googleLocationType"
         )
         google_labels: Optional[list[GoogleLabel]] = Field(
             None, description="", alias="googleLabels"

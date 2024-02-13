@@ -163,22 +163,22 @@ class Sigma(BI):
 
     class Attributes(BI.Attributes):
         sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
+            default=None, description="", alias="sigmaWorkbookQualifiedName"
         )
         sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
+            default=None, description="", alias="sigmaWorkbookName"
         )
         sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
+            default=None, description="", alias="sigmaPageQualifiedName"
         )
         sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
+            default=None, description="", alias="sigmaPageName"
         )
         sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
+            default=None, description="", alias="sigmaDataElementQualifiedName"
         )
         sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
+            default=None, description="", alias="sigmaDataElementName"
         )
 
     attributes: "Sigma.Attributes" = Field(

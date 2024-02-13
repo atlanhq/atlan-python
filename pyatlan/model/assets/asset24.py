@@ -56,7 +56,7 @@ class NoSQL(Catalog):
 
     class Attributes(Catalog.Attributes):
         no_s_q_l_schema_definition: Optional[str] = Field(
-            None, description="", alias="noSQLSchemaDefinition"
+            default=None, description="", alias="noSQLSchemaDefinition"
         )
 
     attributes: "NoSQL.Attributes" = Field(

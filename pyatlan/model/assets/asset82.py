@@ -23,7 +23,7 @@ from .asset54 import Salesforce
 class SalesforceObject(Salesforce):
     """Description"""
 
-    type_name: str = Field("SalesforceObject", allow_mutation=False)
+    type_name: str = Field(default="SalesforceObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -147,10 +147,18 @@ class SalesforceObject(Salesforce):
         self.attributes.fields = fields
 
     class Attributes(Salesforce.Attributes):
-        is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
-        is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
-        is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
-        field_count: Optional[int] = Field(None, description="", alias="fieldCount")
+        is_custom: Optional[bool] = Field(
+            default=None, description="", alias="isCustom"
+        )
+        is_mergable: Optional[bool] = Field(
+            default=None, description="", alias="isMergable"
+        )
+        is_queryable: Optional[bool] = Field(
+            default=None, description="", alias="isQueryable"
+        )
+        field_count: Optional[int] = Field(
+            default=None, description="", alias="fieldCount"
+        )
         lookup_fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="lookupFields"
         )  # relationship
@@ -171,7 +179,7 @@ class SalesforceObject(Salesforce):
 class SalesforceField(Salesforce):
     """Description"""
 
-    type_name: str = Field("SalesforceField", allow_mutation=False)
+    type_name: str = Field(default="SalesforceField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -482,29 +490,39 @@ class SalesforceField(Salesforce):
         self.attributes.object = object
 
     class Attributes(Salesforce.Attributes):
-        data_type: Optional[str] = Field(None, description="", alias="dataType")
+        data_type: Optional[str] = Field(default=None, description="", alias="dataType")
         object_qualified_name: Optional[str] = Field(
-            None, description="", alias="objectQualifiedName"
+            default=None, description="", alias="objectQualifiedName"
         )
-        order: Optional[int] = Field(None, description="", alias="order")
+        order: Optional[int] = Field(default=None, description="", alias="order")
         inline_help_text: Optional[str] = Field(
-            None, description="", alias="inlineHelpText"
+            default=None, description="", alias="inlineHelpText"
         )
         is_calculated: Optional[bool] = Field(
             None, description="", alias="isCalculated"
         )
-        formula: Optional[str] = Field(None, description="", alias="formula")
+        formula: Optional[str] = Field(default=None, description="", alias="formula")
         is_case_sensitive: Optional[bool] = Field(
             None, description="", alias="isCaseSensitive"
         )
-        is_encrypted: Optional[bool] = Field(None, description="", alias="isEncrypted")
-        max_length: Optional[int] = Field(None, description="", alias="maxLength")
-        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
-        precision: Optional[int] = Field(None, description="", alias="precision")
+        is_encrypted: Optional[bool] = Field(
+            default=None, description="", alias="isEncrypted"
+        )
+        max_length: Optional[int] = Field(
+            default=None, description="", alias="maxLength"
+        )
+        is_nullable: Optional[bool] = Field(
+            default=None, description="", alias="isNullable"
+        )
+        precision: Optional[int] = Field(
+            default=None, description="", alias="precision"
+        )
         numeric_scale: Optional[float] = Field(
             None, description="", alias="numericScale"
         )
-        is_unique: Optional[bool] = Field(None, description="", alias="isUnique")
+        is_unique: Optional[bool] = Field(
+            default=None, description="", alias="isUnique"
+        )
         picklist_values: Optional[set[str]] = Field(
             None, description="", alias="picklistValues"
         )
@@ -512,7 +530,7 @@ class SalesforceField(Salesforce):
             None, description="", alias="isPolymorphicForeignKey"
         )
         default_value_formula: Optional[str] = Field(
-            None, description="", alias="defaultValueFormula"
+            default=None, description="", alias="defaultValueFormula"
         )
         lookup_objects: Optional[list[SalesforceObject]] = Field(
             None, description="", alias="lookupObjects"
@@ -531,7 +549,7 @@ class SalesforceField(Salesforce):
 class SalesforceOrganization(Salesforce):
     """Description"""
 
-    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+    type_name: str = Field(default="SalesforceOrganization", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -610,7 +628,7 @@ class SalesforceOrganization(Salesforce):
         self.attributes.dashboards = dashboards
 
     class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
+        source_id: Optional[str] = Field(default=None, description="", alias="sourceId")
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
@@ -631,7 +649,7 @@ class SalesforceOrganization(Salesforce):
 class SalesforceDashboard(Salesforce):
     """Description"""
 
-    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+    type_name: str = Field(default="SalesforceDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -727,11 +745,13 @@ class SalesforceDashboard(Salesforce):
         self.attributes.organization = organization
 
     class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
+        source_id: Optional[str] = Field(default=None, description="", alias="sourceId")
         dashboard_type: Optional[str] = Field(
-            None, description="", alias="dashboardType"
+            default=None, description="", alias="dashboardType"
         )
-        report_count: Optional[int] = Field(None, description="", alias="reportCount")
+        report_count: Optional[int] = Field(
+            default=None, description="", alias="reportCount"
+        )
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
@@ -749,7 +769,7 @@ class SalesforceDashboard(Salesforce):
 class SalesforceReport(Salesforce):
     """Description"""
 
-    type_name: str = Field("SalesforceReport", allow_mutation=False)
+    type_name: str = Field(default="SalesforceReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -845,7 +865,7 @@ class SalesforceReport(Salesforce):
         self.attributes.organization = organization
 
     class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
+        source_id: Optional[str] = Field(default=None, description="", alias="sourceId")
         report_type: Optional[dict[str, str]] = Field(
             None, description="", alias="reportType"
         )

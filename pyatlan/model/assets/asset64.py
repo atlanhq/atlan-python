@@ -38,7 +38,7 @@ class GCSObject(GCS):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("GCSObject", allow_mutation=False)
+    type_name: str = Field(default="GCSObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -376,46 +376,46 @@ class GCSObject(GCS):
 
     class Attributes(GCS.Attributes):
         gcs_bucket_name: Optional[str] = Field(
-            None, description="", alias="gcsBucketName"
+            default=None, description="", alias="gcsBucketName"
         )
         gcs_bucket_qualified_name: Optional[str] = Field(
-            None, description="", alias="gcsBucketQualifiedName"
+            default=None, description="", alias="gcsBucketQualifiedName"
         )
         gcs_object_size: Optional[int] = Field(
             None, description="", alias="gcsObjectSize"
         )
         gcs_object_key: Optional[str] = Field(
-            None, description="", alias="gcsObjectKey"
+            default=None, description="", alias="gcsObjectKey"
         )
         gcs_object_media_link: Optional[str] = Field(
-            None, description="", alias="gcsObjectMediaLink"
+            default=None, description="", alias="gcsObjectMediaLink"
         )
         gcs_object_hold_type: Optional[str] = Field(
-            None, description="", alias="gcsObjectHoldType"
+            default=None, description="", alias="gcsObjectHoldType"
         )
         gcs_object_generation_id: Optional[int] = Field(
             None, description="", alias="gcsObjectGenerationId"
         )
         gcs_object_c_r_c32_c_hash: Optional[str] = Field(
-            None, description="", alias="gcsObjectCRC32CHash"
+            default=None, description="", alias="gcsObjectCRC32CHash"
         )
         gcs_object_m_d5_hash: Optional[str] = Field(
-            None, description="", alias="gcsObjectMD5Hash"
+            default=None, description="", alias="gcsObjectMD5Hash"
         )
         gcs_object_data_last_modified_time: Optional[datetime] = Field(
             None, description="", alias="gcsObjectDataLastModifiedTime"
         )
         gcs_object_content_type: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentType"
+            default=None, description="", alias="gcsObjectContentType"
         )
         gcs_object_content_encoding: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentEncoding"
+            default=None, description="", alias="gcsObjectContentEncoding"
         )
         gcs_object_content_disposition: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentDisposition"
+            default=None, description="", alias="gcsObjectContentDisposition"
         )
         gcs_object_content_language: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentLanguage"
+            default=None, description="", alias="gcsObjectContentLanguage"
         )
         gcs_object_retention_expiration_date: Optional[datetime] = Field(
             None, description="", alias="gcsObjectRetentionExpirationDate"
@@ -475,7 +475,7 @@ class GCSBucket(GCS):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("GCSBucket", allow_mutation=False)
+    type_name: str = Field(default="GCSBucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -659,28 +659,28 @@ class GCSBucket(GCS):
 
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(
-            None, description="", alias="gcsObjectCount"
+            default=None, description="", alias="gcsObjectCount"
         )
         gcs_bucket_versioning_enabled: Optional[bool] = Field(
-            None, description="", alias="gcsBucketVersioningEnabled"
+            default=None, description="", alias="gcsBucketVersioningEnabled"
         )
         gcs_bucket_retention_locked: Optional[bool] = Field(
-            None, description="", alias="gcsBucketRetentionLocked"
+            default=None, description="", alias="gcsBucketRetentionLocked"
         )
         gcs_bucket_retention_period: Optional[int] = Field(
-            None, description="", alias="gcsBucketRetentionPeriod"
+            default=None, description="", alias="gcsBucketRetentionPeriod"
         )
         gcs_bucket_retention_effective_time: Optional[datetime] = Field(
-            None, description="", alias="gcsBucketRetentionEffectiveTime"
+            default=None, description="", alias="gcsBucketRetentionEffectiveTime"
         )
         gcs_bucket_lifecycle_rules: Optional[str] = Field(
-            None, description="", alias="gcsBucketLifecycleRules"
+            default=None, description="", alias="gcsBucketLifecycleRules"
         )
         gcs_bucket_retention_policy: Optional[str] = Field(
-            None, description="", alias="gcsBucketRetentionPolicy"
+            default=None, description="", alias="gcsBucketRetentionPolicy"
         )
         gcs_objects: Optional[list[GCSObject]] = Field(
-            None, description="", alias="gcsObjects"
+            default=None, description="", alias="gcsObjects"
         )  # relationship
 
         @classmethod

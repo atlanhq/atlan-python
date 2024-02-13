@@ -23,7 +23,7 @@ from .asset41 import Mode
 class ModeReport(Mode):
     """Description"""
 
-    type_name: str = Field("ModeReport", allow_mutation=False)
+    type_name: str = Field(default="ModeReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -198,7 +198,7 @@ class ModeReport(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
-            None, description="", alias="modeCollectionToken"
+            default=None, description="", alias="modeCollectionToken"
         )
         mode_report_published_at: Optional[datetime] = Field(
             None, description="", alias="modeReportPublishedAt"
@@ -210,7 +210,7 @@ class ModeReport(Mode):
             None, description="", alias="modeChartCount"
         )
         mode_query_preview: Optional[str] = Field(
-            None, description="", alias="modeQueryPreview"
+            default=None, description="", alias="modeQueryPreview"
         )
         mode_is_public: Optional[bool] = Field(
             None, description="", alias="modeIsPublic"
@@ -235,7 +235,7 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
-    type_name: str = Field("ModeQuery", allow_mutation=False)
+    type_name: str = Field(default="ModeQuery", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -321,7 +321,7 @@ class ModeQuery(Mode):
 
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
-            None, description="", alias="modeRawQuery"
+            default=None, description="", alias="modeRawQuery"
         )
         mode_report_import_count: Optional[int] = Field(
             None, description="", alias="modeReportImportCount"
@@ -343,7 +343,7 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
-    type_name: str = Field("ModeChart", allow_mutation=False)
+    type_name: str = Field(default="ModeChart", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -395,7 +395,7 @@ class ModeChart(Mode):
 
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
-            None, description="", alias="modeChartType"
+            default=None, description="", alias="modeChartType"
         )
         mode_query: Optional[ModeQuery] = Field(
             None, description="", alias="modeQuery"
@@ -411,7 +411,7 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
-    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+    type_name: str = Field(default="ModeWorkspace", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -481,7 +481,7 @@ class ModeWorkspace(Mode):
 class ModeCollection(Mode):
     """Description"""
 
-    type_name: str = Field("ModeCollection", allow_mutation=False)
+    type_name: str = Field(default="ModeCollection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -567,10 +567,10 @@ class ModeCollection(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
-            None, description="", alias="modeCollectionType"
+            default=None, description="", alias="modeCollectionType"
         )
         mode_collection_state: Optional[str] = Field(
-            None, description="", alias="modeCollectionState"
+            default=None, description="", alias="modeCollectionState"
         )
         mode_workspace: Optional[ModeWorkspace] = Field(
             None, description="", alias="modeWorkspace"

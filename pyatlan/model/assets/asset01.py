@@ -14,7 +14,7 @@ from .asset00 import Asset
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
-    type_name: str = Field("DataSet", allow_mutation=False)
+    type_name: str = Field(default="DataSet", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

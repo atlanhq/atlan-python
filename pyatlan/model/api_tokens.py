@@ -13,11 +13,15 @@ class ApiTokenPersona(AtlanObject):
         frozen = True
 
     guid: Optional[str] = Field(
-        description="Unique identifier (GUID) of the linked persona.", alias="id"
+        default=None,
+        description="Unique identifier (GUID) of the linked persona.",
+        alias="id",
     )
-    persona: Optional[str] = Field(description="Unique name of the linked persona.")
+    persona: Optional[str] = Field(
+        default=None, description="Unique name of the linked persona."
+    )
     persona_qualified_name: Optional[str] = Field(
-        description="Unique qualified_name of the persona"
+        default=None, description="Unique qualified_name of the persona"
     )
 
 
@@ -28,18 +32,25 @@ class ApiToken(AtlanObject):
             alias="access.token.lifespan",
         )
         access_token: Optional[str] = Field(
-            description="The actual API token that can be used as a bearer token."
+            default=None,
+            description="The actual API token that can be used as a bearer token.",
         )
         client_id: Optional[str] = Field(
-            description="Unique client identifier (GUID) of the API token."
+            default=None,
+            description="Unique client identifier (GUID) of the API token.",
         )
         created_at: Optional[int] = Field(
             description="Epoch time, in milliseconds, at which the API token was created."
         )
-        created_by: Optional[str] = Field(description="User who created the API token.")
-        description: Optional[str] = Field(description="Explanation of the API token.")
+        created_by: Optional[str] = Field(
+            default=None, description="User who created the API token."
+        )
+        description: Optional[str] = Field(
+            default=None, description="Explanation of the API token."
+        )
         display_name: Optional[str] = Field(
-            description="Human-readable name provided when creating the token."
+            default=None,
+            description="Human-readable name provided when creating the token.",
         )
         personas: Optional[list[Any]] = Field(
             default_factory=list,
@@ -49,7 +60,8 @@ class ApiToken(AtlanObject):
             default_factory=set, description="Personas associated with the API token."
         )
         purposes: Optional[Any] = Field(
-            description="Possible future placeholder for purposes associated with the token."
+            default=None,
+            description="Possible future placeholder for purposes associated with the token.",
         )
         workspace_permissions: Optional[set[str]] = Field(
             default_factory=set,
@@ -78,18 +90,22 @@ class ApiToken(AtlanObject):
             return values
 
     guid: Optional[str] = Field(
-        description="Unique identifier (GUID) of the API token.", alias="id"
+        default=None,
+        description="Unique identifier (GUID) of the API token.",
+        alias="id",
     )
     client_id: Optional[str] = Field(
+        default=None,
         description="Unique client identifier (GUID) of the API token.",
         alias="clientId",
     )
     display_name: Optional[str] = Field(
+        default=None,
         description="Human-readable name provided when creating the token.",
         alias="displayName",
     )
     attributes: Optional[ApiTokenAttributes] = Field(
-        description="Detailed characteristics of the API token."
+        default=None, description="Detailed characteristics of the API token."
     )
 
     @root_validator(pre=True)
@@ -107,17 +123,21 @@ class ApiToken(AtlanObject):
 
 class ApiTokenRequest(AtlanObject):
     display_name: Optional[str] = Field(
-        description="Human-readable name provided when creating the token."
+        default=None,
+        description="Human-readable name provided when creating the token.",
     )
     description: str = Field(default="", description="Explanation of the token.")
     personas: Optional[set[str]] = Field(
+        default=None,
         description="Deprecated (now unused): GUIDs of personas that are associated with the token.",
     )
     persona_qualified_names: Optional[set[str]] = Field(
+        default=None,
         description="Unique qualified_names of personas that are associated with the token.",
     )
     validity_seconds: Optional[int] = Field(
-        description="Length of time, in seconds, after which the token will expire and no longer be usable."
+        default=None,
+        description="Length of time, in seconds, after which the token will expire and no longer be usable.",
     )
 
     @root_validator(pre=True)
@@ -133,10 +153,14 @@ class ApiTokenRequest(AtlanObject):
 
 
 class ApiTokenResponse(AtlanObject):
-    total_record: Optional[int] = Field(description="Total number of API tokens.")
+    total_record: Optional[int] = Field(
+        default=None, description="Total number of API tokens."
+    )
     filter_record: Optional[int] = Field(
-        description="Number of API records that matched the specified filters."
+        default=None,
+        description="Number of API records that matched the specified filters.",
     )
     records: Optional[list[ApiToken]] = Field(
-        description="Actual API tokens that matched the specified filters."
+        default=None,
+        description="Actual API tokens that matched the specified filters.",
     )

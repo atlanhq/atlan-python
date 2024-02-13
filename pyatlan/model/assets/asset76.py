@@ -28,7 +28,7 @@ from .asset49 import QuickSight
 class QuickSightFolder(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+    type_name: str = Field(default="QuickSightFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -172,7 +172,7 @@ class QuickSightFolder(QuickSight):
 class QuickSightDashboardVisual(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+    type_name: str = Field(default="QuickSightDashboardVisual", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -240,7 +240,7 @@ class QuickSightDashboardVisual(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDashboardQualifiedName"
+            default=None, description="", alias="quickSightDashboardQualifiedName"
         )
         quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
             None, description="", alias="quickSightDashboard"
@@ -256,7 +256,7 @@ class QuickSightDashboardVisual(QuickSight):
 class QuickSightAnalysisVisual(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+    type_name: str = Field(default="QuickSightAnalysisVisual", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -318,7 +318,7 @@ class QuickSightAnalysisVisual(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightAnalysisQualifiedName"
+            default=None, description="", alias="quickSightAnalysisQualifiedName"
         )
         quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
             None, description="", alias="quickSightAnalysis"
@@ -334,7 +334,7 @@ class QuickSightAnalysisVisual(QuickSight):
 class QuickSightDatasetField(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+    type_name: str = Field(default="QuickSightDatasetField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -422,7 +422,7 @@ class QuickSightDatasetField(QuickSight):
             None, description="", alias="quickSightDatasetFieldType"
         )
         quick_sight_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDatasetQualifiedName"
+            default=None, description="", alias="quickSightDatasetQualifiedName"
         )
         quick_sight_dataset: Optional[QuickSightDataset] = Field(
             None, description="", alias="quickSightDataset"
@@ -438,7 +438,7 @@ class QuickSightDatasetField(QuickSight):
 class QuickSightAnalysis(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+    type_name: str = Field(default="QuickSightAnalysis", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -631,7 +631,7 @@ class QuickSightAnalysis(QuickSight):
 class QuickSightDashboard(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+    type_name: str = Field(default="QuickSightDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -776,7 +776,7 @@ class QuickSightDashboard(QuickSight):
 class QuickSightDataset(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+    type_name: str = Field(default="QuickSightDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

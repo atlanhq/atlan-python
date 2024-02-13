@@ -133,16 +133,16 @@ class ADLS(ObjectStore):
 
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
-            None, description="", alias="adlsAccountQualifiedName"
+            default=None, description="", alias="adlsAccountQualifiedName"
         )
         azure_resource_id: Optional[str] = Field(
-            None, description="", alias="azureResourceId"
+            default=None, description="", alias="azureResourceId"
         )
         azure_location: Optional[str] = Field(
-            None, description="", alias="azureLocation"
+            default=None, description="", alias="azureLocation"
         )
         adls_account_secondary_location: Optional[str] = Field(
-            None, description="", alias="adlsAccountSecondaryLocation"
+            default=None, description="", alias="adlsAccountSecondaryLocation"
         )
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"

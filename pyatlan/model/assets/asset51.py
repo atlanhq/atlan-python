@@ -125,10 +125,10 @@ class PowerBI(BI):
             None, description="", alias="powerBIIsHidden"
         )
         power_b_i_table_qualified_name: Optional[str] = Field(
-            None, description="", alias="powerBITableQualifiedName"
+            default=None, description="", alias="powerBITableQualifiedName"
         )
         power_b_i_format_string: Optional[str] = Field(
-            None, description="", alias="powerBIFormatString"
+            default=None, description="", alias="powerBIFormatString"
         )
         power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
             None, description="", alias="powerBIEndorsement"

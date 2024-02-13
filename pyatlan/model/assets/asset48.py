@@ -85,10 +85,10 @@ class Metabase(BI):
 
     class Attributes(BI.Attributes):
         metabase_collection_name: Optional[str] = Field(
-            None, description="", alias="metabaseCollectionName"
+            default=None, description="", alias="metabaseCollectionName"
         )
         metabase_collection_qualified_name: Optional[str] = Field(
-            None, description="", alias="metabaseCollectionQualifiedName"
+            default=None, description="", alias="metabaseCollectionQualifiedName"
         )
 
     attributes: "Metabase.Attributes" = Field(

@@ -22,7 +22,7 @@ from .asset48 import Metabase
 class MetabaseQuestion(Metabase):
     """Description"""
 
-    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+    type_name: str = Field(default="MetabaseQuestion", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -132,10 +132,10 @@ class MetabaseQuestion(Metabase):
             None, description="", alias="metabaseDashboardCount"
         )
         metabase_query_type: Optional[str] = Field(
-            None, description="", alias="metabaseQueryType"
+            default=None, description="", alias="metabaseQueryType"
         )
         metabase_query: Optional[str] = Field(
-            None, description="", alias="metabaseQuery"
+            default=None, description="", alias="metabaseQuery"
         )
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
             None, description="", alias="metabaseDashboards"
@@ -154,7 +154,7 @@ class MetabaseQuestion(Metabase):
 class MetabaseCollection(Metabase):
     """Description"""
 
-    type_name: str = Field("MetabaseCollection", allow_mutation=False)
+    type_name: str = Field(default="MetabaseCollection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -281,12 +281,14 @@ class MetabaseCollection(Metabase):
         self.attributes.metabase_questions = metabase_questions
 
     class Attributes(Metabase.Attributes):
-        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
+        metabase_slug: Optional[str] = Field(
+            default=None, description="", alias="metabaseSlug"
+        )
         metabase_color: Optional[str] = Field(
-            None, description="", alias="metabaseColor"
+            default=None, description="", alias="metabaseColor"
         )
         metabase_namespace: Optional[str] = Field(
-            None, description="", alias="metabaseNamespace"
+            default=None, description="", alias="metabaseNamespace"
         )
         metabase_is_personal_collection: Optional[bool] = Field(
             None, description="", alias="metabaseIsPersonalCollection"
@@ -308,7 +310,7 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
-    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+    type_name: str = Field(default="MetabaseDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

@@ -255,40 +255,40 @@ class DataStudio(Google):
 
     class Attributes(Google.Attributes):
         google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
+            default=None, description="", alias="googleService"
         )
         google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
+            default=None, description="", alias="googleProjectName"
         )
         google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
+            default=None, description="", alias="googleProjectId"
         )
         google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
+            default=None, description="", alias="googleProjectNumber"
         )
         google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
+            default=None, description="", alias="googleLocation"
         )
         google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
+            default=None, description="", alias="googleLocationType"
         )
         google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
+            default=None, description="", alias="googleLabels"
         )
         google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
+            default=None, description="", alias="googleTags"
         )
         input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
+            default=None, description="", alias="inputToProcesses"
         )  # relationship
         output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="outputFromAirflowTasks"
+            default=None, description="", alias="outputFromAirflowTasks"
         )  # relationship
         input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="inputToAirflowTasks"
+            default=None, description="", alias="inputToAirflowTasks"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
+            default=None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "DataStudio.Attributes" = Field(

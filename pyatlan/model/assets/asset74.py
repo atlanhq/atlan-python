@@ -142,7 +142,7 @@ class SisenseFolder(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseFolderParentFolderQualifiedName"
+            default=None, description="", alias="sisenseFolderParentFolderQualifiedName"
         )
         sisense_child_folders: Optional[list[SisenseFolder]] = Field(
             None, description="", alias="sisenseChildFolders"
@@ -356,16 +356,16 @@ class SisenseWidget(Sisense):
             None, description="", alias="sisenseWidgetColumnCount"
         )
         sisense_widget_sub_type: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetSubType"
+            default=None, description="", alias="sisenseWidgetSubType"
         )
         sisense_widget_size: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetSize"
+            default=None, description="", alias="sisenseWidgetSize"
         )
         sisense_widget_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetDashboardQualifiedName"
+            default=None, description="", alias="sisenseWidgetDashboardQualifiedName"
         )
         sisense_widget_folder_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseWidgetFolderQualifiedName"
+            default=None, description="", alias="sisenseWidgetFolderQualifiedName"
         )
         sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
             None, description="", alias="sisenseDatamodelTables"
@@ -633,10 +633,10 @@ class SisenseDatamodel(Sisense):
             None, description="", alias="sisenseDatamodelTableCount"
         )
         sisense_datamodel_server: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelServer"
+            default=None, description="", alias="sisenseDatamodelServer"
         )
         sisense_datamodel_revision: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelRevision"
+            default=None, description="", alias="sisenseDatamodelRevision"
         )
         sisense_datamodel_last_build_time: Optional[datetime] = Field(
             None, description="", alias="sisenseDatamodelLastBuildTime"
@@ -648,10 +648,10 @@ class SisenseDatamodel(Sisense):
             None, description="", alias="sisenseDatamodelLastPublishTime"
         )
         sisense_datamodel_type: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelType"
+            default=None, description="", alias="sisenseDatamodelType"
         )
         sisense_datamodel_relation_type: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelRelationType"
+            default=None, description="", alias="sisenseDatamodelRelationType"
         )
         sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
             None, description="", alias="sisenseDatamodelTables"
@@ -919,16 +919,16 @@ class SisenseDatamodelTable(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_datamodel_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelQualifiedName"
+            default=None, description="", alias="sisenseDatamodelQualifiedName"
         )
         sisense_datamodel_table_column_count: Optional[int] = Field(
             None, description="", alias="sisenseDatamodelTableColumnCount"
         )
         sisense_datamodel_table_type: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableType"
+            default=None, description="", alias="sisenseDatamodelTableType"
         )
         sisense_datamodel_table_expression: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableExpression"
+            default=None, description="", alias="sisenseDatamodelTableExpression"
         )
         sisense_datamodel_table_is_materialized: Optional[bool] = Field(
             None, description="", alias="sisenseDatamodelTableIsMaterialized"
@@ -937,10 +937,10 @@ class SisenseDatamodelTable(Sisense):
             None, description="", alias="sisenseDatamodelTableIsHidden"
         )
         sisense_datamodel_table_schedule: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableSchedule"
+            default=None, description="", alias="sisenseDatamodelTableSchedule"
         )
         sisense_datamodel_table_live_query_settings: Optional[str] = Field(
-            None, description="", alias="sisenseDatamodelTableLiveQuerySettings"
+            default=None, description="", alias="sisenseDatamodelTableLiveQuerySettings"
         )
         sisense_datamodel: Optional[SisenseDatamodel] = Field(
             None, description="", alias="sisenseDatamodel"
@@ -1076,7 +1076,7 @@ class SisenseDashboard(Sisense):
 
     class Attributes(Sisense.Attributes):
         sisense_dashboard_folder_qualified_name: Optional[str] = Field(
-            None, description="", alias="sisenseDashboardFolderQualifiedName"
+            default=None, description="", alias="sisenseDashboardFolderQualifiedName"
         )
         sisense_dashboard_widget_count: Optional[int] = Field(
             None, description="", alias="sisenseDashboardWidgetCount"

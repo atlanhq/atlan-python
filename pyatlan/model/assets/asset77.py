@@ -16,7 +16,7 @@ from .asset50 import Thoughtspot
 class ThoughtspotLiveboard(Thoughtspot):
     """Description"""
 
-    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
+    type_name: str = Field(default="ThoughtspotLiveboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -65,7 +65,7 @@ class ThoughtspotLiveboard(Thoughtspot):
 class ThoughtspotDashlet(Thoughtspot):
     """Description"""
 
-    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
+    type_name: str = Field(default="ThoughtspotDashlet", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -156,10 +156,10 @@ class ThoughtspotDashlet(Thoughtspot):
 
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_liveboard_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardName"
+            default=None, description="", alias="thoughtspotLiveboardName"
         )
         thoughtspot_liveboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardQualifiedName"
+            default=None, description="", alias="thoughtspotLiveboardQualifiedName"
         )
         thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
             None, description="", alias="thoughtspotLiveboard"
