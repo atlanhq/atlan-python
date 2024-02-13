@@ -1,3 +1,14 @@
+## 1.9.4 (February 13, 2024)
+
+### New features
+
+- Adds a way to specify replace, append, or removal of individual relationships during `save` operations
+
+### Bug fixes
+
+- Adds missing changes to code generation templates
+- Corrects an erroneous use of the inverse operator
+
 ## 1.9.3 (January 30, 2024)
 
 ### Bug fixes
