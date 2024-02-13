@@ -250,7 +250,9 @@ class AtlanConnectorType(str, Enum):
     AIRFLOW_CLOUD_COMPOSER = ("airflow-cloud-composer", AtlanConnectionCategory.ELT)
     SPARK = ("spark", AtlanConnectionCategory.ELT)
     MPARTICLE = ("mparticle", AtlanConnectionCategory.DATABASE)
+    ESSBASE = ("essbase", AtlanConnectionCategory.DATABASE)
     GENERIC = ("genericdb", AtlanConnectionCategory.DATABASE)
+    FILE = ("file", AtlanConnectionCategory.OBJECT_STORE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):

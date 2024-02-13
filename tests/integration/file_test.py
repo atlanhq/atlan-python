@@ -18,7 +18,7 @@ from tests.integration.connection_test import create_connection
 
 MODULE_NAME = TestId.make_unique("File")
 
-CONNECTOR_TYPE = AtlanConnectorType.API
+CONNECTOR_TYPE = AtlanConnectorType.FILE
 FILE_NAME = f"{MODULE_NAME}-file.pdf"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
