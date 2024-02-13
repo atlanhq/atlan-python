@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 import logging
-import time
+from datetime import datetime
 from typing import List
 
 from pyatlan.client.asset import IndexSearchResults
@@ -67,7 +67,6 @@ def star_asset(asset: Asset, usernames: list[str]) -> None:
     :param usernames: to ensure have starred the asset
     :return: nothing (void)
     """
-    now = round(time.time() * 1000)
     starred_details_list: List[StarredDetails] = asset.starred_details_list or []
     starred_count = len(starred_details_list)
     starred_by: set[str] = asset.starred_by or set()
@@ -76,7 +75,7 @@ def star_asset(asset: Asset, usernames: list[str]) -> None:
             starred_by.add(user)
             starred_count += 1
             starred_details_list.append(
-                StarredDetails(asset_starred_by=user, asset_starred_at=now)
+                StarredDetails(asset_starred_by=user, asset_starred_at=datetime.now())
             )
     to_update = asset.trim_to_required()
     to_update.starred_details_list = starred_details_list
