@@ -308,5 +308,5 @@ class SisenseDatamodelTable(Sisense):
     )
 
 
-from .sisense_datamodel import SisenseDatamodel  # noqa: E402
-from .sisense_widget import SisenseWidget  # noqa: E402
+from .sisense_datamodel import SisenseDatamodel  # noqa
+from .sisense_widget import SisenseWidget  # noqa

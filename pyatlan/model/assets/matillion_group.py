@@ -81,4 +81,4 @@ class MatillionGroup(Matillion):
     )
 
 
-from .matillion_project import MatillionProject  # noqa: E402
+from .matillion_project import MatillionProject  # noqa

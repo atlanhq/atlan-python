@@ -133,5 +133,5 @@ class PowerBIDashboard(PowerBI):
     )
 
 
-from .power_b_i_tile import PowerBITile  # noqa: E402
-from .power_b_i_workspace import PowerBIWorkspace  # noqa: E402
+from .power_b_i_tile import PowerBITile  # noqa
+from .power_b_i_workspace import PowerBIWorkspace  # noqa

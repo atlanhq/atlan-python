@@ -166,4 +166,4 @@ class DataDomain(DataMesh):
     )
 
 
-from .data_product import DataProduct  # noqa: E402
+from .data_product import DataProduct  # noqa

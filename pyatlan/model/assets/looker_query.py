@@ -175,6 +175,6 @@ class LookerQuery(Looker):
     )
 
 
-from .looker_look import LookerLook  # noqa: E402
-from .looker_model import LookerModel  # noqa: E402
-from .looker_tile import LookerTile  # noqa: E402
+from .looker_look import LookerLook  # noqa
+from .looker_model import LookerModel  # noqa
+from .looker_tile import LookerTile  # noqa

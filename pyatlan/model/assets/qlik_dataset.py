@@ -143,4 +143,4 @@ class QlikDataset(Qlik):
     )
 
 
-from .qlik_space import QlikSpace  # noqa: E402
+from .qlik_space import QlikSpace  # noqa

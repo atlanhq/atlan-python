@@ -225,7 +225,7 @@ class TableauWorksheet(Tableau):
     )
 
 
-from .tableau_calculated_field import TableauCalculatedField  # noqa: E402
-from .tableau_dashboard import TableauDashboard  # noqa: E402
-from .tableau_datasource_field import TableauDatasourceField  # noqa: E402
-from .tableau_workbook import TableauWorkbook  # noqa: E402
+from .tableau_calculated_field import TableauCalculatedField  # noqa
+from .tableau_dashboard import TableauDashboard  # noqa
+from .tableau_datasource_field import TableauDatasourceField  # noqa
+from .tableau_workbook import TableauWorkbook  # noqa

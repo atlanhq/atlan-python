@@ -158,4 +158,4 @@ class PowerBIMeasure(PowerBI):
     )
 
 
-from .power_b_i_table import PowerBITable  # noqa: E402
+from .power_b_i_table import PowerBITable  # noqa

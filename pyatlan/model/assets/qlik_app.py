@@ -184,5 +184,5 @@ class QlikApp(Qlik):
     )
 
 
-from .qlik_sheet import QlikSheet  # noqa: E402
-from .qlik_space import QlikSpace  # noqa: E402
+from .qlik_sheet import QlikSheet  # noqa
+from .qlik_space import QlikSpace  # noqa

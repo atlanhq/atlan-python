@@ -79,4 +79,4 @@ class SigmaWorkbook(Sigma):
     )
 
 
-from .sigma_page import SigmaPage  # noqa: E402
+from .sigma_page import SigmaPage  # noqa

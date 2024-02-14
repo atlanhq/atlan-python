@@ -213,6 +213,6 @@ class LookerTile(Looker):
     )
 
 
-from .looker_dashboard import LookerDashboard  # noqa: E402
-from .looker_look import LookerLook  # noqa: E402
-from .looker_query import LookerQuery  # noqa: E402
+from .looker_dashboard import LookerDashboard  # noqa
+from .looker_look import LookerLook  # noqa
+from .looker_query import LookerQuery  # noqa

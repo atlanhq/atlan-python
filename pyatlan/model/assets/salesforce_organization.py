@@ -113,6 +113,6 @@ class SalesforceOrganization(Salesforce):
     )
 
 
-from .salesforce_dashboard import SalesforceDashboard  # noqa: E402
-from .salesforce_object import SalesforceObject  # noqa: E402
-from .salesforce_report import SalesforceReport  # noqa: E402
+from .salesforce_dashboard import SalesforceDashboard  # noqa
+from .salesforce_object import SalesforceObject  # noqa
+from .salesforce_report import SalesforceReport  # noqa

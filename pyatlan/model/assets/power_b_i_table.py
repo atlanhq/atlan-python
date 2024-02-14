@@ -217,6 +217,6 @@ class PowerBITable(PowerBI):
     )
 
 
-from .power_b_i_column import PowerBIColumn  # noqa: E402
-from .power_b_i_dataset import PowerBIDataset  # noqa: E402
-from .power_b_i_measure import PowerBIMeasure  # noqa: E402
+from .power_b_i_column import PowerBIColumn  # noqa
+from .power_b_i_dataset import PowerBIDataset  # noqa
+from .power_b_i_measure import PowerBIMeasure  # noqa

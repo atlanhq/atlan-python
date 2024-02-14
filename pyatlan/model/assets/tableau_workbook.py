@@ -221,7 +221,7 @@ class TableauWorkbook(Tableau):
     )
 
 
-from .tableau_dashboard import TableauDashboard  # noqa: E402
-from .tableau_datasource import TableauDatasource  # noqa: E402
-from .tableau_project import TableauProject  # noqa: E402
-from .tableau_worksheet import TableauWorksheet  # noqa: E402
+from .tableau_dashboard import TableauDashboard  # noqa
+from .tableau_datasource import TableauDatasource  # noqa
+from .tableau_project import TableauProject  # noqa
+from .tableau_worksheet import TableauWorksheet  # noqa

@@ -205,4 +205,4 @@ class Function(SQL):
     )
 
 
-from .schema import Schema  # noqa: E402
+from .schema import Schema  # noqa

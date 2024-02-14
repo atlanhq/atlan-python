@@ -161,5 +161,5 @@ class SalesforceObject(Salesforce):
     )
 
 
-from .salesforce_field import SalesforceField  # noqa: E402
-from .salesforce_organization import SalesforceOrganization  # noqa: E402
+from .salesforce_field import SalesforceField  # noqa
+from .salesforce_organization import SalesforceOrganization  # noqa

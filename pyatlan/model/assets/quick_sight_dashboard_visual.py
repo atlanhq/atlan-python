@@ -97,4 +97,4 @@ class QuickSightDashboardVisual(QuickSight):
     )
 
 
-from .quick_sight_dashboard import QuickSightDashboard  # noqa: E402
+from .quick_sight_dashboard import QuickSightDashboard  # noqa

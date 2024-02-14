@@ -142,4 +142,4 @@ class SnowflakePipe(SQL):
     )
 
 
-from .schema import Schema  # noqa: E402
+from .schema import Schema  # noqa

@@ -147,8 +147,8 @@ class LookerModel(Looker):
     )
 
 
-from .looker_explore import LookerExplore  # noqa: E402
-from .looker_field import LookerField  # noqa: E402
-from .looker_look import LookerLook  # noqa: E402
-from .looker_project import LookerProject  # noqa: E402
-from .looker_query import LookerQuery  # noqa: E402
+from .looker_explore import LookerExplore  # noqa
+from .looker_field import LookerField  # noqa
+from .looker_look import LookerLook  # noqa
+from .looker_project import LookerProject  # noqa
+from .looker_query import LookerQuery  # noqa

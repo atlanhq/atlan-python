@@ -276,23 +276,6 @@ class View(SQL):
     )
 
 
-from .airflow_task import AirflowTask  # noqa: E402
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402
-from .column import Column  # noqa: E402
-from .data_product import DataProduct  # noqa: E402
-from .dbt_model import DbtModel  # noqa: E402
-from .dbt_source import DbtSource  # noqa: E402
-from .dbt_test import DbtTest  # noqa: E402
-from .file import File  # noqa: E402
-from .link import Link  # noqa: E402
-from .m_c_incident import MCIncident  # noqa: E402
-from .m_c_monitor import MCMonitor  # noqa: E402
-from .metric import Metric  # noqa: E402
-from .process import Process  # noqa: E402
-from .query import Query  # noqa: E402
-from .readme import Readme  # noqa: E402
-from .schema import Schema  # noqa: E402
-from .schema_registry_subject import SchemaRegistrySubject  # noqa: E402
-from .soda_check import SodaCheck  # noqa: E402
-
-View.Attributes.update_forward_refs()
+from .column import Column  # noqa
+from .query import Query  # noqa
+from .schema import Schema  # noqa

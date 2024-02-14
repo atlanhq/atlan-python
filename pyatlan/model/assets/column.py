@@ -1370,12 +1370,12 @@ class Column(SQL):
     )
 
 
-from .dbt_metric import DbtMetric  # noqa: E402
-from .dbt_model_column import DbtModelColumn  # noqa: E402
-from .materialised_view import MaterialisedView  # noqa: E402
-from .metric import Metric  # noqa: E402
-from .query import Query  # noqa: E402
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402
-from .table import Table  # noqa: E402
-from .table_partition import TablePartition  # noqa: E402
-from .view import View  # noqa: E402
+from .dbt_metric import DbtMetric  # noqa
+from .dbt_model_column import DbtModelColumn  # noqa
+from .materialised_view import MaterialisedView  # noqa
+from .metric import Metric  # noqa
+from .query import Query  # noqa
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa
+from .table import Table  # noqa
+from .table_partition import TablePartition  # noqa
+from .view import View  # noqa

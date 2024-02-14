@@ -184,5 +184,5 @@ class SodaCheck(Soda):
     )
 
 
-from .asset import Asset  # noqa: E402
-from .column import Column  # noqa: E402
+from .asset import Asset  # noqa
+from .column import Column  # noqa

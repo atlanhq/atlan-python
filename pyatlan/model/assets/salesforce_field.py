@@ -364,4 +364,4 @@ class SalesforceField(Salesforce):
     )
 
 
-from .salesforce_object import SalesforceObject  # noqa: E402
+from .salesforce_object import SalesforceObject  # noqa

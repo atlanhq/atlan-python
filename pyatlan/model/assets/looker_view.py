@@ -135,5 +135,5 @@ class LookerView(Looker):
     )
 
 
-from .looker_field import LookerField  # noqa: E402
-from .looker_project import LookerProject  # noqa: E402
+from .looker_field import LookerField  # noqa
+from .looker_project import LookerProject  # noqa

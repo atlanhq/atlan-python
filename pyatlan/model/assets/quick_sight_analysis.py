@@ -207,5 +207,5 @@ class QuickSightAnalysis(QuickSight):
     )
 
 
-from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa: E402
-from .quick_sight_folder import QuickSightFolder  # noqa: E402
+from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa
+from .quick_sight_folder import QuickSightFolder  # noqa

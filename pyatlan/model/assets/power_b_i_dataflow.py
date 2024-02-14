@@ -117,5 +117,5 @@ class PowerBIDataflow(PowerBI):
     )
 
 
-from .power_b_i_dataset import PowerBIDataset  # noqa: E402
-from .power_b_i_workspace import PowerBIWorkspace  # noqa: E402
+from .power_b_i_dataset import PowerBIDataset  # noqa
+from .power_b_i_workspace import PowerBIWorkspace  # noqa

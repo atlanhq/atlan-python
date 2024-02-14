@@ -99,5 +99,5 @@ class QlikSheet(Qlik):
     )
 
 
-from .qlik_app import QlikApp  # noqa: E402
-from .qlik_chart import QlikChart  # noqa: E402
+from .qlik_app import QlikApp  # noqa
+from .qlik_chart import QlikChart  # noqa

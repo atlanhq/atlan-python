@@ -251,4 +251,4 @@ class SchemaRegistrySubject(SchemaRegistry):
     )
 
 
-from .asset import Asset  # noqa: E402
+from .asset import Asset  # noqa

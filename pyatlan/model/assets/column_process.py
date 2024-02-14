@@ -148,5 +148,5 @@ class ColumnProcess(Process):
     )
 
 
-from .catalog import Catalog  # noqa: E402
-from .process import Process  # noqa: E402
+from .catalog import Catalog  # noqa
+from .process import Process  # noqa

@@ -155,5 +155,5 @@ class SigmaDataElement(Sigma):
     )
 
 
-from .sigma_data_element_field import SigmaDataElementField  # noqa: E402
-from .sigma_page import SigmaPage  # noqa: E402
+from .sigma_data_element_field import SigmaDataElementField  # noqa
+from .sigma_page import SigmaPage  # noqa

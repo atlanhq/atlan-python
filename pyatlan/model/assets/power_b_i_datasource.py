@@ -81,4 +81,4 @@ class PowerBIDatasource(PowerBI):
     )
 
 
-from .power_b_i_dataset import PowerBIDataset  # noqa: E402
+from .power_b_i_dataset import PowerBIDataset  # noqa

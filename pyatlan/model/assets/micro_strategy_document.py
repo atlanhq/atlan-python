@@ -66,4 +66,4 @@ class MicroStrategyDocument(MicroStrategy):
     )
 
 
-from .micro_strategy_project import MicroStrategyProject  # noqa: E402
+from .micro_strategy_project import MicroStrategyProject  # noqa

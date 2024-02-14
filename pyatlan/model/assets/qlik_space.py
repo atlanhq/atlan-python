@@ -97,5 +97,5 @@ class QlikSpace(Qlik):
     )
 
 
-from .qlik_app import QlikApp  # noqa: E402
-from .qlik_dataset import QlikDataset  # noqa: E402
+from .qlik_app import QlikApp  # noqa
+from .qlik_dataset import QlikDataset  # noqa

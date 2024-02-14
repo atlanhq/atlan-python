@@ -191,5 +191,5 @@ class MCIncident(MonteCarlo):
     )
 
 
-from .asset import Asset  # noqa: E402
-from .m_c_monitor import MCMonitor  # noqa: E402
+from .asset import Asset  # noqa
+from .m_c_monitor import MCMonitor  # noqa

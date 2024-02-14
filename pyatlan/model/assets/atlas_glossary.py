@@ -220,16 +220,5 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     )
 
 
-from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: E402
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402
-from .data_product import DataProduct  # noqa: E402
-from .file import File  # noqa: E402
-from .link import Link  # noqa: E402
-from .m_c_incident import MCIncident  # noqa: E402
-from .m_c_monitor import MCMonitor  # noqa: E402
-from .metric import Metric  # noqa: E402
-from .readme import Readme  # noqa: E402
-from .schema_registry_subject import SchemaRegistrySubject  # noqa: E402
-from .soda_check import SodaCheck  # noqa: E402
-
-AtlasGlossary.Attributes.update_forward_refs()
+from .atlas_glossary_category import AtlasGlossaryCategory  # noqa
+from .atlas_glossary_term import AtlasGlossaryTerm  # noqa

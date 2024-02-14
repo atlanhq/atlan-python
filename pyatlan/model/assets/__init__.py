@@ -1,6 +1,5 @@
 # Copyright 2022 Atlan Pte. Ltd.
 # isort: skip_file
-from .atlan_object import AtlanObject
 from .referenceable import Referenceable
 from .asset import Asset
 from .data_set import DataSet
@@ -213,6 +212,3 @@ from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
 from .azure_event_hub import AzureEventHub
 from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
-
-# AtlasGlossaryCategory.update_forward_refs()
-# AtlasGlossaryCategory.Attributes.update_forward_refs()

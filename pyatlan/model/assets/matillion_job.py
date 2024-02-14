@@ -221,5 +221,5 @@ class MatillionJob(Matillion):
     )
 
 
-from .matillion_component import MatillionComponent  # noqa: E402
-from .matillion_project import MatillionProject  # noqa: E402
+from .matillion_component import MatillionComponent  # noqa
+from .matillion_project import MatillionProject  # noqa

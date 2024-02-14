@@ -3169,13 +3169,13 @@ class Asset(Referenceable):
     )
 
 
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402
-from .data_product import DataProduct  # noqa: E402
-from .file import File  # noqa: E402
-from .link import Link  # noqa: E402
-from .m_c_incident import MCIncident  # noqa: E402
-from .m_c_monitor import MCMonitor  # noqa: E402
-from .metric import Metric  # noqa: E402
-from .readme import Readme  # noqa: E402
-from .schema_registry_subject import SchemaRegistrySubject  # noqa: E402
-from .soda_check import SodaCheck  # noqa: E402
+from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
+from .data_product import DataProduct  # noqa
+from .file import File  # noqa
+from .link import Link  # noqa
+from .m_c_incident import MCIncident  # noqa
+from .m_c_monitor import MCMonitor  # noqa
+from .metric import Metric  # noqa
+from .readme import Readme  # noqa
+from .schema_registry_subject import SchemaRegistrySubject  # noqa
+from .soda_check import SodaCheck  # noqa

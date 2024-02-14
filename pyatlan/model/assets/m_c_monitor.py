@@ -444,4 +444,4 @@ class MCMonitor(MonteCarlo):
     )
 
 
-from .asset import Asset  # noqa: E402
+from .asset import Asset  # noqa

@@ -157,5 +157,5 @@ class SisenseFolder(Sisense):
     )
 
 
-from .sisense_dashboard import SisenseDashboard  # noqa: E402
-from .sisense_widget import SisenseWidget  # noqa: E402
+from .sisense_dashboard import SisenseDashboard  # noqa
+from .sisense_widget import SisenseWidget  # noqa

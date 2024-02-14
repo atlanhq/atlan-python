@@ -549,6 +549,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     )
 
 
-from .atlas_glossary import AtlasGlossary  # noqa: E402
-from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: E402
-from .referenceable import Referenceable  # noqa: E402
+from .atlas_glossary import AtlasGlossary  # noqa
+from .atlas_glossary_category import AtlasGlossaryCategory  # noqa
+from .referenceable import Referenceable  # noqa

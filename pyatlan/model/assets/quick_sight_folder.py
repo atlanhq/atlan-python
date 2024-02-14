@@ -158,6 +158,6 @@ class QuickSightFolder(QuickSight):
     )
 
 
-from .quick_sight_analysis import QuickSightAnalysis  # noqa: E402
-from .quick_sight_dashboard import QuickSightDashboard  # noqa: E402
-from .quick_sight_dataset import QuickSightDataset  # noqa: E402
+from .quick_sight_analysis import QuickSightAnalysis  # noqa
+from .quick_sight_dashboard import QuickSightDashboard  # noqa
+from .quick_sight_dataset import QuickSightDataset  # noqa

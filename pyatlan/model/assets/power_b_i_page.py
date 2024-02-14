@@ -103,4 +103,4 @@ class PowerBIPage(PowerBI):
     )
 
 
-from .power_b_i_report import PowerBIReport  # noqa: E402
+from .power_b_i_report import PowerBIReport  # noqa

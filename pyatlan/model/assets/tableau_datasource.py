@@ -347,6 +347,6 @@ class TableauDatasource(Tableau):
     )
 
 
-from .tableau_datasource_field import TableauDatasourceField  # noqa: E402
-from .tableau_project import TableauProject  # noqa: E402
-from .tableau_workbook import TableauWorkbook  # noqa: E402
+from .tableau_datasource_field import TableauDatasourceField  # noqa
+from .tableau_project import TableauProject  # noqa
+from .tableau_workbook import TableauWorkbook  # noqa

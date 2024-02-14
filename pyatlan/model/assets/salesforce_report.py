@@ -129,5 +129,5 @@ class SalesforceReport(Salesforce):
     )
 
 
-from .salesforce_dashboard import SalesforceDashboard  # noqa: E402
-from .salesforce_organization import SalesforceOrganization  # noqa: E402
+from .salesforce_dashboard import SalesforceDashboard  # noqa
+from .salesforce_organization import SalesforceOrganization  # noqa

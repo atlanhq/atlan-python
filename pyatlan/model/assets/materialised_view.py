@@ -329,5 +329,5 @@ class MaterialisedView(SQL):
     )
 
 
-from .column import Column  # noqa: E402
-from .schema import Schema  # noqa: E402
+from .column import Column  # noqa
+from .schema import Schema  # noqa

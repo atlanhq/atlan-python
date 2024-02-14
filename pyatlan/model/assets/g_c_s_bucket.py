@@ -270,4 +270,4 @@ class GCSBucket(GCS):
     )
 
 
-from .g_c_s_object import GCSObject  # noqa: E402
+from .g_c_s_object import GCSObject  # noqa
