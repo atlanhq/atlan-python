@@ -1,205 +1,218 @@
 # Copyright 2022 Atlan Pte. Ltd.
-from .asset00 import (
-    SQL,
-    Airflow,
-    AirflowDag,
-    AirflowTask,
-    Asset,
-    AtlasGlossary,
-    AtlasGlossaryCategory,
-    AtlasGlossaryTerm,
-    Catalog,
-    Column,
-    ColumnProcess,
-    Database,
-    DataDomain,
-    DataMesh,
-    DataProduct,
-    DataQuality,
-    Dbt,
-    DbtMetric,
-    DbtModel,
-    DbtModelColumn,
-    DbtSource,
-    DbtTest,
-    File,
-    Folder,
-    Function,
-    Link,
-    MaterialisedView,
-    Matillion,
-    MatillionComponent,
-    MatillionGroup,
-    MatillionJob,
-    MatillionProject,
-    MCIncident,
-    MCMonitor,
-    Metric,
-    MonteCarlo,
-    Namespace,
-    Procedure,
-    Process,
-    Query,
-    Readme,
-    Referenceable,
-    Resource,
-    Schema,
-    SchemaRegistry,
-    SchemaRegistrySubject,
-    SnowflakeDynamicTable,
-    SnowflakePipe,
-    SnowflakeStream,
-    SnowflakeTag,
-    Soda,
-    SodaCheck,
-    Table,
-    TablePartition,
-    Tag,
-    View,
-    validate_single_required_field,
-)
-from .asset01 import DataSet
-from .asset02 import TagAttachment
-from .asset03 import Connection
-from .asset05 import Badge
-from .asset06 import AccessControl, AuthPolicy
-from .asset07 import ProcessExecution
-from .asset08 import AuthService
-from .asset09 import Cloud
-from .asset10 import Infrastructure
-from .asset11 import BIProcess
-from .asset12 import DbtProcess
-from .asset13 import Persona
-from .asset14 import Purpose
-from .asset15 import Collection
-from .asset17 import ObjectStore
-from .asset19 import BI
-from .asset20 import SaaS
-from .asset23 import EventStore
-from .asset24 import NoSQL
-from .asset27 import Insight
-from .asset28 import API
-from .asset31 import Google
-from .asset32 import Azure
-from .asset33 import AWS
-from .asset34 import DbtColumnProcess
-from .asset35 import S3
-from .asset36 import ADLS
-from .asset37 import GCS
-from .asset40 import Preset
-from .asset41 import Mode
-from .asset42 import Sigma
-from .asset43 import Tableau
-from .asset44 import Looker
-from .asset45 import Redash
-from .asset46 import Sisense
-from .asset47 import DataStudio
-from .asset48 import Metabase
-from .asset49 import QuickSight
-from .asset50 import Thoughtspot
-from .asset51 import PowerBI
-from .asset52 import MicroStrategy
-from .asset53 import Qlik
-from .asset54 import Salesforce
-from .asset55 import ReadmeTemplate
-from .asset56 import Kafka
-from .asset57 import DynamoDB
-from .asset58 import MongoDB
-from .asset59 import DbtTag
-from .asset60 import APIPath, APISpec
-from .asset61 import DataStudioAsset
-from .asset62 import S3Bucket, S3Object
-from .asset63 import ADLSAccount, ADLSContainer, ADLSObject
-from .asset64 import GCSBucket, GCSObject
-from .asset65 import PresetChart, PresetDashboard, PresetDataset, PresetWorkspace
-from .asset66 import ModeChart, ModeCollection, ModeQuery, ModeReport, ModeWorkspace
-from .asset67 import SigmaDataset, SigmaDatasetColumn
-from .asset68 import SigmaDataElement, SigmaDataElementField, SigmaPage, SigmaWorkbook
-from .asset69 import (
-    TableauCalculatedField,
-    TableauDashboard,
-    TableauDatasource,
-    TableauDatasourceField,
-    TableauFlow,
-    TableauProject,
-    TableauSite,
-    TableauWorkbook,
-    TableauWorksheet,
-)
-from .asset70 import TableauMetric
-from .asset71 import (
-    LookerDashboard,
-    LookerExplore,
-    LookerField,
-    LookerFolder,
-    LookerLook,
-    LookerModel,
-    LookerProject,
-    LookerQuery,
-    LookerTile,
-    LookerView,
-)
-from .asset72 import RedashDashboard
-from .asset73 import RedashQuery, RedashVisualization
-from .asset74 import (
-    SisenseDashboard,
-    SisenseDatamodel,
-    SisenseDatamodelTable,
-    SisenseFolder,
-    SisenseWidget,
-)
-from .asset75 import MetabaseCollection, MetabaseDashboard, MetabaseQuestion
-from .asset76 import (
-    QuickSightAnalysis,
-    QuickSightAnalysisVisual,
-    QuickSightDashboard,
-    QuickSightDashboardVisual,
-    QuickSightDataset,
-    QuickSightDatasetField,
-    QuickSightFolder,
-)
-from .asset77 import ThoughtspotDashlet, ThoughtspotLiveboard
-from .asset78 import ThoughtspotAnswer
-from .asset79 import (
-    PowerBIColumn,
-    PowerBIDashboard,
-    PowerBIDataflow,
-    PowerBIDataset,
-    PowerBIDatasource,
-    PowerBIMeasure,
-    PowerBIPage,
-    PowerBIReport,
-    PowerBITable,
-    PowerBITile,
-    PowerBIWorkspace,
-)
-from .asset80 import (
-    MicroStrategyAttribute,
-    MicroStrategyCube,
-    MicroStrategyDocument,
-    MicroStrategyDossier,
-    MicroStrategyFact,
-    MicroStrategyMetric,
-    MicroStrategyProject,
-    MicroStrategyReport,
-    MicroStrategyVisualization,
-)
-from .asset81 import QlikApp, QlikChart, QlikDataset, QlikSheet, QlikSpace
-from .asset82 import (
-    SalesforceDashboard,
-    SalesforceField,
-    SalesforceObject,
-    SalesforceOrganization,
-    SalesforceReport,
-)
-from .asset84 import MongoDBCollection, MongoDBDatabase
-from .asset85 import DynamoDBSecondaryIndex
-from .asset86 import (
-    DynamoDBGlobalSecondaryIndex,
-    DynamoDBLocalSecondaryIndex,
-    DynamoDBTable,
-)
-from .asset87 import KafkaConsumerGroup, KafkaTopic
-from .asset88 import QlikStream
-from .asset89 import AzureEventHub
-from .asset90 import AzureEventHubConsumerGroup
+# isort: skip_file
+from .atlan_object import AtlanObject
+from .referenceable import Referenceable
+from .asset import Asset
+from .data_set import DataSet
+from .tag_attachment import TagAttachment
+from .connection import Connection
+from .process import Process
+from .atlas_glossary_category import AtlasGlossaryCategory
+from .badge import Badge
+from .access_control import AccessControl
+from .namespace import Namespace
+from .catalog import Catalog
+from .atlas_glossary import AtlasGlossary
+from .auth_policy import AuthPolicy
+from .process_execution import ProcessExecution
+from .atlas_glossary_term import AtlasGlossaryTerm
+from .auth_service import AuthService
+from .cloud import Cloud
+from .infrastructure import Infrastructure
+from .b_i_process import BIProcess
+from .dbt_process import DbtProcess
+from .column_process import ColumnProcess
+from .persona import Persona
+from .purpose import Purpose
+from .collection import Collection
+from .folder import Folder
+from .airflow import Airflow
+from .object_store import ObjectStore
+from .data_quality import DataQuality
+from .b_i import BI
+from .saa_s import SaaS
+from .resource import Resource
+from .data_mesh import DataMesh
+from .s_q_l import SQL
+from .event_store import EventStore
+from .no_s_q_l import NoSQL
+from .matillion import Matillion
+from .dbt import Dbt
+from .insight import Insight
+from .a_p_i import API
+from .tag import Tag
+from .schema_registry import SchemaRegistry
+from .google import Google
+from .azure import Azure
+from .a_w_s import AWS
+from .dbt_column_process import DbtColumnProcess
+from .airflow_dag import AirflowDag
+from .airflow_task import AirflowTask
+from .s3 import S3
+from .a_d_l_s import ADLS
+from .g_c_s import GCS
+from .monte_carlo import MonteCarlo
+from .metric import Metric
+from .soda import Soda
+from .preset import Preset
+from .mode import Mode
+from .sigma import Sigma
+from .tableau import Tableau
+from .looker import Looker
+from .redash import Redash
+from .sisense import Sisense
+from .data_studio import DataStudio
+from .metabase import Metabase
+from .quick_sight import QuickSight
+from .thoughtspot import Thoughtspot
+from .power_b_i import PowerBI
+from .micro_strategy import MicroStrategy
+from .qlik import Qlik
+from .salesforce import Salesforce
+from .readme_template import ReadmeTemplate
+from .readme import Readme
+from .file import File
+from .link import Link
+from .data_domain import DataDomain
+from .data_product import DataProduct
+from .table import Table
+from .query import Query
+from .schema import Schema
+from .snowflake_pipe import SnowflakePipe
+from .view import View
+from .materialised_view import MaterialisedView
+from .function import Function
+from .table_partition import TablePartition
+from .column import Column
+from .snowflake_stream import SnowflakeStream
+from .database import Database
+from .procedure import Procedure
+from .snowflake_tag import SnowflakeTag
+from .kafka import Kafka
+from .dynamo_d_b import DynamoDB
+from .mongo_d_b import MongoDB
+from .matillion_group import MatillionGroup
+from .matillion_job import MatillionJob
+from .matillion_project import MatillionProject
+from .matillion_component import MatillionComponent
+from .dbt_model_column import DbtModelColumn
+from .dbt_tag import DbtTag
+from .dbt_test import DbtTest
+from .dbt_model import DbtModel
+from .dbt_metric import DbtMetric
+from .dbt_source import DbtSource
+from .a_p_i_spec import APISpec
+from .a_p_i_path import APIPath
+from .schema_registry_subject import SchemaRegistrySubject
+from .data_studio_asset import DataStudioAsset
+from .s3_bucket import S3Bucket
+from .s3_object import S3Object
+from .a_d_l_s_account import ADLSAccount
+from .a_d_l_s_container import ADLSContainer
+from .a_d_l_s_object import ADLSObject
+from .g_c_s_object import GCSObject
+from .g_c_s_bucket import GCSBucket
+from .m_c_incident import MCIncident
+from .m_c_monitor import MCMonitor
+from .soda_check import SodaCheck
+from .preset_chart import PresetChart
+from .preset_dataset import PresetDataset
+from .preset_dashboard import PresetDashboard
+from .preset_workspace import PresetWorkspace
+from .mode_report import ModeReport
+from .mode_query import ModeQuery
+from .mode_chart import ModeChart
+from .mode_workspace import ModeWorkspace
+from .mode_collection import ModeCollection
+from .sigma_dataset_column import SigmaDatasetColumn
+from .sigma_dataset import SigmaDataset
+from .sigma_workbook import SigmaWorkbook
+from .sigma_data_element_field import SigmaDataElementField
+from .sigma_page import SigmaPage
+from .sigma_data_element import SigmaDataElement
+from .tableau_workbook import TableauWorkbook
+from .tableau_datasource_field import TableauDatasourceField
+from .tableau_calculated_field import TableauCalculatedField
+from .tableau_project import TableauProject
+from .tableau_metric import TableauMetric
+from .tableau_site import TableauSite
+from .tableau_datasource import TableauDatasource
+from .tableau_dashboard import TableauDashboard
+from .tableau_flow import TableauFlow
+from .tableau_worksheet import TableauWorksheet
+from .looker_look import LookerLook
+from .looker_dashboard import LookerDashboard
+from .looker_folder import LookerFolder
+from .looker_tile import LookerTile
+from .looker_model import LookerModel
+from .looker_explore import LookerExplore
+from .looker_project import LookerProject
+from .looker_query import LookerQuery
+from .looker_field import LookerField
+from .looker_view import LookerView
+from .redash_dashboard import RedashDashboard
+from .redash_query import RedashQuery
+from .redash_visualization import RedashVisualization
+from .sisense_folder import SisenseFolder
+from .sisense_widget import SisenseWidget
+from .sisense_datamodel import SisenseDatamodel
+from .sisense_datamodel_table import SisenseDatamodelTable
+from .sisense_dashboard import SisenseDashboard
+from .metabase_question import MetabaseQuestion
+from .metabase_collection import MetabaseCollection
+from .metabase_dashboard import MetabaseDashboard
+from .quick_sight_folder import QuickSightFolder
+from .quick_sight_dashboard_visual import QuickSightDashboardVisual
+from .quick_sight_analysis_visual import QuickSightAnalysisVisual
+from .quick_sight_dataset_field import QuickSightDatasetField
+from .quick_sight_analysis import QuickSightAnalysis
+from .quick_sight_dashboard import QuickSightDashboard
+from .quick_sight_dataset import QuickSightDataset
+from .thoughtspot_liveboard import ThoughtspotLiveboard
+from .thoughtspot_dashlet import ThoughtspotDashlet
+from .thoughtspot_answer import ThoughtspotAnswer
+from .power_b_i_report import PowerBIReport
+from .power_b_i_measure import PowerBIMeasure
+from .power_b_i_column import PowerBIColumn
+from .power_b_i_table import PowerBITable
+from .power_b_i_tile import PowerBITile
+from .power_b_i_datasource import PowerBIDatasource
+from .power_b_i_workspace import PowerBIWorkspace
+from .power_b_i_dataset import PowerBIDataset
+from .power_b_i_dashboard import PowerBIDashboard
+from .power_b_i_dataflow import PowerBIDataflow
+from .power_b_i_page import PowerBIPage
+from .micro_strategy_report import MicroStrategyReport
+from .micro_strategy_project import MicroStrategyProject
+from .micro_strategy_metric import MicroStrategyMetric
+from .micro_strategy_cube import MicroStrategyCube
+from .micro_strategy_dossier import MicroStrategyDossier
+from .micro_strategy_fact import MicroStrategyFact
+from .micro_strategy_document import MicroStrategyDocument
+from .micro_strategy_attribute import MicroStrategyAttribute
+from .micro_strategy_visualization import MicroStrategyVisualization
+from .qlik_space import QlikSpace
+from .qlik_app import QlikApp
+from .qlik_chart import QlikChart
+from .qlik_dataset import QlikDataset
+from .qlik_sheet import QlikSheet
+from .salesforce_object import SalesforceObject
+from .salesforce_field import SalesforceField
+from .salesforce_organization import SalesforceOrganization
+from .salesforce_dashboard import SalesforceDashboard
+from .salesforce_report import SalesforceReport
+from .snowflake_dynamic_table import SnowflakeDynamicTable
+from .mongo_d_b_collection import MongoDBCollection
+from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
+from .dynamo_dbtable import DynamoDBTable
+from .mongo_d_b_database import MongoDBDatabase
+from .kafka_topic import KafkaTopic
+from .kafka_consumer_group import KafkaConsumerGroup
+from .qlik_stream import QlikStream
+from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex
+from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
+from .azure_event_hub import AzureEventHub
+from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
+
+# AtlasGlossaryCategory.update_forward_refs()
+# AtlasGlossaryCategory.Attributes.update_forward_refs()

@@ -10,6 +10,7 @@ CAMEL_CASE_OVERRIDES = {
     "purpose_atlan_tags": "purposeClassifications",
     "mapped_atlan_tag_name": "mappedClassificationName",
     "has_lineage": "__hasLineage",
+    "atlan_tags": "classifications",
 }
 
 
