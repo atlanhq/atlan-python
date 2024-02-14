@@ -103,5 +103,5 @@ class SigmaPage(Sigma):
     )
 
 
-from .sigma_data_element import SigmaDataElement  # noqa: E402
-from .sigma_workbook import SigmaWorkbook  # noqa: E402
+from .sigma_data_element import SigmaDataElement  # noqa
+from .sigma_workbook import SigmaWorkbook  # noqa

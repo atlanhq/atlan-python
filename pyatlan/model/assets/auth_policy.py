@@ -417,4 +417,4 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     )
 
 
-from .access_control import AccessControl  # noqa: E402
+from .access_control import AccessControl  # noqa

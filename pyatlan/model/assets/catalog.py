@@ -132,5 +132,5 @@ class Catalog(Asset, type_name="Catalog"):
     )
 
 
-from .airflow_task import AirflowTask  # noqa: E402
-from .process import Process  # noqa: E402
+from .airflow_task import AirflowTask  # noqa
+from .process import Process  # noqa

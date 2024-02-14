@@ -189,6 +189,6 @@ class LookerExplore(Looker):
     )
 
 
-from .looker_field import LookerField  # noqa: E402
-from .looker_model import LookerModel  # noqa: E402
-from .looker_project import LookerProject  # noqa: E402
+from .looker_field import LookerField  # noqa
+from .looker_model import LookerModel  # noqa
+from .looker_project import LookerProject  # noqa

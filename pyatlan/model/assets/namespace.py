@@ -78,5 +78,5 @@ class Namespace(Asset, type_name="Namespace"):
     )
 
 
-from .folder import Folder  # noqa: E402
-from .query import Query  # noqa: E402
+from .folder import Folder  # noqa
+from .query import Query  # noqa

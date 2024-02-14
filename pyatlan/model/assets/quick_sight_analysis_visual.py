@@ -91,4 +91,4 @@ class QuickSightAnalysisVisual(QuickSight):
     )
 
 
-from .quick_sight_analysis import QuickSightAnalysis  # noqa: E402
+from .quick_sight_analysis import QuickSightAnalysis  # noqa

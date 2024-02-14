@@ -806,7 +806,5 @@ class DynamoDBTable(Table):
     )
 
 
-from .dynamo_d_b_global_secondary_index import (  # noqa: E402
-    DynamoDBGlobalSecondaryIndex,
-)
-from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex  # noqa: E402
+from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex  # noqa
+from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex  # noqa

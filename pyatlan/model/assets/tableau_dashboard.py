@@ -185,5 +185,5 @@ class TableauDashboard(Tableau):
     )
 
 
-from .tableau_workbook import TableauWorkbook  # noqa: E402
-from .tableau_worksheet import TableauWorksheet  # noqa: E402
+from .tableau_workbook import TableauWorkbook  # noqa
+from .tableau_worksheet import TableauWorksheet  # noqa

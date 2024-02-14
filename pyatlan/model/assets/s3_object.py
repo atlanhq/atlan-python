@@ -390,4 +390,4 @@ class S3Object(S3):
     )
 
 
-from .s3_bucket import S3Bucket  # noqa: E402
+from .s3_bucket import S3Bucket  # noqa

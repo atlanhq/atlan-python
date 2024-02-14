@@ -230,6 +230,6 @@ class LookerDashboard(Looker):
     )
 
 
-from .looker_folder import LookerFolder  # noqa: E402
-from .looker_look import LookerLook  # noqa: E402
-from .looker_tile import LookerTile  # noqa: E402
+from .looker_folder import LookerFolder  # noqa
+from .looker_look import LookerLook  # noqa
+from .looker_tile import LookerTile  # noqa

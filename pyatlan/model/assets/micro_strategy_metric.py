@@ -419,8 +419,8 @@ class MicroStrategyMetric(MicroStrategy):
     )
 
 
-from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: E402
-from .micro_strategy_cube import MicroStrategyCube  # noqa: E402
-from .micro_strategy_fact import MicroStrategyFact  # noqa: E402
-from .micro_strategy_project import MicroStrategyProject  # noqa: E402
-from .micro_strategy_report import MicroStrategyReport  # noqa: E402
+from .micro_strategy_attribute import MicroStrategyAttribute  # noqa
+from .micro_strategy_cube import MicroStrategyCube  # noqa
+from .micro_strategy_fact import MicroStrategyFact  # noqa
+from .micro_strategy_project import MicroStrategyProject  # noqa
+from .micro_strategy_report import MicroStrategyReport  # noqa

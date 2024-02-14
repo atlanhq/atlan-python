@@ -81,4 +81,4 @@ class ModeWorkspace(Mode):
     )
 
 
-from .mode_collection import ModeCollection  # noqa: E402
+from .mode_collection import ModeCollection  # noqa

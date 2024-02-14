@@ -278,19 +278,5 @@ class ADLSContainer(ADLS):
     )
 
 
-from .a_d_l_s_account import ADLSAccount  # noqa: E402
-from .a_d_l_s_object import ADLSObject  # noqa: E402
-from .airflow_task import AirflowTask  # noqa: E402
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402
-from .data_product import DataProduct  # noqa: E402
-from .file import File  # noqa: E402
-from .link import Link  # noqa: E402
-from .m_c_incident import MCIncident  # noqa: E402
-from .m_c_monitor import MCMonitor  # noqa: E402
-from .metric import Metric  # noqa: E402
-from .process import Process  # noqa: E402
-from .readme import Readme  # noqa: E402
-from .schema_registry_subject import SchemaRegistrySubject  # noqa: E402
-from .soda_check import SodaCheck  # noqa: E402
-
-ADLSContainer.Attributes.update_forward_refs()
+from .a_d_l_s_account import ADLSAccount  # noqa
+from .a_d_l_s_object import ADLSObject  # noqa

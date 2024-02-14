@@ -129,4 +129,4 @@ class RedashVisualization(Redash):
     )
 
 
-from .redash_query import RedashQuery  # noqa: E402
+from .redash_query import RedashQuery  # noqa

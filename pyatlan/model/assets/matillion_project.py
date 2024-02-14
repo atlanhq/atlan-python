@@ -190,5 +190,5 @@ class MatillionProject(Matillion):
     )
 
 
-from .matillion_group import MatillionGroup  # noqa: E402
-from .matillion_job import MatillionJob  # noqa: E402
+from .matillion_group import MatillionGroup  # noqa
+from .matillion_job import MatillionJob  # noqa

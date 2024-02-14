@@ -117,5 +117,5 @@ class ModeQuery(Mode):
     )
 
 
-from .mode_chart import ModeChart  # noqa: E402
-from .mode_report import ModeReport  # noqa: E402
+from .mode_chart import ModeChart  # noqa
+from .mode_report import ModeReport  # noqa

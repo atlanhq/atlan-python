@@ -79,4 +79,4 @@ class ModeChart(Mode):
     )
 
 
-from .mode_query import ModeQuery  # noqa: E402
+from .mode_query import ModeQuery  # noqa

@@ -267,7 +267,7 @@ class DbtTest(Dbt):
     )
 
 
-from .dbt_model import DbtModel  # noqa: E402
-from .dbt_model_column import DbtModelColumn  # noqa: E402
-from .dbt_source import DbtSource  # noqa: E402
-from .s_q_l import SQL  # noqa: E402
+from .dbt_model import DbtModel  # noqa
+from .dbt_model_column import DbtModelColumn  # noqa
+from .dbt_source import DbtSource  # noqa
+from .s_q_l import SQL  # noqa

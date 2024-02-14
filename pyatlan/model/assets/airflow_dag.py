@@ -101,4 +101,4 @@ class AirflowDag(Airflow):
     )
 
 
-from .airflow_task import AirflowTask  # noqa: E402
+from .airflow_task import AirflowTask  # noqa

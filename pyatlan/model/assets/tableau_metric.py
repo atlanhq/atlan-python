@@ -147,4 +147,4 @@ class TableauMetric(Tableau):
     )
 
 
-from .tableau_project import TableauProject  # noqa: E402
+from .tableau_project import TableauProject  # noqa

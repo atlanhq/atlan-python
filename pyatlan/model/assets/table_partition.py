@@ -398,5 +398,5 @@ class TablePartition(SQL):
     )
 
 
-from .column import Column  # noqa: E402
-from .table import Table  # noqa: E402
+from .column import Column  # noqa
+from .table import Table  # noqa

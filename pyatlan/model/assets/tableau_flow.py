@@ -201,4 +201,4 @@ class TableauFlow(Tableau):
     )
 
 
-from .tableau_project import TableauProject  # noqa: E402
+from .tableau_project import TableauProject  # noqa

@@ -258,7 +258,7 @@ class LookerField(Looker):
     )
 
 
-from .looker_explore import LookerExplore  # noqa: E402
-from .looker_model import LookerModel  # noqa: E402
-from .looker_project import LookerProject  # noqa: E402
-from .looker_view import LookerView  # noqa: E402
+from .looker_explore import LookerExplore  # noqa
+from .looker_model import LookerModel  # noqa
+from .looker_project import LookerProject  # noqa
+from .looker_view import LookerView  # noqa

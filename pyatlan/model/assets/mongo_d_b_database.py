@@ -393,4 +393,4 @@ class MongoDBDatabase(Database):
     )
 
 
-from .mongo_d_b_collection import MongoDBCollection  # noqa: E402
+from .mongo_d_b_collection import MongoDBCollection  # noqa

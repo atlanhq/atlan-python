@@ -105,4 +105,4 @@ class SigmaDatasetColumn(Sigma):
     )
 
 
-from .sigma_dataset import SigmaDataset  # noqa: E402
+from .sigma_dataset import SigmaDataset  # noqa

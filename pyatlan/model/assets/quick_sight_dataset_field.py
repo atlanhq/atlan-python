@@ -122,4 +122,4 @@ class QuickSightDatasetField(QuickSight):
     )
 
 
-from .quick_sight_dataset import QuickSightDataset  # noqa: E402
+from .quick_sight_dataset import QuickSightDataset  # noqa

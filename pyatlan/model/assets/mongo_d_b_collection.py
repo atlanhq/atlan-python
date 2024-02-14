@@ -927,4 +927,4 @@ class MongoDBCollection(Table):
     )
 
 
-from .mongo_d_b_database import MongoDBDatabase  # noqa: E402
+from .mongo_d_b_database import MongoDBDatabase  # noqa

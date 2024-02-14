@@ -272,4 +272,4 @@ class APISpec(API):
     )
 
 
-from .a_p_i_path import APIPath  # noqa: E402
+from .a_p_i_path import APIPath  # noqa

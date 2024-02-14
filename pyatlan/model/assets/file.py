@@ -126,4 +126,4 @@ class File(Resource):
     )
 
 
-from .asset import Asset  # noqa: E402
+from .asset import Asset  # noqa

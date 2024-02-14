@@ -235,7 +235,7 @@ class TableauProject(Tableau):
     )
 
 
-from .tableau_datasource import TableauDatasource  # noqa: E402
-from .tableau_flow import TableauFlow  # noqa: E402
-from .tableau_site import TableauSite  # noqa: E402
-from .tableau_workbook import TableauWorkbook  # noqa: E402
+from .tableau_datasource import TableauDatasource  # noqa
+from .tableau_flow import TableauFlow  # noqa
+from .tableau_site import TableauSite  # noqa
+from .tableau_workbook import TableauWorkbook  # noqa

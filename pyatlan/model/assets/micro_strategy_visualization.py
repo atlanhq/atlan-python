@@ -179,5 +179,5 @@ class MicroStrategyVisualization(MicroStrategy):
     )
 
 
-from .micro_strategy_dossier import MicroStrategyDossier  # noqa: E402
-from .micro_strategy_project import MicroStrategyProject  # noqa: E402
+from .micro_strategy_dossier import MicroStrategyDossier  # noqa
+from .micro_strategy_project import MicroStrategyProject  # noqa

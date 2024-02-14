@@ -170,4 +170,4 @@ class KafkaConsumerGroup(Kafka):
     )
 
 
-from .kafka_topic import KafkaTopic  # noqa: E402
+from .kafka_topic import KafkaTopic  # noqa

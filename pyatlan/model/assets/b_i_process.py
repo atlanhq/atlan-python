@@ -78,4 +78,4 @@ class BIProcess(Process):
     )
 
 
-from .catalog import Catalog  # noqa: E402
+from .catalog import Catalog  # noqa

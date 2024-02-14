@@ -305,13 +305,13 @@ class Schema(SQL):
     )
 
 
-from .database import Database  # noqa: E402
-from .function import Function  # noqa: E402
-from .materialised_view import MaterialisedView  # noqa: E402
-from .procedure import Procedure  # noqa: E402
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402
-from .snowflake_pipe import SnowflakePipe  # noqa: E402
-from .snowflake_stream import SnowflakeStream  # noqa: E402
-from .snowflake_tag import SnowflakeTag  # noqa: E402
-from .table import Table  # noqa: E402
-from .view import View  # noqa: E402
+from .database import Database  # noqa
+from .function import Function  # noqa
+from .materialised_view import MaterialisedView  # noqa
+from .procedure import Procedure  # noqa
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa
+from .snowflake_pipe import SnowflakePipe  # noqa
+from .snowflake_stream import SnowflakeStream  # noqa
+from .snowflake_tag import SnowflakeTag  # noqa
+from .table import Table  # noqa
+from .view import View  # noqa

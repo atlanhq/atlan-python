@@ -547,7 +547,7 @@ class DbtProcess(Dbt):
     )
 
 
-from .airflow_task import AirflowTask  # noqa: E402
-from .catalog import Catalog  # noqa: E402
-from .column_process import ColumnProcess  # noqa: E402
-from .matillion_component import MatillionComponent  # noqa: E402
+from .airflow_task import AirflowTask  # noqa
+from .catalog import Catalog  # noqa
+from .column_process import ColumnProcess  # noqa
+from .matillion_component import MatillionComponent  # noqa

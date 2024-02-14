@@ -168,5 +168,5 @@ class MetabaseCollection(Metabase):
     )
 
 
-from .metabase_dashboard import MetabaseDashboard  # noqa: E402
-from .metabase_question import MetabaseQuestion  # noqa: E402
+from .metabase_dashboard import MetabaseDashboard  # noqa
+from .metabase_question import MetabaseQuestion  # noqa

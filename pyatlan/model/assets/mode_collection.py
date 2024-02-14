@@ -117,5 +117,5 @@ class ModeCollection(Mode):
     )
 
 
-from .mode_report import ModeReport  # noqa: E402
-from .mode_workspace import ModeWorkspace  # noqa: E402
+from .mode_report import ModeReport  # noqa
+from .mode_workspace import ModeWorkspace  # noqa

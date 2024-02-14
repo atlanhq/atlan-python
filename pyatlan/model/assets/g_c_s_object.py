@@ -434,4 +434,4 @@ class GCSObject(GCS):
     )
 
 
-from .g_c_s_bucket import GCSBucket  # noqa: E402
+from .g_c_s_bucket import GCSBucket  # noqa

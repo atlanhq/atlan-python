@@ -368,7 +368,7 @@ class Query(SQL):
     )
 
 
-from .column import Column  # noqa: E402
-from .namespace import Namespace  # noqa: E402
-from .table import Table  # noqa: E402
-from .view import View  # noqa: E402
+from .column import Column  # noqa
+from .namespace import Namespace  # noqa
+from .table import Table  # noqa
+from .view import View  # noqa

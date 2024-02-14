@@ -182,4 +182,4 @@ class PresetDataset(Preset):
     )
 
 
-from .preset_dashboard import PresetDashboard  # noqa: E402
+from .preset_dashboard import PresetDashboard  # noqa

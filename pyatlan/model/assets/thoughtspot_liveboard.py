@@ -62,4 +62,4 @@ class ThoughtspotLiveboard(Thoughtspot):
     )
 
 
-from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa: E402
+from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa

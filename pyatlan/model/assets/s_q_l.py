@@ -394,6 +394,6 @@ class SQL(Catalog):
     )
 
 
-from .dbt_model import DbtModel  # noqa: E402
-from .dbt_source import DbtSource  # noqa: E402
-from .dbt_test import DbtTest  # noqa: E402
+from .dbt_model import DbtModel  # noqa
+from .dbt_source import DbtSource  # noqa
+from .dbt_test import DbtTest  # noqa

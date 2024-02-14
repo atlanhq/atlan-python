@@ -60,4 +60,4 @@ class DynamoDBLocalSecondaryIndex(DynamoDBSecondaryIndex):
     )
 
 
-from .dynamo_dbtable import DynamoDBTable  # noqa: E402
+from .dynamo_dbtable import DynamoDBTable  # noqa

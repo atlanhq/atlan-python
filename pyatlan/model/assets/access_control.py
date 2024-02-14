@@ -235,4 +235,4 @@ class AccessControl(Asset, type_name="AccessControl"):
     )
 
 
-from .auth_policy import AuthPolicy  # noqa: E402
+from .auth_policy import AuthPolicy  # noqa

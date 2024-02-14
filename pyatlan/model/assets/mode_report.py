@@ -220,5 +220,5 @@ class ModeReport(Mode):
     )
 
 
-from .mode_collection import ModeCollection  # noqa: E402
-from .mode_query import ModeQuery  # noqa: E402
+from .mode_collection import ModeCollection  # noqa
+from .mode_query import ModeQuery  # noqa

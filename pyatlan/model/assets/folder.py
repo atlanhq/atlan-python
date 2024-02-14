@@ -105,4 +105,4 @@ class Folder(Namespace):
     )
 
 
-from .namespace import Namespace  # noqa: E402
+from .namespace import Namespace  # noqa

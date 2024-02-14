@@ -8,7 +8,7 @@ from typing import Any, ClassVar, Optional, TypeVar
 
 from pydantic.v1 import Field, PrivateAttr
 
-from pyatlan.model.core import AtlanTag, Meaning
+from pyatlan.model.core import AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import EntityStatus, SaveSemantic
 from pyatlan.model.fields.atlan_fields import (
@@ -20,8 +20,6 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
 )
 from pyatlan.utils import validate_single_required_field
-
-from .atlan_object import AtlanObject
 
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
@@ -306,5 +304,4 @@ class Referenceable(AtlanObject):
     )
 
 
-from .asset import Asset  # noqa: E402
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402
+from .atlas_glossary_term import AtlasGlossaryTerm  # noqa

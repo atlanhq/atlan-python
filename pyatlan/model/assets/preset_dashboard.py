@@ -317,6 +317,6 @@ class PresetDashboard(Preset):
     )
 
 
-from .preset_chart import PresetChart  # noqa: E402
-from .preset_dataset import PresetDataset  # noqa: E402
-from .preset_workspace import PresetWorkspace  # noqa: E402
+from .preset_chart import PresetChart  # noqa
+from .preset_dataset import PresetDataset  # noqa
+from .preset_workspace import PresetWorkspace  # noqa
