@@ -1,6 +1,6 @@
 import pytest
 
-from pyatlan.model.assets.asset00 import Column, ColumnProcess, Process
+from pyatlan.model.assets import Column, ColumnProcess, Process
 from tests.unit.model.constants import (
     CP_CONNECTION_QUALIFIED_NAME,
     CP_NAME,

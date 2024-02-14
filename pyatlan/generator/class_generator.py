@@ -236,12 +236,13 @@ class AssetInfo:
         if self._name == REFERENCEABLE:
             return ""
         super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
-        return f"from . {super_type.module_name} import {super_type.name}"
+        return f"from .{super_type.module_name} import {super_type.name}"
 
     @property
     def imports_for_referenced_assets(self):
         return [
-            f"from . {a.module_name} import {a.name}" for a in self.required_asset_infos
+            f"from .{a.module_name} import {a.name} # noqa"
+            for a in self.required_asset_infos
         ]
 
     def update_attribute_defs(self):
@@ -639,7 +640,7 @@ class Generator:
             script.write(content)
 
     def render_init(self, assets: list[AssetInfo]):
-        imports = [f"from . {a.module_name} import {a.name}" for a in assets]
+        imports = [f"from .{a.module_name} import {a.name}" for a in assets]
         template = self.environment.get_template("init.jinja2")
         content = template.render(
             {

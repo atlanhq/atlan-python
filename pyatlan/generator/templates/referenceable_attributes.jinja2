@@ -137,7 +137,7 @@
         default=None, description='Version of this object.', example=2
     )
     atlan_tags: Optional[list[AtlanTag]] = Field(
-        default=None, description="Atlan tags", alias="classifications"
+        default=None, description="Atlan tags",
     )
     classification_names: Optional[list[str]] = Field(
         default=None, description="The names of the classifications that exist on the asset."
@@ -165,13 +165,9 @@
     meaning_names: Optional[list[str]] = Field(
         default=None, description="Names of assigned_terms that have been linked to this asset."
     )
-    meanings: Optional[list[Meaning]] = Field(
-        default=None, description="", alias="meanings"
-    )
-    custom_attributes: Optional[dict[str, Any]] = Field(default=None, description="", alias="customAttributes")
-    scrubbed: Optional[bool] = Field(
-        default=None, description="", alias="fields removed from results"
-    )
+    meanings: Optional[list[Meaning]] = Field(default=None, description="")
+    custom_attributes: Optional[dict[str, Any]] = Field(default=None, description="")
+    scrubbed: Optional[bool] = Field(default=None, description="")
     pending_tasks: Optional[list[str]] = Field(default=None)
 
     unique_attributes: Optional[dict[str, Any]] = Field(default=None)
