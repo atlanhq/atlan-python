@@ -70,6 +70,23 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- endif %}
 {% endif %}
 
+{%  if asset_info.module_name == 'referenceable' %}
+# Imports required for fixing circular dependencies:
+from .asset import Asset  # noqa # isort:skip
+{% endif %}
+
+{%  if asset_info.module_name == 'metric' %}
+# Imports required for fixing circular dependencies:
+from .asset import Asset  # noqa # isort:skip
+from .catalog import Catalog  # noqa # isort:skip
+from .s_q_l import SQL  # noqa # isort:skip
+{% endif %}
+
 {% for import in asset_info.imports_for_referenced_assets %}
 {{ import }}
 {% endfor %}
+
+{%  if asset_info.entity_def.name in asset_info.eligible_assets %}
+{% set entity_name = asset_info.name %}
+{{ entity_name }}.Attributes.update_forward_refs()
+{% endif %}

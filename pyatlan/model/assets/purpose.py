@@ -21,7 +21,7 @@ from pyatlan.utils import init_guid, validate_required_fields
 
 from .access_control import AccessControl
 from .asset import SelfAsset
-from .authpolicy import AuthPolicy
+from .auth_policy import AuthPolicy
 
 
 class Purpose(AccessControl):

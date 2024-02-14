@@ -239,10 +239,45 @@ class AssetInfo:
         return f"from .{super_type.module_name} import {super_type.name}"
 
     @property
-    def imports_for_referenced_assets(self):
+    def eligible_assets(self):
         return [
-            f"from .{a.module_name} import {a.name} # noqa"
-            for a in self.required_asset_infos
+            "AtlasGlossary",
+            "AtlasGlossaryTerm",
+            "AtlasGlossaryCategory",
+            # "Process",  # <-- problem
+        ]
+
+    @property
+    def imports_for_referenced_assets(self):
+        import_set = set()
+        asset_name = self.name
+        current_name = self.name
+        if asset_name in self.eligible_assets:
+            while current_name != "Referenceable" and self.hierarchy_graph.predecessors(
+                current_name
+            ):
+                parent_asset_name = next(
+                    iter(self.hierarchy_graph.predecessors(current_name))
+                )
+                if parent_asset_name == "Referenceable":
+                    break
+                parent_asset = self.asset_info_by_name[
+                    parent_asset_name
+                ].required_asset_infos
+
+                for parent_module in parent_asset:
+                    if asset_name != parent_module.name:
+                        import_set.add(
+                            f"from .{parent_module.module_name} import {parent_module.name} # noqa"
+                        )
+
+                current_name = parent_asset_name
+
+        import_list = list(import_set)
+
+        return import_list + [
+            f"from .{required_asset.module_name} import {required_asset.name} # noqa"
+            for required_asset in self.required_asset_infos
         ]
 
     def update_attribute_defs(self):
@@ -623,9 +658,6 @@ class Generator:
         )
 
     def render_modules(self, modules: list[ModuleInfo]):
-        # for module in modules:
-        #     self.render_module(module)
-        #     pass
         self.render_init(modules)
 
     def render_module(self, asset_info: AssetInfo):
