@@ -175,5 +175,11 @@ class Metric(DataQuality):
     )
 
 
+# Imports required for fixing circular dependencies:
+from .asset import Asset  # noqa # isort:skip
+from .catalog import Catalog  # noqa # isort:skip
+from .s_q_l import SQL  # noqa # isort:skip
+
+
 from .asset import Asset  # noqa
 from .column import Column  # noqa
