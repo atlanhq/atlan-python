@@ -12,7 +12,7 @@ from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
 from tests.integration.client import TestId
 
-FIXED_USER = "ernest"
+FIXED_USER = "aryaman.bhushan"
 TODAY = datetime.now().strftime("%Y-%m-%d")
 YESTERDAY = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 MODULE_NAME = TestId.make_unique("Admin")
