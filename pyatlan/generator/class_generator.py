@@ -603,11 +603,6 @@ def get_search_type(attr_def: dict[str, Any]) -> SearchType:
     return SearchType(name="RelationField")
 
 
-def dict2items(d, class_name):
-    items_str = ", ".join([f"{k}={k}" for k in d.keys()])
-    return f"{class_name}.Attributes.update_forward_refs(**dict({items_str}))"
-
-
 class Generator:
     def __init__(self) -> None:
         self.environment = Environment(
@@ -618,7 +613,6 @@ class Generator:
         self.environment.filters["get_search_type"] = get_search_type
         self.environment.filters["get_mapped_type"] = get_mapped_type
         self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
-        self.environment.filters["dict2items"] = dict2items
 
     def merge_attributes(self, entity_def):
         def merge_them(s, a):
@@ -668,11 +662,18 @@ class Generator:
             script.write(content)
 
     def render_init(self, assets: list[AssetInfo]):
-        forward_refs = [{a.name: a.get_update_forward_refs} for a in assets]
-        imports = [f"from .{a.module_name} import {a.name}" for a in assets]
+        asset_names = [asset.name for asset in assets]
+        asset_imports = [
+            f"from .{asset.module_name} import {asset.name}" for asset in assets
+        ]
+
         template = self.environment.get_template("init.jinja2")
-        content = template.render({"imports": imports, "forward_refs": forward_refs})
-        with (ASSETS_DIR / "__init__.py").open("w") as script:
+        content = template.render(
+            {"asset_imports": asset_imports, "asset_names": asset_names}
+        )
+
+        init_path = ASSETS_DIR / "__init__.py"
+        with init_path.open("w") as script:
             script.write(content)
 
     def render_structs(self, struct_defs):

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional, TypeVar
+from typing import Any, ClassVar, Optional
 
 from pydantic.v1 import Field, PrivateAttr
 
@@ -19,8 +19,6 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
 )
-
-SelfAsset = TypeVar("SelfAsset", bound="Asset")
 
 
 class Referenceable(AtlanObject):

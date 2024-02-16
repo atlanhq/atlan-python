@@ -1,16 +1,11 @@
 # Copyright 2022 Atlan Pte. Ltd.
 # isort: skip_file
-{%  for import in imports -%}
-{{ import }}
+{% for asset_import in asset_imports -%}
+{{ asset_import }}
 {% endfor %}
 
 # Update asset forward references:
-{%- for item in forward_refs %}
-{%- for class_name, attributes in item.items() %}
-{{ class_name }}.Attributes.update_forward_refs(**dict(
-    {%- for key in attributes.keys() %}
-    {{ key }}={{ key }},
-    {%- endfor %}
-))
-{%- endfor %}
+localns = locals()
+{%- for asset_name in asset_names %}
+{{ asset_name }}.Attributes.update_forward_refs(**localns)
 {%- endfor %}
