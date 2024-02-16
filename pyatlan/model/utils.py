@@ -3,12 +3,14 @@
 
 
 CAMEL_CASE_OVERRIDES = {
-    "IndexTypeEsFields": "IndexTypeESFields",
-    "sourceUrl": "sourceURL",
-    "sourceEmbedUrl": "sourceEmbedURL",
+    "index_type_es_fields": "IndexTypeESFields",
+    "source_url": "sourceURL",
+    "source_embed_url": "sourceEmbedURL",
     "sql_dbt_sources": "sqlDBTSources",
     "purpose_atlan_tags": "purposeClassifications",
     "mapped_atlan_tag_name": "mappedClassificationName",
+    "has_lineage": "__hasLineage",
+    "atlan_tags": "classifications",
 }
 
 
@@ -28,9 +30,9 @@ def to_camel_case(value: str) -> str:
         raise ValueError("Value must be a string")
     if value == "__root__":
         return value
-    value = "".join(word.capitalize() for word in value.split("_"))
     if value in CAMEL_CASE_OVERRIDES:
-        value = CAMEL_CASE_OVERRIDES[value]
+        return CAMEL_CASE_OVERRIDES[value]
+    value = "".join(word.capitalize() for word in value.split("_"))
     if value.startswith("__"):
         value = value[2:]
     return f"{value[0].lower()}{value[1:]}"

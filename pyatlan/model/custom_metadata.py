@@ -1,7 +1,7 @@
 from collections import UserDict
 from typing import Any, Optional
 
-from pydantic import PrivateAttr
+from pydantic.v1 import PrivateAttr
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.errors import NotFoundError

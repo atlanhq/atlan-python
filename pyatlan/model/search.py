@@ -9,7 +9,7 @@ from itertools import chain
 from json import dumps, loads
 from typing import Any, Literal, Optional, Union
 
-from pydantic import (
+from pydantic.v1 import (
     ConfigDict,
     Field,
     StrictBool,
@@ -20,8 +20,8 @@ from pydantic import (
     validate_arguments,
     validator,
 )
-from pydantic.config import Extra
-from pydantic.dataclasses import dataclass
+from pydantic.v1.config import Extra
+from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject, SearchRequest
@@ -1800,11 +1800,11 @@ class DSL(AtlanObject):
     from_: int = Field(0, alias="from")
     size: int = 100
     aggregations: dict[str, Aggregation] = Field(default_factory=dict)
-    track_total_hits: bool = Field(True, alias="track_total_hits")
-    post_filter: Optional[Query] = Field(alias="post_filter")
+    track_total_hits: bool = Field(default=True, alias="track_total_hits")
+    post_filter: Optional[Query] = Field(default=None, alias="post_filter")
     query: Optional[Query]
-    req_class_name: Optional[str] = Field(exclude=True)
-    sort: list[SortItem] = Field(alias="sort", default_factory=list)
+    req_class_name: Optional[str] = Field(default=None, exclude=True)
+    sort: list[SortItem] = Field(default_factory=list, alias="sort")
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1859,7 +1859,7 @@ class IndexSearchRequest(SearchRequest):
     relation_attributes: list[str] = Field(
         default_factory=list, alias="relationAttributes"
     )
-    suppress_logs: Optional[bool] = Field(alias="suppressLogs")
+    suppress_logs: Optional[bool] = Field(default=None, alias="suppressLogs")
     show_search_score: Optional[bool] = Field(
         description="When true, include the score of each result. By default, this is false and scores are excluded.",
         alias="showSearchScore",

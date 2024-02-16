@@ -1,5 +1,11 @@
 # Copyright 2022 Atlan Pte. Ltd.
-from .asset00 import validate_single_required_field
-{%  for import in imports -%}
-{{ import }}
+# isort: skip_file
+{% for asset_import in asset_imports -%}
+{{ asset_import }}
 {% endfor %}
+
+# Update asset forward references:
+localns = locals()
+{%- for asset_name in asset_names %}
+{{ asset_name }}.Attributes.update_forward_refs(**localns)
+{%- endfor %}

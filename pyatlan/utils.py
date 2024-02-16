@@ -15,8 +15,8 @@ from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Mapping, Optional
 
-from pydantic import HttpUrl
-from pydantic.dataclasses import dataclass
+from pydantic.v1 import HttpUrl
+from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.errors import ErrorCode
 
@@ -454,3 +454,16 @@ class RequestIdAdapter(logging.LoggerAdapter):
 
     def process(self, msg, kwargs):
         return f"[{self.extra['requestid']}] {msg}", kwargs
+
+
+def validate_single_required_field(field_names: list[str], values: list[Any]):
+    indexes = [idx for idx, value in enumerate(values) if value is not None]
+    if not indexes:
+        raise ValueError(
+            f"One of the following parameters are required: {', '.join(field_names)}"
+        )
+    if len(indexes) > 1:
+        names = [field_names[idx] for idx in indexes]
+        raise ValueError(
+            f"Only one of the following parameters are allowed: {', '.join(names)}"
+        )

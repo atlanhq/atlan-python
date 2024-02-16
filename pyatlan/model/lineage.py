@@ -6,12 +6,12 @@ import copy
 from collections import deque
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from pydantic import Field, StrictBool, StrictInt, StrictStr, validate_arguments
+from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr, validate_arguments
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
-    from pydantic.dataclasses import dataclass
+    from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
@@ -263,29 +263,33 @@ class LineageListRequest(SearchRequest):
         "Note that you cannot fetch both upstream and downstream at the same time."
     )
     entity_filters: Optional[FilterList] = Field(
-        description="Filters to apply on entities."
+        default=None, description="Filters to apply on entities."
     )
     entity_traversal_filters: Optional[FilterList] = Field(
+        default=None,
         description="Filters to apply for skipping traversal based on entities."
         "Any sub-graphs beyond the entities filtered out by these filters will not be included"
-        "in the lineage result."
+        "in the lineage result.",
     )
     relationship_traversal_filters: Optional[FilterList] = Field(
+        default=None,
         description="Filters to apply for skipping traversal based on relationships."
         "Any sub-graphs beyond the relationships filtered out by these filters will not be included"
-        "in the lineage result."
+        "in the lineage result.",
     )
     offset: Optional[int] = Field(
-        description="Starting point for pagination.", alias="from"
+        default=None, description="Starting point for pagination.", alias="from"
     )
     size: Optional[int] = Field(
-        description="How many results to include in each page of results."
+        default=None, description="How many results to include in each page of results."
     )
     exclude_meanings: Optional[bool] = Field(
-        description="Whether to include assigned terms for assets (false) or not (true)."
+        default=None,
+        description="Whether to include assigned terms for assets (false) or not (true).",
     )
     exclude_classifications: Optional[bool] = Field(
-        description="Whether to include classifications for assets (false) or not (true)."
+        default=None,
+        description="Whether to include classifications for assets (false) or not (true).",
     )
 
     @staticmethod
@@ -306,7 +310,7 @@ class LineageListRequest(SearchRequest):
             size=10,
             exclude_meanings=True,
             exclude_classifications=True,
-        )
+        )  # type: ignore[call-arg]
 
 
 class FluentLineage:
@@ -488,7 +492,7 @@ class FluentLineage:
                 )
                 for _filter in self._includes_in_results
             ]
-            request.entity_filters = FilterList(condition="AND", criteria=criteria)
+            request.entity_filters = FilterList(condition="AND", criteria=criteria)  # type: ignore
         if self._includes_on_results:
             request.attributes = [
                 field.atlan_field_name for field in self._includes_on_results
@@ -506,7 +510,7 @@ class FluentLineage:
             ]
             request.entity_traversal_filters = FilterList(
                 condition="AND", criteria=criteria
-            )
+            )  # type: ignore[call-arg]
         if self._where_relationships:
             criteria = [
                 EntityFilter(
@@ -518,5 +522,5 @@ class FluentLineage:
             ]
             request.relationship_traversal_filters = FilterList(
                 condition="AND", criteria=criteria
-            )
+            )  # type: ignore[call-arg]
         return request

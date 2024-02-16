@@ -4,7 +4,7 @@ from logging import Logger
 from time import sleep
 from typing import Optional, Union, overload
 
-from pydantic import validate_arguments
+from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (

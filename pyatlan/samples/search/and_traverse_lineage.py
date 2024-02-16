@@ -62,7 +62,7 @@ def upstream_certified_sources(guid: str) -> list[Asset]:
                 attribute_value=CertificateStatus.VERIFIED.value,
             )
         ],
-    )
+    )  # type: ignore[call-arg]
     response = client.asset.get_lineage_list(request)
     verified_assets: list[Asset] = [
         asset

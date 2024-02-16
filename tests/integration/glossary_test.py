@@ -6,7 +6,7 @@ from time import sleep
 from typing import Generator, Optional
 
 import pytest
-from pydantic import StrictStr
+from pydantic.v1 import StrictStr
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from pyatlan.client.atlan import AtlanClient

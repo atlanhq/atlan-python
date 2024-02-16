@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Generator, Iterable, Optional, Union
 
-from pydantic import Field, ValidationError, parse_obj_as, root_validator
+from pydantic.v1 import Field, ValidationError, parse_obj_as, root_validator
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.common import ApiCaller
@@ -184,10 +184,10 @@ class EntityAudit(AtlanObject):
     )
     user: str = Field(description="User who carried out the activity.")
     action: AuditActionType = Field(description="The type of activity that was done.")
-    details: Optional[Any] = Field(description="Unused.")
+    details: Optional[Any] = Field(default=None, description="Unused.")
     event_key: str = Field(description="Unique identifier of the activity.")
-    entity: Optional[Any] = Field(description="Unused.")
-    type: Optional[Any] = Field(description="Unused.")
+    entity: Optional[Any] = Field(default=None, description="Unused.")
+    type: Optional[Any] = Field(default=None, description="Unused.")
     detail: Optional[
         Union[
             CustomMetadataAttributesAuditDetail,

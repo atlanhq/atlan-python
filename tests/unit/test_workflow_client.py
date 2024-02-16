@@ -3,7 +3,7 @@
 from unittest.mock import Mock
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH
@@ -11,6 +11,7 @@ from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import WorkflowPackage
 from pyatlan.model.workflow import (
+    PackageParameter,
     Workflow,
     WorkflowMetadata,
     WorkflowResponse,
@@ -55,7 +56,7 @@ def search_result(search_result_detail) -> WorkflowSearchResult:
         primary_term=2,
         sort=["sort"],
         source=search_result_detail,
-    )
+    )  # type: ignore[call-arg]
 
 
 @pytest.fixture()
@@ -63,7 +64,7 @@ def search_response(search_result: WorkflowSearchResult) -> WorkflowSearchRespon
     return WorkflowSearchResponse(
         hits=WorkflowSearchHits(total={"dummy": "dummy"}, hits=[search_result]),
         shards={"dummy": "dummy"},
-    )
+    )  # type: ignore[call-arg]
 
 
 @pytest.fixture()
@@ -80,7 +81,7 @@ def run_response() -> WorkflowResponse:
     return WorkflowResponse(
         metadata=WorkflowMetadata(name="name", namespace="namespace"),
         spec=WorkflowSpec(),
-        payload=[{"parameter": "test-param", "type": "test-type", "body": {}}],
+        payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
     )
 
 
@@ -222,8 +223,10 @@ def test_run_when_given_workflow(
         Workflow(
             metadata=WorkflowMetadata(name="name", namespace="namespace"),
             spec=WorkflowSpec(),
-            payload=[{"parameter": "test-param", "type": "test-type", "body": {}}],
-        )
+            payload=[
+                PackageParameter(parameter="test-param", type="test-type", body={})
+            ],
+        )  # type: ignore[call-arg]
     )
     assert response == run_response
 

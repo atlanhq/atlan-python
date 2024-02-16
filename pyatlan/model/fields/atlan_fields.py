@@ -5,7 +5,7 @@ from datetime import date
 from enum import Enum
 from typing import Union, overload
 
-from pydantic import StrictBool, StrictFloat, StrictInt, StrictStr
+from pydantic.v1 import StrictBool, StrictFloat, StrictInt, StrictStr
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation

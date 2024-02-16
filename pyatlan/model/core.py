@@ -3,18 +3,18 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
-    from pydantic.dataclasses import dataclass
+    from pydantic.v1.dataclasses import dataclass
 
 from typing import Any, Generic, Optional, TypeVar
 
-from pydantic.generics import GenericModel
+from pydantic.v1.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
@@ -100,22 +100,22 @@ class AtlanObject(BaseModel):
 
 class SearchRequest(AtlanObject, ABC):
     attributes: Optional[list[str]] = Field(
-        description="List of attributes to be returned for each result.",
         default_factory=list,
+        description="List of attributes to be returned for each result.",
     )
     offset: Optional[int] = Field(
-        description="Starting point for pagination.", alias="from"
+        default=None, description="Starting point for pagination.", alias="from"
     )
     size: Optional[int] = Field(
-        description="How many results to include in each page of results."
+        default=None, description="How many results to include in each page of results."
     )
 
 
 @dataclass
 class Announcement:
     announcement_title: str
-    announcement_message: Optional[str]
     announcement_type: AnnouncementType
+    announcement_message: Optional[str] = Field(default=None)
 
 
 class AtlanTag(AtlanObject):
@@ -123,30 +123,30 @@ class AtlanTag(AtlanObject):
         extra = "forbid"
 
     type_name: Optional[AtlanTagName] = Field(
-        None,
+        default=None,
         description="Name of the type definition that defines this instance.\n",
         alias="typeName",
     )
     entity_guid: Optional[str] = Field(
-        None,
+        default=None,
         description="Unique identifier of the entity instance.\n",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
         alias="entityGuid",
     )
     entity_status: Optional[EntityStatus] = Field(
-        None,
+        default=None,
         description="Status of the entity",
         example=EntityStatus.ACTIVE,
         alias="entityStatus",
     )
-    propagate: Optional[bool] = Field(None, description="")
+    propagate: Optional[bool] = Field(default=None, description="")
     remove_propagations_on_entity_delete: Optional[bool] = Field(
-        None, description="", alias="removePropagationsOnEntityDelete"
+        default=None, description="", alias="removePropagationsOnEntityDelete"
     )
     restrict_propagation_through_lineage: Optional[bool] = Field(
-        None, description="", alias="restrictPropagationThroughLineage"
+        default=None, description="", alias="restrictPropagationThroughLineage"
     )
-    validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
+    validity_periods: Optional[list[str]] = Field(default=None, alias="validityPeriods")
     _source_tag_attachements: list[SourceTagAttachment] = PrivateAttr(
         default_factory=list
     )
@@ -211,7 +211,7 @@ T = TypeVar("T")
 class AssetResponse(AtlanObject, GenericModel, Generic[T]):
     entity: T
     referredEntities: Optional[dict[str, Any]] = Field(
-        None,
+        default=None,
         description="Map of related entities keyed by the GUID of the related entity. The values will be the detailed "
         "entity object of the related entity.\n",
     )

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from pydantic import validate_arguments
+from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
@@ -59,7 +59,7 @@ class UserClient:
         cur = CreateUserRequest(users=[])
         for user in users:
             role_name = str(user.workspace_role)
-            if role_id := RoleCache.get_id_for_name(role_name):
+            if role_id := RoleCache.get_id_for_name(role_name) and user.email:
                 to_create = CreateUserRequest.CreateUser(
                     email=user.email,
                     role_name=role_name,
@@ -342,7 +342,7 @@ class UserClient:
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.client.atlan import client_connection
-        from pyatlan.model.assets.asset00 import Asset
+        from pyatlan.model.assets import Asset
         from pyatlan.model.fluent_search import FluentSearch
 
         if keyword_field not in [Asset.ADMIN_USERS, Asset.VIEWER_USERS]:

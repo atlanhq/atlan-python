@@ -1,5 +1,5 @@
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from pyatlan.pkg.ui import UIConfig, UIRule, UIStep
 from pyatlan.pkg.widgets import AbstractUIElement, TextInput

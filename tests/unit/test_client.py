@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
 from pyatlan.client.atlan import AtlanClient

@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, Union
 
-from pydantic import BaseModel, Extra, Field
+from pydantic.v1 import BaseModel, Extra, Field
 
 from pyatlan.model.enums import (
     BadgeComparisonOperator,
@@ -53,7 +53,7 @@ class {{struct.name}}(AtlanObject):
     {% endif %}
     {%- for attribute_def in struct.attribute_defs %}
     {%- set type = attribute_def.type_name | get_type %}
-    {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field({% if attribute_def.is_optional %}None,{% endif %} description='' )
+    {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field({% if attribute_def.is_optional %}default=None,{% endif %} description='' )
     {%- endfor %}
 {% endfor %}
 

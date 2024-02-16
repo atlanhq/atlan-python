@@ -8,7 +8,7 @@ from io import StringIO
 from typing import Any, ClassVar, Optional, Set, Type, TypeVar, TYPE_CHECKING, cast, overload
 from urllib.parse import quote, unquote
 
-from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic.v1 import Field, PrivateAttr, StrictStr, root_validator, validator
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, AtlanTagName, Meaning
@@ -103,5 +103,6 @@ from pyatlan.utils import (
     next_id,
     to_camel_case,
     validate_required_fields,
+    validate_single_required_field,
     get_parent_qualified_name,
 )

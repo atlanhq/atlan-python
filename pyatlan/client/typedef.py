@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Union
 
-from pydantic import validate_arguments
+from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
@@ -32,7 +32,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             entity_defs=[],
             relationship_defs=[],
             custom_metadata_defs=[],
-        )
+        )  # type: ignore[call-arg]
     elif isinstance(typedef, CustomMetadataDef):
         # Set up the request payload...
         payload = TypeDefResponse(
@@ -42,7 +42,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             entity_defs=[],
             relationship_defs=[],
             custom_metadata_defs=[typedef],
-        )
+        )  # type: ignore[call-arg]
     elif isinstance(typedef, EnumDef):
         # Set up the request payload...
         payload = TypeDefResponse(
@@ -52,7 +52,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             entity_defs=[],
             relationship_defs=[],
             custom_metadata_defs=[],
-        )
+        )  # type: ignore[call-arg]
     else:
         raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
             typedef.category.value

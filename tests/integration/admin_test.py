@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Generator
 
 import pytest
-from pydantic import StrictStr
+from pydantic.v1 import StrictStr
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
@@ -12,7 +12,7 @@ from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
 from tests.integration.client import TestId
 
-FIXED_USER = "ernest"
+FIXED_USER = "aryaman.bhushan"
 TODAY = datetime.now().strftime("%Y-%m-%d")
 YESTERDAY = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 MODULE_NAME = TestId.make_unique("Admin")

@@ -9,6 +9,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
     Column,
+    ColumnProcess,
     Connection,
     Database,
     MaterialisedView,
@@ -17,7 +18,6 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
-from pyatlan.model.assets.asset00 import ColumnProcess
 from pyatlan.model.enums import AtlanConnectorType, EntityStatus, LineageDirection
 from pyatlan.model.lineage import FluentLineage, LineageRequest
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Prefix, Term

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
@@ -17,70 +17,96 @@ from pyatlan.model.enums import (
 
 class ParsedQuery(AtlanObject):
     class DatabaseColumn(AtlanObject):
-        id: Optional[str] = Field(description="Numeric identifier for the column.")
-        name: Optional[str] = Field(description="Name of the column (unqualified).")
-        source: Optional[str] = Field(description="TBC")
+        id: Optional[str] = Field(
+            default=None, description="Numeric identifier for the column."
+        )
+        name: Optional[str] = Field(
+            default=None, description="Name of the column (unqualified)."
+        )
+        source: Optional[str] = Field(default=None, description="TBC")
 
     class RelationshipEndpoint(AtlanObject):
         id: Optional[str] = Field(
-            description="Numeric identifier for the column referred to by this end of the relationship."
+            default=None,
+            description="Numeric identifier for the column referred to by this end of the relationship.",
         )
         column: Optional[str] = Field(
-            description="Name of the column used by this end of the relationship."
+            default=None,
+            description="Name of the column used by this end of the relationship.",
         )
         parent_id: Optional[str] = Field(
-            description="Numeric identifier of the parent object in which the column exists."
+            default=None,
+            description="Numeric identifier of the parent object in which the column exists.",
         )
         parent_name: Optional[str] = Field(
-            description="Name of the parent object in which the column exists."
+            default=None,
+            description="Name of the parent object in which the column exists.",
         )
 
     class ParserError(AtlanObject):
-        error_message: Optional[str] = Field(description="Description of the error.")
-        error_type: Optional[str] = Field(description="Type of the error.")
+        error_message: Optional[str] = Field(
+            default=None, description="Description of the error."
+        )
+        error_type: Optional[str] = Field(
+            default=None, description="Type of the error."
+        )
         coordinates: Optional[list[Any]] = Field(description="TBC")
 
     class Relationship(AtlanObject):
         id: Optional[str] = Field(
-            description="Numeric identifier for the relationship."
+            default=None, description="Numeric identifier for the relationship."
         )
-        type: Optional[str] = Field(description="Type of the relationship.")
+        type: Optional[str] = Field(
+            default=None, description="Type of the relationship."
+        )
         effect_type: Optional[str] = Field(
-            description="Type of effect made by the query (for example, select vs insert)."
+            default=None,
+            description="Type of effect made by the query (for example, select vs insert).",
         )
         target: Optional[ParsedQuery.RelationshipEndpoint] = Field(description="TBC")
         sources: Optional[list[ParsedQuery.RelationshipEndpoint]] = Field(
             description="TBC"
         )
         process_id: Optional[str] = Field(
-            description="Numeric identifier for the procedure (if any) that manages this relationship."
+            default=None,
+            description="Numeric identifier for the procedure (if any) that manages this relationship.",
         )
         process_type: Optional[str] = Field(
-            description="Type of procedure (if any) that manages this relationship."
+            default=None,
+            description="Type of procedure (if any) that manages this relationship.",
         )
 
     class DatabaseObject(AtlanObject):
         display_name: Optional[str] = Field(
-            description="Fully-qualified name of the SQL object. (Only present on non-process objects.)"
+            default=None,
+            description="Fully-qualified name of the SQL object. (Only present on non-process objects.)",
         )
-        id: Optional[str] = Field(description="Numeric identifier for the object.")
-        name: Optional[str] = Field(description="Name of the object (unqualified).")
-        type: Optional[str] = Field(description="Type of the object.")
+        id: Optional[str] = Field(
+            default=None, description="Numeric identifier for the object."
+        )
+        name: Optional[str] = Field(
+            default=None, description="Name of the object (unqualified)."
+        )
+        type: Optional[str] = Field(default=None, description="Type of the object.")
         database: Optional[str] = Field(
-            description="Name of the database the object exists within."
+            default=None, description="Name of the database the object exists within."
         )
         db_schema: Optional[str] = Field(
-            description="Name of the schema the object exists within.", alias="schema"
+            default=None,
+            description="Name of the schema the object exists within.",
+            alias="schema",
         )
         columns: Optional[list[ParsedQuery.DatabaseColumn]] = Field(
             description="List of details about the columns queried within the object."
             " (Only present on non-process objects.)"
         )
         procedure_name: Optional[str] = Field(
-            description="Name of the procedure (only for process objects)."
+            default=None,
+            description="Name of the procedure (only for process objects).",
         )
         query_hash_id: Optional[str] = Field(
-            description="Unique hash representing the query (only for process objects)."
+            default=None,
+            description="Unique hash representing the query (only for process objects).",
         )
 
     dbobjs: Optional[list[ParsedQuery.DatabaseObject]] = Field(
@@ -100,10 +126,12 @@ class QueryParserRequest(AtlanObject):
         description="Dialect to use when parsing the SQL."
     )
     default_database: Optional[str] = Field(
-        description="Default database name to use for unqualified objects in the SQL."
+        default=None,
+        description="Default database name to use for unqualified objects in the SQL.",
     )
     default_schema: Optional[str] = Field(
-        description="Default schema name to use for unqualified objects in the SQL."
+        default=None,
+        description="Default schema name to use for unqualified objects in the SQL.",
     )
     link_orphan_column_to_first_table: Optional[bool] = Field(description="TBC")
     show_join: Optional[bool] = Field(description="TBC")
@@ -178,19 +206,21 @@ class QueryResponse(AtlanObject):
         self.details = last_event.get("details")
 
     request_id: Optional[str] = Field(
-        description="Unique identifier for the request, if there was any error."
+        default=None,
+        description="Unique identifier for the request, if there was any error.",
     )
     error_name: Optional[str] = Field(
-        description="Unique name for the error, if there was any error."
+        default=None, description="Unique name for the error, if there was any error."
     )
     error_message: Optional[str] = Field(
-        description="Explanation of the error, if there was any error."
+        default=None, description="Explanation of the error, if there was any error."
     )
     error_code: Optional[str] = Field(
-        description="Unique code for the error, if there was any error."
+        default=None, description="Unique code for the error, if there was any error."
     )
     query_id: Optional[str] = Field(
-        description="Unique identifier (GUID) for the specific run of the query."
+        default=None,
+        description="Unique identifier (GUID) for the specific run of the query.",
     )
     rows: Optional[list[list[str]]] = Field(
         description="Results of the query. Each element is of "
@@ -203,7 +233,7 @@ class QueryResponse(AtlanObject):
             description="Unique identifier for the request, if there was any error."
         )
         name: Optional[str] = Field(
-            description="SQL name of the data type for this column.."
+            default=None, description="SQL name of the data type for this column.."
         )
         rep: Optional[str]
 
@@ -220,26 +250,32 @@ class QueryResponse(AtlanObject):
         nullable: Optional[int] = Field(description="TBC")
         signed: Optional[bool] = Field(description="TBC")
         display_size: Optional[int] = Field(description="TBC")
-        label: Optional[str] = Field(description="Display value for the column's name.")
+        label: Optional[str] = Field(
+            default=None, description="Display value for the column's name."
+        )
         column_name: Optional[str] = Field(
-            description="Name of the column (technical)."
+            default=None, description="Name of the column (technical)."
         )
         schema_name: Optional[str] = Field(
-            description="Name of the schema in which this column's table is contained."
+            default=None,
+            description="Name of the schema in which this column's table is contained.",
         )
         precision: Optional[int] = Field(description="TBC")
         scale: Optional[int] = Field(description="TBC")
         table_name: Optional[str] = Field(
-            description="Name of the table in which the column is contained."
+            default=None,
+            description="Name of the table in which the column is contained.",
         )
         catalog_name: Optional[str] = Field(
-            description="Name of the database in which the table's schema is contained."
+            default=None,
+            description="Name of the database in which the table's schema is contained.",
         )
         read_only: Optional[bool] = Field(description="TBC")
         writable: Optional[bool] = Field(description="TBC")
         definitely_writable: Optional[bool] = Field(description="TBC")
         column_class_name: Optional[str] = Field(
-            description="Canonical name of the Java class representing this column's values."
+            default=None,
+            description="Canonical name of the Java class representing this column's values.",
         )
         type: Optional[QueryResponse.ColumnType] = Field(
             description="Details about the (SQL) data type of the column."
@@ -253,16 +289,20 @@ class QueryResponse(AtlanObject):
 
     class AssetDetails(AtlanObject):
         connection_name: Optional[str] = Field(
-            description="Simple name of the connection."
+            default=None, description="Simple name of the connection."
         )
         connection_qn: Optional[str] = Field(
-            description="Unique name of the connection."
+            default=None, description="Unique name of the connection."
         )
-        database: Optional[str] = Field(description="Simple name of the database.")
+        database: Optional[str] = Field(
+            default=None, description="Simple name of the database."
+        )
         schema_: Optional[str] = Field(
-            alias="schema", description="Simple name of the schema."
+            default=None, alias="schema", description="Simple name of the schema."
         )
-        table: Optional[str] = Field(description="Simple name of the table.")
+        table: Optional[str] = Field(
+            default=None, description="Simple name of the table."
+        )
 
     class QueryDetails(AtlanObject):
         """
@@ -273,23 +313,24 @@ class QueryResponse(AtlanObject):
             description="Total number of results returned by the query."
         )
         status: Optional[QueryStatus] = Field(description="Status of the query.")
-        parsed_query: Optional[str] = Field(description="TBC")
+        parsed_query: Optional[str] = Field(default=None, description="TBC")
         pushdown_query: Optional[str] = Field(
-            description="Query that was sent to the data store."
+            default=None, description="Query that was sent to the data store."
         )
         execution_time: Optional[int] = Field(
             description="How long the query took to run, in milliseconds."
         )
-        source_query_id: Optional[str] = Field(description="TBC")
-        result_output_location: Optional[str] = Field(description="TBC")
+        source_query_id: Optional[str] = Field(default=None, description="TBC")
+        result_output_location: Optional[str] = Field(default=None, description="TBC")
         warnings: Optional[list[str]] = Field(
-            description="List of any warnings produced when running the query."
+            default=None,
+            description="List of any warnings produced when running the query.",
         )
         parsing_flow: Optional[ParsingFlow] = Field(
             description="How the query was parsed prior to running."
         )
         heka_flow: Optional[HekaFlow] = Field(description="How the query was run.")
-        s3_upload_path: Optional[str] = Field(description="TBC")
+        s3_upload_path: Optional[str] = Field(default=None, description="TBC")
         source_first_connection_time: Optional[int] = Field(description="TBC")
         source_first_connection_time_perc: Optional[float] = Field(description="TBC")
         explain_call_time_perc: Optional[float] = Field(description="TBC")
@@ -324,7 +365,8 @@ class QueryResponse(AtlanObject):
             description="Metadata about the asset used in the query, in case of any errors."
         )
         developer_message: Optional[str] = Field(
-            description="Detailed back-end error message that could be helpful for developers."
+            default=None,
+            description="Detailed back-end error message that could be helpful for developers.",
         )
         line: Optional[int] = Field(
             description="Line number of the query that had a validation error, if any."
@@ -333,7 +375,8 @@ class QueryResponse(AtlanObject):
             description="Column position of the validation error, if any."
         )
         obj: Optional[str] = Field(
-            description="Name of the object that caused the validation error, if any."
+            default=None,
+            description="Name of the object that caused the validation error, if any.",
         )
 
     details: Optional[QueryResponse.QueryDetails] = Field(

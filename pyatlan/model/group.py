@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.core import AtlanObject
 
@@ -12,47 +12,56 @@ from pyatlan.model.core import AtlanObject
 class AtlanGroup(AtlanObject):
     class Attributes(AtlanObject):
         alias: Optional[list[str]] = Field(
-            description="Name of the group as it appears in the UI."
+            default=None, description="Name of the group as it appears in the UI."
         )
         created_at: Optional[list[str]] = Field(
-            description="Time (epoch) at which the group was created, in milliseconds."
+            default=None,
+            description="Time (epoch) at which the group was created, in milliseconds.",
         )
         created_by: Optional[list[str]] = Field(
-            description="User who created the group."
+            default=None, description="User who created the group."
         )
         updated_at: Optional[list[str]] = Field(
-            description="Time (epoch) at which the group was last updated, in milliseconds."
+            default=None,
+            description="Time (epoch) at which the group was last updated, in milliseconds.",
         )
         updated_by: Optional[list[str]] = Field(
-            description="User who last updated the group."
+            default=None, description="User who last updated the group."
         )
         description: Optional[list[str]] = Field(
-            description="Description of the group."
+            default=None, description="Description of the group."
         )
         is_default: Optional[list[str]] = Field(
-            description="Whether this group should be auto-assigned to all new users or not."
+            default=None,
+            description="Whether this group should be auto-assigned to all new users or not.",
         )
         channels: Optional[list[str]] = Field(
-            description="Slack channels for this group."
+            default=None, description="Slack channels for this group."
         )
 
     alias: Optional[str] = Field(
-        description="Name of the group as it appears in the UI."
+        default=None, description="Name of the group as it appears in the UI."
     )
     attributes: Optional[AtlanGroup.Attributes] = Field(
-        description="Detailed attributes of the group."
+        default=None, description="Detailed attributes of the group."
     )
-    decentralized_roles: Optional[list[Any]] = Field(description="TBC")
-    id: Optional[str] = Field(description="Unique identifier for the group (GUID).")
-    name: Optional[str] = Field(description="Unique (internal) name for the group.")
-    path: Optional[str] = Field(description="TBC")
+    decentralized_roles: Optional[list[Any]] = Field(default=None, description="TBC")
+    id: Optional[str] = Field(
+        default=None, description="Unique identifier for the group (GUID)."
+    )
+    name: Optional[str] = Field(
+        default=None, description="Unique (internal) name for the group."
+    )
+    path: Optional[str] = Field(default=None, description="TBC")
     personas: Optional[list[Any]] = Field(
-        description="Personas the group is associated with."
+        default=None, description="Personas the group is associated with."
     )
     purposes: Optional[list[Any]] = Field(
-        description="Purposes the group is associated with."
+        default=None, description="Purposes the group is associated with."
     )
-    user_count: Optional[int] = Field(description="Number of users in the group.")
+    user_count: Optional[int] = Field(
+        default=None, description="Number of users in the group."
+    )
 
     def is_default(self) -> bool:
         return (
@@ -116,23 +125,27 @@ class GroupResponse(AtlanObject):
 class CreateGroupRequest(AtlanObject):
     group: AtlanGroup = Field(description="Group to be created.")
     users: Optional[list[str]] = Field(
-        description="List of users (their GUIDs) to be included in the group."
+        default=None,
+        description="List of users (their GUIDs) to be included in the group.",
     )
 
 
 class RemoveFromGroupRequest(AtlanObject):
     users: Optional[list[str]] = Field(
-        description="List of users (their GUIDs) to remove from the group."
+        default=None,
+        description="List of users (their GUIDs) to remove from the group.",
     )
 
 
 class CreateGroupResponse(AtlanObject):
     class UserStatus(AtlanObject):
         status: Optional[int] = Field(
-            description="Response code for the association (200 is success)."
+            default=None,
+            description="Response code for the association (200 is success).",
         )
         status_message: Optional[str] = Field(
-            description="Status message for the association ('success' means the association was successful)."
+            default=None,
+            description="Status message for the association ('success' means the association was successful).",
         )
 
         def was_successful(self) -> bool:
@@ -144,5 +157,6 @@ class CreateGroupResponse(AtlanObject):
         description="Unique identifier (GUID) of the group that was created."
     )
     users: Optional[dict[str, CreateGroupResponse.UserStatus]] = Field(
-        description="Map of user association statuses, keyed by unique identifier (GUID) of the user."
+        default=None,
+        description="Map of user association statuses, keyed by unique identifier (GUID) of the user.",
     )

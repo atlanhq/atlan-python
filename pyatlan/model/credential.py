@@ -1,39 +1,39 @@
 from typing import Any, Optional
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from pyatlan.model.core import AtlanObject
 
 
 class Credential(AtlanObject):
     # Unique identifier (GUID) of the credential.
-    id: Optional[str]
+    id: Optional[str] = Field(default=None)
     # Name of the credential.
-    name: Optional[str]
+    name: Optional[str] = Field(default=None)
     # Hostname for which connectivity is defined by the credential.
-    host: Optional[str]
+    host: Optional[str] = Field(default=None)
     # Port number on which connectivity should be done.
-    port: Optional[int]
+    port: Optional[int] = Field(default=None)
     # Authentication mechanism represented by the credential.
-    auth_type: Optional[str]
+    auth_type: Optional[str] = Field(default=None)
     # Type of connector used by the credential.
-    connector_type: Optional[str]
+    connector_type: Optional[str] = Field(default=None)
     # Less sensitive portion of the credential
     # typically used for a username for basic authentication
     # or client IDs for other forms of authentication.
-    username: Optional[str]
+    username: Optional[str] = Field(default=None)
     # More sensitive portion of the credential,
     # typically used for a password for basic authenticatio
     # or client secrets for other forms of authentication.
-    password: Optional[str]
+    password: Optional[str] = Field(default=None)
     # Additional details about the credential. This can capture,
     # for example, a secondary secret for particular forms of authentication
     # and / or additional details about the scope of the connectivity
     # (a specific database, role, warehouse, etc).
-    extras: Optional[dict[str, Any]] = Field(alias="extra")
+    extras: Optional[dict[str, Any]] = Field(default=None, alias="extra")
     # Name of the connector configuration
     # responsible for managing the credential.
-    connector_config_name: Optional[str]
+    connector_config_name: Optional[str] = Field(default=None)
 
 
 class CredentialResponse(AtlanObject):

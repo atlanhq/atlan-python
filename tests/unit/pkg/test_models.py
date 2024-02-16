@@ -2,7 +2,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from pyatlan.pkg.models import CustomPackage, PackageConfig, PackageWriter, generate
 from pyatlan.pkg.ui import UIConfig, UIStep

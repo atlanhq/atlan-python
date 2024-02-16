@@ -11,7 +11,7 @@ from typing import Generator, Iterable, Optional, Type, TypeVar, Union, overload
 from warnings import warn
 
 import requests
-from pydantic import (
+from pydantic.v1 import (
     StrictStr,
     ValidationError,
     constr,

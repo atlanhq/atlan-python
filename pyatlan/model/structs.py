@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, Union
 
-from pydantic import BaseModel, Extra, Field
+from pydantic.v1 import BaseModel, Extra, Field
 
 from pyatlan.model.enums import (
     BadgeComparisonOperator,
@@ -27,10 +27,14 @@ class AtlanObject(BaseModel):
 class MCRuleSchedule(AtlanObject):
     """Description"""
 
-    mc_rule_schedule_type: Optional[str] = Field(None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(None, description="")
-    mc_rule_schedule_start_time: Optional[datetime] = Field(None, description="")
-    mc_rule_schedule_crontab: Optional[str] = Field(None, description="")
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
 
 
 class AwsCloudWatchMetric(AtlanObject):
@@ -40,6 +44,15 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
+
+
 class Histogram(AtlanObject):
     """Description"""
 
@@ -47,20 +60,33 @@ class Histogram(AtlanObject):
     frequencies: set[float] = Field(description="")
 
 
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(None, description="")
-    topic_partition: Optional[str] = Field(None, description="")
-    topic_lag: Optional[int] = Field(None, description="")
-    topic_current_offset: Optional[int] = Field(None, description="")
-
-
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
-    column_value: Optional[str] = Field(None, description="")
-    column_value_frequency: Optional[int] = Field(None, description="")
+    column_value: Optional[str] = Field(default=None, description="")
+    column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
+
+
+class SourceTagAttachment(AtlanObject):
+    """Description"""
+
+    source_tag_name: Optional[str] = Field(default=None, description="")
+    source_tag_qualified_name: Optional[str] = Field(default=None, description="")
+    source_tag_guid: Optional[str] = Field(default=None, description="")
+    source_tag_connector_name: Optional[str] = Field(default=None, description="")
+    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
+        default=None, description=""
+    )
+    is_source_tag_synced: Optional[bool] = Field(default=None, description="")
+    source_tag_sync_timestamp: Optional[datetime] = Field(default=None, description="")
+    source_tag_sync_error: Optional[str] = Field(default=None, description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -91,31 +117,9 @@ class BadgeCondition(AtlanObject):
             else badge_condition_colorhex,
         )
 
-    badge_condition_operator: Optional[str] = Field(None, description="")
-    badge_condition_value: Optional[str] = Field(None, description="")
-    badge_condition_colorhex: Optional[str] = Field(None, description="")
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(None, description="")
-    tag_attachment_value: Optional[str] = Field(None, description="")
-
-
-class SourceTagAttachment(AtlanObject):
-    """Description"""
-
-    source_tag_name: Optional[str] = Field(None, description="")
-    source_tag_qualified_name: Optional[str] = Field(None, description="")
-    source_tag_guid: Optional[str] = Field(None, description="")
-    source_tag_connector_name: Optional[str] = Field(None, description="")
-    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
-        None, description=""
-    )
-    is_source_tag_synced: Optional[bool] = Field(None, description="")
-    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
-    source_tag_sync_error: Optional[str] = Field(None, description="")
+    badge_condition_operator: Optional[str] = Field(default=None, description="")
+    badge_condition_value: Optional[str] = Field(default=None, description="")
+    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
 
 
 class AzureTag(AtlanObject):
@@ -128,8 +132,8 @@ class AzureTag(AtlanObject):
 class StarredDetails(AtlanObject):
     """Description"""
 
-    asset_starred_by: Optional[str] = Field(None, description="")
-    asset_starred_at: Optional[datetime] = Field(None, description="")
+    asset_starred_by: Optional[str] = Field(default=None, description="")
+    asset_starred_at: Optional[datetime] = Field(default=None, description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -156,10 +160,12 @@ class GoogleTag(AtlanObject):
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
-    dbt_metric_filter_column_qualified_name: Optional[str] = Field(None, description="")
-    dbt_metric_filter_field: Optional[str] = Field(None, description="")
-    dbt_metric_filter_operator: Optional[str] = Field(None, description="")
-    dbt_metric_filter_value: Optional[str] = Field(None, description="")
+    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -173,13 +179,13 @@ class AuthPolicyValiditySchedule(AtlanObject):
 class MCRuleComparison(AtlanObject):
     """Description"""
 
-    mc_rule_comparison_type: Optional[str] = Field(None, description="")
-    mc_rule_comparison_field: Optional[str] = Field(None, description="")
-    mc_rule_comparison_metric: Optional[str] = Field(None, description="")
-    mc_rule_comparison_operator: Optional[str] = Field(None, description="")
-    mc_rule_comparison_threshold: Optional[float] = Field(None, description="")
+    mc_rule_comparison_type: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_field: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_metric: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_operator: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_threshold: Optional[float] = Field(default=None, description="")
     mc_rule_comparison_is_threshold_relative: Optional[bool] = Field(
-        None, description=""
+        default=None, description=""
     )
 
 
@@ -193,41 +199,45 @@ class GoogleLabel(AtlanObject):
 class PopularityInsights(AtlanObject):
     """Description"""
 
-    record_user: Optional[str] = Field(None, description="")
-    record_query: Optional[str] = Field(None, description="")
-    record_query_duration: Optional[int] = Field(None, description="")
-    record_query_count: Optional[int] = Field(None, description="")
-    record_total_user_count: Optional[int] = Field(None, description="")
-    record_compute_cost: Optional[float] = Field(None, description="")
-    record_max_compute_cost: Optional[float] = Field(None, description="")
-    record_compute_cost_unit: Optional[SourceCostUnitType] = Field(None, description="")
-    record_last_timestamp: Optional[datetime] = Field(None, description="")
-    record_warehouse: Optional[str] = Field(None, description="")
+    record_user: Optional[str] = Field(default=None, description="")
+    record_query: Optional[str] = Field(default=None, description="")
+    record_query_duration: Optional[int] = Field(default=None, description="")
+    record_query_count: Optional[int] = Field(default=None, description="")
+    record_total_user_count: Optional[int] = Field(default=None, description="")
+    record_compute_cost: Optional[float] = Field(default=None, description="")
+    record_max_compute_cost: Optional[float] = Field(default=None, description="")
+    record_compute_cost_unit: Optional[SourceCostUnitType] = Field(
+        default=None, description=""
+    )
+    record_last_timestamp: Optional[datetime] = Field(default=None, description="")
+    record_warehouse: Optional[str] = Field(default=None, description="")
 
 
 class SourceTagAttribute(AtlanObject):
     """Description"""
 
-    tag_attribute_key: Optional[str] = Field(None, description="")
-    tag_attribute_value: Optional[str] = Field(None, description="")
-    tag_attribute_properties: Optional[dict[str, str]] = Field(None, description="")
+    tag_attribute_key: Optional[str] = Field(default=None, description="")
+    tag_attribute_value: Optional[str] = Field(default=None, description="")
+    tag_attribute_properties: Optional[dict[str, str]] = Field(
+        default=None, description=""
+    )
 
 
 MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Histogram.update_forward_refs()
-
 KafkaTopicConsumption.update_forward_refs()
 
-ColumnValueFrequencyMap.update_forward_refs()
+Histogram.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
+ColumnValueFrequencyMap.update_forward_refs()
 
 SourceTagAttachmentValue.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
+
+BadgeCondition.update_forward_refs()
 
 AzureTag.update_forward_refs()
 

@@ -1,6 +1,6 @@
 from json import loads
 
-from pydantic import parse_obj_as
+from pydantic.v1 import parse_obj_as
 
 from pyatlan.model.credential import Credential
 from pyatlan.model.workflow import (

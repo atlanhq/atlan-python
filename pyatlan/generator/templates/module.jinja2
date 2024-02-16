@@ -5,23 +5,26 @@
 {% from 'macros.jinja2' import gen_property_relationship_class_vars %}
 
 {% include 'imports.jinja2' %}
-{% for import in module.imports%}
-{{ import }}
-{% endfor %}
-{% for asset_info in module.ordered_asset_infos %}
-    {% set entity_def = asset_info.entity_def %}
-    {% set file_name = 'methods/imports/' + entity_def.name | to_snake_case + '.jinja2' %}
-    {%  if existz('templates/' + file_name) %}
-{% include file_name %}
-    {% endif %}
-{% endfor %}
-{%  if module_name == 'asset00' %}
-{% include 'globals.jinja2' %}
+
+{% if asset_info.name != 'Referenceable' and asset_info.name != 'Asset' %}
+from .asset import SelfAsset
 {% endif %}
 
-{% for asset_info in module.ordered_asset_infos %}
-    {% set entity_def = asset_info.entity_def %}
+{% set entity_def = asset_info.entity_def %}
+
+{% set file_name = 'methods/imports/' + entity_def.name | to_snake_case + '.jinja2' %}
+{%  if existz('templates/' + file_name) %}
+{% include file_name %}
+{% endif %}
+
+{% set entity_def = asset_info.entity_def %}
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types %}
+
+{{ asset_info.import_super_class }}
+
+{% if asset_info.name == 'Asset' %}
+SelfAsset = TypeVar("SelfAsset", bound="Asset")
+{% endif %}
 
 class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
     """Description"""
@@ -65,9 +68,24 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     )
     {%- endif %}
 {% endif %}
+
+{%  if asset_info.module_name == 'referenceable' %}
+# Imports required for fixing circular dependencies:
+from .asset import Asset  # noqa # isort:skip
+{% endif %}
+
+{%  if asset_info.module_name == 'metric' %}
+# Imports required for fixing circular dependencies:
+from .asset import Asset  # noqa # isort:skip
+from .catalog import Catalog  # noqa # isort:skip
+from .s_q_l import SQL  # noqa # isort:skip
+{% endif %}
+
+{% for import in asset_info.imports_for_referenced_assets %}
+{{ import }}
 {% endfor %}
 
-{% for asset_info in module.ordered_asset_infos %}
-    {% set entity_def = asset_info.entity_def %}
-{{entity_def.name}}.Attributes.update_forward_refs()
-{% endfor %}
+{%  if asset_info.entity_def.name in asset_info.eligible_assets %}
+{% set entity_name = asset_info.name %}
+{{ entity_name }}.Attributes.update_forward_refs()
+{% endif %}

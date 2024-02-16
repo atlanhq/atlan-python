@@ -3,8 +3,8 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Optional, TypeVar, Union
 
-from pydantic import StrictStr, validate_arguments
-from pydantic.json import pydantic_encoder
+from pydantic.v1 import StrictStr, validate_arguments
+from pydantic.v1.json import pydantic_encoder
 
 from pyatlan.pkg.widgets import (
     APITokenSelector,
