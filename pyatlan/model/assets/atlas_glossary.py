@@ -222,14 +222,3 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
 from .atlas_glossary_category import AtlasGlossaryCategory  # noqa
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
-from .data_product import DataProduct  # noqa
-from .file import File  # noqa
-from .link import Link  # noqa
-from .m_c_incident import MCIncident  # noqa
-from .m_c_monitor import MCMonitor  # noqa
-from .metric import Metric  # noqa
-from .readme import Readme  # noqa
-from .schema_registry_subject import SchemaRegistrySubject  # noqa
-from .soda_check import SodaCheck  # noqa
-
-AtlasGlossary.Attributes.update_forward_refs()

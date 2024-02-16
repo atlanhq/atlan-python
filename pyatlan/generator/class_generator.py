@@ -212,7 +212,7 @@ class AssetInfo:
         self.circular_dependencies: set["AssetInfo"] = set()
         self.order: int = 0
         self.module_name = to_snake_case(name)
-        self.super_type: AssetInfo = None
+        self.super_type: Optional[AssetInfo] = None
 
     def __hash__(self):
         return hash(self._name)
@@ -239,43 +239,33 @@ class AssetInfo:
         return f"from .{super_type.module_name} import {super_type.name}"
 
     @property
-    def eligible_assets(self):
-        return [
-            "AtlasGlossary",
-            "AtlasGlossaryTerm",
-            "AtlasGlossaryCategory",
-            # "Process",  # <-- problem
-        ]
-
-    @property
-    def imports_for_referenced_assets(self):
+    def get_update_forward_refs(self):
         import_set = set()
         asset_name = self.name
         current_name = self.name
-        if asset_name in self.eligible_assets:
-            while current_name != "Referenceable" and self.hierarchy_graph.predecessors(
-                current_name
-            ):
-                parent_asset_name = next(
-                    iter(self.hierarchy_graph.predecessors(current_name))
-                )
-                if parent_asset_name == "Referenceable":
-                    break
-                parent_asset = self.asset_info_by_name[
-                    parent_asset_name
-                ].required_asset_infos
+        while current_name != "Referenceable" and self.hierarchy_graph.predecessors(
+            current_name
+        ):
+            parent_asset_name = next(
+                iter(self.hierarchy_graph.predecessors(current_name))
+            )
+            if parent_asset_name == "Referenceable":
+                break
+            parent_asset = self.asset_info_by_name[
+                parent_asset_name
+            ].required_asset_infos
 
-                for parent_module in parent_asset:
-                    if asset_name != parent_module.name:
-                        import_set.add(
-                            f"from .{parent_module.module_name} import {parent_module.name} # noqa"
-                        )
+            for parent_module in parent_asset:
+                if asset_name != parent_module.name:
+                    import_set.add(parent_module.name)
 
-                current_name = parent_asset_name
+            current_name = parent_asset_name
 
-        import_list = list(import_set)
+        return {key: key for key in import_set}
 
-        return import_list + [
+    @property
+    def imports_for_referenced_assets(self):
+        return [
             f"from .{required_asset.module_name} import {required_asset.name} # noqa"
             for required_asset in self.required_asset_infos
         ]
@@ -613,6 +603,11 @@ def get_search_type(attr_def: dict[str, Any]) -> SearchType:
     return SearchType(name="RelationField")
 
 
+def dict2items(d, class_name):
+    items_str = ", ".join([f"{k}={k}" for k in d.keys()])
+    return f"{class_name}.Attributes.update_forward_refs(**dict({items_str}))"
+
+
 class Generator:
     def __init__(self) -> None:
         self.environment = Environment(
@@ -623,6 +618,7 @@ class Generator:
         self.environment.filters["get_search_type"] = get_search_type
         self.environment.filters["get_mapped_type"] = get_mapped_type
         self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
+        self.environment.filters["dict2items"] = dict2items
 
     def merge_attributes(self, entity_def):
         def merge_them(s, a):
@@ -658,7 +654,7 @@ class Generator:
         )
 
     def render_modules(self, modules: list[ModuleInfo]):
-        self.render_init(modules)
+        self.render_init(modules)  # type: ignore
 
     def render_module(self, asset_info: AssetInfo):
         template = self.environment.get_template("module.jinja2")
@@ -672,13 +668,10 @@ class Generator:
             script.write(content)
 
     def render_init(self, assets: list[AssetInfo]):
+        forward_refs = [{a.name: a.get_update_forward_refs} for a in assets]
         imports = [f"from .{a.module_name} import {a.name}" for a in assets]
         template = self.environment.get_template("init.jinja2")
-        content = template.render(
-            {
-                "imports": imports,
-            }
-        )
+        content = template.render({"imports": imports, "forward_refs": forward_refs})
         with (ASSETS_DIR / "__init__.py").open("w") as script:
             script.write(content)
 
@@ -822,13 +815,12 @@ if __name__ == "__main__":
     AssetInfo.set_entity_defs(type_defs.entity_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
-    # ModuleInfo.check_for_circular_module_dependencies()
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
     generator = Generator()
     for asset_info in ModuleInfo.assets.values():
         generator.render_module(asset_info)
-    generator.render_init(ModuleInfo.assets.values())
+    generator.render_init(ModuleInfo.assets.values())  # type: ignore
     generator.render_structs(type_defs.struct_defs)
     EnumDefInfo.create(type_defs.enum_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)

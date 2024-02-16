@@ -14,7 +14,7 @@ from pyatlan.model.enums import (
     DataProductSensitivity,
     DataProductStatus,
 )
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.search import IndexSearchRequest
 from pyatlan.utils import (
     init_guid,
@@ -117,6 +117,12 @@ class DataProduct(DataMesh):
     """
     Playbook filter to define which assets are part of this data product.
     """
+    DATA_PRODUCT_SCORE_VALUE: ClassVar[NumericField] = NumericField(
+        "dataProductScoreValue", "dataProductScoreValue"
+    )
+    """
+    Score of this data product.
+    """
 
     DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
@@ -133,6 +139,7 @@ class DataProduct(DataMesh):
         "data_product_sensitivity",
         "data_product_assets_d_s_l",
         "data_product_assets_playbook_filter",
+        "data_product_score_value",
         "data_domain",
         "output_ports",
     ]
@@ -212,6 +219,20 @@ class DataProduct(DataMesh):
         )
 
     @property
+    def data_product_score_value(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_score_value
+        )
+
+    @data_product_score_value.setter
+    def data_product_score_value(self, data_product_score_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_score_value = data_product_score_value
+
+    @property
     def data_domain(self) -> Optional[DataDomain]:
         return None if self.attributes is None else self.attributes.data_domain
 
@@ -245,6 +266,7 @@ class DataProduct(DataMesh):
         data_product_assets_playbook_filter: Optional[str] = Field(
             default=None, description=""
         )
+        data_product_score_value: Optional[float] = Field(default=None, description="")
         data_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship

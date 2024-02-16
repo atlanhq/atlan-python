@@ -342,7 +342,7 @@ class UserClient:
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.client.atlan import client_connection
-        from pyatlan.model.assets.asset00 import Asset
+        from pyatlan.model.assets import Asset
         from pyatlan.model.fluent_search import FluentSearch
 
         if keyword_field not in [Asset.ADMIN_USERS, Asset.VIEWER_USERS]:

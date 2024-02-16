@@ -150,7 +150,6 @@ from pyatlan.model.assets import (
     ThoughtspotDashlet,
     ThoughtspotLiveboard,
     View,
-    validate_single_required_field,
 )
 from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import Announcement
@@ -208,6 +207,7 @@ from pyatlan.model.structs import (
     StarredDetails,
 )
 from pyatlan.model.typedef import TypeDefResponse
+from pyatlan.utils import validate_single_required_field
 
 CM_ATTR_ID = "WQ6XGXwq9o7UnZlkWyKhQN"
 

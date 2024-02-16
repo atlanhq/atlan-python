@@ -31,10 +31,9 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.model.structs import PopularityInsights, StarredDetails
 from pyatlan.utils import init_guid, move_struct, validate_required_fields
 
-SelfAsset = TypeVar("SelfAsset", bound="Asset")
-
-
 from .referenceable import Referenceable
+
+SelfAsset = TypeVar("SelfAsset", bound="Asset")
 
 
 class Asset(Referenceable):

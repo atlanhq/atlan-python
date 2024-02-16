@@ -3,3 +3,14 @@
 {%  for import in imports -%}
 {{ import }}
 {% endfor %}
+
+# Update asset forward references:
+{%- for item in forward_refs %}
+{%- for class_name, attributes in item.items() %}
+{{ class_name }}.Attributes.update_forward_refs(**dict(
+    {%- for key in attributes.keys() %}
+    {{ key }}={{ key }},
+    {%- endfor %}
+))
+{%- endfor %}
+{%- endfor %}
