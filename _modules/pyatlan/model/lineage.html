@@ -450,12 +450,12 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictBool</span><span class="p">,</span> <span class="n">StrictInt</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validate_arguments</span>
+<span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictBool</span><span class="p">,</span> <span class="n">StrictInt</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validate_arguments</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pydantic.dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+    <span class="kn">from</span> <span class="nn">pydantic.v1.dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="n">Asset</span>
@@ -724,29 +724,33 @@
         <span class="s2">&quot;Note that you cannot fetch both upstream and downstream at the same time.&quot;</span>
     <span class="p">)</span>
     <span class="n">entity_filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FilterList</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Filters to apply on entities.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Filters to apply on entities.&quot;</span>
     <span class="p">)</span>
     <span class="n">entity_traversal_filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FilterList</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Filters to apply for skipping traversal based on entities.&quot;</span>
         <span class="s2">&quot;Any sub-graphs beyond the entities filtered out by these filters will not be included&quot;</span>
-        <span class="s2">&quot;in the lineage result.&quot;</span>
+        <span class="s2">&quot;in the lineage result.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">relationship_traversal_filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FilterList</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Filters to apply for skipping traversal based on relationships.&quot;</span>
         <span class="s2">&quot;Any sub-graphs beyond the relationships filtered out by these filters will not be included&quot;</span>
-        <span class="s2">&quot;in the lineage result.&quot;</span>
+        <span class="s2">&quot;in the lineage result.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Starting point for pagination.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;from&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Starting point for pagination.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;from&quot;</span>
     <span class="p">)</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;How many results to include in each page of results.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;How many results to include in each page of results.&quot;</span>
     <span class="p">)</span>
     <span class="n">exclude_meanings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to include assigned terms for assets (false) or not (true).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to include assigned terms for assets (false) or not (true).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">exclude_classifications</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to include classifications for assets (false) or not (true).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to include classifications for assets (false) or not (true).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -767,7 +771,7 @@
             <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
             <span class="n">exclude_meanings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">exclude_classifications</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span></div>
 
 
 
@@ -950,7 +954,7 @@
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span>
             <span class="p">]</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">entity_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">entity_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">field</span><span class="o">.</span><span class="n">atlan_field_name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span>
@@ -968,7 +972,7 @@
             <span class="p">]</span>
             <span class="n">request</span><span class="o">.</span><span class="n">entity_traversal_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span>
                 <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
-            <span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span><span class="p">:</span>
             <span class="n">criteria</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">EntityFilter</span><span class="p">(</span>
@@ -980,7 +984,7 @@
             <span class="p">]</span>
             <span class="n">request</span><span class="o">.</span><span class="n">relationship_traversal_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span>
                 <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
-            <span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
         <span class="k">return</span> <span class="n">request</span>
 </pre></div>
         </article>

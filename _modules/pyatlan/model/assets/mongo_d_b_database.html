@@ -1,0 +1,881 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>pyatlan.model.assets.mongo_d_b_database - pyatlan documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">pyatlan  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">pyatlan  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../client.html">Atlan Client Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../assets.html">Assets</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/adls.html">ADLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/adlsaccount.html">ADLSAccount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/adlscontainer.html">ADLSContainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/adlsobject.html">ADLSObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/apipath.html">APIPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/apispec.html">APISpec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/aws.html">AWS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/accesscontrol.html">AccessControl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/airflow.html">Airflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/airflowdag.html">AirflowDag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/airflowtask.html">AirflowTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/asset.html">Asset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlasglossary.html">AtlasGlossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlasglossaryterm.html">AtlasGlossaryTerm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/authpolicy.html">AuthPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/authservice.html">AuthService</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azure.html">Azure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureeventhub.html">AzureEventHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/bi.html">BI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/biprocess.html">BIProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/catalog.html">Catalog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cloud.html">Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/collection.html">Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudioasset.html">DataStudioAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbt.html">Dbt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtcolumnprocess.html">DbtColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmetric.html">DbtMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmodel.html">DbtModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmodelcolumn.html">DbtModelColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtprocess.html">DbtProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtsource.html">DbtSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttag.html">DbtTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbtable.html">DynamoDBTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/eventstore.html">EventStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/file.html">File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/folder.html">Folder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/function.html">Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/gcs.html">GCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/gcsbucket.html">GCSBucket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/gcsobject.html">GCSObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/google.html">Google</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/infrastructure.html">Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/insight.html">Insight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/kafka.html">Kafka</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/kafkaconsumergroup.html">KafkaConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/kafkatopic.html">KafkaTopic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/link.html">Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/looker.html">Looker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerdashboard.html">LookerDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerexplore.html">LookerExplore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerfield.html">LookerField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerfolder.html">LookerFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerlook.html">LookerLook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookermodel.html">LookerModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerproject.html">LookerProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerquery.html">LookerQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookertile.html">LookerTile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/lookerview.html">LookerView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/mcincident.html">MCIncident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/mcmonitor.html">MCMonitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/materialisedview.html">MaterialisedView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/matillion.html">Matillion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/matillioncomponent.html">MatillionComponent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/matilliongroup.html">MatillionGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/matillionjob.html">MatillionJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/matillionproject.html">MatillionProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/metabase.html">Metabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/metabasecollection.html">MetabaseCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/metabasedashboard.html">MetabaseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/metabasequestion.html">MetabaseQuestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/metric.html">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategy.html">MicroStrategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategyattribute.html">MicroStrategyAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategycube.html">MicroStrategyCube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategydocument.html">MicroStrategyDocument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategydossier.html">MicroStrategyDossier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategyfact.html">MicroStrategyFact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategymetric.html">MicroStrategyMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategyproject.html">MicroStrategyProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategyreport.html">MicroStrategyReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategyvisualization.html">MicroStrategyVisualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/mode.html">Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/modechart.html">ModeChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/modecollection.html">ModeCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/modequery.html">ModeQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/modereport.html">ModeReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/modeworkspace.html">ModeWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodb.html">MongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodbcollection.html">MongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodbdatabase.html">MongoDBDatabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/montecarlo.html">MonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/namespace.html">Namespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/nosql.html">NoSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/objectstore.html">ObjectStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/persona.html">Persona</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbi.html">PowerBI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbicolumn.html">PowerBIColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbidashboard.html">PowerBIDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbidataflow.html">PowerBIDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbidataset.html">PowerBIDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbidatasource.html">PowerBIDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbimeasure.html">PowerBIMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbipage.html">PowerBIPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbireport.html">PowerBIReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbitable.html">PowerBITable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbitile.html">PowerBITile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbiworkspace.html">PowerBIWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/preset.html">Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/presetchart.html">PresetChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/presetdashboard.html">PresetDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/presetdataset.html">PresetDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/presetworkspace.html">PresetWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/procedure.html">Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/process.html">Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/processexecution.html">ProcessExecution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/purpose.html">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlik.html">Qlik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikapp.html">QlikApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikchart.html">QlikChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikdataset.html">QlikDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qliksheet.html">QlikSheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikspace.html">QlikSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikstream.html">QlikStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/query.html">Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksight.html">QuickSight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightanalysis.html">QuickSightAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightanalysisvisual.html">QuickSightAnalysisVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightdashboard.html">QuickSightDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightdashboardvisual.html">QuickSightDashboardVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightdataset.html">QuickSightDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightdatasetfield.html">QuickSightDatasetField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/quicksightfolder.html">QuickSightFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/readme.html">Readme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/readmetemplate.html">ReadmeTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/redash.html">Redash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/redashdashboard.html">RedashDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/redashquery.html">RedashQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/redashvisualization.html">RedashVisualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/referenceable.html">Referenceable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/resource.html">Resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3.html">S3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3bucket.html">S3Bucket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3object.html">S3Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sql.html">SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/saas.html">SaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforce.html">Salesforce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforcedashboard.html">SalesforceDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforcefield.html">SalesforceField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforceobject.html">SalesforceObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforceorganization.html">SalesforceOrganization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforcereport.html">SalesforceReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/schema.html">Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/schemaregistry.html">SchemaRegistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/schemaregistrysubject.html">SchemaRegistrySubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigma.html">Sigma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadataelement.html">SigmaDataElement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadataelementfield.html">SigmaDataElementField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadataset.html">SigmaDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmapage.html">SigmaPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflakestream.html">SnowflakeStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflaketag.html">SnowflakeTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/soda.html">Soda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sodacheck.html">SodaCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/table.html">Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tablepartition.html">TablePartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableau.html">Tableau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableaucalculatedfield.html">TableauCalculatedField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableaudashboard.html">TableauDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableaudatasource.html">TableauDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableaudatasourcefield.html">TableauDatasourceField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauflow.html">TableauFlow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableaumetric.html">TableauMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauproject.html">TableauProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableausite.html">TableauSite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauworkbook.html">TableauWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableauworksheet.html">TableauWorksheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/tagattachment.html">TagAttachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspot.html">Thoughtspot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotliveboard.html">ThoughtspotLiveboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../other_models.html">Other models</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Other models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/core.html">Core model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/custom_metadata.html">Custom metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/user.html">User</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/role.html">Role</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/keycloak_events.html">Keycloak events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/lineage.html">Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/typedef.html">TypeDef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../other_model/atlan_image.html">Atlan image</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exceptions.html">Error Handling</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../caches.html">Caches</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Caches</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cache/atlan_tag_cache.html">AtlanTagCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cache/custom_metadata_cache.html">CustomMetadataCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cache/enum_cache.html">EnumCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cache/group_cache.html">GroupCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cache/role_cache.html">RoleCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cache/user_cache.html">UserCache</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../fields.html">Fields</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Fields</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/relation_field.html">RelationField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/searchable_field.html">SearchableField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/boolean_field.html">BooleanField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/keyword_field.html">KeywordField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/text_field.html">TextField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/numeric_field.html">NumericField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/numeric_rank_field.html">NumericRankField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/keyword_text_field.html">KeywordTextField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/keyword_text_stemmed_field.html">KeywordTextStemmedField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../field/custom_metadata_field.html">CustomMetadataField</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../events.html">Events</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for pyatlan.model.assets.mongo_d_b_database</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
+
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
+
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BooleanField</span><span class="p">,</span>
+    <span class="n">KeywordField</span><span class="p">,</span>
+    <span class="n">KeywordTextField</span><span class="p">,</span>
+    <span class="n">NumericField</span><span class="p">,</span>
+    <span class="n">RelationField</span><span class="p">,</span>
+    <span class="n">TextField</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="n">Database</span>
+
+
+<div class="viewcode-block" id="MongoDBDatabase">
+<a class="viewcode-back" href="../../../../asset/mongodbdatabase.html#pyatlan.model.assets.MongoDBDatabase">[docs]</a>
+<span class="k">class</span> <span class="nc">MongoDBDatabase</span><span class="p">(</span><span class="n">Database</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;MongoDBDatabase&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="s2">&quot;MongoDBDatabase&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must be MongoDBDatabase&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">MongoDBDatabase</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">MONGO_DB_DATABASE_COLLECTION_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;mongoDBDatabaseCollectionCount&quot;</span><span class="p">,</span> <span class="s2">&quot;mongoDBDatabaseCollectionCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of collections in the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SCHEMA_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;schemaCount&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaCount&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of schemas in this database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QUERY_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s2">&quot;queryCount&quot;</span><span class="p">,</span> <span class="s2">&quot;queryCount&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of times this asset has been queried.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QUERY_USER_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;queryUserCount&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUserCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of unique users who have queried this asset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QUERY_USER_MAP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;queryUserMap&quot;</span><span class="p">,</span> <span class="s2">&quot;queryUserMap&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Map of unique users who have queried this asset to the number of times they have queried it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">QUERY_COUNT_UPDATED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;queryCountUpdatedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;queryCountUpdatedAt&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) at which the query count was last updated, in milliseconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DATABASE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;databaseName&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DATABASE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;databaseQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;databaseQualifiedName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SCHEMA_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;schemaName&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SCHEMA_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;schemaQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;schemaQualifiedName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TABLE_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;tableName&quot;</span><span class="p">,</span> <span class="s2">&quot;tableName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;tableName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TABLE_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;tableQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;tableQualifiedName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">VIEW_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;viewName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;viewName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">VIEW_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;viewQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;viewQualifiedName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">IS_PROFILED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;isProfiled&quot;</span><span class="p">,</span> <span class="s2">&quot;isProfiled&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Whether this asset has been profiled (true) or not (false).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LAST_PROFILED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;lastProfiledAt&quot;</span><span class="p">,</span> <span class="s2">&quot;lastProfiledAt&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) at which this asset was last profiled, in milliseconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NO_SQL_SCHEMA_DEFINITION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
+        <span class="s2">&quot;noSQLSchemaDefinition&quot;</span><span class="p">,</span> <span class="s2">&quot;noSQLSchemaDefinition&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents attributes for describing the key schema for the table and indexes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MONGO_DB_COLLECTIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;mongoDBCollections&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;mongo_d_b_database_collection_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schema_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;query_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;query_user_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;query_user_map&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;query_count_updated_at&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;database_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;database_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schema_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schema_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;table_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;table_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;view_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;view_qualified_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_profiled&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last_profiled_at&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;no_s_q_l_schema_definition&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mongo_d_b_collections&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mongo_d_b_database_collection_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mongo_d_b_database_collection_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@mongo_d_b_database_collection_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mongo_d_b_database_collection_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mongo_d_b_database_collection_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mongo_d_b_database_collection_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mongo_d_b_database_collection_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">schema_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">schema_count</span>
+
+    <span class="nd">@schema_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">schema_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">schema_count</span> <span class="o">=</span> <span class="n">schema_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_count</span>
+
+    <span class="nd">@query_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">query_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_count</span> <span class="o">=</span> <span class="n">query_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query_user_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_user_count</span>
+
+    <span class="nd">@query_user_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">query_user_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_user_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_user_count</span> <span class="o">=</span> <span class="n">query_user_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query_user_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_user_map</span>
+
+    <span class="nd">@query_user_map</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">query_user_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_user_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_user_map</span> <span class="o">=</span> <span class="n">query_user_map</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query_count_updated_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_count_updated_at</span>
+        <span class="p">)</span>
+
+    <span class="nd">@query_count_updated_at</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">query_count_updated_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_count_updated_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">query_count_updated_at</span> <span class="o">=</span> <span class="n">query_count_updated_at</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">database_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">database_name</span>
+
+    <span class="nd">@database_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">database_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">database_name</span> <span class="o">=</span> <span class="n">database_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">database_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">database_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@database_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">database_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">database_qualified_name</span> <span class="o">=</span> <span class="n">database_qualified_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">schema_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">schema_name</span>
+
+    <span class="nd">@schema_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">schema_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">schema_name</span> <span class="o">=</span> <span class="n">schema_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">schema_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">schema_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@schema_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">schema_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">schema_qualified_name</span> <span class="o">=</span> <span class="n">schema_qualified_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">table_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">table_name</span>
+
+    <span class="nd">@table_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">table_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">table_name</span> <span class="o">=</span> <span class="n">table_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">table_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">table_qualified_name</span>
+
+    <span class="nd">@table_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">table_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">table_qualified_name</span> <span class="o">=</span> <span class="n">table_qualified_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">view_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">view_name</span>
+
+    <span class="nd">@view_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">view_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">view_name</span> <span class="o">=</span> <span class="n">view_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">view_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">view_qualified_name</span>
+
+    <span class="nd">@view_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">view_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">view_qualified_name</span> <span class="o">=</span> <span class="n">view_qualified_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_profiled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_profiled</span>
+
+    <span class="nd">@is_profiled</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_profiled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_profiled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_profiled</span> <span class="o">=</span> <span class="n">is_profiled</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_profiled_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">last_profiled_at</span>
+
+    <span class="nd">@last_profiled_at</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">last_profiled_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_profiled_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">last_profiled_at</span> <span class="o">=</span> <span class="n">last_profiled_at</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">no_s_q_l_schema_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">no_s_q_l_schema_definition</span>
+        <span class="p">)</span>
+
+    <span class="nd">@no_s_q_l_schema_definition</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">no_s_q_l_schema_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">no_s_q_l_schema_definition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">no_s_q_l_schema_definition</span> <span class="o">=</span> <span class="n">no_s_q_l_schema_definition</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mongo_d_b_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MongoDBCollection</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mongo_d_b_collections</span>
+        <span class="p">)</span>
+
+    <span class="nd">@mongo_d_b_collections</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mongo_d_b_collections</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mongo_d_b_collections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MongoDBCollection</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mongo_d_b_collections</span> <span class="o">=</span> <span class="n">mongo_d_b_collections</span>
+
+    <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Database</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
+        <span class="n">mongo_d_b_database_collection_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">schema_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">query_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">query_user_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">query_user_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">query_count_updated_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">database_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">database_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">schema_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">schema_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">table_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">view_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">view_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">is_profiled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">last_profiled_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">no_s_q_l_schema_definition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">mongo_d_b_collections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">MongoDBCollection</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;MongoDBDatabase.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MongoDBDatabase</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
+        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="kn">from</span> <span class="nn">.mongo_d_b_collection</span> <span class="kn">import</span> <span class="n">MongoDBCollection</span>  <span class="c1"># noqa</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Atlan Pte. Ltd.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -448,7 +448,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.atlan_image</span> <span class="kn">import</span> <span class="n">AtlanImage</span>
@@ -613,27 +613,32 @@
 <span class="k">class</span> <span class="nc">TypeDef</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the type definition.&quot;</span><span class="p">)</span>
     <span class="n">create_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time (epoch) at which this object was created, in milliseconds.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">created_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username of the user who created the object.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username of the user who created the object.&quot;</span>
     <span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the type definition.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the type definition.&quot;</span>
     <span class="p">)</span>
     <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier that represents the type definition.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier that represents the type definition.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique name of this type definition.&quot;</span><span class="p">)</span>
-    <span class="n">type_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique name of this type definition.&quot;</span><span class="p">)</span>
+    <span class="n">type_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
     <span class="n">update_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time (epoch) at which this object was last assets_updated, in milliseconds.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time (epoch) at which this object was last assets_updated, in milliseconds.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">updated_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username of the user who last assets_updated the object.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username of the user who last assets_updated the object.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Version of this type definition.&quot;</span><span class="p">)</span></div>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Version of this type definition.&quot;</span>
+    <span class="p">)</span></div>
 
 
 
@@ -642,9 +647,9 @@
 <span class="k">class</span> <span class="nc">EnumDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">ElementDef</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
         <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;One unique value within the enumeration.&quot;</span><span class="p">)</span>
-        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
         <span class="n">ordinal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique numeric identifier for the value.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique numeric identifier for the value.&quot;</span>
         <span class="p">)</span>
 
         <span class="nd">@staticmethod</span>
@@ -677,9 +682,9 @@
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Valid values for the enumeration.&quot;</span>
     <span class="p">)</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
     <span class="p">)</span>
-    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
+    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
@@ -717,75 +722,95 @@
             <span class="n">default</span><span class="o">=</span><span class="s2">&quot;v2&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional description of the attribute.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional description of the attribute.&quot;</span>
         <span class="p">)</span>
         <span class="n">applicable_entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute can be applied. &quot;</span>
             <span class="s2">&quot;Note: generally this should be left as-is. Any overrides should instead be applied through &quot;</span>
             <span class="s2">&quot;one or more of applicable_asset_types}, applicable_glossary_types}, or &quot;</span>
             <span class="s2">&quot;applicable_other_asset_types}.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">custom_applicable_entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute should appear.&quot;</span>
             <span class="s2">&quot;Deprecated: see applicable_asset_types, applicable_glossary_types and &quot;</span>
             <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">allow_search</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute should be searchable (true) or not (false).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">max_str_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum length allowed for a string value.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">allow_filtering</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this attribute should appear in the filterable facets of discovery (true) or not &quot;</span>
             <span class="s2">&quot;(false).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">multi_value_select</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this attribute can have multiple values (true) or only a single value (false).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">show_in_overview</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether users will see this attribute in the overview tab of the sidebar (true) or not &quot;</span>
             <span class="s2">&quot;(false).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">is_deprecated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is deprecated (&#39;true&#39;) or not (None or &#39;false&#39;).&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is deprecated (&#39;true&#39;) or not (None or &#39;false&#39;).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">is_enum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is an enumeration (true) or not (None or false).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">enum_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the enumeration (options), when the attribute is an enumeration.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the enumeration (options), when the attribute is an enumeration.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">custom_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">has_time_precision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If true for a date attribute, then time-level precision is also available in the UI &quot;</span>
-            <span class="s2">&quot;(otherwise only date-level)&quot;</span>
+            <span class="s2">&quot;(otherwise only date-level)&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">is_archived</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute has been deleted (true) or is still active (false).&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute has been deleted (true) or is still active (false).&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">archived_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the attribute was deleted.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the attribute was deleted.&quot;</span>
         <span class="p">)</span>
         <span class="n">archived_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User who deleted the attribute.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User who deleted the attribute.&quot;</span>
         <span class="p">)</span>
-        <span class="n">is_soft_reference</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
-        <span class="n">is_append_on_partial_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
-        <span class="n">primitive_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the attribute.&quot;</span><span class="p">)</span>
+        <span class="n">is_soft_reference</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+        <span class="n">is_append_on_partial_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span>
+        <span class="p">)</span>
+        <span class="n">primitive_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the attribute.&quot;</span>
+        <span class="p">)</span>
         <span class="n">applicable_connections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Qualified names of connections to which to restrict the attribute. &quot;</span>
             <span class="s2">&quot;Only assets within one of these connections will have this attribute available. &quot;</span>
-            <span class="s2">&quot;To further restrict the types of assets within the connections, see applicable_asset_types.&quot;</span>
+            <span class="s2">&quot;To further restrict the types of assets within the connections, see applicable_asset_types.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">applicable_glossaries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Qualified names of glossaries to which to restrict the attribute. &quot;</span>
             <span class="s2">&quot;Only glossary assets within one of these glossaries will have this attribute available. &quot;</span>
-            <span class="s2">&quot;To further restrict the types of assets within the glossaries, see applicable_glossary_types.&quot;</span>
+            <span class="s2">&quot;To further restrict the types of assets within the glossaries, see applicable_glossary_types.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">applicable_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetTypesList&quot;</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Asset type names to which to restrict the attribute. &quot;</span>
             <span class="s2">&quot;Only assets of one of these types will have this attribute available. &quot;</span>
@@ -793,6 +818,7 @@
             <span class="s2">&quot;connection, see applicable_connections. &quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">applicable_glossary_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;glossaryTypeList&quot;</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Glossary type names to which to restrict the attribute. &quot;</span>
             <span class="s2">&quot;Only glossary assets of one of these types will have this attribute available. &quot;</span>
@@ -800,6 +826,7 @@
             <span class="s2">&quot;custom metadata by glossary, see applicable_glossaries.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">applicable_other_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;otherAssetTypeList&quot;</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Any other asset type names to which to restrict the attribute. &quot;</span>
             <span class="s2">&quot;These cover any asset type that is not managed within a connection or a glossary. &quot;</span>
@@ -842,71 +869,84 @@
             <span class="k">return</span> <span class="n">options</span>
 
     <span class="n">is_new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is being newly created (true) or not (false).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">cardinality</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Cardinality</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute allows a single or multiple values. In the case of multiple values, &quot;</span>
         <span class="s2">&quot;`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates &quot;</span>
         <span class="s2">&quot;they are unique and unordered.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span>
     <span class="p">)</span>
     <span class="n">enum_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of values for an enumeration.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of values for an enumeration.&quot;</span>
     <span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the attribute definition.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the attribute definition.&quot;</span>
     <span class="p">)</span>
     <span class="n">default_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default value for this attribute (if any).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default value for this attribute (if any).&quot;</span>
     <span class="p">)</span>
     <span class="n">display_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name to use within all user interactions through the user interface. Note that this may not &quot;</span>
         <span class="s2">&quot;be the same name used to update or interact with the attribute through API operations, for &quot;</span>
         <span class="s2">&quot;that see the `name` property. (This property can be used instead of `name` for the creation &quot;</span>
-        <span class="s2">&quot;of an attribute definition as well.)&quot;</span>
+        <span class="s2">&quot;of an attribute definition as well.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique name of this attribute definition. When provided during creation, this should be the &quot;</span>
         <span class="s2">&quot;human-readable name for the attribute. When returned (or provided for an update) this will be &quot;</span>
         <span class="s2">&quot;the static-hashed name that Atlan uses internally. (This is to allow the name to be changed &quot;</span>
         <span class="s2">&quot;by the user without impacting existing instances of the attribute.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">include_in_notification</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
-    <span class="n">index_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IndexType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">)</span>
+    <span class="n">include_in_notification</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+    <span class="n">index_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IndexType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;DEFAULT&quot;</span>
+    <span class="p">)</span>
     <span class="n">is_indexable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, values for this attribute will be indexed for searching.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_optional</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, a value will not be required for this attribute.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_unique</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, this attribute must be unique across all assets.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributeDef</span><span class="o">.</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extensible options for the attribute.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extensible options for the attribute.&quot;</span>
     <span class="p">)</span>
-    <span class="n">search_weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+    <span class="n">search_weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
     <span class="n">skip_scrubbing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, scrubbing of data will be skipped.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, scrubbing of data will be skipped.&quot;</span>
     <span class="p">)</span>
-    <span class="n">type_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of this attribute.&quot;</span><span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of this attribute.&quot;</span>
+    <span class="p">)</span>
     <span class="n">values_min_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minimum number of values for this attribute. If greater than 0, this attribute &quot;</span>
         <span class="s2">&quot;becomes required.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">values_max_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of values for this attribute. If greater than 1, this attribute allows &quot;</span>
         <span class="s2">&quot;multiple values.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">index_type_es_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESConfig&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESConfig&quot;</span>
     <span class="p">)</span>
     <span class="n">index_type_es_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESFields&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESFields&quot;</span>
     <span class="p">)</span>
-    <span class="n">is_default_value_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+    <span class="n">is_default_value_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">AttributeDef</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
@@ -1138,9 +1178,9 @@
 <div class="viewcode-block" id="RelationshipAttributeDef">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.RelationshipAttributeDef">[docs]</a>
 <span class="k">class</span> <span class="nc">RelationshipAttributeDef</span><span class="p">(</span><span class="n">AttributeDef</span><span class="p">):</span>
-    <span class="n">is_legacy_attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
+    <span class="n">is_legacy_attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
     <span class="n">relationship_type_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the relationship type.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the relationship type.&quot;</span>
     <span class="p">)</span></div>
 
 
@@ -1150,11 +1190,11 @@
 <span class="k">class</span> <span class="nc">StructDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">STRUCT</span>
     <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of attributes that should be available in the type_ definition.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
     <span class="p">)</span></div>
 
 
@@ -1162,31 +1202,38 @@
 <div class="viewcode-block" id="AtlanTagDef">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.AtlanTagDef">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlanTagDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
-    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span>
+    <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CLASSIFICATION</span>
     <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
     <span class="p">)</span>
     <span class="n">entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A list of the entity types that this classification can be used against.&quot;</span>
-        <span class="s2">&quot; (This should be `Asset` to allow classification of any asset in Atlan.)&quot;</span>
+        <span class="s2">&quot; (This should be `Asset` to allow classification of any asset in Atlan.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type_ definition.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type_ definition.&quot;</span>
     <span class="p">)</span>
     <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the sub-types that extend from this type_ definition. Generally this is not specified &quot;</span>
         <span class="s2">&quot;in any request, but is only supplied in responses. (This is intended for internal use only, and &quot;</span>
         <span class="s2">&quot;should not be used without specific guidance.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the super-types that this type_ definition should extend. (This is intended for internal &quot;</span>
         <span class="s2">&quot;use only, and should not be used without specific guidance.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
     <span class="p">)</span>
-    <span class="n">skip_display_name_uniqueness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+    <span class="n">skip_display_name_uniqueness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span>
+    <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
@@ -1231,7 +1278,7 @@
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EntityDef">[docs]</a>
 <span class="k">class</span> <span class="nc">EntityDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
     <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
     <span class="n">business_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]],</span> <span class="nb">dict</span><span class="p">),</span>
@@ -1240,20 +1287,20 @@
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENTITY</span>
     <span class="n">relationship_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
     <span class="p">)</span>
     <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the sub-types that extend from this type_ definition. Generally this is not specified in &quot;</span>
         <span class="s2">&quot;any request, but is only supplied in responses. (This is intended for internal use only, and &quot;</span>
         <span class="s2">&quot;should not be used without specific guidance.)&quot;</span><span class="p">,</span>
         <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
     <span class="p">)</span>
     <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the super-types that this type_ definition should extend. (This is intended for internal &quot;</span>
         <span class="s2">&quot;use only, and should not be used without specific guidance.)&quot;</span><span class="p">,</span>
         <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
@@ -1265,24 +1312,28 @@
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.RelationshipDef">[docs]</a>
 <span class="k">class</span> <span class="nc">RelationshipDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
     <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">RELATIONSHIP</span>
-    <span class="n">end_def1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">({},</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{})</span>
-    <span class="n">end_def2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">({},</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">end_def1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{}</span>
+    <span class="p">)</span>
+    <span class="n">end_def2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{}</span>
+    <span class="p">)</span>
     <span class="n">propagate_tags</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="s2">&quot;ONE_TO_TWO&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;ONE_TO_TWO&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ONE_TO_TWO&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;ONE_TO_TWO&quot;</span>
     <span class="p">)</span>
     <span class="n">relationship_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="s2">&quot;AGGREGATION&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;AGGREGATION&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;AGGREGATION&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;AGGREGATION&quot;</span>
     <span class="p">)</span>
     <span class="n">relationship_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="s2">&quot;__SalesforceOrganization.reports&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;__SalesforceOrganization.reports&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span>
         <span class="n">example</span><span class="o">=</span><span class="s2">&quot;__SalesforceOrganization.reports&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
     <span class="p">)</span></div>
 
 
@@ -1292,25 +1343,27 @@
 <span class="k">class</span> <span class="nc">CustomMetadataDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
         <span class="n">emoji</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is emoji, this should hold the emoji character.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is emoji, this should hold the emoji character.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">image_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The id of the image used for the logo.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The id of the image used for the logo.&quot;</span>
         <span class="p">)</span>
         <span class="n">is_locked</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Indicates whether the custom metadata can be managed in the UI (false) or not (true).&quot;</span>
         <span class="p">)</span>
         <span class="n">logo_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of logo used for the custom metadata.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of logo used for the custom metadata.&quot;</span>
         <span class="p">)</span>
         <span class="n">logo_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is image, this should hold a URL to the image.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is image, this should hold a URL to the image.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">icon_color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanTagColor</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Color to use for the icon.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Color to use for the icon.&quot;</span>
         <span class="p">)</span>
         <span class="n">icon_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Icon to use to represent the custom metadata.&quot;</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Icon to use to represent the custom metadata.&quot;</span>
         <span class="p">)</span>
 
         <span class="nd">@staticmethod</span>
@@ -1359,15 +1412,15 @@
             <span class="p">)</span>
 
     <span class="n">attribute_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of custom attributes defined within the custom metadata.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span>
     <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
     <span class="p">)</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
     <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -1391,24 +1444,24 @@
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse">[docs]</a>
 <span class="k">class</span> <span class="nc">TypeDefResponse</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
     <span class="n">enum_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of enumeration type definitions.&quot;</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of enumeration type definitions.&quot;</span>
     <span class="p">)</span>
     <span class="n">struct_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">StructDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of struct type definitions.&quot;</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of struct type definitions.&quot;</span>
     <span class="p">)</span>
     <span class="n">atlan_tag_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTagDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of classification type definitions.&quot;</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;classificationDefs&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">entity_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EntityDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of entity type_ definitions.&quot;</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of entity type_ definitions.&quot;</span>
     <span class="p">)</span>
     <span class="n">relationship_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelationshipDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of relationship type_ definitions.&quot;</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of relationship type_ definitions.&quot;</span>
     <span class="p">)</span>
     <span class="n">custom_metadata_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CustomMetadataDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="p">[],</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of custom metadata type_ definitions.&quot;</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;businessMetadataDefs&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
