@@ -448,6 +448,7 @@
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictBool</span><span class="p">,</span> <span class="n">StrictInt</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validate_arguments</span>
@@ -695,8 +696,16 @@
 <div class="viewcode-block" id="FilterList">
 <a class="viewcode-back" href="../../../other_model/lineage.html#pyatlan.model.lineage.FilterList">[docs]</a>
 <span class="k">class</span> <span class="nc">FilterList</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
-    <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the criteria must all match (AND) or any matching is sufficient (OR).&quot;</span>
+<div class="viewcode-block" id="FilterList.Condition">
+<a class="viewcode-back" href="../../../other_model/lineage.html#pyatlan.model.lineage.FilterList.Condition">[docs]</a>
+    <span class="k">class</span> <span class="nc">Condition</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+        <span class="n">AND</span> <span class="o">=</span> <span class="s2">&quot;AND&quot;</span>
+        <span class="n">OR</span> <span class="o">=</span> <span class="s2">&quot;OR&quot;</span></div>
+
+
+    <span class="n">condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">Condition</span><span class="o">.</span><span class="n">AND</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the criteria must all match (AND) or any matching is sufficient (OR).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">criteria</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EntityFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Basis on which to compare a result for inclusion.&quot;</span><span class="p">,</span>
@@ -793,8 +802,11 @@
         <span class="n">exclude_atlan_tags</span><span class="p">:</span> <span class="n">StrictBool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">includes_on_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanField</span><span class="p">],</span> <span class="n">AtlanField</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">includes_in_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">includes_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span><span class="o">.</span><span class="n">AND</span><span class="p">,</span>
         <span class="n">where_assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">assets_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span><span class="o">.</span><span class="n">AND</span><span class="p">,</span>
         <span class="n">where_relationships</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">relationships_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span><span class="o">.</span><span class="n">AND</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a FluentLineage request.</span>
 <span class="sd">        :param starting_guid: unique identifier (GUID) of the asset from which to start lineage</span>
@@ -807,10 +819,16 @@
 <span class="sd">        :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not</span>
 <span class="sd">        be included in the results, but will still be traversed in the lineage so that any assets beyond them are still</span>
 <span class="sd">        considered for inclusion in the results</span>
-<span class="sd">        :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets</span>
-<span class="sd">        beyond, as well</span>
-<span class="sd">        :param where_relationships: filters to apply on relationships. Any relationships excluded by the filters will</span>
-<span class="sd">        exclude all assets and relationships beyond, as well</span>
+<span class="sd">        :param includes_condition: whether the `includes_in_results` criteria</span>
+<span class="sd">        should be combined (AND) or any matching is sufficient (OR)</span>
+<span class="sd">        :param where_assets: filters to apply on assets. Any assets excluded</span>
+<span class="sd">        by the filters will exclude all assets beyond, as well</span>
+<span class="sd">        :param assets_condition: whether the `where_assets` criteria</span>
+<span class="sd">        should be combined (AND) or any matching is sufficient (OR)</span>
+<span class="sd">        :param where_relationships: filters to apply on relationships.</span>
+<span class="sd">        Any relationships excluded by the filters will exclude all assets and relationships beyond, as well</span>
+<span class="sd">        :param relationships_condition: whether the `where_relationships` criteria</span>
+<span class="sd">        should be combined (AND) or any matching is sufficient (OR)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">depth</span>
@@ -822,12 +840,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span>
             <span class="n">includes_in_results</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_includes_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">includes_condition</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_starting_guid</span> <span class="o">=</span> <span class="n">starting_guid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_where_assets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span><span class="n">where_assets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assets_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">assets_condition</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span>
             <span class="n">where_relationships</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relationships_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">relationships_condition</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_to_list</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
@@ -909,6 +930,24 @@
         <span class="n">clone</span><span class="o">.</span><span class="n">_includes_in_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lineage_filter</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">clone</span>
 
+    <span class="k">def</span> <span class="nf">includes_condition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">includes_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the filter condition to `include_on_results`.</span>
+<span class="sd">        :param includes_condition: whether the `includes_in_results`</span>
+<span class="sd">        criteria should be combined (AND) or any matching is sufficient (OR)</span>
+<span class="sd">        :returns: the FluentLineage with this includes_condition criterion added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;includes_condition&quot;</span><span class="p">,</span>
+            <span class="n">_type</span><span class="o">=</span><span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">includes_condition</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_includes_condition</span> <span class="o">=</span> <span class="n">includes_condition</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
     <span class="k">def</span> <span class="nf">where_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage_filter</span><span class="p">:</span> <span class="n">LineageFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a filters to apply on assets.</span>
@@ -921,6 +960,24 @@
         <span class="n">clone</span><span class="o">.</span><span class="n">_where_assets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lineage_filter</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">clone</span>
 
+    <span class="k">def</span> <span class="nf">assets_condition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">assets_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the filter condition to `where_assets`.</span>
+<span class="sd">        :param assets_condition: whether the `where_assets`</span>
+<span class="sd">        criteria should be combined (AND) or any matching is sufficient (OR)</span>
+<span class="sd">        :returns: the FluentLineage with this assets_condition criterion added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;assets_condition&quot;</span><span class="p">,</span>
+            <span class="n">_type</span><span class="o">=</span><span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">assets_condition</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_assets_condition</span> <span class="o">=</span> <span class="n">assets_condition</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
     <span class="k">def</span> <span class="nf">where_relationships</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage_filter</span><span class="p">:</span> <span class="n">LineageFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters to apply on relationships.</span>
 <span class="sd">        :param lineage_filter: any relationships excluded by the filter will exclude all assets and</span>
@@ -929,6 +986,24 @@
         <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;lineage_filter&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="n">LineageFilter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">lineage_filter</span><span class="p">)</span>
         <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
         <span class="n">clone</span><span class="o">.</span><span class="n">_where_relationships</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">relationships_condition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">relationships_condition</span><span class="p">:</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the filter condition to `where_relationships`.</span>
+<span class="sd">        :param relationships_condition: whether the `where_relationships`</span>
+<span class="sd">        criteria should be combined (AND) or any matching is sufficient (OR)</span>
+<span class="sd">        :returns: the FluentLineage with this relationships_condition criterion added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;relationships_condition&quot;</span><span class="p">,</span>
+            <span class="n">_type</span><span class="o">=</span><span class="n">FilterList</span><span class="o">.</span><span class="n">Condition</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">relationships_condition</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_relationships_condition</span> <span class="o">=</span> <span class="n">relationships_condition</span>
         <span class="k">return</span> <span class="n">clone</span>
 
     <span class="nd">@property</span>
@@ -954,7 +1029,7 @@
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span>
             <span class="p">]</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">entity_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">entity_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_includes_condition</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">field</span><span class="o">.</span><span class="n">atlan_field_name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span>
@@ -971,7 +1046,7 @@
                 <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_assets</span>
             <span class="p">]</span>
             <span class="n">request</span><span class="o">.</span><span class="n">entity_traversal_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span>
-                <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
+                <span class="n">condition</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_assets_condition</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
             <span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span><span class="p">:</span>
             <span class="n">criteria</span> <span class="o">=</span> <span class="p">[</span>
@@ -983,7 +1058,7 @@
                 <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span>
             <span class="p">]</span>
             <span class="n">request</span><span class="o">.</span><span class="n">relationship_traversal_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span>
-                <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
+                <span class="n">condition</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_relationships_condition</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
             <span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
         <span class="k">return</span> <span class="n">request</span>
 </pre></div>
