@@ -28,6 +28,7 @@ from pyatlan.model.fields.atlan_fields import (
     SearchableField,
 )
 from pyatlan.model.lineage import (
+    FilterList,
     FluentLineage,
     LineageGraph,
     LineageRelation,
@@ -859,17 +860,67 @@ class TestFluentLineage:
         assert request.attributes == [
             field.atlan_field_name for field in includes_on_results
         ]
-        self.validate_filter(request.entity_filters, includes_in_results)
-        self.validate_filter(request.entity_traversal_filters, where_assets)
         self.validate_filter(
-            request.relationship_traversal_filters, where_relationships
+            filter_=request.entity_filters,
+            filter_condition=FilterList.Condition.AND,
+            results=includes_in_results,
+        )
+        self.validate_filter(
+            filter_=request.entity_traversal_filters,
+            filter_condition=FilterList.Condition.AND,
+            results=where_assets,
+        )
+        self.validate_filter(
+            filter_=request.relationship_traversal_filters,
+            filter_condition=FilterList.Condition.AND,
+            results=where_relationships,
+        )
+        request = FluentLineage(
+            starting_guid=starting_guid,
+            depth=depth,
+            direction=direction,
+            size=size,
+            exclude_meanings=exclude_meanings,
+            exclude_atlan_tags=exclude_atlan_tags,
+            includes_on_results=includes_on_results,
+            includes_in_results=includes_in_results,
+            includes_condition=FilterList.Condition.OR,
+            where_assets=where_assets,
+            assets_condition=FilterList.Condition.OR,
+            where_relationships=where_relationships,
+            relationships_condition=FilterList.Condition.OR,
+        ).request
+
+        assert request.guid == GOOD_GUID
+        assert request.size == size
+        assert request.depth == depth
+        assert request.direction == direction
+        assert request.exclude_meanings == exclude_meanings
+        assert request.exclude_classifications == exclude_atlan_tags
+        assert request.attributes == [
+            field.atlan_field_name for field in includes_on_results
+        ]
+        self.validate_filter(
+            filter_=request.entity_filters,
+            filter_condition=FilterList.Condition.OR,
+            results=includes_in_results,
+        )
+        self.validate_filter(
+            filter_=request.entity_traversal_filters,
+            filter_condition=FilterList.Condition.OR,
+            results=where_assets,
+        )
+        self.validate_filter(
+            filter_=request.relationship_traversal_filters,
+            filter_condition=FilterList.Condition.OR,
+            results=where_relationships,
         )
 
     @staticmethod
-    def validate_filter(_filter, results):
-        assert _filter.condition == "AND"
-        assert len(_filter.criteria) == len(results)
-        for entity_filter, include_in in zip(_filter.criteria, results):
+    def validate_filter(filter_, filter_condition, results):
+        assert filter_.condition == filter_condition
+        assert len(filter_.criteria) == len(results)
+        for entity_filter, include_in in zip(filter_.criteria, results):
             assert entity_filter.attribute_name == include_in.field.internal_field_name
             assert entity_filter.operator == include_in.operator
             assert entity_filter.attribute_value == include_in.value

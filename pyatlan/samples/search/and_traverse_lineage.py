@@ -54,7 +54,7 @@ def upstream_certified_sources(guid: str) -> list[Asset]:
         Asset.CERTIFICATE_STATUS.atlan_field_name,
     ]
     request.entity_filters = FilterList(
-        condition="AND",
+        condition=FilterList.Condition.AND,
         criteria=[
             EntityFilter(
                 attribute_name=Asset.CERTIFICATE_STATUS.atlan_field_name,

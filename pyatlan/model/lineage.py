@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 from collections import deque
+from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr, validate_arguments
@@ -237,8 +238,13 @@ class EntityFilter(AtlanObject):
 
 
 class FilterList(AtlanObject):
-    condition: str = Field(
-        description="Whether the criteria must all match (AND) or any matching is sufficient (OR)."
+    class Condition(str, Enum):
+        AND = "AND"
+        OR = "OR"
+
+    condition: FilterList.Condition = Field(
+        default=Condition.AND,
+        description="Whether the criteria must all match (AND) or any matching is sufficient (OR).",
     )
     criteria: list[EntityFilter] = Field(
         description="Basis on which to compare a result for inclusion.",
@@ -331,8 +337,11 @@ class FluentLineage:
         exclude_atlan_tags: StrictBool = True,
         includes_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
         includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        includes_condition: FilterList.Condition = FilterList.Condition.AND,
         where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        assets_condition: FilterList.Condition = FilterList.Condition.AND,
         where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        relationships_condition: FilterList.Condition = FilterList.Condition.AND,
     ):
         """Create a FluentLineage request.
         :param starting_guid: unique identifier (GUID) of the asset from which to start lineage
@@ -345,10 +354,16 @@ class FluentLineage:
         :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not
         be included in the results, but will still be traversed in the lineage so that any assets beyond them are still
         considered for inclusion in the results
-        :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets
-        beyond, as well
-        :param where_relationships: filters to apply on relationships. Any relationships excluded by the filters will
-        exclude all assets and relationships beyond, as well
+        :param includes_condition: whether the `includes_in_results` criteria
+        should be combined (AND) or any matching is sufficient (OR)
+        :param where_assets: filters to apply on assets. Any assets excluded
+        by the filters will exclude all assets beyond, as well
+        :param assets_condition: whether the `where_assets` criteria
+        should be combined (AND) or any matching is sufficient (OR)
+        :param where_relationships: filters to apply on relationships.
+        Any relationships excluded by the filters will exclude all assets and relationships beyond, as well
+        :param relationships_condition: whether the `where_relationships` criteria
+        should be combined (AND) or any matching is sufficient (OR)
         """
 
         self._depth: int = depth
@@ -360,12 +375,15 @@ class FluentLineage:
         self._includes_in_results: list[LineageFilter] = self._to_list(
             includes_in_results
         )
+        self._includes_condition: FilterList.Condition = includes_condition
         self._size: int = size
         self._starting_guid = starting_guid
         self._where_assets: list[LineageFilter] = self._to_list(where_assets)
+        self._assets_condition: FilterList.Condition = assets_condition
         self._where_relationships: list[LineageFilter] = self._to_list(
             where_relationships
         )
+        self._relationships_condition: FilterList.Condition = relationships_condition
 
     @staticmethod
     def _to_list(value):
@@ -447,6 +465,24 @@ class FluentLineage:
         clone._includes_in_results.append(lineage_filter)
         return clone
 
+    def includes_condition(
+        self, includes_condition: FilterList.Condition
+    ) -> "FluentLineage":
+        """
+        Adds the filter condition to `include_on_results`.
+        :param includes_condition: whether the `includes_in_results`
+        criteria should be combined (AND) or any matching is sufficient (OR)
+        :returns: the FluentLineage with this includes_condition criterion added
+        """
+        validate_type(
+            name="includes_condition",
+            _type=FilterList.Condition,
+            value=includes_condition,
+        )
+        clone = self._clone()
+        clone._includes_condition = includes_condition
+        return clone
+
     def where_assets(self, lineage_filter: LineageFilter) -> "FluentLineage":
         """
         Adds a filters to apply on assets.
@@ -459,6 +495,24 @@ class FluentLineage:
         clone._where_assets.append(lineage_filter)
         return clone
 
+    def assets_condition(
+        self, assets_condition: FilterList.Condition
+    ) -> "FluentLineage":
+        """
+        Adds the filter condition to `where_assets`.
+        :param assets_condition: whether the `where_assets`
+        criteria should be combined (AND) or any matching is sufficient (OR)
+        :returns: the FluentLineage with this assets_condition criterion added
+        """
+        validate_type(
+            name="assets_condition",
+            _type=FilterList.Condition,
+            value=assets_condition,
+        )
+        clone = self._clone()
+        clone._assets_condition = assets_condition
+        return clone
+
     def where_relationships(self, lineage_filter: LineageFilter) -> "FluentLineage":
         """Filters to apply on relationships.
         :param lineage_filter: any relationships excluded by the filter will exclude all assets and
@@ -467,6 +521,24 @@ class FluentLineage:
         validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
         clone = self._clone()
         clone._where_relationships.append(lineage_filter)
+        return clone
+
+    def relationships_condition(
+        self, relationships_condition: FilterList.Condition
+    ) -> "FluentLineage":
+        """
+        Adds the filter condition to `where_relationships`.
+        :param relationships_condition: whether the `where_relationships`
+        criteria should be combined (AND) or any matching is sufficient (OR)
+        :returns: the FluentLineage with this relationships_condition criterion added
+        """
+        validate_type(
+            name="relationships_condition",
+            _type=FilterList.Condition,
+            value=relationships_condition,
+        )
+        clone = self._clone()
+        clone._relationships_condition = relationships_condition
         return clone
 
     @property
@@ -492,7 +564,7 @@ class FluentLineage:
                 )
                 for _filter in self._includes_in_results
             ]
-            request.entity_filters = FilterList(condition="AND", criteria=criteria)  # type: ignore
+            request.entity_filters = FilterList(condition=self._includes_condition, criteria=criteria)  # type: ignore
         if self._includes_on_results:
             request.attributes = [
                 field.atlan_field_name for field in self._includes_on_results
@@ -509,7 +581,7 @@ class FluentLineage:
                 for _filter in self._where_assets
             ]
             request.entity_traversal_filters = FilterList(
-                condition="AND", criteria=criteria
+                condition=self._assets_condition, criteria=criteria
             )  # type: ignore[call-arg]
         if self._where_relationships:
             criteria = [
@@ -521,6 +593,6 @@ class FluentLineage:
                 for _filter in self._where_relationships
             ]
             request.relationship_traversal_filters = FilterList(
-                condition="AND", criteria=criteria
+                condition=self._relationships_condition, criteria=criteria
             )  # type: ignore[call-arg]
         return request
