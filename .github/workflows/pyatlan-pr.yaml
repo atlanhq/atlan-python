@@ -57,7 +57,7 @@ jobs:
         test_file: ${{fromJson(needs.qa-checks-and-unit-tests.outputs.files)}}
         python-version: [3.8, 3.9]
     concurrency:
-      group: ${{ matrix.test_file }}-${{ matrix.python-version }}
+      group: ${{ matrix.test_file }}
 
     steps:
       - name: Checkout code
