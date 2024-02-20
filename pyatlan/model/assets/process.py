@@ -217,7 +217,7 @@ class Process(Asset, type_name="Process"):
                 append_relationship(buffer, parent)
             append_relationships(buffer, inputs)
             append_relationships(buffer, outputs)
-            ret_value = hashlib.md5(  # noqa: S303
+            ret_value = hashlib.md5(  # noqa: S303, S324
                 buffer.getvalue().encode()
             ).hexdigest()
             buffer.close()
