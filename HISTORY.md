@@ -1,3 +1,13 @@
+## 2.0.0 (February 20, 2024)
+
+### New features
+
+- Migrates to Pydantic 2.6
+- Adds file connector as a new connector type
+- Adds Essbase connector as a new connector type
+- Allows fluent lineage conditions to be configured for combining (AND) or any (OR)
+- Adds an option to rerun workflows idempotently
+
 ## 1.9.4 (February 13, 2024)
 
 ### New features
