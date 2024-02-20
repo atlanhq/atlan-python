@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, StrictStr, validator
 
@@ -28,7 +28,7 @@ class Badge(Asset, type_name="Badge"):
         name: StrictStr,
         cm_name: str,
         cm_attribute: str,
-        badge_conditions: list[BadgeCondition],
+        badge_conditions: List[BadgeCondition],
     ) -> Badge:
         return cls(
             status=EntityStatus.ACTIVE,
@@ -66,17 +66,17 @@ class Badge(Asset, type_name="Badge"):
     Custom metadata attribute for which to show the badge.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "badge_conditions",
         "badge_metadata_attribute",
     ]
 
     @property
-    def badge_conditions(self) -> Optional[list[BadgeCondition]]:
+    def badge_conditions(self) -> Optional[List[BadgeCondition]]:
         return None if self.attributes is None else self.attributes.badge_conditions
 
     @badge_conditions.setter
-    def badge_conditions(self, badge_conditions: Optional[list[BadgeCondition]]):
+    def badge_conditions(self, badge_conditions: Optional[List[BadgeCondition]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.badge_conditions = badge_conditions
@@ -96,7 +96,7 @@ class Badge(Asset, type_name="Badge"):
         self.attributes.badge_metadata_attribute = badge_metadata_attribute
 
     class Attributes(Asset.Attributes):
-        badge_conditions: Optional[list[BadgeCondition]] = Field(
+        badge_conditions: Optional[List[BadgeCondition]] = Field(
             default=None, description=""
         )
         badge_metadata_attribute: Optional[str] = Field(default=None, description="")
@@ -110,7 +110,7 @@ class Badge(Asset, type_name="Badge"):
             name: StrictStr,
             cm_name: str,
             cm_attribute: str,
-            badge_conditions: list[BadgeCondition],
+            badge_conditions: List[BadgeCondition],
         ) -> Badge.Attributes:
             validate_required_fields(
                 ["name", "cm_name", "cm_attribute", "badge_conditions"],

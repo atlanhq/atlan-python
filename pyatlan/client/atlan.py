@@ -11,7 +11,7 @@ import uuid
 from contextvars import ContextVar
 from importlib.resources import read_text
 from types import SimpleNamespace
-from typing import ClassVar, Generator, Literal, Optional, Type, Union
+from typing import ClassVar, Dict, Generator, List, Literal, Optional, Set, Type, Union
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -256,7 +256,7 @@ class AtlanClient(BaseSettings):
             self._user_client = UserClient(client=self)
         return self._user_client
 
-    def update_headers(self, header: dict[str, str]):
+    def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
 
     def _call_api_internal(self, api, path, params, binary_data=None):
@@ -442,7 +442,7 @@ class AtlanClient(BaseSettings):
     def create_group(
         self,
         group: AtlanGroup,
-        user_ids: Optional[list[str]] = None,
+        user_ids: Optional[List[str]] = None,
     ) -> CreateGroupResponse:
         """Deprecated - use group.create() instead."""
         warn(
@@ -497,7 +497,7 @@ class AtlanClient(BaseSettings):
     def get_all_groups(
         self,
         limit: int = 20,
-    ) -> list[AtlanGroup]:
+    ) -> List[AtlanGroup]:
         """Deprecated - use group.get_all() instead."""
         warn(
             "This method is deprecated, please use 'group.get_all' instead, which offers identical functionality.",
@@ -510,7 +510,7 @@ class AtlanClient(BaseSettings):
         self,
         alias: str,
         limit: int = 20,
-    ) -> Optional[list[AtlanGroup]]:
+    ) -> Optional[List[AtlanGroup]]:
         """Deprecated - use group.get_by_name() instead."""
         warn(
             "This method is deprecated, please use 'group.get_by_name' instead, which offers identical functionality.",
@@ -528,7 +528,7 @@ class AtlanClient(BaseSettings):
         )
         return self.group.get_members(guid=guid)
 
-    def remove_users_from_group(self, guid: str, user_ids=list[str]) -> None:
+    def remove_users_from_group(self, guid: str, user_ids=List[str]) -> None:
         """Deprecated - use group.remove_users() instead."""
         warn(
             "This method is deprecated, please use 'group.remove_users' instead, which offers identical functionality.",
@@ -539,7 +539,7 @@ class AtlanClient(BaseSettings):
 
     def create_users(
         self,
-        users: list[AtlanUser],
+        users: List[AtlanUser],
     ) -> None:
         """Deprecated - use user.create() instead."""
         warn(
@@ -578,7 +578,7 @@ class AtlanClient(BaseSettings):
     def add_user_to_groups(
         self,
         guid: str,
-        group_ids: list[str],
+        group_ids: List[str],
     ) -> None:
         """Deprecated - use user.add_to_groups() instead."""
         warn(
@@ -636,7 +636,7 @@ class AtlanClient(BaseSettings):
     def get_all_users(
         self,
         limit: int = 20,
-    ) -> list[AtlanUser]:
+    ) -> List[AtlanUser]:
         """Deprecated - use user.get_all() instead."""
         warn(
             "This method is deprecated, please use 'user.get_all' instead, which offers identical functionality.",
@@ -649,7 +649,7 @@ class AtlanClient(BaseSettings):
         self,
         email: str,
         limit: int = 20,
-    ) -> Optional[list[AtlanUser]]:
+    ) -> Optional[List[AtlanUser]]:
         """Deprecated - use user.get_by_email() instead."""
         warn(
             "This method is deprecated, please use 'user.get_by_email' instead, which offers identical "
@@ -742,7 +742,7 @@ class AtlanClient(BaseSettings):
 
     def upsert(
         self,
-        entity: Union[Asset, list[Asset]],
+        entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
@@ -762,7 +762,7 @@ class AtlanClient(BaseSettings):
 
     def save(
         self,
-        entity: Union[Asset, list[Asset]],
+        entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
@@ -781,7 +781,7 @@ class AtlanClient(BaseSettings):
         )
 
     def upsert_merging_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use asset.save_merging_cm() instead."""
         warn(
@@ -795,7 +795,7 @@ class AtlanClient(BaseSettings):
         )
 
     def save_merging_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use asset.save_merging_cm() instead."""
         warn(
@@ -823,7 +823,7 @@ class AtlanClient(BaseSettings):
         )
 
     def upsert_replacing_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use asset.save_replacing_cm() instead."""
         warn(
@@ -837,7 +837,7 @@ class AtlanClient(BaseSettings):
         )
 
     def save_replacing_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use asset.save_replacing_cm() instead."""
         warn(
@@ -865,7 +865,7 @@ class AtlanClient(BaseSettings):
         )
 
     def purge_entity_by_guid(
-        self, guid: Union[str, list[str]]
+        self, guid: Union[str, List[str]]
     ) -> AssetMutationResponse:
         """Deprecated - use asset.purge_by_guid() instead."""
         warn(
@@ -877,7 +877,7 @@ class AtlanClient(BaseSettings):
         return self.asset.purge_by_guid(guid=guid)
 
     def delete_entity_by_guid(
-        self, guid: Union[str, list[str]]
+        self, guid: Union[str, List[str]]
     ) -> AssetMutationResponse:
         """Deprecated - use asset.delete_by_guid() instead."""
         warn(
@@ -917,7 +917,7 @@ class AtlanClient(BaseSettings):
         return self.typedef.get_all()
 
     def get_typedefs(
-        self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
+        self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]
     ) -> TypeDefResponse:
         """Deprecated - use typedef.get() instead."""
         warn(
@@ -959,7 +959,7 @@ class AtlanClient(BaseSettings):
         self,
         asset_type: Type[A],
         qualified_name: str,
-        atlan_tag_names: list[str],
+        atlan_tag_names: List[str],
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
@@ -1111,7 +1111,7 @@ class AtlanClient(BaseSettings):
     def append_terms(
         self,
         asset_type: Type[A],
-        terms: list[AtlasGlossaryTerm],
+        terms: List[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1129,7 +1129,7 @@ class AtlanClient(BaseSettings):
     def replace_terms(
         self,
         asset_type: Type[A],
-        terms: list[AtlasGlossaryTerm],
+        terms: List[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1148,7 +1148,7 @@ class AtlanClient(BaseSettings):
     def remove_terms(
         self,
         asset_type: Type[A],
-        terms: list[AtlasGlossaryTerm],
+        terms: List[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1167,8 +1167,8 @@ class AtlanClient(BaseSettings):
         self,
         name: str,
         connector_type: AtlanConnectorType,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Connection]:
+        attributes: Optional[List[str]] = None,
+    ) -> List[Connection]:
         """Deprecated - use asset.find_connections_by_name() instead."""
         warn(
             "This method is deprecated, please use 'asset.find_connections_by_name' instead, which offers identical "
@@ -1274,7 +1274,7 @@ class AtlanClient(BaseSettings):
         self,
         display_name: str,
         description: str = "",
-        personas: Optional[set[str]] = None,
+        personas: Optional[Set[str]] = None,
         validity_seconds: int = -1,
     ) -> ApiToken:
         """Deprecated - use token.create() instead."""
@@ -1295,7 +1295,7 @@ class AtlanClient(BaseSettings):
         guid: str,
         display_name: str,
         description: str = "",
-        personas: Optional[set[str]] = None,
+        personas: Optional[Set[str]] = None,
     ) -> ApiToken:
         """Deprecated - use token.update() instead."""
         warn(
@@ -1345,8 +1345,8 @@ class AtlanClient(BaseSettings):
     def find_personas_by_name(
         self,
         name: str,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Persona]:
+        attributes: Optional[List[str]] = None,
+    ) -> List[Persona]:
         """Deprecated - use asset.find_personas_by_name() instead."""
         warn(
             "This method is deprecated, please use 'asset.find_personas_by_name' instead, which offers identical "
@@ -1359,8 +1359,8 @@ class AtlanClient(BaseSettings):
     def find_purposes_by_name(
         self,
         name: str,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Purpose]:
+        attributes: Optional[List[str]] = None,
+    ) -> List[Purpose]:
         """Deprecated - use asset.find_personas_by_name() instead."""
         warn(
             "This method is deprecated, please use 'asset.find_purposes_by_name' instead, which offers identical "
@@ -1374,7 +1374,7 @@ class AtlanClient(BaseSettings):
     def find_glossary_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
+        attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossary:
         """Deprecated - use asset.find_glossary_by_name() instead."""
         warn(
@@ -1390,8 +1390,8 @@ class AtlanClient(BaseSettings):
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
-    ) -> list[AtlasGlossaryCategory]:
+        attributes: Optional[List[StrictStr]] = None,
+    ) -> List[AtlasGlossaryCategory]:
         """Deprecated - use asset.find_category_fast_by_name() instead."""
         warn(
             "This method is deprecated, please use 'asset.find_category_fast_by_name' instead, which offers identical "
@@ -1410,8 +1410,8 @@ class AtlanClient(BaseSettings):
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
-    ) -> list[AtlasGlossaryCategory]:
+        attributes: Optional[List[StrictStr]] = None,
+    ) -> List[AtlasGlossaryCategory]:
         """Deprecated - use asset.find_category_by_name() instead."""
         warn(
             "This method is deprecated, please use 'asset.find_category_by_name' instead, which offers identical "
@@ -1428,7 +1428,7 @@ class AtlanClient(BaseSettings):
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
+        attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """Deprecated - use asset.find_category_by_name() instead."""
         warn(
@@ -1448,7 +1448,7 @@ class AtlanClient(BaseSettings):
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
+        attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """Deprecated - use asset.find_term_by_name() instead."""
         warn(

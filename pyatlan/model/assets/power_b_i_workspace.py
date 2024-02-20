@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -71,7 +71,7 @@ class PowerBIWorkspace(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "web_url",
         "report_count",
         "dashboard_count",
@@ -134,41 +134,41 @@ class PowerBIWorkspace(PowerBI):
         self.attributes.dataflow_count = dataflow_count
 
     @property
-    def reports(self) -> Optional[list[PowerBIReport]]:
+    def reports(self) -> Optional[List[PowerBIReport]]:
         return None if self.attributes is None else self.attributes.reports
 
     @reports.setter
-    def reports(self, reports: Optional[list[PowerBIReport]]):
+    def reports(self, reports: Optional[List[PowerBIReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.reports = reports
 
     @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
+    def datasets(self) -> Optional[List[PowerBIDataset]]:
         return None if self.attributes is None else self.attributes.datasets
 
     @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+    def datasets(self, datasets: Optional[List[PowerBIDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasets = datasets
 
     @property
-    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
+    def dashboards(self) -> Optional[List[PowerBIDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
     @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
+    def dashboards(self, dashboards: Optional[List[PowerBIDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     @property
-    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+    def dataflows(self) -> Optional[List[PowerBIDataflow]]:
         return None if self.attributes is None else self.attributes.dataflows
 
     @dataflows.setter
-    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+    def dataflows(self, dataflows: Optional[List[PowerBIDataflow]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dataflows = dataflows
@@ -179,16 +179,16 @@ class PowerBIWorkspace(PowerBI):
         dashboard_count: Optional[int] = Field(default=None, description="")
         dataset_count: Optional[int] = Field(default=None, description="")
         dataflow_count: Optional[int] = Field(default=None, description="")
-        reports: Optional[list[PowerBIReport]] = Field(
+        reports: Optional[List[PowerBIReport]] = Field(
             default=None, description=""
         )  # relationship
-        datasets: Optional[list[PowerBIDataset]] = Field(
+        datasets: Optional[List[PowerBIDataset]] = Field(
             default=None, description=""
         )  # relationship
-        dashboards: Optional[list[PowerBIDashboard]] = Field(
+        dashboards: Optional[List[PowerBIDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        dataflows: Optional[list[PowerBIDataflow]] = Field(
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
             default=None, description=""
         )  # relationship
 

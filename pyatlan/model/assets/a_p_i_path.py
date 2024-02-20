@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -91,7 +91,7 @@ class APIPath(API):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "api_path_summary",
         "api_path_raw_u_r_i",
         "api_path_is_templated",
@@ -134,7 +134,7 @@ class APIPath(API):
         self.attributes.api_path_is_templated = api_path_is_templated
 
     @property
-    def api_path_available_operations(self) -> Optional[set[str]]:
+    def api_path_available_operations(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -143,14 +143,14 @@ class APIPath(API):
 
     @api_path_available_operations.setter
     def api_path_available_operations(
-        self, api_path_available_operations: Optional[set[str]]
+        self, api_path_available_operations: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_path_available_operations = api_path_available_operations
 
     @property
-    def api_path_available_response_codes(self) -> Optional[dict[str, str]]:
+    def api_path_available_response_codes(self) -> Optional[Dict[str, str]]:
         return (
             None
             if self.attributes is None
@@ -159,7 +159,7 @@ class APIPath(API):
 
     @api_path_available_response_codes.setter
     def api_path_available_response_codes(
-        self, api_path_available_response_codes: Optional[dict[str, str]]
+        self, api_path_available_response_codes: Optional[Dict[str, str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -195,10 +195,10 @@ class APIPath(API):
         api_path_summary: Optional[str] = Field(default=None, description="")
         api_path_raw_u_r_i: Optional[str] = Field(default=None, description="")
         api_path_is_templated: Optional[bool] = Field(default=None, description="")
-        api_path_available_operations: Optional[set[str]] = Field(
+        api_path_available_operations: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        api_path_available_response_codes: Optional[dict[str, str]] = Field(
+        api_path_available_response_codes: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         api_path_is_ingress_exposed: Optional[bool] = Field(

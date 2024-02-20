@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic.v1 import validate_arguments
 
@@ -46,7 +46,7 @@ class UserClient:
     @validate_arguments
     def create(
         self,
-        users: list[AtlanUser],
+        users: List[AtlanUser],
     ) -> None:
         """
         Create one or more new users.
@@ -143,7 +143,7 @@ class UserClient:
         :returns: a UserResponse which contains a list of users that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: dict[str, Any] = {
+        query_params: Dict[str, Any] = {
             "count": str(count),
             "offset": str(offset),
         }
@@ -181,14 +181,14 @@ class UserClient:
     def get_all(
         self,
         limit: int = 20,
-    ) -> list[AtlanUser]:
+    ) -> List[AtlanUser]:
         """
         Retrieve all users defined in Atlan.
 
         :param limit: maximum number of users to retrieve
         :returns: a list of all the users in Atlan
         """
-        users: list[AtlanUser] = []
+        users: List[AtlanUser] = []
         offset = 0
         response: Optional[UserResponse] = self.get(
             offset=offset, limit=limit, sort="username"
@@ -207,7 +207,7 @@ class UserClient:
         self,
         email: str,
         limit: int = 20,
-    ) -> Optional[list[AtlanUser]]:
+    ) -> Optional[List[AtlanUser]]:
         """
         Retrieves all users with email addresses that contain the provided email.
         (This could include a complete email address, in which case there should be at
@@ -249,7 +249,7 @@ class UserClient:
     def add_to_groups(
         self,
         guid: str,
-        group_ids: list[str],
+        group_ids: List[str],
     ) -> None:
         """
         Add a user to one or more groups.

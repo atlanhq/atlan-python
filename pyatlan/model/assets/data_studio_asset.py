@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -138,7 +138,7 @@ class DataStudioAsset(DataStudio):
     List of tags that have been applied to the asset in Google.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "data_studio_asset_type",
         "data_studio_asset_title",
         "data_studio_asset_owner",
@@ -270,21 +270,21 @@ class DataStudioAsset(DataStudio):
         self.attributes.google_location_type = google_location_type
 
     @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
+    def google_labels(self) -> Optional[List[GoogleLabel]]:
         return None if self.attributes is None else self.attributes.google_labels
 
     @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+    def google_labels(self, google_labels: Optional[List[GoogleLabel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_labels = google_labels
 
     @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
+    def google_tags(self) -> Optional[List[GoogleTag]]:
         return None if self.attributes is None else self.attributes.google_tags
 
     @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+    def google_tags(self, google_tags: Optional[List[GoogleTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
@@ -304,8 +304,8 @@ class DataStudioAsset(DataStudio):
         google_project_number: Optional[int] = Field(default=None, description="")
         google_location: Optional[str] = Field(default=None, description="")
         google_location_type: Optional[str] = Field(default=None, description="")
-        google_labels: Optional[list[GoogleLabel]] = Field(default=None, description="")
-        google_tags: Optional[list[GoogleTag]] = Field(default=None, description="")
+        google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
+        google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
 
         @classmethod
         # @validate_arguments()

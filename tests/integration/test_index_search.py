@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from time import time
-from typing import Generator
+from typing import Generator, Set
 
 import pytest
 
@@ -82,8 +82,8 @@ VALUES_FOR_TEXT_QUERIES = {
 
 @dataclass()
 class AssetTracker:
-    missing_types: set[str] = field(default_factory=set)
-    found_types: set[str] = field(default_factory=set)
+    missing_types: Set[str] = field(default_factory=set)
+    found_types: Set[str] = field(default_factory=set)
 
 
 @pytest.fixture(scope="module")

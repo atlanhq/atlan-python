@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -97,7 +97,7 @@ class KafkaTopic(Kafka):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "kafka_topic_is_internal",
         "kafka_topic_compression_type",
         "kafka_topic_replication_factor",
@@ -245,14 +245,14 @@ class KafkaTopic(Kafka):
         self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
 
     @property
-    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
+    def kafka_consumer_groups(self) -> Optional[List[KafkaConsumerGroup]]:
         return (
             None if self.attributes is None else self.attributes.kafka_consumer_groups
         )
 
     @kafka_consumer_groups.setter
     def kafka_consumer_groups(
-        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
+        self, kafka_consumer_groups: Optional[List[KafkaConsumerGroup]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -278,7 +278,7 @@ class KafkaTopic(Kafka):
         kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(
             default=None, description=""
         )
-        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
+        kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(
             default=None, description=""
         )  # relationship
 

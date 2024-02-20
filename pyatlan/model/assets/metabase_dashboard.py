@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -45,7 +45,7 @@ class MetabaseDashboard(Metabase):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "metabase_question_count",
         "metabase_questions",
         "metabase_collection",
@@ -64,11 +64,11 @@ class MetabaseDashboard(Metabase):
         self.attributes.metabase_question_count = metabase_question_count
 
     @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+    def metabase_questions(self) -> Optional[List[MetabaseQuestion]]:
         return None if self.attributes is None else self.attributes.metabase_questions
 
     @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+    def metabase_questions(self, metabase_questions: Optional[List[MetabaseQuestion]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_questions = metabase_questions
@@ -85,7 +85,7 @@ class MetabaseDashboard(Metabase):
 
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(default=None, description="")
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
+        metabase_questions: Optional[List[MetabaseQuestion]] = Field(
             default=None, description=""
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(

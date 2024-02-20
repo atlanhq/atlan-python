@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -141,7 +141,7 @@ class TableauDatasourceField(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -229,11 +229,11 @@ class TableauDatasourceField(Tableau):
         self.attributes.datasource_qualified_name = datasource_qualified_name
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -301,11 +301,11 @@ class TableauDatasourceField(Tableau):
         )
 
     @property
-    def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+    def upstream_tables(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.upstream_tables
 
     @upstream_tables.setter
-    def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
+    def upstream_tables(self, upstream_tables: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_tables = upstream_tables
@@ -347,21 +347,21 @@ class TableauDatasourceField(Tableau):
         )
 
     @property
-    def upstream_columns(self) -> Optional[list[dict[str, str]]]:
+    def upstream_columns(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.upstream_columns
 
     @upstream_columns.setter
-    def upstream_columns(self, upstream_columns: Optional[list[dict[str, str]]]):
+    def upstream_columns(self, upstream_columns: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_columns = upstream_columns
 
     @property
-    def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+    def upstream_fields(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.upstream_fields
 
     @upstream_fields.setter
-    def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
+    def upstream_fields(self, upstream_fields: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_fields = upstream_fields
@@ -379,11 +379,11 @@ class TableauDatasourceField(Tableau):
         self.attributes.datasource_field_type = datasource_field_type
 
     @property
-    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+    def worksheets(self) -> Optional[List[TableauWorksheet]]:
         return None if self.attributes is None else self.attributes.worksheets
 
     @worksheets.setter
-    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+    def worksheets(self, worksheets: Optional[List[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.worksheets = worksheets
@@ -406,7 +406,7 @@ class TableauDatasourceField(Tableau):
         )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
         datasource_qualified_name: Optional[str] = Field(default=None, description="")
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         fully_qualified_name: Optional[str] = Field(default=None, description="")
@@ -419,7 +419,7 @@ class TableauDatasourceField(Tableau):
         tableau_datasource_field_data_type: Optional[str] = Field(
             default=None, description=""
         )
-        upstream_tables: Optional[list[dict[str, str]]] = Field(
+        upstream_tables: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         tableau_datasource_field_formula: Optional[str] = Field(
@@ -428,14 +428,14 @@ class TableauDatasourceField(Tableau):
         tableau_datasource_field_bin_size: Optional[str] = Field(
             default=None, description=""
         )
-        upstream_columns: Optional[list[dict[str, str]]] = Field(
+        upstream_columns: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        upstream_fields: Optional[list[dict[str, str]]] = Field(
+        upstream_fields: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         datasource_field_type: Optional[str] = Field(default=None, description="")
-        worksheets: Optional[list[TableauWorksheet]] = Field(
+        worksheets: Optional[List[TableauWorksheet]] = Field(
             default=None, description=""
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(

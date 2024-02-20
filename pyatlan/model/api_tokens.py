@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 import json
-from typing import Any, Optional
+from typing import Any, List, Optional, Set
 
 from pydantic.v1 import Field, root_validator
 
@@ -52,18 +52,18 @@ class ApiToken(AtlanObject):
             default=None,
             description="Human-readable name provided when creating the token.",
         )
-        personas: Optional[list[Any]] = Field(
+        personas: Optional[List[Any]] = Field(
             default_factory=list,
             description="Deprecated (now unused): personas associated with the API token.",
         )
-        persona_qualified_name: Optional[set[ApiTokenPersona]] = Field(
+        persona_qualified_name: Optional[Set[ApiTokenPersona]] = Field(
             default_factory=set, description="Personas associated with the API token."
         )
         purposes: Optional[Any] = Field(
             default=None,
             description="Possible future placeholder for purposes associated with the token.",
         )
-        workspace_permissions: Optional[set[str]] = Field(
+        workspace_permissions: Optional[Set[str]] = Field(
             default_factory=set,
             description="Detailed permissions given to the API token.",
         )
@@ -127,11 +127,11 @@ class ApiTokenRequest(AtlanObject):
         description="Human-readable name provided when creating the token.",
     )
     description: str = Field(default="", description="Explanation of the token.")
-    personas: Optional[set[str]] = Field(
+    personas: Optional[Set[str]] = Field(
         default=None,
         description="Deprecated (now unused): GUIDs of personas that are associated with the token.",
     )
-    persona_qualified_names: Optional[set[str]] = Field(
+    persona_qualified_names: Optional[Set[str]] = Field(
         default=None,
         description="Unique qualified_names of personas that are associated with the token.",
     )
@@ -160,7 +160,7 @@ class ApiTokenResponse(AtlanObject):
         default=None,
         description="Number of API records that matched the specified filters.",
     )
-    records: Optional[list[ApiToken]] = Field(
+    records: Optional[List[ApiToken]] = Field(
         default=None,
         description="Actual API tokens that matched the specified filters.",
     )

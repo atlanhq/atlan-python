@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -254,7 +254,7 @@ class DynamoDBTable(Table):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dynamo_dbtable_g_s_i_count",
         "dynamo_dbtable_l_s_i_count",
         "column_count",
@@ -384,11 +384,11 @@ class DynamoDBTable(Table):
         self.attributes.is_query_preview = is_query_preview
 
     @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
+    def query_preview_config(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.query_preview_config
 
     @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+    def query_preview_config(self, query_preview_config: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
@@ -492,11 +492,11 @@ class DynamoDBTable(Table):
         self.attributes.query_user_count = query_user_count
 
     @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
+    def query_user_map(self) -> Optional[Dict[str, int]]:
         return None if self.attributes is None else self.attributes.query_user_map
 
     @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
+    def query_user_map(self, query_user_map: Optional[Dict[str, int]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_user_map = query_user_map
@@ -702,7 +702,7 @@ class DynamoDBTable(Table):
     @property
     def dynamo_d_b_local_secondary_indexes(
         self,
-    ) -> Optional[list[DynamoDBLocalSecondaryIndex]]:
+    ) -> Optional[List[DynamoDBLocalSecondaryIndex]]:
         return (
             None
             if self.attributes is None
@@ -712,7 +712,7 @@ class DynamoDBTable(Table):
     @dynamo_d_b_local_secondary_indexes.setter
     def dynamo_d_b_local_secondary_indexes(
         self,
-        dynamo_d_b_local_secondary_indexes: Optional[list[DynamoDBLocalSecondaryIndex]],
+        dynamo_d_b_local_secondary_indexes: Optional[List[DynamoDBLocalSecondaryIndex]],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -723,7 +723,7 @@ class DynamoDBTable(Table):
     @property
     def dynamo_d_b_global_secondary_indexes(
         self,
-    ) -> Optional[list[DynamoDBGlobalSecondaryIndex]]:
+    ) -> Optional[List[DynamoDBGlobalSecondaryIndex]]:
         return (
             None
             if self.attributes is None
@@ -734,7 +734,7 @@ class DynamoDBTable(Table):
     def dynamo_d_b_global_secondary_indexes(
         self,
         dynamo_d_b_global_secondary_indexes: Optional[
-            list[DynamoDBGlobalSecondaryIndex]
+            List[DynamoDBGlobalSecondaryIndex]
         ],
     ):
         if self.attributes is None:
@@ -752,7 +752,7 @@ class DynamoDBTable(Table):
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[dict[str, str]] = Field(
+        query_preview_config: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         external_location: Optional[str] = Field(default=None, description="")
@@ -764,7 +764,7 @@ class DynamoDBTable(Table):
         partition_list: Optional[str] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
-        query_user_map: Optional[dict[str, int]] = Field(default=None, description="")
+        query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
         query_count_updated_at: Optional[datetime] = Field(default=None, description="")
         database_name: Optional[str] = Field(default=None, description="")
         database_qualified_name: Optional[str] = Field(default=None, description="")
@@ -789,12 +789,12 @@ class DynamoDBTable(Table):
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         dynamo_d_b_local_secondary_indexes: Optional[
-            list[DynamoDBLocalSecondaryIndex]
+            List[DynamoDBLocalSecondaryIndex]
         ] = Field(
             default=None, description=""
         )  # relationship
         dynamo_d_b_global_secondary_indexes: Optional[
-            list[DynamoDBGlobalSecondaryIndex]
+            List[DynamoDBGlobalSecondaryIndex]
         ] = Field(
             default=None, description=""
         )  # relationship

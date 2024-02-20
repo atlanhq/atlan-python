@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -124,7 +124,7 @@ class Query(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "raw_query",
         "long_raw_query",
         "raw_query_text",
@@ -300,31 +300,31 @@ class Query(SQL):
         self.attributes.parent = parent
 
     @property
-    def columns(self) -> Optional[list[Column]]:
+    def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
     @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
+    def columns(self, columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
-    def tables(self) -> Optional[list[Table]]:
+    def tables(self) -> Optional[List[Table]]:
         return None if self.attributes is None else self.attributes.tables
 
     @tables.setter
-    def tables(self, tables: Optional[list[Table]]):
+    def tables(self, tables: Optional[List[Table]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tables = tables
 
     @property
-    def views(self) -> Optional[list[View]]:
+    def views(self) -> Optional[List[View]]:
         return None if self.attributes is None else self.attributes.views
 
     @views.setter
-    def views(self, views: Optional[list[View]]):
+    def views(self, views: Optional[List[View]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.views = views
@@ -351,13 +351,13 @@ class Query(SQL):
         parent: Optional[Namespace] = Field(
             default=None, description=""
         )  # relationship
-        columns: Optional[list[Column]] = Field(
+        columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        tables: Optional[list[Table]] = Field(
+        tables: Optional[List[Table]] = Field(
             default=None, description=""
         )  # relationship
-        views: Optional[list[View]] = Field(
+        views: Optional[List[View]] = Field(
             default=None, description=""
         )  # relationship
 

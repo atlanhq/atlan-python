@@ -1,4 +1,5 @@
 import time
+from typing import List
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
@@ -16,7 +17,7 @@ def block(
 
 
 def retrieve_and_check_assets(
-    client: AtlanClient, to_check: list[Asset], retry_count: int
+    client: AtlanClient, to_check: List[Asset], retry_count: int
 ):
     """
     Retrieve and check the status of a list of assets and retry if needed.

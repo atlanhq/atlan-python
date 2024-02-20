@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -81,7 +81,7 @@ class Function(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "function_definition",
         "function_return_type",
         "function_arguments",
@@ -114,11 +114,11 @@ class Function(SQL):
         self.attributes.function_return_type = function_return_type
 
     @property
-    def function_arguments(self) -> Optional[set[str]]:
+    def function_arguments(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.function_arguments
 
     @function_arguments.setter
-    def function_arguments(self, function_arguments: Optional[set[str]]):
+    def function_arguments(self, function_arguments: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.function_arguments = function_arguments
@@ -188,7 +188,7 @@ class Function(SQL):
     class Attributes(SQL.Attributes):
         function_definition: Optional[str] = Field(default=None, description="")
         function_return_type: Optional[str] = Field(default=None, description="")
-        function_arguments: Optional[set[str]] = Field(default=None, description="")
+        function_arguments: Optional[Set[str]] = Field(default=None, description="")
         function_language: Optional[str] = Field(default=None, description="")
         function_type: Optional[str] = Field(default=None, description="")
         function_is_external: Optional[bool] = Field(default=None, description="")

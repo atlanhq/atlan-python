@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -52,7 +52,7 @@ class Catalog(Asset, type_name="Catalog"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "input_to_processes",
         "output_from_airflow_tasks",
         "input_to_airflow_tasks",
@@ -60,17 +60,17 @@ class Catalog(Asset, type_name="Catalog"):
     ]
 
     @property
-    def input_to_processes(self) -> Optional[list[Process]]:
+    def input_to_processes(self) -> Optional[List[Process]]:
         return None if self.attributes is None else self.attributes.input_to_processes
 
     @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
+    def input_to_processes(self, input_to_processes: Optional[List[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
 
     @property
-    def output_from_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None
             if self.attributes is None
@@ -79,49 +79,49 @@ class Catalog(Asset, type_name="Catalog"):
 
     @output_from_airflow_tasks.setter
     def output_from_airflow_tasks(
-        self, output_from_airflow_tasks: Optional[list[AirflowTask]]
+        self, output_from_airflow_tasks: Optional[List[AirflowTask]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
-    def input_to_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None if self.attributes is None else self.attributes.input_to_airflow_tasks
         )
 
     @input_to_airflow_tasks.setter
     def input_to_airflow_tasks(
-        self, input_to_airflow_tasks: Optional[list[AirflowTask]]
+        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
-    def output_from_processes(self) -> Optional[list[Process]]:
+    def output_from_processes(self) -> Optional[List[Process]]:
         return (
             None if self.attributes is None else self.attributes.output_from_processes
         )
 
     @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+    def output_from_processes(self, output_from_processes: Optional[List[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
+        input_to_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
-        output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
+        output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
+        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
+        output_from_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
 

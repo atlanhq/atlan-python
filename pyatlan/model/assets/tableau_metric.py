@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -59,7 +59,7 @@ class TableauMetric(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -108,11 +108,11 @@ class TableauMetric(Tableau):
         )
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -133,7 +133,7 @@ class TableauMetric(Tableau):
         top_level_project_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         project: Optional[TableauProject] = Field(

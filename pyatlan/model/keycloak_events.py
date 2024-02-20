@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
-from typing import Any, Generator, Optional
+from typing import Any, Dict, Generator, List, Optional
 
 from pydantic.v1 import Field, parse_obj_as
 
@@ -101,7 +101,7 @@ class KeycloakEventRequest(AtlanObject):
     size: Optional[int] = Field(
         default=None, description="Maximum number of events to retrieve (per page)."
     )
-    types: Optional[list[KeycloakEventType]] = Field(
+    types: Optional[List[KeycloakEventType]] = Field(
         default=None, description="Include events only of the supplied types."
     )
     user_id: Optional[str] = Field(
@@ -111,7 +111,7 @@ class KeycloakEventRequest(AtlanObject):
 
     @property
     def query_params(self) -> dict:
-        d: dict[str, object] = {}
+        d: Dict[str, object] = {}
         if self.client:
             d["client"] = self.client
         if self.ip_address:
@@ -136,7 +136,7 @@ class KeycloakEventResponse(object):
         criteria: KeycloakEventRequest,
         start: int,
         size: int,
-        events: list[KeycloakEvent],
+        events: List[KeycloakEvent],
     ):
         self._client = client
         self._criteria = criteria
@@ -144,7 +144,7 @@ class KeycloakEventResponse(object):
         self._size = size
         self._events = events
 
-    def current_page(self) -> list[KeycloakEvent]:
+    def current_page(self) -> List[KeycloakEvent]:
         return self._events
 
     def next_page(self, start=None, size=None) -> bool:
@@ -163,7 +163,7 @@ class KeycloakEventResponse(object):
         if not raw_json:
             self._events = []
             return False
-        self._events = parse_obj_as(list[KeycloakEvent], raw_json)
+        self._events = parse_obj_as(List[KeycloakEvent], raw_json)
         return True
 
     def __iter__(self) -> Generator[KeycloakEvent, None, None]:
@@ -203,21 +203,21 @@ class AdminEventRequest(AtlanObject):
     size: Optional[int] = Field(
         default=None, description="Maximum number of events to retrieve (per page)."
     )
-    operation_types: Optional[list[AdminOperationType]] = Field(
+    operation_types: Optional[List[AdminOperationType]] = Field(
         default=None,
         description="Include events only with the supplied types of operations.",
     )
     resource_path: Optional[str] = Field(
         default=None, description="Include events only against the supplied resource."
     )
-    resource_types: Optional[list[AdminResourceType]] = Field(
+    resource_types: Optional[List[AdminResourceType]] = Field(
         default=None,
         description="Include events only against the supplied types of resources.",
     )
 
     @property
     def query_params(self) -> dict:
-        d: dict[str, object] = {}
+        d: Dict[str, object] = {}
         if self.client_id:
             d["authClient"] = self.client_id
         if self.ip_address:
@@ -248,7 +248,7 @@ class AdminEventResponse(object):
         criteria: AdminEventRequest,
         start: int,
         size: int,
-        events: list[AdminEvent],
+        events: List[AdminEvent],
     ):
         self._client = client
         self._criteria = criteria
@@ -256,7 +256,7 @@ class AdminEventResponse(object):
         self._size = size
         self._events = events
 
-    def current_page(self) -> list[AdminEvent]:
+    def current_page(self) -> List[AdminEvent]:
         return self._events
 
     def next_page(self, start=None, size=None) -> bool:
@@ -275,7 +275,7 @@ class AdminEventResponse(object):
         if not raw_json:
             self._events = []
             return False
-        self._events = parse_obj_as(list[AdminEvent], raw_json)
+        self._events = parse_obj_as(List[AdminEvent], raw_json)
         return True
 
     def __iter__(self) -> Generator[AdminEvent, None, None]:

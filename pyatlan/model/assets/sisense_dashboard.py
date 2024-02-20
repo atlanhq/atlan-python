@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -63,7 +63,7 @@ class SisenseDashboard(Sisense):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sisense_dashboard_folder_qualified_name",
         "sisense_dashboard_widget_count",
         "sisense_datamodels",
@@ -106,21 +106,21 @@ class SisenseDashboard(Sisense):
         self.attributes.sisense_dashboard_widget_count = sisense_dashboard_widget_count
 
     @property
-    def sisense_datamodels(self) -> Optional[list[SisenseDatamodel]]:
+    def sisense_datamodels(self) -> Optional[List[SisenseDatamodel]]:
         return None if self.attributes is None else self.attributes.sisense_datamodels
 
     @sisense_datamodels.setter
-    def sisense_datamodels(self, sisense_datamodels: Optional[list[SisenseDatamodel]]):
+    def sisense_datamodels(self, sisense_datamodels: Optional[List[SisenseDatamodel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_datamodels = sisense_datamodels
 
     @property
-    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
         return None if self.attributes is None else self.attributes.sisense_widgets
 
     @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_widgets = sisense_widgets
@@ -142,10 +142,10 @@ class SisenseDashboard(Sisense):
         sisense_dashboard_widget_count: Optional[int] = Field(
             default=None, description=""
         )
-        sisense_datamodels: Optional[list[SisenseDatamodel]] = Field(
+        sisense_datamodels: Optional[List[SisenseDatamodel]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
             default=None, description=""
         )  # relationship
         sisense_folder: Optional[SisenseFolder] = Field(

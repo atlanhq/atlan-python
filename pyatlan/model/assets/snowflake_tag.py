@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -165,7 +165,7 @@ class SnowflakeTag(Tag):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -203,21 +203,21 @@ class SnowflakeTag(Tag):
         self.attributes.tag_id = tag_id
 
     @property
-    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+    def tag_attributes(self) -> Optional[List[SourceTagAttribute]]:
         return None if self.attributes is None else self.attributes.tag_attributes
 
     @tag_attributes.setter
-    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+    def tag_attributes(self, tag_attributes: Optional[List[SourceTagAttribute]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_attributes = tag_attributes
 
     @property
-    def tag_allowed_values(self) -> Optional[set[str]]:
+    def tag_allowed_values(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.tag_allowed_values
 
     @tag_allowed_values.setter
-    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+    def tag_allowed_values(self, tag_allowed_values: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_allowed_values = tag_allowed_values
@@ -255,11 +255,11 @@ class SnowflakeTag(Tag):
         self.attributes.query_user_count = query_user_count
 
     @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
+    def query_user_map(self) -> Optional[Dict[str, int]]:
         return None if self.attributes is None else self.attributes.query_user_map
 
     @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
+    def query_user_map(self, query_user_map: Optional[Dict[str, int]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_user_map = query_user_map
@@ -381,51 +381,51 @@ class SnowflakeTag(Tag):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def dbt_sources(self) -> Optional[list[DbtSource]]:
+    def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
     @dbt_sources.setter
-    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
+    def dbt_sources(self, dbt_sources: Optional[List[DbtSource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_sources = dbt_sources
 
     @property
-    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
         return None if self.attributes is None else self.attributes.sql_dbt_models
 
     @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
+    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_dbt_models = sql_dbt_models
 
     @property
-    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.sql_dbt_sources
 
     @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_dbt_sources = sql_dbt_sources
 
     @property
-    def dbt_models(self) -> Optional[list[DbtModel]]:
+    def dbt_models(self) -> Optional[List[DbtModel]]:
         return None if self.attributes is None else self.attributes.dbt_models
 
     @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
     @property
-    def dbt_tests(self) -> Optional[list[DbtTest]]:
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
     @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
@@ -442,14 +442,14 @@ class SnowflakeTag(Tag):
 
     class Attributes(Tag.Attributes):
         tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
             default=None, description=""
         )
-        tag_allowed_values: Optional[set[str]] = Field(default=None, description="")
+        tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
-        query_user_map: Optional[dict[str, int]] = Field(default=None, description="")
+        query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
         query_count_updated_at: Optional[datetime] = Field(default=None, description="")
         database_name: Optional[str] = Field(default=None, description="")
         database_qualified_name: Optional[str] = Field(default=None, description="")
@@ -461,19 +461,19 @@ class SnowflakeTag(Tag):
         view_qualified_name: Optional[str] = Field(default=None, description="")
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        dbt_sources: Optional[list[DbtSource]] = Field(
+        dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
+        sql_dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
+        dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_tests: Optional[list[DbtTest]] = Field(
+        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(

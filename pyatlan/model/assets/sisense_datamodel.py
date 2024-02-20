@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -91,7 +91,7 @@ class SisenseDatamodel(Sisense):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sisense_datamodel_table_count",
         "sisense_datamodel_server",
         "sisense_datamodel_revision",
@@ -233,7 +233,7 @@ class SisenseDatamodel(Sisense):
         )
 
     @property
-    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
+    def sisense_datamodel_tables(self) -> Optional[List[SisenseDatamodelTable]]:
         return (
             None
             if self.attributes is None
@@ -242,18 +242,18 @@ class SisenseDatamodel(Sisense):
 
     @sisense_datamodel_tables.setter
     def sisense_datamodel_tables(
-        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
+        self, sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
 
     @property
-    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
+    def sisense_dashboards(self) -> Optional[List[SisenseDashboard]]:
         return None if self.attributes is None else self.attributes.sisense_dashboards
 
     @sisense_dashboards.setter
-    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
+    def sisense_dashboards(self, sisense_dashboards: Optional[List[SisenseDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_dashboards = sisense_dashboards
@@ -277,10 +277,10 @@ class SisenseDatamodel(Sisense):
         sisense_datamodel_relation_type: Optional[str] = Field(
             default=None, description=""
         )
-        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
+        sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
+        sisense_dashboards: Optional[List[SisenseDashboard]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -74,7 +74,7 @@ class QlikApp(Qlik):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "qlik_has_section_access",
         "qlik_origin_app_id",
         "qlik_is_encrypted",
@@ -155,11 +155,11 @@ class QlikApp(Qlik):
         self.attributes.qlik_space = qlik_space
 
     @property
-    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
+    def qlik_sheets(self) -> Optional[List[QlikSheet]]:
         return None if self.attributes is None else self.attributes.qlik_sheets
 
     @qlik_sheets.setter
-    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
+    def qlik_sheets(self, qlik_sheets: Optional[List[QlikSheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_sheets = qlik_sheets
@@ -173,7 +173,7 @@ class QlikApp(Qlik):
         qlik_space: Optional[QlikSpace] = Field(
             default=None, description=""
         )  # relationship
-        qlik_sheets: Optional[list[QlikSheet]] = Field(
+        qlik_sheets: Optional[List[QlikSheet]] = Field(
             default=None, description=""
         )  # relationship
 

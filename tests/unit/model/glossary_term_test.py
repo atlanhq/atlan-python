@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
@@ -72,7 +74,7 @@ def test_create_with_missing_parameters_raise_value_error(
     anchor: AtlasGlossary,
     glossary_qualified_name: str,
     glossary_guid: str,
-    categories: list[AtlasGlossaryCategory],
+    categories: List[AtlasGlossaryCategory],
     message: str,
 ):
     with pytest.raises(ValueError, match=message):
@@ -106,7 +108,7 @@ def test_create(
     anchor: AtlasGlossary,
     glossary_qualified_name: str,
     glossary_guid: str,
-    categories: list[AtlasGlossaryCategory],
+    categories: List[AtlasGlossaryCategory],
 ):
     sut = AtlasGlossaryTerm.create(
         name=GLOSSARY_TERM_NAME,

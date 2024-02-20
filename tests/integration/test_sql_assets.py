@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Callable, Optional, Type
+from typing import Callable, List, Optional, Type
 
 import pytest
 
@@ -27,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module")
 def upsert(client: AtlanClient):
-    guids: list[str] = []
+    guids: List[str] = []
 
     def _upsert(asset: Asset) -> AssetMutationResponse:
         _response = client.asset.save(asset)

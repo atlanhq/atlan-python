@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
@@ -92,7 +92,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "short_description",
         "long_description",
         "language",
@@ -144,13 +144,13 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         self.attributes.usage = usage
 
     @property
-    def additional_attributes(self) -> Optional[dict[str, str]]:
+    def additional_attributes(self) -> Optional[Dict[str, str]]:
         return (
             None if self.attributes is None else self.attributes.additional_attributes
         )
 
     @additional_attributes.setter
-    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
+    def additional_attributes(self, additional_attributes: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
@@ -166,21 +166,21 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         self.attributes.glossary_type = glossary_type
 
     @property
-    def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.terms
 
     @terms.setter
-    def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
+    def terms(self, terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.terms = terms
 
     @property
-    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+    def categories(self) -> Optional[List[AtlasGlossaryCategory]]:
         return None if self.attributes is None else self.attributes.categories
 
     @categories.setter
-    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
+    def categories(self, categories: Optional[List[AtlasGlossaryCategory]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.categories = categories
@@ -190,14 +190,14 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         long_description: Optional[str] = Field(default=None, description="")
         language: Optional[str] = Field(default=None, description="")
         usage: Optional[str] = Field(default=None, description="")
-        additional_attributes: Optional[dict[str, str]] = Field(
+        additional_attributes: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         glossary_type: Optional[AtlasGlossaryType] = Field(default=None, description="")
-        terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+        categories: Optional[List[AtlasGlossaryCategory]] = Field(
             default=None, description=""
         )  # relationship
 

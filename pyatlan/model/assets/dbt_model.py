@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -122,7 +122,7 @@ class DbtModel(Dbt):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_status",
         "dbt_error",
         "dbt_raw_s_q_l",
@@ -316,41 +316,41 @@ class DbtModel(Dbt):
         self.attributes.dbt_model_run_elapsed_time = dbt_model_run_elapsed_time
 
     @property
-    def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+    def dbt_metrics(self) -> Optional[List[DbtMetric]]:
         return None if self.attributes is None else self.attributes.dbt_metrics
 
     @dbt_metrics.setter
-    def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
+    def dbt_metrics(self, dbt_metrics: Optional[List[DbtMetric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_metrics = dbt_metrics
 
     @property
-    def dbt_tests(self) -> Optional[list[DbtTest]]:
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
     @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
 
     @property
-    def dbt_model_sql_assets(self) -> Optional[list[SQL]]:
+    def dbt_model_sql_assets(self) -> Optional[List[SQL]]:
         return None if self.attributes is None else self.attributes.dbt_model_sql_assets
 
     @dbt_model_sql_assets.setter
-    def dbt_model_sql_assets(self, dbt_model_sql_assets: Optional[list[SQL]]):
+    def dbt_model_sql_assets(self, dbt_model_sql_assets: Optional[List[SQL]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_sql_assets = dbt_model_sql_assets
 
     @property
-    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+    def dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
         return None if self.attributes is None else self.attributes.dbt_model_columns
 
     @dbt_model_columns.setter
-    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+    def dbt_model_columns(self, dbt_model_columns: Optional[List[DbtModelColumn]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_columns = dbt_model_columns
@@ -391,16 +391,16 @@ class DbtModel(Dbt):
         dbt_model_run_elapsed_time: Optional[float] = Field(
             default=None, description=""
         )
-        dbt_metrics: Optional[list[DbtMetric]] = Field(
+        dbt_metrics: Optional[List[DbtMetric]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_tests: Optional[list[DbtTest]] = Field(
+        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model_sql_assets: Optional[list[SQL]] = Field(
+        dbt_model_sql_assets: Optional[List[SQL]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
         )  # relationship
         sql_asset: Optional[SQL] = Field(default=None, description="")  # relationship

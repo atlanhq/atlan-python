@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -65,7 +65,7 @@ class Metric(DataQuality):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "metric_type",
         "metric_s_q_l",
         "metric_filters",
@@ -106,11 +106,11 @@ class Metric(DataQuality):
         self.attributes.metric_filters = metric_filters
 
     @property
-    def metric_time_grains(self) -> Optional[set[str]]:
+    def metric_time_grains(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.metric_time_grains
 
     @metric_time_grains.setter
-    def metric_time_grains(self, metric_time_grains: Optional[set[str]]):
+    def metric_time_grains(self, metric_time_grains: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_time_grains = metric_time_grains
@@ -128,17 +128,17 @@ class Metric(DataQuality):
         self.attributes.metric_timestamp_column = metric_timestamp_column
 
     @property
-    def assets(self) -> Optional[list[Asset]]:
+    def assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.assets
 
     @assets.setter
-    def assets(self, assets: Optional[list[Asset]]):
+    def assets(self, assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.assets = assets
 
     @property
-    def metric_dimension_columns(self) -> Optional[list[Column]]:
+    def metric_dimension_columns(self) -> Optional[List[Column]]:
         return (
             None
             if self.attributes is None
@@ -147,7 +147,7 @@ class Metric(DataQuality):
 
     @metric_dimension_columns.setter
     def metric_dimension_columns(
-        self, metric_dimension_columns: Optional[list[Column]]
+        self, metric_dimension_columns: Optional[List[Column]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -157,14 +157,14 @@ class Metric(DataQuality):
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")
-        metric_time_grains: Optional[set[str]] = Field(default=None, description="")
+        metric_time_grains: Optional[Set[str]] = Field(default=None, description="")
         metric_timestamp_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
-        assets: Optional[list[Asset]] = Field(
+        assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
-        metric_dimension_columns: Optional[list[Column]] = Field(
+        metric_dimension_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
 

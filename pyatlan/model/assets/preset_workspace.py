@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -112,7 +112,7 @@ class PresetWorkspace(Preset):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "preset_workspace_public_dashboards_allowed",
         "preset_workspace_cluster_id",
         "preset_workspace_hostname",
@@ -264,11 +264,11 @@ class PresetWorkspace(Preset):
         self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
 
     @property
-    def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
+    def preset_dashboards(self) -> Optional[List[PresetDashboard]]:
         return None if self.attributes is None else self.attributes.preset_dashboards
 
     @preset_dashboards.setter
-    def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
+    def preset_dashboards(self, preset_dashboards: Optional[List[PresetDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_dashboards = preset_dashboards
@@ -293,7 +293,7 @@ class PresetWorkspace(Preset):
         preset_workspace_dataset_count: Optional[int] = Field(
             default=None, description=""
         )
-        preset_dashboards: Optional[list[PresetDashboard]] = Field(
+        preset_dashboards: Optional[List[PresetDashboard]] = Field(
             default=None, description=""
         )  # relationship
 

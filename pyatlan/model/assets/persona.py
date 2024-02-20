@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional, Set
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -198,28 +198,28 @@ class Persona(AccessControl):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "persona_groups",
         "persona_users",
         "role_id",
     ]
 
     @property
-    def persona_groups(self) -> Optional[set[str]]:
+    def persona_groups(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.persona_groups
 
     @persona_groups.setter
-    def persona_groups(self, persona_groups: Optional[set[str]]):
+    def persona_groups(self, persona_groups: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.persona_groups = persona_groups
 
     @property
-    def persona_users(self) -> Optional[set[str]]:
+    def persona_users(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.persona_users
 
     @persona_users.setter
-    def persona_users(self, persona_users: Optional[set[str]]):
+    def persona_users(self, persona_users: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.persona_users = persona_users
@@ -235,8 +235,8 @@ class Persona(AccessControl):
         self.attributes.role_id = role_id
 
     class Attributes(AccessControl.Attributes):
-        persona_groups: Optional[set[str]] = Field(default=None, description="")
-        persona_users: Optional[set[str]] = Field(default=None, description="")
+        persona_groups: Optional[Set[str]] = Field(default=None, description="")
+        persona_users: Optional[Set[str]] = Field(default=None, description="")
         role_id: Optional[str] = Field(default=None, description="")
 
         @classmethod

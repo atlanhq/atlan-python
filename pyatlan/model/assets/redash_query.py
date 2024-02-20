@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -81,7 +81,7 @@ class RedashQuery(Redash):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "redash_query_s_q_l",
         "redash_query_parameters",
         "redash_query_schedule",
@@ -114,13 +114,13 @@ class RedashQuery(Redash):
         self.attributes.redash_query_parameters = redash_query_parameters
 
     @property
-    def redash_query_schedule(self) -> Optional[dict[str, str]]:
+    def redash_query_schedule(self) -> Optional[Dict[str, str]]:
         return (
             None if self.attributes is None else self.attributes.redash_query_schedule
         )
 
     @redash_query_schedule.setter
-    def redash_query_schedule(self, redash_query_schedule: Optional[dict[str, str]]):
+    def redash_query_schedule(self, redash_query_schedule: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.redash_query_schedule = redash_query_schedule
@@ -178,14 +178,14 @@ class RedashQuery(Redash):
         )
 
     @property
-    def redash_visualizations(self) -> Optional[list[RedashVisualization]]:
+    def redash_visualizations(self) -> Optional[List[RedashVisualization]]:
         return (
             None if self.attributes is None else self.attributes.redash_visualizations
         )
 
     @redash_visualizations.setter
     def redash_visualizations(
-        self, redash_visualizations: Optional[list[RedashVisualization]]
+        self, redash_visualizations: Optional[List[RedashVisualization]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -194,7 +194,7 @@ class RedashQuery(Redash):
     class Attributes(Redash.Attributes):
         redash_query_s_q_l: Optional[str] = Field(default=None, description="")
         redash_query_parameters: Optional[str] = Field(default=None, description="")
-        redash_query_schedule: Optional[dict[str, str]] = Field(
+        redash_query_schedule: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         redash_query_last_execution_runtime: Optional[float] = Field(
@@ -206,7 +206,7 @@ class RedashQuery(Redash):
         redash_query_schedule_humanized: Optional[str] = Field(
             default=None, description=""
         )
-        redash_visualizations: Optional[list[RedashVisualization]] = Field(
+        redash_visualizations: Optional[List[RedashVisualization]] = Field(
             default=None, description=""
         )  # relationship
 

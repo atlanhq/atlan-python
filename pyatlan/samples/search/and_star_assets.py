@@ -2,7 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 import logging
 from datetime import datetime
-from typing import List
+from typing import List, Set
 
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
@@ -36,7 +36,7 @@ def find_assets() -> IndexSearchResults:
     return client.asset.search(search_request)
 
 
-def list_users_in_group(name: str) -> list[str]:
+def list_users_in_group(name: str) -> List[str]:
     """
     Given the name of a group in Atlan, return a list of all the usernames
     of users in that group.
@@ -58,7 +58,7 @@ def list_users_in_group(name: str) -> list[str]:
     return usernames
 
 
-def star_asset(asset: Asset, usernames: list[str]) -> None:
+def star_asset(asset: Asset, usernames: List[str]) -> None:
     """
     Given an asset and a list of usernames, ensure all the users listed
     have starred the asset.
@@ -69,7 +69,7 @@ def star_asset(asset: Asset, usernames: list[str]) -> None:
     """
     starred_details_list: List[StarredDetails] = asset.starred_details_list or []
     starred_count = len(starred_details_list)
-    starred_by: set[str] = asset.starred_by or set()
+    starred_by: Set[str] = asset.starred_by or set()
     for user in usernames:
         if user not in starred_by:
             starred_by.add(user)

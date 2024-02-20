@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr
 
@@ -57,7 +57,7 @@ class Referenceable(AtlanObject):
         return True
 
     @property
-    def atlan_tag_names(self) -> list[str]:
+    def atlan_tag_names(self) -> List[str]:
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
         from pyatlan.model.constants import DELETED_
 
@@ -73,7 +73,7 @@ class Referenceable(AtlanObject):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "qualified_name",
         "assigned_terms",
     ]
@@ -89,18 +89,18 @@ class Referenceable(AtlanObject):
         self.attributes.qualified_name = qualified_name
 
     @property
-    def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def assigned_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.meanings
 
     @assigned_terms.setter
-    def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
+    def assigned_terms(self, assigned_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.meanings = assigned_terms
 
     class Attributes(AtlanObject):
         qualified_name: Optional[str] = Field(default="", description="")
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+        meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -183,7 +183,7 @@ class Referenceable(AtlanObject):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.",
     )
-    business_attributes: Optional[dict[str, Any]] = Field(
+    business_attributes: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of custom metadata attributes and values defined on the entity.",
     )
@@ -208,8 +208,8 @@ class Referenceable(AtlanObject):
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
     is_incomplete: Optional[bool] = Field(default=True, description="", example=True)
-    labels: Optional[list[str]] = Field(default=None, description="Internal use only.")
-    relationship_attributes: Optional[dict[str, Any]] = Field(
+    labels: Optional[List[str]] = Field(default=None, description="Internal use only.")
+    relationship_attributes: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
         "so are described in the sub-types of this schema.",
@@ -230,11 +230,11 @@ class Referenceable(AtlanObject):
     version: Optional[int] = Field(
         default=None, description="Version of this object.", example=2
     )
-    atlan_tags: Optional[list[AtlanTag]] = Field(
+    atlan_tags: Optional[List[AtlanTag]] = Field(
         default=None,
         description="Atlan tags",
     )
-    classification_names: Optional[list[str]] = Field(
+    classification_names: Optional[List[str]] = Field(
         default=None,
         description="The names of the classifications that exist on the asset.",
     )
@@ -258,22 +258,22 @@ class Referenceable(AtlanObject):
         default=None,
         description="Status of the relationship (when this is a related entity).",
     )
-    meaning_names: Optional[list[str]] = Field(
+    meaning_names: Optional[List[str]] = Field(
         default=None,
         description="Names of assigned_terms that have been linked to this asset.",
     )
-    meanings: Optional[list[Meaning]] = Field(default=None, description="")
-    custom_attributes: Optional[dict[str, Any]] = Field(default=None, description="")
+    meanings: Optional[List[Meaning]] = Field(default=None, description="")
+    custom_attributes: Optional[Dict[str, Any]] = Field(default=None, description="")
     scrubbed: Optional[bool] = Field(default=None, description="")
-    pending_tasks: Optional[list[str]] = Field(default=None)
+    pending_tasks: Optional[List[str]] = Field(default=None)
 
-    unique_attributes: Optional[dict[str, Any]] = Field(default=None)
+    unique_attributes: Optional[Dict[str, Any]] = Field(default=None)
 
-    append_relationship_attributes: Optional[dict[str, Any]] = Field(
+    append_relationship_attributes: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of append relationship attributes.",
     )
-    remove_relationship_attributes: Optional[dict[str, Any]] = Field(
+    remove_relationship_attributes: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of remove relationship attributes.",
     )

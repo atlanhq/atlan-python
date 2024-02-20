@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -45,7 +45,7 @@ class QlikSheet(Qlik):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "qlik_sheet_is_approved",
         "qlik_app",
         "qlik_charts",
@@ -74,11 +74,11 @@ class QlikSheet(Qlik):
         self.attributes.qlik_app = qlik_app
 
     @property
-    def qlik_charts(self) -> Optional[list[QlikChart]]:
+    def qlik_charts(self) -> Optional[List[QlikChart]]:
         return None if self.attributes is None else self.attributes.qlik_charts
 
     @qlik_charts.setter
-    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
+    def qlik_charts(self, qlik_charts: Optional[List[QlikChart]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_charts = qlik_charts
@@ -88,7 +88,7 @@ class QlikSheet(Qlik):
         qlik_app: Optional[QlikApp] = Field(
             default=None, description=""
         )  # relationship
-        qlik_charts: Optional[list[QlikChart]] = Field(
+        qlik_charts: Optional[List[QlikChart]] = Field(
             default=None, description=""
         )  # relationship
 

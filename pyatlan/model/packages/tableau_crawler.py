@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
@@ -31,9 +31,9 @@ class TableauCrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_users: Optional[list[str]],
+        admin_roles: Optional[List[str]],
+        admin_groups: Optional[List[str]],
+        admin_users: Optional[List[str]],
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,
@@ -114,7 +114,7 @@ class TableauCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def include(self, projects: list[str]) -> "TableauCrawler":
+    def include(self, projects: List[str]) -> "TableauCrawler":
         """
         Defines the filter for projects to include when crawling.
 
@@ -130,7 +130,7 @@ class TableauCrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, projects: list[str]) -> "TableauCrawler":
+    def exclude(self, projects: List[str]) -> "TableauCrawler":
         """
         Defines the filter for projects to exclude when crawling.
 

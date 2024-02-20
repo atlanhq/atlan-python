@@ -1,5 +1,5 @@
 from collections import UserDict
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Set
 
 from pydantic.v1 import PrivateAttr
 
@@ -27,7 +27,7 @@ class CustomMetadataDict(UserDict):
         return obj
 
     @property
-    def attribute_names(self) -> set[str]:
+    def attribute_names(self) -> Set[str]:
         return self._names
 
     def __init__(self, name: str):
@@ -96,7 +96,7 @@ class CustomMetadataDict(UserDict):
         return key in self.data
 
     @property
-    def business_attributes(self) -> dict[str, Any]:
+    def business_attributes(self) -> Dict[str, Any]:
         """Returns a dict containing the metadata set with the human-readable set name and property names resolved
         to their internal values"""
         return {
@@ -106,8 +106,8 @@ class CustomMetadataDict(UserDict):
 
 
 class CustomMetadataProxy:
-    def __init__(self, business_attributes: Optional[dict[str, Any]]):
-        self._metadata: Optional[dict[str, CustomMetadataDict]] = None
+    def __init__(self, business_attributes: Optional[Dict[str, Any]]):
+        self._metadata: Optional[Dict[str, CustomMetadataDict]] = None
         self._business_attributes = business_attributes
         self._modified = False
         if self._business_attributes is None:
@@ -151,7 +151,7 @@ class CustomMetadataProxy:
         return any(metadata_dict.modified for metadata_dict in self._metadata.values())
 
     @property
-    def business_attributes(self) -> Optional[dict[str, Any]]:
+    def business_attributes(self) -> Optional[Dict[str, Any]]:
         if self.modified and self._metadata is not None:
             return {
                 CustomMetadataCache.get_id_for_name(key): value.business_attributes
@@ -161,7 +161,7 @@ class CustomMetadataProxy:
 
 
 class CustomMetadataRequest(AtlanObject):
-    __root__: dict[str, Any]
+    __root__: Dict[str, Any]
     _set_id: str = PrivateAttr()
 
     @classmethod

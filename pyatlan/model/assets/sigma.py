@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -72,7 +72,7 @@ class Sigma(BI):
     Simple name of the data element in which this asset exists.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sigma_workbook_qualified_name",
         "sigma_workbook_name",
         "sigma_page_qualified_name",

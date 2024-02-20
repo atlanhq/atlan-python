@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional, Set
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -30,7 +30,7 @@ class Purpose(AccessControl):
     @classmethod
     # @validate_arguments()
     @init_guid
-    def create(cls, *, name: str, atlan_tags: list[AtlanTagName]) -> Purpose:
+    def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
         attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
@@ -193,22 +193,22 @@ class Purpose(AccessControl):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "purpose_atlan_tags",
     ]
 
     @property
-    def purpose_atlan_tags(self) -> Optional[list[AtlanTagName]]:
+    def purpose_atlan_tags(self) -> Optional[List[AtlanTagName]]:
         return None if self.attributes is None else self.attributes.purpose_atlan_tags
 
     @purpose_atlan_tags.setter
-    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[list[AtlanTagName]]):
+    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[List[AtlanTagName]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
-        purpose_atlan_tags: Optional[list[AtlanTagName]] = Field(
+        purpose_atlan_tags: Optional[List[AtlanTagName]] = Field(
             default=None, description=""
         )
 
@@ -216,7 +216,7 @@ class Purpose(AccessControl):
         # @validate_arguments()
         @init_guid
         def create(
-            cls, name: str, atlan_tags: list[AtlanTagName]
+            cls, name: str, atlan_tags: List[AtlanTagName]
         ) -> Purpose.Attributes:
             validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(

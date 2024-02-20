@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -73,7 +73,7 @@ class PowerBITable(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "power_b_i_table_source_expressions",
@@ -111,7 +111,7 @@ class PowerBITable(PowerBI):
         self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
-    def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
+    def power_b_i_table_source_expressions(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -120,7 +120,7 @@ class PowerBITable(PowerBI):
 
     @power_b_i_table_source_expressions.setter
     def power_b_i_table_source_expressions(
-        self, power_b_i_table_source_expressions: Optional[set[str]]
+        self, power_b_i_table_source_expressions: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -159,21 +159,21 @@ class PowerBITable(PowerBI):
         self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
 
     @property
-    def columns(self) -> Optional[list[PowerBIColumn]]:
+    def columns(self) -> Optional[List[PowerBIColumn]]:
         return None if self.attributes is None else self.attributes.columns
 
     @columns.setter
-    def columns(self, columns: Optional[list[PowerBIColumn]]):
+    def columns(self, columns: Optional[List[PowerBIColumn]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
-    def measures(self) -> Optional[list[PowerBIMeasure]]:
+    def measures(self) -> Optional[List[PowerBIMeasure]]:
         return None if self.attributes is None else self.attributes.measures
 
     @measures.setter
-    def measures(self, measures: Optional[list[PowerBIMeasure]]):
+    def measures(self, measures: Optional[List[PowerBIMeasure]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.measures = measures
@@ -191,7 +191,7 @@ class PowerBITable(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
-        power_b_i_table_source_expressions: Optional[set[str]] = Field(
+        power_b_i_table_source_expressions: Optional[Set[str]] = Field(
             default=None, description=""
         )
         power_b_i_table_column_count: Optional[int] = Field(
@@ -200,10 +200,10 @@ class PowerBITable(PowerBI):
         power_b_i_table_measure_count: Optional[int] = Field(
             default=None, description=""
         )
-        columns: Optional[list[PowerBIColumn]] = Field(
+        columns: Optional[List[PowerBIColumn]] = Field(
             default=None, description=""
         )  # relationship
-        measures: Optional[list[PowerBIMeasure]] = Field(
+        measures: Optional[List[PowerBIMeasure]] = Field(
             default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(

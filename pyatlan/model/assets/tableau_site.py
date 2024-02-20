@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -34,22 +34,22 @@ class TableauSite(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "projects",
     ]
 
     @property
-    def projects(self) -> Optional[list[TableauProject]]:
+    def projects(self) -> Optional[List[TableauProject]]:
         return None if self.attributes is None else self.attributes.projects
 
     @projects.setter
-    def projects(self, projects: Optional[list[TableauProject]]):
+    def projects(self, projects: Optional[List[TableauProject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.projects = projects
 
     class Attributes(Tableau.Attributes):
-        projects: Optional[list[TableauProject]] = Field(
+        projects: Optional[List[TableauProject]] = Field(
             default=None, description=""
         )  # relationship
 

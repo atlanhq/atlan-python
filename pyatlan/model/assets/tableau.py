@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
@@ -27,4 +27,4 @@ class Tableau(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convenience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[List[str]] = []

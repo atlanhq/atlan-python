@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import time
-from typing import Generator, Optional, Tuple
+from typing import Generator, List, Optional, Tuple
 
 import pytest
 
@@ -70,7 +70,7 @@ _removal_epoch: Optional[int]
 def create_custom_metadata(
     client: AtlanClient,
     name: str,
-    attribute_defs: list[AttributeDef],
+    attribute_defs: List[AttributeDef],
     locked: bool,
     logo: Optional[str] = None,
     icon: Optional[AtlanIcon] = None,
@@ -94,7 +94,7 @@ def create_custom_metadata(
     return r.custom_metadata_defs[0]
 
 
-def create_enum(client: AtlanClient, name: str, values: list[str]) -> EnumDef:
+def create_enum(client: AtlanClient, name: str, values: List[str]) -> EnumDef:
     enum_def = EnumDef.create(name=name, values=values)
     r = client.typedef.create(enum_def)
     return r.enum_defs[0]
@@ -384,7 +384,7 @@ def groups(
     cm_raci: CustomMetadataDef,
     cm_ipr: CustomMetadataDef,
     cm_dq: CustomMetadataDef,
-) -> Generator[list[CreateGroupResponse], None, None]:
+) -> Generator[List[CreateGroupResponse], None, None]:
     g1 = create_group(client, GROUP_NAME1)
     g2 = create_group(client, GROUP_NAME2)
     yield [g1, g2]
@@ -410,7 +410,7 @@ def test_add_term_cm_raci(
     client: AtlanClient,
     cm_raci: CustomMetadataDef,
     term: AtlasGlossaryTerm,
-    groups: list[AtlanGroup],
+    groups: List[AtlanGroup],
 ):
     cm_name = CM_RACI
     raci_attrs = CustomMetadataDict(cm_name)
@@ -910,7 +910,7 @@ def _validate_dq_empty(dq_attrs: CustomMetadataDict):
 
 
 def _validate_raci_structure(
-    attributes: Optional[list[AttributeDef]], total_expected: int
+    attributes: Optional[List[AttributeDef]], total_expected: int
 ):
     global _removal_epoch
     assert attributes

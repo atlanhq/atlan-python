@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -77,7 +77,7 @@ class TableauWorkbook(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_name",
@@ -142,11 +142,11 @@ class TableauWorkbook(Tableau):
         )
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -162,31 +162,31 @@ class TableauWorkbook(Tableau):
         self.attributes.project = project
 
     @property
-    def dashboards(self) -> Optional[list[TableauDashboard]]:
+    def dashboards(self) -> Optional[List[TableauDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
     @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
+    def dashboards(self, dashboards: Optional[List[TableauDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     @property
-    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+    def worksheets(self) -> Optional[List[TableauWorksheet]]:
         return None if self.attributes is None else self.attributes.worksheets
 
     @worksheets.setter
-    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+    def worksheets(self, worksheets: Optional[List[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.worksheets = worksheets
 
     @property
-    def datasources(self) -> Optional[list[TableauDatasource]]:
+    def datasources(self) -> Optional[List[TableauDatasource]]:
         return None if self.attributes is None else self.attributes.datasources
 
     @datasources.setter
-    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+    def datasources(self, datasources: Optional[List[TableauDatasource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasources = datasources
@@ -198,19 +198,19 @@ class TableauWorkbook(Tableau):
         top_level_project_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         project: Optional[TableauProject] = Field(
             default=None, description=""
         )  # relationship
-        dashboards: Optional[list[TableauDashboard]] = Field(
+        dashboards: Optional[List[TableauDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        worksheets: Optional[list[TableauWorksheet]] = Field(
+        worksheets: Optional[List[TableauWorksheet]] = Field(
             default=None, description=""
         )  # relationship
-        datasources: Optional[list[TableauDatasource]] = Field(
+        datasources: Optional[List[TableauDatasource]] = Field(
             default=None, description=""
         )  # relationship
 

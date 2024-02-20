@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
@@ -43,7 +43,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         anchor: Optional[AtlasGlossary] = None,
         glossary_qualified_name: Optional[StrictStr] = None,
         glossary_guid: Optional[StrictStr] = None,
-        categories: Optional[list[AtlasGlossaryCategory]] = None,
+        categories: Optional[List[AtlasGlossaryCategory]] = None,
     ) -> AtlasGlossaryTerm:
         validate_required_fields(["name"], [name])
         return cls(
@@ -195,7 +195,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "short_description",
         "long_description",
         "examples",
@@ -242,11 +242,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.long_description = long_description
 
     @property
-    def examples(self) -> Optional[set[str]]:
+    def examples(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.examples
 
     @examples.setter
-    def examples(self, examples: Optional[set[str]]):
+    def examples(self, examples: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.examples = examples
@@ -272,13 +272,13 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.usage = usage
 
     @property
-    def additional_attributes(self) -> Optional[dict[str, str]]:
+    def additional_attributes(self) -> Optional[Dict[str, str]]:
         return (
             None if self.attributes is None else self.attributes.additional_attributes
         )
 
     @additional_attributes.setter
-    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
+    def additional_attributes(self, additional_attributes: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
@@ -294,151 +294,151 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.term_type = term_type
 
     @property
-    def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def valid_values_for(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.valid_values_for
 
     @valid_values_for.setter
-    def valid_values_for(self, valid_values_for: Optional[list[AtlasGlossaryTerm]]):
+    def valid_values_for(self, valid_values_for: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.valid_values_for = valid_values_for
 
     @property
-    def valid_values(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def valid_values(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.valid_values
 
     @valid_values.setter
-    def valid_values(self, valid_values: Optional[list[AtlasGlossaryTerm]]):
+    def valid_values(self, valid_values: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.valid_values = valid_values
 
     @property
-    def see_also(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def see_also(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.see_also
 
     @see_also.setter
-    def see_also(self, see_also: Optional[list[AtlasGlossaryTerm]]):
+    def see_also(self, see_also: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.see_also = see_also
 
     @property
-    def is_a(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def is_a(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.is_a
 
     @is_a.setter
-    def is_a(self, is_a: Optional[list[AtlasGlossaryTerm]]):
+    def is_a(self, is_a: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.is_a = is_a
 
     @property
-    def antonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def antonyms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.antonyms
 
     @antonyms.setter
-    def antonyms(self, antonyms: Optional[list[AtlasGlossaryTerm]]):
+    def antonyms(self, antonyms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.antonyms = antonyms
 
     @property
-    def assigned_entities(self) -> Optional[list[Referenceable]]:
+    def assigned_entities(self) -> Optional[List[Referenceable]]:
         return None if self.attributes is None else self.attributes.assigned_entities
 
     @assigned_entities.setter
-    def assigned_entities(self, assigned_entities: Optional[list[Referenceable]]):
+    def assigned_entities(self, assigned_entities: Optional[List[Referenceable]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.assigned_entities = assigned_entities
 
     @property
-    def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def classifies(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.classifies
 
     @classifies.setter
-    def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
+    def classifies(self, classifies: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.classifies = classifies
 
     @property
-    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+    def categories(self) -> Optional[List[AtlasGlossaryCategory]]:
         return None if self.attributes is None else self.attributes.categories
 
     @categories.setter
-    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
+    def categories(self, categories: Optional[List[AtlasGlossaryCategory]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.categories = categories
 
     @property
-    def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def preferred_to_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.preferred_to_terms
 
     @preferred_to_terms.setter
-    def preferred_to_terms(self, preferred_to_terms: Optional[list[AtlasGlossaryTerm]]):
+    def preferred_to_terms(self, preferred_to_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preferred_to_terms = preferred_to_terms
 
     @property
-    def preferred_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def preferred_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.preferred_terms
 
     @preferred_terms.setter
-    def preferred_terms(self, preferred_terms: Optional[list[AtlasGlossaryTerm]]):
+    def preferred_terms(self, preferred_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preferred_terms = preferred_terms
 
     @property
-    def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def translation_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.translation_terms
 
     @translation_terms.setter
-    def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
+    def translation_terms(self, translation_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.translation_terms = translation_terms
 
     @property
-    def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def synonyms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.synonyms
 
     @synonyms.setter
-    def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
+    def synonyms(self, synonyms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.synonyms = synonyms
 
     @property
-    def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def replaced_by(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.replaced_by
 
     @replaced_by.setter
-    def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
+    def replaced_by(self, replaced_by: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.replaced_by = replaced_by
 
     @property
-    def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def replacement_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.replacement_terms
 
     @replacement_terms.setter
-    def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
+    def replacement_terms(self, replacement_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.replacement_terms = replacement_terms
 
     @property
-    def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def translated_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.translated_terms
 
     @translated_terms.setter
-    def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
+    def translated_terms(self, translated_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.translated_terms = translated_terms
@@ -456,56 +456,56 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(default=None, description="")
         long_description: Optional[str] = Field(default=None, description="")
-        examples: Optional[set[str]] = Field(default=None, description="")
+        examples: Optional[Set[str]] = Field(default=None, description="")
         abbreviation: Optional[str] = Field(default=None, description="")
         usage: Optional[str] = Field(default=None, description="")
-        additional_attributes: Optional[dict[str, str]] = Field(
+        additional_attributes: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         term_type: Optional[AtlasGlossaryTermType] = Field(default=None, description="")
-        valid_values_for: Optional[list[AtlasGlossaryTerm]] = Field(
+        valid_values_for: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
+        valid_values: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        see_also: Optional[list[AtlasGlossaryTerm]] = Field(
+        see_also: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        is_a: Optional[list[AtlasGlossaryTerm]] = Field(
+        is_a: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        antonyms: Optional[list[AtlasGlossaryTerm]] = Field(
+        antonyms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        assigned_entities: Optional[list[Referenceable]] = Field(
+        assigned_entities: Optional[List[Referenceable]] = Field(
             default=None, description=""
         )  # relationship
-        classifies: Optional[list[AtlasGlossaryTerm]] = Field(
+        classifies: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+        categories: Optional[List[AtlasGlossaryCategory]] = Field(
             default=None, description=""
         )  # relationship
-        preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        preferred_to_terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        preferred_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        preferred_terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        translation_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        translation_terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        synonyms: Optional[list[AtlasGlossaryTerm]] = Field(
+        synonyms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
+        replaced_by: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        replacement_terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        translated_terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
         anchor: Optional[AtlasGlossary] = Field(
@@ -522,7 +522,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             anchor: Optional[AtlasGlossary] = None,
             glossary_qualified_name: Optional[StrictStr] = None,
             glossary_guid: Optional[StrictStr] = None,
-            categories: Optional[list[AtlasGlossaryCategory]] = None,
+            categories: Optional[List[AtlasGlossaryCategory]] = None,
         ) -> AtlasGlossaryTerm.Attributes:
             validate_required_fields(["name"], [name])
             validate_single_required_field(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -56,7 +56,7 @@ class QuickSightDataset(QuickSight):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "quick_sight_dataset_import_mode",
         "quick_sight_dataset_column_count",
         "quick_sight_dataset_folders",
@@ -100,7 +100,7 @@ class QuickSightDataset(QuickSight):
         )
 
     @property
-    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
+    def quick_sight_dataset_folders(self) -> Optional[List[QuickSightFolder]]:
         return (
             None
             if self.attributes is None
@@ -109,14 +109,14 @@ class QuickSightDataset(QuickSight):
 
     @quick_sight_dataset_folders.setter
     def quick_sight_dataset_folders(
-        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
+        self, quick_sight_dataset_folders: Optional[List[QuickSightFolder]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
 
     @property
-    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
+    def quick_sight_dataset_fields(self) -> Optional[List[QuickSightDatasetField]]:
         return (
             None
             if self.attributes is None
@@ -125,7 +125,7 @@ class QuickSightDataset(QuickSight):
 
     @quick_sight_dataset_fields.setter
     def quick_sight_dataset_fields(
-        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
+        self, quick_sight_dataset_fields: Optional[List[QuickSightDatasetField]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -138,10 +138,10 @@ class QuickSightDataset(QuickSight):
         quick_sight_dataset_column_count: Optional[int] = Field(
             default=None, description=""
         )
-        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
+        quick_sight_dataset_folders: Optional[List[QuickSightFolder]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
+        quick_sight_dataset_fields: Optional[List[QuickSightDatasetField]] = Field(
             default=None, description=""
         )  # relationship
 

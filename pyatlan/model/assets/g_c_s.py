@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -138,7 +138,7 @@ class GCS(Google):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "gcs_storage_class",
         "gcs_encryption_type",
         "gcs_e_tag",
@@ -284,37 +284,37 @@ class GCS(Google):
         self.attributes.google_location_type = google_location_type
 
     @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
+    def google_labels(self) -> Optional[List[GoogleLabel]]:
         return None if self.attributes is None else self.attributes.google_labels
 
     @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+    def google_labels(self, google_labels: Optional[List[GoogleLabel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_labels = google_labels
 
     @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
+    def google_tags(self) -> Optional[List[GoogleTag]]:
         return None if self.attributes is None else self.attributes.google_tags
 
     @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+    def google_tags(self, google_tags: Optional[List[GoogleTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
     @property
-    def input_to_processes(self) -> Optional[list[Process]]:
+    def input_to_processes(self) -> Optional[List[Process]]:
         return None if self.attributes is None else self.attributes.input_to_processes
 
     @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
+    def input_to_processes(self, input_to_processes: Optional[List[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
 
     @property
-    def output_from_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None
             if self.attributes is None
@@ -323,34 +323,34 @@ class GCS(Google):
 
     @output_from_airflow_tasks.setter
     def output_from_airflow_tasks(
-        self, output_from_airflow_tasks: Optional[list[AirflowTask]]
+        self, output_from_airflow_tasks: Optional[List[AirflowTask]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
-    def input_to_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None if self.attributes is None else self.attributes.input_to_airflow_tasks
         )
 
     @input_to_airflow_tasks.setter
     def input_to_airflow_tasks(
-        self, input_to_airflow_tasks: Optional[list[AirflowTask]]
+        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
-    def output_from_processes(self) -> Optional[list[Process]]:
+    def output_from_processes(self) -> Optional[List[Process]]:
         return (
             None if self.attributes is None else self.attributes.output_from_processes
         )
 
     @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+    def output_from_processes(self, output_from_processes: Optional[List[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
@@ -368,18 +368,18 @@ class GCS(Google):
         google_project_number: Optional[int] = Field(default=None, description="")
         google_location: Optional[str] = Field(default=None, description="")
         google_location_type: Optional[str] = Field(default=None, description="")
-        google_labels: Optional[list[GoogleLabel]] = Field(default=None, description="")
-        google_tags: Optional[list[GoogleTag]] = Field(default=None, description="")
-        input_to_processes: Optional[list[Process]] = Field(
+        google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
+        google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
+        input_to_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
-        output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
+        output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
+        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
+        output_from_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
 

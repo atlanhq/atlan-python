@@ -6,7 +6,7 @@
 ??? type-enum "{{attr_name}}"
 {% elif type.attr_type == "STRUCT" %}
 ??? type-struct "{{attr_name}}"
-{% elif type.container and type.container == "dict[" %}
+{% elif type.container and type.container == "Dict[" %}
 ??? type-map "{{attr_name}}"
 {% else %}
 ??? type-{{type.original_base}} "{{attr_name}}"

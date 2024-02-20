@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -45,7 +45,7 @@ class QlikSpace(Qlik):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "qlik_space_type",
         "qlik_datasets",
         "qlik_apps",
@@ -62,31 +62,31 @@ class QlikSpace(Qlik):
         self.attributes.qlik_space_type = qlik_space_type
 
     @property
-    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
+    def qlik_datasets(self) -> Optional[List[QlikDataset]]:
         return None if self.attributes is None else self.attributes.qlik_datasets
 
     @qlik_datasets.setter
-    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
+    def qlik_datasets(self, qlik_datasets: Optional[List[QlikDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_datasets = qlik_datasets
 
     @property
-    def qlik_apps(self) -> Optional[list[QlikApp]]:
+    def qlik_apps(self) -> Optional[List[QlikApp]]:
         return None if self.attributes is None else self.attributes.qlik_apps
 
     @qlik_apps.setter
-    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
+    def qlik_apps(self, qlik_apps: Optional[List[QlikApp]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_apps = qlik_apps
 
     class Attributes(Qlik.Attributes):
         qlik_space_type: Optional[str] = Field(default=None, description="")
-        qlik_datasets: Optional[list[QlikDataset]] = Field(
+        qlik_datasets: Optional[List[QlikDataset]] = Field(
             default=None, description=""
         )  # relationship
-        qlik_apps: Optional[list[QlikApp]] = Field(
+        qlik_apps: Optional[List[QlikApp]] = Field(
             default=None, description=""
         )  # relationship
 

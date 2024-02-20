@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from pydantic.v1 import StrictStr, validate_arguments
 from pydantic.v1.json import pydantic_encoder
@@ -54,16 +54,16 @@ TUIStep = TypeVar("TUIStep", bound="UIStep")
 @dataclass()
 class UIStep:
     title: str
-    inputs: dict[str, UIElement]
+    inputs: Dict[str, UIElement]
     description: str = ""
     id: str = ""
-    properties: list[str] = field(default_factory=list)
+    properties: List[str] = field(default_factory=list)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def __init__(
         self,
         title: StrictStr,
-        inputs: dict[StrictStr, UIElement],
+        inputs: Dict[StrictStr, UIElement],
         description: StrictStr = "",
     ):
         self.title = title
@@ -78,7 +78,7 @@ class UIStep:
             title: str
             description: str = ""
             id: str = ""
-            properties: list[str] = field(default_factory=list)
+            properties: List[str] = field(default_factory=list)
 
         inner = Inner(
             title=self.title,
@@ -94,13 +94,13 @@ TUIRule = TypeVar("TUIRule", bound="UIRule")
 
 @dataclass()
 class UIRule:
-    when_inputs: dict[str, str]
-    required: list[str]
-    properties: dict[str, dict[str, str]] = field(default_factory=dict)
+    when_inputs: Dict[str, str]
+    required: List[str]
+    properties: Dict[str, Dict[str, str]] = field(default_factory=dict)
 
     @validate_arguments()
     def __init__(
-        self, when_inputs: dict[StrictStr, StrictStr], required: list[StrictStr]
+        self, when_inputs: Dict[StrictStr, StrictStr], required: List[StrictStr]
     ):
         """
         Configure basic UI rules that when the specified inputs have specified values, certain other fields become
@@ -124,12 +124,12 @@ class UIRule:
 
 @dataclass()
 class UIConfig:
-    steps: list[UIStep]
-    rules: list[Any] = field(default_factory=list)
-    properties: dict[str, UIElement] = field(default_factory=dict)
+    steps: List[UIStep]
+    rules: List[Any] = field(default_factory=list)
+    properties: Dict[str, UIElement] = field(default_factory=dict)
 
     @validate_arguments()
-    def __init__(self, steps: list[UIStep], rules: Optional[list[Any]] = None):
+    def __init__(self, steps: List[UIStep], rules: Optional[List[Any]] = None):
         if rules is None:
             rules = []
         self.steps = steps

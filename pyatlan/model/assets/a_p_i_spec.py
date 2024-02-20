@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -103,7 +103,7 @@ class APISpec(API):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "api_spec_terms_of_service_url",
         "api_spec_contact_email",
         "api_spec_contact_name",
@@ -214,11 +214,11 @@ class APISpec(API):
         self.attributes.api_spec_service_alias = api_spec_service_alias
 
     @property
-    def api_paths(self) -> Optional[list[APIPath]]:
+    def api_paths(self) -> Optional[List[APIPath]]:
         return None if self.attributes is None else self.attributes.api_paths
 
     @api_paths.setter
-    def api_paths(self, api_paths: Optional[list[APIPath]]):
+    def api_paths(self, api_paths: Optional[List[APIPath]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_paths = api_paths
@@ -234,7 +234,7 @@ class APISpec(API):
         api_spec_license_url: Optional[str] = Field(default=None, description="")
         api_spec_contract_version: Optional[str] = Field(default=None, description="")
         api_spec_service_alias: Optional[str] = Field(default=None, description="")
-        api_paths: Optional[list[APIPath]] = Field(
+        api_paths: Optional[List[APIPath]] = Field(
             default=None, description=""
         )  # relationship
 

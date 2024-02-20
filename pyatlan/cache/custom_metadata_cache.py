@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Optional
+from typing import Dict, List, Optional, Set
 
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
@@ -14,7 +14,7 @@ class CustomMetadataCache:
     for custom metadata (including attributes).
     """
 
-    caches: dict[int, "CustomMetadataCache"] = dict()
+    caches: Dict[int, "CustomMetadataCache"] = dict()
 
     @classmethod
     def get_cache(cls) -> "CustomMetadataCache":
@@ -62,7 +62,7 @@ class CustomMetadataCache:
     @classmethod
     def get_all_custom_attributes(
         cls, include_deleted: bool = False, force_refresh: bool = False
-    ) -> dict[str, list[AttributeDef]]:
+    ) -> Dict[str, List[AttributeDef]]:
         """
         Retrieve all the custom metadata attributes. The dict will be keyed by custom metadata set
         name, and the value will be a listing of all the attributes within that set (with all the details
@@ -117,7 +117,7 @@ class CustomMetadataCache:
         return cls.get_cache()._is_attr_archived(attr_id=attr_id)
 
     @classmethod
-    def get_attributes_for_search_results(cls, set_name: str) -> Optional[list[str]]:
+    def get_attributes_for_search_results(cls, set_name: str) -> Optional[List[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
 
@@ -168,14 +168,14 @@ class CustomMetadataCache:
 
     def __init__(self, typedef_client: TypeDefClient):
         self.typedef_client: TypeDefClient = typedef_client
-        self.cache_by_id: dict[str, CustomMetadataDef] = {}
-        self.attr_cache_by_id: dict[str, AttributeDef] = {}
-        self.map_id_to_name: dict[str, str] = {}
-        self.map_name_to_id: dict[str, str] = {}
-        self.map_attr_id_to_name: dict[str, dict[str, str]] = {}
-        self.map_attr_name_to_id: dict[str, dict[str, str]] = {}
-        self.archived_attr_ids: dict[str, str] = {}
-        self.types_by_asset: dict[str, set[type]] = {}
+        self.cache_by_id: Dict[str, CustomMetadataDef] = {}
+        self.attr_cache_by_id: Dict[str, AttributeDef] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.map_attr_id_to_name: Dict[str, Dict[str, str]] = {}
+        self.map_attr_name_to_id: Dict[str, Dict[str, str]] = {}
+        self.archived_attr_ids: Dict[str, str] = {}
+        self.types_by_asset: Dict[str, Set[type]] = {}
 
     def _refresh_cache(self) -> None:
         """
@@ -259,7 +259,7 @@ class CustomMetadataCache:
 
     def _get_all_custom_attributes(
         self, include_deleted: bool = False, force_refresh: bool = False
-    ) -> dict[str, list[AttributeDef]]:
+    ) -> Dict[str, List[AttributeDef]]:
         """
         Retrieve all the custom metadata attributes. The dict will be keyed by custom metadata set
         name, and the value will be a listing of all the attributes within that set (with all the details
@@ -349,7 +349,7 @@ class CustomMetadataCache:
 
         return attr_id in self.archived_attr_ids
 
-    def _get_attributes_for_search_results_(self, set_id: str) -> Optional[list[str]]:
+    def _get_attributes_for_search_results_(self, set_id: str) -> Optional[List[str]]:
         if sub_map := self.map_attr_name_to_id.get(set_id):
             attr_ids = sub_map.values()
             return [f"{set_id}.{idstr}" for idstr in attr_ids]
@@ -362,7 +362,7 @@ class CustomMetadataCache:
             return sub_map.get(attr_name, None)
         return None
 
-    def _get_attributes_for_search_results(self, set_name: str) -> Optional[list[str]]:
+    def _get_attributes_for_search_results(self, set_name: str) -> Optional[List[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
 

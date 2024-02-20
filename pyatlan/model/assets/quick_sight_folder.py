@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -58,7 +58,7 @@ class QuickSightFolder(QuickSight):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "quick_sight_folder_type",
         "quick_sight_folder_hierarchy",
         "quick_sight_dashboards",
@@ -81,7 +81,7 @@ class QuickSightFolder(QuickSight):
         self.attributes.quick_sight_folder_type = quick_sight_folder_type
 
     @property
-    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def quick_sight_folder_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return (
             None
             if self.attributes is None
@@ -90,45 +90,45 @@ class QuickSightFolder(QuickSight):
 
     @quick_sight_folder_hierarchy.setter
     def quick_sight_folder_hierarchy(
-        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
+        self, quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
 
     @property
-    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
+    def quick_sight_dashboards(self) -> Optional[List[QuickSightDashboard]]:
         return (
             None if self.attributes is None else self.attributes.quick_sight_dashboards
         )
 
     @quick_sight_dashboards.setter
     def quick_sight_dashboards(
-        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
+        self, quick_sight_dashboards: Optional[List[QuickSightDashboard]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboards = quick_sight_dashboards
 
     @property
-    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
+    def quick_sight_datasets(self) -> Optional[List[QuickSightDataset]]:
         return None if self.attributes is None else self.attributes.quick_sight_datasets
 
     @quick_sight_datasets.setter
     def quick_sight_datasets(
-        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
+        self, quick_sight_datasets: Optional[List[QuickSightDataset]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_datasets = quick_sight_datasets
 
     @property
-    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+    def quick_sight_analyses(self) -> Optional[List[QuickSightAnalysis]]:
         return None if self.attributes is None else self.attributes.quick_sight_analyses
 
     @quick_sight_analyses.setter
     def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
+        self, quick_sight_analyses: Optional[List[QuickSightAnalysis]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -138,16 +138,16 @@ class QuickSightFolder(QuickSight):
         quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
             default=None, description=""
         )
-        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
+        quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
+        quick_sight_dashboards: Optional[List[QuickSightDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
+        quick_sight_datasets: Optional[List[QuickSightDataset]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
+        quick_sight_analyses: Optional[List[QuickSightAnalysis]] = Field(
             default=None, description=""
         )  # relationship
 

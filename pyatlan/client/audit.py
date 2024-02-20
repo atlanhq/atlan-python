@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from typing import List
+
 from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
 
 from pyatlan.client.common import ApiCaller
@@ -38,7 +40,7 @@ class AuditClient:
         )
         if ENTITY_AUDITS in raw_json:
             try:
-                entity_audits = parse_obj_as(list[EntityAudit], raw_json[ENTITY_AUDITS])
+                entity_audits = parse_obj_as(List[EntityAudit], raw_json[ENTITY_AUDITS])
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)

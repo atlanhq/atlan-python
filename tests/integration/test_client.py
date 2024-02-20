@@ -1,6 +1,6 @@
 import time
 from dataclasses import dataclass
-from typing import Generator, Optional, Type
+from typing import Generator, List, Optional, Type
 
 import pytest
 from pydantic.v1 import StrictStr
@@ -673,7 +673,7 @@ def test_search_log_most_recent_viewers(
 
 @pytest.mark.order(after="test_search_log_most_recent_viewers")
 def test_search_log_most_viewed_assets(client: AtlanClient):
-    def _assert_most_viewed_assets(details: Optional[list[AssetViews]]):
+    def _assert_most_viewed_assets(details: Optional[List[AssetViews]]):
         if details is not None:
             assert len(details) > 0
             for detail in details:

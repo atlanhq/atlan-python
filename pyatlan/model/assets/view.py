@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -98,7 +98,7 @@ class View(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "column_count",
         "row_count",
         "size_bytes",
@@ -153,11 +153,11 @@ class View(SQL):
         self.attributes.is_query_preview = is_query_preview
 
     @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
+    def query_preview_config(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.query_preview_config
 
     @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+    def query_preview_config(self, query_preview_config: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
@@ -193,21 +193,21 @@ class View(SQL):
         self.attributes.definition = definition
 
     @property
-    def columns(self) -> Optional[list[Column]]:
+    def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
     @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
+    def columns(self, columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
-    def queries(self) -> Optional[list[Query]]:
+    def queries(self) -> Optional[List[Query]]:
         return None if self.attributes is None else self.attributes.queries
 
     @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
+    def queries(self, queries: Optional[List[Query]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.queries = queries
@@ -227,16 +227,16 @@ class View(SQL):
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[dict[str, str]] = Field(
+        query_preview_config: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         definition: Optional[str] = Field(default=None, description="")
-        columns: Optional[list[Column]] = Field(
+        columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        queries: Optional[list[Query]] = Field(
+        queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(

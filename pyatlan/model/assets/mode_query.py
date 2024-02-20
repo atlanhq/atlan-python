@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -49,7 +49,7 @@ class ModeQuery(Mode):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "mode_raw_query",
         "mode_report_import_count",
         "mode_charts",
@@ -81,11 +81,11 @@ class ModeQuery(Mode):
         self.attributes.mode_report_import_count = mode_report_import_count
 
     @property
-    def mode_charts(self) -> Optional[list[ModeChart]]:
+    def mode_charts(self) -> Optional[List[ModeChart]]:
         return None if self.attributes is None else self.attributes.mode_charts
 
     @mode_charts.setter
-    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
+    def mode_charts(self, mode_charts: Optional[List[ModeChart]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_charts = mode_charts
@@ -103,7 +103,7 @@ class ModeQuery(Mode):
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(default=None, description="")
         mode_report_import_count: Optional[int] = Field(default=None, description="")
-        mode_charts: Optional[list[ModeChart]] = Field(
+        mode_charts: Optional[List[ModeChart]] = Field(
             default=None, description=""
         )  # relationship
         mode_report: Optional[ModeReport] = Field(

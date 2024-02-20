@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -65,7 +65,7 @@ class LookerQuery(Looker):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "source_definition",
         "source_definition_database",
         "source_definition_schema",
@@ -114,31 +114,31 @@ class LookerQuery(Looker):
         self.attributes.source_definition_schema = source_definition_schema
 
     @property
-    def fields(self) -> Optional[set[str]]:
+    def fields(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.fields
 
     @fields.setter
-    def fields(self, fields: Optional[set[str]]):
+    def fields(self, fields: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     @property
-    def tiles(self) -> Optional[list[LookerTile]]:
+    def tiles(self) -> Optional[List[LookerTile]]:
         return None if self.attributes is None else self.attributes.tiles
 
     @tiles.setter
-    def tiles(self, tiles: Optional[list[LookerTile]]):
+    def tiles(self, tiles: Optional[List[LookerTile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tiles = tiles
 
     @property
-    def looks(self) -> Optional[list[LookerLook]]:
+    def looks(self) -> Optional[List[LookerLook]]:
         return None if self.attributes is None else self.attributes.looks
 
     @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
+    def looks(self, looks: Optional[List[LookerLook]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.looks = looks
@@ -157,11 +157,11 @@ class LookerQuery(Looker):
         source_definition: Optional[str] = Field(default=None, description="")
         source_definition_database: Optional[str] = Field(default=None, description="")
         source_definition_schema: Optional[str] = Field(default=None, description="")
-        fields: Optional[set[str]] = Field(default=None, description="")
-        tiles: Optional[list[LookerTile]] = Field(
+        fields: Optional[Set[str]] = Field(default=None, description="")
+        tiles: Optional[List[LookerTile]] = Field(
             default=None, description=""
         )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
+        looks: Optional[List[LookerLook]] = Field(
             default=None, description=""
         )  # relationship
         model: Optional[LookerModel] = Field(

@@ -1,5 +1,5 @@
 {%- macro gen_properties(entity_def, attribute_defs) %}
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         {%- for attribute_def in attribute_defs %}
         "{{ 'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case }}",
         {%- endfor %}]

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -61,7 +61,7 @@ class ADLS(ObjectStore):
     Tags that have been applied to this asset in Azure.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
         "azure_resource_id",
         "azure_location",
@@ -122,11 +122,11 @@ class ADLS(ObjectStore):
         )
 
     @property
-    def azure_tags(self) -> Optional[list[AzureTag]]:
+    def azure_tags(self) -> Optional[List[AzureTag]]:
         return None if self.attributes is None else self.attributes.azure_tags
 
     @azure_tags.setter
-    def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
+    def azure_tags(self, azure_tags: Optional[List[AzureTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
@@ -138,7 +138,7 @@ class ADLS(ObjectStore):
         adls_account_secondary_location: Optional[str] = Field(
             default=None, description=""
         )
-        azure_tags: Optional[list[AzureTag]] = Field(default=None, description="")
+        azure_tags: Optional[List[AzureTag]] = Field(default=None, description="")
 
     attributes: "ADLS.Attributes" = Field(
         default_factory=lambda: ADLS.Attributes(),

@@ -7,7 +7,18 @@ import logging
 import time
 from abc import ABC
 from enum import Enum
-from typing import Generator, Iterable, Optional, Type, TypeVar, Union, overload
+from typing import (
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 from warnings import warn
 
 import requests
@@ -150,7 +161,7 @@ class AssetClient:
                     unflatten_custom_metadata_for_entity(
                         entity=entity, attributes=criteria.attributes
                     )
-                assets = parse_obj_as(list[Asset], raw_json["entities"])
+                assets = parse_obj_as(List[Asset], raw_json["entities"])
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)
@@ -224,7 +235,7 @@ class AssetClient:
         )
         if "entities" in raw_json:
             try:
-                assets = parse_obj_as(list[Asset], raw_json["entities"])
+                assets = parse_obj_as(List[Asset], raw_json["entities"])
                 has_more = parse_obj_as(bool, raw_json["hasMore"])
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -246,8 +257,8 @@ class AssetClient:
     def find_personas_by_name(
         self,
         name: str,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Persona]:
+        attributes: Optional[List[str]] = None,
+    ) -> List[Persona]:
         """
         Find a persona by its human-readable name.
 
@@ -275,8 +286,8 @@ class AssetClient:
     def find_purposes_by_name(
         self,
         name: str,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Purpose]:
+        attributes: Optional[List[str]] = None,
+    ) -> List[Purpose]:
         """
         Find a purpose by its human-readable name.
 
@@ -407,7 +418,7 @@ class AssetClient:
     @validate_arguments
     def upsert(
         self,
-        entity: Union[Asset, list[Asset]],
+        entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
@@ -428,7 +439,7 @@ class AssetClient:
     @validate_arguments
     def save(
         self,
-        entity: Union[Asset, list[Asset]],
+        entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
@@ -451,7 +462,7 @@ class AssetClient:
             "replaceBusinessAttributes": replace_custom_metadata,
             "overwriteBusinessAttributes": overwrite_custom_metadata,
         }
-        entities: list[Asset] = []
+        entities: List[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
         else:
@@ -476,7 +487,7 @@ class AssetClient:
 
     @validate_arguments
     def upsert_merging_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_merging_cm() instead."""
         warn(
@@ -491,7 +502,7 @@ class AssetClient:
 
     @validate_arguments
     def save_merging_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """
         If no asset exists, has the same behavior as the upsert() method, while also setting
@@ -535,7 +546,7 @@ class AssetClient:
 
     @validate_arguments
     def upsert_replacing_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_replacing_cm() instead."""
         warn(
@@ -550,7 +561,7 @@ class AssetClient:
 
     @validate_arguments
     def save_replacing_cm(
-        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """
         If no asset exists, has the same behavior as the upsert() method, while also setting
@@ -570,7 +581,7 @@ class AssetClient:
             "replaceBusinessAttributes": True,
             "overwriteBusinessAttributes": True,
         }
-        entities: list[Asset] = []
+        entities: List[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
         else:
@@ -608,7 +619,7 @@ class AssetClient:
         )
 
     @validate_arguments
-    def purge_by_guid(self, guid: Union[str, list[str]]) -> AssetMutationResponse:
+    def purge_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
         """
         Hard-deletes (purges) one or more assets by their unique identifier (GUID).
         This operation is irreversible.
@@ -617,7 +628,7 @@ class AssetClient:
         :returns: details of the hard-deleted asset(s)
         :raises AtlanError: on any API communication issue
         """
-        guids: list[str] = []
+        guids: List[str] = []
         if isinstance(guid, list):
             guids.extend(guid)
         else:
@@ -629,7 +640,7 @@ class AssetClient:
         return AssetMutationResponse(**raw_json)
 
     @validate_arguments
-    def delete_by_guid(self, guid: Union[str, list[str]]) -> AssetMutationResponse:
+    def delete_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
         """
         Soft-deletes (archives) one or more assets by their unique identifier (GUID).
         This operation can be reversed by updating the asset and its status to ACTIVE.
@@ -640,7 +651,7 @@ class AssetClient:
         :raises ApiError: if the retry limit is overrun waiting for confirmation the asset is deleted
         :raises InvalidRequestError: if an asset does not support archiving
         """
-        guids: list[str] = []
+        guids: List[str] = []
         if isinstance(guid, list):
             guids.extend(guid)
         else:
@@ -724,7 +735,7 @@ class AssetClient:
         api: API,
         asset_type: Type[A],
         qualified_name: str,
-        atlan_tag_names: list[str],
+        atlan_tag_names: List[str],
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
@@ -752,7 +763,7 @@ class AssetClient:
         self,
         asset_type: Type[A],
         qualified_name: str,
-        atlan_tag_names: list[str],
+        atlan_tag_names: List[str],
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
@@ -787,7 +798,7 @@ class AssetClient:
         self,
         asset_type: Type[A],
         qualified_name: str,
-        atlan_tag_names: list[str],
+        atlan_tag_names: List[str],
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
@@ -1196,7 +1207,7 @@ class AssetClient:
     def append_terms(
         self,
         asset_type: Type[A],
-        terms: list[AtlasGlossaryTerm],
+        terms: List[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1224,7 +1235,7 @@ class AssetClient:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         if not terms:
             return asset
-        replacement_terms: list[AtlasGlossaryTerm] = []
+        replacement_terms: List[AtlasGlossaryTerm] = []
         if existing_terms := asset.assigned_terms:
             replacement_terms.extend(
                 term for term in existing_terms if term.relationship_status != "DELETED"
@@ -1240,7 +1251,7 @@ class AssetClient:
     def replace_terms(
         self,
         asset_type: Type[A],
-        terms: list[AtlasGlossaryTerm],
+        terms: List[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1274,7 +1285,7 @@ class AssetClient:
     def remove_terms(
         self,
         asset_type: Type[A],
-        terms: list[AtlasGlossaryTerm],
+        terms: List[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1302,7 +1313,7 @@ class AssetClient:
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-        replacement_terms: list[AtlasGlossaryTerm] = []
+        replacement_terms: List[AtlasGlossaryTerm] = []
         guids_to_be_removed = {t.guid for t in terms}
         if existing_terms := asset.assigned_terms:
             replacement_terms.extend(
@@ -1322,8 +1333,8 @@ class AssetClient:
         self,
         name: str,
         connector_type: AtlanConnectorType,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Connection]:
+        attributes: Optional[List[str]] = None,
+    ) -> List[Connection]:
         """
         Find a connection by its human-readable name and type.
 
@@ -1353,7 +1364,7 @@ class AssetClient:
     def find_glossary_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
+        attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossary:
         """
         Find a glossary by its human-readable name.
@@ -1375,8 +1386,8 @@ class AssetClient:
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
-    ) -> list[AtlasGlossaryCategory]:
+        attributes: Optional[List[StrictStr]] = None,
+    ) -> List[AtlasGlossaryCategory]:
         """
         Find a category by its human-readable name.
         Note: this operation requires first knowing the qualified_name of the glossary in which the
@@ -1407,8 +1418,8 @@ class AssetClient:
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
-    ) -> list[AtlasGlossaryCategory]:
+        attributes: Optional[List[StrictStr]] = None,
+    ) -> List[AtlasGlossaryCategory]:
         """
         Find a category by its human-readable name.
         Note: this operation must run two separate queries to first resolve the qualified_name of the
@@ -1434,9 +1445,9 @@ class AssetClient:
         query: Query,
         name: str,
         asset_type: Type[A],
-        attributes: Optional[list[StrictStr]],
+        attributes: Optional[List[StrictStr]],
         allow_multiple: bool = False,
-    ) -> list[A]:
+    ) -> List[A]:
         dsl = DSL(query=query)
         search_request = IndexSearchRequest(
             dsl=dsl,
@@ -1466,7 +1477,7 @@ class AssetClient:
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
+        attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """
         Find a term by its human-readable name.
@@ -1493,7 +1504,7 @@ class AssetClient:
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        attributes: Optional[list[StrictStr]] = None,
+        attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """
         Find a term by its human-readable name.
@@ -1518,7 +1529,7 @@ class AssetClient:
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/pydantic/pydantic/issues/2901
     def get_hierarchy(
-        self, glossary: AtlasGlossary, attributes: Optional[list[AtlanField]] = None
+        self, glossary: AtlasGlossary, attributes: Optional[List[AtlanField]] = None
     ) -> CategoryHierarchy:
         """
         Retrieve category hierarchy in this Glossary, in a traversable form. You can traverse in either depth_first
@@ -1537,8 +1548,8 @@ class AssetClient:
             raise ErrorCode.GLOSSARY_MISSING_QUALIFIED_NAME.exception_with_parameters()
         if attributes is None:
             attributes = []
-        top_categories: set[str] = set()
-        category_dict: dict[str, AtlasGlossaryCategory] = {}
+        top_categories: Set[str] = set()
+        category_dict: Dict[str, AtlasGlossaryCategory] = {}
         search = (
             FluentSearch.select()
             .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name))
@@ -1578,7 +1589,7 @@ class SearchResults(ABC, Iterable):
         criteria: SearchRequest,
         start: int,
         size: int,
-        assets: list[Asset],
+        assets: List[Asset],
     ):
         self._client = client
         self._endpoint = endpoint
@@ -1587,7 +1598,7 @@ class SearchResults(ABC, Iterable):
         self._size = size
         self._assets = assets
 
-    def current_page(self) -> list[Asset]:
+    def current_page(self) -> List[Asset]:
         """
         Retrieve the current page of results.
 
@@ -1632,7 +1643,7 @@ class SearchResults(ABC, Iterable):
                 unflatten_custom_metadata_for_entity(
                     entity=entity, attributes=self._criteria.attributes
                 )
-            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+            self._assets = parse_obj_as(List[Asset], raw_json["entities"])
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -1666,7 +1677,7 @@ class IndexSearchResults(SearchResults, Iterable):
         start: int,
         size: int,
         count: int,
-        assets: list[Asset],
+        assets: List[Asset],
         aggregations: Optional[Aggregations],
     ):
         super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
@@ -1710,7 +1721,7 @@ class LineageListResults(SearchResults, Iterable):
         start: int,
         size: int,
         has_more: bool,
-        assets: list[Asset],
+        assets: List[Asset],
     ):
         super().__init__(client, GET_LINEAGE_LIST, criteria, start, size, assets)
         self._has_more = has_more
@@ -1742,10 +1753,10 @@ class CustomMetadataHandling(str, Enum):
 class FailedBatch:
     """Internal class to capture batch failures."""
 
-    failed_assets: list[Asset]
+    failed_assets: List[Asset]
     failure_reason: Exception
 
-    def __init__(self, failed_assets: list[Asset], failure_reason: Exception):
+    def __init__(self, failed_assets: List[Asset], failure_reason: Exception):
         self.failed_assets = failed_assets
         self.failure_reason = failure_reason
 
@@ -1779,13 +1790,13 @@ class Batch:
             custom_metadata_handling
         )
         self._capture_failures: bool = capture_failures
-        self._batch: list[Asset] = []
-        self._failures: list[FailedBatch] = []
-        self._created: list[Asset] = []
-        self._updated: list[Asset] = []
+        self._batch: List[Asset] = []
+        self._failures: List[FailedBatch] = []
+        self._created: List[Asset] = []
+        self._updated: List[Asset] = []
 
     @property
-    def failures(self) -> list[FailedBatch]:
+    def failures(self) -> List[FailedBatch]:
         """Get information on any failed batches
 
         :returns: a list of FailedBatch objects that contain information about any batches that may have failed
@@ -1794,7 +1805,7 @@ class Batch:
         return self._failures
 
     @property
-    def created(self) -> list[Asset]:
+    def created(self) -> List[Asset]:
         """Get a list of all the Assets that were created
 
         :returns: a list of all the Assets that were created
@@ -1802,7 +1813,7 @@ class Batch:
         return self._created
 
     @property
-    def updated(self) -> list[Asset]:
+    def updated(self) -> List[Asset]:
         """Get a list of all the Assets that were updated
 
         :returns: a list of all the Assets that were updated
@@ -1876,20 +1887,20 @@ class Batch:
                     self._track(self._updated, asset)
 
     @staticmethod
-    def _track(tracker: list[Asset], candidate: Asset):
+    def _track(tracker: List[Asset], candidate: Asset):
         asset = candidate.trim_to_required()
         asset.name = candidate.name
         tracker.append(asset)
 
 
-def _bfs(bfs_list: list[AtlasGlossaryCategory], to_add: list[AtlasGlossaryCategory]):
+def _bfs(bfs_list: List[AtlasGlossaryCategory], to_add: List[AtlasGlossaryCategory]):
     for nade in to_add:
         bfs_list.extend(nade.children_categories or [])
     for node in to_add:
         _bfs(bfs_list, node.children_categories or [])
 
 
-def _dfs(dfs_list: list[AtlasGlossaryCategory], to_add: list[AtlasGlossaryCategory]):
+def _dfs(dfs_list: List[AtlasGlossaryCategory], to_add: List[AtlasGlossaryCategory]):
     for node in to_add:
         dfs_list.append(node)
         _dfs(dfs_list=dfs_list, to_add=node.children_categories or [])
@@ -1897,21 +1908,21 @@ def _dfs(dfs_list: list[AtlasGlossaryCategory], to_add: list[AtlasGlossaryCatego
 
 class CategoryHierarchy:
     def __init__(
-        self, top_level: set[str], stub_dict: dict[str, AtlasGlossaryCategory]
+        self, top_level: Set[str], stub_dict: Dict[str, AtlasGlossaryCategory]
     ):
         self._top_level = top_level
         self._root_categories: list = []
-        self._categories: dict[str, AtlasGlossaryCategory] = {}
+        self._categories: Dict[str, AtlasGlossaryCategory] = {}
         self._build_category_dict(stub_dict)
-        self._bfs_list: list[AtlasGlossaryCategory] = []
-        self._dfs_list: list[AtlasGlossaryCategory] = []
+        self._bfs_list: List[AtlasGlossaryCategory] = []
+        self._dfs_list: List[AtlasGlossaryCategory] = []
 
-    def _build_category_dict(self, stub_dict: dict[str, AtlasGlossaryCategory]):
+    def _build_category_dict(self, stub_dict: Dict[str, AtlasGlossaryCategory]):
         for category in stub_dict.values():
             if parent := category.parent_category:
                 parent_guid = parent.guid
                 full_parent = self._categories.get(parent_guid, stub_dict[parent_guid])
-                children: list[AtlasGlossaryCategory] = (
+                children: List[AtlasGlossaryCategory] = (
                     []
                     if full_parent.children_categories is None
                     else full_parent.children_categories.copy()
@@ -1933,7 +1944,7 @@ class CategoryHierarchy:
         return self._categories[guid]
 
     @property
-    def root_categories(self) -> list[AtlasGlossaryCategory]:
+    def root_categories(self) -> List[AtlasGlossaryCategory]:
         """
         Retrieve only the root-level categories (those with no parents).
 
@@ -1944,7 +1955,7 @@ class CategoryHierarchy:
         return self._root_categories
 
     @property
-    def breadth_first(self) -> list[AtlasGlossaryCategory]:
+    def breadth_first(self) -> List[AtlasGlossaryCategory]:
         """
         Retrieve all the categories in the hierarchy in breadth-first traversal order.
 
@@ -1958,14 +1969,14 @@ class CategoryHierarchy:
         return self._bfs_list
 
     @property
-    def depth_first(self) -> list[AtlasGlossaryCategory]:
+    def depth_first(self) -> List[AtlasGlossaryCategory]:
         """
         Retrieve all the categories in the hierarchy in depth-first traversal order.
 
         :returns: all categories in depth-first order
         """
         if not self._dfs_list:
-            dfs_list: list[AtlasGlossaryCategory] = []
+            dfs_list: List[AtlasGlossaryCategory] = []
             _dfs(dfs_list=dfs_list, to_add=self.root_categories)
             self._dfs_list = dfs_list
         return self._dfs_list

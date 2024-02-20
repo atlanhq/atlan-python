@@ -3,7 +3,7 @@
 from abc import ABC
 from datetime import date
 from enum import Enum
-from typing import Union, overload
+from typing import List, Union, overload
 
 from pydantic.v1 import StrictBool, StrictFloat, StrictInt, StrictStr
 
@@ -205,7 +205,7 @@ class KeywordField(SearchableField):
             case_insensitive=case_insensitive,
         )
 
-    def within(self, values: list[str]) -> Query:
+    def within(self, values: List[str]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that exactly matches
         at least one of the provided string values.
@@ -634,7 +634,7 @@ class CustomMetadataField(SearchableField):
             case_insensitive=case_insensitive,
         )
 
-    def within(self, values: list[str]) -> Query:
+    def within(self, values: List[str]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that exactly matches
         at least one of the provided string values.

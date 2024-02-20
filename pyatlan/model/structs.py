@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional, Union
+from typing import Dict, List, Optional, Set, Union
 
 from pydantic.v1 import BaseModel, Extra, Field
 
@@ -56,8 +56,8 @@ class KafkaTopicConsumption(AtlanObject):
 class Histogram(AtlanObject):
     """Description"""
 
-    boundaries: set[float] = Field(description="")
-    frequencies: set[float] = Field(description="")
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
 
 
 class ColumnValueFrequencyMap(AtlanObject):
@@ -81,7 +81,7 @@ class SourceTagAttachment(AtlanObject):
     source_tag_qualified_name: Optional[str] = Field(default=None, description="")
     source_tag_guid: Optional[str] = Field(default=None, description="")
     source_tag_connector_name: Optional[str] = Field(default=None, description="")
-    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
+    source_tag_value: Optional[List[SourceTagAttachmentValue]] = Field(
         default=None, description=""
     )
     is_source_tag_synced: Optional[bool] = Field(default=None, description="")
@@ -140,7 +140,7 @@ class AuthPolicyCondition(AtlanObject):
     """Description"""
 
     policy_condition_type: str = Field(description="")
-    policy_condition_values: set[str] = Field(description="")
+    policy_condition_values: Set[str] = Field(description="")
 
 
 class AwsTag(AtlanObject):
@@ -218,7 +218,7 @@ class SourceTagAttribute(AtlanObject):
 
     tag_attribute_key: Optional[str] = Field(default=None, description="")
     tag_attribute_value: Optional[str] = Field(default=None, description="")
-    tag_attribute_properties: Optional[dict[str, str]] = Field(
+    tag_attribute_properties: Optional[Dict[str, str]] = Field(
         default=None, description=""
     )
 

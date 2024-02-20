@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -124,7 +124,7 @@ class SalesforceField(Salesforce):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "data_type",
         "object_qualified_name",
         "order",
@@ -278,11 +278,11 @@ class SalesforceField(Salesforce):
         self.attributes.is_unique = is_unique
 
     @property
-    def picklist_values(self) -> Optional[set[str]]:
+    def picklist_values(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.picklist_values
 
     @picklist_values.setter
-    def picklist_values(self, picklist_values: Optional[set[str]]):
+    def picklist_values(self, picklist_values: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.picklist_values = picklist_values
@@ -314,11 +314,11 @@ class SalesforceField(Salesforce):
         self.attributes.default_value_formula = default_value_formula
 
     @property
-    def lookup_objects(self) -> Optional[list[SalesforceObject]]:
+    def lookup_objects(self) -> Optional[List[SalesforceObject]]:
         return None if self.attributes is None else self.attributes.lookup_objects
 
     @lookup_objects.setter
-    def lookup_objects(self, lookup_objects: Optional[list[SalesforceObject]]):
+    def lookup_objects(self, lookup_objects: Optional[List[SalesforceObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.lookup_objects = lookup_objects
@@ -347,10 +347,10 @@ class SalesforceField(Salesforce):
         precision: Optional[int] = Field(default=None, description="")
         numeric_scale: Optional[float] = Field(default=None, description="")
         is_unique: Optional[bool] = Field(default=None, description="")
-        picklist_values: Optional[set[str]] = Field(default=None, description="")
+        picklist_values: Optional[Set[str]] = Field(default=None, description="")
         is_polymorphic_foreign_key: Optional[bool] = Field(default=None, description="")
         default_value_formula: Optional[str] = Field(default=None, description="")
-        lookup_objects: Optional[list[SalesforceObject]] = Field(
+        lookup_objects: Optional[List[SalesforceObject]] = Field(
             default=None, description=""
         )  # relationship
         object: Optional[SalesforceObject] = Field(

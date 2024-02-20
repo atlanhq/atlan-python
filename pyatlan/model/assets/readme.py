@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 from urllib.parse import quote, unquote
 
 from pydantic.v1 import Field, validator
@@ -65,17 +65,17 @@ class Readme(Resource):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "see_also",
         "asset",
     ]
 
     @property
-    def see_also(self) -> Optional[list[Readme]]:
+    def see_also(self) -> Optional[List[Readme]]:
         return None if self.attributes is None else self.attributes.see_also
 
     @see_also.setter
-    def see_also(self, see_also: Optional[list[Readme]]):
+    def see_also(self, see_also: Optional[List[Readme]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.see_also = see_also
@@ -91,7 +91,7 @@ class Readme(Resource):
         self.attributes.asset = asset
 
     class Attributes(Resource.Attributes):
-        see_also: Optional[list[Readme]] = Field(
+        see_also: Optional[List[Readme]] = Field(
             default=None, description=""
         )  # relationship
         asset: Optional[Asset] = Field(default=None, description="")  # relationship

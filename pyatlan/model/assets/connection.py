@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -27,9 +27,9 @@ class Connection(Asset, type_name="Connection"):
         *,
         name: str,
         connector_type: AtlanConnectorType,
-        admin_users: Optional[list[str]] = None,
-        admin_groups: Optional[list[str]] = None,
-        admin_roles: Optional[list[str]] = None,
+        admin_users: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
     ) -> Connection:
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
@@ -211,7 +211,7 @@ class Connection(Asset, type_name="Connection"):
 
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "category",
         "sub_category",
         "host",
@@ -303,11 +303,11 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.allow_query_preview = allow_query_preview
 
     @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
+    def query_preview_config(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.query_preview_config
 
     @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+    def query_preview_config(self, query_preview_config: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
@@ -495,7 +495,7 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.has_popularity_insights = has_popularity_insights
 
     @property
-    def connection_dbt_environments(self) -> Optional[set[str]]:
+    def connection_dbt_environments(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -504,7 +504,7 @@ class Connection(Asset, type_name="Connection"):
 
     @connection_dbt_environments.setter
     def connection_dbt_environments(
-        self, connection_dbt_environments: Optional[set[str]]
+        self, connection_dbt_environments: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -593,7 +593,7 @@ class Connection(Asset, type_name="Connection"):
         port: Optional[int] = Field(default=None, description="")
         allow_query: Optional[bool] = Field(default=None, description="")
         allow_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[dict[str, str]] = Field(
+        query_preview_config: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         query_config: Optional[str] = Field(default=None, description="")
@@ -619,7 +619,7 @@ class Connection(Asset, type_name="Connection"):
             default=None, description=""
         )
         has_popularity_insights: Optional[bool] = Field(default=None, description="")
-        connection_dbt_environments: Optional[set[str]] = Field(
+        connection_dbt_environments: Optional[Set[str]] = Field(
             default=None, description=""
         )
         connection_s_s_o_credential_guid: Optional[str] = Field(

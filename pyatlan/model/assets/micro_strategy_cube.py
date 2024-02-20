@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -61,7 +61,7 @@ class MicroStrategyCube(MicroStrategy):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "micro_strategy_cube_type",
         "micro_strategy_cube_query",
         "micro_strategy_metrics",
@@ -98,14 +98,14 @@ class MicroStrategyCube(MicroStrategy):
         self.attributes.micro_strategy_cube_query = micro_strategy_cube_query
 
     @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+    def micro_strategy_metrics(self) -> Optional[List[MicroStrategyMetric]]:
         return (
             None if self.attributes is None else self.attributes.micro_strategy_metrics
         )
 
     @micro_strategy_metrics.setter
     def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+        self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -126,7 +126,7 @@ class MicroStrategyCube(MicroStrategy):
         self.attributes.micro_strategy_project = micro_strategy_project
 
     @property
-    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+    def micro_strategy_attributes(self) -> Optional[List[MicroStrategyAttribute]]:
         return (
             None
             if self.attributes is None
@@ -135,7 +135,7 @@ class MicroStrategyCube(MicroStrategy):
 
     @micro_strategy_attributes.setter
     def micro_strategy_attributes(
-        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+        self, micro_strategy_attributes: Optional[List[MicroStrategyAttribute]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -144,13 +144,13 @@ class MicroStrategyCube(MicroStrategy):
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_cube_type: Optional[str] = Field(default=None, description="")
         micro_strategy_cube_query: Optional[str] = Field(default=None, description="")
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+        micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+        micro_strategy_attributes: Optional[List[MicroStrategyAttribute]] = Field(
             default=None, description=""
         )  # relationship
 

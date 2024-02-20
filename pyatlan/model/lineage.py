@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 from collections import deque
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr, validate_arguments
 
@@ -41,13 +41,13 @@ class DirectedPair:
 
 @dataclass(frozen=True)
 class LineageGraph:
-    downstream_list: dict[str, dict[DirectedPair, None]]
-    upstream_list: dict[str, dict[DirectedPair, None]]
+    downstream_list: Dict[str, Dict[DirectedPair, None]]
+    upstream_list: Dict[str, Dict[DirectedPair, None]]
 
     @classmethod
-    def create(cls, relations: list[LineageRelation]) -> "LineageGraph":
-        downstream_list: dict[str, dict[DirectedPair, None]] = {}
-        upstream_list: dict[str, dict[DirectedPair, None]] = {}
+    def create(cls, relations: List[LineageRelation]) -> "LineageGraph":
+        downstream_list: Dict[str, Dict[DirectedPair, None]] = {}
+        upstream_list: Dict[str, Dict[DirectedPair, None]] = {}
 
         def add_relation(_relation: LineageRelation):
             if (
@@ -82,34 +82,34 @@ class LineageGraph:
 
     @staticmethod
     def get_asset_guids(
-        guid: str, guids: dict[str, dict[DirectedPair, None]]
-    ) -> list[str]:
+        guid: str, guids: Dict[str, Dict[DirectedPair, None]]
+    ) -> List[str]:
         if guid in guids:
             return list({pair.target_guid: None for pair in guids[guid].keys()}.keys())
         return []
 
     @staticmethod
     def get_process_guids(
-        guid: str, guids: dict[str, dict[DirectedPair, None]]
-    ) -> list[str]:
+        guid: str, guids: Dict[str, Dict[DirectedPair, None]]
+    ) -> List[str]:
         if guid in guids:
             return list({pair.process_guid: None for pair in guids[guid].keys()}.keys())
         return []
 
-    def get_downstream_asset_guids(self, guid: str) -> list[str]:
+    def get_downstream_asset_guids(self, guid: str) -> List[str]:
         return LineageGraph.get_asset_guids(guid, self.downstream_list)
 
-    def get_downstream_process_guids(self, guid: str) -> list[str]:
+    def get_downstream_process_guids(self, guid: str) -> List[str]:
         return LineageGraph.get_process_guids(guid, self.downstream_list)
 
-    def get_upstream_asset_guids(self, guid: str) -> list[str]:
+    def get_upstream_asset_guids(self, guid: str) -> List[str]:
         return LineageGraph.get_asset_guids(guid, self.upstream_list)
 
-    def get_upstream_process_guids(self, guid: str) -> list[str]:
+    def get_upstream_process_guids(self, guid: str) -> List[str]:
         return LineageGraph.get_process_guids(guid, self.upstream_list)
 
-    def get_all_downstream_asset_guids_dfs(self, guid: str) -> list[str]:
-        visited: dict[str, None] = {}
+    def get_all_downstream_asset_guids_dfs(self, guid: str) -> List[str]:
+        visited: Dict[str, None] = {}
         stack: deque[str] = deque()
         stack.append(guid)
         while len(stack) > 0:
@@ -121,8 +121,8 @@ class LineageGraph:
                         stack.append(downstream_guid)
         return list(visited.keys())
 
-    def get_all_upstream_asset_guids_dfs(self, guid: str) -> list[str]:
-        visited: dict[str, None] = {}
+    def get_all_upstream_asset_guids_dfs(self, guid: str) -> List[str]:
+        visited: Dict[str, None] = {}
         stack: deque[str] = deque()
         stack.append(guid)
         while len(stack) > 0:
@@ -143,9 +143,9 @@ class LineageResponse(AtlanObject):
     offset: int
     has_more_upstream_vertices: bool
     has_more_downstream_vertices: bool
-    guid_entity_map: dict[str, Asset]
-    relations: list[LineageRelation]
-    vertex_children_info: Optional[dict[str, Any]]
+    guid_entity_map: Dict[str, Asset]
+    relations: List[LineageRelation]
+    vertex_children_info: Optional[Dict[str, Any]]
     graph: Optional[LineageGraph] = None
 
     def get_graph(self):
@@ -155,12 +155,12 @@ class LineageResponse(AtlanObject):
 
     def get_all_downstream_asset_guids_dfs(
         self, guid: Optional[str] = None
-    ) -> list[str]:
+    ) -> List[str]:
         return self.get_graph().get_all_downstream_asset_guids_dfs(
             guid or self.base_entity_guid
         )
 
-    def get_all_downstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
+    def get_all_downstream_assets_dfs(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_all_downstream_asset_guids_dfs(
@@ -168,12 +168,12 @@ class LineageResponse(AtlanObject):
             )
         ]
 
-    def get_all_upstream_asset_guids_dfs(self, guid: Optional[str] = None) -> list[str]:
+    def get_all_upstream_asset_guids_dfs(self, guid: Optional[str] = None) -> List[str]:
         return self.get_graph().get_all_upstream_asset_guids_dfs(
             guid or self.base_entity_guid
         )
 
-    def get_all_upstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
+    def get_all_upstream_assets_dfs(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_all_upstream_asset_guids_dfs(
@@ -181,12 +181,12 @@ class LineageResponse(AtlanObject):
             )
         ]
 
-    def get_downstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
+    def get_downstream_asset_guids(self, guid: Optional[str] = None) -> List[str]:
         return self.get_graph().get_downstream_asset_guids(
             guid or self.base_entity_guid
         )
 
-    def get_downstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
+    def get_downstream_assets(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_downstream_asset_guids(
@@ -194,15 +194,15 @@ class LineageResponse(AtlanObject):
             )
         ]
 
-    def get_downstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
+    def get_downstream_process_guids(self, guid: Optional[str] = None) -> List[str]:
         return self.get_graph().get_downstream_process_guids(
             guid or self.base_entity_guid
         )
 
-    def get_upstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
+    def get_upstream_asset_guids(self, guid: Optional[str] = None) -> List[str]:
         return self.get_graph().get_upstream_asset_guids(guid or self.base_entity_guid)
 
-    def get_upstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
+    def get_upstream_assets(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_upstream_asset_guids(
@@ -210,7 +210,7 @@ class LineageResponse(AtlanObject):
             )
         ]
 
-    def get_upstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
+    def get_upstream_process_guids(self, guid: Optional[str] = None) -> List[str]:
         return self.get_graph().get_upstream_process_guids(
             guid or self.base_entity_guid
         )
@@ -246,7 +246,7 @@ class FilterList(AtlanObject):
         default=Condition.AND,
         description="Whether the criteria must all match (AND) or any matching is sufficient (OR).",
     )
-    criteria: list[EntityFilter] = Field(
+    criteria: List[EntityFilter] = Field(
         description="Basis on which to compare a result for inclusion.",
         alias="criterion",
     )
@@ -335,12 +335,12 @@ class FluentLineage:
         size: StrictInt = 10,
         exclude_meanings: StrictBool = True,
         exclude_atlan_tags: StrictBool = True,
-        includes_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
-        includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        includes_on_results: Optional[Union[List[AtlanField], AtlanField]] = None,
+        includes_in_results: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         includes_condition: FilterList.Condition = FilterList.Condition.AND,
-        where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        where_assets: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         assets_condition: FilterList.Condition = FilterList.Condition.AND,
-        where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        where_relationships: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         relationships_condition: FilterList.Condition = FilterList.Condition.AND,
     ):
         """Create a FluentLineage request.
@@ -371,16 +371,16 @@ class FluentLineage:
         self._exclude_atlan_tags: bool = exclude_atlan_tags
         self._exclude_meanings: bool = exclude_meanings
 
-        self._includes_on_results: list[AtlanField] = self._to_list(includes_on_results)
-        self._includes_in_results: list[LineageFilter] = self._to_list(
+        self._includes_on_results: List[AtlanField] = self._to_list(includes_on_results)
+        self._includes_in_results: List[LineageFilter] = self._to_list(
             includes_in_results
         )
         self._includes_condition: FilterList.Condition = includes_condition
         self._size: int = size
         self._starting_guid = starting_guid
-        self._where_assets: list[LineageFilter] = self._to_list(where_assets)
+        self._where_assets: List[LineageFilter] = self._to_list(where_assets)
         self._assets_condition: FilterList.Condition = assets_condition
-        self._where_relationships: list[LineageFilter] = self._to_list(
+        self._where_relationships: List[LineageFilter] = self._to_list(
             where_relationships
         )
         self._relationships_condition: FilterList.Condition = relationships_condition

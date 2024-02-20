@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 from pydantic.v1 import Field
 
@@ -30,7 +30,7 @@ class Credential(AtlanObject):
     # for example, a secondary secret for particular forms of authentication
     # and / or additional details about the scope of the connectivity
     # (a specific database, role, warehouse, etc).
-    extras: Optional[dict[str, Any]] = Field(default=None, alias="extra")
+    extras: Optional[Dict[str, Any]] = Field(default=None, alias="extra")
     # Name of the connector configuration
     # responsible for managing the credential.
     connector_config_name: Optional[str] = Field(default=None)
@@ -52,9 +52,9 @@ class CredentialResponse(AtlanObject):
     auth_type: str
     host: str
     port: Optional[int]
-    metadata: Optional[dict[str, Any]]
-    level: Optional[dict[str, Any]]
-    connection: Optional[dict[str, Any]]
+    metadata: Optional[Dict[str, Any]]
+    level: Optional[Dict[str, Any]]
+    connection: Optional[Dict[str, Any]]
 
     def to_credential(self) -> Credential:
         """

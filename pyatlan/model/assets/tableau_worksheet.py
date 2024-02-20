@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -77,7 +77,7 @@ class TableauWorksheet(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -130,11 +130,11 @@ class TableauWorksheet(Tableau):
         )
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -162,35 +162,35 @@ class TableauWorksheet(Tableau):
         self.attributes.workbook = workbook
 
     @property
-    def datasource_fields(self) -> Optional[list[TableauDatasourceField]]:
+    def datasource_fields(self) -> Optional[List[TableauDatasourceField]]:
         return None if self.attributes is None else self.attributes.datasource_fields
 
     @datasource_fields.setter
     def datasource_fields(
-        self, datasource_fields: Optional[list[TableauDatasourceField]]
+        self, datasource_fields: Optional[List[TableauDatasourceField]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasource_fields = datasource_fields
 
     @property
-    def calculated_fields(self) -> Optional[list[TableauCalculatedField]]:
+    def calculated_fields(self) -> Optional[List[TableauCalculatedField]]:
         return None if self.attributes is None else self.attributes.calculated_fields
 
     @calculated_fields.setter
     def calculated_fields(
-        self, calculated_fields: Optional[list[TableauCalculatedField]]
+        self, calculated_fields: Optional[List[TableauCalculatedField]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.calculated_fields = calculated_fields
 
     @property
-    def dashboards(self) -> Optional[list[TableauDashboard]]:
+    def dashboards(self) -> Optional[List[TableauDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
     @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
+    def dashboards(self, dashboards: Optional[List[TableauDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
@@ -201,20 +201,20 @@ class TableauWorksheet(Tableau):
         top_level_project_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
         workbook: Optional[TableauWorkbook] = Field(
             default=None, description=""
         )  # relationship
-        datasource_fields: Optional[list[TableauDatasourceField]] = Field(
+        datasource_fields: Optional[List[TableauDatasourceField]] = Field(
             default=None, description=""
         )  # relationship
-        calculated_fields: Optional[list[TableauCalculatedField]] = Field(
+        calculated_fields: Optional[List[TableauCalculatedField]] = Field(
             default=None, description=""
         )  # relationship
-        dashboards: Optional[list[TableauDashboard]] = Field(
+        dashboards: Optional[List[TableauDashboard]] = Field(
             default=None, description=""
         )  # relationship
 

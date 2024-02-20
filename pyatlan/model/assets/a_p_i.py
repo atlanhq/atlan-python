@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -68,7 +68,7 @@ class API(Catalog):
     Whether authentication is optional (true) or required (false).
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "api_spec_type",
         "api_spec_version",
         "api_spec_name",
@@ -120,11 +120,11 @@ class API(Catalog):
         self.attributes.api_spec_qualified_name = api_spec_qualified_name
 
     @property
-    def api_external_docs(self) -> Optional[dict[str, str]]:
+    def api_external_docs(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.api_external_docs
 
     @api_external_docs.setter
-    def api_external_docs(self, api_external_docs: Optional[dict[str, str]]):
+    def api_external_docs(self, api_external_docs: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_external_docs = api_external_docs
@@ -144,7 +144,7 @@ class API(Catalog):
         api_spec_version: Optional[str] = Field(default=None, description="")
         api_spec_name: Optional[str] = Field(default=None, description="")
         api_spec_qualified_name: Optional[str] = Field(default=None, description="")
-        api_external_docs: Optional[dict[str, str]] = Field(
+        api_external_docs: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         api_is_auth_optional: Optional[bool] = Field(default=None, description="")

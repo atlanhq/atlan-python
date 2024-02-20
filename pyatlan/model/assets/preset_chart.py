@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -62,7 +62,7 @@ class PresetChart(Preset):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "preset_chart_description_markdown",
         "preset_chart_form_data",
         "preset_dashboard",
@@ -87,13 +87,13 @@ class PresetChart(Preset):
         )
 
     @property
-    def preset_chart_form_data(self) -> Optional[dict[str, str]]:
+    def preset_chart_form_data(self) -> Optional[Dict[str, str]]:
         return (
             None if self.attributes is None else self.attributes.preset_chart_form_data
         )
 
     @preset_chart_form_data.setter
-    def preset_chart_form_data(self, preset_chart_form_data: Optional[dict[str, str]]):
+    def preset_chart_form_data(self, preset_chart_form_data: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_chart_form_data = preset_chart_form_data
@@ -112,7 +112,7 @@ class PresetChart(Preset):
         preset_chart_description_markdown: Optional[str] = Field(
             default=None, description=""
         )
-        preset_chart_form_data: Optional[dict[str, str]] = Field(
+        preset_chart_form_data: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         preset_dashboard: Optional[PresetDashboard] = Field(

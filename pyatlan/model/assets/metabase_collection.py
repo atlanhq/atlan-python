@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -68,7 +68,7 @@ class MetabaseCollection(Metabase):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "metabase_slug",
         "metabase_color",
         "metabase_namespace",
@@ -126,23 +126,23 @@ class MetabaseCollection(Metabase):
         )
 
     @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+    def metabase_dashboards(self) -> Optional[List[MetabaseDashboard]]:
         return None if self.attributes is None else self.attributes.metabase_dashboards
 
     @metabase_dashboards.setter
     def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+        self, metabase_dashboards: Optional[List[MetabaseDashboard]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_dashboards = metabase_dashboards
 
     @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+    def metabase_questions(self) -> Optional[List[MetabaseQuestion]]:
         return None if self.attributes is None else self.attributes.metabase_questions
 
     @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+    def metabase_questions(self, metabase_questions: Optional[List[MetabaseQuestion]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_questions = metabase_questions
@@ -154,10 +154,10 @@ class MetabaseCollection(Metabase):
         metabase_is_personal_collection: Optional[bool] = Field(
             default=None, description=""
         )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
+        metabase_dashboards: Optional[List[MetabaseDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
+        metabase_questions: Optional[List[MetabaseQuestion]] = Field(
             default=None, description=""
         )  # relationship
 

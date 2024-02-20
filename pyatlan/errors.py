@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Protocol, Type, TypeVar
+from typing import Dict, Protocol, Type, TypeVar
 
 E = TypeVar("E", bound="AtlanError")
 RAISE_GITHUB_ISSUE = (
@@ -852,7 +852,7 @@ class ErrorCode(Enum):
         return self.exception_type(self, *args)
 
 
-ERROR_CODE_FOR_HTTP_STATUS: dict[int, ErrorCode] = {
+ERROR_CODE_FOR_HTTP_STATUS: Dict[int, ErrorCode] = {
     400: ErrorCode.INVALID_REQUEST_PASSTHROUGH,
     401: ErrorCode.AUTHENTICATION_PASSTHROUGH,
     403: ErrorCode.PERMISSION_PASSTHROUGH,

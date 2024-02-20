@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -49,14 +49,14 @@ class MicroStrategyDossier(MicroStrategy):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "micro_strategy_dossier_chapter_names",
         "micro_strategy_visualizations",
         "micro_strategy_project",
     ]
 
     @property
-    def micro_strategy_dossier_chapter_names(self) -> Optional[set[str]]:
+    def micro_strategy_dossier_chapter_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -65,7 +65,7 @@ class MicroStrategyDossier(MicroStrategy):
 
     @micro_strategy_dossier_chapter_names.setter
     def micro_strategy_dossier_chapter_names(
-        self, micro_strategy_dossier_chapter_names: Optional[set[str]]
+        self, micro_strategy_dossier_chapter_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -76,7 +76,7 @@ class MicroStrategyDossier(MicroStrategy):
     @property
     def micro_strategy_visualizations(
         self,
-    ) -> Optional[list[MicroStrategyVisualization]]:
+    ) -> Optional[List[MicroStrategyVisualization]]:
         return (
             None
             if self.attributes is None
@@ -85,7 +85,7 @@ class MicroStrategyDossier(MicroStrategy):
 
     @micro_strategy_visualizations.setter
     def micro_strategy_visualizations(
-        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+        self, micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -106,11 +106,11 @@ class MicroStrategyDossier(MicroStrategy):
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
+        micro_strategy_dossier_chapter_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
         micro_strategy_visualizations: Optional[
-            list[MicroStrategyVisualization]
+            List[MicroStrategyVisualization]
         ] = Field(
             default=None, description=""
         )  # relationship

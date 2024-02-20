@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -145,7 +145,7 @@ class Dbt(Catalog):
 
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -333,11 +333,11 @@ class Dbt(Catalog):
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
-    def dbt_tags(self) -> Optional[set[str]]:
+    def dbt_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.dbt_tags
 
     @dbt_tags.setter
-    def dbt_tags(self, dbt_tags: Optional[set[str]]):
+    def dbt_tags(self, dbt_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
@@ -386,7 +386,7 @@ class Dbt(Catalog):
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
         dbt_environment_name: Optional[str] = Field(default=None, description="")
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
-        dbt_tags: Optional[set[str]] = Field(default=None, description="")
+        dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""

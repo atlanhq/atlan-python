@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic.v1 import Field
 
@@ -12,16 +12,16 @@ from pyatlan.model.search import Query, SortItem
 class PackageParameter(AtlanObject):
     parameter: str
     type: str
-    body: dict[str, Any]
+    body: Dict[str, Any]
 
 
 class WorkflowMetadata(AtlanObject):
-    annotations: Optional[dict[str, str]] = Field(default=None)
+    annotations: Optional[Dict[str, str]] = Field(default=None)
     creation_timestamp: Optional[str] = Field(default=None)
     generate_name: Optional[str] = Field(default=None)
     generation: Optional[int] = Field(default=None)
-    labels: Optional[dict[str, str]] = Field(default=None)
-    managed_fields: Optional[list[Any]] = Field(default=None)
+    labels: Optional[Dict[str, str]] = Field(default=None)
+    managed_fields: Optional[List[Any]] = Field(default=None)
     name: Optional[str] = Field(default=None)
     namespace: Optional[str] = Field(default=None)
     resource_version: Optional[str] = Field(default=None)
@@ -40,7 +40,7 @@ class NameValuePair(AtlanObject):
 
 
 class WorkflowParameters(AtlanObject):
-    parameters: list[NameValuePair]
+    parameters: List[NameValuePair]
 
 
 class WorkflowTask(AtlanObject):
@@ -50,7 +50,7 @@ class WorkflowTask(AtlanObject):
 
 
 class WorkflowDAG(AtlanObject):
-    tasks: list[WorkflowTask]
+    tasks: List[WorkflowTask]
 
 
 class WorkflowTemplate(AtlanObject):
@@ -64,36 +64,36 @@ class WorkflowTemplate(AtlanObject):
 class WorkflowSpec(AtlanObject):
     entrypoint: Optional[str] = Field(default=None)
     arguments: Optional[Any] = Field(default=None)
-    templates: Optional[list[WorkflowTemplate]] = Field(default=None)
-    workflow_template_ref: Optional[dict[str, str]] = Field(default=None)
+    templates: Optional[List[WorkflowTemplate]] = Field(default=None)
+    workflow_template_ref: Optional[Dict[str, str]] = Field(default=None)
     workflow_metadata: Optional[WorkflowMetadata] = Field(default=None)
 
 
 class Workflow(AtlanObject):
     metadata: WorkflowMetadata
     spec: WorkflowSpec
-    payload: list[PackageParameter] = Field(default_factory=list)
+    payload: List[PackageParameter] = Field(default_factory=list)
 
 
 class WorkflowSearchResultStatus(AtlanObject):
-    artifact_gc_Status: Optional[dict[str, Any]] = Field(
+    artifact_gc_Status: Optional[Dict[str, Any]] = Field(
         default=None, alias="artifactGCStatus"
     )
     artifact_repository_ref: Optional[Any] = Field(default=None)
     compressed_nodes: Optional[str] = Field(default=None)
     estimated_duration: Optional[int] = Field(default=None)
-    conditions: Optional[list[Any]] = Field(default=None)
+    conditions: Optional[List[Any]] = Field(default=None)
     message: Optional[str] = Field(default=None)
     finished_at: Optional[str] = Field(default=None)
     nodes: Optional[Any] = Field(default=None)
     outputs: Optional[WorkflowParameters] = Field(default=None)
     phase: Optional[AtlanWorkflowPhase] = Field(default=None)
     progress: Optional[str] = Field(default=None)
-    resources_duration: Optional[dict[str, int]] = Field(default=None)
+    resources_duration: Optional[Dict[str, int]] = Field(default=None)
     startedAt: Optional[str] = Field(default=None)
     stored_templates: Any = Field(default=None)
     storedWorkflowTemplateSpec: Any = Field(default=None)
-    synchronization: Optional[dict[str, Any]] = Field(default=None)
+    synchronization: Optional[Dict[str, Any]] = Field(default=None)
 
 
 class WorkflowSearchResultDetail(AtlanObject):
@@ -110,7 +110,7 @@ class WorkflowSearchResult(AtlanObject):
     id: str = Field(alias="_id")
     seq_no: Any = Field(alias="_seq_no")
     primary_term: Any = Field(alias="_primary_term")
-    sort: list[Any]
+    sort: List[Any]
     source: WorkflowSearchResultDetail = Field(alias="_source")
 
     @property
@@ -125,14 +125,14 @@ class WorkflowSearchResult(AtlanObject):
 
 
 class WorkflowSearchHits(AtlanObject):
-    total: dict[str, Any]
-    hits: Optional[list[WorkflowSearchResult]] = Field(default=None)
+    total: Dict[str, Any]
+    hits: Optional[List[WorkflowSearchResult]] = Field(default=None)
 
 
 class WorkflowSearchResponse(AtlanObject):
     took: Optional[int] = Field(default=None)
     hits: WorkflowSearchHits
-    shards: dict[str, Any] = Field(alias="_shards")
+    shards: Dict[str, Any] = Field(alias="_shards")
 
 
 class ReRunRequest(AtlanObject):
@@ -148,7 +148,7 @@ class ReRunRequest(AtlanObject):
 class WorkflowResponse(AtlanObject):
     metadata: WorkflowMetadata
     spec: WorkflowSpec
-    payload: Optional[list[Any]] = Field(default=None)
+    payload: Optional[List[Any]] = Field(default=None)
 
 
 class WorkflowRunResponse(WorkflowResponse):
@@ -161,7 +161,7 @@ class WorkflowSearchRequest(AtlanObject):
     track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(default=None, alias="post_filter")
     query: Optional[Query] = Field(default=None)
-    sort: list[SortItem] = Field(
+    sort: List[SortItem] = Field(
         alias="sort",
         default=[
             SortItem(

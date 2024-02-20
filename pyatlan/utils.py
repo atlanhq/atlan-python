@@ -13,7 +13,7 @@ from contextvars import ContextVar
 from datetime import datetime
 from enum import Enum
 from functools import reduce, wraps
-from typing import Any, Mapping, Optional
+from typing import Any, Dict, List, Mapping, Optional
 
 from pydantic.v1 import HttpUrl
 from pydantic.v1.dataclasses import dataclass
@@ -74,7 +74,7 @@ def list_attributes_to_params(
 
 
 def attributes_to_params(
-    attributes: list[tuple[str, object]], query_params: Optional[dict] = None
+    attributes: List[tuple[str, object]], query_params: Optional[dict] = None
 ) -> dict:
     if query_params is None:
         query_params = {}
@@ -128,7 +128,7 @@ def type_coerce_dict_list(obj, obj_type):
     )
 
 
-def validate_required_fields(field_names: list[str], values: list[Any]):
+def validate_required_fields(field_names: List[str], values: List[Any]):
     for field_name, value in zip(field_names, values):
         if value is None:
             raise ValueError(f"{field_name} is required")
@@ -226,11 +226,11 @@ class HTTPStatus:
 
 
 def unflatten_custom_metadata(
-    attributes: Optional[list[str]], asset_attributes: Optional[dict[str, Any]]
-) -> Optional[dict[str, Any]]:
+    attributes: Optional[List[str]], asset_attributes: Optional[Dict[str, Any]]
+) -> Optional[Dict[str, Any]]:
     if not attributes or not asset_attributes:
         return None
-    retval: dict[str, Any] = {}
+    retval: Dict[str, Any] = {}
     metadata_attribute = re.compile(r"(\w+)[.](\w+)")
     for attribute_of_interest in attributes:
         if matched := metadata_attribute.match(attribute_of_interest):
@@ -243,7 +243,7 @@ def unflatten_custom_metadata(
 
 
 def unflatten_custom_metadata_for_entity(
-    entity: dict[str, Any], attributes: Optional[list[str]]
+    entity: Dict[str, Any], attributes: Optional[List[str]]
 ):
     if custom_metadata := unflatten_custom_metadata(
         attributes=attributes, asset_attributes=entity.get("attributes")
@@ -456,7 +456,7 @@ class RequestIdAdapter(logging.LoggerAdapter):
         return f"[{self.extra['requestid']}] {msg}", kwargs
 
 
-def validate_single_required_field(field_names: list[str], values: list[Any]):
+def validate_single_required_field(field_names: List[str], values: List[Any]):
     indexes = [idx for idx, value in enumerate(values) if value is not None]
     if not indexes:
         raise ValueError(

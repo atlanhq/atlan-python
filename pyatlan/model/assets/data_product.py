@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, StrictStr, validator
 
@@ -133,7 +133,7 @@ class DataProduct(DataMesh):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "data_product_status",
         "data_product_criticality",
         "data_product_sensitivity",
@@ -243,11 +243,11 @@ class DataProduct(DataMesh):
         self.attributes.data_domain = data_domain
 
     @property
-    def output_ports(self) -> Optional[list[Asset]]:
+    def output_ports(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.output_ports
 
     @output_ports.setter
-    def output_ports(self, output_ports: Optional[list[Asset]]):
+    def output_ports(self, output_ports: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_ports = output_ports
@@ -270,7 +270,7 @@ class DataProduct(DataMesh):
         data_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship
-        output_ports: Optional[list[Asset]] = Field(
+        output_ports: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
 

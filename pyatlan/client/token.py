@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Optional
+from typing import Dict, Optional, Set
 
 from pydantic.v1 import validate_arguments
 
@@ -47,7 +47,7 @@ class TokenClient:
         :returns: an ApiTokenResponse which contains a list of API tokens that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: dict[str, str] = {
+        query_params: Dict[str, str] = {
             "count": str(count),
             "offset": str(offset),
         }
@@ -118,7 +118,7 @@ class TokenClient:
         self,
         display_name: str,
         description: str = "",
-        personas: Optional[set[str]] = None,
+        personas: Optional[Set[str]] = None,
         validity_seconds: int = -1,
     ) -> ApiToken:
         """
@@ -147,7 +147,7 @@ class TokenClient:
         guid: str,
         display_name: str,
         description: str = "",
-        personas: Optional[set[str]] = None,
+        personas: Optional[Set[str]] = None,
     ) -> ApiToken:
         """
         Update an existing API token with the provided settings.

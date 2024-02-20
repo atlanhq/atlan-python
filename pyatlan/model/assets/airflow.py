@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -78,7 +78,7 @@ class Airflow(Catalog):
     State of the run in OpenLineage.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "airflow_tags",
         "airflow_run_version",
         "airflow_run_open_lineage_version",
@@ -90,11 +90,11 @@ class Airflow(Catalog):
     ]
 
     @property
-    def airflow_tags(self) -> Optional[set[str]]:
+    def airflow_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.airflow_tags
 
     @airflow_tags.setter
-    def airflow_tags(self, airflow_tags: Optional[set[str]]):
+    def airflow_tags(self, airflow_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.airflow_tags = airflow_tags
@@ -186,7 +186,7 @@ class Airflow(Catalog):
         self.attributes.airflow_run_open_lineage_state = airflow_run_open_lineage_state
 
     class Attributes(Catalog.Attributes):
-        airflow_tags: Optional[set[str]] = Field(default=None, description="")
+        airflow_tags: Optional[Set[str]] = Field(default=None, description="")
         airflow_run_version: Optional[str] = Field(default=None, description="")
         airflow_run_open_lineage_version: Optional[str] = Field(
             default=None, description=""

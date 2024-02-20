@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -122,7 +122,7 @@ class AirflowTask(Airflow):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "airflow_task_operator_class",
         "airflow_dag_name",
         "airflow_dag_qualified_name",
@@ -277,11 +277,11 @@ class AirflowTask(Airflow):
         self.attributes.airflow_task_trigger_rule = airflow_task_trigger_rule
 
     @property
-    def outputs(self) -> Optional[list[Catalog]]:
+    def outputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.outputs
 
     @outputs.setter
-    def outputs(self, outputs: Optional[list[Catalog]]):
+    def outputs(self, outputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.outputs = outputs
@@ -297,11 +297,11 @@ class AirflowTask(Airflow):
         self.attributes.process = process
 
     @property
-    def inputs(self) -> Optional[list[Catalog]]:
+    def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
     @inputs.setter
-    def inputs(self, inputs: Optional[list[Catalog]]):
+    def inputs(self, inputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
@@ -330,11 +330,11 @@ class AirflowTask(Airflow):
             default=None, description=""
         )
         airflow_task_trigger_rule: Optional[str] = Field(default=None, description="")
-        outputs: Optional[list[Catalog]] = Field(
+        outputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
-        inputs: Optional[list[Catalog]] = Field(
+        inputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
         airflow_dag: Optional[AirflowDag] = Field(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -53,7 +53,7 @@ class DbtSource(Dbt):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_state",
         "dbt_freshness_criteria",
         "sql_assets",
@@ -84,21 +84,21 @@ class DbtSource(Dbt):
         self.attributes.dbt_freshness_criteria = dbt_freshness_criteria
 
     @property
-    def sql_assets(self) -> Optional[list[SQL]]:
+    def sql_assets(self) -> Optional[List[SQL]]:
         return None if self.attributes is None else self.attributes.sql_assets
 
     @sql_assets.setter
-    def sql_assets(self, sql_assets: Optional[list[SQL]]):
+    def sql_assets(self, sql_assets: Optional[List[SQL]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_assets = sql_assets
 
     @property
-    def dbt_tests(self) -> Optional[list[DbtTest]]:
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
     @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
@@ -116,10 +116,10 @@ class DbtSource(Dbt):
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(default=None, description="")
         dbt_freshness_criteria: Optional[str] = Field(default=None, description="")
-        sql_assets: Optional[list[SQL]] = Field(
+        sql_assets: Optional[List[SQL]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_tests: Optional[list[DbtTest]] = Field(
+        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
         sql_asset: Optional[SQL] = Field(default=None, description="")  # relationship

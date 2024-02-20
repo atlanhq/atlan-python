@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -98,7 +98,7 @@ class ADLSContainer(ADLS):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "adls_container_url",
         "adls_container_lease_state",
         "adls_container_lease_status",
@@ -198,11 +198,11 @@ class ADLSContainer(ADLS):
         self.attributes.adls_object_count = adls_object_count
 
     @property
-    def adls_objects(self) -> Optional[list[ADLSObject]]:
+    def adls_objects(self) -> Optional[List[ADLSObject]]:
         return None if self.attributes is None else self.attributes.adls_objects
 
     @adls_objects.setter
-    def adls_objects(self, adls_objects: Optional[list[ADLSObject]]):
+    def adls_objects(self, adls_objects: Optional[List[ADLSObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_objects = adls_objects
@@ -232,7 +232,7 @@ class ADLSContainer(ADLS):
             default=None, description=""
         )
         adls_object_count: Optional[int] = Field(default=None, description="")
-        adls_objects: Optional[list[ADLSObject]] = Field(
+        adls_objects: Optional[List[ADLSObject]] = Field(
             default=None, description=""
         )  # relationship
         adls_account: Optional[ADLSAccount] = Field(

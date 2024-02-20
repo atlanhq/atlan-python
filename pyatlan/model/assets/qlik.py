@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -76,7 +76,7 @@ class Qlik(BI):
     Whether this asset is published in Qlik (true) or not (false).
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "qlik_id",
         "qlik_q_r_i",
         "qlik_space_id",

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 else:
     from pydantic.v1.dataclasses import dataclass
 
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 
 from pydantic.v1.generics import GenericModel
 
@@ -99,7 +99,7 @@ class AtlanObject(BaseModel):
 
 
 class SearchRequest(AtlanObject, ABC):
-    attributes: Optional[list[str]] = Field(
+    attributes: Optional[List[str]] = Field(
         default_factory=list,
         description="List of attributes to be returned for each result.",
     )
@@ -146,15 +146,15 @@ class AtlanTag(AtlanObject):
     restrict_propagation_through_lineage: Optional[bool] = Field(
         default=None, description="", alias="restrictPropagationThroughLineage"
     )
-    validity_periods: Optional[list[str]] = Field(default=None, alias="validityPeriods")
-    _source_tag_attachements: list[SourceTagAttachment] = PrivateAttr(
+    validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
+    _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
         default_factory=list
     )
 
-    attributes: Optional[dict[str, Any]] = None
+    attributes: Optional[Dict[str, Any]] = None
 
     @property
-    def source_tag_attachements(self) -> list[SourceTagAttachment]:
+    def source_tag_attachements(self) -> List[SourceTagAttachment]:
         return self._source_tag_attachements
 
     @validator("type_name", pre=True)
@@ -181,7 +181,7 @@ class AtlanTag(AtlanObject):
 
 
 class AtlanTags(AtlanObject):
-    __root__: list[AtlanTag] = Field(
+    __root__: List[AtlanTag] = Field(
         default_factory=list, description="classifications"
     )
 
@@ -210,7 +210,7 @@ T = TypeVar("T")
 
 class AssetResponse(AtlanObject, GenericModel, Generic[T]):
     entity: T
-    referredEntities: Optional[dict[str, Any]] = Field(
+    referredEntities: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of related entities keyed by the GUID of the related entity. The values will be the detailed "
         "entity object of the related entity.\n",
@@ -230,7 +230,7 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
 
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
-    entities: list[T]
+    entities: List[T]
 
     @validator("entities", each_item=True)
     def process_attributes_and_flush_cm(cls, asset):

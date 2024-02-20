@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -41,7 +41,7 @@ class SigmaWorkbook(Sigma):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sigma_page_count",
         "sigma_pages",
     ]
@@ -57,18 +57,18 @@ class SigmaWorkbook(Sigma):
         self.attributes.sigma_page_count = sigma_page_count
 
     @property
-    def sigma_pages(self) -> Optional[list[SigmaPage]]:
+    def sigma_pages(self) -> Optional[List[SigmaPage]]:
         return None if self.attributes is None else self.attributes.sigma_pages
 
     @sigma_pages.setter
-    def sigma_pages(self, sigma_pages: Optional[list[SigmaPage]]):
+    def sigma_pages(self, sigma_pages: Optional[List[SigmaPage]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_pages = sigma_pages
 
     class Attributes(Sigma.Attributes):
         sigma_page_count: Optional[int] = Field(default=None, description="")
-        sigma_pages: Optional[list[SigmaPage]] = Field(
+        sigma_pages: Optional[List[SigmaPage]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -61,7 +61,7 @@ class PowerBI(BI):
     Endorsement status of this asset, in Power BI.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "power_b_i_is_hidden",
         "power_b_i_table_qualified_name",
         "power_b_i_format_string",

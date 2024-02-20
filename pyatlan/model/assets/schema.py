@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -95,7 +95,7 @@ class Schema(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "table_count",
         "views_count",
         "snowflake_tags",
@@ -131,31 +131,31 @@ class Schema(SQL):
         self.attributes.views_count = views_count
 
     @property
-    def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
+    def snowflake_tags(self) -> Optional[List[SnowflakeTag]]:
         return None if self.attributes is None else self.attributes.snowflake_tags
 
     @snowflake_tags.setter
-    def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
+    def snowflake_tags(self, snowflake_tags: Optional[List[SnowflakeTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_tags = snowflake_tags
 
     @property
-    def functions(self) -> Optional[list[Function]]:
+    def functions(self) -> Optional[List[Function]]:
         return None if self.attributes is None else self.attributes.functions
 
     @functions.setter
-    def functions(self, functions: Optional[list[Function]]):
+    def functions(self, functions: Optional[List[Function]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.functions = functions
 
     @property
-    def tables(self) -> Optional[list[Table]]:
+    def tables(self) -> Optional[List[Table]]:
         return None if self.attributes is None else self.attributes.tables
 
     @tables.setter
-    def tables(self, tables: Optional[list[Table]]):
+    def tables(self, tables: Optional[List[Table]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tables = tables
@@ -171,37 +171,37 @@ class Schema(SQL):
         self.attributes.database = database
 
     @property
-    def procedures(self) -> Optional[list[Procedure]]:
+    def procedures(self) -> Optional[List[Procedure]]:
         return None if self.attributes is None else self.attributes.procedures
 
     @procedures.setter
-    def procedures(self, procedures: Optional[list[Procedure]]):
+    def procedures(self, procedures: Optional[List[Procedure]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.procedures = procedures
 
     @property
-    def views(self) -> Optional[list[View]]:
+    def views(self) -> Optional[List[View]]:
         return None if self.attributes is None else self.attributes.views
 
     @views.setter
-    def views(self, views: Optional[list[View]]):
+    def views(self, views: Optional[List[View]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.views = views
 
     @property
-    def materialised_views(self) -> Optional[list[MaterialisedView]]:
+    def materialised_views(self) -> Optional[List[MaterialisedView]]:
         return None if self.attributes is None else self.attributes.materialised_views
 
     @materialised_views.setter
-    def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
+    def materialised_views(self, materialised_views: Optional[List[MaterialisedView]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.materialised_views = materialised_views
 
     @property
-    def snowflake_dynamic_tables(self) -> Optional[list[SnowflakeDynamicTable]]:
+    def snowflake_dynamic_tables(self) -> Optional[List[SnowflakeDynamicTable]]:
         return (
             None
             if self.attributes is None
@@ -210,28 +210,28 @@ class Schema(SQL):
 
     @snowflake_dynamic_tables.setter
     def snowflake_dynamic_tables(
-        self, snowflake_dynamic_tables: Optional[list[SnowflakeDynamicTable]]
+        self, snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_dynamic_tables = snowflake_dynamic_tables
 
     @property
-    def snowflake_pipes(self) -> Optional[list[SnowflakePipe]]:
+    def snowflake_pipes(self) -> Optional[List[SnowflakePipe]]:
         return None if self.attributes is None else self.attributes.snowflake_pipes
 
     @snowflake_pipes.setter
-    def snowflake_pipes(self, snowflake_pipes: Optional[list[SnowflakePipe]]):
+    def snowflake_pipes(self, snowflake_pipes: Optional[List[SnowflakePipe]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_pipes = snowflake_pipes
 
     @property
-    def snowflake_streams(self) -> Optional[list[SnowflakeStream]]:
+    def snowflake_streams(self) -> Optional[List[SnowflakeStream]]:
         return None if self.attributes is None else self.attributes.snowflake_streams
 
     @snowflake_streams.setter
-    def snowflake_streams(self, snowflake_streams: Optional[list[SnowflakeStream]]):
+    def snowflake_streams(self, snowflake_streams: Optional[List[SnowflakeStream]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_streams = snowflake_streams
@@ -239,34 +239,34 @@ class Schema(SQL):
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(default=None, description="")
         views_count: Optional[int] = Field(default=None, description="")
-        snowflake_tags: Optional[list[SnowflakeTag]] = Field(
+        snowflake_tags: Optional[List[SnowflakeTag]] = Field(
             default=None, description=""
         )  # relationship
-        functions: Optional[list[Function]] = Field(
+        functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
-        tables: Optional[list[Table]] = Field(
+        tables: Optional[List[Table]] = Field(
             default=None, description=""
         )  # relationship
         database: Optional[Database] = Field(
             default=None, description=""
         )  # relationship
-        procedures: Optional[list[Procedure]] = Field(
+        procedures: Optional[List[Procedure]] = Field(
             default=None, description=""
         )  # relationship
-        views: Optional[list[View]] = Field(
+        views: Optional[List[View]] = Field(
             default=None, description=""
         )  # relationship
-        materialised_views: Optional[list[MaterialisedView]] = Field(
+        materialised_views: Optional[List[MaterialisedView]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_dynamic_tables: Optional[list[SnowflakeDynamicTable]] = Field(
+        snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
+        snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_streams: Optional[list[SnowflakeStream]] = Field(
+        snowflake_streams: Optional[List[SnowflakeStream]] = Field(
             default=None, description=""
         )  # relationship
 

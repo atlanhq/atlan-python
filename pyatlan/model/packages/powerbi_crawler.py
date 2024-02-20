@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
@@ -35,9 +35,9 @@ class PowerBICrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_users: Optional[list[str]],
+        admin_roles: Optional[List[str]],
+        admin_groups: Optional[List[str]],
+        admin_users: Optional[List[str]],
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,
@@ -123,7 +123,7 @@ class PowerBICrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def include(self, workspaces: list[str]) -> "PowerBICrawler":
+    def include(self, workspaces: List[str]) -> "PowerBICrawler":
         """
         Defines the filter for workspaces to include when crawling.
 
@@ -139,7 +139,7 @@ class PowerBICrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, workspaces: list[str]) -> "PowerBICrawler":
+    def exclude(self, workspaces: List[str]) -> "PowerBICrawler":
         """
         Defines the filter for workspaces to exclude when crawling.
 

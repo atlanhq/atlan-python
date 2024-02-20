@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Optional
+from typing import Dict, List, Optional
 
 from pydantic.v1 import validate_arguments
 
@@ -41,7 +41,7 @@ class GroupClient:
     def create(
         self,
         group: AtlanGroup,
-        user_ids: Optional[list[str]] = None,
+        user_ids: Optional[List[str]] = None,
     ) -> CreateGroupResponse:
         """
         Create a new group.
@@ -109,7 +109,7 @@ class GroupClient:
         :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: dict[str, str] = {
+        query_params: Dict[str, str] = {
             "count": str(count),
             "offset": str(offset),
         }
@@ -128,14 +128,14 @@ class GroupClient:
     def get_all(
         self,
         limit: int = 20,
-    ) -> list[AtlanGroup]:
+    ) -> List[AtlanGroup]:
         """
         Retrieve all groups defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :returns: a list of all the groups in Atlan
         """
-        groups: list[AtlanGroup] = []
+        groups: List[AtlanGroup] = []
         offset = 0
         response: Optional[GroupResponse] = self.get(
             offset=offset, limit=limit, sort="createdAt"
@@ -154,7 +154,7 @@ class GroupClient:
         self,
         alias: str,
         limit: int = 20,
-    ) -> Optional[list[AtlanGroup]]:
+    ) -> Optional[List[AtlanGroup]]:
         """
         Retrieve all groups with a name that contains the provided string.
         (This could include a complete group name, in which case there should be at most
@@ -188,7 +188,7 @@ class GroupClient:
         return UserResponse(**raw_json)
 
     @validate_arguments
-    def remove_users(self, guid: str, user_ids: Optional[list[str]] = None) -> None:
+    def remove_users(self, guid: str, user_ids: Optional[List[str]] = None) -> None:
         """
         Remove one or more users from a group.
 

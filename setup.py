@@ -67,6 +67,6 @@ setup(
     include_package_data=True,
     zip_safe=False,
     keywords="atlan client",
-    python_requires=">=3.9",
+    python_requires=">=3.8",
     repository="https://github.com/atlanhq/atlan-python",
 )

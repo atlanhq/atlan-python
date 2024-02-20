@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import hashlib
 from io import StringIO
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -25,8 +25,8 @@ class Process(Asset, type_name="Process"):
         cls,
         name: str,
         connection_qualified_name: str,
-        inputs: list["Catalog"],
-        outputs: list["Catalog"],
+        inputs: List["Catalog"],
+        outputs: List["Catalog"],
         process_id: Optional[str] = None,
         parent: Optional[Process] = None,
     ) -> Process:
@@ -80,7 +80,7 @@ class Process(Asset, type_name="Process"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "inputs",
         "outputs",
         "code",
@@ -92,21 +92,21 @@ class Process(Asset, type_name="Process"):
     ]
 
     @property
-    def inputs(self) -> Optional[list[Catalog]]:
+    def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
     @inputs.setter
-    def inputs(self, inputs: Optional[list[Catalog]]):
+    def inputs(self, inputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     @property
-    def outputs(self) -> Optional[list[Catalog]]:
+    def outputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.outputs
 
     @outputs.setter
-    def outputs(self, outputs: Optional[list[Catalog]]):
+    def outputs(self, outputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.outputs = outputs
@@ -152,38 +152,38 @@ class Process(Asset, type_name="Process"):
         self.attributes.matillion_component = matillion_component
 
     @property
-    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
     @airflow_tasks.setter
-    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+    def airflow_tasks(self, airflow_tasks: Optional[List[AirflowTask]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
-    def column_processes(self) -> Optional[list[ColumnProcess]]:
+    def column_processes(self) -> Optional[List[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
     @column_processes.setter
-    def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
+    def column_processes(self, column_processes: Optional[List[ColumnProcess]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
     class Attributes(Asset.Attributes):
-        inputs: Optional[list[Catalog]] = Field(default=None, description="")
-        outputs: Optional[list[Catalog]] = Field(default=None, description="")
+        inputs: Optional[List[Catalog]] = Field(default=None, description="")
+        outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
-        airflow_tasks: Optional[list[AirflowTask]] = Field(
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        column_processes: Optional[list[ColumnProcess]] = Field(
+        column_processes: Optional[List[ColumnProcess]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -191,8 +191,8 @@ class Process(Asset, type_name="Process"):
         def generate_qualified_name(
             name: str,
             connection_qualified_name: str,
-            inputs: list["Catalog"],
-            outputs: list["Catalog"],
+            inputs: List["Catalog"],
+            outputs: List["Catalog"],
             parent: Optional["Process"] = None,
             process_id: Optional[str] = None,
         ) -> str:
@@ -200,7 +200,7 @@ class Process(Asset, type_name="Process"):
                 if relationship.guid:
                     output.write(relationship.guid)
 
-            def append_relationships(output: StringIO, relationships: list["Catalog"]):
+            def append_relationships(output: StringIO, relationships: List["Catalog"]):
                 for catalog in relationships:
                     append_relationship(output, catalog)
 
@@ -217,8 +217,8 @@ class Process(Asset, type_name="Process"):
                 append_relationship(buffer, parent)
             append_relationships(buffer, inputs)
             append_relationships(buffer, outputs)
-            ret_value = hashlib.md5(
-                buffer.getvalue().encode(), usedforsecurity=False
+            ret_value = hashlib.md5(  # noqa: S303
+                buffer.getvalue().encode()
             ).hexdigest()
             buffer.close()
             return ret_value
@@ -229,8 +229,8 @@ class Process(Asset, type_name="Process"):
             cls,
             name: str,
             connection_qualified_name: str,
-            inputs: list["Catalog"],
-            outputs: list["Catalog"],
+            inputs: List["Catalog"],
+            outputs: List["Catalog"],
             process_id: Optional[str] = None,
             parent: Optional[Process] = None,
         ) -> Process.Attributes:

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -107,7 +107,7 @@ class PresetDashboard(Preset):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "preset_dashboard_changed_by_name",
         "preset_dashboard_changed_by_url",
         "preset_dashboard_is_managed_externally",
@@ -220,21 +220,21 @@ class PresetDashboard(Preset):
         self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
 
     @property
-    def preset_datasets(self) -> Optional[list[PresetDataset]]:
+    def preset_datasets(self) -> Optional[List[PresetDataset]]:
         return None if self.attributes is None else self.attributes.preset_datasets
 
     @preset_datasets.setter
-    def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
+    def preset_datasets(self, preset_datasets: Optional[List[PresetDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_datasets = preset_datasets
 
     @property
-    def preset_charts(self) -> Optional[list[PresetChart]]:
+    def preset_charts(self) -> Optional[List[PresetChart]]:
         return None if self.attributes is None else self.attributes.preset_charts
 
     @preset_charts.setter
-    def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
+    def preset_charts(self, preset_charts: Optional[List[PresetChart]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_charts = preset_charts
@@ -268,10 +268,10 @@ class PresetDashboard(Preset):
         preset_dashboard_chart_count: Optional[int] = Field(
             default=None, description=""
         )
-        preset_datasets: Optional[list[PresetDataset]] = Field(
+        preset_datasets: Optional[List[PresetDataset]] = Field(
             default=None, description=""
         )  # relationship
-        preset_charts: Optional[list[PresetChart]] = Field(
+        preset_charts: Optional[List[PresetChart]] = Field(
             default=None, description=""
         )  # relationship
         preset_workspace: Optional[PresetWorkspace] = Field(

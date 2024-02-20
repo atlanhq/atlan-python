@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
-from typing import Any, Literal, Optional, Union
+from typing import Any, Dict, Literal, Optional, Union
 
 from pydantic.v1 import Field
 
@@ -9,7 +9,7 @@ from pyatlan.model.core import AtlanObject, AtlanTag
 
 
 class AtlanEventPayload(AtlanObject):
-    _subtypes_: dict[str, type] = dict()
+    _subtypes_: Dict[str, type] = dict()
 
     def __init_subclass__(
         cls, event_type="ENTITY_NOTIFICATION_V2", operation_type=None
@@ -70,7 +70,7 @@ class CustomMetadataUpdatePayload(
         description="Type of the operation the event contains a payload for."
     )
     # TODO: Need to create a more specific type
-    mutated_details: Optional[dict[str, Any]] = Field(
+    mutated_details: Optional[Dict[str, Any]] = Field(
         description="Map of custom metadata attributes and values defined on the asset."
         "The map is keyed by the human-readable name of the custom metadata set,"
         "and the values are a further mapping from human-readable attribute name"
@@ -136,7 +136,7 @@ class AwsRequestContext(AtlanObject):
     api_id: Optional[str] = Field(default=None, description="TBC")
     domain_name: Optional[str] = Field(default=None, description="TBC")
     domain_prefix: Optional[str] = Field(default=None, description="TBC")
-    http: Optional[dict[str, str]] = Field(description="TBC")
+    http: Optional[Dict[str, str]] = Field(description="TBC")
     request_id: Optional[str] = Field(default=None, description="TBC")
     route_key: Optional[str] = Field(default=None, description="TBC")
     stage: Optional[str] = Field(default=None, description="TBC")
@@ -154,7 +154,7 @@ class AwsEventWrapper(AtlanObject):
     route_key: Optional[str] = Field(default=None, description="TBC")
     raw_path: Optional[str] = Field(default=None, description="TBC")
     raw_query_string: Optional[str] = Field(default=None, description="TBC")
-    headers: Optional[dict[str, str]] = Field(
+    headers: Optional[Dict[str, str]] = Field(
         description="Headers that were used when sending the event through to the Lambda URL."
     )
     request_context: Optional[AwsRequestContext] = Field(description="TBC")

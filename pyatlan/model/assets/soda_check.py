@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -68,7 +68,7 @@ class SodaCheck(Soda):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "soda_check_id",
         "soda_check_evaluation_status",
         "soda_check_definition",
@@ -141,21 +141,21 @@ class SodaCheck(Soda):
         self.attributes.soda_check_incident_count = soda_check_incident_count
 
     @property
-    def soda_check_columns(self) -> Optional[list[Column]]:
+    def soda_check_columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.soda_check_columns
 
     @soda_check_columns.setter
-    def soda_check_columns(self, soda_check_columns: Optional[list[Column]]):
+    def soda_check_columns(self, soda_check_columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.soda_check_columns = soda_check_columns
 
     @property
-    def soda_check_assets(self) -> Optional[list[Asset]]:
+    def soda_check_assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.soda_check_assets
 
     @soda_check_assets.setter
-    def soda_check_assets(self, soda_check_assets: Optional[list[Asset]]):
+    def soda_check_assets(self, soda_check_assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.soda_check_assets = soda_check_assets
@@ -170,10 +170,10 @@ class SodaCheck(Soda):
             default=None, description=""
         )
         soda_check_incident_count: Optional[int] = Field(default=None, description="")
-        soda_check_columns: Optional[list[Column]] = Field(
+        soda_check_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        soda_check_assets: Optional[list[Asset]] = Field(
+        soda_check_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
 

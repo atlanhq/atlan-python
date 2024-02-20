@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic.v1 import Field
 
@@ -50,7 +50,7 @@ class ParsedQuery(AtlanObject):
         error_type: Optional[str] = Field(
             default=None, description="Type of the error."
         )
-        coordinates: Optional[list[Any]] = Field(description="TBC")
+        coordinates: Optional[List[Any]] = Field(description="TBC")
 
     class Relationship(AtlanObject):
         id: Optional[str] = Field(
@@ -64,7 +64,7 @@ class ParsedQuery(AtlanObject):
             description="Type of effect made by the query (for example, select vs insert).",
         )
         target: Optional[ParsedQuery.RelationshipEndpoint] = Field(description="TBC")
-        sources: Optional[list[ParsedQuery.RelationshipEndpoint]] = Field(
+        sources: Optional[List[ParsedQuery.RelationshipEndpoint]] = Field(
             description="TBC"
         )
         process_id: Optional[str] = Field(
@@ -96,7 +96,7 @@ class ParsedQuery(AtlanObject):
             description="Name of the schema the object exists within.",
             alias="schema",
         )
-        columns: Optional[list[ParsedQuery.DatabaseColumn]] = Field(
+        columns: Optional[List[ParsedQuery.DatabaseColumn]] = Field(
             description="List of details about the columns queried within the object."
             " (Only present on non-process objects.)"
         )
@@ -109,13 +109,13 @@ class ParsedQuery(AtlanObject):
             description="Unique hash representing the query (only for process objects).",
         )
 
-    dbobjs: Optional[list[ParsedQuery.DatabaseObject]] = Field(
+    dbobjs: Optional[List[ParsedQuery.DatabaseObject]] = Field(
         description="All the database objects detected in the query."
     )
-    relationships: Optional[list[ParsedQuery.Relationship]] = Field(
+    relationships: Optional[List[ParsedQuery.Relationship]] = Field(
         description="All the relationship objects detected in the query."
     )
-    errors: Optional[list[ParsedQuery.ParserError]] = Field(
+    errors: Optional[List[ParsedQuery.ParserError]] = Field(
         description="Any errors during parsing."
     )
 
@@ -181,7 +181,7 @@ class QueryResponse(AtlanObject):
     from multiple events related to the same query.
     """
 
-    def __init__(self, events: Optional[list[dict[str, Any]]] = None):
+    def __init__(self, events: Optional[List[Dict[str, Any]]] = None):
         super().__init__()
         if not events:
             return
@@ -222,7 +222,7 @@ class QueryResponse(AtlanObject):
         default=None,
         description="Unique identifier (GUID) for the specific run of the query.",
     )
-    rows: Optional[list[list[str]]] = Field(
+    rows: Optional[List[List[str]]] = Field(
         description="Results of the query. Each element is of "
         "the outer list is a single row, while each inner list gives "
         "the column values for that row (in order)"
@@ -281,7 +281,7 @@ class QueryResponse(AtlanObject):
             description="Details about the (SQL) data type of the column."
         )
 
-    columns: Optional[list[QueryResponse.ColumnDetails]] = Field(
+    columns: Optional[List[QueryResponse.ColumnDetails]] = Field(
         description="Columns that are present in each row of the results. "
         "The order of the elements of this list will match the order of "
         "the inner list of values for the `rows`."
@@ -322,7 +322,7 @@ class QueryResponse(AtlanObject):
         )
         source_query_id: Optional[str] = Field(default=None, description="TBC")
         result_output_location: Optional[str] = Field(default=None, description="TBC")
-        warnings: Optional[list[str]] = Field(
+        warnings: Optional[List[str]] = Field(
             default=None,
             description="List of any warnings produced when running the query.",
         )

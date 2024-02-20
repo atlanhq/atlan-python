@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 import dataclasses
-from typing import Optional, TypeVar, Union
+from typing import Dict, List, Optional, TypeVar, Union
 
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.errors import ErrorCode
@@ -21,9 +21,9 @@ class CompoundQuery:
     Class to compose compound queries combining various conditions.
     """
 
-    wheres: Optional[list[Query]] = None
-    where_nots: Optional[list[Query]] = None
-    where_somes: Optional[list[Query]] = None
+    wheres: Optional[List[Query]] = None
+    where_nots: Optional[List[Query]] = None
+    where_somes: Optional[List[Query]] = None
     _min_somes: int = 1
 
     @staticmethod
@@ -55,7 +55,7 @@ class CompoundQuery:
         return Referenceable.TYPE_NAME.eq(of.__name__)
 
     @staticmethod
-    def asset_types(one_of: list[type]) -> Query:
+    def asset_types(one_of: List[type]) -> Query:
         """
         Returns a query that will only match assets that are one of the types provided.
 
@@ -65,7 +65,7 @@ class CompoundQuery:
         return Referenceable.TYPE_NAME.within(list(map(lambda x: x.__name__, one_of)))
 
     @staticmethod
-    def super_types(one_of: Union[type, list[type]]) -> Query:
+    def super_types(one_of: Union[type, List[type]]) -> Query:
         """
         Returns a query that will match all assets that are a subtype of at least one of
         the types provided.
@@ -81,7 +81,7 @@ class CompoundQuery:
 
     @staticmethod
     def tagged(
-        with_one_of: Optional[list[str]] = None, directly: bool = False
+        with_one_of: Optional[List[str]] = None, directly: bool = False
     ) -> Query:
         """
         Returns a query that will only match assets that have at least one of the Atlan tags
@@ -95,7 +95,7 @@ class CompoundQuery:
         """
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        values: list[str] = []
+        values: List[str] = []
         if with_one_of:
             for name in with_one_of:
                 if tag_id := AtlanTagCache.get_id_for_name(name):
@@ -129,7 +129,7 @@ class CompoundQuery:
         ).to_query()
 
     @staticmethod
-    def assigned_term(qualified_names: Optional[list[str]] = None) -> Query:
+    def assigned_term(qualified_names: Optional[List[str]] = None) -> Query:
         """
         Returns a query that will only match assets that have at least one term assigned.
         (If a list of qualified_names is specified, the assets that match must have at least
@@ -144,9 +144,9 @@ class CompoundQuery:
 
     def __init__(
         self,
-        wheres: Optional[list[Query]] = None,
-        where_nots: Optional[list[Query]] = None,
-        where_somes: Optional[list[Query]] = None,
+        wheres: Optional[List[Query]] = None,
+        where_nots: Optional[List[Query]] = None,
+        where_somes: Optional[List[Query]] = None,
         _min_somes: int = 1,
     ):
         self.wheres = wheres
@@ -236,11 +236,11 @@ class FluentSearch(CompoundQuery):
     Class to compose compound queries combining various conditions.
     """
 
-    sorts: Optional[list[SortItem]] = None
-    aggregations: Optional[dict[str, Aggregation]] = None
+    sorts: Optional[List[SortItem]] = None
+    aggregations: Optional[Dict[str, Aggregation]] = None
     _page_size: Optional[int] = None
-    _includes_on_results: Optional[list[str]] = None
-    _includes_on_relations: Optional[list[str]] = None
+    _includes_on_results: Optional[List[str]] = None
+    _includes_on_relations: Optional[List[str]] = None
 
     @classmethod
     def select(cls, include_archived=False) -> "FluentSearch":
@@ -262,15 +262,15 @@ class FluentSearch(CompoundQuery):
 
     def __init__(
         self,
-        wheres: Optional[list[Query]] = None,
-        where_nots: Optional[list[Query]] = None,
-        where_somes: Optional[list[Query]] = None,
+        wheres: Optional[List[Query]] = None,
+        where_nots: Optional[List[Query]] = None,
+        where_somes: Optional[List[Query]] = None,
         _min_somes: int = 1,
-        sorts: Optional[list[SortItem]] = None,
-        aggregations: Optional[dict[str, Aggregation]] = None,
+        sorts: Optional[List[SortItem]] = None,
+        aggregations: Optional[Dict[str, Aggregation]] = None,
         _page_size: Optional[int] = None,
-        _includes_on_results: Optional[list[str]] = None,
-        _includes_on_relations: Optional[list[str]] = None,
+        _includes_on_results: Optional[List[str]] = None,
+        _includes_on_relations: Optional[List[str]] = None,
     ):
         super().__init__(wheres, where_nots, where_somes, _min_somes)
         self.sorts = sorts

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 import logging
+from typing import List
 
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
@@ -34,7 +35,7 @@ def find_all(asset_type: type) -> IndexSearchResults:
     return client.asset.search(search_request)
 
 
-def upstream_certified_sources(guid: str) -> list[Asset]:
+def upstream_certified_sources(guid: str) -> List[Asset]:
     """
     Given the GUID of an asset, this will look for all upstream assets in
     lineage that have a certificate of VERIFIED. If any Table, View or
@@ -64,7 +65,7 @@ def upstream_certified_sources(guid: str) -> list[Asset]:
         ],
     )  # type: ignore[call-arg]
     response = client.asset.get_lineage_list(request)
-    verified_assets: list[Asset] = [
+    verified_assets: List[Asset] = [
         asset
         for asset in response
         if asset.type_name in {"Table", "View", "MaterialisedView"}

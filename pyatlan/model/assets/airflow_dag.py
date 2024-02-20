@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -47,7 +47,7 @@ class AirflowDag(Airflow):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "airflow_dag_schedule",
         "airflow_dag_schedule_delta",
         "airflow_tasks",
@@ -78,11 +78,11 @@ class AirflowDag(Airflow):
         self.attributes.airflow_dag_schedule_delta = airflow_dag_schedule_delta
 
     @property
-    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
     @airflow_tasks.setter
-    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+    def airflow_tasks(self, airflow_tasks: Optional[List[AirflowTask]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
@@ -90,7 +90,7 @@ class AirflowDag(Airflow):
     class Attributes(Airflow.Attributes):
         airflow_dag_schedule: Optional[str] = Field(default=None, description="")
         airflow_dag_schedule_delta: Optional[int] = Field(default=None, description="")
-        airflow_tasks: Optional[list[AirflowTask]] = Field(
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
 

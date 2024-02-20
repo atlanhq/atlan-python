@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -85,7 +85,7 @@ class SchemaRegistrySubject(SchemaRegistry):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "schema_registry_subject_base_name",
         "schema_registry_subject_is_key_schema",
         "schema_registry_subject_schema_compatibility",
@@ -193,7 +193,7 @@ class SchemaRegistrySubject(SchemaRegistry):
     @property
     def schema_registry_subject_governing_asset_qualified_names(
         self,
-    ) -> Optional[set[str]]:
+    ) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -203,7 +203,7 @@ class SchemaRegistrySubject(SchemaRegistry):
     @schema_registry_subject_governing_asset_qualified_names.setter
     def schema_registry_subject_governing_asset_qualified_names(
         self,
-        schema_registry_subject_governing_asset_qualified_names: Optional[set[str]],
+        schema_registry_subject_governing_asset_qualified_names: Optional[Set[str]],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -212,11 +212,11 @@ class SchemaRegistrySubject(SchemaRegistry):
         )
 
     @property
-    def assets(self) -> Optional[list[Asset]]:
+    def assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.assets
 
     @assets.setter
-    def assets(self, assets: Optional[list[Asset]]):
+    def assets(self, assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.assets = assets
@@ -238,9 +238,9 @@ class SchemaRegistrySubject(SchemaRegistry):
             default=None, description=""
         )
         schema_registry_subject_governing_asset_qualified_names: Optional[
-            set[str]
+            Set[str]
         ] = Field(default=None, description="")
-        assets: Optional[list[Asset]] = Field(
+        assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
 

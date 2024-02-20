@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -112,7 +112,7 @@ class MicroStrategy(BI):
     Location of this asset in MicroStrategy.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "micro_strategy_project_qualified_name",
         "micro_strategy_project_name",
         "micro_strategy_cube_qualified_names",
@@ -158,7 +158,7 @@ class MicroStrategy(BI):
         self.attributes.micro_strategy_project_name = micro_strategy_project_name
 
     @property
-    def micro_strategy_cube_qualified_names(self) -> Optional[set[str]]:
+    def micro_strategy_cube_qualified_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -167,7 +167,7 @@ class MicroStrategy(BI):
 
     @micro_strategy_cube_qualified_names.setter
     def micro_strategy_cube_qualified_names(
-        self, micro_strategy_cube_qualified_names: Optional[set[str]]
+        self, micro_strategy_cube_qualified_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -176,7 +176,7 @@ class MicroStrategy(BI):
         )
 
     @property
-    def micro_strategy_cube_names(self) -> Optional[set[str]]:
+    def micro_strategy_cube_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -184,13 +184,13 @@ class MicroStrategy(BI):
         )
 
     @micro_strategy_cube_names.setter
-    def micro_strategy_cube_names(self, micro_strategy_cube_names: Optional[set[str]]):
+    def micro_strategy_cube_names(self, micro_strategy_cube_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_cube_names = micro_strategy_cube_names
 
     @property
-    def micro_strategy_report_qualified_names(self) -> Optional[set[str]]:
+    def micro_strategy_report_qualified_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -199,7 +199,7 @@ class MicroStrategy(BI):
 
     @micro_strategy_report_qualified_names.setter
     def micro_strategy_report_qualified_names(
-        self, micro_strategy_report_qualified_names: Optional[set[str]]
+        self, micro_strategy_report_qualified_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -208,7 +208,7 @@ class MicroStrategy(BI):
         )
 
     @property
-    def micro_strategy_report_names(self) -> Optional[set[str]]:
+    def micro_strategy_report_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -217,7 +217,7 @@ class MicroStrategy(BI):
 
     @micro_strategy_report_names.setter
     def micro_strategy_report_names(
-        self, micro_strategy_report_names: Optional[set[str]]
+        self, micro_strategy_report_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -268,14 +268,14 @@ class MicroStrategy(BI):
         self.attributes.micro_strategy_certified_at = micro_strategy_certified_at
 
     @property
-    def micro_strategy_location(self) -> Optional[list[dict[str, str]]]:
+    def micro_strategy_location(self) -> Optional[List[Dict[str, str]]]:
         return (
             None if self.attributes is None else self.attributes.micro_strategy_location
         )
 
     @micro_strategy_location.setter
     def micro_strategy_location(
-        self, micro_strategy_location: Optional[list[dict[str, str]]]
+        self, micro_strategy_location: Optional[List[Dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -286,16 +286,16 @@ class MicroStrategy(BI):
             default=None, description=""
         )
         micro_strategy_project_name: Optional[str] = Field(default=None, description="")
-        micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
+        micro_strategy_cube_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        micro_strategy_cube_names: Optional[set[str]] = Field(
+        micro_strategy_cube_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        micro_strategy_report_qualified_names: Optional[set[str]] = Field(
+        micro_strategy_report_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        micro_strategy_report_names: Optional[set[str]] = Field(
+        micro_strategy_report_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
         micro_strategy_is_certified: Optional[bool] = Field(
@@ -305,7 +305,7 @@ class MicroStrategy(BI):
         micro_strategy_certified_at: Optional[datetime] = Field(
             default=None, description=""
         )
-        micro_strategy_location: Optional[list[dict[str, str]]] = Field(
+        micro_strategy_location: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
 

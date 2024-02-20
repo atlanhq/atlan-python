@@ -3,6 +3,7 @@
 import json
 from datetime import date
 from pathlib import Path
+from typing import List
 from unittest.mock import Mock
 
 import pytest
@@ -595,10 +596,10 @@ class TestLineageFilterFieldString:
 GOOD_DEPTH = 1
 GOOD_EXCLUDE_MEANINGS = False
 GOOD_EXCLUDE_CLASSIFICATIONS = True
-GOOD_INCLUDES_IN_RESULTS: list[AtlanField] = []
-GOOD_INCLUDE_ON_RESULTS: list[LineageFilter] = []
-GOOD_WHERE_ASSETS: list[LineageFilter] = []
-GOOD_WHERE_RELATIONSHIPS: list[LineageFilter] = []
+GOOD_INCLUDES_IN_RESULTS: List[AtlanField] = []
+GOOD_INCLUDE_ON_RESULTS: List[LineageFilter] = []
+GOOD_WHERE_ASSETS: List[LineageFilter] = []
+GOOD_WHERE_RELATIONSHIPS: List[LineageFilter] = []
 BAD_STRING = True
 GOOD_GUID = "123"
 GOOD_SIZE = 10

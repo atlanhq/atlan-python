@@ -1,5 +1,5 @@
 
-def validate_single_required_field(field_names: list[str], values: list[Any]):
+def validate_single_required_field(field_names: List[str], values: List[Any]):
     indexes = [idx for idx, value in enumerate(values) if value is not None]
     if not indexes:
         raise ValueError(

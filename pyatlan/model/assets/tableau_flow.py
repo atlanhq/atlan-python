@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -71,7 +71,7 @@ class TableauFlow(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -123,41 +123,41 @@ class TableauFlow(Tableau):
         )
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def input_fields(self) -> Optional[list[dict[str, str]]]:
+    def input_fields(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.input_fields
 
     @input_fields.setter
-    def input_fields(self, input_fields: Optional[list[dict[str, str]]]):
+    def input_fields(self, input_fields: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_fields = input_fields
 
     @property
-    def output_fields(self) -> Optional[list[dict[str, str]]]:
+    def output_fields(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.output_fields
 
     @output_fields.setter
-    def output_fields(self, output_fields: Optional[list[dict[str, str]]]):
+    def output_fields(self, output_fields: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_fields = output_fields
 
     @property
-    def output_steps(self) -> Optional[list[dict[str, str]]]:
+    def output_steps(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.output_steps
 
     @output_steps.setter
-    def output_steps(self, output_steps: Optional[list[dict[str, str]]]):
+    def output_steps(self, output_steps: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_steps = output_steps
@@ -178,16 +178,16 @@ class TableauFlow(Tableau):
         top_level_project_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        input_fields: Optional[list[dict[str, str]]] = Field(
+        input_fields: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        output_fields: Optional[list[dict[str, str]]] = Field(
+        output_fields: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        output_steps: Optional[list[dict[str, str]]] = Field(
+        output_steps: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         project: Optional[TableauProject] = Field(
