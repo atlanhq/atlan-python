@@ -73,7 +73,14 @@ class WorkflowClient:
         response = WorkflowSearchResponse(**raw_json)
         return response.hits.hits or []
 
+    @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
+        """
+        Find the latest run of a given workflow
+        :param name: name of the workflow for which to find the current run
+        :returns: the singular result giving the latest run of the workflow
+        :raises AtlanError: on any API communication issue
+        """
         query = Bool(
             filter=[
                 NestedQuery(
@@ -88,7 +95,38 @@ class WorkflowClient:
         response = self._find_run(query)
         return results[0] if (results := response.hits.hits) else None
 
-    def _find_run(self, query: Query, size=1) -> WorkflowSearchResponse:
+    @validate_arguments
+    def _find_current_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
+        """
+        Find the most current, still-running run of a given workflow
+
+        :param name: name of the workflow for which to find the current run
+        :returns: the singular result giving the latest currently-running
+        run of the workflow, or `None` if it is not currently running
+        :raises AtlanError: on any API communication issue
+        """
+        query = Bool(
+            filter=[
+                NestedQuery(
+                    query=Term(
+                        field="spec.workflowTemplateRef.name.keyword",
+                        value=workflow_name,
+                    ),
+                    path="spec",
+                )
+            ]
+        )
+        response = self._find_run(query, size=50)
+        if results := response.hits.hits:
+            for result in results:
+                if result.status in {
+                    AtlanWorkflowPhase.PENDING,
+                    AtlanWorkflowPhase.RUNNING,
+                }:
+                    return result
+        return None
+
+    def _find_run(self, query: Query, size: int = 1) -> WorkflowSearchResponse:
         request = WorkflowSearchRequest(query=query, size=size)
         raw_json = self._client._call_api(
             WORKFLOW_INDEX_RUN_SEARCH,
@@ -97,15 +135,21 @@ class WorkflowClient:
         return WorkflowSearchResponse(**raw_json)
 
     @overload
-    def rerun(self, workflow: WorkflowPackage) -> WorkflowRunResponse:
+    def rerun(
+        self, workflow: WorkflowPackage, idempotent: bool = False
+    ) -> WorkflowRunResponse:
         ...
 
     @overload
-    def rerun(self, workflow: WorkflowSearchResultDetail) -> WorkflowRunResponse:
+    def rerun(
+        self, workflow: WorkflowSearchResultDetail, idempotent: bool = False
+    ) -> WorkflowRunResponse:
         ...
 
     @overload
-    def rerun(self, workflow: WorkflowSearchResult) -> WorkflowRunResponse:
+    def rerun(
+        self, workflow: WorkflowSearchResult, idempotent: bool = False
+    ) -> WorkflowRunResponse:
         ...
 
     @validate_arguments
@@ -114,11 +158,13 @@ class WorkflowClient:
         workflow: Union[
             WorkflowPackage, WorkflowSearchResultDetail, WorkflowSearchResult
         ],
+        idempotent: bool = False,
     ) -> WorkflowRunResponse:
         """
         Rerun the workflow immediately. Note: this must be a workflow that was previously run.
         :param workflow: The workflow to rerun.
-        :returns: the details of the workflow run
+        :param idempotent: If `True`, the workflow will only be rerun if it is not already currently running
+        :returns: the details of the workflow run (if `idempotent`, will return details of the already-running workflow)
         :raises ValidationError: If the provided workflow is invalid
         :raises InvalidRequestException: If no prior runs are available for the provided workflow
         :raises AtlanError: on any API communication issue
@@ -134,6 +180,21 @@ class WorkflowClient:
             detail = workflow.source
         else:
             detail = workflow
+
+        if idempotent and detail.metadata.name:
+            # Introducing a delay before checking the current workflow run
+            # since it takes some time to start or stop
+            sleep(10)
+            if (
+                current_run_details := self._find_current_run(
+                    workflow_name=detail.metadata.name
+                )
+            ) and current_run_details.source.status:
+                return WorkflowRunResponse(
+                    metadata=current_run_details.source.metadata,
+                    spec=current_run_details.source.spec,
+                    status=current_run_details.source.status,
+                )
 
         request = ReRunRequest(
             namespace=detail.metadata.namespace, resource_name=detail.metadata.name

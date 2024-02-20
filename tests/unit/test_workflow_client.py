@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from pydantic.v1 import ValidationError
@@ -9,7 +9,7 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import WorkflowPackage
+from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.workflow import (
     PackageParameter,
     Workflow,
@@ -32,17 +32,31 @@ def mock_api_caller():
 
 
 @pytest.fixture()
+def mock_workflow_time_sleep():
+    with patch("pyatlan.client.workflow.sleep") as mock_time_sleep:
+        yield mock_time_sleep
+
+
+@pytest.fixture()
 def client(mock_api_caller) -> WorkflowClient:
     return WorkflowClient(mock_api_caller)
 
 
 @pytest.fixture()
-def search_result_detail() -> WorkflowSearchResultDetail:
+def search_result_status() -> WorkflowSearchResultStatus:
+    return WorkflowSearchResultStatus(phase=AtlanWorkflowPhase.RUNNING)
+
+
+@pytest.fixture()
+def search_result_detail(
+    search_result_status: WorkflowSearchResultStatus,
+) -> WorkflowSearchResultDetail:
     return WorkflowSearchResultDetail(
         api_version="1",
         kind="kind",
         metadata=WorkflowMetadata(name="name", namespace="namespace"),
         spec=WorkflowSpec(),
+        status=search_result_status,
     )
 
 
@@ -73,6 +87,17 @@ def rerun_response() -> WorkflowRunResponse:
         status=WorkflowSearchResultStatus(),
         metadata=WorkflowMetadata(name="name", namespace="namespace"),
         spec=WorkflowSpec(),
+    )
+
+
+@pytest.fixture()
+def rerun_response_with_idempotent(
+    search_result_status: WorkflowSearchResultStatus,
+) -> WorkflowRunResponse:
+    return WorkflowRunResponse(
+        metadata=WorkflowMetadata(name="name", namespace="namespace"),
+        spec=WorkflowSpec(),
+        status=search_result_status,
     )
 
 
@@ -191,6 +216,63 @@ def test_re_run_when_given_workflowsearchresult(
     mock_api_caller._call_api.return_value = rerun_response.dict()
 
     assert client.rerun(workflow=search_result) == rerun_response
+
+
+def test_re_run_when_given_workflowpackage_with_idempotent(
+    client: WorkflowClient,
+    mock_api_caller,
+    mock_workflow_time_sleep,
+    search_response: WorkflowSearchResponse,
+    rerun_response_with_idempotent: WorkflowRunResponse,
+):
+    mock_api_caller._call_api.side_effect = [
+        search_response.dict(),
+        search_response.dict(),
+        rerun_response_with_idempotent.dict(),
+    ]
+
+    assert (
+        client.rerun(WorkflowPackage.FIVETRAN, idempotent=True)
+        == rerun_response_with_idempotent
+    )
+
+
+def test_re_run_when_given_workflowsearchresultdetail_with_idempotent(
+    client: WorkflowClient,
+    mock_api_caller,
+    mock_workflow_time_sleep,
+    search_response: WorkflowSearchResponse,
+    search_result_detail: WorkflowSearchResultDetail,
+    rerun_response_with_idempotent: WorkflowRunResponse,
+):
+    mock_api_caller._call_api.side_effect = [
+        search_response.dict(),
+        rerun_response_with_idempotent.dict(),
+    ]
+
+    assert (
+        client.rerun(workflow=search_result_detail, idempotent=True)
+        == rerun_response_with_idempotent
+    )
+
+
+def test_re_run_when_given_workflowsearchresult_with_idempotent(
+    client: WorkflowClient,
+    mock_api_caller,
+    mock_workflow_time_sleep,
+    search_response: WorkflowSearchResponse,
+    search_result: WorkflowSearchResult,
+    rerun_response_with_idempotent: WorkflowRunResponse,
+):
+    mock_api_caller._call_api.side_effect = [
+        search_response.dict(),
+        rerun_response_with_idempotent.dict(),
+    ]
+
+    assert (
+        client.rerun(workflow=search_result, idempotent=True)
+        == rerun_response_with_idempotent
+    )
 
 
 @pytest.mark.parametrize(
