@@ -446,7 +446,7 @@
 
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span>
 
@@ -463,7 +463,7 @@
     <span class="n">TagIconType</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">_complete_type_list</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">_complete_type_list</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;ADLSAccount&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ADLSContainer&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ADLSObject&quot;</span><span class="p">,</span>
@@ -581,17 +581,17 @@
     <span class="s2">&quot;ThoughtspotLiveboard&quot;</span><span class="p">,</span>
     <span class="s2">&quot;View&quot;</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="n">_all_glossary_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">_all_glossary_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;AtlasGlossary&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AtlasGlossaryCategory&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AtlasGlossaryTerm&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
-<span class="n">_all_other_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;File&quot;</span><span class="p">}</span>
+<span class="n">_all_other_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;File&quot;</span><span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">_get_all_qualified_names</span><span class="p">(</span><span class="n">asset_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_get_all_qualified_names</span><span class="p">(</span><span class="n">asset_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="kn">from</span> <span class="nn">pyatlan.client.atlan</span> <span class="kn">import</span> <span class="n">AtlanClient</span>
     <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="n">Asset</span>
     <span class="kn">from</span> <span class="nn">pyatlan.model.fluent_search</span> <span class="kn">import</span> <span class="n">FluentSearch</span>
@@ -663,14 +663,14 @@
             <span class="k">return</span> <span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">(</span><span class="n">ordinal</span><span class="o">=</span><span class="n">ordinal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">def</span> <span class="nf">list_from</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]:</span>
+        <span class="k">def</span> <span class="nf">list_from</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]:</span>
             <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
 
             <span class="n">validate_required_fields</span><span class="p">(</span>
                 <span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">],</span>
                 <span class="p">[</span><span class="n">values</span><span class="p">],</span>
             <span class="p">)</span>
-            <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">elements</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                 <span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">ordinal</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
@@ -678,16 +678,16 @@
             <span class="k">return</span> <span class="n">elements</span>
 
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENUM</span>
-    <span class="n">element_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;EnumDef.ElementDef&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">element_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;EnumDef.ElementDef&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Valid values for the enumeration.&quot;</span>
     <span class="p">)</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
 
         <span class="n">validate_required_fields</span><span class="p">(</span>
@@ -703,7 +703,7 @@
 
 <div class="viewcode-block" id="EnumDef.get_valid_values">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EnumDef.get_valid_values">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_valid_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">get_valid_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the element definitions in this enumeration into simple list of strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -878,10 +878,10 @@
         <span class="s2">&quot;`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates &quot;</span>
         <span class="s2">&quot;they are unique and unordered.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span>
     <span class="p">)</span>
-    <span class="n">enum_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">enum_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of values for an enumeration.&quot;</span>
     <span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -940,10 +940,10 @@
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of values for this attribute. If greater than 1, this attribute allows &quot;</span>
         <span class="s2">&quot;multiple values.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">index_type_es_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">index_type_es_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESConfig&quot;</span>
     <span class="p">)</span>
-    <span class="n">index_type_es_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">index_type_es_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESFields&quot;</span>
     <span class="p">)</span>
     <span class="n">is_default_value_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
@@ -953,7 +953,7 @@
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span>
         <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span>
         <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span>
@@ -963,7 +963,7 @@
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set of entities on which this attribute can be applied.</span>
 <span class="sd">        Note: generally this should be left as-is. Any overrides should instead be applied through</span>
@@ -974,17 +974,17 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_entity_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_entity_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+                <span class="s2">&quot;applicable_entity_types&quot;</span><span class="p">,</span> <span class="s2">&quot;Set[str]&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_entity_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">entity_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Asset type names to which to restrict the attribute.</span>
 <span class="sd">        Only assets of one of these types will have this attribute available.</span>
@@ -995,12 +995,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_asset_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+                <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span> <span class="s2">&quot;Set[str]&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">asset_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_complete_type_list</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
@@ -1009,7 +1009,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_asset_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">asset_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Glossary type names to which to restrict the attribute.</span>
 <span class="sd">        Only glossary assets of one of these types will have this attribute available.</span>
@@ -1020,12 +1020,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_glossary_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossary_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossary_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">glossary_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+                <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span> <span class="s2">&quot;Set[str]&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">glossary_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_glossary_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
@@ -1034,7 +1034,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossary_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">glossary_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Any other asset type names to which to restrict the attribute.</span>
 <span class="sd">        These cover any asset type that is not managed within a connection or a glossary.</span>
@@ -1045,12 +1045,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_other_asset_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_asset_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_asset_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other_asset_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+                <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span> <span class="s2">&quot;Set[str]&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">other_asset_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_other_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
@@ -1059,7 +1059,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_other_asset_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other_asset_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Qualified names of connections to which to restrict the attribute.</span>
 <span class="sd">        Only assets within one of these connections will have this attribute available.</span>
@@ -1070,17 +1070,17 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_connections</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connections</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connections</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">connections</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_connections&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+                <span class="s2">&quot;applicable_connections&quot;</span><span class="p">,</span> <span class="s2">&quot;Set[str]&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_connections</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">connections</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_glossaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_glossaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Qualified names of glossaries to which to restrict the attribute.</span>
 <span class="sd">        Only glossary assets within one of these glossaries will have this attribute available.</span>
@@ -1091,12 +1091,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_glossaries</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_glossaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossaries</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_glossaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossaries</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">glossaries</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_glossaries&quot;</span><span class="p">,</span> <span class="s2">&quot;set[str]&quot;</span>
+                <span class="s2">&quot;applicable_glossaries&quot;</span><span class="p">,</span> <span class="s2">&quot;Set[str]&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossaries</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">glossaries</span><span class="p">))</span>
 
@@ -1189,7 +1189,7 @@
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.StructDef">[docs]</a>
 <span class="k">class</span> <span class="nc">StructDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">STRUCT</span>
-    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of attributes that should be available in the type_ definition.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1202,28 +1202,28 @@
 <div class="viewcode-block" id="AtlanTagDef">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.AtlanTagDef">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlanTagDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
-    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span>
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CLASSIFICATION</span>
     <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
     <span class="p">)</span>
-    <span class="n">entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A list of the entity types that this classification can be used against.&quot;</span>
         <span class="s2">&quot; (This should be `Asset` to allow classification of any asset in Atlan.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type_ definition.&quot;</span>
     <span class="p">)</span>
-    <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the sub-types that extend from this type_ definition. Generally this is not specified &quot;</span>
         <span class="s2">&quot;in any request, but is only supplied in responses. (This is intended for internal use only, and &quot;</span>
         <span class="s2">&quot;should not be used without specific guidance.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the super-types that this type_ definition should extend. (This is intended for internal &quot;</span>
         <span class="s2">&quot;use only, and should not be used without specific guidance.)&quot;</span><span class="p">,</span>
@@ -1277,29 +1277,29 @@
 <div class="viewcode-block" id="EntityDef">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EntityDef">[docs]</a>
 <span class="k">class</span> <span class="nc">EntityDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
-    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
-    <span class="n">business_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]],</span> <span class="nb">dict</span><span class="p">),</span>
+    <span class="n">business_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">[[],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]],</span> <span class="nb">dict</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span>
         <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENTITY</span>
-    <span class="n">relationship_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">relationship_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
     <span class="p">)</span>
-    <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the sub-types that extend from this type_ definition. Generally this is not specified in &quot;</span>
         <span class="s2">&quot;any request, but is only supplied in responses. (This is intended for internal use only, and &quot;</span>
         <span class="s2">&quot;should not be used without specific guidance.)&quot;</span><span class="p">,</span>
         <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
     <span class="p">)</span>
-    <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the super-types that this type_ definition should extend. (This is intended for internal &quot;</span>
         <span class="s2">&quot;use only, and should not be used without specific guidance.)&quot;</span><span class="p">,</span>
@@ -1311,14 +1311,14 @@
 <div class="viewcode-block" id="RelationshipDef">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.RelationshipDef">[docs]</a>
 <span class="k">class</span> <span class="nc">RelationshipDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
-    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">RELATIONSHIP</span>
-    <span class="n">end_def1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">end_def1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{}</span>
     <span class="p">)</span>
-    <span class="n">end_def2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">end_def2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{}</span>
     <span class="p">)</span>
     <span class="n">propagate_tags</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -1411,7 +1411,7 @@
                 <span class="n">is_locked</span><span class="o">=</span><span class="n">locked</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="n">attribute_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of custom attributes defined within the custom metadata.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1443,24 +1443,24 @@
 <div class="viewcode-block" id="TypeDefResponse">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse">[docs]</a>
 <span class="k">class</span> <span class="nc">TypeDefResponse</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
-    <span class="n">enum_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">enum_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EnumDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of enumeration type definitions.&quot;</span>
     <span class="p">)</span>
-    <span class="n">struct_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">StructDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">struct_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">StructDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of struct type definitions.&quot;</span>
     <span class="p">)</span>
-    <span class="n">atlan_tag_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTagDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">atlan_tag_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlanTagDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of classification type definitions.&quot;</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;classificationDefs&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">entity_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EntityDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">entity_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EntityDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of entity type_ definitions.&quot;</span>
     <span class="p">)</span>
-    <span class="n">relationship_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelationshipDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">relationship_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RelationshipDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of relationship type_ definitions.&quot;</span>
     <span class="p">)</span>
-    <span class="n">custom_metadata_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CustomMetadataDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">custom_metadata_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CustomMetadataDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of custom metadata type_ definitions.&quot;</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;businessMetadataDefs&quot;</span><span class="p">,</span>

@@ -444,7 +444,7 @@
           <h1>Source code for pyatlan.cache.user_cache</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.client.token</span> <span class="kn">import</span> <span class="n">SERVICE_ACCOUNT_</span><span class="p">,</span> <span class="n">TokenClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.user</span> <span class="kn">import</span> <span class="n">UserClient</span>
@@ -458,7 +458,7 @@
 <span class="sd">    Lazily-loaded cache for translating Atlan-internal users into their various IDs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">caches</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;UserCache&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">caches</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;UserCache&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;UserCache&quot;</span><span class="p">:</span>
@@ -526,9 +526,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_client</span><span class="p">:</span> <span class="n">UserClient</span><span class="p">,</span> <span class="n">token_client</span><span class="p">:</span> <span class="n">TokenClient</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user_client</span><span class="p">:</span> <span class="n">UserClient</span> <span class="o">=</span> <span class="n">user_client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token_client</span><span class="p">:</span> <span class="n">TokenClient</span> <span class="o">=</span> <span class="n">token_client</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">map_email_to_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_email_to_id</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_refresh_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_client</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>

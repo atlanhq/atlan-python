@@ -455,7 +455,7 @@
 <span class="kn">from</span> <span class="nn">contextvars</span> <span class="kn">import</span> <span class="n">ContextVar</span>
 <span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">read_text</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
@@ -708,7 +708,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_user_client</span> <span class="o">=</span> <span class="n">UserClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_client</span>
 
-    <span class="k">def</span> <span class="nf">update_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">update_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_call_api_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">binary_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -905,7 +905,7 @@
     <span class="k">def</span> <span class="nf">create_group</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">group</span><span class="p">:</span> <span class="n">AtlanGroup</span><span class="p">,</span>
-        <span class="n">user_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CreateGroupResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.create() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -972,7 +972,7 @@
     <span class="k">def</span> <span class="nf">get_all_groups</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.get_all() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;group.get_all&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
@@ -988,7 +988,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.get_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;group.get_by_name&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
@@ -1012,7 +1012,7 @@
 
 <div class="viewcode-block" id="AtlanClient.remove_users_from_group">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_users_from_group">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_users_from_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">remove_users_from_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_ids</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.remove_users() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;group.remove_users&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
@@ -1026,7 +1026,7 @@
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.create_users">[docs]</a>
     <span class="k">def</span> <span class="nf">create_users</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">],</span>
+        <span class="n">users</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.create() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1074,7 +1074,7 @@
     <span class="k">def</span> <span class="nf">add_user_to_groups</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">group_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">group_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.add_to_groups() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1144,7 +1144,7 @@
     <span class="k">def</span> <span class="nf">get_all_users</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_all() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;user.get_all&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
@@ -1160,7 +1160,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_by_email() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;user.get_by_email&#39; instead, which offers identical &quot;</span>
@@ -1271,7 +1271,7 @@
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upsert">[docs]</a>
     <span class="k">def</span> <span class="nf">upsert</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span>
+        <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span>
         <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">replace_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">overwrite_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1294,7 +1294,7 @@
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.save">[docs]</a>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span>
+        <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span>
         <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">replace_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">overwrite_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1316,7 +1316,7 @@
 <div class="viewcode-block" id="AtlanClient.upsert_merging_cm">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upsert_merging_cm">[docs]</a>
     <span class="k">def</span> <span class="nf">upsert_merging_cm</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_merging_cm() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1333,7 +1333,7 @@
 <div class="viewcode-block" id="AtlanClient.save_merging_cm">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.save_merging_cm">[docs]</a>
     <span class="k">def</span> <span class="nf">save_merging_cm</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_merging_cm() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1367,7 +1367,7 @@
 <div class="viewcode-block" id="AtlanClient.upsert_replacing_cm">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upsert_replacing_cm">[docs]</a>
     <span class="k">def</span> <span class="nf">upsert_replacing_cm</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tagss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tagss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_replacing_cm() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1384,7 +1384,7 @@
 <div class="viewcode-block" id="AtlanClient.save_replacing_cm">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.save_replacing_cm">[docs]</a>
     <span class="k">def</span> <span class="nf">save_replacing_cm</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_replacing_cm() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1418,7 +1418,7 @@
 <div class="viewcode-block" id="AtlanClient.purge_entity_by_guid">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.purge_entity_by_guid">[docs]</a>
     <span class="k">def</span> <span class="nf">purge_entity_by_guid</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.purge_by_guid() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1433,7 +1433,7 @@
 <div class="viewcode-block" id="AtlanClient.delete_entity_by_guid">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.delete_entity_by_guid">[docs]</a>
     <span class="k">def</span> <span class="nf">delete_entity_by_guid</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.delete_by_guid() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1485,7 +1485,7 @@
 <div class="viewcode-block" id="AtlanClient.get_typedefs">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_typedefs">[docs]</a>
     <span class="k">def</span> <span class="nf">get_typedefs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">type_category</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">type_category</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use typedef.get() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -1539,7 +1539,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">atlan_tag_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">atlan_tag_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">propagate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_propagation_on_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">restrict_lineage_propagation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1718,7 +1718,7 @@
     <span class="k">def</span> <span class="nf">append_terms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
-        <span class="n">terms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
+        <span class="n">terms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
         <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
@@ -1739,7 +1739,7 @@
     <span class="k">def</span> <span class="nf">replace_terms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
-        <span class="n">terms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
+        <span class="n">terms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
         <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
@@ -1761,7 +1761,7 @@
     <span class="k">def</span> <span class="nf">remove_terms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
-        <span class="n">terms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
+        <span class="n">terms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
         <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
@@ -1783,8 +1783,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">connector_type</span><span class="p">:</span> <span class="n">AtlanConnectorType</span><span class="p">,</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Connection</span><span class="p">]:</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Connection</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_connections_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_connections_by_name&#39; instead, which offers identical &quot;</span>
@@ -1914,7 +1914,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">validity_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ApiToken</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.create() instead.&quot;&quot;&quot;</span>
@@ -1938,7 +1938,7 @@
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ApiToken</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.update() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -2000,8 +2000,8 @@
     <span class="k">def</span> <span class="nf">find_personas_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Persona</span><span class="p">]:</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Persona</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_personas_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_personas_by_name&#39; instead, which offers identical &quot;</span>
@@ -2017,8 +2017,8 @@
     <span class="k">def</span> <span class="nf">find_purposes_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Purpose</span><span class="p">]:</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Purpose</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_personas_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_purposes_by_name&#39; instead, which offers identical &quot;</span>
@@ -2035,7 +2035,7 @@
     <span class="k">def</span> <span class="nf">find_glossary_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossary</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_glossary_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -2054,8 +2054,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">glossary_qualified_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]:</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_category_fast_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_category_fast_by_name&#39; instead, which offers identical &quot;</span>
@@ -2077,8 +2077,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">glossary_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]:</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_category_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_category_by_name&#39; instead, which offers identical &quot;</span>
@@ -2098,7 +2098,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">glossary_qualified_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryTerm</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_category_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -2121,7 +2121,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">glossary_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryTerm</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_term_by_name() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>

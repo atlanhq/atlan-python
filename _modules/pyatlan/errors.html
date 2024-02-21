@@ -447,7 +447,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;AtlanError&quot;</span><span class="p">)</span>
 <span class="n">RAISE_GITHUB_ISSUE</span> <span class="o">=</span> <span class="p">(</span>
@@ -1326,7 +1326,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
 
-<span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ErrorCode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ErrorCode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">400</span><span class="p">:</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_REQUEST_PASSTHROUGH</span><span class="p">,</span>
     <span class="mi">401</span><span class="p">:</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">AUTHENTICATION_PASSTHROUGH</span><span class="p">,</span>
     <span class="mi">403</span><span class="p">:</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">PERMISSION_PASSTHROUGH</span><span class="p">,</span>

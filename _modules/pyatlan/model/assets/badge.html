@@ -448,7 +448,7 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validator</span>
 
@@ -466,7 +466,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
-    <span class="c1"># @validate_arguments()</span>
     <span class="nd">@init_guid</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
@@ -474,7 +473,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
         <span class="n">cm_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">cm_attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">badge_conditions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">],</span>
+        <span class="n">badge_conditions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Badge</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">status</span><span class="o">=</span><span class="n">EntityStatus</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">,</span>
@@ -512,17 +511,17 @@
 <span class="sd">    Custom metadata attribute for which to show the badge.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;badge_conditions&quot;</span><span class="p">,</span>
         <span class="s2">&quot;badge_metadata_attribute&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">badge_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">badge_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">badge_conditions</span>
 
     <span class="nd">@badge_conditions</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">badge_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">badge_conditions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="nf">badge_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">badge_conditions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">]]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">badge_conditions</span> <span class="o">=</span> <span class="n">badge_conditions</span>
@@ -542,13 +541,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">badge_metadata_attribute</span> <span class="o">=</span> <span class="n">badge_metadata_attribute</span>
 
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
-        <span class="n">badge_conditions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">badge_conditions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
         <span class="n">badge_metadata_attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
         <span class="nd">@classmethod</span>
-        <span class="c1"># @validate_arguments()</span>
         <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
             <span class="bp">cls</span><span class="p">,</span>
@@ -556,7 +554,7 @@
             <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
             <span class="n">cm_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">cm_attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">badge_conditions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">],</span>
+            <span class="n">badge_conditions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BadgeCondition</span><span class="p">],</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Badge</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">(</span>
                 <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_name&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_attribute&quot;</span><span class="p">,</span> <span class="s2">&quot;badge_conditions&quot;</span><span class="p">],</span>

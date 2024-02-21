@@ -456,7 +456,7 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pydantic.v1.dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1.generics</span> <span class="kn">import</span> <span class="n">GenericModel</span>
 
@@ -551,7 +551,7 @@
 <div class="viewcode-block" id="SearchRequest">
 <a class="viewcode-back" href="../../../other_model/core.html#pyatlan.model.core.SearchRequest">[docs]</a>
 <span class="k">class</span> <span class="nc">SearchRequest</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-    <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of attributes to be returned for each result.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -604,15 +604,15 @@
     <span class="n">restrict_propagation_through_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;restrictPropagationThroughLineage&quot;</span>
     <span class="p">)</span>
-    <span class="n">validity_periods</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;validityPeriods&quot;</span><span class="p">)</span>
-    <span class="n">_source_tag_attachements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SourceTagAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span>
+    <span class="n">validity_periods</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;validityPeriods&quot;</span><span class="p">)</span>
+    <span class="n">_source_tag_attachements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SourceTagAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span>
     <span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">source_tag_attachements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SourceTagAttachment</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">source_tag_attachements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SourceTagAttachment</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_attachements</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type_name&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -642,7 +642,7 @@
 <div class="viewcode-block" id="AtlanTags">
 <a class="viewcode-back" href="../../../other_model/core.html#pyatlan.model.core.AtlanTags">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlanTags</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
-    <span class="n">__root__</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">__root__</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlanTag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;classifications&quot;</span>
     <span class="p">)</span></div>
 
@@ -674,7 +674,7 @@
 <a class="viewcode-back" href="../../../other_model/core.html#pyatlan.model.core.AssetResponse">[docs]</a>
 <span class="k">class</span> <span class="nc">AssetResponse</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">,</span> <span class="n">GenericModel</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
     <span class="n">entity</span><span class="p">:</span> <span class="n">T</span>
-    <span class="n">referredEntities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">referredEntities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of related entities keyed by the GUID of the related entity. The values will be the detailed &quot;</span>
         <span class="s2">&quot;entity object of the related entity.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -700,7 +700,7 @@
 <div class="viewcode-block" id="BulkRequest">
 <a class="viewcode-back" href="../../../other_model/core.html#pyatlan.model.core.BulkRequest">[docs]</a>
 <span class="k">class</span> <span class="nc">BulkRequest</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">,</span> <span class="n">GenericModel</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-    <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">]</span>
+    <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;entities&quot;</span><span class="p">,</span> <span class="n">each_item</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">process_attributes_and_flush_cm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span>
