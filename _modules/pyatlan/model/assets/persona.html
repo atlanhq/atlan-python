@@ -180,6 +180,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/calculationview.html">CalculationView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/catalog.html">Catalog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cloud.html">Cloud</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/collection.html">Collection</a></li>
@@ -449,6 +450,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
@@ -476,10 +478,23 @@
 
     <span class="nd">@classmethod</span>
     <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Persona</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">creator</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Persona</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">Persona</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@init_guid</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Persona</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;This method is deprecated, please use &#39;creator&#39; &quot;</span>
+                <span class="s2">&quot;instead, which offers identical functionality.&quot;</span>
+            <span class="p">),</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create_metadata_policy</span><span class="p">(</span>
@@ -496,7 +511,7 @@
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;persona_id&quot;</span><span class="p">,</span> <span class="s2">&quot;policy_type&quot;</span><span class="p">,</span> <span class="s2">&quot;actions&quot;</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">persona_id</span><span class="p">,</span> <span class="n">policy_type</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">resources</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">}</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_category</span> <span class="o">=</span> <span class="n">AuthPolicyCategory</span><span class="o">.</span><span class="n">PERSONA</span><span class="o">.</span><span class="n">value</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_type</span> <span class="o">=</span> <span class="n">policy_type</span>
@@ -524,7 +539,7 @@
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;persona_id&quot;</span><span class="p">,</span> <span class="s2">&quot;policy_type&quot;</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">persona_id</span><span class="p">,</span> <span class="n">policy_type</span><span class="p">,</span> <span class="n">resources</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">DataAction</span><span class="o">.</span><span class="n">SELECT</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_category</span> <span class="o">=</span> <span class="n">AuthPolicyCategory</span><span class="o">.</span><span class="n">PERSONA</span><span class="o">.</span><span class="n">value</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_type</span> <span class="o">=</span> <span class="n">policy_type</span>
@@ -553,7 +568,7 @@
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;persona_id&quot;</span><span class="p">,</span> <span class="s2">&quot;policy_type&quot;</span><span class="p">,</span> <span class="s2">&quot;actions&quot;</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">persona_id</span><span class="p">,</span> <span class="n">policy_type</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">resources</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">}</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_category</span> <span class="o">=</span> <span class="n">AuthPolicyCategory</span><span class="o">.</span><span class="n">PERSONA</span><span class="o">.</span><span class="n">value</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_type</span> <span class="o">=</span> <span class="n">policy_type</span>
@@ -579,7 +594,7 @@
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;persona_id&quot;</span><span class="p">,</span> <span class="s2">&quot;actions&quot;</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">persona_id</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">resources</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">policy</span> <span class="o">=</span> <span class="n">AuthPolicy</span><span class="o">.</span><span class="n">_AuthPolicy__create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">}</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_category</span> <span class="o">=</span> <span class="n">AuthPolicyCategory</span><span class="o">.</span><span class="n">PERSONA</span><span class="o">.</span><span class="n">value</span>
         <span class="n">policy</span><span class="o">.</span><span class="n">policy_type</span> <span class="o">=</span> <span class="n">AuthPolicyType</span><span class="o">.</span><span class="n">ALLOW</span>
@@ -593,7 +608,7 @@
         <span class="k">return</span> <span class="n">policy</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">create_for_modification</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">updater</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SelfAsset</span><span class="p">],</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -609,6 +624,25 @@
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">is_access_control_enabled</span><span class="o">=</span><span class="n">is_enabled</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_for_modification</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">is_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Persona</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;This method is deprecated, please use &#39;updater&#39; &quot;</span>
+                <span class="s2">&quot;instead, which offers identical functionality.&quot;</span>
+            <span class="p">),</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">updater</span><span class="p">(</span>
+            <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">is_enabled</span><span class="o">=</span><span class="n">is_enabled</span>
         <span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;Persona&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

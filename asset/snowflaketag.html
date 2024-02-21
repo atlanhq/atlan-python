@@ -181,6 +181,7 @@
 <li class="toctree-l2"><a class="reference internal" href="bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculationview.html">CalculationView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="catalog.html">Catalog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cloud.html">Cloud</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collection.html">Collection</a></li>
@@ -456,6 +457,18 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.SnowflakeTag.CALCULATION_VIEW_NAME">
+<span class="sig-name descname"><span class="pre">CALCULATION_VIEW_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SnowflakeTag.CALCULATION_VIEW_NAME" title="Link to this definition">#</a></dt>
+<dd><p>Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.SnowflakeTag.CALCULATION_VIEW_QUALIFIED_NAME">
+<span class="sig-name descname"><span class="pre">CALCULATION_VIEW_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SnowflakeTag.CALCULATION_VIEW_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
+<dd><p>Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.SnowflakeTag.DATABASE_NAME">
 <span class="sig-name descname"><span class="pre">DATABASE_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.SnowflakeTag.DATABASE_NAME" title="Link to this definition">#</a></dt>
 <dd><p>Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.</p>
@@ -655,6 +668,8 @@
 <li><a class="reference internal" href="#">SnowflakeTag</a><ul>
 <li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag</span></code></a><ul>
 <li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag.ATLAN_SCHEMA"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag.ATLAN_SCHEMA</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag.CALCULATION_VIEW_NAME"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag.CALCULATION_VIEW_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag.CALCULATION_VIEW_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag.CALCULATION_VIEW_QUALIFIED_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag.DATABASE_NAME"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag.DATABASE_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag.DATABASE_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag.DATABASE_QUALIFIED_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.SnowflakeTag.DBT_MODELS"><code class="docutils literal notranslate"><span class="pre">SnowflakeTag.DBT_MODELS</span></code></a></li>
