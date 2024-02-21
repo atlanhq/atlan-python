@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Generator, Iterable, Optional, Union
+from typing import Any, Dict, Generator, Iterable, List, Optional, Union
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as, root_validator
 
@@ -54,7 +54,7 @@ class AuditSearchRequest(SearchRequest):
     """Class from which to configure a search against Atlan's activity log."""
 
     dsl: DSL
-    attributes: list[str] = Field(default_factory=list, alias="attributes")
+    attributes: List[str] = Field(default_factory=list, alias="attributes")
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         dsl = data.get("dsl")
@@ -138,9 +138,9 @@ class CustomMetadataAttributesAuditDetail(AtlanObject):
 
     type_name: str
 
-    attributes: dict[str, Any]
+    attributes: Dict[str, Any]
 
-    archived_attributes: Optional[dict[str, Any]]
+    archived_attributes: Optional[Dict[str, Any]]
 
     @property
     def empty(self) -> bool:
@@ -202,7 +202,7 @@ class EntityAudit(AtlanObject):
         description="Minimal details about the asset that was acted upon. Note that this contains current details "
         "about the asset, not the state of the asset immediately before or after the given activity."
     )
-    headers: Optional[dict[str, str]] = Field(
+    headers: Optional[Dict[str, str]] = Field(
         description="Headers detailing how the action was taken, if not by a user."
     )
 
@@ -216,7 +216,7 @@ class AuditSearchResults(Iterable):
         criteria: AuditSearchRequest,
         start: int,
         size: int,
-        entity_audits: list[EntityAudit],
+        entity_audits: List[EntityAudit],
         count: int,
         aggregations: Optional[Any],
     ):
@@ -232,7 +232,7 @@ class AuditSearchResults(Iterable):
     def total_count(self) -> int:
         return self._count
 
-    def current_page(self) -> list[EntityAudit]:
+    def current_page(self) -> List[EntityAudit]:
         """
         Retrieve the current page of results.
 
@@ -278,7 +278,7 @@ class AuditSearchResults(Iterable):
             self._entity_audits = []
             return None
         try:
-            self._assets = parse_obj_as(list[EntityAudit], raw_json[ENTITY_AUDITS])
+            self._assets = parse_obj_as(List[EntityAudit], raw_json[ENTITY_AUDITS])
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(

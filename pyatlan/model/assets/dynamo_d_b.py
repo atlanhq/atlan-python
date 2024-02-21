@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -61,7 +61,7 @@ class DynamoDB(NoSQL):
     The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -58,7 +58,7 @@ class Preset(BI):
     Unique name of the dashboard in which this asset exists.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "preset_workspace_id",
         "preset_workspace_qualified_name",
         "preset_dashboard_id",

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -25,7 +25,6 @@ class GCSObject(GCS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
         validate_required_fields(
@@ -147,7 +146,7 @@ class GCSObject(GCS):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "gcs_bucket_name",
         "gcs_bucket_qualified_name",
         "gcs_object_size",
@@ -399,7 +398,6 @@ class GCSObject(GCS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, gcs_bucket_qualified_name: str

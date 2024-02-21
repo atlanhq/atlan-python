@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 
 from pyatlan.client.role import RoleClient
 from pyatlan.model.role import AtlanRole
@@ -11,7 +11,7 @@ class RoleCache:
     Lazily-loaded cache for translating Atlan-internal roles into their various IDs.
     """
 
-    caches: dict[int, "RoleCache"] = {}
+    caches: Dict[int, "RoleCache"] = {}
 
     @classmethod
     def get_cache(cls) -> "RoleCache":
@@ -54,9 +54,9 @@ class RoleCache:
 
     def __init__(self, role_client: RoleClient):
         self.role_client: RoleClient = role_client
-        self.cache_by_id: dict[str, AtlanRole] = {}
-        self.map_id_to_name: dict[str, str] = {}
-        self.map_name_to_id: dict[str, str] = {}
+        self.cache_by_id: Dict[str, AtlanRole] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
         response = self.role_client.get(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -23,8 +23,8 @@ class ColumnProcess(Process):
         cls,
         name: str,
         connection_qualified_name: str,
-        inputs: list["Catalog"],
-        outputs: list["Catalog"],
+        inputs: List["Catalog"],
+        outputs: List["Catalog"],
         parent: Process,
         process_id: Optional[str] = None,
     ) -> ColumnProcess:
@@ -65,18 +65,18 @@ class ColumnProcess(Process):
     Assets that are inputs to this process.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "outputs",
         "process",
         "inputs",
     ]
 
     @property
-    def outputs(self) -> Optional[list[Catalog]]:
+    def outputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.outputs
 
     @outputs.setter
-    def outputs(self, outputs: Optional[list[Catalog]]):
+    def outputs(self, outputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.outputs = outputs
@@ -92,21 +92,21 @@ class ColumnProcess(Process):
         self.attributes.process = process
 
     @property
-    def inputs(self) -> Optional[list[Catalog]]:
+    def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
     @inputs.setter
-    def inputs(self, inputs: Optional[list[Catalog]]):
+    def inputs(self, inputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     class Attributes(Process.Attributes):
-        outputs: Optional[list[Catalog]] = Field(
+        outputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
-        inputs: Optional[list[Catalog]] = Field(
+        inputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -116,8 +116,8 @@ class ColumnProcess(Process):
             cls,
             name: str,
             connection_qualified_name: str,
-            inputs: list["Catalog"],
-            outputs: list["Catalog"],
+            inputs: List["Catalog"],
+            outputs: List["Catalog"],
             parent: Process,
             process_id: Optional[str] = None,
         ) -> ColumnProcess.Attributes:

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -25,7 +25,6 @@ class S3Object(S3):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -53,7 +52,6 @@ class S3Object(S3):
         return cls(attributes=attributes)
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create_with_prefix(
         cls,
@@ -151,7 +149,7 @@ class S3Object(S3):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "s3_object_last_modified_time",
         "s3_bucket_name",
         "s3_bucket_qualified_name",
@@ -301,7 +299,6 @@ class S3Object(S3):
         bucket: Optional[S3Bucket] = Field(default=None, description="")  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,
@@ -342,7 +339,6 @@ class S3Object(S3):
             )
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create_with_prefix(
             cls,

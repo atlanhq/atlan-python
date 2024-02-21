@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -199,7 +199,7 @@ class DbtMetric(Dbt):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_metric_filters",
         "dbt_alias",
         "dbt_meta",
@@ -231,11 +231,11 @@ class DbtMetric(Dbt):
     ]
 
     @property
-    def dbt_metric_filters(self) -> Optional[list[DbtMetricFilter]]:
+    def dbt_metric_filters(self) -> Optional[List[DbtMetricFilter]]:
         return None if self.attributes is None else self.attributes.dbt_metric_filters
 
     @dbt_metric_filters.setter
-    def dbt_metric_filters(self, dbt_metric_filters: Optional[list[DbtMetricFilter]]):
+    def dbt_metric_filters(self, dbt_metric_filters: Optional[List[DbtMetricFilter]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_metric_filters = dbt_metric_filters
@@ -407,11 +407,11 @@ class DbtMetric(Dbt):
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
-    def dbt_tags(self) -> Optional[set[str]]:
+    def dbt_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.dbt_tags
 
     @dbt_tags.setter
-    def dbt_tags(self, dbt_tags: Optional[set[str]]):
+    def dbt_tags(self, dbt_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
@@ -473,11 +473,11 @@ class DbtMetric(Dbt):
         self.attributes.metric_filters = metric_filters
 
     @property
-    def metric_time_grains(self) -> Optional[set[str]]:
+    def metric_time_grains(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.metric_time_grains
 
     @metric_time_grains.setter
-    def metric_time_grains(self, metric_time_grains: Optional[set[str]]):
+    def metric_time_grains(self, metric_time_grains: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_time_grains = metric_time_grains
@@ -505,17 +505,17 @@ class DbtMetric(Dbt):
         self.attributes.dbt_model = dbt_model
 
     @property
-    def assets(self) -> Optional[list[Asset]]:
+    def assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.assets
 
     @assets.setter
-    def assets(self, assets: Optional[list[Asset]]):
+    def assets(self, assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.assets = assets
 
     @property
-    def metric_dimension_columns(self) -> Optional[list[Column]]:
+    def metric_dimension_columns(self) -> Optional[List[Column]]:
         return (
             None
             if self.attributes is None
@@ -524,14 +524,14 @@ class DbtMetric(Dbt):
 
     @metric_dimension_columns.setter
     def metric_dimension_columns(
-        self, metric_dimension_columns: Optional[list[Column]]
+        self, metric_dimension_columns: Optional[List[Column]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_dimension_columns = metric_dimension_columns
 
     @property
-    def dbt_metric_filter_columns(self) -> Optional[list[Column]]:
+    def dbt_metric_filter_columns(self) -> Optional[List[Column]]:
         return (
             None
             if self.attributes is None
@@ -540,14 +540,14 @@ class DbtMetric(Dbt):
 
     @dbt_metric_filter_columns.setter
     def dbt_metric_filter_columns(
-        self, dbt_metric_filter_columns: Optional[list[Column]]
+        self, dbt_metric_filter_columns: Optional[List[Column]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_metric_filter_columns = dbt_metric_filter_columns
 
     class Attributes(Dbt.Attributes):
-        dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
+        dbt_metric_filters: Optional[List[DbtMetricFilter]] = Field(
             default=None, description=""
         )
         dbt_alias: Optional[str] = Field(default=None, description="")
@@ -567,7 +567,7 @@ class DbtMetric(Dbt):
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
         dbt_environment_name: Optional[str] = Field(default=None, description="")
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
-        dbt_tags: Optional[set[str]] = Field(default=None, description="")
+        dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
@@ -575,20 +575,20 @@ class DbtMetric(Dbt):
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")
-        metric_time_grains: Optional[set[str]] = Field(default=None, description="")
+        metric_time_grains: Optional[Set[str]] = Field(default=None, description="")
         metric_timestamp_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             default=None, description=""
         )  # relationship
-        assets: Optional[list[Asset]] = Field(
+        assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
-        metric_dimension_columns: Optional[list[Column]] = Field(
+        metric_dimension_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_metric_filter_columns: Optional[list[Column]] = Field(
+        dbt_metric_filter_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
 

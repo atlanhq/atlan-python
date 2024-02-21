@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -168,7 +168,7 @@ class DbtTag(Dbt):
     Name of the classification in Atlan that is mapped to this tag.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -360,11 +360,11 @@ class DbtTag(Dbt):
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
-    def dbt_tags(self) -> Optional[set[str]]:
+    def dbt_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.dbt_tags
 
     @dbt_tags.setter
-    def dbt_tags(self, dbt_tags: Optional[set[str]]):
+    def dbt_tags(self, dbt_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
@@ -406,21 +406,21 @@ class DbtTag(Dbt):
         self.attributes.tag_id = tag_id
 
     @property
-    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+    def tag_attributes(self) -> Optional[List[SourceTagAttribute]]:
         return None if self.attributes is None else self.attributes.tag_attributes
 
     @tag_attributes.setter
-    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+    def tag_attributes(self, tag_attributes: Optional[List[SourceTagAttribute]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_attributes = tag_attributes
 
     @property
-    def tag_allowed_values(self) -> Optional[set[str]]:
+    def tag_allowed_values(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.tag_allowed_values
 
     @tag_allowed_values.setter
-    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+    def tag_allowed_values(self, tag_allowed_values: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_allowed_values = tag_allowed_values
@@ -455,16 +455,16 @@ class DbtTag(Dbt):
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
         dbt_environment_name: Optional[str] = Field(default=None, description="")
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
-        dbt_tags: Optional[set[str]] = Field(default=None, description="")
+        dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
         tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
             default=None, description=""
         )
-        tag_allowed_values: Optional[set[str]] = Field(default=None, description="")
+        tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
 
     attributes: "DbtTag.Attributes" = Field(

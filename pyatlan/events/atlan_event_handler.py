@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 from abc import ABC
-from typing import Iterable, Optional
+from typing import Dict, Iterable, List, Optional
 from warnings import warn
 
 from pyatlan.client.atlan import AtlanClient
@@ -16,7 +16,7 @@ def is_validation_request(data: str) -> bool:
     return WEBHOOK_VALIDATION_REQUEST == data
 
 
-def valid_signature(expected: str, headers: dict[str, str]) -> bool:
+def valid_signature(expected: str, headers: Dict[str, str]) -> bool:
     """
     Validate the signing secret provided with a request matches the expected signing secret.
 
@@ -147,7 +147,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         return get_current_view_of_asset(self.client, from_event)
 
-    def calculate_changes(self, current_view: Asset) -> list[Asset]:
+    def calculate_changes(self, current_view: Asset) -> List[Asset]:
         """
         Calculate any changes to apply to assets, and return a collection of the minimally-updated form of the assets
         with those changes applied (in-memory). Typically, you will want to call trim_to_required()
@@ -184,7 +184,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         return current == modified
 
-    def upsert_changes(self, changed_assets: list[Asset]):
+    def upsert_changes(self, changed_assets: List[Asset]):
         """
         Deprecated — send the changed assets to Atlan so that they are persisted.
         Use 'save_changes' instead.
@@ -199,7 +199,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         )
         self.save_changes(changed_assets)
 
-    def save_changes(self, changed_assets: list[Asset]):
+    def save_changes(self, changed_assets: List[Asset]):
         """
         Actually send the changed assets to Atlan so that they are persisted.
 

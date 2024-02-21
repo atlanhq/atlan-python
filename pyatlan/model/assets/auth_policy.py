@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -25,7 +25,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     def __create(cls, *, name: str) -> AuthPolicy:
         validate_required_fields(["name"], [name])
         attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore
@@ -159,7 +158,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "policy_type",
         "policy_service_name",
         "policy_category",
@@ -221,51 +220,51 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self.attributes.policy_sub_category = policy_sub_category
 
     @property
-    def policy_users(self) -> Optional[set[str]]:
+    def policy_users(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.policy_users
 
     @policy_users.setter
-    def policy_users(self, policy_users: Optional[set[str]]):
+    def policy_users(self, policy_users: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_users = policy_users
 
     @property
-    def policy_groups(self) -> Optional[set[str]]:
+    def policy_groups(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.policy_groups
 
     @policy_groups.setter
-    def policy_groups(self, policy_groups: Optional[set[str]]):
+    def policy_groups(self, policy_groups: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_groups = policy_groups
 
     @property
-    def policy_roles(self) -> Optional[set[str]]:
+    def policy_roles(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.policy_roles
 
     @policy_roles.setter
-    def policy_roles(self, policy_roles: Optional[set[str]]):
+    def policy_roles(self, policy_roles: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_roles = policy_roles
 
     @property
-    def policy_actions(self) -> Optional[set[str]]:
+    def policy_actions(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.policy_actions
 
     @policy_actions.setter
-    def policy_actions(self, policy_actions: Optional[set[str]]):
+    def policy_actions(self, policy_actions: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_actions = policy_actions
 
     @property
-    def policy_resources(self) -> Optional[set[str]]:
+    def policy_resources(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.policy_resources
 
     @policy_resources.setter
-    def policy_resources(self, policy_resources: Optional[set[str]]):
+    def policy_resources(self, policy_resources: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_resources = policy_resources
@@ -315,7 +314,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self.attributes.policy_mask_type = policy_mask_type
 
     @property
-    def policy_validity_schedule(self) -> Optional[list[AuthPolicyValiditySchedule]]:
+    def policy_validity_schedule(self) -> Optional[List[AuthPolicyValiditySchedule]]:
         return (
             None
             if self.attributes is None
@@ -324,7 +323,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @policy_validity_schedule.setter
     def policy_validity_schedule(
-        self, policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]]
+        self, policy_validity_schedule: Optional[List[AuthPolicyValiditySchedule]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -357,11 +356,11 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self.attributes.policy_delegate_admin = policy_delegate_admin
 
     @property
-    def policy_conditions(self) -> Optional[list[AuthPolicyCondition]]:
+    def policy_conditions(self) -> Optional[List[AuthPolicyCondition]]:
         return None if self.attributes is None else self.attributes.policy_conditions
 
     @policy_conditions.setter
-    def policy_conditions(self, policy_conditions: Optional[list[AuthPolicyCondition]]):
+    def policy_conditions(self, policy_conditions: Optional[List[AuthPolicyCondition]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_conditions = policy_conditions
@@ -381,21 +380,21 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         policy_service_name: Optional[str] = Field(default=None, description="")
         policy_category: Optional[str] = Field(default=None, description="")
         policy_sub_category: Optional[str] = Field(default=None, description="")
-        policy_users: Optional[set[str]] = Field(default=None, description="")
-        policy_groups: Optional[set[str]] = Field(default=None, description="")
-        policy_roles: Optional[set[str]] = Field(default=None, description="")
-        policy_actions: Optional[set[str]] = Field(default=None, description="")
-        policy_resources: Optional[set[str]] = Field(default=None, description="")
+        policy_users: Optional[Set[str]] = Field(default=None, description="")
+        policy_groups: Optional[Set[str]] = Field(default=None, description="")
+        policy_roles: Optional[Set[str]] = Field(default=None, description="")
+        policy_actions: Optional[Set[str]] = Field(default=None, description="")
+        policy_resources: Optional[Set[str]] = Field(default=None, description="")
         policy_resource_category: Optional[str] = Field(default=None, description="")
         policy_priority: Optional[int] = Field(default=None, description="")
         is_policy_enabled: Optional[bool] = Field(default=None, description="")
         policy_mask_type: Optional[str] = Field(default=None, description="")
-        policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]] = Field(
+        policy_validity_schedule: Optional[List[AuthPolicyValiditySchedule]] = Field(
             default=None, description=""
         )
         policy_resource_signature: Optional[str] = Field(default=None, description="")
         policy_delegate_admin: Optional[bool] = Field(default=None, description="")
-        policy_conditions: Optional[list[AuthPolicyCondition]] = Field(
+        policy_conditions: Optional[List[AuthPolicyCondition]] = Field(
             default=None, description=""
         )
         access_control: Optional[AccessControl] = Field(
@@ -403,7 +402,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         def __create(cls, name: str) -> AuthPolicy.Attributes:
             validate_required_fields(["name"], [name])
             return AuthPolicy.Attributes(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -113,7 +113,7 @@ class TableauDatasource(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -185,11 +185,11 @@ class TableauDatasource(Tableau):
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -225,11 +225,11 @@ class TableauDatasource(Tableau):
         self.attributes.is_certified = is_certified
 
     @property
-    def certifier(self) -> Optional[dict[str, str]]:
+    def certifier(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.certifier
 
     @certifier.setter
-    def certifier(self, certifier: Optional[dict[str, str]]):
+    def certifier(self, certifier: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.certifier = certifier
@@ -257,22 +257,22 @@ class TableauDatasource(Tableau):
         self.attributes.certifier_display_name = certifier_display_name
 
     @property
-    def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+    def upstream_tables(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.upstream_tables
 
     @upstream_tables.setter
-    def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
+    def upstream_tables(self, upstream_tables: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_tables = upstream_tables
 
     @property
-    def upstream_datasources(self) -> Optional[list[dict[str, str]]]:
+    def upstream_datasources(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.upstream_datasources
 
     @upstream_datasources.setter
     def upstream_datasources(
-        self, upstream_datasources: Optional[list[dict[str, str]]]
+        self, upstream_datasources: Optional[List[Dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -299,11 +299,11 @@ class TableauDatasource(Tableau):
         self.attributes.project = project
 
     @property
-    def fields(self) -> Optional[list[TableauDatasourceField]]:
+    def fields(self) -> Optional[List[TableauDatasourceField]]:
         return None if self.attributes is None else self.attributes.fields
 
     @fields.setter
-    def fields(self, fields: Optional[list[TableauDatasourceField]]):
+    def fields(self, fields: Optional[List[TableauDatasourceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
@@ -315,19 +315,19 @@ class TableauDatasource(Tableau):
             default=None, description=""
         )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         is_published: Optional[bool] = Field(default=None, description="")
         has_extracts: Optional[bool] = Field(default=None, description="")
         is_certified: Optional[bool] = Field(default=None, description="")
-        certifier: Optional[dict[str, str]] = Field(default=None, description="")
+        certifier: Optional[Dict[str, str]] = Field(default=None, description="")
         certification_note: Optional[str] = Field(default=None, description="")
         certifier_display_name: Optional[str] = Field(default=None, description="")
-        upstream_tables: Optional[list[dict[str, str]]] = Field(
+        upstream_tables: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        upstream_datasources: Optional[list[dict[str, str]]] = Field(
+        upstream_datasources: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         workbook: Optional[TableauWorkbook] = Field(
@@ -336,7 +336,7 @@ class TableauDatasource(Tableau):
         project: Optional[TableauProject] = Field(
             default=None, description=""
         )  # relationship
-        fields: Optional[list[TableauDatasourceField]] = Field(
+        fields: Optional[List[TableauDatasourceField]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 
+from typing import List
+
 from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
 
 from pyatlan.client.common import ApiCaller
@@ -46,7 +48,7 @@ class AdminClient:
             exclude_unset=True,
         ):
             try:
-                events = parse_obj_as(list[KeycloakEvent], raw_json)
+                events = parse_obj_as(List[KeycloakEvent], raw_json)
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)
@@ -74,7 +76,7 @@ class AdminClient:
             ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
         ):
             try:
-                events = parse_obj_as(list[AdminEvent], raw_json)
+                events = parse_obj_as(List[AdminEvent], raw_json)
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)

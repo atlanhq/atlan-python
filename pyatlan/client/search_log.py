@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 
 from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
 
@@ -96,7 +96,7 @@ class SearchLogClient:
                     "buckets", []
                 )
                 user_views = parse_obj_as(
-                    list[UserViews],
+                    List[UserViews],
                     [
                         self._map_bucket_to_user_view(user_view)
                         for user_view in user_views_bucket
@@ -118,7 +118,7 @@ class SearchLogClient:
                     "buckets", []
                 )
                 asset_views = parse_obj_as(
-                    list[AssetViews],
+                    List[AssetViews],
                     [
                         self._map_bucket_to_asset_view(asset_view)
                         for asset_view in asset_views_bucket
@@ -135,7 +135,7 @@ class SearchLogClient:
         # for recent search logs
         if "logs" in raw_json and raw_json.get("logs", []):
             try:
-                log_entries = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
+                log_entries = parse_obj_as(List[SearchLogEntry], raw_json["logs"])
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)

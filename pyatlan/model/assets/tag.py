@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -53,7 +53,7 @@ class Tag(Catalog):
     Name of the classification in Atlan that is mapped to this tag.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -71,21 +71,21 @@ class Tag(Catalog):
         self.attributes.tag_id = tag_id
 
     @property
-    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+    def tag_attributes(self) -> Optional[List[SourceTagAttribute]]:
         return None if self.attributes is None else self.attributes.tag_attributes
 
     @tag_attributes.setter
-    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+    def tag_attributes(self, tag_attributes: Optional[List[SourceTagAttribute]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_attributes = tag_attributes
 
     @property
-    def tag_allowed_values(self) -> Optional[set[str]]:
+    def tag_allowed_values(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.tag_allowed_values
 
     @tag_allowed_values.setter
-    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+    def tag_allowed_values(self, tag_allowed_values: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_allowed_values = tag_allowed_values
@@ -104,10 +104,10 @@ class Tag(Catalog):
 
     class Attributes(Catalog.Attributes):
         tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
             default=None, description=""
         )
-        tag_allowed_values: Optional[set[str]] = Field(default=None, description="")
+        tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
 
     attributes: "Tag.Attributes" = Field(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -71,7 +71,7 @@ class PowerBIColumn(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "power_b_i_column_data_category",

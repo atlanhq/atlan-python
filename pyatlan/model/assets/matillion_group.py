@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -41,7 +41,7 @@ class MatillionGroup(Matillion):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "matillion_project_count",
         "matillion_projects",
     ]
@@ -59,18 +59,18 @@ class MatillionGroup(Matillion):
         self.attributes.matillion_project_count = matillion_project_count
 
     @property
-    def matillion_projects(self) -> Optional[list[MatillionProject]]:
+    def matillion_projects(self) -> Optional[List[MatillionProject]]:
         return None if self.attributes is None else self.attributes.matillion_projects
 
     @matillion_projects.setter
-    def matillion_projects(self, matillion_projects: Optional[list[MatillionProject]]):
+    def matillion_projects(self, matillion_projects: Optional[List[MatillionProject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_projects = matillion_projects
 
     class Attributes(Matillion.Attributes):
         matillion_project_count: Optional[int] = Field(default=None, description="")
-        matillion_projects: Optional[list[MatillionProject]] = Field(
+        matillion_projects: Optional[List[MatillionProject]] = Field(
             default=None, description=""
         )  # relationship
 

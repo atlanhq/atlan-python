@@ -38,7 +38,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {% include file_name %}
     {% endif %}
 
-    type_name: str = Field("{{ entity_def.name }}", allow_mutation=False)
+    type_name: str = Field(default="{{ entity_def.name }}", allow_mutation=False)
 
     @validator('type_name')
     def validate_type_name(cls, v):
@@ -51,11 +51,11 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: Optional[{{type}}] = Field(None, description='' , alias='{{attribute_def.name}}')
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}] = Field(default=None, description='')
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: Optional[{{type}}]= Field(None, description='',  alias='{{attribute_def.name}}') # relationship
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}]= Field(default=None, description='') # relationship
         {%- endfor %}
         {% set file_name = 'methods/attribute/' + entity_def.name | to_snake_case + '.jinja2' %}
         {%  if existz('templates/' + file_name) %}
@@ -84,8 +84,3 @@ from .s_q_l import SQL  # noqa # isort:skip
 {% for import in asset_info.imports_for_referenced_assets %}
 {{ import }}
 {% endfor %}
-
-{%  if asset_info.entity_def.name in asset_info.eligible_assets %}
-{% set entity_name = asset_info.name %}
-{{ entity_name }}.Attributes.update_forward_refs()
-{% endif %}

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Union
+from typing import List, Union
 
 from pydantic.v1 import validate_arguments
 
@@ -100,7 +100,7 @@ class TypeDefClient:
 
     @validate_arguments
     def get(
-        self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
+        self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]
     ) -> TypeDefResponse:
         """
         Retrieves  a TypeDefResponse object that contain a list of the specified category type definitions in Atlan.
@@ -109,7 +109,7 @@ class TypeDefClient:
         :returns: TypeDefResponse object that contain a list that contains the requested list of type definitions
         :raises AtlanError: on any API communication issue
         """
-        categories: list[str] = []
+        categories: List[str] = []
         if isinstance(type_category, list):
             categories.extend(map(lambda x: x.value, type_category))
         else:

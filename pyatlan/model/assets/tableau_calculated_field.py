@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -103,7 +103,7 @@ class TableauCalculatedField(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -186,11 +186,11 @@ class TableauCalculatedField(Tableau):
         self.attributes.datasource_qualified_name = datasource_qualified_name
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -236,21 +236,21 @@ class TableauCalculatedField(Tableau):
         self.attributes.formula = formula
 
     @property
-    def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+    def upstream_fields(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.upstream_fields
 
     @upstream_fields.setter
-    def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
+    def upstream_fields(self, upstream_fields: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_fields = upstream_fields
 
     @property
-    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+    def worksheets(self) -> Optional[List[TableauWorksheet]]:
         return None if self.attributes is None else self.attributes.worksheets
 
     @worksheets.setter
-    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+    def worksheets(self, worksheets: Optional[List[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.worksheets = worksheets
@@ -273,17 +273,17 @@ class TableauCalculatedField(Tableau):
         )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
         datasource_qualified_name: Optional[str] = Field(default=None, description="")
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         data_category: Optional[str] = Field(default=None, description="")
         role: Optional[str] = Field(default=None, description="")
         tableau_data_type: Optional[str] = Field(default=None, description="")
         formula: Optional[str] = Field(default=None, description="")
-        upstream_fields: Optional[list[dict[str, str]]] = Field(
+        upstream_fields: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        worksheets: Optional[list[TableauWorksheet]] = Field(
+        worksheets: Optional[List[TableauWorksheet]] = Field(
             default=None, description=""
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(

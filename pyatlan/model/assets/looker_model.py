@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -55,7 +55,7 @@ class LookerModel(Looker):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "project_name",
         "explores",
         "project",
@@ -75,11 +75,11 @@ class LookerModel(Looker):
         self.attributes.project_name = project_name
 
     @property
-    def explores(self) -> Optional[list[LookerExplore]]:
+    def explores(self) -> Optional[List[LookerExplore]]:
         return None if self.attributes is None else self.attributes.explores
 
     @explores.setter
-    def explores(self, explores: Optional[list[LookerExplore]]):
+    def explores(self, explores: Optional[List[LookerExplore]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.explores = explores
@@ -105,38 +105,38 @@ class LookerModel(Looker):
         self.attributes.look = look
 
     @property
-    def queries(self) -> Optional[list[LookerQuery]]:
+    def queries(self) -> Optional[List[LookerQuery]]:
         return None if self.attributes is None else self.attributes.queries
 
     @queries.setter
-    def queries(self, queries: Optional[list[LookerQuery]]):
+    def queries(self, queries: Optional[List[LookerQuery]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.queries = queries
 
     @property
-    def fields(self) -> Optional[list[LookerField]]:
+    def fields(self) -> Optional[List[LookerField]]:
         return None if self.attributes is None else self.attributes.fields
 
     @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
+    def fields(self, fields: Optional[List[LookerField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(default=None, description="")
-        explores: Optional[list[LookerExplore]] = Field(
+        explores: Optional[List[LookerExplore]] = Field(
             default=None, description=""
         )  # relationship
         project: Optional[LookerProject] = Field(
             default=None, description=""
         )  # relationship
         look: Optional[LookerLook] = Field(default=None, description="")  # relationship
-        queries: Optional[list[LookerQuery]] = Field(
+        queries: Optional[List[LookerQuery]] = Field(
             default=None, description=""
         )  # relationship
-        fields: Optional[list[LookerField]] = Field(
+        fields: Optional[List[LookerField]] = Field(
             default=None, description=""
         )  # relationship
 

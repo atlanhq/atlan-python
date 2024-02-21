@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -63,7 +63,7 @@ class KafkaConsumerGroup(Kafka):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "kafka_consumer_group_topic_consumption_properties",
         "kafka_consumer_group_member_count",
         "kafka_topic_names",
@@ -74,7 +74,7 @@ class KafkaConsumerGroup(Kafka):
     @property
     def kafka_consumer_group_topic_consumption_properties(
         self,
-    ) -> Optional[list[KafkaTopicConsumption]]:
+    ) -> Optional[List[KafkaTopicConsumption]]:
         return (
             None
             if self.attributes is None
@@ -85,7 +85,7 @@ class KafkaConsumerGroup(Kafka):
     def kafka_consumer_group_topic_consumption_properties(
         self,
         kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
+            List[KafkaTopicConsumption]
         ],
     ):
         if self.attributes is None:
@@ -113,17 +113,17 @@ class KafkaConsumerGroup(Kafka):
         )
 
     @property
-    def kafka_topic_names(self) -> Optional[set[str]]:
+    def kafka_topic_names(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.kafka_topic_names
 
     @kafka_topic_names.setter
-    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
+    def kafka_topic_names(self, kafka_topic_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_names = kafka_topic_names
 
     @property
-    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
+    def kafka_topic_qualified_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -132,34 +132,34 @@ class KafkaConsumerGroup(Kafka):
 
     @kafka_topic_qualified_names.setter
     def kafka_topic_qualified_names(
-        self, kafka_topic_qualified_names: Optional[set[str]]
+        self, kafka_topic_qualified_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
 
     @property
-    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
+    def kafka_topics(self) -> Optional[List[KafkaTopic]]:
         return None if self.attributes is None else self.attributes.kafka_topics
 
     @kafka_topics.setter
-    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
+    def kafka_topics(self, kafka_topics: Optional[List[KafkaTopic]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topics = kafka_topics
 
     class Attributes(Kafka.Attributes):
         kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
+            List[KafkaTopicConsumption]
         ] = Field(default=None, description="")
         kafka_consumer_group_member_count: Optional[int] = Field(
             default=None, description=""
         )
-        kafka_topic_names: Optional[set[str]] = Field(default=None, description="")
-        kafka_topic_qualified_names: Optional[set[str]] = Field(
+        kafka_topic_names: Optional[Set[str]] = Field(default=None, description="")
+        kafka_topic_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        kafka_topics: Optional[list[KafkaTopic]] = Field(
+        kafka_topics: Optional[List[KafkaTopic]] = Field(
             default=None, description=""
         )  # relationship
 

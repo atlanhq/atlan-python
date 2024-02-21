@@ -1,15 +1,14 @@
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
         *,
         name: str,
         connector_type: AtlanConnectorType,
-        admin_users: Optional[list[str]] = None,
-        admin_groups: Optional[list[str]] = None,
-        admin_roles: Optional[list[str]] = None,
+        admin_users: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
     )->{{ entity_def.name }}:
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:

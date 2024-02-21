@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -96,7 +96,7 @@ class SisenseDatamodelTable(Sisense):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sisense_datamodel_qualified_name",
         "sisense_datamodel_table_column_count",
         "sisense_datamodel_table_type",
@@ -260,11 +260,11 @@ class SisenseDatamodelTable(Sisense):
         self.attributes.sisense_datamodel = sisense_datamodel
 
     @property
-    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
         return None if self.attributes is None else self.attributes.sisense_widgets
 
     @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_widgets = sisense_widgets
@@ -297,7 +297,7 @@ class SisenseDatamodelTable(Sisense):
         sisense_datamodel: Optional[SisenseDatamodel] = Field(
             default=None, description=""
         )  # relationship
-        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
             default=None, description=""
         )  # relationship
 

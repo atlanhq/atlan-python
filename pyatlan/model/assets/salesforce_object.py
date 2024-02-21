@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -59,7 +59,7 @@ class SalesforceObject(Salesforce):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "is_custom",
         "is_mergable",
         "is_queryable",
@@ -110,11 +110,11 @@ class SalesforceObject(Salesforce):
         self.attributes.field_count = field_count
 
     @property
-    def lookup_fields(self) -> Optional[list[SalesforceField]]:
+    def lookup_fields(self) -> Optional[List[SalesforceField]]:
         return None if self.attributes is None else self.attributes.lookup_fields
 
     @lookup_fields.setter
-    def lookup_fields(self, lookup_fields: Optional[list[SalesforceField]]):
+    def lookup_fields(self, lookup_fields: Optional[List[SalesforceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.lookup_fields = lookup_fields
@@ -130,11 +130,11 @@ class SalesforceObject(Salesforce):
         self.attributes.organization = organization
 
     @property
-    def fields(self) -> Optional[list[SalesforceField]]:
+    def fields(self) -> Optional[List[SalesforceField]]:
         return None if self.attributes is None else self.attributes.fields
 
     @fields.setter
-    def fields(self, fields: Optional[list[SalesforceField]]):
+    def fields(self, fields: Optional[List[SalesforceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
@@ -144,13 +144,13 @@ class SalesforceObject(Salesforce):
         is_mergable: Optional[bool] = Field(default=None, description="")
         is_queryable: Optional[bool] = Field(default=None, description="")
         field_count: Optional[int] = Field(default=None, description="")
-        lookup_fields: Optional[list[SalesforceField]] = Field(
+        lookup_fields: Optional[List[SalesforceField]] = Field(
             default=None, description=""
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             default=None, description=""
         )  # relationship
-        fields: Optional[list[SalesforceField]] = Field(
+        fields: Optional[List[SalesforceField]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -67,7 +67,7 @@ class PowerBIReport(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "web_url",
@@ -135,21 +135,21 @@ class PowerBIReport(PowerBI):
         self.attributes.workspace = workspace
 
     @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
+    def tiles(self) -> Optional[List[PowerBITile]]:
         return None if self.attributes is None else self.attributes.tiles
 
     @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
+    def tiles(self, tiles: Optional[List[PowerBITile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tiles = tiles
 
     @property
-    def pages(self) -> Optional[list[PowerBIPage]]:
+    def pages(self) -> Optional[List[PowerBIPage]]:
         return None if self.attributes is None else self.attributes.pages
 
     @pages.setter
-    def pages(self, pages: Optional[list[PowerBIPage]]):
+    def pages(self, pages: Optional[List[PowerBIPage]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.pages = pages
@@ -172,10 +172,10 @@ class PowerBIReport(PowerBI):
         workspace: Optional[PowerBIWorkspace] = Field(
             default=None, description=""
         )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
+        tiles: Optional[List[PowerBITile]] = Field(
             default=None, description=""
         )  # relationship
-        pages: Optional[list[PowerBIPage]] = Field(
+        pages: Optional[List[PowerBIPage]] = Field(
             default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(

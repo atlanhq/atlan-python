@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -79,7 +79,7 @@ class TableauProject(Tableau):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "top_level_project_qualified_name",
         "is_top_level_project",
@@ -131,11 +131,11 @@ class TableauProject(Tableau):
         self.attributes.is_top_level_project = is_top_level_project
 
     @property
-    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return None if self.attributes is None else self.attributes.project_hierarchy
 
     @project_hierarchy.setter
-    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+    def project_hierarchy(self, project_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
@@ -151,11 +151,11 @@ class TableauProject(Tableau):
         self.attributes.parent_project = parent_project
 
     @property
-    def workbooks(self) -> Optional[list[TableauWorkbook]]:
+    def workbooks(self) -> Optional[List[TableauWorkbook]]:
         return None if self.attributes is None else self.attributes.workbooks
 
     @workbooks.setter
-    def workbooks(self, workbooks: Optional[list[TableauWorkbook]]):
+    def workbooks(self, workbooks: Optional[List[TableauWorkbook]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.workbooks = workbooks
@@ -171,31 +171,31 @@ class TableauProject(Tableau):
         self.attributes.site = site
 
     @property
-    def datasources(self) -> Optional[list[TableauDatasource]]:
+    def datasources(self) -> Optional[List[TableauDatasource]]:
         return None if self.attributes is None else self.attributes.datasources
 
     @datasources.setter
-    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+    def datasources(self, datasources: Optional[List[TableauDatasource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasources = datasources
 
     @property
-    def flows(self) -> Optional[list[TableauFlow]]:
+    def flows(self) -> Optional[List[TableauFlow]]:
         return None if self.attributes is None else self.attributes.flows
 
     @flows.setter
-    def flows(self, flows: Optional[list[TableauFlow]]):
+    def flows(self, flows: Optional[List[TableauFlow]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.flows = flows
 
     @property
-    def child_projects(self) -> Optional[list[TableauProject]]:
+    def child_projects(self) -> Optional[List[TableauProject]]:
         return None if self.attributes is None else self.attributes.child_projects
 
     @child_projects.setter
-    def child_projects(self, child_projects: Optional[list[TableauProject]]):
+    def child_projects(self, child_projects: Optional[List[TableauProject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.child_projects = child_projects
@@ -206,25 +206,25 @@ class TableauProject(Tableau):
             default=None, description=""
         )
         is_top_level_project: Optional[bool] = Field(default=None, description="")
-        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
         parent_project: Optional[TableauProject] = Field(
             default=None, description=""
         )  # relationship
-        workbooks: Optional[list[TableauWorkbook]] = Field(
+        workbooks: Optional[List[TableauWorkbook]] = Field(
             default=None, description=""
         )  # relationship
         site: Optional[TableauSite] = Field(
             default=None, description=""
         )  # relationship
-        datasources: Optional[list[TableauDatasource]] = Field(
+        datasources: Optional[List[TableauDatasource]] = Field(
             default=None, description=""
         )  # relationship
-        flows: Optional[list[TableauFlow]] = Field(
+        flows: Optional[List[TableauFlow]] = Field(
             default=None, description=""
         )  # relationship
-        child_projects: Optional[list[TableauProject]] = Field(
+        child_projects: Optional[List[TableauProject]] = Field(
             default=None, description=""
         )  # relationship
 

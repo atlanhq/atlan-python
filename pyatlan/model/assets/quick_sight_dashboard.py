@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -59,7 +59,7 @@ class QuickSightDashboard(QuickSight):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "quick_sight_dashboard_published_version_number",
         "quick_sight_dashboard_last_published_time",
         "quick_sight_dashboard_folders",
@@ -103,7 +103,7 @@ class QuickSightDashboard(QuickSight):
         )
 
     @property
-    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
+    def quick_sight_dashboard_folders(self) -> Optional[List[QuickSightFolder]]:
         return (
             None
             if self.attributes is None
@@ -112,7 +112,7 @@ class QuickSightDashboard(QuickSight):
 
     @quick_sight_dashboard_folders.setter
     def quick_sight_dashboard_folders(
-        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
+        self, quick_sight_dashboard_folders: Optional[List[QuickSightFolder]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -121,7 +121,7 @@ class QuickSightDashboard(QuickSight):
     @property
     def quick_sight_dashboard_visuals(
         self,
-    ) -> Optional[list[QuickSightDashboardVisual]]:
+    ) -> Optional[List[QuickSightDashboardVisual]]:
         return (
             None
             if self.attributes is None
@@ -130,7 +130,7 @@ class QuickSightDashboard(QuickSight):
 
     @quick_sight_dashboard_visuals.setter
     def quick_sight_dashboard_visuals(
-        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
+        self, quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -143,11 +143,11 @@ class QuickSightDashboard(QuickSight):
         quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
             default=None, description=""
         )
-        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
+        quick_sight_dashboard_folders: Optional[List[QuickSightFolder]] = Field(
             default=None, description=""
         )  # relationship
         quick_sight_dashboard_visuals: Optional[
-            list[QuickSightDashboardVisual]
+            List[QuickSightDashboardVisual]
         ] = Field(
             default=None, description=""
         )  # relationship

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -86,7 +86,7 @@ class SisenseWidget(Sisense):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sisense_widget_column_count",
         "sisense_widget_sub_type",
         "sisense_widget_size",
@@ -170,7 +170,7 @@ class SisenseWidget(Sisense):
         )
 
     @property
-    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
+    def sisense_datamodel_tables(self) -> Optional[List[SisenseDatamodelTable]]:
         return (
             None
             if self.attributes is None
@@ -179,7 +179,7 @@ class SisenseWidget(Sisense):
 
     @sisense_datamodel_tables.setter
     def sisense_datamodel_tables(
-        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
+        self, sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -215,7 +215,7 @@ class SisenseWidget(Sisense):
         sisense_widget_folder_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
+        sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]] = Field(
             default=None, description=""
         )  # relationship
         sisense_folder: Optional[SisenseFolder] = Field(

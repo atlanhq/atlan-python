@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -38,36 +38,36 @@ class Namespace(Asset, type_name="Namespace"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "children_queries",
         "children_folders",
     ]
 
     @property
-    def children_queries(self) -> Optional[list[Query]]:
+    def children_queries(self) -> Optional[List[Query]]:
         return None if self.attributes is None else self.attributes.children_queries
 
     @children_queries.setter
-    def children_queries(self, children_queries: Optional[list[Query]]):
+    def children_queries(self, children_queries: Optional[List[Query]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.children_queries = children_queries
 
     @property
-    def children_folders(self) -> Optional[list[Folder]]:
+    def children_folders(self) -> Optional[List[Folder]]:
         return None if self.attributes is None else self.attributes.children_folders
 
     @children_folders.setter
-    def children_folders(self, children_folders: Optional[list[Folder]]):
+    def children_folders(self, children_folders: Optional[List[Folder]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.children_folders = children_folders
 
     class Attributes(Asset.Attributes):
-        children_queries: Optional[list[Query]] = Field(
+        children_queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
-        children_folders: Optional[list[Folder]] = Field(
+        children_folders: Optional[List[Folder]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -46,7 +46,7 @@ class Metabase(BI):
     Unique name of the Metabase collection in which this asset exists.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "metabase_collection_name",
         "metabase_collection_qualified_name",
     ]

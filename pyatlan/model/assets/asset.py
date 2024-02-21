@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import TYPE_CHECKING, ClassVar, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional, Set, Type, TypeVar
 
 from pydantic.v1 import Field, validator
 
@@ -39,7 +39,7 @@ SelfAsset = TypeVar("SelfAsset", bound="Asset")
 class Asset(Referenceable):
     """Description"""
 
-    _subtypes_: dict[str, type] = dict()
+    _subtypes_: Dict[str, type] = dict()
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
@@ -998,7 +998,7 @@ class Asset(Referenceable):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "name",
         "display_name",
         "description",
@@ -1289,61 +1289,61 @@ class Asset(Referenceable):
         self.attributes.announcement_updated_by = announcement_updated_by
 
     @property
-    def owner_users(self) -> Optional[set[str]]:
+    def owner_users(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.owner_users
 
     @owner_users.setter
-    def owner_users(self, owner_users: Optional[set[str]]):
+    def owner_users(self, owner_users: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.owner_users = owner_users
 
     @property
-    def owner_groups(self) -> Optional[set[str]]:
+    def owner_groups(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.owner_groups
 
     @owner_groups.setter
-    def owner_groups(self, owner_groups: Optional[set[str]]):
+    def owner_groups(self, owner_groups: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.owner_groups = owner_groups
 
     @property
-    def admin_users(self) -> Optional[set[str]]:
+    def admin_users(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.admin_users
 
     @admin_users.setter
-    def admin_users(self, admin_users: Optional[set[str]]):
+    def admin_users(self, admin_users: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.admin_users = admin_users
 
     @property
-    def admin_groups(self) -> Optional[set[str]]:
+    def admin_groups(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.admin_groups
 
     @admin_groups.setter
-    def admin_groups(self, admin_groups: Optional[set[str]]):
+    def admin_groups(self, admin_groups: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.admin_groups = admin_groups
 
     @property
-    def viewer_users(self) -> Optional[set[str]]:
+    def viewer_users(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.viewer_users
 
     @viewer_users.setter
-    def viewer_users(self, viewer_users: Optional[set[str]]):
+    def viewer_users(self, viewer_users: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.viewer_users = viewer_users
 
     @property
-    def viewer_groups(self) -> Optional[set[str]]:
+    def viewer_groups(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.viewer_groups
 
     @viewer_groups.setter
-    def viewer_groups(self, viewer_groups: Optional[set[str]]):
+    def viewer_groups(self, viewer_groups: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.viewer_groups = viewer_groups
@@ -1545,11 +1545,11 @@ class Asset(Referenceable):
         self.attributes.last_sync_run = last_sync_run
 
     @property
-    def admin_roles(self) -> Optional[set[str]]:
+    def admin_roles(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.admin_roles
 
     @admin_roles.setter
-    def admin_roles(self, admin_roles: Optional[set[str]]):
+    def admin_roles(self, admin_roles: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.admin_roles = admin_roles
@@ -1629,7 +1629,7 @@ class Asset(Referenceable):
         self.attributes.source_read_query_cost = source_read_query_cost
 
     @property
-    def source_read_recent_user_list(self) -> Optional[set[str]]:
+    def source_read_recent_user_list(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -1638,14 +1638,14 @@ class Asset(Referenceable):
 
     @source_read_recent_user_list.setter
     def source_read_recent_user_list(
-        self, source_read_recent_user_list: Optional[set[str]]
+        self, source_read_recent_user_list: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_read_recent_user_list = source_read_recent_user_list
 
     @property
-    def source_read_recent_user_record_list(self) -> Optional[list[PopularityInsights]]:
+    def source_read_recent_user_record_list(self) -> Optional[List[PopularityInsights]]:
         return (
             None
             if self.attributes is None
@@ -1654,7 +1654,7 @@ class Asset(Referenceable):
 
     @source_read_recent_user_record_list.setter
     def source_read_recent_user_record_list(
-        self, source_read_recent_user_record_list: Optional[list[PopularityInsights]]
+        self, source_read_recent_user_record_list: Optional[List[PopularityInsights]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1663,7 +1663,7 @@ class Asset(Referenceable):
         )
 
     @property
-    def source_read_top_user_list(self) -> Optional[set[str]]:
+    def source_read_top_user_list(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -1671,13 +1671,13 @@ class Asset(Referenceable):
         )
 
     @source_read_top_user_list.setter
-    def source_read_top_user_list(self, source_read_top_user_list: Optional[set[str]]):
+    def source_read_top_user_list(self, source_read_top_user_list: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_read_top_user_list = source_read_top_user_list
 
     @property
-    def source_read_top_user_record_list(self) -> Optional[list[PopularityInsights]]:
+    def source_read_top_user_record_list(self) -> Optional[List[PopularityInsights]]:
         return (
             None
             if self.attributes is None
@@ -1686,7 +1686,7 @@ class Asset(Referenceable):
 
     @source_read_top_user_record_list.setter
     def source_read_top_user_record_list(
-        self, source_read_top_user_record_list: Optional[list[PopularityInsights]]
+        self, source_read_top_user_record_list: Optional[List[PopularityInsights]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1697,7 +1697,7 @@ class Asset(Referenceable):
     @property
     def source_read_popular_query_record_list(
         self,
-    ) -> Optional[list[PopularityInsights]]:
+    ) -> Optional[List[PopularityInsights]]:
         return (
             None
             if self.attributes is None
@@ -1706,7 +1706,7 @@ class Asset(Referenceable):
 
     @source_read_popular_query_record_list.setter
     def source_read_popular_query_record_list(
-        self, source_read_popular_query_record_list: Optional[list[PopularityInsights]]
+        self, source_read_popular_query_record_list: Optional[List[PopularityInsights]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1717,7 +1717,7 @@ class Asset(Referenceable):
     @property
     def source_read_expensive_query_record_list(
         self,
-    ) -> Optional[list[PopularityInsights]]:
+    ) -> Optional[List[PopularityInsights]]:
         return (
             None
             if self.attributes is None
@@ -1727,7 +1727,7 @@ class Asset(Referenceable):
     @source_read_expensive_query_record_list.setter
     def source_read_expensive_query_record_list(
         self,
-        source_read_expensive_query_record_list: Optional[list[PopularityInsights]],
+        source_read_expensive_query_record_list: Optional[List[PopularityInsights]],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1736,7 +1736,7 @@ class Asset(Referenceable):
         )
 
     @property
-    def source_read_slow_query_record_list(self) -> Optional[list[PopularityInsights]]:
+    def source_read_slow_query_record_list(self) -> Optional[List[PopularityInsights]]:
         return (
             None
             if self.attributes is None
@@ -1745,7 +1745,7 @@ class Asset(Referenceable):
 
     @source_read_slow_query_record_list.setter
     def source_read_slow_query_record_list(
-        self, source_read_slow_query_record_list: Optional[list[PopularityInsights]]
+        self, source_read_slow_query_record_list: Optional[List[PopularityInsights]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1754,7 +1754,7 @@ class Asset(Referenceable):
         )
 
     @property
-    def source_query_compute_cost_list(self) -> Optional[set[str]]:
+    def source_query_compute_cost_list(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -1763,7 +1763,7 @@ class Asset(Referenceable):
 
     @source_query_compute_cost_list.setter
     def source_query_compute_cost_list(
-        self, source_query_compute_cost_list: Optional[set[str]]
+        self, source_query_compute_cost_list: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1772,7 +1772,7 @@ class Asset(Referenceable):
     @property
     def source_query_compute_cost_record_list(
         self,
-    ) -> Optional[list[PopularityInsights]]:
+    ) -> Optional[List[PopularityInsights]]:
         return (
             None
             if self.attributes is None
@@ -1781,7 +1781,7 @@ class Asset(Referenceable):
 
     @source_query_compute_cost_record_list.setter
     def source_query_compute_cost_record_list(
-        self, source_query_compute_cost_record_list: Optional[list[PopularityInsights]]
+        self, source_query_compute_cost_record_list: Optional[List[PopularityInsights]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -2374,11 +2374,11 @@ class Asset(Referenceable):
         )
 
     @property
-    def asset_dbt_tags(self) -> Optional[set[str]]:
+    def asset_dbt_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.asset_dbt_tags
 
     @asset_dbt_tags.setter
-    def asset_dbt_tags(self, asset_dbt_tags: Optional[set[str]]):
+    def asset_dbt_tags(self, asset_dbt_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_dbt_tags = asset_dbt_tags
@@ -2430,29 +2430,29 @@ class Asset(Referenceable):
         self.attributes.sample_data_url = sample_data_url
 
     @property
-    def asset_tags(self) -> Optional[set[str]]:
+    def asset_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.asset_tags
 
     @asset_tags.setter
-    def asset_tags(self, asset_tags: Optional[set[str]]):
+    def asset_tags(self, asset_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_tags = asset_tags
 
     @property
-    def asset_mc_incident_names(self) -> Optional[set[str]]:
+    def asset_mc_incident_names(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_mc_incident_names
         )
 
     @asset_mc_incident_names.setter
-    def asset_mc_incident_names(self, asset_mc_incident_names: Optional[set[str]]):
+    def asset_mc_incident_names(self, asset_mc_incident_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_names = asset_mc_incident_names
 
     @property
-    def asset_mc_incident_qualified_names(self) -> Optional[set[str]]:
+    def asset_mc_incident_qualified_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2461,7 +2461,7 @@ class Asset(Referenceable):
 
     @asset_mc_incident_qualified_names.setter
     def asset_mc_incident_qualified_names(
-        self, asset_mc_incident_qualified_names: Optional[set[str]]
+        self, asset_mc_incident_qualified_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -2470,19 +2470,19 @@ class Asset(Referenceable):
         )
 
     @property
-    def asset_mc_monitor_names(self) -> Optional[set[str]]:
+    def asset_mc_monitor_names(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_mc_monitor_names
         )
 
     @asset_mc_monitor_names.setter
-    def asset_mc_monitor_names(self, asset_mc_monitor_names: Optional[set[str]]):
+    def asset_mc_monitor_names(self, asset_mc_monitor_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_names = asset_mc_monitor_names
 
     @property
-    def asset_mc_monitor_qualified_names(self) -> Optional[set[str]]:
+    def asset_mc_monitor_qualified_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2491,7 +2491,7 @@ class Asset(Referenceable):
 
     @asset_mc_monitor_qualified_names.setter
     def asset_mc_monitor_qualified_names(
-        self, asset_mc_monitor_qualified_names: Optional[set[str]]
+        self, asset_mc_monitor_qualified_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -2500,7 +2500,7 @@ class Asset(Referenceable):
         )
 
     @property
-    def asset_mc_monitor_statuses(self) -> Optional[set[str]]:
+    def asset_mc_monitor_statuses(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2508,25 +2508,25 @@ class Asset(Referenceable):
         )
 
     @asset_mc_monitor_statuses.setter
-    def asset_mc_monitor_statuses(self, asset_mc_monitor_statuses: Optional[set[str]]):
+    def asset_mc_monitor_statuses(self, asset_mc_monitor_statuses: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_statuses = asset_mc_monitor_statuses
 
     @property
-    def asset_mc_monitor_types(self) -> Optional[set[str]]:
+    def asset_mc_monitor_types(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_mc_monitor_types
         )
 
     @asset_mc_monitor_types.setter
-    def asset_mc_monitor_types(self, asset_mc_monitor_types: Optional[set[str]]):
+    def asset_mc_monitor_types(self, asset_mc_monitor_types: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_types = asset_mc_monitor_types
 
     @property
-    def asset_mc_monitor_schedule_types(self) -> Optional[set[str]]:
+    def asset_mc_monitor_schedule_types(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2535,7 +2535,7 @@ class Asset(Referenceable):
 
     @asset_mc_monitor_schedule_types.setter
     def asset_mc_monitor_schedule_types(
-        self, asset_mc_monitor_schedule_types: Optional[set[str]]
+        self, asset_mc_monitor_schedule_types: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -2544,19 +2544,19 @@ class Asset(Referenceable):
         )
 
     @property
-    def asset_mc_incident_types(self) -> Optional[set[str]]:
+    def asset_mc_incident_types(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_mc_incident_types
         )
 
     @asset_mc_incident_types.setter
-    def asset_mc_incident_types(self, asset_mc_incident_types: Optional[set[str]]):
+    def asset_mc_incident_types(self, asset_mc_incident_types: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_types = asset_mc_incident_types
 
     @property
-    def asset_mc_incident_sub_types(self) -> Optional[set[str]]:
+    def asset_mc_incident_sub_types(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2565,14 +2565,14 @@ class Asset(Referenceable):
 
     @asset_mc_incident_sub_types.setter
     def asset_mc_incident_sub_types(
-        self, asset_mc_incident_sub_types: Optional[set[str]]
+        self, asset_mc_incident_sub_types: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_sub_types = asset_mc_incident_sub_types
 
     @property
-    def asset_mc_incident_severities(self) -> Optional[set[str]]:
+    def asset_mc_incident_severities(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2581,14 +2581,14 @@ class Asset(Referenceable):
 
     @asset_mc_incident_severities.setter
     def asset_mc_incident_severities(
-        self, asset_mc_incident_severities: Optional[set[str]]
+        self, asset_mc_incident_severities: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
 
     @property
-    def asset_mc_incident_states(self) -> Optional[set[str]]:
+    def asset_mc_incident_states(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -2596,7 +2596,7 @@ class Asset(Referenceable):
         )
 
     @asset_mc_incident_states.setter
-    def asset_mc_incident_states(self, asset_mc_incident_states: Optional[set[str]]):
+    def asset_mc_incident_states(self, asset_mc_incident_states: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_states = asset_mc_incident_states
@@ -2616,22 +2616,22 @@ class Asset(Referenceable):
         self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
 
     @property
-    def starred_by(self) -> Optional[set[str]]:
+    def starred_by(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.starred_by
 
     @starred_by.setter
-    def starred_by(self, starred_by: Optional[set[str]]):
+    def starred_by(self, starred_by: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.starred_by = starred_by
 
     @property
-    def starred_details_list(self) -> Optional[list[StarredDetails]]:
+    def starred_details_list(self) -> Optional[List[StarredDetails]]:
         return None if self.attributes is None else self.attributes.starred_details_list
 
     @starred_details_list.setter
     def starred_details_list(
-        self, starred_details_list: Optional[list[StarredDetails]]
+        self, starred_details_list: Optional[List[StarredDetails]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -2776,7 +2776,7 @@ class Asset(Referenceable):
         self.attributes.asset_theme_hex = asset_theme_hex
 
     @property
-    def schema_registry_subjects(self) -> Optional[list[SchemaRegistrySubject]]:
+    def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
             if self.attributes is None
@@ -2785,24 +2785,24 @@ class Asset(Referenceable):
 
     @schema_registry_subjects.setter
     def schema_registry_subjects(
-        self, schema_registry_subjects: Optional[list[SchemaRegistrySubject]]
+        self, schema_registry_subjects: Optional[List[SchemaRegistrySubject]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.schema_registry_subjects = schema_registry_subjects
 
     @property
-    def mc_monitors(self) -> Optional[list[MCMonitor]]:
+    def mc_monitors(self) -> Optional[List[MCMonitor]]:
         return None if self.attributes is None else self.attributes.mc_monitors
 
     @mc_monitors.setter
-    def mc_monitors(self, mc_monitors: Optional[list[MCMonitor]]):
+    def mc_monitors(self, mc_monitors: Optional[List[MCMonitor]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_monitors = mc_monitors
 
     @property
-    def output_port_data_products(self) -> Optional[list[DataProduct]]:
+    def output_port_data_products(self) -> Optional[List[DataProduct]]:
         return (
             None
             if self.attributes is None
@@ -2811,48 +2811,48 @@ class Asset(Referenceable):
 
     @output_port_data_products.setter
     def output_port_data_products(
-        self, output_port_data_products: Optional[list[DataProduct]]
+        self, output_port_data_products: Optional[List[DataProduct]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_port_data_products = output_port_data_products
 
     @property
-    def files(self) -> Optional[list[File]]:
+    def files(self) -> Optional[List[File]]:
         return None if self.attributes is None else self.attributes.files
 
     @files.setter
-    def files(self, files: Optional[list[File]]):
+    def files(self, files: Optional[List[File]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.files = files
 
     @property
-    def mc_incidents(self) -> Optional[list[MCIncident]]:
+    def mc_incidents(self) -> Optional[List[MCIncident]]:
         return None if self.attributes is None else self.attributes.mc_incidents
 
     @mc_incidents.setter
-    def mc_incidents(self, mc_incidents: Optional[list[MCIncident]]):
+    def mc_incidents(self, mc_incidents: Optional[List[MCIncident]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_incidents = mc_incidents
 
     @property
-    def links(self) -> Optional[list[Link]]:
+    def links(self) -> Optional[List[Link]]:
         return None if self.attributes is None else self.attributes.links
 
     @links.setter
-    def links(self, links: Optional[list[Link]]):
+    def links(self, links: Optional[List[Link]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.links = links
 
     @property
-    def metrics(self) -> Optional[list[Metric]]:
+    def metrics(self) -> Optional[List[Metric]]:
         return None if self.attributes is None else self.attributes.metrics
 
     @metrics.setter
-    def metrics(self, metrics: Optional[list[Metric]]):
+    def metrics(self, metrics: Optional[List[Metric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metrics = metrics
@@ -2868,21 +2868,21 @@ class Asset(Referenceable):
         self.attributes.readme = readme
 
     @property
-    def soda_checks(self) -> Optional[list[SodaCheck]]:
+    def soda_checks(self) -> Optional[List[SodaCheck]]:
         return None if self.attributes is None else self.attributes.soda_checks
 
     @soda_checks.setter
-    def soda_checks(self, soda_checks: Optional[list[SodaCheck]]):
+    def soda_checks(self, soda_checks: Optional[List[SodaCheck]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.soda_checks = soda_checks
 
     @property
-    def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def assigned_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.meanings
 
     @assigned_terms.setter
-    def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
+    def assigned_terms(self, assigned_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.meanings = assigned_terms
@@ -2906,12 +2906,12 @@ class Asset(Referenceable):
             default=None, description=""
         )
         announcement_updated_by: Optional[str] = Field(default=None, description="")
-        owner_users: Optional[set[str]] = Field(default=None, description="")
-        owner_groups: Optional[set[str]] = Field(default=None, description="")
-        admin_users: Optional[set[str]] = Field(default=None, description="")
-        admin_groups: Optional[set[str]] = Field(default=None, description="")
-        viewer_users: Optional[set[str]] = Field(default=None, description="")
-        viewer_groups: Optional[set[str]] = Field(default=None, description="")
+        owner_users: Optional[Set[str]] = Field(default=None, description="")
+        owner_groups: Optional[Set[str]] = Field(default=None, description="")
+        admin_users: Optional[Set[str]] = Field(default=None, description="")
+        admin_groups: Optional[Set[str]] = Field(default=None, description="")
+        viewer_users: Optional[Set[str]] = Field(default=None, description="")
+        viewer_groups: Optional[Set[str]] = Field(default=None, description="")
         connector_name: Optional[str] = Field(default=None, description="")
         connection_name: Optional[str] = Field(default=None, description="")
         connection_qualified_name: Optional[str] = Field(default=None, description="")
@@ -2931,7 +2931,7 @@ class Asset(Referenceable):
         last_sync_workflow_name: Optional[str] = Field(default=None, description="")
         last_sync_run_at: Optional[datetime] = Field(default=None, description="")
         last_sync_run: Optional[str] = Field(default=None, description="")
-        admin_roles: Optional[set[str]] = Field(default=None, description="")
+        admin_roles: Optional[Set[str]] = Field(default=None, description="")
         source_read_count: Optional[int] = Field(default=None, description="")
         source_read_user_count: Optional[int] = Field(default=None, description="")
         source_last_read_at: Optional[datetime] = Field(default=None, description="")
@@ -2941,32 +2941,32 @@ class Asset(Referenceable):
             default=None, description=""
         )
         source_read_query_cost: Optional[float] = Field(default=None, description="")
-        source_read_recent_user_list: Optional[set[str]] = Field(
+        source_read_recent_user_list: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        source_read_recent_user_record_list: Optional[list[PopularityInsights]] = Field(
+        source_read_recent_user_record_list: Optional[List[PopularityInsights]] = Field(
             default=None, description=""
         )
-        source_read_top_user_list: Optional[set[str]] = Field(
+        source_read_top_user_list: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        source_read_top_user_record_list: Optional[list[PopularityInsights]] = Field(
+        source_read_top_user_record_list: Optional[List[PopularityInsights]] = Field(
             default=None, description=""
         )
         source_read_popular_query_record_list: Optional[
-            list[PopularityInsights]
+            List[PopularityInsights]
         ] = Field(default=None, description="")
         source_read_expensive_query_record_list: Optional[
-            list[PopularityInsights]
+            List[PopularityInsights]
         ] = Field(default=None, description="")
-        source_read_slow_query_record_list: Optional[list[PopularityInsights]] = Field(
+        source_read_slow_query_record_list: Optional[List[PopularityInsights]] = Field(
             default=None, description=""
         )
-        source_query_compute_cost_list: Optional[set[str]] = Field(
+        source_query_compute_cost_list: Optional[Set[str]] = Field(
             default=None, description=""
         )
         source_query_compute_cost_record_list: Optional[
-            list[PopularityInsights]
+            List[PopularityInsights]
         ] = Field(default=None, description="")
         dbt_qualified_name: Optional[str] = Field(default=None, description="")
         asset_dbt_alias: Optional[str] = Field(default=None, description="")
@@ -3052,7 +3052,7 @@ class Asset(Referenceable):
         asset_dbt_environment_dbt_version: Optional[str] = Field(
             default=None, description=""
         )
-        asset_dbt_tags: Optional[set[str]] = Field(default=None, description="")
+        asset_dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
@@ -3060,41 +3060,41 @@ class Asset(Referenceable):
             default=None, description=""
         )
         sample_data_url: Optional[str] = Field(default=None, description="")
-        asset_tags: Optional[set[str]] = Field(default=None, description="")
-        asset_mc_incident_names: Optional[set[str]] = Field(
+        asset_tags: Optional[Set[str]] = Field(default=None, description="")
+        asset_mc_incident_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_incident_qualified_names: Optional[set[str]] = Field(
+        asset_mc_incident_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_monitor_names: Optional[set[str]] = Field(default=None, description="")
-        asset_mc_monitor_qualified_names: Optional[set[str]] = Field(
+        asset_mc_monitor_names: Optional[Set[str]] = Field(default=None, description="")
+        asset_mc_monitor_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_monitor_statuses: Optional[set[str]] = Field(
+        asset_mc_monitor_statuses: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_monitor_types: Optional[set[str]] = Field(default=None, description="")
-        asset_mc_monitor_schedule_types: Optional[set[str]] = Field(
+        asset_mc_monitor_types: Optional[Set[str]] = Field(default=None, description="")
+        asset_mc_monitor_schedule_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_incident_types: Optional[set[str]] = Field(
+        asset_mc_incident_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_incident_sub_types: Optional[set[str]] = Field(
+        asset_mc_incident_sub_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_incident_severities: Optional[set[str]] = Field(
+        asset_mc_incident_severities: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_mc_incident_states: Optional[set[str]] = Field(
+        asset_mc_incident_states: Optional[Set[str]] = Field(
             default=None, description=""
         )
         asset_mc_last_sync_run_at: Optional[datetime] = Field(
             default=None, description=""
         )
-        starred_by: Optional[set[str]] = Field(default=None, description="")
-        starred_details_list: Optional[list[StarredDetails]] = Field(
+        starred_by: Optional[Set[str]] = Field(default=None, description="")
+        starred_details_list: Optional[List[StarredDetails]] = Field(
             default=None, description=""
         )
         starred_count: Optional[int] = Field(default=None, description="")
@@ -3113,32 +3113,32 @@ class Asset(Referenceable):
         is_a_i_generated: Optional[bool] = Field(default=None, description="")
         asset_cover_image: Optional[str] = Field(default=None, description="")
         asset_theme_hex: Optional[str] = Field(default=None, description="")
-        schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
+        schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
+        mc_monitors: Optional[List[MCMonitor]] = Field(
             default=None, description=""
         )  # relationship
-        output_port_data_products: Optional[list[DataProduct]] = Field(
+        output_port_data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
-        files: Optional[list[File]] = Field(
+        files: Optional[List[File]] = Field(
             default=None, description=""
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
+        mc_incidents: Optional[List[MCIncident]] = Field(
             default=None, description=""
         )  # relationship
-        links: Optional[list[Link]] = Field(
+        links: Optional[List[Link]] = Field(
             default=None, description=""
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
+        metrics: Optional[List[Metric]] = Field(
             default=None, description=""
         )  # relationship
         readme: Optional[Readme] = Field(default=None, description="")  # relationship
-        soda_checks: Optional[list[SodaCheck]] = Field(
+        soda_checks: Optional[List[SodaCheck]] = Field(
             default=None, description=""
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+        meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
 

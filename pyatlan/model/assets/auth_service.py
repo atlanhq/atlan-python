@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -58,7 +58,7 @@ class AuthService(Asset, type_name="AuthService"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "auth_service_type",
         "tag_service",
         "auth_service_is_enabled",
@@ -99,11 +99,11 @@ class AuthService(Asset, type_name="AuthService"):
         self.attributes.auth_service_is_enabled = auth_service_is_enabled
 
     @property
-    def auth_service_config(self) -> Optional[dict[str, str]]:
+    def auth_service_config(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.auth_service_config
 
     @auth_service_config.setter
-    def auth_service_config(self, auth_service_config: Optional[dict[str, str]]):
+    def auth_service_config(self, auth_service_config: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.auth_service_config = auth_service_config
@@ -128,7 +128,7 @@ class AuthService(Asset, type_name="AuthService"):
         auth_service_type: Optional[str] = Field(default=None, description="")
         tag_service: Optional[str] = Field(default=None, description="")
         auth_service_is_enabled: Optional[bool] = Field(default=None, description="")
-        auth_service_config: Optional[dict[str, str]] = Field(
+        auth_service_config: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         auth_service_policy_last_sync: Optional[int] = Field(

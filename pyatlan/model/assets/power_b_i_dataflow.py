@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -49,7 +49,7 @@ class PowerBIDataflow(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "web_url",
         "workspace",
@@ -91,11 +91,11 @@ class PowerBIDataflow(PowerBI):
         self.attributes.workspace = workspace
 
     @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
+    def datasets(self) -> Optional[List[PowerBIDataset]]:
         return None if self.attributes is None else self.attributes.datasets
 
     @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+    def datasets(self, datasets: Optional[List[PowerBIDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasets = datasets
@@ -106,7 +106,7 @@ class PowerBIDataflow(PowerBI):
         workspace: Optional[PowerBIWorkspace] = Field(
             default=None, description=""
         )  # relationship
-        datasets: Optional[list[PowerBIDataset]] = Field(
+        datasets: Optional[List[PowerBIDataset]] = Field(
             default=None, description=""
         )  # relationship
 

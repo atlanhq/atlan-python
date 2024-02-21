@@ -1,6 +1,5 @@
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,
@@ -8,7 +7,7 @@
             name: StrictStr,
             cm_name: str,
             cm_attribute: str,
-            badge_conditions: list[BadgeCondition],
+            badge_conditions: List[BadgeCondition],
         ) -> Badge.Attributes:
             validate_required_fields(
                 ["name", "cm_name", "cm_attribute", "badge_conditions"],

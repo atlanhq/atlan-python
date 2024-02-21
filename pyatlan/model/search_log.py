@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Generator, Iterable, Optional
+from typing import Any, Dict, Generator, Iterable, List, Optional
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as
 
@@ -25,15 +25,15 @@ class SearchLogRequest(SearchRequest):
     """Class from which to configure a search against Atlan's search log."""
 
     dsl: DSL
-    attributes: list[str] = Field(default_factory=list, alias="attributes")
-    _EXCLUDE_USERS: list[str] = [
+    attributes: List[str] = Field(default_factory=list, alias="attributes")
+    _EXCLUDE_USERS: List[str] = [
         "atlansupport",
         "support",
         "support@atlan.com",
         "atlansupport@atlan.com",
         "hello@atlan.com",
     ]
-    _BASE_QUERY_FILTER: list[Query] = [
+    _BASE_QUERY_FILTER: List[Query] = [
         Term(
             field="utmTags",
             value=UTMTags.ACTION_ASSET_VIEWED.value,
@@ -84,7 +84,7 @@ class SearchLogRequest(SearchRequest):
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
     @staticmethod
-    def _get_recent_viewers_aggs(max_users: int) -> dict[str, object]:
+    def _get_recent_viewers_aggs(max_users: int) -> Dict[str, object]:
         return {
             "uniqueUsers": {
                 "terms": {
@@ -102,7 +102,7 @@ class SearchLogRequest(SearchRequest):
     @staticmethod
     def _get_most_viewed_assets_aggs(
         max_assets: int, by_diff_user: bool
-    ) -> dict[str, object]:
+    ) -> Dict[str, object]:
         aggs_terms = {
             "field": "entityGuidsAll",
             "size": max_assets,
@@ -178,7 +178,7 @@ class SearchLogRequest(SearchRequest):
         guid: str,
         size: int = 20,
         from_: int = 0,
-        sort: Optional[list[SortItem]] = None,
+        sort: Optional[List[SortItem]] = None,
     ) -> "SearchLogRequest":
         """
         Create a search log request to retrieve recent search logs of an assets.
@@ -243,22 +243,22 @@ class SearchLogEntry(AtlanObject):
     )
     ip_address: str = Field(description="IP address from which the search was run.")
     user_name: str = Field(description="Username of the user who ran the search.")
-    entity_guids_all: list[str] = Field(
+    entity_guids_all: List[str] = Field(
         default_factory=list,
         alias="entityGuidsAll",
         description="GUID(s) of asset(s) that were in the results of the search.",
     )
-    entity_qf_names_all: list[str] = Field(
+    entity_qf_names_all: List[str] = Field(
         default_factory=list,
         alias="entityQFNamesAll",
         description="Unique name(s) of asset(s) that were in the results of the search.",
     )
-    entity_guids_allowed: list[str] = Field(
+    entity_guids_allowed: List[str] = Field(
         default_factory=list,
         alias="entityGuidsAllowed",
         description="GUID(s) of asset(s) that were in the results of the search, that the user is permitted to see.",
     )
-    entity_qf_names_allowed: list[str] = Field(
+    entity_qf_names_allowed: List[str] = Field(
         default_factory=list,
         alias="entityQFNamesAllowed",
         description=(
@@ -266,12 +266,12 @@ class SearchLogEntry(AtlanObject):
             "results of the search, that the user is permitted to see."
         ),
     )
-    entity_type_names_all: list[str] = Field(
+    entity_type_names_all: List[str] = Field(
         default_factory=list,
         alias="entityTypeNamesAll",
         description="Name(s) of the types of assets that were in the results of the search.",
     )
-    entity_type_names_allowed: list[str] = Field(
+    entity_type_names_allowed: List[str] = Field(
         default_factory=list,
         alias="entityTypeNamesAllowed",
         description=(
@@ -279,7 +279,7 @@ class SearchLogEntry(AtlanObject):
             "the results of the search, that the user is permitted to see."
         ),
     )
-    utm_tags: list[str] = Field(
+    utm_tags: List[str] = Field(
         default_factory=list, description="Tag(s) that were sent in the search request."
     )
     has_result: bool = Field(
@@ -310,11 +310,11 @@ class SearchLogEntry(AtlanObject):
         alias="request.dslText",
         description="DSL of the full search request that was made, as a string.",
     )
-    request_attributes: Optional[list[str]] = Field(
+    request_attributes: Optional[List[str]] = Field(
         alias="request.attributes",
         description="List of attribute (names) that were requested as part of the search.",
     )
-    request_relation_attributes: Optional[list[str]] = Field(
+    request_relation_attributes: Optional[List[str]] = Field(
         alias="request.relationAttributes",
         description="List of relationship attribute (names) that were requested as part of the search.",
     )
@@ -326,8 +326,8 @@ class SearchLogViewResults:
     def __init__(
         self,
         count: int,
-        user_views: Optional[list[UserViews]] = None,
-        asset_views: Optional[list[AssetViews]] = None,
+        user_views: Optional[List[UserViews]] = None,
+        asset_views: Optional[List[AssetViews]] = None,
     ):
         self._count = count
         self._user_views = user_views
@@ -338,11 +338,11 @@ class SearchLogViewResults:
         return self._count
 
     @property
-    def user_views(self) -> Optional[list[UserViews]]:
+    def user_views(self) -> Optional[List[UserViews]]:
         return self._user_views
 
     @property
-    def asset_views(self) -> Optional[list[AssetViews]]:
+    def asset_views(self) -> Optional[List[AssetViews]]:
         return self._asset_views
 
 
@@ -356,8 +356,8 @@ class SearchLogResults(Iterable):
         start: int,
         size: int,
         count: int,
-        log_entries: list[SearchLogEntry],
-        aggregations: dict[str, Aggregation],
+        log_entries: List[SearchLogEntry],
+        aggregations: Dict[str, Aggregation],
     ):
         self._client = client
         self._endpoint = SEARCH_LOG
@@ -372,7 +372,7 @@ class SearchLogResults(Iterable):
     def count(self) -> int:
         return self._count
 
-    def current_page(self) -> list[SearchLogEntry]:
+    def current_page(self) -> List[SearchLogEntry]:
         """
         Retrieve the current page of results.
 
@@ -421,7 +421,7 @@ class SearchLogResults(Iterable):
             return None
         try:
             raw_json.get("logs", [])
-            self._log_entries = parse_obj_as(list[SearchLogEntry], raw_json["logs"])
+            self._log_entries = parse_obj_as(List[SearchLogEntry], raw_json["logs"])
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(

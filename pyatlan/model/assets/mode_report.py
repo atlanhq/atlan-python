@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -88,7 +88,7 @@ class ModeReport(Mode):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "mode_collection_token",
         "mode_report_published_at",
         "mode_query_count",
@@ -177,21 +177,21 @@ class ModeReport(Mode):
         self.attributes.mode_is_shared = mode_is_shared
 
     @property
-    def mode_queries(self) -> Optional[list[ModeQuery]]:
+    def mode_queries(self) -> Optional[List[ModeQuery]]:
         return None if self.attributes is None else self.attributes.mode_queries
 
     @mode_queries.setter
-    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
+    def mode_queries(self, mode_queries: Optional[List[ModeQuery]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_queries = mode_queries
 
     @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
+    def mode_collections(self) -> Optional[List[ModeCollection]]:
         return None if self.attributes is None else self.attributes.mode_collections
 
     @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+    def mode_collections(self, mode_collections: Optional[List[ModeCollection]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_collections = mode_collections
@@ -206,10 +206,10 @@ class ModeReport(Mode):
         mode_query_preview: Optional[str] = Field(default=None, description="")
         mode_is_public: Optional[bool] = Field(default=None, description="")
         mode_is_shared: Optional[bool] = Field(default=None, description="")
-        mode_queries: Optional[list[ModeQuery]] = Field(
+        mode_queries: Optional[List[ModeQuery]] = Field(
             default=None, description=""
         )  # relationship
-        mode_collections: Optional[list[ModeCollection]] = Field(
+        mode_collections: Optional[List[ModeCollection]] = Field(
             default=None, description=""
         )  # relationship
 

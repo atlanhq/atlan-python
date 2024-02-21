@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 
 from pyatlan.client.group import GroupClient
 
@@ -10,7 +10,7 @@ class GroupCache:
     Lazily-loaded cache for translating Atlan-internal groups into their various IDs.
     """
 
-    caches: dict[int, "GroupCache"] = {}
+    caches: Dict[int, "GroupCache"] = {}
 
     @classmethod
     def get_cache(cls) -> "GroupCache":
@@ -63,9 +63,9 @@ class GroupCache:
 
     def __init__(self, group_client: GroupClient):
         self.group_client: GroupClient = group_client
-        self.map_id_to_name: dict[str, str] = {}
-        self.map_name_to_id: dict[str, str] = {}
-        self.map_alias_to_id: dict[str, str] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.map_alias_to_id: Dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
         groups = self.group_client.get_all()

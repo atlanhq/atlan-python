@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from datetime import datetime
-from typing import Literal, Union
+from typing import Dict, Literal, Set, Union
 
 import pytest
 from pydantic.v1 import StrictBool, StrictStr, ValidationError
@@ -39,7 +39,7 @@ from tests.unit.model.constants import (
 )
 
 NOW = datetime.now()
-VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
+VALUES_BY_TYPE: Dict[Union[type, object], Union[str, datetime, object]] = {
     StrictStr: "abc",
     StrictBool: True,
     datetime: NOW,
@@ -49,7 +49,7 @@ VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
     CertificateStatus: CertificateStatus.VERIFIED,
 }
 
-INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
+INCOMPATIPLE_QUERY: Dict[type, Set[TermAttributes]] = {
     Wildcard: {
         TermAttributes.CONNECTOR_NAME,
         TermAttributes.HAS_LINEAGE,

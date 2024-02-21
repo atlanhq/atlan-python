@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -65,7 +65,7 @@ class QlikDataset(Qlik):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "qlik_dataset_technical_name",
         "qlik_dataset_type",
         "qlik_dataset_uri",

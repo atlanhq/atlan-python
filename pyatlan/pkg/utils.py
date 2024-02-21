@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+from typing import Dict, List
 
 from pydantic.v1 import parse_obj_as, parse_raw_as
 
@@ -49,7 +50,7 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
     """
     client = get_client(run_time_config.user_id or "")
     if run_time_config.agent == "workflow":
-        headers: dict[str, str] = {}
+        headers: Dict[str, str] = {}
         if run_time_config.agent:
             headers["x-atlan-agent"] = run_time_config.agent
         if run_time_config.agent_pkg:
@@ -69,7 +70,7 @@ def validate_multiselect(v):
     if isinstance(v, str):
         if v.startswith("["):
             data = json.loads(v)
-            v = parse_obj_as(list[str], data)
+            v = parse_obj_as(List[str], data)
         else:
             v = [v]
     return v

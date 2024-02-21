@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -139,7 +139,7 @@ class MongoDBDatabase(Database):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "mongo_d_b_database_collection_count",
         "schema_count",
         "query_count",
@@ -209,11 +209,11 @@ class MongoDBDatabase(Database):
         self.attributes.query_user_count = query_user_count
 
     @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
+    def query_user_map(self) -> Optional[Dict[str, int]]:
         return None if self.attributes is None else self.attributes.query_user_map
 
     @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
+    def query_user_map(self, query_user_map: Optional[Dict[str, int]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_user_map = query_user_map
@@ -349,14 +349,14 @@ class MongoDBDatabase(Database):
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
 
     @property
-    def mongo_d_b_collections(self) -> Optional[list[MongoDBCollection]]:
+    def mongo_d_b_collections(self) -> Optional[List[MongoDBCollection]]:
         return (
             None if self.attributes is None else self.attributes.mongo_d_b_collections
         )
 
     @mongo_d_b_collections.setter
     def mongo_d_b_collections(
-        self, mongo_d_b_collections: Optional[list[MongoDBCollection]]
+        self, mongo_d_b_collections: Optional[List[MongoDBCollection]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -369,7 +369,7 @@ class MongoDBDatabase(Database):
         schema_count: Optional[int] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
-        query_user_map: Optional[dict[str, int]] = Field(default=None, description="")
+        query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
         query_count_updated_at: Optional[datetime] = Field(default=None, description="")
         database_name: Optional[str] = Field(default=None, description="")
         database_qualified_name: Optional[str] = Field(default=None, description="")
@@ -382,7 +382,7 @@ class MongoDBDatabase(Database):
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        mongo_d_b_collections: Optional[list[MongoDBCollection]] = Field(
+        mongo_d_b_collections: Optional[List[MongoDBCollection]] = Field(
             default=None, description=""
         )  # relationship
 

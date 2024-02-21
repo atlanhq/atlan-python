@@ -1,3 +1,5 @@
+from typing import Dict
+
 import pytest
 from pydantic.v1 import ValidationError
 
@@ -25,7 +27,7 @@ def text_input() -> TextInput:
 
 
 @pytest.fixture()
-def inputs(text_input: TextInput) -> dict[str, AbstractUIElement]:
+def inputs(text_input: TextInput) -> Dict[str, AbstractUIElement]:
     return {"qn_prefix": text_input}
 
 

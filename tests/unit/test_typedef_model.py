@@ -307,7 +307,7 @@ class TestAttributeDef:
             (
                 APPLICABLE_ASSET_TYPES,
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be set\[str\]",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be Set\[str\]",
             ),
             (
                 APPLICABLE_ASSET_TYPES,
@@ -317,7 +317,7 @@ class TestAttributeDef:
             (
                 APLICABLE_GLOSSARY_TYPES,
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be set\[str\]",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be Set\[str\]",
             ),
             (
                 APLICABLE_GLOSSARY_TYPES,
@@ -327,7 +327,7 @@ class TestAttributeDef:
             (
                 APPLICABLE_OTHER_ASSET_TYPES,
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be set\[str\]",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be Set\[str\]",
             ),
             (
                 APPLICABLE_OTHER_ASSET_TYPES,
@@ -337,17 +337,17 @@ class TestAttributeDef:
             (
                 APPLICABLE_ENTITY_TYPES,
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be set\[str\]",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be Set\[str\]",
             ),
             (
                 APPLICABLE_CONNECTIONS,
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be set\[str\]",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be Set\[str\]",
             ),
             (
                 APPLICABLE_GLOSSARIES,
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be set\[str\]",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be Set\[str\]",
             ),
         ],
     )

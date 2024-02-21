@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 
 from pyatlan.model.assets import Column, ColumnProcess, Process
@@ -58,8 +60,8 @@ from tests.unit.model.constants import (
 def test_create_with_missing_parameters_raise_value_error(
     name: str,
     connection_qualified_name: str,
-    inputs: list[Column],
-    outputs: list[Column],
+    inputs: List[Column],
+    outputs: List[Column],
     process: Process,
     error_msg: str,
 ):
@@ -97,8 +99,8 @@ def test_create_with_missing_parameters_raise_value_error(
 def test_create(
     name: str,
     connection_qualified_name: str,
-    inputs: list[Column],
-    outputs: list[Column],
+    inputs: List[Column],
+    outputs: List[Column],
     process_id: str,
     parent: Process,
 ):

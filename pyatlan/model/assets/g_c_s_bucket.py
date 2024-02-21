@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -25,7 +25,6 @@ class GCSBucket(GCS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
         validate_required_fields(
@@ -97,7 +96,7 @@ class GCSBucket(GCS):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "gcs_object_count",
         "gcs_bucket_versioning_enabled",
         "gcs_bucket_retention_locked",
@@ -209,11 +208,11 @@ class GCSBucket(GCS):
         self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
 
     @property
-    def gcs_objects(self) -> Optional[list[GCSObject]]:
+    def gcs_objects(self) -> Optional[List[GCSObject]]:
         return None if self.attributes is None else self.attributes.gcs_objects
 
     @gcs_objects.setter
-    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
+    def gcs_objects(self, gcs_objects: Optional[List[GCSObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.gcs_objects = gcs_objects
@@ -232,12 +231,11 @@ class GCSBucket(GCS):
         )
         gcs_bucket_lifecycle_rules: Optional[str] = Field(default=None, description="")
         gcs_bucket_retention_policy: Optional[str] = Field(default=None, description="")
-        gcs_objects: Optional[list[GCSObject]] = Field(
+        gcs_objects: Optional[List[GCSObject]] = Field(
             default=None, description=""
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str

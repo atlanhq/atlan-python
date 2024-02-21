@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
@@ -31,9 +31,9 @@ class ConfluentKafkaCrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_users: Optional[list[str]],
+        admin_roles: Optional[List[str]],
+        admin_groups: Optional[List[str]],
+        admin_users: Optional[List[str]],
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,

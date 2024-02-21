@@ -2,7 +2,7 @@ import json
 import logging.config
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 from pydantic.v1 import BaseModel, BaseSettings, Field, parse_obj_as
 
@@ -23,7 +23,7 @@ def validate_multiselect(v, values, **kwargs):
     if isinstance(v, str):
         if v.startswith("["):
             data = json.loads(v)
-            v = parse_obj_as(list[str], data)
+            v = parse_obj_as(List[str], data)
         else:
             v = [v]
     return v
@@ -35,7 +35,7 @@ def validate_connection(v, values, config, field, **kwargs):
 
 class ConnectorAndConnection(BaseModel):
     source: AtlanConnectorType
-    connections: list[str]
+    connections: List[str]
 
 
 def validate_connector_and_connection(v, values, config, field, **kwargs):

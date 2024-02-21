@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 
 from pyatlan.client.token import SERVICE_ACCOUNT_, TokenClient
 from pyatlan.client.user import UserClient
@@ -12,7 +12,7 @@ class UserCache:
     Lazily-loaded cache for translating Atlan-internal users into their various IDs.
     """
 
-    caches: dict[int, "UserCache"] = {}
+    caches: Dict[int, "UserCache"] = {}
 
     @classmethod
     def get_cache(cls) -> "UserCache":
@@ -68,9 +68,9 @@ class UserCache:
     def __init__(self, user_client: UserClient, token_client: TokenClient):
         self.user_client: UserClient = user_client
         self.token_client: TokenClient = token_client
-        self.map_id_to_name: dict[str, str] = {}
-        self.map_name_to_id: dict[str, str] = {}
-        self.map_email_to_id: dict[str, str] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.map_email_to_id: Dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
         users = self.user_client.get_all()

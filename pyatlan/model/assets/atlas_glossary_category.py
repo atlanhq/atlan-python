@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
@@ -37,7 +37,6 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         return values
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -134,7 +133,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "short_description",
         "long_description",
         "additional_attributes",
@@ -166,13 +165,13 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self.attributes.long_description = long_description
 
     @property
-    def additional_attributes(self) -> Optional[dict[str, str]]:
+    def additional_attributes(self) -> Optional[Dict[str, str]]:
         return (
             None if self.attributes is None else self.attributes.additional_attributes
         )
 
     @additional_attributes.setter
-    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
+    def additional_attributes(self, additional_attributes: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
@@ -188,11 +187,11 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self.attributes.category_type = category_type
 
     @property
-    def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+    def terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.terms
 
     @terms.setter
-    def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
+    def terms(self, terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.terms = terms
@@ -218,12 +217,12 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self.attributes.parent_category = parent_category
 
     @property
-    def children_categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+    def children_categories(self) -> Optional[List[AtlasGlossaryCategory]]:
         return None if self.attributes is None else self.attributes.children_categories
 
     @children_categories.setter
     def children_categories(
-        self, children_categories: Optional[list[AtlasGlossaryCategory]]
+        self, children_categories: Optional[List[AtlasGlossaryCategory]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -232,13 +231,13 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(default=None, description="")
         long_description: Optional[str] = Field(default=None, description="")
-        additional_attributes: Optional[dict[str, str]] = Field(
+        additional_attributes: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         category_type: Optional[AtlasGlossaryCategoryType] = Field(
             default=None, description=""
         )
-        terms: Optional[list[AtlasGlossaryTerm]] = Field(
+        terms: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
         anchor: Optional[AtlasGlossary] = Field(
@@ -247,12 +246,11 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         parent_category: Optional[AtlasGlossaryCategory] = Field(
             default=None, description=""
         )  # relationship
-        children_categories: Optional[list[AtlasGlossaryCategory]] = Field(
+        children_categories: Optional[List[AtlasGlossaryCategory]] = Field(
             default=None, description=""
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

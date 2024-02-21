@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -48,7 +48,7 @@ class Resource(Catalog):
     Metadata of the resource.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "link",
         "is_global",
         "reference",
@@ -86,11 +86,11 @@ class Resource(Catalog):
         self.attributes.reference = reference
 
     @property
-    def resource_metadata(self) -> Optional[dict[str, str]]:
+    def resource_metadata(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.resource_metadata
 
     @resource_metadata.setter
-    def resource_metadata(self, resource_metadata: Optional[dict[str, str]]):
+    def resource_metadata(self, resource_metadata: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.resource_metadata = resource_metadata
@@ -99,7 +99,7 @@ class Resource(Catalog):
         link: Optional[str] = Field(default=None, description="")
         is_global: Optional[bool] = Field(default=None, description="")
         reference: Optional[str] = Field(default=None, description="")
-        resource_metadata: Optional[dict[str, str]] = Field(
+        resource_metadata: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
 

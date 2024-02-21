@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -144,7 +144,7 @@ class MCMonitor(MonteCarlo):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "mc_monitor_id",
         "mc_monitor_status",
         "mc_monitor_type",
@@ -340,7 +340,7 @@ class MCMonitor(MonteCarlo):
         )
 
     @property
-    def mc_monitor_rule_comparisons(self) -> Optional[list[MCRuleComparison]]:
+    def mc_monitor_rule_comparisons(self) -> Optional[List[MCRuleComparison]]:
         return (
             None
             if self.attributes is None
@@ -349,7 +349,7 @@ class MCMonitor(MonteCarlo):
 
     @mc_monitor_rule_comparisons.setter
     def mc_monitor_rule_comparisons(
-        self, mc_monitor_rule_comparisons: Optional[list[MCRuleComparison]]
+        self, mc_monitor_rule_comparisons: Optional[List[MCRuleComparison]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -396,11 +396,11 @@ class MCMonitor(MonteCarlo):
         self.attributes.mc_monitor_incident_count = mc_monitor_incident_count
 
     @property
-    def mc_monitor_assets(self) -> Optional[list[Asset]]:
+    def mc_monitor_assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.mc_monitor_assets
 
     @mc_monitor_assets.setter
-    def mc_monitor_assets(self, mc_monitor_assets: Optional[list[Asset]]):
+    def mc_monitor_assets(self, mc_monitor_assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_monitor_assets = mc_monitor_assets
@@ -427,13 +427,13 @@ class MCMonitor(MonteCarlo):
         mc_monitor_rule_previous_execution_time: Optional[datetime] = Field(
             default=None, description=""
         )
-        mc_monitor_rule_comparisons: Optional[list[MCRuleComparison]] = Field(
+        mc_monitor_rule_comparisons: Optional[List[MCRuleComparison]] = Field(
             default=None, description=""
         )
         mc_monitor_rule_is_snoozed: Optional[bool] = Field(default=None, description="")
         mc_monitor_breach_rate: Optional[float] = Field(default=None, description="")
         mc_monitor_incident_count: Optional[int] = Field(default=None, description="")
-        mc_monitor_assets: Optional[list[Asset]] = Field(
+        mc_monitor_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
 

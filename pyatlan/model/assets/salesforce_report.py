@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -53,7 +53,7 @@ class SalesforceReport(Salesforce):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "source_id",
         "report_type",
         "detail_columns",
@@ -72,31 +72,31 @@ class SalesforceReport(Salesforce):
         self.attributes.source_id = source_id
 
     @property
-    def report_type(self) -> Optional[dict[str, str]]:
+    def report_type(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.report_type
 
     @report_type.setter
-    def report_type(self, report_type: Optional[dict[str, str]]):
+    def report_type(self, report_type: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.report_type = report_type
 
     @property
-    def detail_columns(self) -> Optional[set[str]]:
+    def detail_columns(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.detail_columns
 
     @detail_columns.setter
-    def detail_columns(self, detail_columns: Optional[set[str]]):
+    def detail_columns(self, detail_columns: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.detail_columns = detail_columns
 
     @property
-    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+    def dashboards(self) -> Optional[List[SalesforceDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
     @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+    def dashboards(self, dashboards: Optional[List[SalesforceDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
@@ -113,9 +113,9 @@ class SalesforceReport(Salesforce):
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(default=None, description="")
-        report_type: Optional[dict[str, str]] = Field(default=None, description="")
-        detail_columns: Optional[set[str]] = Field(default=None, description="")
-        dashboards: Optional[list[SalesforceDashboard]] = Field(
+        report_type: Optional[Dict[str, str]] = Field(default=None, description="")
+        detail_columns: Optional[Set[str]] = Field(default=None, description="")
+        dashboards: Optional[List[SalesforceDashboard]] = Field(
             default=None, description=""
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(

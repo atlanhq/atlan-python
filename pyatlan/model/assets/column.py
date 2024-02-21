@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -27,7 +27,6 @@ class Column(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
@@ -374,7 +373,7 @@ class Column(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "data_type",
         "sub_data_type",
         "raw_data_type_definition",
@@ -657,11 +656,11 @@ class Column(SQL):
         self.attributes.max_length = max_length
 
     @property
-    def validations(self) -> Optional[dict[str, str]]:
+    def validations(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.validations
 
     @validations.setter
-    def validations(self, validations: Optional[dict[str, str]]):
+    def validations(self, validations: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.validations = validations
@@ -899,11 +898,11 @@ class Column(SQL):
         self.attributes.column_maximum_string_length = column_maximum_string_length
 
     @property
-    def column_maxs(self) -> Optional[set[str]]:
+    def column_maxs(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.column_maxs
 
     @column_maxs.setter
-    def column_maxs(self, column_maxs: Optional[set[str]]):
+    def column_maxs(self, column_maxs: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_maxs = column_maxs
@@ -923,11 +922,11 @@ class Column(SQL):
         self.attributes.column_minimum_string_length = column_minimum_string_length
 
     @property
-    def column_mins(self) -> Optional[set[str]]:
+    def column_mins(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.column_mins
 
     @column_mins.setter
-    def column_mins(self, column_mins: Optional[set[str]]):
+    def column_mins(self, column_mins: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_mins = column_mins
@@ -1009,12 +1008,12 @@ class Column(SQL):
         self.attributes.column_variance = column_variance
 
     @property
-    def column_top_values(self) -> Optional[list[ColumnValueFrequencyMap]]:
+    def column_top_values(self) -> Optional[List[ColumnValueFrequencyMap]]:
         return None if self.attributes is None else self.attributes.column_top_values
 
     @column_top_values.setter
     def column_top_values(
-        self, column_top_values: Optional[list[ColumnValueFrequencyMap]]
+        self, column_top_values: Optional[List[ColumnValueFrequencyMap]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1055,17 +1054,17 @@ class Column(SQL):
         self.attributes.view = view
 
     @property
-    def nested_columns(self) -> Optional[list[Column]]:
+    def nested_columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.nested_columns
 
     @nested_columns.setter
-    def nested_columns(self, nested_columns: Optional[list[Column]]):
+    def nested_columns(self, nested_columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.nested_columns = nested_columns
 
     @property
-    def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
+    def data_quality_metric_dimensions(self) -> Optional[List[Metric]]:
         return (
             None
             if self.attributes is None
@@ -1074,18 +1073,18 @@ class Column(SQL):
 
     @data_quality_metric_dimensions.setter
     def data_quality_metric_dimensions(
-        self, data_quality_metric_dimensions: Optional[list[Metric]]
+        self, data_quality_metric_dimensions: Optional[List[Metric]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
 
     @property
-    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+    def dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
         return None if self.attributes is None else self.attributes.dbt_model_columns
 
     @dbt_model_columns.setter
-    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+    def dbt_model_columns(self, dbt_model_columns: Optional[List[DbtModelColumn]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_columns = dbt_model_columns
@@ -1101,7 +1100,7 @@ class Column(SQL):
         self.attributes.table = table
 
     @property
-    def column_dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+    def column_dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
         return (
             None
             if self.attributes is None
@@ -1110,7 +1109,7 @@ class Column(SQL):
 
     @column_dbt_model_columns.setter
     def column_dbt_model_columns(
-        self, column_dbt_model_columns: Optional[list[DbtModelColumn]]
+        self, column_dbt_model_columns: Optional[List[DbtModelColumn]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1137,31 +1136,31 @@ class Column(SQL):
         self.attributes.parent_column = parent_column
 
     @property
-    def queries(self) -> Optional[list[Query]]:
+    def queries(self) -> Optional[List[Query]]:
         return None if self.attributes is None else self.attributes.queries
 
     @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
+    def queries(self, queries: Optional[List[Query]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.queries = queries
 
     @property
-    def metric_timestamps(self) -> Optional[list[Metric]]:
+    def metric_timestamps(self) -> Optional[List[Metric]]:
         return None if self.attributes is None else self.attributes.metric_timestamps
 
     @metric_timestamps.setter
-    def metric_timestamps(self, metric_timestamps: Optional[list[Metric]]):
+    def metric_timestamps(self, metric_timestamps: Optional[List[Metric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_timestamps = metric_timestamps
 
     @property
-    def foreign_key_to(self) -> Optional[list[Column]]:
+    def foreign_key_to(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.foreign_key_to
 
     @foreign_key_to.setter
-    def foreign_key_to(self, foreign_key_to: Optional[list[Column]]):
+    def foreign_key_to(self, foreign_key_to: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.foreign_key_to = foreign_key_to
@@ -1177,11 +1176,11 @@ class Column(SQL):
         self.attributes.foreign_key_from = foreign_key_from
 
     @property
-    def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+    def dbt_metrics(self) -> Optional[List[DbtMetric]]:
         return None if self.attributes is None else self.attributes.dbt_metrics
 
     @dbt_metrics.setter
-    def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
+    def dbt_metrics(self, dbt_metrics: Optional[List[DbtMetric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_metrics = dbt_metrics
@@ -1218,7 +1217,7 @@ class Column(SQL):
         is_nullable: Optional[bool] = Field(default=None, description="")
         numeric_scale: Optional[float] = Field(default=None, description="")
         max_length: Optional[int] = Field(default=None, description="")
-        validations: Optional[dict[str, str]] = Field(default=None, description="")
+        validations: Optional[Dict[str, str]] = Field(default=None, description="")
         parent_column_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
@@ -1251,11 +1250,11 @@ class Column(SQL):
         column_maximum_string_length: Optional[int] = Field(
             default=None, description=""
         )
-        column_maxs: Optional[set[str]] = Field(default=None, description="")
+        column_maxs: Optional[Set[str]] = Field(default=None, description="")
         column_minimum_string_length: Optional[int] = Field(
             default=None, description=""
         )
-        column_mins: Optional[set[str]] = Field(default=None, description="")
+        column_mins: Optional[Set[str]] = Field(default=None, description="")
         column_missing_values_count: Optional[int] = Field(default=None, description="")
         column_missing_values_count_long: Optional[int] = Field(
             default=None, description=""
@@ -1267,7 +1266,7 @@ class Column(SQL):
             default=None, description=""
         )
         column_variance: Optional[float] = Field(default=None, description="")
-        column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
+        column_top_values: Optional[List[ColumnValueFrequencyMap]] = Field(
             default=None, description=""
         )
         column_depth_level: Optional[int] = Field(default=None, description="")
@@ -1275,17 +1274,17 @@ class Column(SQL):
             default=None, description=""
         )  # relationship
         view: Optional[View] = Field(default=None, description="")  # relationship
-        nested_columns: Optional[list[Column]] = Field(
+        nested_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        data_quality_metric_dimensions: Optional[list[Metric]] = Field(
+        data_quality_metric_dimensions: Optional[List[Metric]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
         )  # relationship
         table: Optional[Table] = Field(default=None, description="")  # relationship
-        column_dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+        column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
         )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
@@ -1294,19 +1293,19 @@ class Column(SQL):
         parent_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
-        queries: Optional[list[Query]] = Field(
+        queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
-        metric_timestamps: Optional[list[Metric]] = Field(
+        metric_timestamps: Optional[List[Metric]] = Field(
             default=None, description=""
         )  # relationship
-        foreign_key_to: Optional[list[Column]] = Field(
+        foreign_key_to: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
         foreign_key_from: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
-        dbt_metrics: Optional[list[DbtMetric]] = Field(
+        dbt_metrics: Optional[List[DbtMetric]] = Field(
             default=None, description=""
         )  # relationship
         table_partition: Optional[TablePartition] = Field(
@@ -1314,7 +1313,6 @@ class Column(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int

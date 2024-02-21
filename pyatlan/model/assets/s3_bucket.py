@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional, overload
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
@@ -43,7 +43,6 @@ class S3Bucket(S3):
         ...
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
@@ -90,7 +89,7 @@ class S3Bucket(S3):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "s3_object_count",
         "s3_bucket_versioning_enabled",
         "objects",
@@ -123,11 +122,11 @@ class S3Bucket(S3):
         self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
 
     @property
-    def objects(self) -> Optional[list[S3Object]]:
+    def objects(self) -> Optional[List[S3Object]]:
         return None if self.attributes is None else self.attributes.objects
 
     @objects.setter
-    def objects(self, objects: Optional[list[S3Object]]):
+    def objects(self, objects: Optional[List[S3Object]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.objects = objects
@@ -137,12 +136,11 @@ class S3Bucket(S3):
         s3_bucket_versioning_enabled: Optional[bool] = Field(
             default=None, description=""
         )
-        objects: Optional[list[S3Object]] = Field(
+        objects: Optional[List[S3Object]] = Field(
             default=None, description=""
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

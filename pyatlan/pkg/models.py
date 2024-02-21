@@ -6,7 +6,7 @@ import textwrap
 from enum import Enum
 from importlib import resources
 from pathlib import Path
-from typing import Literal, Optional, Protocol
+from typing import Dict, List, Literal, Optional, Protocol
 
 from jinja2 import Environment, PackageLoader
 from pydantic.v1 import BaseModel, Field, PrivateAttr, StrictStr, validate_arguments
@@ -35,22 +35,22 @@ class RuntimeConfig(Protocol):
 
 
 class PackageConfig(BaseModel):
-    labels: dict[StrictStr, StrictStr]
-    annotations: dict[StrictStr, StrictStr]
+    labels: Dict[StrictStr, StrictStr]
+    annotations: Dict[StrictStr, StrictStr]
 
 
 class _PackageDefinition(BaseModel):
     name: str
     version: str
     description: str
-    keywords: list[str]
+    keywords: List[str]
     homepage: str
     main: str
-    scripts: dict[str, str]
-    author: dict[str, str]
-    repository: dict[str, str]
+    scripts: Dict[str, str]
+    author: Dict[str, str]
+    repository: Dict[str, str]
     license: str
-    bugs: dict[str, str]
+    bugs: Dict[str, str]
     config: PackageConfig
 
 
@@ -60,8 +60,8 @@ class PackageDefinition(BaseModel):
     description: str
     icon_url: str
     docs_url: str
-    keywords: list[str] = Field(default_factory=list)
-    scripts: dict[str, str] = Field(default_factory=dict)
+    keywords: List[str] = Field(default_factory=list)
+    scripts: Dict[str, str] = Field(default_factory=dict)
     allow_schedule: bool = True
     certified: bool = True
     preview: bool = False
@@ -142,10 +142,10 @@ class CustomPackage(BaseModel):
     :ivar icon_url str: link to an icon to use for the package, as it should be shown in the UI
     :ivar docs_url str: link to an online document describing the package
     :ivar ui_config UIConfig: configuration for the UI of the custom package
-    :ivar keywords list[str]: (optional) list of any keyword labels to apply to the package
+    :ivar keywords List[str]: (optional) list of any keyword labels to apply to the package
     :ivar container_image str: container image to run the logic of the custom package
     :ivar container_image_pull_policy PullPolicy: (optional) override the default IfNotPresent policy
-    :ivar container_command list[str]: the full command to run in the container image, as a list rather than spaced
+    :ivar container_command List[str]: the full command to run in the container image, as a list rather than spaced
     (must be provided if you have not specified the class above)
     :ivar allow_schedule bool: (optional) whether to allow the package to be scheduled (default, true) or only run
     immediately (false)
@@ -155,7 +155,7 @@ class CustomPackage(BaseModel):
     :ivar connector_type Optional[AtlanConnectorType]: (optional) if the package needs to configure a connector,
     specify its type here
     :ivar category str:  name of the pill under which the package should be categorized in the marketplace in the UI
-    :ivar outputs dict[str,str]: (optional) any outputs that the custom package logic is expected to produce
+    :ivar outputs Dict[str,str]: (optional) any outputs that the custom package logic is expected to produce
     """
 
     package_id: str
@@ -164,16 +164,16 @@ class CustomPackage(BaseModel):
     icon_url: str
     docs_url: str
     ui_config: UIConfig
-    keywords: list[str] = Field(default_factory=list)
+    keywords: List[str] = Field(default_factory=list)
     container_image: str
     container_image_pull_policy: PullPolicy = PullPolicy.IF_NOT_PRESENT
-    container_command: list[str]
+    container_command: List[str]
     allow_schedule: bool = True
     certified: bool = True
     preview: bool = False
     connector_type: Optional[AtlanConnectorType] = None
     category: str = "custom"
-    outputs: dict[str, str] = Field(default_factory=dict)
+    outputs: Dict[str, str] = Field(default_factory=dict)
     _pkg: PackageDefinition = PrivateAttr()
     _name: str = PrivateAttr()
 
@@ -291,4 +291,4 @@ def generate(pkg: CustomPackage, path: Path, operation: Literal["package", "conf
 
 class ConnectorAndConnection(BaseModel):
     source: AtlanConnectorType
-    connections: list[str]
+    connections: List[str]

@@ -1,5 +1,5 @@
 from json import dumps
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from pyatlan import utils
 from pyatlan.errors import ErrorCode
@@ -29,9 +29,9 @@ class AbstractCrawler(AbstractPackage):
         self,
         connection_name: str,
         connection_type: str,
-        admin_roles: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_users: Optional[list[str]],
+        admin_roles: Optional[List[str]],
+        admin_groups: Optional[List[str]],
+        admin_users: Optional[List[str]],
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,

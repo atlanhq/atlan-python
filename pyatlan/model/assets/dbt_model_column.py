@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -72,7 +72,7 @@ class DbtModelColumn(Dbt):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
@@ -143,7 +143,7 @@ class DbtModelColumn(Dbt):
         self.attributes.dbt_model = dbt_model
 
     @property
-    def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
+    def dbt_model_column_sql_columns(self) -> Optional[List[Column]]:
         return (
             None
             if self.attributes is None
@@ -152,18 +152,18 @@ class DbtModelColumn(Dbt):
 
     @dbt_model_column_sql_columns.setter
     def dbt_model_column_sql_columns(
-        self, dbt_model_column_sql_columns: Optional[list[Column]]
+        self, dbt_model_column_sql_columns: Optional[List[Column]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
 
     @property
-    def dbt_tests(self) -> Optional[list[DbtTest]]:
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
     @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
@@ -178,10 +178,10 @@ class DbtModelColumn(Dbt):
         dbt_model: Optional[DbtModel] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model_column_sql_columns: Optional[list[Column]] = Field(
+        dbt_model_column_sql_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_tests: Optional[list[DbtTest]] = Field(
+        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Optional
+from typing import Dict, Optional, Set
 
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
@@ -14,7 +14,7 @@ class AtlanTagCache:
     for Atlan tags.
     """
 
-    caches: dict[int, "AtlanTagCache"] = {}
+    caches: Dict[int, "AtlanTagCache"] = {}
 
     @classmethod
     def get_cache(cls) -> "AtlanTagCache":
@@ -66,12 +66,12 @@ class AtlanTagCache:
 
     def __init__(self, typedef_client: TypeDefClient):
         self.typdef_client: TypeDefClient = typedef_client
-        self.cache_by_id: dict[str, AtlanTagDef] = {}
-        self.map_id_to_name: dict[str, str] = {}
-        self.map_name_to_id: dict[str, str] = {}
-        self.deleted_ids: set[str] = set()
-        self.deleted_names: set[str] = set()
-        self.map_id_to_source_tags_attr_id: dict[str, str] = {}
+        self.cache_by_id: Dict[str, AtlanTagDef] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.deleted_ids: Set[str] = set()
+        self.deleted_names: Set[str] = set()
+        self.map_id_to_source_tags_attr_id: Dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
         """

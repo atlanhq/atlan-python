@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -43,7 +43,7 @@ class SigmaDataset(Sigma):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sigma_dataset_column_count",
         "sigma_dataset_columns",
     ]
@@ -63,14 +63,14 @@ class SigmaDataset(Sigma):
         self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
 
     @property
-    def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
+    def sigma_dataset_columns(self) -> Optional[List[SigmaDatasetColumn]]:
         return (
             None if self.attributes is None else self.attributes.sigma_dataset_columns
         )
 
     @sigma_dataset_columns.setter
     def sigma_dataset_columns(
-        self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
+        self, sigma_dataset_columns: Optional[List[SigmaDatasetColumn]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -78,7 +78,7 @@ class SigmaDataset(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_column_count: Optional[int] = Field(default=None, description="")
-        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
+        sigma_dataset_columns: Optional[List[SigmaDatasetColumn]] = Field(
             default=None, description=""
         )  # relationship
 

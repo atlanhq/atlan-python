@@ -3,7 +3,7 @@
 import abc
 import json
 from dataclasses import dataclass, field
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 from pydantic.v1 import (
     Field,
@@ -75,16 +75,16 @@ class AbstractUIElement(abc.ABC):
 
 @dataclass
 class UIElementWithEnum(AbstractUIElement):
-    enum: list[str]
-    enum_names: list[str]
+    enum: List[str]
+    enum_names: List[str]
     default: Optional[str] = None
-    possible_values: dict[str, str] = field(default_factory=dict)
+    possible_values: Dict[str, str] = field(default_factory=dict)
 
     def __init__(
         self,
         type_: str,
         required: bool,
-        possible_values: dict[str, str],
+        possible_values: Dict[str, str],
         ui: Optional[Widget] = None,
     ):
         super().__init__(type_=type_, required=required, ui=ui)
@@ -471,7 +471,7 @@ class DropDownWidget(AbstractWidget):
         self.mode = mode
 
     def get_validator(self, name: str):
-        return f"""{name}: Optional[list[str]] = Field(default_factory=list)
+        return f"""{name}: Optional[List[str]] = Field(default_factory=list)
     _validate_{name} = validator(
     "{name}", pre=True, allow_reuse=True
     )(validate_multiselect)"""
@@ -483,7 +483,7 @@ class DropDown(UIElementWithEnum):
     def __init__(
         self,
         label: StrictStr,
-        possible_values: dict[str, str],
+        possible_values: Dict[str, str],
         required: StrictBool = False,
         hidden: StrictBool = False,
         help: StrictStr = "",
@@ -518,12 +518,12 @@ class DropDown(UIElementWithEnum):
 
 @dataclasses.dataclass
 class FileUploaderWidget(AbstractWidget):
-    accept: list[str] = field(default_factory=list)
+    accept: List[str] = field(default_factory=list)
 
     def __init__(
         self,
         label: str,
-        accept: list[str],
+        accept: List[str],
         hidden: bool = False,
         help: str = "",
         placeholder: str = "",
@@ -558,7 +558,7 @@ class FileUploader(AbstractUIElement):
     def __init__(
         self,
         label: StrictStr,
-        file_types: list[str],
+        file_types: List[str],
         required: StrictBool = False,
         hidden: StrictBool = False,
         help: StrictStr = "",
@@ -644,7 +644,7 @@ class MultipleGroupsWidget(AbstractWidget):
         )
 
     def get_validator(self, name: str):
-        return f"""{name}: Optional[list[str]] = Field(default_factory=list)
+        return f"""{name}: Optional[List[str]] = Field(default_factory=list)
     _validate_{name} = validator(
     "{name}", pre=True, allow_reuse=True
     )(validate_multiselect)"""
@@ -853,7 +853,7 @@ class Radio(UIElementWithEnum):
     def __init__(
         self,
         label: StrictStr,
-        posssible_values: dict[str, str],
+        posssible_values: Dict[str, str],
         default: StrictStr,
         required: StrictBool = False,
         hidden: StrictBool = False,

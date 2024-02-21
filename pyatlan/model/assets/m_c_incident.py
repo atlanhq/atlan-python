@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -75,7 +75,7 @@ class MCIncident(MonteCarlo):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "mc_incident_id",
         "mc_incident_type",
         "mc_incident_sub_types",
@@ -107,13 +107,13 @@ class MCIncident(MonteCarlo):
         self.attributes.mc_incident_type = mc_incident_type
 
     @property
-    def mc_incident_sub_types(self) -> Optional[set[str]]:
+    def mc_incident_sub_types(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.mc_incident_sub_types
         )
 
     @mc_incident_sub_types.setter
-    def mc_incident_sub_types(self, mc_incident_sub_types: Optional[set[str]]):
+    def mc_incident_sub_types(self, mc_incident_sub_types: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_incident_sub_types = mc_incident_sub_types
@@ -161,11 +161,11 @@ class MCIncident(MonteCarlo):
         self.attributes.mc_monitor = mc_monitor
 
     @property
-    def mc_incident_assets(self) -> Optional[list[Asset]]:
+    def mc_incident_assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.mc_incident_assets
 
     @mc_incident_assets.setter
-    def mc_incident_assets(self, mc_incident_assets: Optional[list[Asset]]):
+    def mc_incident_assets(self, mc_incident_assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_incident_assets = mc_incident_assets
@@ -173,14 +173,14 @@ class MCIncident(MonteCarlo):
     class Attributes(MonteCarlo.Attributes):
         mc_incident_id: Optional[str] = Field(default=None, description="")
         mc_incident_type: Optional[str] = Field(default=None, description="")
-        mc_incident_sub_types: Optional[set[str]] = Field(default=None, description="")
+        mc_incident_sub_types: Optional[Set[str]] = Field(default=None, description="")
         mc_incident_severity: Optional[str] = Field(default=None, description="")
         mc_incident_state: Optional[str] = Field(default=None, description="")
         mc_incident_warehouse: Optional[str] = Field(default=None, description="")
         mc_monitor: Optional[MCMonitor] = Field(
             default=None, description=""
         )  # relationship
-        mc_incident_assets: Optional[list[Asset]] = Field(
+        mc_incident_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
 

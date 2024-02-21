@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -181,7 +181,7 @@ class DbtColumnProcess(Dbt):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "dbt_column_process_job_status",
         "dbt_alias",
         "dbt_meta",
@@ -395,11 +395,11 @@ class DbtColumnProcess(Dbt):
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
-    def dbt_tags(self) -> Optional[set[str]]:
+    def dbt_tags(self) -> Optional[Set[str]]:
         return None if self.attributes is None else self.attributes.dbt_tags
 
     @dbt_tags.setter
-    def dbt_tags(self, dbt_tags: Optional[set[str]]):
+    def dbt_tags(self, dbt_tags: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
@@ -431,21 +431,21 @@ class DbtColumnProcess(Dbt):
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
-    def inputs(self) -> Optional[list[Catalog]]:
+    def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
     @inputs.setter
-    def inputs(self, inputs: Optional[list[Catalog]]):
+    def inputs(self, inputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     @property
-    def outputs(self) -> Optional[list[Catalog]]:
+    def outputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.outputs
 
     @outputs.setter
-    def outputs(self, outputs: Optional[list[Catalog]]):
+    def outputs(self, outputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.outputs = outputs
@@ -501,21 +501,21 @@ class DbtColumnProcess(Dbt):
         self.attributes.process = process
 
     @property
-    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+    def airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
     @airflow_tasks.setter
-    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+    def airflow_tasks(self, airflow_tasks: Optional[List[AirflowTask]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
-    def column_processes(self) -> Optional[list[ColumnProcess]]:
+    def column_processes(self) -> Optional[List[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
     @column_processes.setter
-    def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
+    def column_processes(self, column_processes: Optional[List[ColumnProcess]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
@@ -541,13 +541,13 @@ class DbtColumnProcess(Dbt):
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
         dbt_environment_name: Optional[str] = Field(default=None, description="")
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
-        dbt_tags: Optional[set[str]] = Field(default=None, description="")
+        dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
-        inputs: Optional[list[Catalog]] = Field(default=None, description="")
-        outputs: Optional[list[Catalog]] = Field(default=None, description="")
+        inputs: Optional[List[Catalog]] = Field(default=None, description="")
+        outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
@@ -555,10 +555,10 @@ class DbtColumnProcess(Dbt):
             default=None, description=""
         )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
-        airflow_tasks: Optional[list[AirflowTask]] = Field(
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        column_processes: Optional[list[ColumnProcess]] = Field(
+        column_processes: Optional[List[ColumnProcess]] = Field(
             default=None, description=""
         )  # relationship
 

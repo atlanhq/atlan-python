@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -83,7 +83,7 @@ class MatillionJob(Matillion):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "matillion_job_type",
         "matillion_job_path",
         "matillion_job_component_count",
@@ -183,12 +183,12 @@ class MatillionJob(Matillion):
         self.attributes.matillion_project = matillion_project
 
     @property
-    def matillion_components(self) -> Optional[list[MatillionComponent]]:
+    def matillion_components(self) -> Optional[List[MatillionComponent]]:
         return None if self.attributes is None else self.attributes.matillion_components
 
     @matillion_components.setter
     def matillion_components(
-        self, matillion_components: Optional[list[MatillionComponent]]
+        self, matillion_components: Optional[List[MatillionComponent]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -210,7 +210,7 @@ class MatillionJob(Matillion):
         matillion_project: Optional[MatillionProject] = Field(
             default=None, description=""
         )  # relationship
-        matillion_components: Optional[list[MatillionComponent]] = Field(
+        matillion_components: Optional[List[MatillionComponent]] = Field(
             default=None, description=""
         )  # relationship
 

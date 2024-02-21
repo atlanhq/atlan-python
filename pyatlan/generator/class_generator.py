@@ -12,7 +12,7 @@ import os
 import re
 from enum import Enum
 from pathlib import Path
-from typing import Any, NamedTuple, Optional
+from typing import Any, Dict, List, NamedTuple, Optional, Set
 
 import networkx as nx
 from jinja2 import Environment, PackageLoader
@@ -23,22 +23,22 @@ from pyatlan.model.utils import to_snake_case
 REFERENCEABLE = "Referenceable"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
 TYPE_REPLACEMENTS = [
-    ("array<string>", "set[string]"),
-    ("array<date>", "set[date]"),
-    ("array<boolean>", "set[bool]"),
-    ("array<int>", "set[int]"),
-    ("array<float>", "set[float]"),
-    ("array<long>", "set[int]"),
+    ("array<string>", "Set[string]"),
+    ("array<date>", "Set[date]"),
+    ("array<boolean>", "Set[bool]"),
+    ("array<int>", "Set[int]"),
+    ("array<float>", "Set[float]"),
+    ("array<long>", "Set[int]"),
     ("icon_type", "IconType"),
     ("string", "str"),
     ("date", "datetime"),
-    ("array", "list"),
+    ("array", "List"),
     ("boolean", "bool"),
     ("float", "float"),
     ("long", "int"),
     ("__internal", "Internal"),
     ("certificate_status", "CertificateStatus"),
-    ("map", "dict"),
+    ("map", "Dict"),
     (">", "]"),
     ("<", "["),
     ("query_username_strategy", "QueryUsernameStrategy"),
@@ -64,7 +64,7 @@ PRIMITIVE_MAPPINGS = {
     "string,string": "str, str",
     "string,long": "str, int",
 }
-ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
+ARRAY_REPLACEMENTS = [("array<string>", "Set{string}")]
 ADDITIONAL_IMPORTS = {
     "datetime": "from datetime import datetime",
     "CertificateStatus": "from .enums import CertificateStatus",
@@ -110,9 +110,9 @@ class ModuleStatus(str, Enum):
 
 class ModuleInfo:
     count: int = 0
-    modules: set["ModuleInfo"] = set()
-    modules_by_asset_name: dict[str, str] = {}
-    assets: dict[str, "AssetInfo"] = {}
+    modules: Set["ModuleInfo"] = set()
+    modules_by_asset_name: Dict[str, str] = {}
+    assets: Dict[str, "AssetInfo"] = {}
 
     @classmethod
     def check_for_circular_module_dependencies(cls):
@@ -132,7 +132,7 @@ class ModuleInfo:
     def __init__(self, asset_info: "AssetInfo"):
         self.order = ModuleInfo.count
         self._name = f"asset{ModuleInfo.count:02d}"
-        self.asset_infos: set["AssetInfo"] = set()
+        self.asset_infos: Set["AssetInfo"] = set()
         self.add_asset_info(asset_info=asset_info)
         self.status: ModuleStatus = ModuleStatus.ACTIVE
         ModuleInfo.modules.add(self)
@@ -198,18 +198,18 @@ class ModuleInfo:
 
 
 class AssetInfo:
-    asset_info_by_name: dict[str, "AssetInfo"] = {}
+    asset_info_by_name: Dict[str, "AssetInfo"] = {}
     hierarchy_graph: nx.DiGraph = nx.DiGraph()
-    super_type_names_to_ignore: set[str] = set()
-    entity_defs_by_name: dict[str, EntityDef] = {}
+    super_type_names_to_ignore: Set[str] = set()
+    entity_defs_by_name: Dict[str, EntityDef] = {}
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
         self.entity_def: EntityDef = entity_def
         self.update_attribute_defs()
         self.module_info: Optional[ModuleInfo] = None
-        self.required_asset_infos: set["AssetInfo"] = set()
-        self.circular_dependencies: set["AssetInfo"] = set()
+        self.required_asset_infos: Set["AssetInfo"] = set()
+        self.circular_dependencies: Set["AssetInfo"] = set()
         self.order: int = 0
         self.module_name = to_snake_case(name)
         self.super_type: Optional[AssetInfo] = None
@@ -237,31 +237,6 @@ class AssetInfo:
             return ""
         super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
         return f"from .{super_type.module_name} import {super_type.name}"
-
-    @property
-    def get_update_forward_refs(self):
-        import_set = set()
-        asset_name = self.name
-        current_name = self.name
-        while current_name != "Referenceable" and self.hierarchy_graph.predecessors(
-            current_name
-        ):
-            parent_asset_name = next(
-                iter(self.hierarchy_graph.predecessors(current_name))
-            )
-            if parent_asset_name == "Referenceable":
-                break
-            parent_asset = self.asset_info_by_name[
-                parent_asset_name
-            ].required_asset_infos
-
-            for parent_module in parent_asset:
-                if asset_name != parent_module.name:
-                    import_set.add(parent_module.name)
-
-            current_name = parent_asset_name
-
-        return {key: key for key in import_set}
 
     @property
     def imports_for_referenced_assets(self):
@@ -307,7 +282,7 @@ class AssetInfo:
         )
 
     def update_required_asset_names(self) -> None:
-        attributes_to_remove: set[str] = set()
+        attributes_to_remove: Set[str] = set()
         attribute_defs = self.entity_def.attribute_defs or []
         relationship_attribute_defs = self.entity_def.relationship_attribute_defs or []
         for attribute in attribute_defs + relationship_attribute_defs:
@@ -355,7 +330,7 @@ class AssetInfo:
                 self.circular_dependencies.add(super_type)
 
     @classmethod
-    def set_entity_defs(cls, entity_defs: list[EntityDef]):
+    def set_entity_defs(cls, entity_defs: List[EntityDef]):
         cls.entity_defs_by_name = {
             entity_def.name: entity_def for entity_def in entity_defs
         }
@@ -446,13 +421,13 @@ def get_mapped_type(type_name: str) -> MappedType:
         if type_name.startswith("array<"):
             if type_name.startswith("array<map<"):
                 base_type = get_embedded_type(type_name[len("array<") :])  # noqa: E203
-                container = "list[dict["
+                container = "List[Dict["
             else:
                 base_type = get_embedded_type(type_name)
-                container = "set["
+                container = "Set["
         elif type_name.startswith("map<"):
             base_type = get_embedded_type(type_name)
-            container = "dict["
+            container = "Dict["
     builder = MappedType()
     builder.original_base = base_type
     if primitive_name := PRIMITIVE_MAPPINGS.get(base_type):
@@ -465,7 +440,7 @@ def get_mapped_type(type_name: str) -> MappedType:
             builder.name = mapped_type.name
             if base_type_of_mapped == AttributeType.STRUCT:
                 # If the referred object is a struct, change the container to a list rather than a set
-                container = "list["
+                container = "List["
         else:
             # Failing any cached type, fallback to just the name of the object
             builder.attr_type = AttributeType.ASSET
@@ -500,7 +475,7 @@ class SearchType:
         self.args = args
 
 
-def get_search_type(attr_def: dict[str, Any]) -> SearchType:
+def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
     def get_default_index_for_type(base_type: str) -> IndexType:
         if base_type in {"date", "float", "double", "int", "long"}:
             to_use = IndexType.NUMERIC
@@ -528,8 +503,8 @@ def get_search_type(attr_def: dict[str, Any]) -> SearchType:
                 base_type = get_embedded_type(type_name)
         return base_type
 
-    def get_indexes_for_attribute() -> dict[IndexType, str]:
-        searchable: dict[IndexType, str] = {}
+    def get_indexes_for_attribute() -> Dict[IndexType, str]:
+        searchable: Dict[IndexType, str] = {}
         config = attr_def.get("indexTypeESConfig")
         attr_name = str(attr_def.get("name"))
         if "relationshipTypeName" in attr_def:
@@ -647,7 +622,7 @@ class Generator:
             ancestor_relationship_defs,
         )
 
-    def render_modules(self, modules: list[ModuleInfo]):
+    def render_modules(self, modules: List[ModuleInfo]):
         self.render_init(modules)  # type: ignore
 
     def render_module(self, asset_info: AssetInfo):
@@ -661,7 +636,7 @@ class Generator:
         with (ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
             script.write(content)
 
-    def render_init(self, assets: list[AssetInfo]):
+    def render_init(self, assets: List[AssetInfo]):
         asset_names = [asset.name for asset in assets]
         asset_imports = [
             f"from .{asset.module_name} import {asset.name}" for asset in assets
@@ -682,7 +657,7 @@ class Generator:
         with (MODEL_DIR / "structs.py").open("w") as script:
             script.write(content)
 
-    def render_enums(self, enum_defs: list["EnumDefInfo"]):
+    def render_enums(self, enum_defs: List["EnumDefInfo"]):
         template = self.environment.get_template("enums.jinja2")
         content = template.render({"enum_defs": enum_defs})
         start_of_generated_section_found = False
@@ -786,11 +761,11 @@ class KeyValue(NamedTuple):
 
 
 class EnumDefInfo:
-    enum_def_info: list["EnumDefInfo"] = []
+    enum_def_info: List["EnumDefInfo"] = []
 
     def __init__(self, enum_def: EnumDef):
         self.name = get_type(enum_def.name)
-        self.element_defs: list[KeyValue] = [
+        self.element_defs: List[KeyValue] = [
             self.get_key_value(e)
             for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal or 0)
         ]

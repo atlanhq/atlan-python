@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -53,7 +53,7 @@ class SalesforceDashboard(Salesforce):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "source_id",
         "dashboard_type",
         "report_count",
@@ -92,11 +92,11 @@ class SalesforceDashboard(Salesforce):
         self.attributes.report_count = report_count
 
     @property
-    def reports(self) -> Optional[list[SalesforceReport]]:
+    def reports(self) -> Optional[List[SalesforceReport]]:
         return None if self.attributes is None else self.attributes.reports
 
     @reports.setter
-    def reports(self, reports: Optional[list[SalesforceReport]]):
+    def reports(self, reports: Optional[List[SalesforceReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.reports = reports
@@ -115,7 +115,7 @@ class SalesforceDashboard(Salesforce):
         source_id: Optional[str] = Field(default=None, description="")
         dashboard_type: Optional[str] = Field(default=None, description="")
         report_count: Optional[int] = Field(default=None, description="")
-        reports: Optional[list[SalesforceReport]] = Field(
+        reports: Optional[List[SalesforceReport]] = Field(
             default=None, description=""
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(

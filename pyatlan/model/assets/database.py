@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -19,7 +19,6 @@ class Database(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> Database:
         validate_required_fields(
@@ -63,7 +62,7 @@ class Database(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "schema_count",
         "schemas",
     ]
@@ -79,23 +78,22 @@ class Database(SQL):
         self.attributes.schema_count = schema_count
 
     @property
-    def schemas(self) -> Optional[list[Schema]]:
+    def schemas(self) -> Optional[List[Schema]]:
         return None if self.attributes is None else self.attributes.schemas
 
     @schemas.setter
-    def schemas(self, schemas: Optional[list[Schema]]):
+    def schemas(self, schemas: Optional[List[Schema]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.schemas = schemas
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(default=None, description="")
-        schemas: Optional[list[Schema]] = Field(
+        schemas: Optional[List[Schema]] = Field(
             default=None, description=""
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, name: str, connection_qualified_name: str

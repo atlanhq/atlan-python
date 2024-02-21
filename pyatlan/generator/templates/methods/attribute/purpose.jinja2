@@ -1,8 +1,7 @@
 
         @classmethod
-        # @validate_arguments()
         @init_guid
-        def create(cls, name: str, atlan_tags: list[AtlanTagName]) -> {{ entity_def.name }}.Attributes:
+        def create(cls, name: str, atlan_tags: List[AtlanTagName]) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(
                 qualified_name=name,

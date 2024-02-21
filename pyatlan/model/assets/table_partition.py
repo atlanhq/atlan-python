@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -134,7 +134,7 @@ class TablePartition(SQL):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "constraint",
         "column_count",
         "row_count",
@@ -227,11 +227,11 @@ class TablePartition(SQL):
         self.attributes.is_query_preview = is_query_preview
 
     @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
+    def query_preview_config(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.query_preview_config
 
     @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+    def query_preview_config(self, query_preview_config: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
@@ -315,25 +315,25 @@ class TablePartition(SQL):
         self.attributes.partition_list = partition_list
 
     @property
-    def child_table_partitions(self) -> Optional[list[TablePartition]]:
+    def child_table_partitions(self) -> Optional[List[TablePartition]]:
         return (
             None if self.attributes is None else self.attributes.child_table_partitions
         )
 
     @child_table_partitions.setter
     def child_table_partitions(
-        self, child_table_partitions: Optional[list[TablePartition]]
+        self, child_table_partitions: Optional[List[TablePartition]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.child_table_partitions = child_table_partitions
 
     @property
-    def columns(self) -> Optional[list[Column]]:
+    def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
     @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
+    def columns(self, columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
@@ -368,7 +368,7 @@ class TablePartition(SQL):
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[dict[str, str]] = Field(
+        query_preview_config: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         external_location: Optional[str] = Field(default=None, description="")
@@ -378,10 +378,10 @@ class TablePartition(SQL):
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
-        child_table_partitions: Optional[list[TablePartition]] = Field(
+        child_table_partitions: Optional[List[TablePartition]] = Field(
             default=None, description=""
         )  # relationship
-        columns: Optional[list[Column]] = Field(
+        columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
         parent_table_partition: Optional[TablePartition] = Field(

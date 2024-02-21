@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -93,7 +93,7 @@ class MatillionComponent(Matillion):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "matillion_component_id",
         "matillion_component_implementation_id",
         "matillion_component_linked_job",
@@ -137,7 +137,7 @@ class MatillionComponent(Matillion):
         )
 
     @property
-    def matillion_component_linked_job(self) -> Optional[dict[str, str]]:
+    def matillion_component_linked_job(self) -> Optional[Dict[str, str]]:
         return (
             None
             if self.attributes is None
@@ -146,7 +146,7 @@ class MatillionComponent(Matillion):
 
     @matillion_component_linked_job.setter
     def matillion_component_linked_job(
-        self, matillion_component_linked_job: Optional[dict[str, str]]
+        self, matillion_component_linked_job: Optional[Dict[str, str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -189,7 +189,7 @@ class MatillionComponent(Matillion):
         )
 
     @property
-    def matillion_component_sqls(self) -> Optional[set[str]]:
+    def matillion_component_sqls(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -197,7 +197,7 @@ class MatillionComponent(Matillion):
         )
 
     @matillion_component_sqls.setter
-    def matillion_component_sqls(self, matillion_component_sqls: Optional[set[str]]):
+    def matillion_component_sqls(self, matillion_component_sqls: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_component_sqls = matillion_component_sqls
@@ -251,7 +251,7 @@ class MatillionComponent(Matillion):
         matillion_component_implementation_id: Optional[str] = Field(
             default=None, description=""
         )
-        matillion_component_linked_job: Optional[dict[str, str]] = Field(
+        matillion_component_linked_job: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         matillion_component_last_run_status: Optional[str] = Field(
@@ -260,7 +260,7 @@ class MatillionComponent(Matillion):
         matillion_component_last_five_run_status: Optional[str] = Field(
             default=None, description=""
         )
-        matillion_component_sqls: Optional[set[str]] = Field(
+        matillion_component_sqls: Optional[Set[str]] = Field(
             default=None, description=""
         )
         matillion_job_name: Optional[str] = Field(default=None, description="")

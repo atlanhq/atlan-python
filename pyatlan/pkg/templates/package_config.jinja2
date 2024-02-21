@@ -4,7 +4,7 @@ from pydantic.v1 import BaseModel, BaseSettings, Field, validator
 from pyatlan.model.assets import Connection
 from pyatlan.pkg.models import ConnectorAndConnection
 from pyatlan.pkg.utils import validate_connection, validate_multiselect, validate_connector_and_connection
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Dict
 import logging.config
 
 PARENT = Path(__file__).parent
@@ -57,13 +57,13 @@ class RuntimeConfig(BaseSettings):
             return cls.json_loads(raw_value)
 
     @property
-    def envars_as_dict(self) -> dict[str, Any]:
+    def envars_as_dict(self) -> Dict[str, Any]:
         """
         :return dict: returns a dict of the environment variable names and values consumed by this RuntimeConfig.
         the name of an environment variable will be the key and the value will be the value. This is provided
         to facilitate testing
         """
-        ret_val: dict[str, Any] = {}
+        ret_val: Dict[str, Any] = {}
         for key, value in RuntimeConfig.Config.fields.items():
             if field_value := getattr(self, key):
                 ret_val[value["env"]] = field_value.json()

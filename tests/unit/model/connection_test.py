@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from unittest.mock import patch
 
 import pytest
@@ -52,9 +52,9 @@ from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAM
 def test_create_with_missing_parameters_raise_value_error(
     name: str,
     connector_type: AtlanConnectorType,
-    admin_users: Optional[list[str]],
-    admin_groups: Optional[list[str]],
-    admin_roles: Optional[list[str]],
+    admin_users: Optional[List[str]],
+    admin_groups: Optional[List[str]],
+    admin_roles: Optional[List[str]],
     message: str,
     mock_role_cache,
     mock_user_cache,
@@ -105,9 +105,9 @@ def test_create_with_missing_parameters_raise_value_error(
 def test_create(
     name: str,
     connector_type: AtlanConnectorType,
-    admin_users: list[str],
-    admin_groups: list[str],
-    admin_roles: list[str],
+    admin_users: List[str],
+    admin_groups: List[str],
+    admin_roles: List[str],
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,

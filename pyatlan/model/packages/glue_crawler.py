@@ -1,5 +1,5 @@
 from json import dumps
-from typing import Optional
+from typing import List, Optional
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -38,9 +38,9 @@ class GlueCrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_users: Optional[list[str]],
+        admin_roles: Optional[List[str]],
+        admin_groups: Optional[List[str]],
+        admin_users: Optional[List[str]],
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,
@@ -91,7 +91,7 @@ class GlueCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def _build_asset_filter(self, filter_type: str, filter_assets: list[str]) -> None:
+    def _build_asset_filter(self, filter_type: str, filter_assets: List[str]) -> None:
         if not filter_assets:
             self._parameters.append({"name": f"{filter_type}-filter", "value": "{}"})
             return
@@ -106,7 +106,7 @@ class GlueCrawler(AbstractCrawler):
         except TypeError:
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
-    def include(self, assets: list[str]) -> "GlueCrawler":
+    def include(self, assets: List[str]) -> "GlueCrawler":
         """
         Defines the filter for assets to include when crawling.
 
@@ -118,7 +118,7 @@ class GlueCrawler(AbstractCrawler):
         self._build_asset_filter("include", assets)
         return self
 
-    def exclude(self, assets: list[str]) -> "GlueCrawler":
+    def exclude(self, assets: List[str]) -> "GlueCrawler":
         """
         Defines the filter for assets to exclude when crawling.
 

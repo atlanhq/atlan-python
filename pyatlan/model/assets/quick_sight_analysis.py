@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -69,7 +69,7 @@ class QuickSightAnalysis(QuickSight):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "quick_sight_analysis_status",
         "quick_sight_analysis_calculated_fields",
         "quick_sight_analysis_parameter_declarations",
@@ -95,7 +95,7 @@ class QuickSightAnalysis(QuickSight):
         self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
 
     @property
-    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+    def quick_sight_analysis_calculated_fields(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -104,7 +104,7 @@ class QuickSightAnalysis(QuickSight):
 
     @quick_sight_analysis_calculated_fields.setter
     def quick_sight_analysis_calculated_fields(
-        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
+        self, quick_sight_analysis_calculated_fields: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -113,7 +113,7 @@ class QuickSightAnalysis(QuickSight):
         )
 
     @property
-    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+    def quick_sight_analysis_parameter_declarations(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -122,7 +122,7 @@ class QuickSightAnalysis(QuickSight):
 
     @quick_sight_analysis_parameter_declarations.setter
     def quick_sight_analysis_parameter_declarations(
-        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+        self, quick_sight_analysis_parameter_declarations: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -131,7 +131,7 @@ class QuickSightAnalysis(QuickSight):
         )
 
     @property
-    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+    def quick_sight_analysis_filter_groups(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -140,7 +140,7 @@ class QuickSightAnalysis(QuickSight):
 
     @quick_sight_analysis_filter_groups.setter
     def quick_sight_analysis_filter_groups(
-        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+        self, quick_sight_analysis_filter_groups: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -149,7 +149,7 @@ class QuickSightAnalysis(QuickSight):
         )
 
     @property
-    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+    def quick_sight_analysis_visuals(self) -> Optional[List[QuickSightAnalysisVisual]]:
         return (
             None
             if self.attributes is None
@@ -158,14 +158,14 @@ class QuickSightAnalysis(QuickSight):
 
     @quick_sight_analysis_visuals.setter
     def quick_sight_analysis_visuals(
-        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+        self, quick_sight_analysis_visuals: Optional[List[QuickSightAnalysisVisual]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
 
     @property
-    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+    def quick_sight_analysis_folders(self) -> Optional[List[QuickSightFolder]]:
         return (
             None
             if self.attributes is None
@@ -174,7 +174,7 @@ class QuickSightAnalysis(QuickSight):
 
     @quick_sight_analysis_folders.setter
     def quick_sight_analysis_folders(
-        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+        self, quick_sight_analysis_folders: Optional[List[QuickSightFolder]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -184,19 +184,19 @@ class QuickSightAnalysis(QuickSight):
         quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
             default=None, description=""
         )
-        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
+        quick_sight_analysis_calculated_fields: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
+        quick_sight_analysis_parameter_declarations: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
+        quick_sight_analysis_filter_groups: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
+        quick_sight_analysis_visuals: Optional[List[QuickSightAnalysisVisual]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
+        quick_sight_analysis_folders: Optional[List[QuickSightFolder]] = Field(
             default=None, description=""
         )  # relationship
 

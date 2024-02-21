@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -34,24 +34,24 @@ class ThoughtspotLiveboard(Thoughtspot):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "thoughtspot_dashlets",
     ]
 
     @property
-    def thoughtspot_dashlets(self) -> Optional[list[ThoughtspotDashlet]]:
+    def thoughtspot_dashlets(self) -> Optional[List[ThoughtspotDashlet]]:
         return None if self.attributes is None else self.attributes.thoughtspot_dashlets
 
     @thoughtspot_dashlets.setter
     def thoughtspot_dashlets(
-        self, thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]]
+        self, thoughtspot_dashlets: Optional[List[ThoughtspotDashlet]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
 
     class Attributes(Thoughtspot.Attributes):
-        thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
+        thoughtspot_dashlets: Optional[List[ThoughtspotDashlet]] = Field(
             default=None, description=""
         )  # relationship
 

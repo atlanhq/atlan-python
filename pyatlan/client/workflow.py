@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from logging import Logger
 from time import sleep
-from typing import Optional, Union, overload
+from typing import List, Optional, Union, overload
 
 from pydantic.v1 import validate_arguments
 
@@ -47,7 +47,7 @@ class WorkflowClient:
     @validate_arguments
     def find_by_type(
         self, prefix: WorkflowPackage, max_results: int = 10
-    ) -> list[WorkflowSearchResult]:
+    ) -> List[WorkflowSearchResult]:
         """
         Find workflows based on their type (prefix). Note: Only workflows that have been run will be found.
 

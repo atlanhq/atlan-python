@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -71,7 +71,7 @@ class LookerFolder(Looker):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "source_content_metadata_id",
         "source_creator_id",
         "source_child_count",
@@ -127,31 +127,31 @@ class LookerFolder(Looker):
         self.attributes.source_parent_i_d = source_parent_i_d
 
     @property
-    def looker_sub_folders(self) -> Optional[list[LookerFolder]]:
+    def looker_sub_folders(self) -> Optional[List[LookerFolder]]:
         return None if self.attributes is None else self.attributes.looker_sub_folders
 
     @looker_sub_folders.setter
-    def looker_sub_folders(self, looker_sub_folders: Optional[list[LookerFolder]]):
+    def looker_sub_folders(self, looker_sub_folders: Optional[List[LookerFolder]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.looker_sub_folders = looker_sub_folders
 
     @property
-    def dashboards(self) -> Optional[list[LookerDashboard]]:
+    def dashboards(self) -> Optional[List[LookerDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
     @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[LookerDashboard]]):
+    def dashboards(self, dashboards: Optional[List[LookerDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     @property
-    def looks(self) -> Optional[list[LookerLook]]:
+    def looks(self) -> Optional[List[LookerLook]]:
         return None if self.attributes is None else self.attributes.looks
 
     @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
+    def looks(self, looks: Optional[List[LookerLook]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.looks = looks
@@ -171,13 +171,13 @@ class LookerFolder(Looker):
         source_creator_id: Optional[int] = Field(default=None, description="")
         source_child_count: Optional[int] = Field(default=None, description="")
         source_parent_i_d: Optional[int] = Field(default=None, description="")
-        looker_sub_folders: Optional[list[LookerFolder]] = Field(
+        looker_sub_folders: Optional[List[LookerFolder]] = Field(
             default=None, description=""
         )  # relationship
-        dashboards: Optional[list[LookerDashboard]] = Field(
+        dashboards: Optional[List[LookerDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
+        looks: Optional[List[LookerLook]] = Field(
             default=None, description=""
         )  # relationship
         looker_parent_folder: Optional[LookerFolder] = Field(

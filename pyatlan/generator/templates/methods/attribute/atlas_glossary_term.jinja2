@@ -1,6 +1,5 @@
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,
@@ -9,7 +8,7 @@
             anchor: Optional[AtlasGlossary] = None,
             glossary_qualified_name: Optional[StrictStr] = None,
             glossary_guid: Optional[StrictStr] = None,
-            categories: Optional[list[AtlasGlossaryCategory]] = None,
+            categories: Optional[List[AtlasGlossaryCategory]] = None,
         ) -> AtlasGlossaryTerm.Attributes:
             validate_required_fields(["name"], [name])
             validate_single_required_field(

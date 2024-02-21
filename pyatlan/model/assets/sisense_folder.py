@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -61,7 +61,7 @@ class SisenseFolder(Sisense):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "sisense_folder_parent_folder_qualified_name",
         "sisense_child_folders",
         "sisense_widgets",
@@ -88,35 +88,35 @@ class SisenseFolder(Sisense):
         )
 
     @property
-    def sisense_child_folders(self) -> Optional[list[SisenseFolder]]:
+    def sisense_child_folders(self) -> Optional[List[SisenseFolder]]:
         return (
             None if self.attributes is None else self.attributes.sisense_child_folders
         )
 
     @sisense_child_folders.setter
     def sisense_child_folders(
-        self, sisense_child_folders: Optional[list[SisenseFolder]]
+        self, sisense_child_folders: Optional[List[SisenseFolder]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_child_folders = sisense_child_folders
 
     @property
-    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
         return None if self.attributes is None else self.attributes.sisense_widgets
 
     @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_widgets = sisense_widgets
 
     @property
-    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
+    def sisense_dashboards(self) -> Optional[List[SisenseDashboard]]:
         return None if self.attributes is None else self.attributes.sisense_dashboards
 
     @sisense_dashboards.setter
-    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
+    def sisense_dashboards(self, sisense_dashboards: Optional[List[SisenseDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_dashboards = sisense_dashboards
@@ -137,13 +137,13 @@ class SisenseFolder(Sisense):
         sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        sisense_child_folders: Optional[list[SisenseFolder]] = Field(
+        sisense_child_folders: Optional[List[SisenseFolder]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
+        sisense_dashboards: Optional[List[SisenseDashboard]] = Field(
             default=None, description=""
         )  # relationship
         sisense_parent_folder: Optional[SisenseFolder] = Field(

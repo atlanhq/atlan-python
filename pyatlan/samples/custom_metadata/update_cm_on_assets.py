@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 import logging
-from typing import Optional
+from typing import List, Optional
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
@@ -18,7 +18,7 @@ def find_asset(
     connector_type: AtlanConnectorType,
     connection_name: str,
     asset_name: str,
-    attributes: Optional[list[str]] = None,
+    attributes: Optional[List[str]] = None,
 ) -> Optional[Asset]:
     """
     Given a connector type and otherwise-qualified name (not including the
@@ -54,7 +54,7 @@ def update_custom_metadata(
     rating: str,
     passed: int = 0,
     failed: int = 0,
-    reports: Optional[list[str]] = None,
+    reports: Optional[List[str]] = None,
 ) -> Optional[Asset]:
     """
     Update the custom metadata on the provided asset.

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -85,7 +85,7 @@ class S3(ObjectStore):
     List of tags that have been applied to the asset in AWS.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "s3_e_tag",
         "s3_encryption",
         "aws_arn",
@@ -200,11 +200,11 @@ class S3(ObjectStore):
         self.attributes.aws_owner_id = aws_owner_id
 
     @property
-    def aws_tags(self) -> Optional[list[AwsTag]]:
+    def aws_tags(self) -> Optional[List[AwsTag]]:
         return None if self.attributes is None else self.attributes.aws_tags
 
     @aws_tags.setter
-    def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
+    def aws_tags(self, aws_tags: Optional[List[AwsTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
@@ -220,7 +220,7 @@ class S3(ObjectStore):
         aws_resource_id: Optional[str] = Field(default=None, description="")
         aws_owner_name: Optional[str] = Field(default=None, description="")
         aws_owner_id: Optional[str] = Field(default=None, description="")
-        aws_tags: Optional[list[AwsTag]] = Field(default=None, description="")
+        aws_tags: Optional[List[AwsTag]] = Field(default=None, description="")
 
     attributes: "S3.Attributes" = Field(
         default_factory=lambda: S3.Attributes(),

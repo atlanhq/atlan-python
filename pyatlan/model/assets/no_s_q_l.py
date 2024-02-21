@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -36,7 +36,7 @@ class NoSQL(Catalog):
     Represents attributes for describing the key schema for the table and indexes.
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "no_s_q_l_schema_definition",
     ]
 

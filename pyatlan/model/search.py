@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from itertools import chain
 from json import dumps, loads
-from typing import Any, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic.v1 import (
     ConfigDict,
@@ -124,7 +124,7 @@ class Query(ABC):
         return copy.deepcopy(self)
 
     @abstractmethod
-    def to_dict(self) -> dict[Any, Any]:
+    def to_dict(self) -> Dict[Any, Any]:
         ...
 
 
@@ -146,7 +146,7 @@ class MatchAll(Query):
     def __invert__(self):
         return MatchNone()
 
-    def to_dict(self) -> dict[Any, Any]:
+    def to_dict(self) -> Dict[Any, Any]:
         value = {"boost": self.boost} if self.boost else {}
         return {self.type_name: value}
 
@@ -171,7 +171,7 @@ class MatchNone(Query):
     def __invert__(self):
         return MatchAll()
 
-    def to_dict(self) -> dict[Any, Any]:
+    def to_dict(self) -> Dict[Any, Any]:
         return {"match_none": {}}
 
 
@@ -495,13 +495,13 @@ class Term(Query):
 @dataclass
 class Terms(Query):
     field: str
-    values: list[str]
+    values: List[str]
     boost: Optional[float] = None
     type_name: Literal["terms"] = "terms"
 
     @classmethod
     @validate_arguments()
-    def with_type_name(cls, values: list[str]):
+    def with_type_name(cls, values: List[str]):
         return cls(field=TermAttributes.TYPE_NAME.value, values=values)
 
     def to_dict(self):
@@ -513,10 +513,10 @@ class Terms(Query):
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Bool(Query):
-    must: list[Query] = Field(default_factory=list)
-    should: list[Query] = Field(default_factory=list)
-    must_not: list[Query] = Field(default_factory=list)
-    filter: list[Query] = Field(default_factory=list)
+    must: List[Query] = Field(default_factory=list)
+    should: List[Query] = Field(default_factory=list)
+    must_not: List[Query] = Field(default_factory=list)
+    filter: List[Query] = Field(default_factory=list)
     type_name: Literal["bool"] = "bool"
     boost: Optional[float] = None
     minimum_should_match: Optional[int] = None
@@ -620,7 +620,7 @@ class Bool(Query):
 
     __rand__ = __and__
 
-    def to_dict(self) -> dict[Any, Any]:
+    def to_dict(self) -> Dict[Any, Any]:
         clauses = {}
 
         def add_clause(name):
@@ -717,8 +717,8 @@ class Prefix(Query):
     def with_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
-    def to_dict(self) -> dict[Any, Any]:
-        parameters: dict[str, Any] = {
+    def to_dict(self) -> Dict[Any, Any]:
+        parameters: Dict[str, Any] = {
             "value": int(self.value.timestamp() * 1000)
             if isinstance(self.value, datetime)
             else self.value
@@ -869,7 +869,7 @@ class Range(Query):
             time_zone=time_zone,
         )
 
-    def to_dict(self) -> dict[Any, Any]:
+    def to_dict(self) -> Dict[Any, Any]:
         def get_value(attribute_name):
             if hasattr(self, attribute_name):
                 attribute_value = getattr(self, attribute_name)
@@ -1799,12 +1799,12 @@ class SortItem:
 class DSL(AtlanObject):
     from_: int = Field(0, alias="from")
     size: int = 100
-    aggregations: dict[str, Aggregation] = Field(default_factory=dict)
+    aggregations: Dict[str, Aggregation] = Field(default_factory=dict)
     track_total_hits: bool = Field(default=True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(default=None, alias="post_filter")
     query: Optional[Query]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
-    sort: list[SortItem] = Field(default_factory=list, alias="sort")
+    sort: List[SortItem] = Field(default_factory=list, alias="sort")
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1856,7 +1856,7 @@ class DSL(AtlanObject):
 
 class IndexSearchRequest(SearchRequest):
     dsl: DSL
-    relation_attributes: list[str] = Field(
+    relation_attributes: List[str] = Field(
         default_factory=list, alias="relationAttributes"
     )
     suppress_logs: Optional[bool] = Field(default=None, alias="suppressLogs")
@@ -1882,7 +1882,7 @@ class IndexSearchRequest(SearchRequest):
 
     class Metadata(AtlanObject):
         save_search_log: bool = True
-        utm_tags: list[str] = []
+        utm_tags: List[str] = []
 
     request_metadata: Metadata = Field(
         default_factory=lambda: IndexSearchRequest.Metadata(

@@ -1,7 +1,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 from datetime import datetime
-from typing import Optional, Union
+from typing import Dict, List, Optional, Set, Union
 
 from pydantic.v1 import BaseModel, Extra, Field
 
@@ -27,7 +27,6 @@ class {{struct.name}}(AtlanObject):
     """Description"""
     {%- if struct.name == "BadgeCondition" %}
     @classmethod
-    # @validate_arguments()
     def create(
         cls,
         *,

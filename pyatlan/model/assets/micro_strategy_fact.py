@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -49,14 +49,14 @@ class MicroStrategyFact(MicroStrategy):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "micro_strategy_fact_expressions",
         "micro_strategy_metrics",
         "micro_strategy_project",
     ]
 
     @property
-    def micro_strategy_fact_expressions(self) -> Optional[set[str]]:
+    def micro_strategy_fact_expressions(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
@@ -65,7 +65,7 @@ class MicroStrategyFact(MicroStrategy):
 
     @micro_strategy_fact_expressions.setter
     def micro_strategy_fact_expressions(
-        self, micro_strategy_fact_expressions: Optional[set[str]]
+        self, micro_strategy_fact_expressions: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -74,14 +74,14 @@ class MicroStrategyFact(MicroStrategy):
         )
 
     @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+    def micro_strategy_metrics(self) -> Optional[List[MicroStrategyMetric]]:
         return (
             None if self.attributes is None else self.attributes.micro_strategy_metrics
         )
 
     @micro_strategy_metrics.setter
     def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+        self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -102,10 +102,10 @@ class MicroStrategyFact(MicroStrategy):
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_fact_expressions: Optional[set[str]] = Field(
+        micro_strategy_fact_expressions: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+        micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(

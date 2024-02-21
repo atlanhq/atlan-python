@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -34,7 +34,6 @@ class ADLSObject(ADLS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -179,7 +178,7 @@ class ADLSObject(ADLS):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "adls_object_url",
         "adls_object_version_id",
         "adls_object_type",
@@ -413,11 +412,11 @@ class ADLSObject(ADLS):
         self.attributes.adls_object_lease_state = adls_object_lease_state
 
     @property
-    def adls_object_metadata(self) -> Optional[dict[str, str]]:
+    def adls_object_metadata(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.adls_object_metadata
 
     @adls_object_metadata.setter
-    def adls_object_metadata(self, adls_object_metadata: Optional[dict[str, str]]):
+    def adls_object_metadata(self, adls_object_metadata: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_object_metadata = adls_object_metadata
@@ -482,7 +481,7 @@ class ADLSObject(ADLS):
         adls_object_lease_state: Optional[ADLSLeaseState] = Field(
             default=None, description=""
         )
-        adls_object_metadata: Optional[dict[str, str]] = Field(
+        adls_object_metadata: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         adls_container_qualified_name: Optional[str] = Field(
@@ -493,7 +492,6 @@ class ADLSObject(ADLS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, adls_container_qualified_name: str

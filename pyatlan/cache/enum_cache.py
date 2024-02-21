@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
-from typing import Optional
+from typing import Dict, Optional
 
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
@@ -13,7 +13,7 @@ class EnumCache:
     Lazily-loaded cache for accessing details of an enumeration.
     """
 
-    caches: dict[int, "EnumCache"] = {}
+    caches: Dict[int, "EnumCache"] = {}
 
     @classmethod
     def get_cache(cls) -> "EnumCache":
@@ -44,7 +44,7 @@ class EnumCache:
 
     def __init__(self, typedef_client: TypeDefClient):
         self.typedef_client: TypeDefClient = typedef_client
-        self.cache_by_name: dict[str, EnumDef] = {}
+        self.cache_by_name: Dict[str, EnumDef] = {}
 
     def _refresh_cache(self) -> None:
         """

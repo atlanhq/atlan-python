@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -41,36 +41,36 @@ class PowerBIDatasource(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "connection_details",
         "datasets",
     ]
 
     @property
-    def connection_details(self) -> Optional[dict[str, str]]:
+    def connection_details(self) -> Optional[Dict[str, str]]:
         return None if self.attributes is None else self.attributes.connection_details
 
     @connection_details.setter
-    def connection_details(self, connection_details: Optional[dict[str, str]]):
+    def connection_details(self, connection_details: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.connection_details = connection_details
 
     @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
+    def datasets(self) -> Optional[List[PowerBIDataset]]:
         return None if self.attributes is None else self.attributes.datasets
 
     @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+    def datasets(self, datasets: Optional[List[PowerBIDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasets = datasets
 
     class Attributes(PowerBI.Attributes):
-        connection_details: Optional[dict[str, str]] = Field(
+        connection_details: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
-        datasets: Optional[list[PowerBIDataset]] = Field(
+        datasets: Optional[List[PowerBIDataset]] = Field(
             default=None, description=""
         )  # relationship
 

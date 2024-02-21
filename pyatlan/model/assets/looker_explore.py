@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -73,7 +73,7 @@ class LookerExplore(Looker):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "project_name",
         "model_name",
         "source_connection_name",
@@ -157,11 +157,11 @@ class LookerExplore(Looker):
         self.attributes.model = model
 
     @property
-    def fields(self) -> Optional[list[LookerField]]:
+    def fields(self) -> Optional[List[LookerField]]:
         return None if self.attributes is None else self.attributes.fields
 
     @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
+    def fields(self, fields: Optional[List[LookerField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
@@ -178,7 +178,7 @@ class LookerExplore(Looker):
         model: Optional[LookerModel] = Field(
             default=None, description=""
         )  # relationship
-        fields: Optional[list[LookerField]] = Field(
+        fields: Optional[List[LookerField]] = Field(
             default=None, description=""
         )  # relationship
 

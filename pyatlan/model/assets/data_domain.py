@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, StrictStr, validator
 
@@ -20,7 +20,6 @@ class DataDomain(DataMesh):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -84,18 +83,18 @@ class DataDomain(DataMesh):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "data_products",
         "parent_domain",
         "sub_domains",
     ]
 
     @property
-    def data_products(self) -> Optional[list[DataProduct]]:
+    def data_products(self) -> Optional[List[DataProduct]]:
         return None if self.attributes is None else self.attributes.data_products
 
     @data_products.setter
-    def data_products(self, data_products: Optional[list[DataProduct]]):
+    def data_products(self, data_products: Optional[List[DataProduct]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_products = data_products
@@ -111,23 +110,23 @@ class DataDomain(DataMesh):
         self.attributes.parent_domain = parent_domain
 
     @property
-    def sub_domains(self) -> Optional[list[DataDomain]]:
+    def sub_domains(self) -> Optional[List[DataDomain]]:
         return None if self.attributes is None else self.attributes.sub_domains
 
     @sub_domains.setter
-    def sub_domains(self, sub_domains: Optional[list[DataDomain]]):
+    def sub_domains(self, sub_domains: Optional[List[DataDomain]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sub_domains = sub_domains
 
     class Attributes(DataMesh.Attributes):
-        data_products: Optional[list[DataProduct]] = Field(
+        data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
         parent_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship
-        sub_domains: Optional[list[DataDomain]] = Field(
+        sub_domains: Optional[List[DataDomain]] = Field(
             default=None, description=""
         )  # relationship
 

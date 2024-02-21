@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -59,7 +59,7 @@ class MicroStrategyAttribute(MicroStrategy):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "micro_strategy_attribute_forms",
         "micro_strategy_reports",
         "micro_strategy_metrics",
@@ -84,40 +84,40 @@ class MicroStrategyAttribute(MicroStrategy):
         self.attributes.micro_strategy_attribute_forms = micro_strategy_attribute_forms
 
     @property
-    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+    def micro_strategy_reports(self) -> Optional[List[MicroStrategyReport]]:
         return (
             None if self.attributes is None else self.attributes.micro_strategy_reports
         )
 
     @micro_strategy_reports.setter
     def micro_strategy_reports(
-        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+        self, micro_strategy_reports: Optional[List[MicroStrategyReport]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_reports = micro_strategy_reports
 
     @property
-    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+    def micro_strategy_metrics(self) -> Optional[List[MicroStrategyMetric]]:
         return (
             None if self.attributes is None else self.attributes.micro_strategy_metrics
         )
 
     @micro_strategy_metrics.setter
     def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+        self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
-    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+    def micro_strategy_cubes(self) -> Optional[List[MicroStrategyCube]]:
         return None if self.attributes is None else self.attributes.micro_strategy_cubes
 
     @micro_strategy_cubes.setter
     def micro_strategy_cubes(
-        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+        self, micro_strategy_cubes: Optional[List[MicroStrategyCube]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -141,13 +141,13 @@ class MicroStrategyAttribute(MicroStrategy):
         micro_strategy_attribute_forms: Optional[str] = Field(
             default=None, description=""
         )
-        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+        micro_strategy_reports: Optional[List[MicroStrategyReport]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+        micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+        micro_strategy_cubes: Optional[List[MicroStrategyCube]] = Field(
             default=None, description=""
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(

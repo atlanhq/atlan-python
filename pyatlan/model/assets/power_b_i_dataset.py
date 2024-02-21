@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -65,7 +65,7 @@ class PowerBIDataset(PowerBI):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "web_url",
         "reports",
@@ -101,11 +101,11 @@ class PowerBIDataset(PowerBI):
         self.attributes.web_url = web_url
 
     @property
-    def reports(self) -> Optional[list[PowerBIReport]]:
+    def reports(self) -> Optional[List[PowerBIReport]]:
         return None if self.attributes is None else self.attributes.reports
 
     @reports.setter
-    def reports(self, reports: Optional[list[PowerBIReport]]):
+    def reports(self, reports: Optional[List[PowerBIReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.reports = reports
@@ -121,41 +121,41 @@ class PowerBIDataset(PowerBI):
         self.attributes.workspace = workspace
 
     @property
-    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+    def dataflows(self) -> Optional[List[PowerBIDataflow]]:
         return None if self.attributes is None else self.attributes.dataflows
 
     @dataflows.setter
-    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+    def dataflows(self, dataflows: Optional[List[PowerBIDataflow]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dataflows = dataflows
 
     @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
+    def tiles(self) -> Optional[List[PowerBITile]]:
         return None if self.attributes is None else self.attributes.tiles
 
     @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
+    def tiles(self, tiles: Optional[List[PowerBITile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tiles = tiles
 
     @property
-    def tables(self) -> Optional[list[PowerBITable]]:
+    def tables(self) -> Optional[List[PowerBITable]]:
         return None if self.attributes is None else self.attributes.tables
 
     @tables.setter
-    def tables(self, tables: Optional[list[PowerBITable]]):
+    def tables(self, tables: Optional[List[PowerBITable]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tables = tables
 
     @property
-    def datasources(self) -> Optional[list[PowerBIDatasource]]:
+    def datasources(self) -> Optional[List[PowerBIDatasource]]:
         return None if self.attributes is None else self.attributes.datasources
 
     @datasources.setter
-    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
+    def datasources(self, datasources: Optional[List[PowerBIDatasource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasources = datasources
@@ -163,22 +163,22 @@ class PowerBIDataset(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         web_url: Optional[str] = Field(default=None, description="")
-        reports: Optional[list[PowerBIReport]] = Field(
+        reports: Optional[List[PowerBIReport]] = Field(
             default=None, description=""
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             default=None, description=""
         )  # relationship
-        dataflows: Optional[list[PowerBIDataflow]] = Field(
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
             default=None, description=""
         )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
+        tiles: Optional[List[PowerBITile]] = Field(
             default=None, description=""
         )  # relationship
-        tables: Optional[list[PowerBITable]] = Field(
+        tables: Optional[List[PowerBITable]] = Field(
             default=None, description=""
         )  # relationship
-        datasources: Optional[list[PowerBIDatasource]] = Field(
+        datasources: Optional[List[PowerBIDatasource]] = Field(
             default=None, description=""
         )  # relationship
 

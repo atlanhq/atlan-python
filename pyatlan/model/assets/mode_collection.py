@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -51,7 +51,7 @@ class ModeCollection(Mode):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "mode_collection_type",
         "mode_collection_state",
         "mode_workspace",
@@ -91,11 +91,11 @@ class ModeCollection(Mode):
         self.attributes.mode_workspace = mode_workspace
 
     @property
-    def mode_reports(self) -> Optional[list[ModeReport]]:
+    def mode_reports(self) -> Optional[List[ModeReport]]:
         return None if self.attributes is None else self.attributes.mode_reports
 
     @mode_reports.setter
-    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
+    def mode_reports(self, mode_reports: Optional[List[ModeReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_reports = mode_reports
@@ -106,7 +106,7 @@ class ModeCollection(Mode):
         mode_workspace: Optional[ModeWorkspace] = Field(
             default=None, description=""
         )  # relationship
-        mode_reports: Optional[list[ModeReport]] = Field(
+        mode_reports: Optional[List[ModeReport]] = Field(
             default=None, description=""
         )  # relationship
 

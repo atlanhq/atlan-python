@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -32,7 +32,6 @@ class ADLSAccount(ADLS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
         validate_required_fields(
@@ -124,7 +123,7 @@ class ADLSAccount(ADLS):
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[List[str]] = [
         "adls_e_tag",
         "adls_encryption_type",
         "adls_account_resource_group",
@@ -275,11 +274,11 @@ class ADLSAccount(ADLS):
         self.attributes.adls_account_access_tier = adls_account_access_tier
 
     @property
-    def adls_containers(self) -> Optional[list[ADLSContainer]]:
+    def adls_containers(self) -> Optional[List[ADLSContainer]]:
         return None if self.attributes is None else self.attributes.adls_containers
 
     @adls_containers.setter
-    def adls_containers(self, adls_containers: Optional[list[ADLSContainer]]):
+    def adls_containers(self, adls_containers: Optional[List[ADLSContainer]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_containers = adls_containers
@@ -309,12 +308,11 @@ class ADLSAccount(ADLS):
         adls_account_access_tier: Optional[ADLSAccessTier] = Field(
             default=None, description=""
         )
-        adls_containers: Optional[list[ADLSContainer]] = Field(
+        adls_containers: Optional[List[ADLSContainer]] = Field(
             default=None, description=""
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str

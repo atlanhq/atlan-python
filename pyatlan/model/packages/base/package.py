@@ -1,4 +1,5 @@
 from json import loads
+from typing import List
 
 from pydantic.v1 import parse_obj_as
 
@@ -45,7 +46,7 @@ class AbstractPackage:
                                 name="run",
                                 arguments=WorkflowParameters(
                                     parameters=parse_obj_as(
-                                        list[NameValuePair], self._parameters
+                                        List[NameValuePair], self._parameters
                                     )
                                 ),
                                 template_ref=WorkflowTemplateRef(

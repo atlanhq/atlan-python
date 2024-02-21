@@ -2,7 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any, Dict, List, Union
 
 from pyatlan.model.core import AtlanObject
 
@@ -25,17 +25,17 @@ class AggregationBucketResult(AtlanObject):
 
     doc_count_error_upper_bound: int
     sum_other_doc_count: int
-    buckets: list[AggregationBucketDetails]
+    buckets: List[AggregationBucketDetails]
 
 
 class Aggregation(AtlanObject):
-    __root__: dict[str, Any]
+    __root__: Dict[str, Any]
 
 
 class Aggregations(AtlanObject):
     """Aggregation results from a search"""
 
-    __root__: dict[str, Union[AggregationMetricResult, AggregationBucketResult]]
+    __root__: Dict[str, Union[AggregationMetricResult, AggregationBucketResult]]
 
     def __iter__(self):
         return iter(self.__root__)

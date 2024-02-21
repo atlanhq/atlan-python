@@ -12,9 +12,9 @@
 {%- endif %}
 
     ```python linenums="1" title="{{attribute_def.description | default('TBC',true)}}"
-    {%- if type.container == "dict[" or type.container == "set[" %}
+    {%- if type.container == "Dict[" or type.container == "Set[" %}
     builder.{{attr_name}} = {...}  # (1)
-    {%- elif type.container == "list[" %}
+    {%- elif type.container == "List[" %}
     builder.{{attr_name}} = [...]  # (1)
     {%- else %}
     builder.{{attr_name}} = ...  # (1)
