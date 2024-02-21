@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import ClassVar, Dict, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -28,7 +29,7 @@ class Column(SQL):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
     ) -> Column:
         return Column(
@@ -38,6 +39,26 @@ class Column(SQL):
                 parent_type=parent_type,
                 order=order,
             )
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            parent_qualified_name=parent_qualified_name,
+            parent_type=parent_type,
+            order=order,
         )
 
     type_name: str = Field(default="Column", allow_mutation=False)

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import ClassVar, Dict, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -21,7 +22,7 @@ class Connection(Asset, type_name="Connection"):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: str,
@@ -45,6 +46,33 @@ class Connection(Asset, type_name="Connection"):
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
         return cls(attributes=attr)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connector_type: AtlanConnectorType,
+        admin_users: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
+    ) -> Connection:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connector_type=connector_type,
+            admin_users=admin_users,
+            admin_groups=admin_groups,
+            admin_roles=admin_roles,
+        )
 
     type_name: str = Field(default="Connection", allow_mutation=False)
 

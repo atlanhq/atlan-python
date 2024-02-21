@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
 
@@ -21,7 +22,7 @@ class Badge(Asset, type_name="Badge"):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: StrictStr,
@@ -37,6 +38,31 @@ class Badge(Asset, type_name="Badge"):
                 cm_attribute=cm_attribute,
                 badge_conditions=badge_conditions,
             ),
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: List[BadgeCondition],
+    ) -> Badge:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            cm_name=cm_name,
+            cm_attribute=cm_attribute,
+            badge_conditions=badge_conditions,
         )
 
     type_name: str = Field(default="Badge", allow_mutation=False)

@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, Dict, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
@@ -35,7 +36,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: StrictStr,
@@ -55,6 +56,33 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
         )
 
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        anchor: Optional[AtlasGlossary] = None,
+        glossary_qualified_name: Optional[StrictStr] = None,
+        glossary_guid: Optional[StrictStr] = None,
+        categories: Optional[List[AtlasGlossaryCategory]] = None,
+    ) -> AtlasGlossaryTerm:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            anchor=anchor,
+            glossary_qualified_name=glossary_qualified_name,
+            glossary_guid=glossary_guid,
+            categories=categories,
+        )
+
     def trim_to_required(self) -> AtlasGlossaryTerm:
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
@@ -62,6 +90,25 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             qualified_name=self.qualified_name or "",
             name=self.name or "",
             glossary_guid=self.anchor.guid,
+        )
+
+    @classmethod
+    def updater(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
         )
 
     @classmethod

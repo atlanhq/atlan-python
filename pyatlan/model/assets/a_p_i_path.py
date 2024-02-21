@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, Dict, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -26,7 +27,7 @@ class APIPath(API):
 
     @classmethod
     @init_guid
-    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
+    def creator(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         validate_required_fields(
             ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
         )
@@ -34,6 +35,21 @@ class APIPath(API):
             path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+        )
 
     type_name: str = Field(default="APIPath", allow_mutation=False)
 

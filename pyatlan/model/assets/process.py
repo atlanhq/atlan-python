@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 from io import StringIO
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -21,7 +22,7 @@ class Process(Asset, type_name="Process"):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         name: str,
         connection_qualified_name: str,
@@ -39,6 +40,34 @@ class Process(Asset, type_name="Process"):
                 outputs=outputs,
                 parent=parent,
             )
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: List["Catalog"],
+        outputs: List["Catalog"],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
+    ) -> Process:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            inputs=inputs,
+            outputs=outputs,
+            process_id=process_id,
+            parent=parent,
         )
 
     type_name: str = Field(default="Process", allow_mutation=False)

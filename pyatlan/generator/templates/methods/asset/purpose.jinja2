@@ -1,16 +1,42 @@
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> {{ entity_def.name }}:
+    def creator(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
         attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
 
     @classmethod
-    def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
-        validate_required_fields(["name", "purpose_id", "policy_type", "actions"], [name, purpose_id, policy_type, actions])
+    @init_guid
+    def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(name=name, atlan_tags=atlan_tags)
+
+    @classmethod
+    def create_metadata_policy(
+        cls,
+        *,
+        name: str,
+        purpose_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PurposeMetadataAction],
+        policy_groups: Optional[Set[str]] = None,
+        policy_users: Optional[Set[str]] = None,
+        all_users: bool = False,
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "purpose_id", "policy_type", "actions"],
+            [name, purpose_id, policy_type, actions],
+        )
         target_found = False
-        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
+        policy = AuthPolicy.create(name=name)
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -26,6 +52,7 @@
         else:
             if policy_groups:
                 from pyatlan.cache.group_cache import GroupCache
+
                 for group_name in policy_groups:
                     if not GroupCache.get_id_for_name(group_name):
                         raise ValueError(
@@ -37,6 +64,7 @@
                 policy.policy_groups = None
             if policy_users:
                 from pyatlan.cache.user_cache import UserCache
+
                 for username in policy_users:
                     if not UserCache.get_id_for_name(username):
                         raise ValueError(
@@ -49,14 +77,23 @@
         if target_found:
             return policy
         else:
-            raise ValueError(
-                "No user or group specified for the policy."
-            )
+            raise ValueError("No user or group specified for the policy.")
 
     @classmethod
-    def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
-        validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
-        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
+    def create_data_policy(
+        cls,
+        *,
+        name: str,
+        purpose_id: str,
+        policy_type: AuthPolicyType,
+        policy_groups: Optional[Set[str]] = None,
+        policy_users: Optional[Set[str]] = None,
+        all_users: bool = False,
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
+        )
+        policy = AuthPolicy.create(name=name)
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -72,6 +109,7 @@
         else:
             if policy_groups:
                 from pyatlan.cache.group_cache import GroupCache
+
                 for group_name in policy_groups:
                     if not GroupCache.get_id_for_name(group_name):
                         raise ValueError(
@@ -83,6 +121,7 @@
                 policy.policy_groups = None
             if policy_users:
                 from pyatlan.cache.user_cache import UserCache
+
                 for username in policy_users:
                     if not UserCache.get_id_for_name(username):
                         raise ValueError(
@@ -95,12 +134,10 @@
         if target_found:
             return policy
         else:
-            raise ValueError(
-                "No user or group specified for the policy."
-            )
+            raise ValueError("No user or group specified for the policy.")
 
     @classmethod
-    def create_for_modification(
+    def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
@@ -114,6 +151,25 @@
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                is_access_control_enabled=is_enabled
+                is_access_control_enabled=is_enabled,
             )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls,
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> Purpose:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name, name=name, is_enabled=is_enabled
         )

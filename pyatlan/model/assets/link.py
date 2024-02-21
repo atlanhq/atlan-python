@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import uuid
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -21,7 +22,7 @@ class Link(Resource):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
     ) -> Link:
         return Link(
@@ -29,6 +30,21 @@ class Link(Resource):
                 asset=asset, name=name, link=link, idempotent=idempotent
             )
         )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
+    ) -> Link:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(asset=asset, name=name, link=link, idempotent=idempotent)
 
     type_name: str = Field(default="Link", allow_mutation=False)
 

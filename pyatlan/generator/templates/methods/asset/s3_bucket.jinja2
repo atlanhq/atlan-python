@@ -2,6 +2,46 @@
     @overload
     @classmethod
     @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+    ) -> S3Bucket:
+        ...
+
+    @overload
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: Optional[str] = None,
+    ) -> S3Bucket:
+        ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+        return cls(attributes=attributes)
+
+    @overload
+    @classmethod
+    @init_guid
     def create(
         cls,
         *,
@@ -28,13 +68,16 @@
     def create(
         cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
     ) -> S3Bucket:
-        validate_required_fields(
-            ["name", "connection_qualified_name"],
-            [name, connection_qualified_name],
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
         )
-        attributes = S3Bucket.Attributes.create(
+        return cls.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
         )
-        return cls(attributes=attributes)

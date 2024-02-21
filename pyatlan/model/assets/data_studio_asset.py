@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import uuid
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -28,7 +29,7 @@ class DataStudioAsset(DataStudio):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: str,
@@ -49,6 +50,31 @@ class DataStudioAsset(DataStudio):
             gdsid=gdsid,
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        data_studio_asset_type: GoogleDatastudioAssetType,
+        gdsid: Optional[str] = None,
+    ) -> DataStudioAsset:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            data_studio_asset_type=data_studio_asset_type,
+            gdsid=gdsid,
+        )
 
     type_name: str = Field(default="DataStudioAsset", allow_mutation=False)
 

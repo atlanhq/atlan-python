@@ -1,7 +1,7 @@
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
     ) -> Readme:
         return Readme(
@@ -9,6 +9,21 @@
                 asset=asset, content=content, asset_name=asset_name
             )
         )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(asset=asset, content=content, asset_name=asset_name)
 
     @property
     def description(self) -> Optional[str]:

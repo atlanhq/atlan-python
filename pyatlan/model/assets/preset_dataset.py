@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -25,7 +26,7 @@ class PresetDataset(Preset):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, name: str, preset_dashboard_qualified_name: str
     ) -> PresetDataset:
         validate_required_fields(
@@ -36,6 +37,23 @@ class PresetDataset(Preset):
             name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, preset_dashboard_qualified_name: str
+    ) -> PresetDataset:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
+        )
 
     type_name: str = Field(default="PresetDataset", allow_mutation=False)
 
