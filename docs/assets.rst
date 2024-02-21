@@ -32,6 +32,7 @@ You can interact with all of the following different kinds of assets:
     asset/bi
     asset/biprocess
     asset/badge
+    asset/calculationview
     asset/catalog
     asset/cloud
     asset/collection

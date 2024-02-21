@@ -84,11 +84,11 @@
 
     @classmethod
     def create_for_modification(
-        cls: type[SelfAsset],
+        cls,
         qualified_name: str = "",
         name: str = "",
         glossary_guid: str = "",
-    ) -> SelfAsset:
+    ) -> AtlasGlossaryTerm:
         warn(
             (
                 "This method is deprecated, please use 'updater' "

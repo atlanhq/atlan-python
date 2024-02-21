@@ -365,6 +365,10 @@ class Column(SQL):
     """
     TBC
     """
+    CALCULATION_VIEW: ClassVar[RelationField] = RelationField("calculationView")
+    """
+    TBC
+    """
     PARENT_COLUMN: ClassVar[RelationField] = RelationField("parentColumn")
     """
     TBC
@@ -453,6 +457,7 @@ class Column(SQL):
         "table",
         "column_dbt_model_columns",
         "materialised_view",
+        "calculation_view",
         "parent_column",
         "queries",
         "metric_timestamps",
@@ -1147,6 +1152,16 @@ class Column(SQL):
         self.attributes.materialised_view = materialised_view
 
     @property
+    def calculation_view(self) -> Optional[CalculationView]:
+        return None if self.attributes is None else self.attributes.calculation_view
+
+    @calculation_view.setter
+    def calculation_view(self, calculation_view: Optional[CalculationView]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view = calculation_view
+
+    @property
     def parent_column(self) -> Optional[Column]:
         return None if self.attributes is None else self.attributes.parent_column
 
@@ -1311,6 +1326,9 @@ class Column(SQL):
         materialised_view: Optional[MaterialisedView] = Field(
             default=None, description=""
         )  # relationship
+        calculation_view: Optional[CalculationView] = Field(
+            default=None, description=""
+        )  # relationship
         parent_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
@@ -1389,6 +1407,7 @@ class Column(SQL):
     )
 
 
+from .calculation_view import CalculationView  # noqa
 from .dbt_metric import DbtMetric  # noqa
 from .dbt_model_column import DbtModelColumn  # noqa
 from .materialised_view import MaterialisedView  # noqa

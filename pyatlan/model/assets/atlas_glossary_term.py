@@ -113,21 +113,21 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @classmethod
     def create_for_modification(
-        cls: type[SelfAsset],
+        cls,
         qualified_name: str = "",
         name: str = "",
         glossary_guid: str = "",
-    ) -> SelfAsset:
-        validate_required_fields(
-            ["name", "qualified_name", "glossary_guid"],
-            [name, qualified_name, glossary_guid],
+    ) -> AtlasGlossaryTerm:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
         )
-        glossary = AtlasGlossary()
-        glossary.guid = glossary_guid
-        return cls(
-            attributes=cls.Attributes(
-                qualified_name=qualified_name, name=name, anchor=glossary
-            )
+        return cls.updater(
+            qualified_name=qualified_name, name=name, glossary_guid=glossary_guid
         )
 
     ANCHOR: ClassVar[KeywordField] = KeywordField("anchor", "__glossary")
