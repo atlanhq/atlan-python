@@ -1,6 +1,5 @@
 
         @classmethod
-
         def __create(cls, name: str) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(["name"], [name])
             return AuthPolicy.Attributes(

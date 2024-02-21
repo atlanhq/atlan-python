@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
 
@@ -21,7 +22,7 @@ class DataDomain(DataMesh):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: StrictStr,
@@ -39,7 +40,32 @@ class DataDomain(DataMesh):
         return cls(attributes=attributes)
 
     @classmethod
-    def create_for_modification(
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        icon: Optional[AtlanIcon] = None,
+        parent_domain: Optional[DataDomain] = None,
+        parent_domain_qualified_name: Optional[StrictStr] = None,
+    ) -> DataDomain:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            icon=icon,
+            parent_domain=parent_domain,
+            parent_domain_qualified_name=parent_domain_qualified_name,
+        )
+
+    @classmethod
+    def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
@@ -55,6 +81,25 @@ class DataDomain(DataMesh):
                 qualified_name=qualified_name,
                 name=name,
             )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+    ) -> SelfAsset:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name,
+            name=name,
         )
 
     type_name: str = Field(default="DataDomain", allow_mutation=False)

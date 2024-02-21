@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, Dict, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
@@ -30,13 +31,28 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
     ) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
         return AtlasGlossary(
             attributes=AtlasGlossary.Attributes.create(name=name, icon=icon)
         )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+    ) -> AtlasGlossary:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(name=name, icon=icon)
 
     type_name: str = Field(default="AtlasGlossary", allow_mutation=False)
 

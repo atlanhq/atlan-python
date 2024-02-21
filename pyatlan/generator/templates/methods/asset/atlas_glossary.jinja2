@@ -7,6 +7,25 @@
 
     @classmethod
     @init_guid
-    def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None)->{{ entity_def.name }}:
+    def creator(
+        cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+    ) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name, icon=icon))
+        return AtlasGlossary(
+            attributes=AtlasGlossary.Attributes.create(name=name, icon=icon)
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+    ) -> AtlasGlossary:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(name=name, icon=icon)

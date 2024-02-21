@@ -117,6 +117,18 @@ class MongoDBDatabase(Database):
     """
     Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
+    CALCULATION_VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "calculationViewName", "calculationViewName.keyword", "calculationViewName"
+    )
+    """
+    Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
+    CALCULATION_VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "calculationViewQualifiedName", "calculationViewQualifiedName"
+    )
+    """
+    Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
     Whether this asset has been profiled (true) or not (false).
@@ -154,6 +166,8 @@ class MongoDBDatabase(Database):
         "table_qualified_name",
         "view_name",
         "view_qualified_name",
+        "calculation_view_name",
+        "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
         "no_s_q_l_schema_definition",
@@ -315,6 +329,36 @@ class MongoDBDatabase(Database):
         self.attributes.view_qualified_name = view_qualified_name
 
     @property
+    def calculation_view_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.calculation_view_name
+        )
+
+    @calculation_view_name.setter
+    def calculation_view_name(self, calculation_view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_name = calculation_view_name
+
+    @property
+    def calculation_view_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_qualified_name
+        )
+
+    @calculation_view_qualified_name.setter
+    def calculation_view_qualified_name(
+        self, calculation_view_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_qualified_name = (
+            calculation_view_qualified_name
+        )
+
+    @property
     def is_profiled(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_profiled
 
@@ -379,6 +423,10 @@ class MongoDBDatabase(Database):
         table_qualified_name: Optional[str] = Field(default=None, description="")
         view_name: Optional[str] = Field(default=None, description="")
         view_qualified_name: Optional[str] = Field(default=None, description="")
+        calculation_view_name: Optional[str] = Field(default=None, description="")
+        calculation_view_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")

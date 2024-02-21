@@ -1,7 +1,7 @@
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: StrictStr,
@@ -10,11 +10,36 @@
         badge_conditions: List[BadgeCondition],
     ) -> Badge:
         return cls(
-            status = EntityStatus.ACTIVE,
+            status=EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
                 name=name,
                 cm_name=cm_name,
                 cm_attribute=cm_attribute,
                 badge_conditions=badge_conditions,
-            )
+            ),
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: List[BadgeCondition],
+    ) -> Badge:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            cm_name=cm_name,
+            cm_attribute=cm_attribute,
+            badge_conditions=badge_conditions,
         )

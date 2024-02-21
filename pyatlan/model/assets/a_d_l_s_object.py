@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import ClassVar, Dict, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -35,7 +36,7 @@ class ADLSObject(ADLS):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: str,
@@ -49,6 +50,26 @@ class ADLSObject(ADLS):
             name=name, adls_container_qualified_name=adls_container_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+    ) -> ADLSObject:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name, adls_container_qualified_name=adls_container_qualified_name
+        )
 
     type_name: str = Field(default="ADLSObject", allow_mutation=False)
 

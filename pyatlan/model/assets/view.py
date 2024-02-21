@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, Dict, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -25,7 +26,7 @@ class View(SQL):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, schema_qualified_name: str) -> View:
+    def creator(cls, *, name: str, schema_qualified_name: str) -> View:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
@@ -33,6 +34,22 @@ class View(SQL):
             name=name, schema_qualified_name=schema_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, name: str, schema_qualified_name: str) -> View:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            schema_qualified_name=schema_qualified_name,
+        )
 
     type_name: str = Field(default="View", allow_mutation=False)
 

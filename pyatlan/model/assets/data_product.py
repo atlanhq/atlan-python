@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
 
@@ -32,7 +33,7 @@ class DataProduct(DataMesh):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: StrictStr,
@@ -53,7 +54,34 @@ class DataProduct(DataMesh):
         return cls(attributes=attributes)
 
     @classmethod
-    def create_for_modification(
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        assets: IndexSearchRequest,
+        icon: Optional[AtlanIcon] = None,
+        domain: Optional[DataDomain] = None,
+        domain_qualified_name: Optional[StrictStr] = None,
+    ) -> DataProduct:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            assets=assets,
+            icon=icon,
+            domain=domain,
+            domain_qualified_name=domain_qualified_name,
+        )
+
+    @classmethod
+    def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
@@ -71,6 +99,25 @@ class DataProduct(DataMesh):
                 qualified_name=qualified_name,
                 name=name,
             )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+    ) -> SelfAsset:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name,
+            name=name,
         )
 
     type_name: str = Field(default="DataProduct", allow_mutation=False)

@@ -1,7 +1,7 @@
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: str,
@@ -10,16 +10,46 @@
         s3_bucket_qualified_name: str,
     ) -> S3Object:
         validate_required_fields(
-            ["name", "connection_qualified_name", "aws_arn", "s3_bucket_qualified_name"],
+            [
+                "name",
+                "connection_qualified_name",
+                "aws_arn",
+                "s3_bucket_qualified_name",
+            ],
             [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
         )
         attributes = S3Object.Attributes.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
-            s3_bucket_qualified_name=s3_bucket_qualified_name
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: str,
+    ) -> S3Object:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
+        )
 
     @classmethod
     @init_guid

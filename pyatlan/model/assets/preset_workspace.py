@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -26,7 +27,7 @@ class PresetWorkspace(Preset):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
+    def creator(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
@@ -34,6 +35,21 @@ class PresetWorkspace(Preset):
             name=name, connection_qualified_name=connection_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
 
     type_name: str = Field(default="PresetWorkspace", allow_mutation=False)
 

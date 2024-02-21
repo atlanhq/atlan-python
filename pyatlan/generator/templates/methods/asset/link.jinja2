@@ -1,7 +1,7 @@
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
     ) -> Link:
         return Link(
@@ -9,3 +9,18 @@
                 asset=asset, name=name, link=link, idempotent=idempotent
             )
         )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
+    ) -> Link:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(asset=asset, name=name, link=link, idempotent=idempotent)

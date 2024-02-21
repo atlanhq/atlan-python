@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -26,7 +27,7 @@ class GCSObject(GCS):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+    def creator(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
         validate_required_fields(
             ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
         )
@@ -34,6 +35,21 @@ class GCSObject(GCS):
             name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+        )
 
     type_name: str = Field(default="GCSObject", allow_mutation=False)
 
