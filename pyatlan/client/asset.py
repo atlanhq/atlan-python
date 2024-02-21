@@ -280,7 +280,9 @@ class AssetClient:
             attributes=attributes,
         )
         results = self.search(search_request)
-        return [asset for asset in results if isinstance(asset, Persona)]
+        if personas := [asset for asset in results if isinstance(asset, Persona)]:
+            return personas
+        raise ErrorCode.PERSONA_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     @validate_arguments
     def find_purposes_by_name(
@@ -309,7 +311,9 @@ class AssetClient:
             attributes=attributes,
         )
         results = self.search(search_request)
-        return [asset for asset in results if isinstance(asset, Purpose)]
+        if purposes := [asset for asset in results if isinstance(asset, Purpose)]:
+            return purposes
+        raise ErrorCode.PURPOSE_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     @validate_arguments
     def get_by_qualified_name(
@@ -1358,7 +1362,11 @@ class AssetClient:
             attributes=attributes,
         )
         results = self.search(search_request)
-        return [asset for asset in results if isinstance(asset, Connection)]
+        if connections := [asset for asset in results if isinstance(asset, Connection)]:
+            return connections
+        raise ErrorCode.CONNECTION_NOT_FOUND_BY_NAME.exception_with_parameters(
+            name, connector_type
+        )
 
     @validate_arguments
     def find_glossary_by_name(
