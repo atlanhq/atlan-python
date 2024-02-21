@@ -24,7 +24,6 @@ class View(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> View:
         validate_required_fields(
@@ -244,7 +243,6 @@ class View(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(cls, *, name: str, schema_qualified_name: str) -> View.Attributes:
             if not name:

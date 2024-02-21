@@ -20,7 +20,6 @@ class Connection(Asset, type_name="Connection"):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,

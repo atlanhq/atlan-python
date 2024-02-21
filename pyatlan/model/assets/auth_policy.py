@@ -25,7 +25,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     def __create(cls, *, name: str) -> AuthPolicy:
         validate_required_fields(["name"], [name])
         attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore
@@ -403,7 +402,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         def __create(cls, name: str) -> AuthPolicy.Attributes:
             validate_required_fields(["name"], [name])
             return AuthPolicy.Attributes(

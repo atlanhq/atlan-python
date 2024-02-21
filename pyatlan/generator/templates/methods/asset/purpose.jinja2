@@ -1,6 +1,5 @@
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> {{ entity_def.name }}:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
@@ -8,7 +7,6 @@
         return cls(attributes=attributes)
 
     @classmethod
-    # @validate_arguments()
     def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
         validate_required_fields(["name", "purpose_id", "policy_type", "actions"], [name, purpose_id, policy_type, actions])
         target_found = False
@@ -56,7 +54,6 @@
             )
 
     @classmethod
-    # @validate_arguments()
     def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
         validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore

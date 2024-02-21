@@ -25,7 +25,6 @@ class GCSBucket(GCS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
         validate_required_fields(
@@ -237,7 +236,6 @@ class GCSBucket(GCS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str

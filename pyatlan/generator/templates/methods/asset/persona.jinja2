@@ -1,6 +1,5 @@
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str) -> {{ entity_def.name }}:
         validate_required_fields(["name"], [name])
@@ -8,7 +7,6 @@
         return cls(attributes=attributes)
 
     @classmethod
-    # @validate_arguments()
     def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
@@ -26,7 +24,6 @@
         return policy
 
     @classmethod
-    # @validate_arguments()
     def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "resources"], [name, persona_id, policy_type, resources])
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
@@ -45,7 +42,6 @@
         return policy
 
     @classmethod
-    # @validate_arguments()
     def create_glossary_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaGlossaryAction], resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
@@ -62,7 +58,6 @@
         return policy
 
     @classmethod
-    # @validate_arguments()
     def create_domain_policy(cls, *, name: str, persona_id: str, actions: Set[PersonaDomainAction], resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "actions", "resources"], [name, persona_id, actions, resources])
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore

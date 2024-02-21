@@ -27,7 +27,6 @@ class Column(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
@@ -1314,7 +1313,6 @@ class Column(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int

@@ -19,7 +19,6 @@ class PresetChart(Preset):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, preset_dashboard_qualified_name: str) -> PresetChart:
         validate_required_fields(
@@ -120,7 +119,6 @@ class PresetChart(Preset):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, preset_dashboard_qualified_name: str

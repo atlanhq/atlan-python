@@ -37,7 +37,6 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         return values
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -252,7 +251,6 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

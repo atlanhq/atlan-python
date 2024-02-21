@@ -25,7 +25,6 @@ class MaterialisedView(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
         validate_required_fields(
@@ -295,7 +294,6 @@ class MaterialisedView(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, schema_qualified_name: str

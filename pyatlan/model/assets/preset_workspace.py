@@ -25,7 +25,6 @@ class PresetWorkspace(Preset):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
         validate_required_fields(
@@ -298,7 +297,6 @@ class PresetWorkspace(Preset):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str

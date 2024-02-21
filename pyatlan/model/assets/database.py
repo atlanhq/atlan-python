@@ -19,7 +19,6 @@ class Database(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> Database:
         validate_required_fields(
@@ -95,7 +94,6 @@ class Database(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, name: str, connection_qualified_name: str

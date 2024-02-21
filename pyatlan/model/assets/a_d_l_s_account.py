@@ -32,7 +32,6 @@ class ADLSAccount(ADLS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
         validate_required_fields(
@@ -314,7 +313,6 @@ class ADLSAccount(ADLS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str

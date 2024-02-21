@@ -23,7 +23,6 @@ class APISpec(API):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> APISpec:
         validate_required_fields(
@@ -239,7 +238,6 @@ class APISpec(API):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str

@@ -29,7 +29,6 @@ class Persona(AccessControl):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str) -> Persona:
         validate_required_fields(["name"], [name])
@@ -37,7 +36,6 @@ class Persona(AccessControl):
         return cls(attributes=attributes)
 
     @classmethod
-    # @validate_arguments()
     def create_metadata_policy(
         cls,
         *,
@@ -67,7 +65,6 @@ class Persona(AccessControl):
         return policy
 
     @classmethod
-    # @validate_arguments()
     def create_data_policy(
         cls,
         *,
@@ -97,7 +94,6 @@ class Persona(AccessControl):
         return policy
 
     @classmethod
-    # @validate_arguments()
     def create_glossary_policy(
         cls,
         *,
@@ -125,7 +121,6 @@ class Persona(AccessControl):
         return policy
 
     @classmethod
-    # @validate_arguments()
     def create_domain_policy(
         cls,
         *,
@@ -240,7 +235,6 @@ class Persona(AccessControl):
         role_id: Optional[str] = Field(default=None, description="")
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(cls, name: str) -> Persona.Attributes:
             if not name:

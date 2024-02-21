@@ -24,7 +24,6 @@ class PresetDataset(Preset):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, preset_dashboard_qualified_name: str
@@ -144,7 +143,6 @@ class PresetDataset(Preset):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, preset_dashboard_qualified_name: str

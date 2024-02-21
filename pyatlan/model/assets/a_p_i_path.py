@@ -25,7 +25,6 @@ class APIPath(API):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         validate_required_fields(
@@ -209,7 +208,6 @@ class APIPath(API):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, path_raw_uri: str, spec_qualified_name: str

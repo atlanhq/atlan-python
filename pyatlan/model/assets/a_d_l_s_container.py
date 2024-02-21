@@ -25,7 +25,6 @@ class ADLSContainer(ADLS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
         validate_required_fields(
@@ -240,7 +239,6 @@ class ADLSContainer(ADLS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, adls_account_qualified_name: str

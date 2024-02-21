@@ -19,7 +19,6 @@ class Schema(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, database_qualified_name: str) -> Schema:
         validate_required_fields(
@@ -271,7 +270,6 @@ class Schema(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, database_qualified_name: str

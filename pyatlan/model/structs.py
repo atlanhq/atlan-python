@@ -93,7 +93,6 @@ class BadgeCondition(AtlanObject):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     def create(
         cls,
         *,

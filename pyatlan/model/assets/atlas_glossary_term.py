@@ -34,7 +34,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         return values
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -513,7 +512,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

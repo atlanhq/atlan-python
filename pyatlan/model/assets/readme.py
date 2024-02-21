@@ -19,7 +19,6 @@ class Readme(Resource):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
@@ -97,7 +96,6 @@ class Readme(Resource):
         asset: Optional[Asset] = Field(default=None, description="")  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, asset: Asset, content: str, asset_name: Optional[str] = None

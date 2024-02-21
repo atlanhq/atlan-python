@@ -43,7 +43,6 @@ class S3Bucket(S3):
         ...
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
@@ -142,7 +141,6 @@ class S3Bucket(S3):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

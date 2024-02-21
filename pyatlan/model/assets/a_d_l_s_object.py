@@ -34,7 +34,6 @@ class ADLSObject(ADLS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -493,7 +492,6 @@ class ADLSObject(ADLS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, adls_container_qualified_name: str

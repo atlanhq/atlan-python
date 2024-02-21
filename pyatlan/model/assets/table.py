@@ -24,7 +24,6 @@ class Table(SQL):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> Table:
         validate_required_fields(
@@ -416,7 +415,6 @@ class Table(SQL):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
             if not name:

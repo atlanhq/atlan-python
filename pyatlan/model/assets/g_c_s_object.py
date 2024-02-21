@@ -25,7 +25,6 @@ class GCSObject(GCS):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
         validate_required_fields(
@@ -399,7 +398,6 @@ class GCSObject(GCS):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, gcs_bucket_qualified_name: str

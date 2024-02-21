@@ -27,7 +27,6 @@ class DataStudioAsset(DataStudio):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -308,7 +307,6 @@ class DataStudioAsset(DataStudio):
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

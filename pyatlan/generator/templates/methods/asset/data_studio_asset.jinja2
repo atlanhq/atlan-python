@@ -1,6 +1,5 @@
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str, data_studio_asset_type: GoogleDatastudioAssetType, gdsid: Optional[str] = None) -> {{ entity_def.name }}:
         validate_required_fields(

@@ -20,7 +20,6 @@ class Badge(Asset, type_name="Badge"):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -102,7 +101,6 @@ class Badge(Asset, type_name="Badge"):
         badge_metadata_attribute: Optional[str] = Field(default=None, description="")
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,

@@ -20,7 +20,6 @@ class DataDomain(DataMesh):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,

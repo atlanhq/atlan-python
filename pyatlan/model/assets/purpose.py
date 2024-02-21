@@ -28,7 +28,6 @@ class Purpose(AccessControl):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
@@ -36,7 +35,6 @@ class Purpose(AccessControl):
         return cls(attributes=attributes)
 
     @classmethod
-    # @validate_arguments()
     def create_metadata_policy(
         cls,
         *,
@@ -97,7 +95,6 @@ class Purpose(AccessControl):
             raise ValueError("No user or group specified for the policy.")
 
     @classmethod
-    # @validate_arguments()
     def create_data_policy(
         cls,
         *,
@@ -213,7 +210,6 @@ class Purpose(AccessControl):
         )
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, name: str, atlan_tags: List[AtlanTagName]

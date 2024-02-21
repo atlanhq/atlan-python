@@ -29,7 +29,6 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         return values
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
@@ -202,7 +201,6 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None

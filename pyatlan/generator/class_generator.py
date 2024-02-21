@@ -64,7 +64,7 @@ PRIMITIVE_MAPPINGS = {
     "string,string": "str, str",
     "string,long": "str, int",
 }
-ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
+ARRAY_REPLACEMENTS = [("array<string>", "Set{string}")]
 ADDITIONAL_IMPORTS = {
     "datetime": "from datetime import datetime",
     "CertificateStatus": "from .enums import CertificateStatus",
@@ -237,31 +237,6 @@ class AssetInfo:
             return ""
         super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
         return f"from .{super_type.module_name} import {super_type.name}"
-
-    @property
-    def get_update_forward_refs(self):
-        import_set = set()
-        asset_name = self.name
-        current_name = self.name
-        while current_name != "Referenceable" and self.hierarchy_graph.predecessors(
-            current_name
-        ):
-            parent_asset_name = next(
-                iter(self.hierarchy_graph.predecessors(current_name))
-            )
-            if parent_asset_name == "Referenceable":
-                break
-            parent_asset = self.asset_info_by_name[
-                parent_asset_name
-            ].required_asset_infos
-
-            for parent_module in parent_asset:
-                if asset_name != parent_module.name:
-                    import_set.add(parent_module.name)
-
-            current_name = parent_asset_name
-
-        return {key: key for key in import_set}
 
     @property
     def imports_for_referenced_assets(self):

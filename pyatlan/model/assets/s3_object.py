@@ -25,7 +25,6 @@ class S3Object(S3):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls,
@@ -53,7 +52,6 @@ class S3Object(S3):
         return cls(attributes=attributes)
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create_with_prefix(
         cls,
@@ -301,7 +299,6 @@ class S3Object(S3):
         bucket: Optional[S3Bucket] = Field(default=None, description="")  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls,
@@ -342,7 +339,6 @@ class S3Object(S3):
             )
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create_with_prefix(
             cls,

@@ -20,7 +20,6 @@ class Link(Resource):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
@@ -100,7 +99,6 @@ class Link(Resource):
         asset: Optional[Asset] = Field(default=None, description="")  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, asset: Asset, name: str, link: str, idempotent: bool

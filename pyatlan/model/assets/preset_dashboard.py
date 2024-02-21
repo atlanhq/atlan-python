@@ -25,7 +25,6 @@ class PresetDashboard(Preset):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, preset_workspace_qualified_name: str
@@ -279,7 +278,6 @@ class PresetDashboard(Preset):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, preset_workspace_qualified_name: str

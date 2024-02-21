@@ -19,7 +19,6 @@ class File(Resource):
     """Description"""
 
     @classmethod
-    # @validate_arguments()
     @init_guid
     def create(
         cls, *, name: str, connection_qualified_name: str, file_type: FileType
@@ -103,7 +102,6 @@ class File(Resource):
         )  # relationship
 
         @classmethod
-        # @validate_arguments()
         @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str, file_type: FileType
