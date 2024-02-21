@@ -26,22 +26,10 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """Description"""
 
     @classmethod
-    def creator(cls, *, name: str) -> AuthPolicy:
+    def __create(cls, *, name: str) -> AuthPolicy:
         validate_required_fields(["name"], [name])
-        attributes = AuthPolicy.Attributes.create(name=name)
+        attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore[attr-defined]
         return cls(attributes=attributes)
-
-    @classmethod
-    def create(cls, *, name: str) -> AuthPolicy:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.creator(name=name)
 
     @classmethod
     def updater(
@@ -435,7 +423,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         )  # relationship
 
         @classmethod
-        def create(cls, name: str) -> AuthPolicy.Attributes:
+        def __create(cls, name: str) -> AuthPolicy.Attributes:
             validate_required_fields(["name"], [name])
             return AuthPolicy.Attributes(
                 qualified_name=name, name=name, display_name=""

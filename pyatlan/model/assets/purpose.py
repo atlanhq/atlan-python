@@ -65,7 +65,7 @@ class Purpose(AccessControl):
             [name, purpose_id, policy_type, actions],
         )
         target_found = False
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -122,7 +122,7 @@ class Purpose(AccessControl):
         validate_required_fields(
             ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type

@@ -69,8 +69,8 @@ class Asset(Referenceable):
     @init_guid
     def creator(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
         raise NotImplementedError(
-            "Creator has not been implemented for this class. Please submit an enhancement"
-            "request if you need it implemented."
+            "Creator has not been implemented for this class. "
+            "Please submit an enhancement request if you need it implemented."
         )
 
     @classmethod

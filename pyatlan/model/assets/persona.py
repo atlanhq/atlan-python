@@ -64,7 +64,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "policy_type", "actions", "resources"],
             [name, persona_id, policy_type, actions, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -92,7 +92,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "policy_type", "resources"],
             [name, persona_id, policy_type, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -121,7 +121,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "policy_type", "actions", "resources"],
             [name, persona_id, policy_type, actions, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -147,7 +147,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "actions", "resources"],
             [name, persona_id, actions, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = AuthPolicyType.ALLOW
