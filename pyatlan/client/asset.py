@@ -274,15 +274,13 @@ class AssetClient:
             + Term.with_type_name("PERSONA")
             + Term.with_name(name)
         )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
+        return self._search_for_asset_with_name(
+            query=query,
+            name=name,
+            asset_type=Persona,
             attributes=attributes,
+            allow_multiple=True,
         )
-        results = self.search(search_request)
-        if personas := [asset for asset in results if isinstance(asset, Persona)]:
-            return personas
-        raise ErrorCode.PERSONA_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     @validate_arguments
     def find_purposes_by_name(
@@ -305,15 +303,13 @@ class AssetClient:
             + Term.with_type_name("PURPOSE")
             + Term.with_name(name)
         )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
+        return self._search_for_asset_with_name(
+            query=query,
+            name=name,
+            asset_type=Purpose,
             attributes=attributes,
+            allow_multiple=True,
         )
-        results = self.search(search_request)
-        if purposes := [asset for asset in results if isinstance(asset, Purpose)]:
-            return purposes
-        raise ErrorCode.PURPOSE_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     @validate_arguments
     def get_by_qualified_name(
@@ -1356,16 +1352,12 @@ class AssetClient:
             + Term.with_name(name)
             + Term(field="connectorName", value=connector_type.value)
         )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
+        return self._search_for_asset_with_name(
+            query=query,
+            name=name,
+            asset_type=Connection,
             attributes=attributes,
-        )
-        results = self.search(search_request)
-        if connections := [asset for asset in results if isinstance(asset, Connection)]:
-            return connections
-        raise ErrorCode.CONNECTION_NOT_FOUND_BY_NAME.exception_with_parameters(
-            name, connector_type
+            allow_multiple=True,
         )
 
     @validate_arguments
@@ -1462,12 +1454,18 @@ class AssetClient:
             attributes=attributes,
         )
         results = self.search(search_request)
-        if results.count > 0 and (
-            assets := [
-                asset
-                for asset in results.current_page()
-                if isinstance(asset, asset_type)
-            ]
+        if (
+            results
+            and results.count > 0
+            and (
+                # Check for paginated results first;
+                # if not paginated, iterate over the results
+                assets := [
+                    asset
+                    for asset in (results.current_page() or results)
+                    if isinstance(asset, asset_type)
+                ]
+            )
         ):
             if not allow_multiple and len(assets) > 1:
                 LOGGER.warning(

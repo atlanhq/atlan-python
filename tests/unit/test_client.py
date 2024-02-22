@@ -482,7 +482,7 @@ def test_find_personas_by_name_when_none_found_raises_not_found_error(mock_searc
     client = AtlanClient()
     with pytest.raises(
         NotFoundError,
-        match=f"Unable to find a persona with the name: {PERSONA_NAME}.",
+        match=f"The Persona asset could not be found by name: {PERSONA_NAME}.",
     ):
         client.asset.find_personas_by_name(name=PERSONA_NAME)
 
@@ -494,7 +494,7 @@ def test_find_purposes_by_name_when_none_found_raises_not_found_error(mock_searc
     client = AtlanClient()
     with pytest.raises(
         NotFoundError,
-        match=f"Unable to find a purpose with the name: {PURPOSE_NAME}.",
+        match=f"The Purpose asset could not be found by name: {PURPOSE_NAME}.",
     ):
         client.asset.find_purposes_by_name(name=PURPOSE_NAME)
 
@@ -506,7 +506,7 @@ def test_find_connections_by_name_when_none_found_raises_not_found_error(mock_se
     client = AtlanClient()
     with pytest.raises(
         NotFoundError,
-        match=f"Unable to find a connection with the name {CONNECTION_NAME} of type: {CONNECTOR_TYPE}.",
+        match=f"The Connection asset could not be found by name: {CONNECTION_NAME}.",
     ):
         client.asset.find_connections_by_name(
             name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE
