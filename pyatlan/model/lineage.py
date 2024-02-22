@@ -335,7 +335,9 @@ class FluentLineage:
         size: StrictInt = 10,
         exclude_meanings: StrictBool = True,
         exclude_atlan_tags: StrictBool = True,
-        includes_on_results: Optional[Union[List[AtlanField], AtlanField]] = None,
+        includes_on_results: Optional[
+            Union[List[str], str, List[AtlanField], AtlanField]
+        ] = None,
         includes_in_results: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         includes_condition: FilterList.Condition = FilterList.Condition.AND,
         where_assets: Optional[Union[List[LineageFilter], LineageFilter]] = None,
@@ -370,8 +372,9 @@ class FluentLineage:
         self._direction: LineageDirection = direction
         self._exclude_atlan_tags: bool = exclude_atlan_tags
         self._exclude_meanings: bool = exclude_meanings
-
-        self._includes_on_results: List[AtlanField] = self._to_list(includes_on_results)
+        self._includes_on_results: List[Union[str, AtlanField]] = self._to_list(
+            includes_on_results
+        )
         self._includes_in_results: List[LineageFilter] = self._to_list(
             includes_in_results
         )
@@ -443,11 +446,11 @@ class FluentLineage:
         clone._exclude_meanings = exclude_meanings
         return clone
 
-    def include_on_results(self, field: AtlanField) -> "FluentLineage":
+    def include_on_results(self, field: Union[str, AtlanField]) -> "FluentLineage":
         """Adds the include_on_results to traverse the lineage.
         :param field: attributes to retrieve for each asset in the lineage results
         :returns: the FluentLineage with this include_on_results criterion added"""
-        validate_type(name="field", _type=AtlanField, value=field)
+        validate_type(name="field", _type=(str, AtlanField), value=field)
         clone = self._clone()
         clone._includes_on_results.append(field)
         return clone
@@ -567,7 +570,8 @@ class FluentLineage:
             request.entity_filters = FilterList(condition=self._includes_condition, criteria=criteria)  # type: ignore
         if self._includes_on_results:
             request.attributes = [
-                field.atlan_field_name for field in self._includes_on_results
+                field.atlan_field_name if isinstance(field, AtlanField) else field
+                for field in self._includes_on_results
             ]
         if self._size:
             request.size = self._size

@@ -235,6 +235,10 @@ class AssetClient:
         )
         if "entities" in raw_json:
             try:
+                for entity in raw_json["entities"]:
+                    unflatten_custom_metadata_for_entity(
+                        entity=entity, attributes=lineage_request.attributes
+                    )
                 assets = parse_obj_as(List[Asset], raw_json["entities"])
                 has_more = parse_obj_as(bool, raw_json["hasMore"])
             except ValidationError as err:

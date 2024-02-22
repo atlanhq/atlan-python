@@ -299,23 +299,31 @@ def is_comparable_type(attribute_type: str, to: ComparisonCategory) -> bool:
     return to == ComparisonCategory.STRING
 
 
-def validate_type(name: str, _type: type, value):
+def validate_type(name: str, _type, value):
     """
     Validate that the given value is of the specified type.
 
-    :param name: the name of the variable to be used in error message
-    :_type: the type of the variable to be validated
-    :value: the value to be validated that it is of the specified type
+    :param name: the name of the variable to be used in the error message
+    :param _type: the type of the variable to be validated
+    :param value: the value to be validated that it is of the specified type
 
     """
     if _type is int:
         if isinstance(value, _type) and not isinstance(value, bool):
             return
+    elif isinstance(_type, tuple):
+        if any(isinstance(value, t) for t in _type):
+            return
     elif isinstance(value, _type):
         return
-    raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-        name, _type.__name__
+
+    type_name = (
+        ", ".join(t.__name__ for t in _type)
+        if isinstance(_type, tuple)
+        else _type.__name__
     )
+
+    raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(name, type_name)
 
 
 def move_struct(data):

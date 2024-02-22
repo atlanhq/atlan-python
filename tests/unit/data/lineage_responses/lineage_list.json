@@ -1,0 +1,38 @@
+{
+    "entities": [
+      {
+        "typeName": "View",
+        "attributes": {
+          "qualifiedName": "test-qn",
+          "testcm1.testcm2": "test-cm-value",
+          "name": "test-name"
+        },
+        "guid": "test-guid",
+        "status": "ACTIVE",
+        "displayText": "test-display-text",
+        "classificationNames": [],
+        "meaningNames": [],
+        "meanings": [],
+        "isIncomplete": false,
+        "labels": [],
+        "createdBy": "service-account-apikey-1234",
+        "updatedBy": "service-account-apikey-1234",
+        "createTime": 1708145336284,
+        "updateTime": 1708146440004
+      }
+    ],
+    "hasMore": false,
+    "entityCount": 1,
+    "searchParameters": {
+      "guid": "test-guid",
+      "size": 10,
+      "from": 0,
+      "depth": 1,
+      "direction": "INPUT",
+      "attributes": [
+        "testcm1.testcm2"
+      ],
+      "excludeMeanings": false,
+      "excludeClassifications": false
+    }
+}
