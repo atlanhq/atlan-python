@@ -1,7 +1,7 @@
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
     ) -> Column:
         return Column(
@@ -11,4 +11,24 @@
                 parent_type=parent_type,
                 order=order,
             )
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            parent_qualified_name=parent_qualified_name,
+            parent_type=parent_type,
+            order=order,
         )

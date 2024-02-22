@@ -71,7 +71,11 @@ ADDITIONAL_IMPORTS = {
     "SourceCostUnitType": "from .enums import SourceCostUnitType",
     "PopularityInsights": "from .structs import PopularityInsights",
 }
-PARENT = Path(__file__).parent
+# The resolve() method ensures
+# the retrieval of the absolute path for the file,
+# helping to prevent inconsistencies
+# across Python versions (e.g: 3.8 and 3.9).
+PARENT = Path(__file__).resolve().parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
 MODEL_DIR = PARENT.parent / "model"
 DOCS_DIR = PARENT.parent / "documentation"

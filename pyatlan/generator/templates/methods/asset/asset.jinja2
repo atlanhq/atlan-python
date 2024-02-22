@@ -23,12 +23,27 @@
 
     @classmethod
     @init_guid
-    def create(cls:Type[SelfAsset], *args, **kwargs)->SelfAsset:
-        raise NotImplementedError("Create has not been implemented for this class. Please submit an enhancement"
-                                  "request if you need it implemented.")
+    def creator(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
+        raise NotImplementedError(
+            "Creator has not been implemented for this class. "
+            "Please submit an enhancement request if you need it implemented."
+        )
 
     @classmethod
-    def create_for_modification(
+    @init_guid
+    def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(*args, **kwargs)
+
+    @classmethod
+    def updater(
         cls: type[SelfAsset], qualified_name: str = "", name: str = ""
     ) -> SelfAsset:
         if cls.__name__ == "Asset":
@@ -38,6 +53,20 @@
             [name, qualified_name],
         )
         return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset], qualified_name: str = "", name: str = ""
+    ) -> SelfAsset:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(qualified_name=qualified_name, name=name)
 
     @classmethod
     def ref_by_guid(

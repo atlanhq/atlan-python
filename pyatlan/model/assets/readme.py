@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, List, Optional
 from urllib.parse import quote, unquote
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -20,7 +21,7 @@ class Readme(Resource):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
     ) -> Readme:
         return Readme(
@@ -28,6 +29,21 @@ class Readme(Resource):
                 asset=asset, content=content, asset_name=asset_name
             )
         )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(asset=asset, content=content, asset_name=asset_name)
 
     @property
     def description(self) -> Optional[str]:

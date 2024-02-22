@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -27,8 +28,23 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @classmethod
     def __create(cls, *, name: str) -> AuthPolicy:
         validate_required_fields(["name"], [name])
-        attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore
+        attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore[attr-defined]
         return cls(attributes=attributes)
+
+    @classmethod
+    def updater(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = ""
+        """
+        This method is not available for AuthPolicy.
+        Please retrieve the existing policy and then update it in its entirety.
+        """,
+    ) -> SelfAsset:
+        raise NotImplementedError(
+            "This method is not available for AuthPolicy. "
+            "Please retrieve the existing policy and then update it in its entirety."
+        )
 
     @classmethod
     def create_for_modification(
@@ -36,14 +52,19 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         qualified_name: str = "",
         name: str = ""
         """
-        This method is not available for AuthPolicy. Please retrieve the existing policy and then update it in its
-        entirety.
+        This method is not available for AuthPolicy.
+        Please retrieve the existing policy and then update it in its entirety.
         """,
     ) -> SelfAsset:
-        raise NotImplementedError(
-            "This method is not available for AuthPolicy. Please retrieve the existing policy"
-            " and then update it in its entirety."
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
         )
+        return cls.updater(qualified_name=qualified_name, name=name)
 
     type_name: str = Field(default="AuthPolicy", allow_mutation=False)
 

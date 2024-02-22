@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -20,7 +21,7 @@ class File(Resource):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls, *, name: str, connection_qualified_name: str, file_type: FileType
     ) -> File:
         return File(
@@ -29,6 +30,25 @@ class File(Resource):
                 connection_qualified_name=connection_qualified_name,
                 file_type=file_type,
             )
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, connection_qualified_name: str, file_type: FileType
+    ) -> File:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            file_type=file_type,
         )
 
     type_name: str = Field(default="File", allow_mutation=False)

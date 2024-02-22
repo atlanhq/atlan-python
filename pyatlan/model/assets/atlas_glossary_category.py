@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, Dict, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
@@ -38,7 +39,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: StrictStr,
@@ -52,6 +53,25 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
         )
 
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        anchor: AtlasGlossary,
+        parent_category: Optional[AtlasGlossaryCategory] = None,
+    ) -> AtlasGlossaryCategory:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(name=name, anchor=anchor, parent_category=parent_category)
+
     def trim_to_required(self) -> AtlasGlossaryCategory:
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
@@ -62,7 +82,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )
 
     @classmethod
-    def create_for_modification(
+    def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
@@ -78,6 +98,25 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             attributes=cls.Attributes(
                 qualified_name=qualified_name, name=name, anchor=glossary
             )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls,
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> AtlasGlossaryCategory:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name, name=name, glossary_guid=glossary_guid
         )
 
     ANCHOR: ClassVar[KeywordField] = KeywordField("anchor", "__glossary")

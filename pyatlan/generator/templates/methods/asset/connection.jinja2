@@ -1,7 +1,7 @@
 
     @classmethod
     @init_guid
-    def create(
+    def creator(
         cls,
         *,
         name: str,
@@ -9,7 +9,7 @@
         admin_users: Optional[List[str]] = None,
         admin_groups: Optional[List[str]] = None,
         admin_roles: Optional[List[str]] = None,
-    )->{{ entity_def.name }}:
+    ) -> Connection:
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
@@ -25,3 +25,30 @@
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
         return cls(attributes=attr)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connector_type: AtlanConnectorType,
+        admin_users: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
+    ) -> Connection:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connector_type=connector_type,
+            admin_users=admin_users,
+            admin_groups=admin_groups,
+            admin_roles=admin_roles,
+        )

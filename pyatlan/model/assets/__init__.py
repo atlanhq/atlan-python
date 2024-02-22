@@ -84,6 +84,7 @@ from .function import Function
 from .table_partition import TablePartition
 from .column import Column
 from .snowflake_stream import SnowflakeStream
+from .calculation_view import CalculationView
 from .database import Database
 from .procedure import Procedure
 from .snowflake_tag import SnowflakeTag
@@ -300,6 +301,7 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)

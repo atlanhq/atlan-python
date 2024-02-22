@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, overload
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -17,6 +18,46 @@ from .s3 import S3
 
 class S3Bucket(S3):
     """Description"""
+
+    @overload
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+    ) -> S3Bucket:
+        ...
+
+    @overload
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: Optional[str] = None,
+    ) -> S3Bucket:
+        ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+        return cls(attributes=attributes)
 
     @overload
     @classmethod
@@ -47,16 +88,19 @@ class S3Bucket(S3):
     def create(
         cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
     ) -> S3Bucket:
-        validate_required_fields(
-            ["name", "connection_qualified_name"],
-            [name, connection_qualified_name],
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
         )
-        attributes = S3Bucket.Attributes.create(
+        return cls.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
         )
-        return cls(attributes=attributes)
 
     type_name: str = Field(default="S3Bucket", allow_mutation=False)
 

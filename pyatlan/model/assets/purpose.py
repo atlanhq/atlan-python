@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -29,10 +30,23 @@ class Purpose(AccessControl):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
+    def creator(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
         attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(name=name, atlan_tags=atlan_tags)
 
     @classmethod
     def create_metadata_policy(
@@ -51,7 +65,7 @@ class Purpose(AccessControl):
             [name, purpose_id, policy_type, actions],
         )
         target_found = False
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -108,7 +122,7 @@ class Purpose(AccessControl):
         validate_required_fields(
             ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
         )
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -152,7 +166,7 @@ class Purpose(AccessControl):
             raise ValueError("No user or group specified for the policy.")
 
     @classmethod
-    def create_for_modification(
+    def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",
         name: str = "",
@@ -168,6 +182,25 @@ class Purpose(AccessControl):
                 name=name,
                 is_access_control_enabled=is_enabled,
             )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls,
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> Purpose:
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name, name=name, is_enabled=is_enabled
         )
 
     type_name: str = Field(default="Purpose", allow_mutation=False)

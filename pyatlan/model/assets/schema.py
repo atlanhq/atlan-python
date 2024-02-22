@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -20,7 +21,7 @@ class Schema(SQL):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
+    def creator(cls, *, name: str, database_qualified_name: str) -> Schema:
         validate_required_fields(
             ["name", "database_qualified_name"], [name, database_qualified_name]
         )
@@ -28,6 +29,22 @@ class Schema(SQL):
             name=name, database_qualified_name=database_qualified_name
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            database_qualified_name=database_qualified_name,
+        )
 
     type_name: str = Field(default="Schema", allow_mutation=False)
 
@@ -93,6 +110,10 @@ class Schema(SQL):
     """
     TBC
     """
+    CALCULATION_VIEWS: ClassVar[RelationField] = RelationField("calculationViews")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "table_count",
@@ -107,6 +128,7 @@ class Schema(SQL):
         "snowflake_dynamic_tables",
         "snowflake_pipes",
         "snowflake_streams",
+        "calculation_views",
     ]
 
     @property
@@ -235,6 +257,16 @@ class Schema(SQL):
             self.attributes = self.Attributes()
         self.attributes.snowflake_streams = snowflake_streams
 
+    @property
+    def calculation_views(self) -> Optional[List[CalculationView]]:
+        return None if self.attributes is None else self.attributes.calculation_views
+
+    @calculation_views.setter
+    def calculation_views(self, calculation_views: Optional[List[CalculationView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_views = calculation_views
+
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(default=None, description="")
         views_count: Optional[int] = Field(default=None, description="")
@@ -266,6 +298,9 @@ class Schema(SQL):
             default=None, description=""
         )  # relationship
         snowflake_streams: Optional[List[SnowflakeStream]] = Field(
+            default=None, description=""
+        )  # relationship
+        calculation_views: Optional[List[CalculationView]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -303,6 +338,7 @@ class Schema(SQL):
     )
 
 
+from .calculation_view import CalculationView  # noqa
 from .database import Database  # noqa
 from .function import Function  # noqa
 from .materialised_view import MaterialisedView  # noqa
