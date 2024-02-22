@@ -34,10 +34,14 @@ from tests.unit.constants import (
     TEST_USER_CLIENT_METHODS,
 )
 from tests.unit.model.constants import (
+    CONNECTION_NAME,
+    CONNECTOR_TYPE,
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
     GLOSSARY_QUALIFIED_NAME,
     GLOSSARY_TERM_NAME,
+    PERSONA_NAME,
+    PURPOSE_NAME,
 )
 
 GLOSSARY = AtlasGlossary.create(name=GLOSSARY_NAME)
@@ -469,6 +473,44 @@ def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_searc
     ):
         client.asset.find_glossary_by_name(GLOSSARY_NAME)
     mock_search.return_value.current_page.assert_called_once()
+
+
+@patch.object(AssetClient, "search")
+def test_find_personas_by_name_when_none_found_raises_not_found_error(mock_search):
+    mock_search.return_value.count = 0
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The Persona asset could not be found by name: {PERSONA_NAME}.",
+    ):
+        client.asset.find_personas_by_name(name=PERSONA_NAME)
+
+
+@patch.object(AssetClient, "search")
+def test_find_purposes_by_name_when_none_found_raises_not_found_error(mock_search):
+    mock_search.return_value.count = 0
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The Purpose asset could not be found by name: {PURPOSE_NAME}.",
+    ):
+        client.asset.find_purposes_by_name(name=PURPOSE_NAME)
+
+
+@patch.object(AssetClient, "search")
+def test_find_connections_by_name_when_none_found_raises_not_found_error(mock_search):
+    mock_search.return_value.count = 0
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The Connection asset could not be found by name: {CONNECTION_NAME}.",
+    ):
+        client.asset.find_connections_by_name(
+            name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE
+        )
 
 
 @patch.object(AssetClient, "search")

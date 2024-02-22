@@ -79,6 +79,8 @@ PRESET_DATASET_NAME = "ps-dataset"
 PRESET_DATASET_QUALIFIED_NAME = (
     f"{PRESET_DASHBOARD_QUALIFIED_NAME}/{PRESET_DATASET_NAME}"
 )
+PERSONA_NAME = "my-persona"
+PURPOSE_NAME = "my-purpose"
 DATA_DOMAIN_NAME = "data-domain"
 DATA_DOMAIN_QUALIFIED_NAME = "default/domain/dataDomain"
 DATA_SUB_DOMAIN_NAME = "data-sub-domain"
