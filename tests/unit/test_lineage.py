@@ -737,7 +737,7 @@ class TestFluentLineage:
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"2 validation errors for Init\nincludes_on_results",
+                r"4 validation errors for Init\nincludes_on_results",
             ),
             (
                 GOOD_GUID,
@@ -826,7 +826,7 @@ class TestFluentLineage:
             ),
         ],
     )
-    def test_reqeust(
+    def test_request(
         self,
         starting_guid,
         depth,
@@ -957,7 +957,7 @@ class TestFluentLineage:
             (
                 "include_on_results",
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be AtlanField",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be str, AtlanField",
             ),
             (
                 "include_in_results",
