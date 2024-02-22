@@ -1,3 +1,27 @@
+## 2.0.0 (February 22, 2024)
+
+### New features
+
+- Migrates to Pydantic 2.6
+- Allows use of Python 3.8 as a minimum version supported by the SDK
+- Adds file connector as a new connector type
+- Adds Essbase connector as a new connector type
+- Allows fluent lineage conditions to be configured for combining (AND) or any (OR)
+- Adds an option to rerun workflows idempotently
+
+### Breaking changes
+
+Since this is a new major release, there are some breaking changes:
+
+- The move to Pydantic 2.6 means we have a dependency on a different major release of this library than previously. We do not believe it will impact your use of any of our methods; however, it could impact you if you rely on Pydantic v1 elsewhere in your codebase and are not yet ready to move to Pydantic v2 yourself.
+- The `find_personas_by_name`, `find_purposes_by_name` and `find_connections_by_name` methods previously returned an empty list if no requested object were found, despite being documented as throwing a `NotFoundError` in such cases. We have now made this consistent with the other `find_.._by_name` methods, so if a requested object does not found it will now throw a `NotFoundError`.
+- To create consistency across our SDKs, we are also introducing new asset creation and modification methods. This is to reserve the use of verbs in a method name for server-side interactions (like `save`, `find`, etc) and instead use non-verbs to indicate that you are creating an instance of an object purely in-memory — but that it still needs to be acted upon (`save`d) in order to be persisted to Atlan. These offer identical functionality to the prior methods, and we will keep the prior methods around until at least the next major release but simply mark them as deprecated. (So no immediate change to any existing code should be needed.)
+
+    | Old method | New method |
+    |---|---|
+    | `create()` | `creator()` |
+    | `create_for_modification()` | `updater()` |
+
 ## 1.9.4 (February 13, 2024)
 
 ### New features
