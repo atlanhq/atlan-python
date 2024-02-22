@@ -9,6 +9,7 @@ from pydantic.v1 import ValidationError
 
 from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.common import ApiCaller
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.errors import AtlanError, ErrorCode, InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
@@ -18,7 +19,13 @@ from pyatlan.model.assets import (
     Table,
 )
 from pyatlan.model.core import Announcement, BulkRequest
-from pyatlan.model.enums import AnnouncementType, CertificateStatus, SaveSemantic
+from pyatlan.model.enums import (
+    AnnouncementType,
+    CertificateStatus,
+    LineageDirection,
+    SaveSemantic,
+)
+from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
@@ -55,10 +62,14 @@ LOG_IP_ADDRESS = "ipAddress"
 LOG_USERNAME = "userName"
 SEARCH_PARAMS = "searchParameters"
 SEARCH_COUNT = "approximateCount"
-SEARCH_RESPONSES_DIR = Path(__file__).parent / "data" / "search_log_responses"
+TEST_DATA_DIR = Path(__file__).parent / "data"
+SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_log_responses"
 SL_MOST_RECENT_VIEWERS_JSON = "sl_most_recent_viewers.json"
 SL_MOST_VIEWED_ASSETS_JSON = "sl_most_viewed_assets.json"
 SL_DETAILED_LOG_ENTRIES_JSON = "sl_detailed_log_entries.json"
+CM_NAME = "testcm1.testcm2"
+LINEAGE_LIST_JSON = "lineage_list.json"
+LINEAGE_RESPONSES_DIR = TEST_DATA_DIR / "lineage_responses"
 TEST_ANNOUNCEMENT = Announcement(
     announcement_title="test-title",
     announcement_message="test-msg",
@@ -86,24 +97,40 @@ def mock_asset_client():
     return Mock(AssetClient)
 
 
-def load_json(filename):
-    with (SEARCH_RESPONSES_DIR / filename).open() as input_file:
+@pytest.fixture(scope="module")
+def mock_api_caller():
+    return Mock(spec=ApiCaller)
+
+
+@pytest.fixture()
+def mock_cm_cache():
+    with patch("pyatlan.model.custom_metadata.CustomMetadataCache") as cache:
+        yield cache
+
+
+def load_json(respones_dir, filename):
+    with (respones_dir / filename).open() as input_file:
         return load(input_file)
 
 
 @pytest.fixture()
 def sl_most_recent_viewers_json():
-    return load_json(SL_MOST_RECENT_VIEWERS_JSON)
+    return load_json(SEARCH_RESPONSES_DIR, SL_MOST_RECENT_VIEWERS_JSON)
 
 
 @pytest.fixture()
 def sl_most_viewed_assets_json():
-    return load_json(SL_MOST_VIEWED_ASSETS_JSON)
+    return load_json(SEARCH_RESPONSES_DIR, SL_MOST_VIEWED_ASSETS_JSON)
 
 
 @pytest.fixture()
 def sl_detailed_log_entries_json():
-    return load_json(SL_DETAILED_LOG_ENTRIES_JSON)
+    return load_json(SEARCH_RESPONSES_DIR, SL_DETAILED_LOG_ENTRIES_JSON)
+
+
+@pytest.fixture()
+def lineage_list_json():
+    return load_json(LINEAGE_RESPONSES_DIR, LINEAGE_LIST_JSON)
 
 
 @pytest.mark.parametrize(
@@ -1075,6 +1102,29 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     assert log_entries[0].request_dsl_text
     assert log_entries[0].request_attributes is None
     assert log_entries[0].request_relation_attributes
+
+
+def test_asset_get_lineage_list_response_with_custom_metadata(
+    mock_api_caller, mock_cm_cache, lineage_list_json
+):
+    client = AssetClient(mock_api_caller)
+    mock_cm_cache.get_name_for_id.return_value = CM_NAME
+    mock_api_caller._call_api.return_value = lineage_list_json
+
+    lineage_request = LineageListRequest(
+        guid="test-guid", depth=1, direction=LineageDirection.UPSTREAM
+    )
+    lineage_request.attributes = [CM_NAME]
+    lineage_response = client.get_lineage_list(lineage_request=lineage_request)
+    asset = next(iter(lineage_response))
+
+    assert asset
+    assert asset.type_name == "View"
+    assert asset.guid == "test-guid"
+    assert asset.qualified_name == "test-qn"
+    assert asset.attributes
+    assert asset.business_attributes
+    assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
 
 
 @pytest.mark.parametrize(

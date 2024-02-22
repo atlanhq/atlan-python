@@ -37,22 +37,21 @@ from pyatlan.model.lineage import (
 )
 from pyatlan.model.typedef import AttributeDef
 
-BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
-
-DATA_DIR = Path(__file__).parent / "data"
-BASE_GUID = "75474eab-3105-4ef9-9f84-709e386a7d3e"
 TODAY = date.today()
+BASE_GUID = "75474eab-3105-4ef9-9f84-709e386a7d3e"
+BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
+LINEAGE_RESPONSES_DIR = Path(__file__).parent / "data" / "lineage_responses"
 
 
 @pytest.fixture(scope="session")
-def lineage_response_json():
-    with (DATA_DIR / "lineage_response.json").open() as input_file:
+def lineage_json():
+    with (LINEAGE_RESPONSES_DIR / "lineage.json").open() as input_file:
         return json.load(input_file)
 
 
 @pytest.fixture(scope="session")
-def lineage_response(lineage_response_json):
-    return LineageResponse(**lineage_response_json)
+def lineage_response(lineage_json):
+    return LineageResponse(**lineage_json)
 
 
 @pytest.fixture(scope="session")
