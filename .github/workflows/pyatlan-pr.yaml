@@ -79,4 +79,6 @@ jobs:
           ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
           MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           MARK_BASE_URL: https://mark.atlan.com
-        run: pytest ${{ matrix.test_file }}
+        # Run the integration test file using `pytest-timer` plugin
+        # to display only the durations of the 10 slowest tests
+        run: pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10
