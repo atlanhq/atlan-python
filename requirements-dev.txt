@@ -4,6 +4,8 @@ black==23.7.0
 types-requests==2.31.0.2
 pytest==7.4.0
 pytest-order==1.1.0
+pytest-timer[termcolor]==1.0.0
+pytest-sugar==1.0.0
 retry==0.9.2
 pre-commit==2.20.0
 deepdiff==6.2.1
