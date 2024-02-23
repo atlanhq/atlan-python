@@ -37,7 +37,7 @@ jobs:
           MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           MARK_BASE_URL: https://mark.atlan.com
         # Run the integration test suite using the `pytest-timer` plugin
-        # to display only the durations of the 25 slowest tests
+        # to display only the durations of the 25 slowest tests with `pytest-sugar`
         run: |
-          pytest tests/unit
-          pytest tests/integration --ignore tests/integration/data_mesh_test.py -p name_of_plugin --timer-top-n 25
+          pytest tests/unit --force-sugar
+          pytest tests/integration --ignore tests/integration/data_mesh_test.py -p name_of_plugin --timer-top-n 25 --force-sugar
