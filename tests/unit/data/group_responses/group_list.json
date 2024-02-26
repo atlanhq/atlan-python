@@ -1,0 +1,102 @@
+{
+    "totalRecord": 2,
+    "filterRecord": 2,
+    "records": [
+      {
+        "alias": "Admins",
+        "attributes": {
+          "alias": [
+            "Admins"
+          ],
+          "createdAt": [
+            "1708026540827"
+          ],
+          "createdBy": [
+            "service-account-apikey-123"
+          ],
+          "isDefault": [
+            "true"
+          ],
+          "updatedAt": [
+            "1708086335440"
+          ],
+          "updatedBy": [
+            "chris"
+          ]
+        },
+        "id": "test-guid-1",
+        "name": "admins",
+        "path": "/admins",
+        "personas": [
+          {
+            "id": "test-guid-2",
+            "name": "Business Definitions",
+            "displayName": "Business Definitions",
+            "qualifiedName": "default/f6g3UE0c4WGBRTqCybUB7d"
+          },
+          {
+            "id": "test-guid-3",
+            "name": "Data Assets",
+            "displayName": "Data Assets",
+            "qualifiedName": "default/LzgnFMh4DYW1lVTJkBYFSZ"
+          }
+        ],
+        "purposes": [
+          {
+            "guid": "test-guid-4",
+            "name": "Known Issues",
+            "qualifiedName": "default/SF2kGcgjvRYd2bU1ph6M06"
+          }
+        ],
+        "userCount": 3
+      },
+      {
+        "alias": "Test Admins",
+        "attributes": {
+          "alias": [
+            "Test Admins"
+          ],
+          "createdAt": [
+            "1708026540827"
+          ],
+          "createdBy": [
+            "service-account-apikey-123"
+          ],
+          "isDefault": [
+            "true"
+          ],
+          "updatedAt": [
+            "1708086335440"
+          ],
+          "updatedBy": [
+            "chris"
+          ]
+        },
+        "id": "test-guid-1",
+        "name": "testadmins",
+        "path": "/testadmins",
+        "personas": [
+          {
+            "id": "test-guid-2",
+            "name": "Business Definitions",
+            "displayName": "Business Definitions",
+            "qualifiedName": "default/f6g3UE0c4WGBRTqCybUB7d"
+          },
+          {
+            "id": "test-guid-3",
+            "name": "Data Assets",
+            "displayName": "Data Assets",
+            "qualifiedName": "default/LzgnFMh4DYW1lVTJkBYFSZ"
+          }
+        ],
+        "purposes": [
+          {
+            "guid": "test-guid-4",
+            "name": "Known Issues",
+            "qualifiedName": "default/SF2kGcgjvRYd2bU1ph6M06"
+          }
+        ],
+        "userCount": 3
+      }
+    ]
+}

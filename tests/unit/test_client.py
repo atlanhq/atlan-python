@@ -10,7 +10,9 @@ from pydantic.v1 import ValidationError
 from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
+from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
+from pyatlan.client.user import UserClient
 from pyatlan.errors import AtlanError, ErrorCode, InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
@@ -25,10 +27,12 @@ from pyatlan.model.enums import (
     LineageDirection,
     SaveSemantic,
 )
+from pyatlan.model.group import GroupRequest
 from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
+from pyatlan.model.user import UserRequest
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_ASSET_CLIENT_METHODS,
@@ -70,6 +74,13 @@ SL_DETAILED_LOG_ENTRIES_JSON = "sl_detailed_log_entries.json"
 CM_NAME = "testcm1.testcm2"
 LINEAGE_LIST_JSON = "lineage_list.json"
 LINEAGE_RESPONSES_DIR = TEST_DATA_DIR / "lineage_responses"
+GROUP_LIST_JSON = "group_list.json"
+GROUP_MEMBERS_JSON = "group_members.json"
+GROUP_RESPONSES_DIR = TEST_DATA_DIR / "group_responses"
+USER_LIST_JSON = "user_list.json"
+USER_GROUPS_JSON = "user_groups.json"
+USER_RESPONSES_DIR = TEST_DATA_DIR / "user_responses"
+
 TEST_ANNOUNCEMENT = Announcement(
     announcement_title="test-title",
     announcement_message="test-msg",
@@ -131,6 +142,26 @@ def sl_detailed_log_entries_json():
 @pytest.fixture()
 def lineage_list_json():
     return load_json(LINEAGE_RESPONSES_DIR, LINEAGE_LIST_JSON)
+
+
+@pytest.fixture()
+def group_list_json():
+    return load_json(GROUP_RESPONSES_DIR, GROUP_LIST_JSON)
+
+
+@pytest.fixture()
+def group_members_json():
+    return load_json(GROUP_RESPONSES_DIR, GROUP_MEMBERS_JSON)
+
+
+@pytest.fixture()
+def user_list_json():
+    return load_json(USER_RESPONSES_DIR, USER_LIST_JSON)
+
+
+@pytest.fixture()
+def user_groups_json():
+    return load_json(USER_RESPONSES_DIR, USER_GROUPS_JSON)
 
 
 @pytest.mark.parametrize(
@@ -1125,6 +1156,77 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
     assert asset.attributes
     assert asset.business_attributes
     assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
+    mock_api_caller.reset_mock()
+
+
+def test_group_get_pagination(mock_api_caller, group_list_json):
+    client = GroupClient(mock_api_caller)
+    last_page_response = {"totalRecord": 3, "filterRecord": 3, "records": None}
+    mock_api_caller._call_api.side_effect = [group_list_json, last_page_response]
+    response = client.get()
+
+    assert response
+    assert len(response.current_page()) == 2
+    for group in response:
+        assert group.name
+        assert group.path
+        assert group.personas
+    assert len(response.current_page()) == 0
+    assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+
+def test_group_get_members_pagination(client, mock_api_caller, group_members_json):
+    client = GroupClient(mock_api_caller)
+    last_page_response = {"totalRecord": 3, "filterRecord": 3, "records": None}
+    mock_api_caller._call_api.side_effect = [group_members_json, last_page_response]
+    response = client.get_members(guid="test-guid", request=UserRequest())
+
+    assert response
+    assert len(response.current_page()) == 3
+    for user in response:
+        assert user.username
+        assert user.email
+        assert user.attributes
+    assert len(response.current_page()) == 0
+    assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+
+def test_user_list_pagination(mock_api_caller, user_list_json):
+    client = UserClient(mock_api_caller)
+    last_page_response = {"totalRecord": 3, "filterRecord": 3, "records": None}
+    mock_api_caller._call_api.side_effect = [user_list_json, last_page_response]
+    response = client.get()
+
+    assert response
+    assert len(response.current_page()) == 3
+    for user in response:
+        assert user.username
+        assert user.email
+        assert user.attributes
+        assert user.login_events
+    assert len(response.current_page()) == 0
+    assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+
+def test_user_groups_pagination(mock_api_caller, user_groups_json):
+    client = UserClient(mock_api_caller)
+    last_page_response = {"totalRecord": 2, "filterRecord": 2, "records": None}
+    mock_api_caller._call_api.side_effect = [user_groups_json, last_page_response]
+    response = client.get_groups(guid="test-guid", request=GroupRequest())
+
+    assert response
+    assert len(response.current_page()) == 2
+    for group in response:
+        assert group.name
+        assert group.path
+        assert group.alias
+        assert group.attributes
+    assert len(response.current_page()) == 0
+    assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
 
 
 @pytest.mark.parametrize(

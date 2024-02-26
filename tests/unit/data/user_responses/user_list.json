@@ -1,0 +1,180 @@
+{
+    "totalRecord": 3,
+    "filterRecord": 3,
+    "records": [
+      {
+        "attributes": {
+          "flags": [
+            "{\"notificationNudgeAutoShown\":true}"
+          ],
+          "invitedAt": [
+            "2024-02-16T12:25:09Z"
+          ],
+          "invitedBy": [
+            "chris"
+          ],
+          "invitedByName": [
+            "Chris Grote"
+          ],
+          "profileRole": [
+            "Software Engineer"
+          ],
+          "profileRoleOther": [
+            ""
+          ]
+        },
+        "createdTimestamp": 1708086309499,
+        "email": "aryaman.bhushan@atlan.com",
+        "emailVerified": true,
+        "enabled": true,
+        "firstName": "Aryaman",
+        "groupCount": 1,
+        "id": "test-guid-1",
+        "isScimUser": false,
+        "lastLoginTime": 1708967980214,
+        "lastName": "Bhushan",
+        "loginEvents": [
+          {
+            "clientId": "atlan-frontend",
+            "details": {},
+            "ipAddress": "123",
+            "realmId": "default",
+            "sessionId": "test-guid-2",
+            "time": 1708967980214,
+            "type": "LOGIN",
+            "userId": "test-guid-1"
+          }
+        ],
+        "personas": [
+          {
+            "id": "test-guid-3",
+            "name": "Business Definitions",
+            "displayName": "Business Definitions",
+            "qualifiedName": "default/f6g3UE0c4WGBRTqCybUB7d"
+          },
+          {
+            "id": "test-guid-4",
+            "name": "Data Assets",
+            "displayName": "Data Assets",
+            "qualifiedName": "default/LzgnFMh4DYW1lVTJkBYFSZ"
+          }
+        ],
+        "status": "Enabled",
+        "username": "aryaman.bhushan",
+        "workspaceRole": "$admin"
+      },
+      {
+        "attributes": {
+          "flags": [
+            "{\"notificationNudgeAutoShown\":true,\"aliasBadgeShown\":true,\"aliasModalTooltip\":true}"
+          ],
+          "profileRole": [
+            "Other"
+          ],
+          "profileRoleOther": [
+            "devx"
+          ]
+        },
+        "createdTimestamp": 1708021929674,
+        "email": "chris@atlan.com",
+        "emailVerified": true,
+        "enabled": true,
+        "firstName": "Chris",
+        "groupCount": 1,
+        "id": "test-guid-4",
+        "isScimUser": false,
+        "lastLoginTime": 1708948797578,
+        "lastName": "Grote",
+        "loginEvents": [
+          {
+            "clientId": "atlan-frontend",
+            "details": {},
+            "ipAddress": "123",
+            "realmId": "default",
+            "sessionId": "test-guid-5",
+            "time": 1708948797578,
+            "type": "LOGIN",
+            "userId": "test-guid-4"
+          }
+        ],
+        "personas": [
+          {
+            "id": "test-guid-3",
+            "name": "Business Definitions",
+            "displayName": "Business Definitions",
+            "qualifiedName": "default/f6g3UE0c4WGBRTqCybUB7d"
+          },
+          {
+            "id": "test-guid-4",
+            "name": "Data Assets",
+            "displayName": "Data Assets",
+            "qualifiedName": "default/LzgnFMh4DYW1lVTJkBYFSZ"
+          }
+        ],
+        "status": "Enabled",
+        "username": "chris",
+        "workspaceRole": "$admin"
+      },
+      {
+        "attributes": {
+          "flags": [
+            "{\"notificationNudgeAutoShown\":true}"
+          ],
+          "invitedAt": [
+            "2024-02-16T12:25:09Z"
+          ],
+          "invitedBy": [
+            "chris"
+          ],
+          "invitedByName": [
+            "Chris Grote"
+          ],
+          "profileRole": [
+            "Software Engineer"
+          ],
+          "profileRoleOther": [
+            ""
+          ]
+        },
+        "createdTimestamp": 1708086309501,
+        "email": "karanjot.singh@atlan.com",
+        "emailVerified": true,
+        "enabled": true,
+        "firstName": "Karanjot",
+        "groupCount": 1,
+        "id": "test-guid-7",
+        "isScimUser": false,
+        "lastLoginTime": 1708801370507,
+        "lastName": "Singh",
+        "loginEvents": [
+          {
+            "clientId": "atlan-frontend",
+            "details": {},
+            "ipAddress": "128",
+            "realmId": "default",
+            "sessionId": "test-guid-6",
+            "time": 1708801370507,
+            "type": "LOGIN",
+            "userId": "test-guid-7"
+          }
+        ],
+        "personas": [
+          {
+            "id": "test-guid-3",
+            "name": "Business Definitions",
+            "displayName": "Business Definitions",
+            "qualifiedName": "default/f6g3UE0c4WGBRTqCybUB7d"
+          },
+          {
+            "id": "test-guid-4",
+            "name": "Data Assets",
+            "displayName": "Data Assets",
+            "qualifiedName": "default/LzgnFMh4DYW1lVTJkBYFSZ"
+          }
+        ],
+        "status": "Enabled",
+        "username": "karanjot.singh",
+        "workspaceRole": "$admin"
+      }
+    ]
+}
