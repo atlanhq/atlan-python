@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
@@ -18,10 +18,11 @@ from pyatlan.model.group import (
     AtlanGroup,
     CreateGroupRequest,
     CreateGroupResponse,
+    GroupRequest,
     GroupResponse,
     RemoveFromGroupRequest,
 )
-from pyatlan.model.user import UserResponse
+from pyatlan.model.user import UserRequest, UserResponse
 
 
 class GroupClient:
@@ -92,7 +93,7 @@ class GroupClient:
     @validate_arguments
     def get(
         self,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 20,
         post_filter: Optional[str] = None,
         sort: Optional[str] = None,
         count: bool = True,
@@ -109,51 +110,48 @@ class GroupClient:
         :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: Dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        raw_json = self._client._call_api(
-            GET_GROUPS.format_path_with_params(), query_params
+        request = GroupRequest(
+            post_filter=post_filter, limit=limit, sort=sort, count=count, offset=offset
         )
-        return GroupResponse(**raw_json)
+        endpoint = GET_GROUPS.format_path_with_params()
+        raw_json = self._client._call_api(
+            api=endpoint, query_params=request.query_params
+        )
+        return GroupResponse(
+            client=self._client,
+            endpoint=GET_GROUPS,
+            criteria=request,
+            start=request.offset,
+            size=request.limit,
+            records=raw_json.get("records"),
+            filter_record=raw_json.get("filterRecord"),
+            total_record=raw_json.get("totalRecord"),
+        )
 
     @validate_arguments
     def get_all(
         self,
         limit: int = 20,
+        offset: int = 0,
+        sort: Optional[str] = "name",
     ) -> List[AtlanGroup]:
         """
         Retrieve all groups defined in Atlan.
 
         :param limit: maximum number of results to be returned
+        :param offset: starting point for the list of groups when paging
+        :param sort: property by which to sort the results, by default : `name`
         :returns: a list of all the groups in Atlan
         """
-        groups: List[AtlanGroup] = []
-        offset = 0
-        response: Optional[GroupResponse] = self.get(
-            offset=offset, limit=limit, sort="createdAt"
-        )
-        while response:
-            if page := response.records:
-                groups.extend(page)
-                offset += limit
-                response = self.get(offset=offset, limit=limit, sort="createdAt")
-            else:
-                response = None
-        return groups
+        response: GroupResponse = self.get(offset=offset, limit=limit, sort=sort)
+        return [group for group in response]
 
     @validate_arguments
     def get_by_name(
         self,
         alias: str,
         limit: int = 20,
+        offset: int = 0,
     ) -> Optional[List[AtlanGroup]]:
         """
         Retrieve all groups with a name that contains the provided string.
@@ -163,10 +161,11 @@ class GroupClient:
 
         :param alias: name (as it appears in the UI) on which to filter the groups
         :param limit: maximum number of groups to retrieve
+        :param offset: starting point for the list of groups when paging
         :returns: all groups whose name (in the UI) contains the provided string
         """
         if response := self.get(
-            offset=0,
+            offset=offset,
             limit=limit,
             post_filter='{"$and":[{"alias":{"$ilike":"%' + alias + '%"}}]}',
         ):
@@ -174,18 +173,36 @@ class GroupClient:
         return None
 
     @validate_arguments
-    def get_members(self, guid: str) -> UserResponse:
+    def get_members(
+        self, guid: str, request: Optional[UserRequest] = None
+    ) -> UserResponse:
         """
         Retrieves a UserResponse object which contains a list of the members (users) of a group.
 
         :param guid: unique identifier (GUID) of the group from which to retrieve members
+        :param request: request containing details about which members to retrieve
         :returns: a UserResponse object which contains a list of users that are members of the group
         :raises AtlanError: on any API communication issue
         """
+        if not request:
+            request = UserRequest()
+        endpoint = GET_GROUP_MEMBERS.format_path(
+            {"group_guid": guid}
+        ).format_path_with_params()
         raw_json = self._client._call_api(
-            GET_GROUP_MEMBERS.format_path({"group_guid": guid})
+            api=endpoint,
+            query_params=request.query_params,
         )
-        return UserResponse(**raw_json)
+        return UserResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request,
+            start=request.offset,
+            size=request.limit,
+            records=raw_json.get("records"),
+            filter_record=raw_json.get("filterRecord"),
+            total_record=raw_json.get("totalRecord"),
+        )
 
     @validate_arguments
     def remove_users(self, guid: str, user_ids: Optional[List[str]] = None) -> None:

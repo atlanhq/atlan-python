@@ -1,0 +1,120 @@
+{
+    "totalRecord": 3,
+    "filterRecord": 3,
+    "records": [
+      {
+        "id": "test-guid-1",
+        "firstName": "Aryaman",
+        "lastName": "Bhushan",
+        "email": "aryaman.bhushan@atlan.com",
+        "emailVerified": true,
+        "enabled": true,
+        "username": "aryaman.bhushan",
+        "createdTimestamp": 1708086309499,
+        "roles": [
+          "default-roles-default",
+          "$admin"
+        ],
+        "defaultRoles": [
+          "offline_access",
+          "uma_authorization",
+          "$guest"
+        ],
+        "groupCount": 1,
+        "attributes": {
+          "flags": [
+            "{\"notificationNudgeAutoShown\":true}"
+          ],
+          "invitedAt": [
+            "2024-02-16T12:25:09Z"
+          ],
+          "invitedBy": [
+            "chris"
+          ],
+          "invitedByName": [
+            "Chris Grote"
+          ],
+          "profileRole": [
+            "Software Engineer"
+          ],
+          "profileRoleOther": [
+            ""
+          ]
+        },
+        "workspaceRole": "$admin"
+      },
+      {
+        "id": "test-guid-2",
+        "firstName": "Chris",
+        "lastName": "Grote",
+        "email": "chris@atlan.com",
+        "emailVerified": true,
+        "enabled": true,
+        "username": "chris",
+        "createdTimestamp": 1708021929674,
+        "roles": [
+          "default-roles-default",
+          "$admin"
+        ],
+        "defaultRoles": [
+          "offline_access",
+          "uma_authorization",
+          "$guest"
+        ],
+        "groupCount": 1,
+        "attributes": {
+          "flags": [
+            "{\"notificationNudgeAutoShown\":true,\"aliasBadgeShown\":true,\"aliasModalTooltip\":true}"
+          ],
+          "profileRole": [
+            "Other"
+          ],
+          "profileRoleOther": [
+            "devx"
+          ]
+        },
+        "workspaceRole": "$admin"
+      },
+      {
+        "id": "test-guid-3",
+        "firstName": "Karanjot",
+        "lastName": "Singh",
+        "email": "karanjot.singh@atlan.com",
+        "emailVerified": true,
+        "enabled": true,
+        "username": "karanjot.singh",
+        "createdTimestamp": 1708086309501,
+        "roles": [
+          "default-roles-default",
+          "$admin"
+        ],
+        "defaultRoles": [
+          "offline_access",
+          "uma_authorization",
+          "$guest"
+        ],
+        "groupCount": 1,
+        "attributes": {
+          "flags": [
+            "{\"notificationNudgeAutoShown\":true}"
+          ],
+          "invitedAt": [
+            "2024-02-16T12:25:09Z"
+          ],
+          "invitedBy": [
+            "chris"
+          ],
+          "invitedByName": [
+            "Chris Grote"
+          ],
+          "profileRole": [
+            "Software Engineer"
+          ],
+          "profileRoleOther": [
+            ""
+          ]
+        },
+        "workspaceRole": "$admin"
+      }
+    ]
+}

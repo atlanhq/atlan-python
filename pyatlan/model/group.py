@@ -2,11 +2,14 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Generator, List, Optional
 
-from pydantic.v1 import Field
+from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
+from pyatlan.client.common import ApiCaller
+from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
+from pyatlan.utils import API
 
 
 class AtlanGroup(AtlanObject):
@@ -113,6 +116,11 @@ class AtlanGroup(AtlanObject):
 
 
 class GroupResponse(AtlanObject):
+    _size: int = PrivateAttr()
+    _start: int = PrivateAttr()
+    _endpoint: API = PrivateAttr()
+    _client: ApiCaller = PrivateAttr()
+    _criteria: GroupRequest = PrivateAttr()
     total_record: Optional[int] = Field(description="Total number of groups.")
     filter_record: Optional[int] = Field(
         description="Number of groups in the filtered response.",
@@ -120,6 +128,82 @@ class GroupResponse(AtlanObject):
     records: Optional[List[AtlanGroup]] = Field(
         description="Details of each group included in the response."
     )
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self._endpoint = data.get("endpoint")  # type: ignore[assignment]
+        self._client = data.get("client")  # type: ignore[assignment]
+        self._criteria = data.get("criteria")  # type: ignore[assignment]
+        self._size = data.get("size")  # type: ignore[assignment]
+        self._start = data.get("start")  # type: ignore[assignment]
+
+    def current_page(self) -> Optional[List[AtlanGroup]]:
+        return self.records
+
+    def next_page(self, start=None, size=None) -> bool:
+        self._start = start or self._start + self._size
+        if size:
+            self._size = size
+        return self._get_next_page() if self.records else False
+
+    def _get_next_page(self):
+        self._criteria.offset = self._start
+        self._criteria.limit = self._size
+        raw_json = self._client._call_api(
+            api=self._endpoint.format_path_with_params(),
+            query_params=self._criteria.query_params,
+        )
+        if not raw_json.get("records"):
+            self.records = []
+            return False
+        try:
+            self.records = parse_obj_as(List[AtlanGroup], raw_json.get("records"))
+        except ValidationError as err:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
+        return True
+
+    def __iter__(self) -> Generator[AtlanGroup, None, None]:  # type: ignore[override]
+        while True:
+            yield from self.current_page() or []
+            if not self.next_page():
+                break
+
+
+class GroupRequest(AtlanObject):
+    post_filter: Optional[str] = Field(
+        default=None,
+        description="Criteria by which to filter the list of groups to retrieve.",
+    )
+    sort: Optional[str] = Field(
+        default="name",
+        description="Property by which to sort the resulting list of groups.",
+    )
+    count: bool = Field(
+        default=True,
+        description="Whether to include an overall count of groups (True) or not (False).",
+    )
+    offset: int = Field(
+        default=0,
+        description="Starting point for the list of groups when paging.",
+    )
+    limit: Optional[int] = Field(
+        default=20,
+        description="Maximum number of groups to return per page.",
+    )
+
+    @property
+    def query_params(self) -> dict:
+        qp: Dict[str, object] = {}
+        if self.post_filter:
+            qp["filter"] = self.post_filter
+        if self.sort:
+            qp["sort"] = self.sort
+        qp["count"] = self.count
+        qp["offset"] = self.offset
+        qp["limit"] = self.limit
+        return qp
 
 
 class CreateGroupRequest(AtlanObject):

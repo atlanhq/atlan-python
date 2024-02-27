@@ -1,0 +1,60 @@
+{
+    "totalRecord": 2,
+    "filterRecord": 2,
+    "records": [
+      {
+        "alias": "Admins",
+        "attributes": {
+          "alias": [
+            "Admins"
+          ],
+          "createdAt": [
+            "1708026540827"
+          ],
+          "createdBy": [
+            "service-account-apikey-123"
+          ],
+          "isDefault": [
+            "true"
+          ],
+          "updatedAt": [
+            "1708086335440"
+          ],
+          "updatedBy": [
+            "chris"
+          ]
+        },
+        "id": "test-guid-1",
+        "name": "admins",
+        "path": "/admins",
+        "userCount": 3
+      },
+      {
+        "alias": "Test Admins",
+        "attributes": {
+          "alias": [
+            "Admins"
+          ],
+          "createdAt": [
+            "1708026540827"
+          ],
+          "createdBy": [
+            "service-account-apikey-123"
+          ],
+          "isDefault": [
+            "true"
+          ],
+          "updatedAt": [
+            "1708086335440"
+          ],
+          "updatedBy": [
+            "chris"
+          ]
+        },
+        "id": "test-guid-2",
+        "name": "testadmins",
+        "path": "/testadmins",
+        "userCount": 3
+      }
+    ]
+  }

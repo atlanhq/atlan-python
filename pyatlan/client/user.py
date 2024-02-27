@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
@@ -18,7 +18,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.fields.atlan_fields import KeywordField
-from pyatlan.model.group import GroupResponse
+from pyatlan.model.group import GroupRequest, GroupResponse
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.user import (
     AddToGroupsRequest,
@@ -26,6 +26,7 @@ from pyatlan.model.user import (
     ChangeRoleRequest,
     CreateUserRequest,
     UserMinimalResponse,
+    UserRequest,
     UserResponse,
 )
 
@@ -126,7 +127,7 @@ class UserClient:
     @validate_arguments
     def get(
         self,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 20,
         post_filter: Optional[str] = None,
         sort: Optional[str] = None,
         count: bool = True,
@@ -143,70 +144,71 @@ class UserClient:
         :returns: a UserResponse which contains a list of users that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: Dict[str, Any] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        query_params["maxLoginEvents"] = 1
-        query_params["columns"] = [
-            "firstName",
-            "lastName",
-            "username",
-            "id",
-            "email",
-            "emailVerified",
-            "enabled",
-            "roles",
-            "defaultRoles",
-            "groupCount",
-            "attributes",
-            "personas",
-            "createdTimestamp",
-            "lastLoginTime",
-            "loginEvents",
-            "isLocked",
-        ]
-        raw_json = self._client._call_api(
-            GET_USERS.format_path_with_params(), query_params
+        request = UserRequest(
+            post_filter=post_filter,
+            limit=limit,
+            sort=sort,
+            count=count,
+            offset=offset,
+            columns=[
+                "firstName",
+                "lastName",
+                "username",
+                "id",
+                "email",
+                "emailVerified",
+                "enabled",
+                "roles",
+                "defaultRoles",
+                "groupCount",
+                "attributes",
+                "personas",
+                "createdTimestamp",
+                "lastLoginTime",
+                "loginEvents",
+                "isLocked",
+                "workspaceRole",
+            ],
         )
-        return UserResponse(**raw_json)
+        endpoint = GET_USERS.format_path_with_params()
+        raw_json = self._client._call_api(
+            api=endpoint, query_params=request.query_params
+        )
+        return UserResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request,
+            start=request.offset,
+            size=request.limit,
+            records=raw_json["records"],
+            filter_record=raw_json["filterRecord"],
+            total_record=raw_json["totalRecord"],
+        )
 
     @validate_arguments
     def get_all(
         self,
         limit: int = 20,
+        offset: int = 0,
+        sort: Optional[str] = "username",
     ) -> List[AtlanUser]:
         """
         Retrieve all users defined in Atlan.
 
         :param limit: maximum number of users to retrieve
+        :param offset: starting point for the list of users when paging
+        :param sort: property by which to sort the results, by default : `username`
         :returns: a list of all the users in Atlan
         """
-        users: List[AtlanUser] = []
-        offset = 0
-        response: Optional[UserResponse] = self.get(
-            offset=offset, limit=limit, sort="username"
-        )
-        while response:
-            if page := response.records:
-                users.extend(page)
-                offset += limit
-                response = self.get(offset=offset, limit=limit, sort="username")
-            else:
-                response = None
-        return users
+        response: UserResponse = self.get(offset=offset, limit=limit, sort=sort)
+        return [user for user in response]
 
     @validate_arguments
     def get_by_email(
         self,
         email: str,
         limit: int = 20,
+        offset: int = 0,
     ) -> Optional[List[AtlanUser]]:
         """
         Retrieves all users with email addresses that contain the provided email.
@@ -217,10 +219,11 @@ class UserClient:
 
         :param email: on which to filter the users
         :param limit: maximum number of users to retrieve
+        :param offset: starting point for the list of users when pagin
         :returns: all users whose email addresses contain the provided string
         """
         if response := self.get(
-            offset=0,
+            offset=offset,
             limit=limit,
             post_filter='{"email":{"$ilike":"%' + email + '%"}}',
         ):
@@ -267,20 +270,35 @@ class UserClient:
 
     @validate_arguments
     def get_groups(
-        self,
-        guid: str,
+        self, guid: str, request: Optional[GroupRequest] = None
     ) -> GroupResponse:
         """
         Retrieve the groups this user belongs to.
 
         :param guid: unique identifier (GUID) of the user
+        :param request: request containing details about which groups to retrieve
         :returns: a GroupResponse which contains the groups this user belongs to
         :raises AtlanError: on any API communication issue
         """
+        if not request:
+            request = GroupRequest()
+        endpoint = GET_USER_GROUPS.format_path(
+            {"user_guid": guid}
+        ).format_path_with_params()
         raw_json = self._client._call_api(
-            GET_USER_GROUPS.format_path({"user_guid": guid})
+            api=endpoint,
+            query_params=request.query_params,
         )
-        return GroupResponse(**raw_json)
+        return GroupResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request,
+            start=request.offset,
+            size=request.limit,
+            records=raw_json.get("records"),
+            filter_record=raw_json.get("filterRecord"),
+            total_record=raw_json.get("totalRecord"),
+        )
 
     @validate_arguments
     def add_as_admin(

@@ -8,8 +8,9 @@ from pydantic.v1 import StrictStr
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.group import AtlanGroup, CreateGroupResponse
+from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupRequest
 from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
+from pyatlan.model.user import UserRequest
 from tests.integration.client import TestId
 
 FIXED_USER = "aryaman.bhushan"
@@ -78,6 +79,89 @@ def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
     for group1 in groups:
         if group1.is_default():
             _default_group_count += 1
+
+
+def test_group_get_pagination(client: AtlanClient, group: CreateGroupResponse):
+    response = client.group.get(limit=1)
+
+    assert response
+    assert response.total_record is not None
+    assert response.total_record >= 1
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 1
+    for test_group in response:
+        assert test_group.id
+        assert test_group.name
+        assert test_group.path
+        assert test_group.attributes
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 0
+
+
+def test_group_get_members_pagination(client: AtlanClient, group: CreateGroupResponse):
+    groups = client.group.get_by_name(alias=GROUP_NAME)
+    assert groups
+    assert len(groups) == 1
+    group1 = groups[0]
+    assert group1.id
+    response = client.group.get_members(guid=group1.id, request=UserRequest(limit=1))
+
+    assert response
+    assert response.total_record is not None
+    assert response.total_record >= 1
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 1
+    for test_user in response:
+        assert test_user.username
+        assert test_user.email
+        assert test_user.attributes
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 0
+
+
+def test_user_list_pagination(client: AtlanClient, group: CreateGroupResponse):
+    response = client.user.get(limit=1)
+
+    assert response
+    assert response.total_record is not None
+    assert response.total_record > 1
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 1
+    for test_user in response:
+        assert test_user.username
+        assert test_user.email
+        assert test_user.attributes
+        assert test_user.login_events
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 0
+
+
+def test_user_groups_pagination(client: AtlanClient, group: CreateGroupResponse):
+    fixed_user = client.user.get_by_username(FIXED_USER)
+    assert fixed_user
+    assert fixed_user.id
+    response = client.user.get_groups(guid=fixed_user.id, request=GroupRequest(limit=1))
+
+    assert response
+    assert response.total_record is not None
+    assert response.total_record >= 1
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 1
+    for test_group in response:
+        assert test_group.id
+        assert test_group.name
+        assert test_group.path
+        assert test_group.attributes
+    current_page = response.current_page()
+    assert current_page is not None
+    assert len(current_page) == 0
 
 
 @pytest.mark.order(after="test_retrieve_all_groups")
