@@ -1,3 +1,18 @@
+## 2.0.1 (February 27, 2024)
+
+### New features
+
+- Adds pagination to listings for **user**, **group**, and **membership**.
+
+### Bug fixes
+
+- Fixes `LineageListResults` not including custom metadata.
+- Avoid throwing `ValidationError` when aggregating an index search with no results.
+
+### QOL improvements
+
+- Improves the tests report experience by using pytest plugins (`pytest-sugar` and `pytest-timer`).
+
 ## 2.0.0 (February 22, 2024)
 
 ### New features
