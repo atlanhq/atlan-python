@@ -9,6 +9,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Table
+from pyatlan.model.assets.column import Column
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import (
@@ -314,6 +315,20 @@ def test_metric_aggregation(client: AtlanClient):
     assert results.aggregations["min_columns"]
     assert results.aggregations["max_columns"]
     assert results.aggregations["sum_columns"]
+
+
+def test_index_search_with_no_aggregation_results(client: AtlanClient):
+    test_aggs = {"max_update_time": {"max": {"field": "__modificationTimestamp"}}}
+    request = (
+        FluentSearch(aggregations=test_aggs).where(  # type:ignore[arg-type]
+            Column.QUALIFIED_NAME.startswith("some-non-existent-column-qn")
+        )
+    ).to_request()
+    response = client.search(criteria=request)
+
+    assert response
+    assert response.count == 0
+    assert response.aggregations is None
 
 
 def test_default_sorting(client: AtlanClient):

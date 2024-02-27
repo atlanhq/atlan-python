@@ -181,15 +181,12 @@ class AssetClient:
         )
 
     def _get_aggregations(self, raw_json) -> Optional[Aggregations]:
+        aggregations = None
         if "aggregations" in raw_json:
             try:
                 aggregations = Aggregations.parse_obj(raw_json["aggregations"])
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            aggregations = None
+            except ValidationError:
+                pass
         return aggregations
 
     # TODO: Try adding @validate_arguments to this method once
