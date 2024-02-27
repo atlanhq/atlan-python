@@ -20,6 +20,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Table,
 )
+from pyatlan.model.assets.column import Column
 from pyatlan.model.core import Announcement, BulkRequest
 from pyatlan.model.enums import (
     AnnouncementType,
@@ -27,6 +28,7 @@ from pyatlan.model.enums import (
     LineageDirection,
     SaveSemantic,
 )
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.group import GroupRequest
 from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
@@ -67,7 +69,7 @@ LOG_USERNAME = "userName"
 SEARCH_PARAMS = "searchParameters"
 SEARCH_COUNT = "approximateCount"
 TEST_DATA_DIR = Path(__file__).parent / "data"
-SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_log_responses"
+SEARCH_LOG_RESPONSES_DIR = TEST_DATA_DIR / "search_log_responses"
 SL_MOST_RECENT_VIEWERS_JSON = "sl_most_recent_viewers.json"
 SL_MOST_VIEWED_ASSETS_JSON = "sl_most_viewed_assets.json"
 SL_DETAILED_LOG_ENTRIES_JSON = "sl_detailed_log_entries.json"
@@ -80,6 +82,8 @@ GROUP_RESPONSES_DIR = TEST_DATA_DIR / "group_responses"
 USER_LIST_JSON = "user_list.json"
 USER_GROUPS_JSON = "user_groups.json"
 USER_RESPONSES_DIR = TEST_DATA_DIR / "user_responses"
+AGGREGATIONS_NULL_RESPONSES_DIR = "aggregations_null_value.json"
+SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_responses"
 
 TEST_ANNOUNCEMENT = Announcement(
     announcement_title="test-title",
@@ -126,17 +130,17 @@ def load_json(respones_dir, filename):
 
 @pytest.fixture()
 def sl_most_recent_viewers_json():
-    return load_json(SEARCH_RESPONSES_DIR, SL_MOST_RECENT_VIEWERS_JSON)
+    return load_json(SEARCH_LOG_RESPONSES_DIR, SL_MOST_RECENT_VIEWERS_JSON)
 
 
 @pytest.fixture()
 def sl_most_viewed_assets_json():
-    return load_json(SEARCH_RESPONSES_DIR, SL_MOST_VIEWED_ASSETS_JSON)
+    return load_json(SEARCH_LOG_RESPONSES_DIR, SL_MOST_VIEWED_ASSETS_JSON)
 
 
 @pytest.fixture()
 def sl_detailed_log_entries_json():
-    return load_json(SEARCH_RESPONSES_DIR, SL_DETAILED_LOG_ENTRIES_JSON)
+    return load_json(SEARCH_LOG_RESPONSES_DIR, SL_DETAILED_LOG_ENTRIES_JSON)
 
 
 @pytest.fixture()
@@ -162,6 +166,11 @@ def user_list_json():
 @pytest.fixture()
 def user_groups_json():
     return load_json(USER_RESPONSES_DIR, USER_GROUPS_JSON)
+
+
+@pytest.fixture()
+def aggregations_null_json():
+    return load_json(SEARCH_RESPONSES_DIR, AGGREGATIONS_NULL_RESPONSES_DIR)
 
 
 @pytest.mark.parametrize(
@@ -1226,6 +1235,23 @@ def test_user_groups_pagination(mock_api_caller, user_groups_json):
         assert group.attributes
     assert len(response.current_page()) == 0
     assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+
+def test_index_search_with_no_aggregation_results(
+    mock_api_caller, aggregations_null_json
+):
+    client = AssetClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [aggregations_null_json]
+    request = (
+        FluentSearch(
+            aggregations={"test1": {"test2": {"field": "__test_field"}}}
+        ).where(Column.QUALIFIED_NAME.startswith("test-qn"))
+    ).to_request()
+    response = client.search(criteria=request)
+    assert response
+    assert response.count == 0
+    assert response.aggregations is None
     mock_api_caller.reset_mock()
 
 
