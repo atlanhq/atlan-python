@@ -89,7 +89,7 @@ def test_group_get_pagination(client: AtlanClient, group: CreateGroupResponse):
     assert response.total_record >= 1
     current_page = response.current_page()
     assert current_page is not None
-    assert len(current_page) >= 1
+    assert len(current_page) == 1
     for test_group in response:
         assert test_group.id
         assert test_group.name
@@ -113,7 +113,7 @@ def test_group_get_members_pagination(client: AtlanClient, group: CreateGroupRes
     assert response.total_record >= 1
     current_page = response.current_page()
     assert current_page is not None
-    assert len(current_page) >= 1
+    assert len(current_page) == 1
     for test_user in response:
         assert test_user.username
         assert test_user.email
@@ -128,10 +128,10 @@ def test_user_list_pagination(client: AtlanClient, group: CreateGroupResponse):
 
     assert response
     assert response.total_record is not None
-    assert response.total_record >= 1
+    assert response.total_record > 1
     current_page = response.current_page()
     assert current_page is not None
-    assert len(current_page) >= 1
+    assert len(current_page) == 1
     for test_user in response:
         assert test_user.username
         assert test_user.email
@@ -153,7 +153,7 @@ def test_user_groups_pagination(client: AtlanClient, group: CreateGroupResponse)
     assert response.total_record >= 1
     current_page = response.current_page()
     assert current_page is not None
-    assert len(current_page) >= 1
+    assert len(current_page) == 1
     for test_group in response:
         assert test_group.id
         assert test_group.name
