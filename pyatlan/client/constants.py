@@ -441,6 +441,8 @@ SEARCH_LOG_API = "search/searchlog"
 SEARCH_LOG = API(
     SEARCH_LOG_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
 )
+TASK_API = "task/search"
+TASK_SEARCH = API(TASK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 
 TYPES_API = "types/"
 TYPEDEFS_API = f"{TYPES_API}typedefs/"

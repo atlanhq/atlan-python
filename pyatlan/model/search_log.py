@@ -400,9 +400,7 @@ class SearchLogResults(Iterable):
         self._criteria.dsl.from_ = self._start
         self._criteria.dsl.size = self._size
         if raw_json := self._get_next_page_json():
-            self._count = (
-                raw_json["approximateCount"] if "approximateCount" in raw_json else 0
-            )
+            self._count = raw_json.get("approximateCount", 0)
             return True
         return False
 
@@ -420,7 +418,6 @@ class SearchLogResults(Iterable):
             self._log_entries = []
             return None
         try:
-            raw_json.get("logs", [])
             self._log_entries = parse_obj_as(List[SearchLogEntry], raw_json["logs"])
             return raw_json
         except ValidationError as err:
