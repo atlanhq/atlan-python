@@ -253,6 +253,7 @@ class AtlanConnectorType(str, Enum):
     ESSBASE = ("essbase", AtlanConnectionCategory.DATABASE)
     GENERIC = ("genericdb", AtlanConnectionCategory.DATABASE)
     FILE = ("file", AtlanConnectionCategory.OBJECT_STORE)
+    MICROSTRATEGY = ("microstrategy", AtlanConnectionCategory.BI)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
