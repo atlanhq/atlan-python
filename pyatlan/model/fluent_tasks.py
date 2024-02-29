@@ -201,7 +201,7 @@ class FluentTasks:
         :raises: `InvalidRequestError` if no atlan client has been provided
         :returns: the count of tasks that will match the supplied criteria
         """
-        if not client:
+        if not isinstance(client, AtlanClient):
             raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
         dsl = self._dsl()
         dsl.size = 1
@@ -216,7 +216,7 @@ class FluentTasks:
         :raises: `InvalidRequestError` if no atlan client has been provided
         :returns: an iterable list of tasks that match the supplied criteria, lazily-fetched
         """
-        if not client:
+        if not isinstance(client, AtlanClient):
             raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
         return client.tasks.search(self.to_request())
 

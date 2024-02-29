@@ -38,21 +38,21 @@ class TaskClient:
 
     @staticmethod
     def _handle_sorting(sort: List[SortItem]):
-        missing_guid_sort = True
+        missing_time_sort = True
         missing_sort = True if not sort else False
 
         if not missing_sort:
-            # If there is some sort, see whether GUID is already included
+            # If there is some sort, see whether time is already included
             for option in sort:
                 if (
                     option.field
                     and option.field == AtlanTask.START_TIME.numeric_field_name
                 ):
-                    missing_guid_sort = False
+                    missing_time_sort = False
                     break
 
-        if missing_guid_sort:
-            # If there is no sort by GUID, always add it as a final
+        if missing_time_sort:
+            # If there is no sort by time, always add it as a final
             # (tie-breaker) criteria to ensure there is consistent paging
             # (unfortunately sorting by _doc still has duplicates across large number of pages)
             sort.append(
