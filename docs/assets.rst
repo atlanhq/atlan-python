@@ -20,6 +20,7 @@ You can interact with all of the following different kinds of assets:
     asset/airflow
     asset/airflowdag
     asset/airflowtask
+    asset/alteryxworkflow
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
@@ -56,6 +57,11 @@ You can interact with all of the following different kinds of assets:
     asset/dbtsource
     asset/dbttag
     asset/dbttest
+    asset/domo
+    asset/domocard
+    asset/domodashboard
+    asset/domodataset
+    asset/domodatasetcolumn
     asset/dynamodb
     asset/dynamodbglobalsecondaryindex
     asset/dynamodblocalsecondaryindex
@@ -218,6 +224,10 @@ You can interact with all of the following different kinds of assets:
     asset/tagattachment
     asset/thoughtspot
     asset/thoughtspotanswer
+    asset/thoughtspotcolumn
     asset/thoughtspotdashlet
     asset/thoughtspotliveboard
+    asset/thoughtspottable
+    asset/thoughtspotview
+    asset/thoughtspotworksheet
     asset/view

@@ -25,6 +25,7 @@ from .persona import Persona
 from .purpose import Purpose
 from .collection import Collection
 from .folder import Folder
+from .alteryx_workflow import AlteryxWorkflow
 from .airflow import Airflow
 from .object_store import ObjectStore
 from .data_quality import DataQuality
@@ -58,6 +59,7 @@ from .mode import Mode
 from .sigma import Sigma
 from .tableau import Tableau
 from .looker import Looker
+from .domo import Domo
 from .redash import Redash
 from .sisense import Sisense
 from .data_studio import DataStudio
@@ -84,8 +86,8 @@ from .function import Function
 from .table_partition import TablePartition
 from .column import Column
 from .snowflake_stream import SnowflakeStream
-from .calculation_view import CalculationView
 from .database import Database
+from .calculation_view import CalculationView
 from .procedure import Procedure
 from .snowflake_tag import SnowflakeTag
 from .kafka import Kafka
@@ -150,6 +152,10 @@ from .looker_project import LookerProject
 from .looker_query import LookerQuery
 from .looker_field import LookerField
 from .looker_view import LookerView
+from .domo_dataset import DomoDataset
+from .domo_card import DomoCard
+from .domo_dataset_column import DomoDatasetColumn
+from .domo_dashboard import DomoDashboard
 from .redash_dashboard import RedashDashboard
 from .redash_query import RedashQuery
 from .redash_visualization import RedashVisualization
@@ -168,7 +174,11 @@ from .quick_sight_dataset_field import QuickSightDatasetField
 from .quick_sight_analysis import QuickSightAnalysis
 from .quick_sight_dashboard import QuickSightDashboard
 from .quick_sight_dataset import QuickSightDataset
+from .thoughtspot_worksheet import ThoughtspotWorksheet
 from .thoughtspot_liveboard import ThoughtspotLiveboard
+from .thoughtspot_table import ThoughtspotTable
+from .thoughtspot_column import ThoughtspotColumn
+from .thoughtspot_view import ThoughtspotView
 from .thoughtspot_dashlet import ThoughtspotDashlet
 from .thoughtspot_answer import ThoughtspotAnswer
 from .power_b_i_report import PowerBIReport
@@ -242,6 +252,7 @@ Persona.Attributes.update_forward_refs(**localns)
 Purpose.Attributes.update_forward_refs(**localns)
 Collection.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
+AlteryxWorkflow.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ObjectStore.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
@@ -275,6 +286,7 @@ Mode.Attributes.update_forward_refs(**localns)
 Sigma.Attributes.update_forward_refs(**localns)
 Tableau.Attributes.update_forward_refs(**localns)
 Looker.Attributes.update_forward_refs(**localns)
+Domo.Attributes.update_forward_refs(**localns)
 Redash.Attributes.update_forward_refs(**localns)
 Sisense.Attributes.update_forward_refs(**localns)
 DataStudio.Attributes.update_forward_refs(**localns)
@@ -301,8 +313,8 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 Kafka.Attributes.update_forward_refs(**localns)
@@ -367,6 +379,10 @@ LookerProject.Attributes.update_forward_refs(**localns)
 LookerQuery.Attributes.update_forward_refs(**localns)
 LookerField.Attributes.update_forward_refs(**localns)
 LookerView.Attributes.update_forward_refs(**localns)
+DomoDataset.Attributes.update_forward_refs(**localns)
+DomoCard.Attributes.update_forward_refs(**localns)
+DomoDatasetColumn.Attributes.update_forward_refs(**localns)
+DomoDashboard.Attributes.update_forward_refs(**localns)
 RedashDashboard.Attributes.update_forward_refs(**localns)
 RedashQuery.Attributes.update_forward_refs(**localns)
 RedashVisualization.Attributes.update_forward_refs(**localns)
@@ -385,7 +401,11 @@ QuickSightDatasetField.Attributes.update_forward_refs(**localns)
 QuickSightAnalysis.Attributes.update_forward_refs(**localns)
 QuickSightDashboard.Attributes.update_forward_refs(**localns)
 QuickSightDataset.Attributes.update_forward_refs(**localns)
+ThoughtspotWorksheet.Attributes.update_forward_refs(**localns)
 ThoughtspotLiveboard.Attributes.update_forward_refs(**localns)
+ThoughtspotTable.Attributes.update_forward_refs(**localns)
+ThoughtspotColumn.Attributes.update_forward_refs(**localns)
+ThoughtspotView.Attributes.update_forward_refs(**localns)
 ThoughtspotDashlet.Attributes.update_forward_refs(**localns)
 ThoughtspotAnswer.Attributes.update_forward_refs(**localns)
 PowerBIReport.Attributes.update_forward_refs(**localns)
