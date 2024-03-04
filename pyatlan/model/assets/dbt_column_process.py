@@ -209,7 +209,6 @@ class DbtColumnProcess(Dbt):
         "matillion_component",
         "process",
         "airflow_tasks",
-        "alteryx_workflow",
         "column_processes",
     ]
 

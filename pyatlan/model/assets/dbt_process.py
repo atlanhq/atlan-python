@@ -204,7 +204,6 @@ class DbtProcess(Dbt):
         "ast",
         "matillion_component",
         "airflow_tasks",
-        "alteryx_workflow",
         "column_processes",
     ]
 
