@@ -20,6 +20,7 @@ from jinja2 import Environment, PackageLoader
 from pyatlan.model.typedef import EntityDef, EnumDef, TypeDefResponse
 from pyatlan.model.utils import to_snake_case
 
+RESERVED_SERVICE_TYPES = {"atlas_core", "atlan", "aws", "azure", "gcp", "google"}
 REFERENCEABLE = "Referenceable"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
 TYPE_REPLACEMENTS = [
@@ -205,6 +206,7 @@ class AssetInfo:
     asset_info_by_name: Dict[str, "AssetInfo"] = {}
     hierarchy_graph: nx.DiGraph = nx.DiGraph()
     super_type_names_to_ignore: Set[str] = set()
+    sub_type_names_to_ignore: Set[str] = set()
     entity_defs_by_name: Dict[str, EntityDef] = {}
 
     def __init__(self, name: str, entity_def: EntityDef):
@@ -353,7 +355,8 @@ class AssetInfo:
                 cls.super_type_names_to_ignore.add(name)
                 continue
             for asset_name in entity_def.sub_types or []:
-                AssetInfo.hierarchy_graph.add_edge(name, asset_name)
+                if asset_name not in AssetInfo.sub_type_names_to_ignore:
+                    AssetInfo.hierarchy_graph.add_edge(name, asset_name)
             asset_info = AssetInfo(name=name, entity_def=entity_def)
             AssetInfo.asset_info_by_name[name] = asset_info
         for asset_info in AssetInfo.asset_info_by_name.values():
@@ -792,7 +795,21 @@ class EnumDefInfo:
 
 if __name__ == "__main__":
     type_defs = get_type_defs()
-    AssetInfo.set_entity_defs(type_defs.entity_defs)
+    AssetInfo.sub_type_names_to_ignore.update(
+        {
+            entity_def.name
+            for entity_def in type_defs.entity_defs
+            if entity_def.service_type not in RESERVED_SERVICE_TYPES
+        }
+    )
+    AssetInfo.set_entity_defs(
+        [
+            entity_def
+            for entity_def in type_defs.entity_defs
+            if entity_def.service_type in RESERVED_SERVICE_TYPES
+        ]
+    )
+
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
     for file in (ASSETS_DIR).glob("*.py"):

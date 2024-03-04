@@ -176,10 +176,6 @@ class DbtColumnProcess(Dbt):
     """
     TBC
     """
-    ALTERYX_WORKFLOW: ClassVar[RelationField] = RelationField("alteryxWorkflow")
-    """
-    TBC
-    """
     COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
     """
     TBC
@@ -516,16 +512,6 @@ class DbtColumnProcess(Dbt):
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
-    def alteryx_workflow(self) -> Optional[AlteryxWorkflow]:
-        return None if self.attributes is None else self.attributes.alteryx_workflow
-
-    @alteryx_workflow.setter
-    def alteryx_workflow(self, alteryx_workflow: Optional[AlteryxWorkflow]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alteryx_workflow = alteryx_workflow
-
-    @property
     def column_processes(self) -> Optional[List[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
@@ -573,9 +559,6 @@ class DbtColumnProcess(Dbt):
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        alteryx_workflow: Optional[AlteryxWorkflow] = Field(
-            default=None, description=""
-        )  # relationship
         column_processes: Optional[List[ColumnProcess]] = Field(
             default=None, description=""
         )  # relationship
@@ -588,7 +571,6 @@ class DbtColumnProcess(Dbt):
 
 
 from .airflow_task import AirflowTask  # noqa
-from .alteryx_workflow import AlteryxWorkflow  # noqa
 from .catalog import Catalog  # noqa
 from .column_process import ColumnProcess  # noqa
 from .matillion_component import MatillionComponent  # noqa

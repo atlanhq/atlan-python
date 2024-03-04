@@ -25,7 +25,6 @@ from .persona import Persona
 from .purpose import Purpose
 from .collection import Collection
 from .folder import Folder
-from .alteryx_workflow import AlteryxWorkflow
 from .airflow import Airflow
 from .object_store import ObjectStore
 from .data_quality import DataQuality
@@ -252,7 +251,6 @@ Persona.Attributes.update_forward_refs(**localns)
 Purpose.Attributes.update_forward_refs(**localns)
 Collection.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
-AlteryxWorkflow.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ObjectStore.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
