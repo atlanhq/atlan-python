@@ -1001,7 +1001,7 @@ class TypeDefResponse(AtlanObject):
 
     _custom_entity_defs: List[EntityDef] = PrivateAttr(default_factory=list)
 
-    _custom_entity_def_names: set[str] = PrivateAttr(default_factory=set)
+    _custom_entity_def_names: Set[str] = PrivateAttr(default_factory=set)
 
     def __init__(self, **data):
         super().__init__(**data)
