@@ -1,0 +1,25 @@
+{
+    "tasks": [
+      {
+        "type": "CLASSIFICATION_PROPAGATION_ADD",
+        "guid": "test-guid-1",
+        "createdBy": "service-account-apikey-123",
+        "createdTime": 1708758931776,
+        "updatedTime": 1708758963361,
+        "startTime": 1708758959335,
+        "endTime": 1708758963321,
+        "timeTakenInSeconds": 3,
+        "parameters": {
+          "relationshipGuid": null,
+          "entityGuid": "test-guid-2",
+          "classificationVertexId": "901280"
+        },
+        "attemptCount": 0,
+        "status": "COMPLETE",
+        "classificationId": "901280",
+        "entityGuid": "test-guid-2"
+      }
+    ],
+    "aggregations": null,
+    "approximateCount": 1
+}
