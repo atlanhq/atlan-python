@@ -1021,7 +1021,7 @@ class TypeDefResponse(AtlanObject):
         return self._custom_entity_defs
 
     @property
-    def custom_entity_def_names(self) -> set[str]:
+    def custom_entity_def_names(self) -> Set[str]:
         return self._custom_entity_def_names
 
     def is_custom_entity_def_name(self, name: str) -> bool:
