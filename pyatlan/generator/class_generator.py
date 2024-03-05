@@ -206,6 +206,7 @@ class AssetInfo:
     hierarchy_graph: nx.DiGraph = nx.DiGraph()
     super_type_names_to_ignore: Set[str] = set()
     entity_defs_by_name: Dict[str, EntityDef] = {}
+    sub_type_names_to_ignore: Set[str] = set()
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
