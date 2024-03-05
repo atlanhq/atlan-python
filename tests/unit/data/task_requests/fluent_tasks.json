@@ -1,0 +1,29 @@
+{
+    "attributes": [],
+    "dsl": {
+      "from": 0,
+      "size": 1,
+      "aggregations": {},
+      "track_total_hits": true,
+      "query": {
+        "bool": {
+          "filter": [
+            {
+              "match": {
+                "__task_status": {
+                  "query": "COMPLETE"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "sort": [
+        {
+          "__task_startTime": {
+            "order": "asc"
+          }
+        }
+      ]
+    }
+}
