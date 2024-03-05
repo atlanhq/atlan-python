@@ -12,7 +12,7 @@ import os
 import re
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Optional, Set
+from typing import Any, Dict, NamedTuple, Optional, Set
 
 import networkx as nx
 from jinja2 import Environment, PackageLoader
@@ -203,19 +203,19 @@ class ModuleInfo:
 
 
 class AssetInfo:
-    asset_info_by_name: Dict[str, "AssetInfo"] = {}
+    asset_info_by_name: dict[str, "AssetInfo"] = {}
     hierarchy_graph: nx.DiGraph = nx.DiGraph()
-    super_type_names_to_ignore: Set[str] = set()
-    sub_type_names_to_ignore: Set[str] = set()
-    entity_defs_by_name: Dict[str, EntityDef] = {}
+    super_type_names_to_ignore: set[str] = set()
+    sub_type_names_to_ignore: set[str] = set()
+    entity_defs_by_name: dict[str, EntityDef] = {}
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
         self.entity_def: EntityDef = entity_def
         self.update_attribute_defs()
         self.module_info: Optional[ModuleInfo] = None
-        self.required_asset_infos: Set["AssetInfo"] = set()
-        self.circular_dependencies: Set["AssetInfo"] = set()
+        self.required_asset_infos: set["AssetInfo"] = set()
+        self.circular_dependencies: set["AssetInfo"] = set()
         self.order: int = 0
         self.module_name = to_snake_case(name)
         self.super_type: Optional[AssetInfo] = None
@@ -288,7 +288,7 @@ class AssetInfo:
         )
 
     def update_required_asset_names(self) -> None:
-        attributes_to_remove: Set[str] = set()
+        attributes_to_remove: set[str] = set()
         attribute_defs = self.entity_def.attribute_defs or []
         relationship_attribute_defs = self.entity_def.relationship_attribute_defs or []
         for attribute in attribute_defs + relationship_attribute_defs:
@@ -336,7 +336,7 @@ class AssetInfo:
                 self.circular_dependencies.add(super_type)
 
     @classmethod
-    def set_entity_defs(cls, entity_defs: List[EntityDef]):
+    def set_entity_defs(cls, entity_defs: list[EntityDef]):
         cls.entity_defs_by_name = {
             entity_def.name: entity_def for entity_def in entity_defs
         }
@@ -482,7 +482,7 @@ class SearchType:
         self.args = args
 
 
-def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
+def get_search_type(attr_def: dict[str, Any]) -> SearchType:
     def get_default_index_for_type(base_type: str) -> IndexType:
         if base_type in {"date", "float", "double", "int", "long"}:
             to_use = IndexType.NUMERIC
@@ -510,8 +510,8 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
                 base_type = get_embedded_type(type_name)
         return base_type
 
-    def get_indexes_for_attribute() -> Dict[IndexType, str]:
-        searchable: Dict[IndexType, str] = {}
+    def get_indexes_for_attribute() -> dict[IndexType, str]:
+        searchable: dict[IndexType, str] = {}
         config = attr_def.get("indexTypeESConfig")
         attr_name = str(attr_def.get("name"))
         if "relationshipTypeName" in attr_def:
@@ -629,7 +629,7 @@ class Generator:
             ancestor_relationship_defs,
         )
 
-    def render_modules(self, modules: List[ModuleInfo]):
+    def render_modules(self, modules: list[ModuleInfo]):
         self.render_init(modules)  # type: ignore
 
     def render_module(self, asset_info: AssetInfo):
@@ -643,7 +643,7 @@ class Generator:
         with (ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
             script.write(content)
 
-    def render_init(self, assets: List[AssetInfo]):
+    def render_init(self, assets: list[AssetInfo]):
         asset_names = [asset.name for asset in assets]
         asset_imports = [
             f"from .{asset.module_name} import {asset.name}" for asset in assets
@@ -664,7 +664,7 @@ class Generator:
         with (MODEL_DIR / "structs.py").open("w") as script:
             script.write(content)
 
-    def render_enums(self, enum_defs: List["EnumDefInfo"]):
+    def render_enums(self, enum_defs: list["EnumDefInfo"]):
         template = self.environment.get_template("enums.jinja2")
         content = template.render({"enum_defs": enum_defs})
         start_of_generated_section_found = False
@@ -768,11 +768,11 @@ class KeyValue(NamedTuple):
 
 
 class EnumDefInfo:
-    enum_def_info: List["EnumDefInfo"] = []
+    enum_def_info: list["EnumDefInfo"] = []
 
     def __init__(self, enum_def: EnumDef):
         self.name = get_type(enum_def.name)
-        self.element_defs: List[KeyValue] = [
+        self.element_defs: list[KeyValue] = [
             self.get_key_value(e)
             for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal or 0)
         ]
@@ -793,23 +793,33 @@ class EnumDefInfo:
         cls.enum_def_info = sorted(cls.enum_def_info, key=lambda e: e.name)
 
 
+def filter_attributes_of_custom_entity_type():
+    for entity_def in type_defs.reserved_entity_defs:
+        if entity_def.attribute_defs:
+            filtered_attribute_defs = [
+                attribute_def
+                for attribute_def in entity_def.attribute_defs
+                if not type_defs.is_custom_entity_def_name(attribute_def["typeName"])
+            ]
+            entity_def.attribute_defs = filtered_attribute_defs
+        if entity_def.relationship_attribute_defs:
+            filtered_relationship_attribute_defs = [
+                relationship_attribute_def
+                for relationship_attribute_def in entity_def.relationship_attribute_defs
+                if not type_defs.is_custom_entity_def_name(
+                    relationship_attribute_def["typeName"]
+                )
+            ]
+            entity_def.relationship_attribute_defs = (
+                filtered_relationship_attribute_defs
+            )
+
+
 if __name__ == "__main__":
     type_defs = get_type_defs()
-    AssetInfo.sub_type_names_to_ignore.update(
-        {
-            entity_def.name
-            for entity_def in type_defs.entity_defs
-            if entity_def.service_type not in RESERVED_SERVICE_TYPES
-        }
-    )
-    AssetInfo.set_entity_defs(
-        [
-            entity_def
-            for entity_def in type_defs.entity_defs
-            if entity_def.service_type in RESERVED_SERVICE_TYPES
-        ]
-    )
-
+    filter_attributes_of_custom_entity_type()
+    AssetInfo.sub_type_names_to_ignore = type_defs.custom_entity_def_names
+    AssetInfo.set_entity_defs(type_defs.reserved_entity_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
     for file in (ASSETS_DIR).glob("*.py"):
@@ -822,6 +832,6 @@ if __name__ == "__main__":
     EnumDefInfo.create(type_defs.enum_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)
     generator.render_docs_struct_snippets(type_defs.struct_defs)
-    generator.render_docs_entity_properties(type_defs.entity_defs)
-    generator.render_docs_entity_relationships(type_defs.entity_defs)
-    generator.render_sphinx_docs(type_defs.entity_defs)
+    generator.render_docs_entity_properties(type_defs.reserved_entity_defs)
+    generator.render_docs_entity_relationships(type_defs.reserved_entity_defs)
+    generator.render_sphinx_docs(type_defs.reserved_entity_defs)

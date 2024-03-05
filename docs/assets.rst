@@ -20,7 +20,6 @@ You can interact with all of the following different kinds of assets:
     asset/airflow
     asset/airflowdag
     asset/airflowtask
-    asset/alteryxworkflow
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
