@@ -12,6 +12,10 @@ from pyatlan.utils import to_camel_case
 from tests.integration.client import TestId, delete_asset
 from tests.integration.utils import block
 
+DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = (
+    '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+)
+
 MODULE_NAME = TestId.make_unique("DM")
 
 DATA_DOMAIN_NAME = f"{MODULE_NAME}-data-domain"
@@ -192,7 +196,7 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert product.qualified_name == DATA_PRODUCT_QUALIFIED_NAME
     assert (
         product.data_product_assets_playbook_filter
-        == '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+        == DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER
     )
 
 
