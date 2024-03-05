@@ -347,6 +347,7 @@ class DataProduct(DataMesh):
                 data_domain=domain,
                 qualified_name=f"default/product/{camel_case_name}",
                 asset_icon=icon_str,
+                data_product_assets_playbook_filter='{"condition":"AND","isGroupLocked":false,"rules":[]}',
             )
 
     attributes: "DataProduct.Attributes" = Field(

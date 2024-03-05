@@ -34,6 +34,10 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 response = block(AtlanClient(), AssetMutationResponse())
 
+pytestmark = pytest.mark.skip(
+    "Reset broke data mesh stuff. Some bootstrap policies need to be reset"
+)
+
 
 @pytest.fixture(scope="module")
 def domain(client: AtlanClient) -> Generator[DataDomain, None, None]:
@@ -186,6 +190,10 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert product.qualified_name
     assert product.name == DATA_PRODUCT_NAME
     assert product.qualified_name == DATA_PRODUCT_QUALIFIED_NAME
+    assert (
+        product.data_product_assets_playbook_filter
+        == '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+    )
 
 
 def test_update_product(client: AtlanClient, product: DataProduct):
