@@ -12,7 +12,7 @@ import os
 import re
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, NamedTuple, Optional, Set
+from typing import Any, NamedTuple, Optional
 
 import networkx as nx
 from jinja2 import Environment, PackageLoader
@@ -115,9 +115,9 @@ class ModuleStatus(str, Enum):
 
 class ModuleInfo:
     count: int = 0
-    modules: Set["ModuleInfo"] = set()
-    modules_by_asset_name: Dict[str, str] = {}
-    assets: Dict[str, "AssetInfo"] = {}
+    modules: set["ModuleInfo"] = set()
+    modules_by_asset_name: dict[str, str] = {}
+    assets: dict[str, "AssetInfo"] = {}
 
     @classmethod
     def check_for_circular_module_dependencies(cls):
@@ -137,7 +137,7 @@ class ModuleInfo:
     def __init__(self, asset_info: "AssetInfo"):
         self.order = ModuleInfo.count
         self._name = f"asset{ModuleInfo.count:02d}"
-        self.asset_infos: Set["AssetInfo"] = set()
+        self.asset_infos: set["AssetInfo"] = set()
         self.add_asset_info(asset_info=asset_info)
         self.status: ModuleStatus = ModuleStatus.ACTIVE
         ModuleInfo.modules.add(self)
