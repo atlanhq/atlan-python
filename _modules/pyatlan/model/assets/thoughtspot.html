@@ -204,6 +204,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/domo.html">Domo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/domocard.html">DomoCard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/domodashboard.html">DomoDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/domodataset.html">DomoDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/domodatasetcolumn.html">DomoDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodb.html">DynamoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
@@ -366,8 +371,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotcolumn.html">ThoughtspotColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotliveboard.html">ThoughtspotLiveboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspottable.html">ThoughtspotTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotview.html">ThoughtspotView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/thoughtspotworksheet.html">ThoughtspotWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
 </ul>
 </li>
@@ -453,7 +462,7 @@
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">TextField</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">NumericField</span><span class="p">,</span> <span class="n">TextField</span>
 
 <span class="kn">from</span> <span class="nn">.b_i</span> <span class="kn">import</span> <span class="n">BI</span>
 
@@ -488,10 +497,24 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">THOUGHTSPOT_JOIN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;thoughtspotJoinCount&quot;</span><span class="p">,</span> <span class="s2">&quot;thoughtspotJoinCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Total number of data table joins executed for analysis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">THOUGHTSPOT_COLUMN_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;thoughtspotColumnCount&quot;</span><span class="p">,</span> <span class="s2">&quot;thoughtspotColumnCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Number of Columns.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;thoughtspot_chart_type&quot;</span><span class="p">,</span>
         <span class="s2">&quot;thoughtspot_question_text&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspot_join_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;thoughtspot_column_count&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -520,9 +543,37 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_question_text</span> <span class="o">=</span> <span class="n">thoughtspot_question_text</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_join_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_join_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@thoughtspot_join_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_join_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thoughtspot_join_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_join_count</span> <span class="o">=</span> <span class="n">thoughtspot_join_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_column_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@thoughtspot_column_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thoughtspot_column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thoughtspot_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">thoughtspot_column_count</span> <span class="o">=</span> <span class="n">thoughtspot_column_count</span>
+
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">BI</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
         <span class="n">thoughtspot_chart_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">thoughtspot_question_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">thoughtspot_join_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">thoughtspot_column_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;Thoughtspot.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Thoughtspot</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>

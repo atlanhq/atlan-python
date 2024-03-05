@@ -203,6 +203,11 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/domo.html">Domo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/domocard.html">DomoCard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/domodashboard.html">DomoDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/domodataset.html">DomoDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/domodatasetcolumn.html">DomoDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dynamodb.html">DynamoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
@@ -365,8 +370,12 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspot.html">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotcolumn.html">ThoughtspotColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotliveboard.html">ThoughtspotLiveboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/thoughtspottable.html">ThoughtspotTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotview.html">ThoughtspotView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/thoughtspotworksheet.html">ThoughtspotWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/view.html">View</a></li>
 </ul>
 </li>
@@ -1716,8 +1725,6 @@
           <li><a href="asset/dbttag.html#pyatlan.model.assets.DbtTag.DBT_JOB_STATUS">(pyatlan.model.assets.DbtTag attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbtmodel.html#pyatlan.model.assets.DbtModel.DBT_MATERIALIZATION_TYPE">DBT_MATERIALIZATION_TYPE (pyatlan.model.assets.DbtModel attribute)</a>
 </li>
         <li><a href="asset/dbt.html#pyatlan.model.assets.Dbt.DBT_META">DBT_META (pyatlan.model.assets.Dbt attribute)</a>
@@ -1748,6 +1755,8 @@
           <li><a href="asset/dbtmodelcolumn.html#pyatlan.model.assets.DbtModelColumn.DBT_MODEL">(pyatlan.model.assets.DbtModelColumn attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbtmodelcolumn.html#pyatlan.model.assets.DbtModelColumn.DBT_MODEL_COLUMN_DATA_TYPE">DBT_MODEL_COLUMN_DATA_TYPE (pyatlan.model.assets.DbtModelColumn attribute)</a>
 </li>
         <li><a href="asset/dbtmodelcolumn.html#pyatlan.model.assets.DbtModelColumn.DBT_MODEL_COLUMN_ORDER">DBT_MODEL_COLUMN_ORDER (pyatlan.model.assets.DbtModelColumn attribute)</a>
@@ -1959,6 +1968,58 @@
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.DISPLAY_NAME">DISPLAY_NAME (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="asset/accesscontrol.html#pyatlan.model.assets.AccessControl.DISPLAY_PREFERENCES">DISPLAY_PREFERENCES (pyatlan.model.assets.AccessControl attribute)</a>
+</li>
+        <li><a href="asset/domo.html#pyatlan.model.assets.Domo">Domo (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_CARD_DASHBOARD_COUNT">DOMO_CARD_DASHBOARD_COUNT (pyatlan.model.assets.DomoCard attribute)</a>
+</li>
+        <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_CARD_TYPE">DOMO_CARD_TYPE (pyatlan.model.assets.DomoCard attribute)</a>
+</li>
+        <li><a href="asset/domodashboard.html#pyatlan.model.assets.DomoDashboard.DOMO_CARDS">DOMO_CARDS (pyatlan.model.assets.DomoDashboard attribute)</a>
+
+        <ul>
+          <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset.DOMO_CARDS">(pyatlan.model.assets.DomoDataset attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/domodashboard.html#pyatlan.model.assets.DomoDashboard.DOMO_DASHBOARD_CARD_COUNT">DOMO_DASHBOARD_CARD_COUNT (pyatlan.model.assets.DomoDashboard attribute)</a>
+</li>
+        <li><a href="asset/domodashboard.html#pyatlan.model.assets.DomoDashboard.DOMO_DASHBOARD_CHILDREN">DOMO_DASHBOARD_CHILDREN (pyatlan.model.assets.DomoDashboard attribute)</a>
+</li>
+        <li><a href="asset/domodashboard.html#pyatlan.model.assets.DomoDashboard.DOMO_DASHBOARD_PARENT">DOMO_DASHBOARD_PARENT (pyatlan.model.assets.DomoDashboard attribute)</a>
+</li>
+        <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_DASHBOARDS">DOMO_DASHBOARDS (pyatlan.model.assets.DomoCard attribute)</a>
+</li>
+        <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_DATASET">DOMO_DATASET (pyatlan.model.assets.DomoCard attribute)</a>
+
+        <ul>
+          <li><a href="asset/domodatasetcolumn.html#pyatlan.model.assets.DomoDatasetColumn.DOMO_DATASET">(pyatlan.model.assets.DomoDatasetColumn attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset.DOMO_DATASET_CARD_COUNT">DOMO_DATASET_CARD_COUNT (pyatlan.model.assets.DomoDataset attribute)</a>
+</li>
+        <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset.DOMO_DATASET_COLUMN_COUNT">DOMO_DATASET_COLUMN_COUNT (pyatlan.model.assets.DomoDataset attribute)</a>
+</li>
+        <li><a href="asset/domodatasetcolumn.html#pyatlan.model.assets.DomoDatasetColumn.DOMO_DATASET_COLUMN_TYPE">DOMO_DATASET_COLUMN_TYPE (pyatlan.model.assets.DomoDatasetColumn attribute)</a>
+</li>
+        <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset.DOMO_DATASET_COLUMNS">DOMO_DATASET_COLUMNS (pyatlan.model.assets.DomoDataset attribute)</a>
+</li>
+        <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset.DOMO_DATASET_LAST_RUN">DOMO_DATASET_LAST_RUN (pyatlan.model.assets.DomoDataset attribute)</a>
+</li>
+        <li><a href="asset/domodatasetcolumn.html#pyatlan.model.assets.DomoDatasetColumn.DOMO_DATASET_QUALIFIED_NAME">DOMO_DATASET_QUALIFIED_NAME (pyatlan.model.assets.DomoDatasetColumn attribute)</a>
+</li>
+        <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset.DOMO_DATASET_ROW_COUNT">DOMO_DATASET_ROW_COUNT (pyatlan.model.assets.DomoDataset attribute)</a>
+</li>
+        <li><a href="asset/domo.html#pyatlan.model.assets.Domo.DOMO_ID">DOMO_ID (pyatlan.model.assets.Domo attribute)</a>
+</li>
+        <li><a href="asset/domo.html#pyatlan.model.assets.Domo.DOMO_OWNER_ID">DOMO_OWNER_ID (pyatlan.model.assets.Domo attribute)</a>
+</li>
+        <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard">DomoCard (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/domodashboard.html#pyatlan.model.assets.DomoDashboard">DomoDashboard (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/domodataset.html#pyatlan.model.assets.DomoDataset">DomoDataset (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/domodatasetcolumn.html#pyatlan.model.assets.DomoDatasetColumn">DomoDatasetColumn (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.DYNAMO_DB_GLOBAL_SECONDARY_INDEXES">DYNAMO_DB_GLOBAL_SECONDARY_INDEXES (pyatlan.model.assets.DynamoDBTable attribute)</a>
 </li>
@@ -5198,8 +5259,6 @@
           <li><a href="asset/tag.html#pyatlan.model.assets.Tag.TAG_ATTRIBUTES">(pyatlan.model.assets.Tag attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbttag.html#pyatlan.model.assets.DbtTag.TAG_ID">TAG_ID (pyatlan.model.assets.DbtTag attribute)</a>
 
         <ul>
@@ -5218,6 +5277,8 @@
 </li>
         <li><a href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm.TERM_TYPE">TERM_TYPE (pyatlan.model.assets.AtlasGlossaryTerm attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/atlasglossary.html#pyatlan.model.assets.AtlasGlossary.TERMS">TERMS (pyatlan.model.assets.AtlasGlossary attribute)</a>
 
         <ul>
@@ -5238,7 +5299,23 @@
 </li>
         <li><a href="asset/thoughtspot.html#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_CHART_TYPE">THOUGHTSPOT_CHART_TYPE (pyatlan.model.assets.Thoughtspot attribute)</a>
 </li>
+        <li><a href="asset/thoughtspot.html#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_COLUMN_COUNT">THOUGHTSPOT_COLUMN_COUNT (pyatlan.model.assets.Thoughtspot attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_COLUMN_DATA_TYPE">THOUGHTSPOT_COLUMN_DATA_TYPE (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_COLUMN_TYPE">THOUGHTSPOT_COLUMN_TYPE (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspottable.html#pyatlan.model.assets.ThoughtspotTable.THOUGHTSPOT_COLUMNS">THOUGHTSPOT_COLUMNS (pyatlan.model.assets.ThoughtspotTable attribute)</a>
+
+        <ul>
+          <li><a href="asset/thoughtspotview.html#pyatlan.model.assets.ThoughtspotView.THOUGHTSPOT_COLUMNS">(pyatlan.model.assets.ThoughtspotView attribute)</a>
+</li>
+          <li><a href="asset/thoughtspotworksheet.html#pyatlan.model.assets.ThoughtspotWorksheet.THOUGHTSPOT_COLUMNS">(pyatlan.model.assets.ThoughtspotWorksheet attribute)</a>
+</li>
+        </ul></li>
         <li><a href="asset/thoughtspotliveboard.html#pyatlan.model.assets.ThoughtspotLiveboard.THOUGHTSPOT_DASHLETS">THOUGHTSPOT_DASHLETS (pyatlan.model.assets.ThoughtspotLiveboard attribute)</a>
+</li>
+        <li><a href="asset/thoughtspot.html#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_JOIN_COUNT">THOUGHTSPOT_JOIN_COUNT (pyatlan.model.assets.Thoughtspot attribute)</a>
 </li>
         <li><a href="asset/thoughtspotdashlet.html#pyatlan.model.assets.ThoughtspotDashlet.THOUGHTSPOT_LIVEBOARD">THOUGHTSPOT_LIVEBOARD (pyatlan.model.assets.ThoughtspotDashlet attribute)</a>
 </li>
@@ -5248,11 +5325,31 @@
 </li>
         <li><a href="asset/thoughtspot.html#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_QUESTION_TEXT">THOUGHTSPOT_QUESTION_TEXT (pyatlan.model.assets.Thoughtspot attribute)</a>
 </li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_TABLE">THOUGHTSPOT_TABLE (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_TABLE_QUALIFIED_NAME">THOUGHTSPOT_TABLE_QUALIFIED_NAME (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_VIEW">THOUGHTSPOT_VIEW (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_VIEW_QUALIFIED_NAME">THOUGHTSPOT_VIEW_QUALIFIED_NAME (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_WORKSHEET">THOUGHTSPOT_WORKSHEET (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn.THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME">THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME (pyatlan.model.assets.ThoughtspotColumn attribute)</a>
+</li>
         <li><a href="asset/thoughtspotanswer.html#pyatlan.model.assets.ThoughtspotAnswer">ThoughtspotAnswer (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/thoughtspotcolumn.html#pyatlan.model.assets.ThoughtspotColumn">ThoughtspotColumn (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/thoughtspotdashlet.html#pyatlan.model.assets.ThoughtspotDashlet">ThoughtspotDashlet (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/thoughtspotliveboard.html#pyatlan.model.assets.ThoughtspotLiveboard">ThoughtspotLiveboard (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/thoughtspottable.html#pyatlan.model.assets.ThoughtspotTable">ThoughtspotTable (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/thoughtspotview.html#pyatlan.model.assets.ThoughtspotView">ThoughtspotView (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/thoughtspotworksheet.html#pyatlan.model.assets.ThoughtspotWorksheet">ThoughtspotWorksheet (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/lookerlook.html#pyatlan.model.assets.LookerLook.TILE">TILE (pyatlan.model.assets.LookerLook attribute)</a>
 </li>

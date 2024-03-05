@@ -205,6 +205,11 @@
 <li class="toctree-l2"><a class="reference internal" href="dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domo.html">Domo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domocard.html">DomoCard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domodashboard.html">DomoDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domodataset.html">DomoDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domodatasetcolumn.html">DomoDatasetColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dynamodb.html">DynamoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
@@ -367,8 +372,12 @@
 <li class="toctree-l2"><a class="reference internal" href="tagattachment.html">TagAttachment</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Thoughtspot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotanswer.html">ThoughtspotAnswer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotcolumn.html">ThoughtspotColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thoughtspotliveboard.html">ThoughtspotLiveboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspottable.html">ThoughtspotTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotview.html">ThoughtspotView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotworksheet.html">ThoughtspotWorksheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
 </ul>
 </li>
@@ -456,6 +465,18 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_COLUMN_COUNT">
+<span class="sig-name descname"><span class="pre">THOUGHTSPOT_COLUMN_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_COLUMN_COUNT" title="Link to this definition">#</a></dt>
+<dd><p>Number of Columns.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_JOIN_COUNT">
+<span class="sig-name descname"><span class="pre">THOUGHTSPOT_JOIN_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_JOIN_COUNT" title="Link to this definition">#</a></dt>
+<dd><p>Total number of data table joins executed for analysis.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_QUESTION_TEXT">
 <span class="sig-name descname"><span class="pre">THOUGHTSPOT_QUESTION_TEXT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/text_field.html#pyatlan.model.fields.atlan_fields.TextField" title="pyatlan.model.fields.atlan_fields.TextField"><span class="pre">TextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.TextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_QUESTION_TEXT" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -522,6 +543,8 @@
 <li><a class="reference internal" href="#">Thoughtspot</a><ul>
 <li><a class="reference internal" href="#pyatlan.model.assets.Thoughtspot"><code class="docutils literal notranslate"><span class="pre">Thoughtspot</span></code></a><ul>
 <li><a class="reference internal" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_CHART_TYPE"><code class="docutils literal notranslate"><span class="pre">Thoughtspot.THOUGHTSPOT_CHART_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_COLUMN_COUNT"><code class="docutils literal notranslate"><span class="pre">Thoughtspot.THOUGHTSPOT_COLUMN_COUNT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_JOIN_COUNT"><code class="docutils literal notranslate"><span class="pre">Thoughtspot.THOUGHTSPOT_JOIN_COUNT</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Thoughtspot.THOUGHTSPOT_QUESTION_TEXT"><code class="docutils literal notranslate"><span class="pre">Thoughtspot.THOUGHTSPOT_QUESTION_TEXT</span></code></a></li>
 </ul>
 </li>
