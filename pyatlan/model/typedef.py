@@ -4,7 +4,7 @@ import json
 import time
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, cast
 
-from pydantic.v1 import Field
+from pydantic.v1 import Field, PrivateAttr
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.atlan_image import AtlanImage
@@ -809,6 +809,9 @@ class AtlanTagDef(TypeDef):
         )
 
 
+RESERVED_SERVICE_TYPES = {"atlas_core", "atlan", "aws", "azure", "gcp", "google"}
+
+
 class EntityDef(TypeDef):
     attribute_defs: Optional[List[Dict[str, Any]]] = Field(
         default_factory=list, description="Unused.", example=[]
@@ -838,6 +841,10 @@ class EntityDef(TypeDef):
         "use only, and should not be used without specific guidance.)",
         example=[],
     )
+
+    @property
+    def reserved_type(self) -> bool:
+        return self.service_type in RESERVED_SERVICE_TYPES
 
 
 class RelationshipDef(TypeDef):
@@ -989,3 +996,36 @@ class TypeDefResponse(AtlanObject):
         description="list of custom metadata type_ definitions.",
         alias="businessMetadataDefs",
     )
+
+    _reserved_entity_defs: List[EntityDef] = PrivateAttr(default_factory=list)
+
+    _custom_entity_defs: List[EntityDef] = PrivateAttr(default_factory=list)
+
+    _custom_entity_def_names: Set[str] = PrivateAttr(default_factory=set)
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        for entity_def in self.entity_defs:
+            if entity_def.reserved_type:
+                self._reserved_entity_defs.append(entity_def)
+            else:
+                self._custom_entity_defs.append(entity_def)
+                self._custom_entity_def_names.add(entity_def.name)
+
+    @property
+    def reserved_entity_defs(self) -> List[EntityDef]:
+        return self._reserved_entity_defs
+
+    @property
+    def custom_entity_defs(self) -> List[EntityDef]:
+        return self._custom_entity_defs
+
+    @property
+    def custom_entity_def_names(self) -> Set[str]:
+        return self._custom_entity_def_names
+
+    def is_custom_entity_def_name(self, name: str) -> bool:
+        for custom_name in self.custom_entity_def_names:
+            if custom_name in name:
+                return True
+        return False

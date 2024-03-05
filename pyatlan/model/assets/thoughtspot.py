@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, TextField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
 
 from .b_i import BI
 
@@ -41,10 +41,24 @@ class Thoughtspot(BI):
     """
 
     """
+    THOUGHTSPOT_JOIN_COUNT: ClassVar[NumericField] = NumericField(
+        "thoughtspotJoinCount", "thoughtspotJoinCount"
+    )
+    """
+    Total number of data table joins executed for analysis.
+    """
+    THOUGHTSPOT_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "thoughtspotColumnCount", "thoughtspotColumnCount"
+    )
+    """
+    Number of Columns.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "thoughtspot_chart_type",
         "thoughtspot_question_text",
+        "thoughtspot_join_count",
+        "thoughtspot_column_count",
     ]
 
     @property
@@ -73,9 +87,37 @@ class Thoughtspot(BI):
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_question_text = thoughtspot_question_text
 
+    @property
+    def thoughtspot_join_count(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.thoughtspot_join_count
+        )
+
+    @thoughtspot_join_count.setter
+    def thoughtspot_join_count(self, thoughtspot_join_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_join_count = thoughtspot_join_count
+
+    @property
+    def thoughtspot_column_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.thoughtspot_column_count
+        )
+
+    @thoughtspot_column_count.setter
+    def thoughtspot_column_count(self, thoughtspot_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_column_count = thoughtspot_column_count
+
     class Attributes(BI.Attributes):
         thoughtspot_chart_type: Optional[str] = Field(default=None, description="")
         thoughtspot_question_text: Optional[str] = Field(default=None, description="")
+        thoughtspot_join_count: Optional[int] = Field(default=None, description="")
+        thoughtspot_column_count: Optional[int] = Field(default=None, description="")
 
     attributes: "Thoughtspot.Attributes" = Field(
         default_factory=lambda: Thoughtspot.Attributes(),

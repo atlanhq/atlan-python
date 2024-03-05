@@ -206,6 +206,7 @@ class AssetInfo:
     hierarchy_graph: nx.DiGraph = nx.DiGraph()
     super_type_names_to_ignore: Set[str] = set()
     entity_defs_by_name: Dict[str, EntityDef] = {}
+    sub_type_names_to_ignore: Set[str] = set()
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
@@ -353,7 +354,8 @@ class AssetInfo:
                 cls.super_type_names_to_ignore.add(name)
                 continue
             for asset_name in entity_def.sub_types or []:
-                AssetInfo.hierarchy_graph.add_edge(name, asset_name)
+                if asset_name not in AssetInfo.sub_type_names_to_ignore:
+                    AssetInfo.hierarchy_graph.add_edge(name, asset_name)
             asset_info = AssetInfo(name=name, entity_def=entity_def)
             AssetInfo.asset_info_by_name[name] = asset_info
         for asset_info in AssetInfo.asset_info_by_name.values():
@@ -790,9 +792,33 @@ class EnumDefInfo:
         cls.enum_def_info = sorted(cls.enum_def_info, key=lambda e: e.name)
 
 
+def filter_attributes_of_custom_entity_type():
+    for entity_def in type_defs.reserved_entity_defs:
+        if entity_def.attribute_defs:
+            filtered_attribute_defs = [
+                attribute_def
+                for attribute_def in entity_def.attribute_defs
+                if not type_defs.is_custom_entity_def_name(attribute_def["typeName"])
+            ]
+            entity_def.attribute_defs = filtered_attribute_defs
+        if entity_def.relationship_attribute_defs:
+            filtered_relationship_attribute_defs = [
+                relationship_attribute_def
+                for relationship_attribute_def in entity_def.relationship_attribute_defs
+                if not type_defs.is_custom_entity_def_name(
+                    relationship_attribute_def["typeName"]
+                )
+            ]
+            entity_def.relationship_attribute_defs = (
+                filtered_relationship_attribute_defs
+            )
+
+
 if __name__ == "__main__":
     type_defs = get_type_defs()
-    AssetInfo.set_entity_defs(type_defs.entity_defs)
+    filter_attributes_of_custom_entity_type()
+    AssetInfo.sub_type_names_to_ignore = type_defs.custom_entity_def_names
+    AssetInfo.set_entity_defs(type_defs.reserved_entity_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
     for file in (ASSETS_DIR).glob("*.py"):
@@ -805,6 +831,6 @@ if __name__ == "__main__":
     EnumDefInfo.create(type_defs.enum_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)
     generator.render_docs_struct_snippets(type_defs.struct_defs)
-    generator.render_docs_entity_properties(type_defs.entity_defs)
-    generator.render_docs_entity_relationships(type_defs.entity_defs)
-    generator.render_sphinx_docs(type_defs.entity_defs)
+    generator.render_docs_entity_properties(type_defs.reserved_entity_defs)
+    generator.render_docs_entity_relationships(type_defs.reserved_entity_defs)
+    generator.render_sphinx_docs(type_defs.reserved_entity_defs)
