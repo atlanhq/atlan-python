@@ -1,3 +1,14 @@
+## 2.0.2 (March 5, 2024)
+
+### New features
+
+- **(Experimental)** Adds the ability to search the background tasks queue.
+- Adds the missing connector type for `MICROSTRATEGY`.
+
+### Bug fixes
+
+- Replaces spaces with underscores in generated enums.
+
 ## 2.0.1 (February 27, 2024)
 
 ### New features
