@@ -84,6 +84,10 @@ USER_GROUPS_JSON = "user_groups.json"
 USER_RESPONSES_DIR = TEST_DATA_DIR / "user_responses"
 AGGREGATIONS_NULL_RESPONSES_DIR = "aggregations_null_value.json"
 SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_responses"
+USER_LIST_JSON = "user_list.json"
+GET_BY_GUID_JSON = "get_by_guid.json"
+RETRIEVE_MINIMAL_JSON = "retrieve_minimal.json"
+ASSET_RESPONSES_DIR = TEST_DATA_DIR / "asset_responses"
 
 TEST_ANNOUNCEMENT = Announcement(
     announcement_title="test-title",
@@ -171,6 +175,16 @@ def user_groups_json():
 @pytest.fixture()
 def aggregations_null_json():
     return load_json(SEARCH_RESPONSES_DIR, AGGREGATIONS_NULL_RESPONSES_DIR)
+
+
+@pytest.fixture()
+def get_by_guid_json():
+    return load_json(ASSET_RESPONSES_DIR, GET_BY_GUID_JSON)
+
+
+@pytest.fixture()
+def retrieve_minimal_json():
+    return load_json(ASSET_RESPONSES_DIR, RETRIEVE_MINIMAL_JSON)
 
 
 @pytest.mark.parametrize(
@@ -1252,6 +1266,36 @@ def test_index_search_with_no_aggregation_results(
     assert response
     assert response.count == 0
     assert response.aggregations is None
+    mock_api_caller.reset_mock()
+
+
+def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json):
+    client = AssetClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [get_by_guid_json]
+
+    response = client.get_by_guid(guid="test-table-guid-123")
+
+    assert response
+    assert isinstance(response, Table)
+    assert response.guid
+    assert response.qualified_name
+    assert response.attributes
+    mock_api_caller.reset_mock()
+
+
+def test_asset_retrieve_minimal_without_asset_type(
+    mock_api_caller, retrieve_minimal_json
+):
+    client = AssetClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [retrieve_minimal_json]
+
+    response = client.retrieve_minimal(guid="test-table-guid-123")
+
+    assert response
+    assert isinstance(response, Table)
+    assert response.guid
+    assert response.qualified_name
+    assert response.attributes
     mock_api_caller.reset_mock()
 
 

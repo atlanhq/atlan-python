@@ -355,7 +355,7 @@ class AssetClient:
     def get_by_guid(
         self,
         guid: str,
-        asset_type: Type[A],
+        asset_type: Type[A] = Asset,  # type: ignore[assignment]
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
     ) -> A:
@@ -363,7 +363,7 @@ class AssetClient:
         Retrieves an asset by its GUID.
 
         :param guid: unique identifier (GUID) of the asset to retrieve
-        :param asset_type: type of asset to be retrieved
+        :param asset_type: type of asset to be retrieved, defaults to `Asset`
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :returns: the requested asset
@@ -400,12 +400,14 @@ class AssetClient:
         return asset
 
     @validate_arguments
-    def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
+    def retrieve_minimal(
+        self, guid: str, asset_type: Type[A] = Asset  # type: ignore[assignment]
+    ) -> A:
         """
         Retrieves an asset by its GUID, without any of its relationships.
 
         :param guid: unique identifier (GUID) of the asset to retrieve
-        :param asset_type: type of asset to be retrieved
+        :param asset_type: type of asset to be retrieved, defaults to `Asset`
         :returns: the asset, without any of its relationships
         :raises NotFoundError: if the asset does not exist
         """
