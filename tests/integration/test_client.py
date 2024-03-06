@@ -360,6 +360,20 @@ def test_get_asset_by_guid_good_guid(client: AtlanClient, glossary: AtlasGlossar
     assert isinstance(glossary, AtlasGlossary)
 
 
+def test_get_asset_by_guid_without_asset_type(
+    client: AtlanClient, glossary: AtlasGlossary
+):
+    glossary = client.asset.get_by_guid(glossary.guid)
+    assert isinstance(glossary, AtlasGlossary)
+
+
+def test_get_minimal_asset_without_asset_type(
+    client: AtlanClient, glossary: AtlasGlossary
+):
+    glossary = client.asset.retrieve_minimal(glossary.guid)
+    assert isinstance(glossary, AtlasGlossary)
+
+
 def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not_found_error(
     client: AtlanClient, glossary: AtlasGlossary
 ):

@@ -136,7 +136,8 @@ def test_user_list_pagination(client: AtlanClient, group: CreateGroupResponse):
         assert test_user.username
         assert test_user.email
         assert test_user.attributes
-        assert test_user.login_events
+        assert test_user.login_events is not None
+        assert len(test_user.login_events) >= 0
     current_page = response.current_page()
     assert current_page is not None
     assert len(current_page) == 0

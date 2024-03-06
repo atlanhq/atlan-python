@@ -18,16 +18,12 @@ TEST_ASSET_CLIENT_METHODS = {
         (["qn", "asset-type"], "asset_type\n  a class is expected"),
     ],
     "get_by_guid": [
-        ([[123], "asset-type"], "guid\n  str type expected"),
-        ([None, "asset-type"], "none is not an allowed value"),
-        (["qn", None], "none is not an allowed value"),
-        (["qn", "asset-type"], "asset_type\n  a class is expected"),
+        ([[123]], "guid\n  str type expected"),
+        ([None], "none is not an allowed value"),
     ],
     "retrieve_minimal": [
-        ([[123], "asset-type"], "guid\n  str type expected"),
-        ([None, "asset-type"], "none is not an allowed value"),
-        (["qn", None], "none is not an allowed value"),
-        (["qn", "asset-type"], "asset_type\n  a class is expected"),
+        ([[123]], "guid\n  str type expected"),
+        ([None], "none is not an allowed value"),
     ],
     "upsert": [
         ([123], "entity\n  argument of type 'int' is not iterable"),
