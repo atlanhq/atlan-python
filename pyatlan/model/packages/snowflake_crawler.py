@@ -180,8 +180,6 @@ class SnowflakeCrawler(AbstractCrawler):
         :returns: crawler, set to include only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
-        :raises InvalidRequestException: In the unlikely
-        event the provided filter cannot be translated
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
@@ -196,8 +194,6 @@ class SnowflakeCrawler(AbstractCrawler):
 
         :param assets: Map keyed by database name with each value being a list of schemas
         :returns: crawler, set to exclude only those assets specified
-        :raises InvalidRequestException: In the unlikely
-        event the provided filter cannot be translated
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
@@ -243,7 +239,7 @@ class SnowflakeCrawler(AbstractCrawler):
                 "orchestration.atlan.com/dependentPackage": "",
                 "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6037440864145",
                 "orchestration.atlan.com/emoji": "\U0001f680",
-                "orchestration.atlan.com/icon": self._PACKAGE_LOGO,
+                "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
                 "orchestration.atlan.com/name": f"{self._NAME.capitalize()} Assets",
