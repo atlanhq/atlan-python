@@ -9,7 +9,7 @@ from pyatlan.model.workflow import WorkflowMetadata
 
 class SQLServerCrawler(AbstractCrawler):
     """
-    Base configuration for a new Microsoft SQL server crawler.
+    Base configuration for a new Microsoft SQL Server crawler.
 
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection

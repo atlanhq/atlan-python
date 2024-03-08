@@ -96,7 +96,7 @@
         "body": {
           "name": "default-sigma-123456-0",
           "host": "aws-api.sigmacomputing.com",
-          "port": 443,
+          "port": 1234,
           "authType": "api_token",
           "username": "test-client-id",
           "password": "test-api-token",

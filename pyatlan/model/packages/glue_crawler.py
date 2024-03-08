@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from json import dumps
 from typing import List, Optional
 
@@ -60,7 +62,7 @@ class GlueCrawler(AbstractCrawler):
     def direct(
         self,
         region: str,
-    ) -> "GlueCrawler":
+    ) -> GlueCrawler:
         """
         Set up the crawler to extract directly from Glue.
 
@@ -75,7 +77,7 @@ class GlueCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_user_auth(self, access_key: str, secret_key: str) -> "GlueCrawler":
+    def iam_user_auth(self, access_key: str, secret_key: str) -> GlueCrawler:
         """
         Set up the crawler to use IAM user-based authentication.
 
@@ -106,7 +108,7 @@ class GlueCrawler(AbstractCrawler):
         except TypeError:
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
-    def include(self, assets: List[str]) -> "GlueCrawler":
+    def include(self, assets: List[str]) -> GlueCrawler:
         """
         Defines the filter for assets to include when crawling.
 
@@ -118,7 +120,7 @@ class GlueCrawler(AbstractCrawler):
         self._build_asset_filter("include", assets)
         return self
 
-    def exclude(self, assets: List[str]) -> "GlueCrawler":
+    def exclude(self, assets: List[str]) -> GlueCrawler:
         """
         Defines the filter for assets to exclude when crawling.
 

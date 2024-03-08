@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -54,7 +56,7 @@ class PowerBICrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def direct(self) -> "PowerBICrawler":
+    def direct(self) -> PowerBICrawler:
         """
         Set up the crawler to extract directly from Power BI.
 
@@ -76,7 +78,7 @@ class PowerBICrawler(AbstractCrawler):
         tenant_id: str,
         client_id: str,
         client_secret: str,
-    ) -> "PowerBICrawler":
+    ) -> PowerBICrawler:
         """
         Set up the crawler to use delegated user authentication.
 
@@ -102,7 +104,7 @@ class PowerBICrawler(AbstractCrawler):
 
     def service_principal(
         self, tenant_id: str, client_id: str, client_secret: str
-    ) -> "PowerBICrawler":
+    ) -> PowerBICrawler:
         """
         Set up the crawler to use service principal authentication.
 
@@ -123,7 +125,7 @@ class PowerBICrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def include(self, workspaces: List[str]) -> "PowerBICrawler":
+    def include(self, workspaces: List[str]) -> PowerBICrawler:
         """
         Defines the filter for workspaces to include when crawling.
 
@@ -139,7 +141,7 @@ class PowerBICrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, workspaces: List[str]) -> "PowerBICrawler":
+    def exclude(self, workspaces: List[str]) -> PowerBICrawler:
         """
         Defines the filter for workspaces to exclude when crawling.
 
@@ -155,7 +157,7 @@ class PowerBICrawler(AbstractCrawler):
         )
         return self
 
-    def direct_endorsements(self, enabled: bool = True) -> "PowerBICrawler":
+    def direct_endorsements(self, enabled: bool = True) -> PowerBICrawler:
         """
         Whether to directly attach endorsements as
         certificates (True), or instead raise these as requests

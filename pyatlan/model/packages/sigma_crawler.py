@@ -31,7 +31,7 @@ class SigmaCrawler(AbstractCrawler):
     _PACKAGE_ICON = "http://assets.atlan.com/assets/sigma.svg"
     _PACKAGE_LOGO = "http://assets.atlan.com/assets/sigma.svg"
 
-    class Endpoint(str, Enum):
+    class Hostname(str, Enum):
         GCP = "api.sigmacomputing.com"
         AZURE = "api.us.azure.sigmacomputing.com"
         AWS = "aws-api.sigmacomputing.com"
@@ -60,17 +60,18 @@ class SigmaCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def direct(self, endpoint: SigmaCrawler.Endpoint) -> SigmaCrawler:
+    def direct(self, hostname: SigmaCrawler.Hostname, port: int = 443) -> SigmaCrawler:
         """
         Set up the crawler to extract directly from Sigma.
 
-        :param endpoint: of your organization cloud
-        :returns: crawler, set up to extract directly from sigma
+        :param hostname: of the Sigma host, for example `SigmaCrawler.Hostname.AWS`
+        :param port: of the Sigma host, default: `443`
+        :returns: crawler, set up to extract directly from Sigma
         """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
-            "host": endpoint,
-            "port": 443,
+            "host": hostname,
+            "port": port,
             "extra": {},
             "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
@@ -85,8 +86,8 @@ class SigmaCrawler(AbstractCrawler):
         """
         Set up the crawler to use API token-based authentication.
 
-        :param client_id: through which to access sigma
-        :param api_secret: through which to access sigma
+        :param client_id: through which to access Sigma
+        :param api_token: through which to access Sigma
         :returns: crawler, set up to use API token-based authentication
         """
         local_creds = {
@@ -99,7 +100,7 @@ class SigmaCrawler(AbstractCrawler):
 
     def include(self, workbooks: List[str]) -> SigmaCrawler:
         """
-        Defines the filter for sigma workbooks to include when crawling.
+        Defines the filter for Sigma workbooks to include when crawling.
 
         :param workbooks: the GUIDs of workbooks to include when crawling,
         default to no workbooks if `None` are specified
@@ -116,7 +117,7 @@ class SigmaCrawler(AbstractCrawler):
 
     def exclude(self, workbooks: List[str]) -> SigmaCrawler:
         """
-        Defines the filter for sigma workbooks to exclude when crawling.
+        Defines the filter for Sigma workbooks to exclude when crawling.
 
         :param workbooks: the GUIDs of workbooks to exclude when crawling,
         default to no workbooks if `None` are specified

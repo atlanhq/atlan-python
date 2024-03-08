@@ -367,7 +367,7 @@ def test_sigma_package(
             admin_groups=None,
             admin_users=None,
         )
-        .direct(endpoint=SigmaCrawler.Endpoint.AWS)
+        .direct(hostname=SigmaCrawler.Hostname.AWS, port=1234)
         .api_token(client_id="test-client-id", api_token="test-api-token")
         .include(workbooks=["test-workbook-1", "test-workbook-2"])
         .exclude(workbooks=[])
