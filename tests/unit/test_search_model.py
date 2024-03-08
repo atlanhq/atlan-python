@@ -39,6 +39,7 @@ from tests.unit.model.constants import (
 )
 
 NOW = datetime.now()
+NOW_TIMESTAMP = int(NOW.timestamp() * 1000)
 VALUES_BY_TYPE: Dict[Union[type, object], Union[str, datetime, object]] = {
     StrictStr: "abc",
     StrictBool: True,
@@ -728,6 +729,30 @@ def test_by_methods_on_exists(with_name, field):
                 "range": {
                     "Bob": {
                         "gt": 1,
+                        "gte": 2,
+                        "lt": 3,
+                        "lte": 4,
+                        "boost": 2.0,
+                        "format": "YY/MM/DD",
+                        "relation": "WITHIN",
+                        "time_zone": "-01:00",
+                    }
+                }
+            },
+        ),
+        (
+            NOW,
+            2,
+            3,
+            4,
+            2.0,
+            "YY/MM/DD",
+            "WITHIN",
+            "-01:00",
+            {
+                "range": {
+                    "Bob": {
+                        "gt": NOW_TIMESTAMP,
                         "gte": 2,
                         "lt": 3,
                         "lte": 4,
