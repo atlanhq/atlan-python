@@ -128,9 +128,12 @@ class SQLServerCrawler(AbstractCrawler):
             {"name": "credential-guid", "value": "{{credentialGuid}}"}
         )
         self._parameters.append(dict(name="publish-mode", value="production"))
+        self._parameters.append(dict(name="extraction-method", value="direct"))
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))
+        self._parameters.append(dict(name="use-jdbc-internal-methods", value="true"))
+        self._parameters.append(dict(name="use-source-schema-filtering", value="false"))
         self._parameters.append(
-            dict(name="control-config-strategy", value="credential_guid")
+            dict(name="credentials-fetch-strategy", value="credential_guid")
         )
         self._parameters.append(
             {
