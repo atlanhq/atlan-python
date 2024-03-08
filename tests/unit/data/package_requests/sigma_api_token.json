@@ -1,0 +1,108 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/8731744918813",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "http://assets.atlan.com/assets/sigma.svg",
+        "orchestration.atlan.com/logo": "http://assets.atlan.com/assets/sigma.svg",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/sigma",
+        "orchestration.atlan.com/name": "Sigma Assets",
+        "orchestration.atlan.com/categories": "sigma,crawler",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl Sigma assets and publish to Atlan for discovery",
+        "package.argoproj.io/homepage": "",
+        "package.argoproj.io/keywords": "[\"sigma\",\"bi\",\"connector\",\"crawler\"]",
+        "package.argoproj.io/name": "@atlan/sigma",
+        "package.argoproj.io/parent": ".",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-sigma-default-sigma-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "sigma",
+        "orchestration.atlan.com/sourceCategory": "bi",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hsigma",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-sigma-123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-sigma-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "include-filter",
+                      "value": "{\"test-workbook-1\": {}, \"test-workbook-2\": {}}"
+                    },
+                    {
+                      "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/sigma/123456\", \"name\": \"test-sigma-basic-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"sigma\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"http://assets.atlan.com/assets/sigma.svg\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    },
+                    {
+                      "name": "publish-mode",
+                      "value": "production"
+                    },
+                    {
+                      "name": "atlas-auth-type",
+                      "value": "internal"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-sigma",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/sigma"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "name": "default-sigma-123456-0",
+          "host": "aws-api.sigmacomputing.com",
+          "port": 443,
+          "authType": "api_token",
+          "username": "test-client-id",
+          "password": "test-api-token",
+          "extra": {},
+          "connectorConfigName": "atlan-connectors-sigma"
+        }
+      }
+    ]
+}
