@@ -874,7 +874,7 @@ class Range(Query):
             if hasattr(self, attribute_name):
                 attribute_value = getattr(self, attribute_name)
                 if isinstance(attribute_value, datetime):
-                    attribute_value = int(self.value.timestamp() * 1000)
+                    attribute_value = int(attribute_value.timestamp() * 1000)
             else:
                 attribute_value = None
             return attribute_value
