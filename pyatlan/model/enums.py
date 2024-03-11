@@ -254,6 +254,8 @@ class AtlanConnectorType(str, Enum):
     GENERIC = ("genericdb", AtlanConnectionCategory.DATABASE)
     FILE = ("file", AtlanConnectionCategory.OBJECT_STORE)
     MICROSTRATEGY = ("microstrategy", AtlanConnectionCategory.BI)
+    AWS_SITEWISE = ("aws-sitewise", AtlanConnectionCategory.DATABASE)
+    AWS_GREENGRASS = ("aws-greengrass", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
