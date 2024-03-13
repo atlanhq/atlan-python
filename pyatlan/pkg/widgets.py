@@ -21,6 +21,7 @@ Widget = Union[
     "ConnectionCreatorWidget",
     "ConnectionSelectorWidget",
     "ConnectorTypeSelectorWidget",
+    "CredentialWidget",
     "DateInputWidget",
     "DropDownWidget",
     "FileUploaderWidget",
@@ -363,6 +364,70 @@ class ConnectorTypeSelector(AbstractUIElement):
             help=help,
             grid=grid,
             start=start,
+        )
+        super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclasses.dataclass
+class CredentialWidget(AbstractWidget):
+    credential_type: str = ""
+
+    def __init__(
+        self,
+        label: str,
+        credential_type: str,
+        hidden: bool = False,
+        help: str = "",
+        placeholder: str = "",
+        grid: int = 8,
+    ):
+        super().__init__(
+            widget="credential",
+            label=label,
+            hidden=hidden,
+            help=help,
+            placeholder=placeholder,
+            grid=grid,
+        )
+        self.credential_type = credential_type
+
+    def to_json(self):
+        ret_val = super().to_json()
+        return ret_val.replace("credential_type", "credentialType")
+
+
+@dataclass
+class Credential(AbstractUIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        credential_type: str,
+        required: StrictBool = False,
+        hidden: StrictBool = False,
+        help: StrictStr = "",
+        placeholder: StrictStr = "",
+        grid: StrictInt = 8,
+    ):
+        """
+        Widget that allows you to enter arbitrary text into a single-line text input field, and returns the value of the
+        text that was entered.
+
+        :param label: name to show in the UI for the widget
+        :param required" whether a value must be selected to proceed with the UI setup
+        :param hidden: whether the widget will be shown in the UI (false) or not (true)
+        :param help: informational text to place in a hover-over to describe the use of the input
+        :param placeholder: example text to place within the widget to exemplify its use
+        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
+
+        """
+        widget = CredentialWidget(
+            label=label,
+            credential_type=credential_type,
+            hidden=hidden,
+            help=help,
+            placeholder=placeholder,
+            grid=grid,
         )
         super().__init__(type_="string", required=required, ui=widget)
 

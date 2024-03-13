@@ -12,6 +12,7 @@ from pyatlan.pkg.widgets import (
     ConnectionCreator,
     ConnectionSelector,
     ConnectorTypeSelector,
+    Credential,
     DateInput,
     DropDown,
     FileUploader,
@@ -34,6 +35,7 @@ UIElement = Union[
     ConnectionCreator,
     ConnectionSelector,
     ConnectorTypeSelector,
+    Credential,
     DateInput,
     DropDown,
     FileUploader,
@@ -127,6 +129,7 @@ class UIConfig:
     steps: List[UIStep]
     rules: List[Any] = field(default_factory=list)
     properties: Dict[str, UIElement] = field(default_factory=dict)
+    _credentials: Optional[tuple[str, UIElement]] = None
 
     @validate_arguments()
     def __init__(self, steps: List[UIStep], rules: Optional[List[Any]] = None):
@@ -140,3 +143,9 @@ class UIConfig:
                 if key in self.properties:
                     LOGGER.warning("Duplicate key found across steps: %s", key)
                 self.properties[key] = value
+                if isinstance(value, Credential):
+                    self._credentials = (key, value)
+
+    @property
+    def credentials(self) -> Optional[tuple[str, UIElement]]:
+        return self._credentials
