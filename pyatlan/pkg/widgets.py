@@ -372,22 +372,10 @@ class ConnectorTypeSelector(AbstractUIElement):
 class CredentialWidget(AbstractWidget):
     credential_type: str = ""
 
-    def __init__(
-        self,
-        label: str,
-        credential_type: str,
-        hidden: bool = False,
-        help: str = "",
-        placeholder: str = "",
-        grid: int = 8,
-    ):
+    def __init__(self, label: str, credential_type: str):
         super().__init__(
             widget="credential",
             label=label,
-            hidden=hidden,
-            help=help,
-            placeholder=placeholder,
-            grid=grid,
         )
         self.credential_type = credential_type
 
@@ -403,33 +391,20 @@ class Credential(AbstractUIElement):
         self,
         label: StrictStr,
         credential_type: str,
-        required: StrictBool = False,
-        hidden: StrictBool = False,
-        help: StrictStr = "",
-        placeholder: StrictStr = "",
-        grid: StrictInt = 8,
     ):
         """
-        Widget that allows you to enter arbitrary text into a single-line text input field, and returns the value of the
-        text that was entered.
+        Widget that allows you to embed the UI to obtain credentials for a connector defined in the repo
+        marketplace-packages/packages/atlan/connectors
 
         :param label: name to show in the UI for the widget
-        :param required" whether a value must be selected to proceed with the UI setup
-        :param hidden: whether the widget will be shown in the UI (false) or not (true)
-        :param help: informational text to place in a hover-over to describe the use of the input
-        :param placeholder: example text to place within the widget to exemplify its use
-        :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
-
+        :param credential_type" a string containing the id of the desired connector for exaample
+        csa-connectors-databricks or csa-connectors-s3
         """
         widget = CredentialWidget(
             label=label,
             credential_type=credential_type,
-            hidden=hidden,
-            help=help,
-            placeholder=placeholder,
-            grid=grid,
         )
-        super().__init__(type_="string", required=required, ui=widget)
+        super().__init__(type_="string", required=True, ui=widget)
 
 
 @dataclasses.dataclass
