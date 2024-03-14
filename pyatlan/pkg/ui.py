@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from pydantic.v1 import Extra, StrictStr, validate_arguments
 from pydantic.v1.json import pydantic_encoder
@@ -144,7 +144,7 @@ class UIConfig:
                 self.properties[key] = value
 
     @property
-    def credentials(self) -> Optional[tuple[str, UIElement]]:
+    def credentials(self) -> Optional[Tuple[str, UIElement]]:
         for step in self.steps:
             for key, value in step.inputs.items():
                 if isinstance(value, Credential):
