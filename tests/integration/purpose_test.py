@@ -21,7 +21,7 @@ from pyatlan.model.enums import (
     PurposeMetadataAction,
     QueryStatus,
 )
-from pyatlan.model.query import QueryRequest
+from pyatlan.model.query import QueryRequest, QueryResponse
 from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId, delete_asset
 
@@ -44,6 +44,16 @@ def snowflake_conn(client: AtlanClient):
 @pytest.fixture(scope="module")
 def snowflake_column_qn(snowflake_conn):
     return f"{snowflake_conn.qualified_name}/{DB_NAME}/{SCHEMA_NAME}/{TABLE_NAME}/{COLUMN_NAME}"
+
+
+def _skip_query_test_when_malformed_connection_found(response: QueryResponse):
+    if (
+        response.error_name
+        and response.error_message
+        and response.error_name == "BAD_REQUEST"
+        and "Malformed connection config" in response.error_message
+    ):
+        pytest.skip("Malformed connection config was found")
 
 
 @pytest.fixture(scope="module")
@@ -276,6 +286,7 @@ def test_retrieve_purpose(
 @pytest.mark.order(after="test_retrieve_purpose")
 def test_run_query_without_policy(client: AtlanClient, assign_tag_to_asset, query):
     response = client.queries.stream(request=query)
+    _skip_query_test_when_malformed_connection_found(response)
     assert response
     assert response.rows
     assert len(response.rows) > 1
@@ -317,6 +328,7 @@ def test_run_query_with_policy(client: AtlanClient, assign_tag_to_asset, token, 
     while found == HekaFlow.BYPASS and count < 30:
         time.sleep(2)
         response = redacted.queries.stream(query)
+        _skip_query_test_when_malformed_connection_found(response)
         assert response
         assert response.details
         assert response.details.status
