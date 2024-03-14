@@ -1,0 +1,125 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "mssql,crawler",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6167939436945-How-to-crawl-Microsoft-SQL-Server",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png",
+        "orchestration.atlan.com/logo": "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/mssql",
+        "orchestration.atlan.com/name": "SQL Server Assets",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl Microsoft SQL Server assets and publish to Atlan for discovery",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/mssql",
+        "package.argoproj.io/keywords": "[\"mssql\",\"database\",\"sql\",\"connector\",\"crawler\"]",
+        "package.argoproj.io/name": "@atlan/mssql",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-mssql-default-mssql-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "mssql",
+        "orchestration.atlan.com/sourceCategory": "warehouse",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hmssql",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-mssql-123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-mssql-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "include-filter",
+                      "value": "{\"^test-db$\": [\"^test-schema-1$\", \"^test-schema-2$\"]}"
+                    },
+                    {
+                      "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "publish-mode",
+                      "value": "production"
+                    },
+                    {
+                      "name": "extraction-method",
+                      "value": "direct"
+                    },
+                    {
+                      "name": "atlas-auth-type",
+                      "value": "internal"
+                    },
+                    {
+                      "name": "use-jdbc-internal-methods",
+                      "value": "true"
+                    },
+                    {
+                      "name": "use-source-schema-filtering",
+                      "value": "false"
+                    },
+                    {
+                      "name": "credentials-fetch-strategy",
+                      "value": "credential_guid"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/mssql/123456\", \"name\": \"test-sigma-basic-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"mssql\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-mssql",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/mssql"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "name": "default-mssql-123456-0",
+          "host": "11.22.33.44",
+          "port": 1234,
+          "authType": "basic",
+          "username": "test-user",
+          "password": "test-pass",
+          "extra": {
+            "database": "test-db"
+          },
+          "connectorConfigName": "atlan-connectors-mssql"
+        }
+      }
+    ]
+}

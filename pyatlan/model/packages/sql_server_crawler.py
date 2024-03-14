@@ -1,41 +1,34 @@
 from __future__ import annotations
 
-from json import dumps
 from typing import List, Optional
 
-from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
-class GlueCrawler(AbstractCrawler):
+class SQLServerCrawler(AbstractCrawler):
     """
-    Base configuration for a new Glue crawler.
+    Base configuration for a new Microsoft SQL Server crawler.
 
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
     :param admin_groups: admin groups for the connection
     :param admin_users: admin users for the connection
     :param allow_query: allow data to be queried in the
-    connection (True) or not (False), default: False
+    connection (True) or not (False), default: True
     :param allow_query_preview: allow sample data viewing for
-    assets in the connection (True) or not (False), default: False
+    assets in the connection (True) or not (False), default: True
     :param row_limit: maximum number of rows
-    that can be returned by a query, default: 0
+    that can be returned by a query, default: 10000
     """
 
-    _NAME = "glue"
-    _PACKAGE_NAME = "@atlan/glue"
-    _PACKAGE_PREFIX = WorkflowPackage.GLUE.value
-    _CONNECTOR_TYPE = AtlanConnectorType.GLUE
-    _AWS_DATA_CATALOG = "AwsDataCatalog"
-    _PACKAGE_ICON = (
-        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    )
-    _PACKAGE_LOGO = (
-        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    )
+    _NAME = "mssql"
+    _PACKAGE_NAME = "@atlan/mssql"
+    _PACKAGE_PREFIX = WorkflowPackage.MSSQL.value
+    _CONNECTOR_TYPE = AtlanConnectorType.MSSQL
+    _PACKAGE_ICON = "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
+    _PACKAGE_LOGO = "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
 
     def __init__(
         self,
@@ -43,9 +36,9 @@ class GlueCrawler(AbstractCrawler):
         admin_roles: Optional[List[str]],
         admin_groups: Optional[List[str]],
         admin_users: Optional[List[str]],
-        allow_query: bool = False,
-        allow_query_preview: bool = False,
-        row_limit: int = 0,
+        allow_query: bool = True,
+        allow_query_preview: bool = True,
+        row_limit: int = 10000,
     ):
         super().__init__(
             connection_name=connection_name,
@@ -60,84 +53,87 @@ class GlueCrawler(AbstractCrawler):
         )
 
     def direct(
-        self,
-        region: str,
-    ) -> GlueCrawler:
+        self, hostname: str, database: str, port: int = 1433
+    ) -> SQLServerCrawler:
         """
-        Set up the crawler to extract directly from Glue.
+        Set up the crawler to extract directly from the database.
 
-        :param region: AWS region where Glue is set up
-        :returns: crawler, set up to extract directly from Glue
+        :param hostname: hostname of the SQL Server host
+        :param database: name of the database to extract
+        :param port: port number of the SQL Server host, default: `1433`
+        :returns: crawler, set up to extract directly from the database
         """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
-            "extra": {"region": region},
+            "host": hostname,
+            "port": port,
+            "extra": {"database": database},
             "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_user_auth(self, access_key: str, secret_key: str) -> GlueCrawler:
+    def basic_auth(self, username: str, password: str) -> SQLServerCrawler:
         """
-        Set up the crawler to use IAM user-based authentication.
+        Set up the crawler to use basic authentication.
 
-        :param access_key: through which to access Glue
-        :param secret_key: through which to access Glue
-        :returns: crawler, set up to use IAM user-based authentication
+        :param username: through which to access SQL Server
+        :param password: through which to access SQL Server
+        :returns: crawler, set up to use basic authentication
         """
         local_creds = {
-            "auth_type": "iam",
-            "username": access_key,
-            "password": secret_key,
+            "authType": "basic",
+            "username": username,
+            "password": password,
         }
         self._credentials_body.update(local_creds)
         return self
 
-    def _build_asset_filter(self, filter_type: str, filter_assets: List[str]) -> None:
-        if not filter_assets:
-            self._parameters.append({"name": f"{filter_type}-filter", "value": "{}"})
-            return
-        filter_dict: dict = {self._AWS_DATA_CATALOG: {}}
-        try:
-            for asset in filter_assets:
-                filter_dict[self._AWS_DATA_CATALOG][asset] = {}
-                filter_values = dumps(filter_dict)
-            self._parameters.append(
-                {"name": f"{filter_type}-filter", "value": filter_values}
-            )
-        except TypeError:
-            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
-
-    def include(self, assets: List[str]) -> GlueCrawler:
+    def include(self, assets: dict) -> SQLServerCrawler:
         """
         Defines the filter for assets to include when crawling.
 
-        :param assets: list of schema names to include when crawling
+        :param assets: map keyed by database name
+        with each value being a list of schemas
         :returns: crawler, set to include only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
-        self._build_asset_filter("include", assets)
+        include_assets = assets or {}
+        to_include = self.build_hierarchical_filter(include_assets)
+        self._parameters.append(
+            dict(name="include-filter", value=to_include if to_include else "{}")
+        )
         return self
 
-    def exclude(self, assets: List[str]) -> GlueCrawler:
+    def exclude(self, assets: dict) -> SQLServerCrawler:
         """
         Defines the filter for assets to exclude when crawling.
 
-        :param assets: list of schema names to exclude when crawling
+        :param assets: map keyed by database name
+        with each value being a list of schemas
         :returns: crawler, set to exclude only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
-        self._build_asset_filter("exclude", assets)
+        exclude_assets = assets or {}
+        to_exclude = self.build_hierarchical_filter(exclude_assets)
+        self._parameters.append(
+            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
+        )
         return self
 
     def _set_required_metadata_params(self):
         self._parameters.append(
-            dict(name="credentials-fetch-strategy", value="credential_guid")
-        )
-        self._parameters.append(
             {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
+        self._parameters.append(dict(name="publish-mode", value="production"))
+        self._parameters.append(dict(name="extraction-method", value="direct"))
+        self._parameters.append(dict(name="atlas-auth-type", value="internal"))
+        self._parameters.append(dict(name="use-jdbc-internal-methods", value="true"))
+        self._parameters.append(dict(name="use-source-schema-filtering", value="false"))
+        self._parameters.append(
+            dict(name="credentials-fetch-strategy", value="credential_guid")
         )
         self._parameters.append(
             {
@@ -147,8 +143,6 @@ class GlueCrawler(AbstractCrawler):
                 ),
             }
         )
-        self._parameters.append(dict(name="publish-mode", value="production"))
-        self._parameters.append(dict(name="atlas-auth-type", value="internal"))
 
     def _get_metadata(self) -> WorkflowMetadata:
         self._set_required_metadata_params()
@@ -156,7 +150,7 @@ class GlueCrawler(AbstractCrawler):
             labels={
                 "orchestration.atlan.com/certified": "true",
                 "orchestration.atlan.com/source": self._NAME,
-                "orchestration.atlan.com/sourceCategory": "lake",
+                "orchestration.atlan.com/sourceCategory": "warehouse",
                 "orchestration.atlan.com/type": "connector",
                 "orchestration.atlan.com/verified": "true",
                 "package.argoproj.io/installer": "argopm",
@@ -167,18 +161,18 @@ class GlueCrawler(AbstractCrawler):
             },
             annotations={
                 "orchestration.atlan.com/allowSchedule": "true",
+                "orchestration.atlan.com/categories": "mssql,crawler",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6335637665681",
+                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6167939436945-How-to-crawl-Microsoft-SQL-Server",  # noqa
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
-                "orchestration.atlan.com/name": f"{self._NAME.capitalize()} Assets",
-                "orchestration.atlan.com/usecase": "crawling,auto-classifications",
+                "orchestration.atlan.com/name": "SQL Server Assets",
                 "package.argoproj.io/author": "Atlan",
-                "package.argoproj.io/description": f"Package to crawl AWS {self._NAME.capitalize()} assets and publish to Atlan for discovery.",  # noqa
+                "package.argoproj.io/description": f"Package to crawl Microsoft SQL Server assets and publish to Atlan for discovery",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": '["lake","connector","crawler","glue","aws","s3"]',  # fmt: skip # noqa
+                "package.argoproj.io/keywords": '["mssql","database","sql","connector","crawler"]',  # fmt: skip # noqa
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
