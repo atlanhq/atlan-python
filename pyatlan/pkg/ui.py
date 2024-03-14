@@ -3,7 +3,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
-from pydantic.v1 import StrictStr, validate_arguments
+from pydantic.v1 import Extra, StrictStr, validate_arguments
 from pydantic.v1.json import pydantic_encoder
 
 from pyatlan.pkg.widgets import (
@@ -129,7 +129,6 @@ class UIConfig:
     steps: List[UIStep]
     rules: List[Any] = field(default_factory=list)
     properties: Dict[str, UIElement] = field(default_factory=dict)
-    _credentials: Optional[tuple[str, UIElement]] = None
 
     @validate_arguments()
     def __init__(self, steps: List[UIStep], rules: Optional[List[Any]] = None):
@@ -143,9 +142,14 @@ class UIConfig:
                 if key in self.properties:
                     LOGGER.warning("Duplicate key found across steps: %s", key)
                 self.properties[key] = value
-                if isinstance(value, Credential):
-                    self._credentials = (key, value)
 
     @property
     def credentials(self) -> Optional[tuple[str, UIElement]]:
-        return self._credentials
+        for step in self.steps:
+            for key, value in step.inputs.items():
+                if isinstance(value, Credential):
+                    return (key, value)
+        return None
+
+    class Config:
+        extra = Extra.forbid
