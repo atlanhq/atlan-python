@@ -1,17 +1,16 @@
 from __future__ import annotations
 
-from json import dumps
+from enum import Enum
 from typing import List, Optional
 
-from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
-class GlueCrawler(AbstractCrawler):
+class SigmaCrawler(AbstractCrawler):
     """
-    Base configuration for a new Glue crawler.
+    Base configuration for a new Sigma crawler.
 
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
@@ -25,17 +24,19 @@ class GlueCrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
-    _NAME = "glue"
-    _PACKAGE_NAME = "@atlan/glue"
-    _PACKAGE_PREFIX = WorkflowPackage.GLUE.value
-    _CONNECTOR_TYPE = AtlanConnectorType.GLUE
-    _AWS_DATA_CATALOG = "AwsDataCatalog"
-    _PACKAGE_ICON = (
-        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    )
-    _PACKAGE_LOGO = (
-        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    )
+    _NAME = "sigma"
+    _PACKAGE_NAME = "@atlan/sigma"
+    _PACKAGE_PREFIX = WorkflowPackage.SIGMA.value
+    _CONNECTOR_TYPE = AtlanConnectorType.SIGMA
+    _PACKAGE_ICON = "http://assets.atlan.com/assets/sigma.svg"
+    _PACKAGE_LOGO = "http://assets.atlan.com/assets/sigma.svg"
+
+    class Hostname(str, Enum):
+        GCP = "api.sigmacomputing.com"
+        AZURE = "api.us.azure.sigmacomputing.com"
+        AWS = "aws-api.sigmacomputing.com"
+        AWS_CANADA = "api.ca.aws.sigmacomputing.com"
+        AWS_EUROPE = "api.eu.aws.sigmacomputing.com"
 
     def __init__(
         self,
@@ -59,83 +60,79 @@ class GlueCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def direct(
-        self,
-        region: str,
-    ) -> GlueCrawler:
+    def direct(self, hostname: SigmaCrawler.Hostname, port: int = 443) -> SigmaCrawler:
         """
-        Set up the crawler to extract directly from Glue.
+        Set up the crawler to extract directly from Sigma.
 
-        :param region: AWS region where Glue is set up
-        :returns: crawler, set up to extract directly from Glue
+        :param hostname: of the Sigma host, for example `SigmaCrawler.Hostname.AWS`
+        :param port: of the Sigma host, default: `443`
+        :returns: crawler, set up to extract directly from Sigma
         """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
-            "extra": {"region": region},
+            "host": hostname,
+            "port": port,
+            "extra": {},
             "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_user_auth(self, access_key: str, secret_key: str) -> GlueCrawler:
+    def api_token(
+        self,
+        client_id: str,
+        api_token: str,
+    ) -> SigmaCrawler:
         """
-        Set up the crawler to use IAM user-based authentication.
+        Set up the crawler to use API token-based authentication.
 
-        :param access_key: through which to access Glue
-        :param secret_key: through which to access Glue
-        :returns: crawler, set up to use IAM user-based authentication
+        :param client_id: through which to access Sigma
+        :param api_token: through which to access Sigma
+        :returns: crawler, set up to use API token-based authentication
         """
         local_creds = {
-            "auth_type": "iam",
-            "username": access_key,
-            "password": secret_key,
+            "username": client_id,
+            "password": api_token,
+            "auth_type": "api_token",
         }
         self._credentials_body.update(local_creds)
         return self
 
-    def _build_asset_filter(self, filter_type: str, filter_assets: List[str]) -> None:
-        if not filter_assets:
-            self._parameters.append({"name": f"{filter_type}-filter", "value": "{}"})
-            return
-        filter_dict: dict = {self._AWS_DATA_CATALOG: {}}
-        try:
-            for asset in filter_assets:
-                filter_dict[self._AWS_DATA_CATALOG][asset] = {}
-                filter_values = dumps(filter_dict)
-            self._parameters.append(
-                {"name": f"{filter_type}-filter", "value": filter_values}
-            )
-        except TypeError:
-            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
-
-    def include(self, assets: List[str]) -> GlueCrawler:
+    def include(self, workbooks: List[str]) -> SigmaCrawler:
         """
-        Defines the filter for assets to include when crawling.
+        Defines the filter for Sigma workbooks to include when crawling.
 
-        :param assets: list of schema names to include when crawling
-        :returns: crawler, set to include only those assets specified
+        :param workbooks: the GUIDs of workbooks to include when crawling,
+        default to no workbooks if `None` are specified
+        :returns: crawler, set to include only those workbooks specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
-        self._build_asset_filter("include", assets)
+        include_workbooks = workbooks or []
+        to_include = self.build_flat_filter(include_workbooks)
+        self._parameters.append(
+            dict(name="include-filter", value=to_include if to_include else "{}")
+        )
         return self
 
-    def exclude(self, assets: List[str]) -> GlueCrawler:
+    def exclude(self, workbooks: List[str]) -> SigmaCrawler:
         """
-        Defines the filter for assets to exclude when crawling.
+        Defines the filter for Sigma workbooks to exclude when crawling.
 
-        :param assets: list of schema names to exclude when crawling
-        :returns: crawler, set to exclude only those assets specified
+        :param workbooks: the GUIDs of workbooks to exclude when crawling,
+        default to no workbooks if `None` are specified
+        :returns: crawler, set to exclude only those workbooks specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
-        self._build_asset_filter("exclude", assets)
+        exclude_workbooks = workbooks or []
+        to_exclude = self.build_flat_filter(exclude_workbooks)
+        self._parameters.append(
+            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
+        )
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            dict(name="credentials-fetch-strategy", value="credential_guid")
-        )
         self._parameters.append(
             {"name": "credential-guid", "value": "{{credentialGuid}}"}
         )
@@ -156,7 +153,7 @@ class GlueCrawler(AbstractCrawler):
             labels={
                 "orchestration.atlan.com/certified": "true",
                 "orchestration.atlan.com/source": self._NAME,
-                "orchestration.atlan.com/sourceCategory": "lake",
+                "orchestration.atlan.com/sourceCategory": "bi",
                 "orchestration.atlan.com/type": "connector",
                 "orchestration.atlan.com/verified": "true",
                 "package.argoproj.io/installer": "argopm",
@@ -168,18 +165,19 @@ class GlueCrawler(AbstractCrawler):
             annotations={
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6335637665681",
+                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/8731744918813",
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
-                "orchestration.atlan.com/name": f"{self._NAME.capitalize()} Assets",
-                "orchestration.atlan.com/usecase": "crawling,auto-classifications",
+                "orchestration.atlan.com/name": "Sigma Assets",
+                "orchestration.atlan.com/categories": "sigma,crawler",
                 "package.argoproj.io/author": "Atlan",
-                "package.argoproj.io/description": f"Package to crawl AWS {self._NAME.capitalize()} assets and publish to Atlan for discovery.",  # noqa
-                "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": '["lake","connector","crawler","glue","aws","s3"]',  # fmt: skip # noqa
+                "package.argoproj.io/description": "Package to crawl Sigma assets and publish to Atlan for discovery",
+                "package.argoproj.io/homepage": "",
+                "package.argoproj.io/keywords": '[\"sigma\",\"bi\",\"connector\",\"crawler\"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
+                "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
                 "package.argoproj.io/support": "support@atlan.com",

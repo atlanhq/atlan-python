@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -52,7 +54,7 @@ class SnowflakeCrawler(AbstractCrawler):
 
     def basic_auth(
         self, username: str, password: str, role: str, warehouse: str
-    ) -> "SnowflakeCrawler":
+    ) -> SnowflakeCrawler:
         """
         Set up the crawler to use basic authentication.
 
@@ -80,7 +82,7 @@ class SnowflakeCrawler(AbstractCrawler):
         private_key_password: str,
         role: str,
         warehouse: str,
-    ) -> "SnowflakeCrawler":
+    ) -> SnowflakeCrawler:
         """
         Set up the crawler to use keypair-based authentication.
 
@@ -106,7 +108,7 @@ class SnowflakeCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def information_schema(self, hostname: str) -> "SnowflakeCrawler":
+    def information_schema(self, hostname: str) -> SnowflakeCrawler:
         """
         Set the crawler to extract using Snowflake's information schema.
 
@@ -125,7 +127,7 @@ class SnowflakeCrawler(AbstractCrawler):
 
     def account_usage(
         self, hostname: str, database_name: str, schema_name: str
-    ) -> "SnowflakeCrawler":
+    ) -> SnowflakeCrawler:
         """
         Set the crawler to extract using Snowflake's account usage database and schema.
 
@@ -148,7 +150,7 @@ class SnowflakeCrawler(AbstractCrawler):
         )
         return self
 
-    def lineage(self, include: bool = True) -> "SnowflakeCrawler":
+    def lineage(self, include: bool = True) -> SnowflakeCrawler:
         """
         Whether to enable lineage as part of crawling Snowflake.
 
@@ -160,7 +162,7 @@ class SnowflakeCrawler(AbstractCrawler):
         )
         return self
 
-    def tags(self, include: bool = False) -> "SnowflakeCrawler":
+    def tags(self, include: bool = False) -> SnowflakeCrawler:
         """
         Whether to enable Snowflake tag syncing as part of crawling Snowflake.
 
@@ -172,14 +174,12 @@ class SnowflakeCrawler(AbstractCrawler):
         )
         return self
 
-    def include(self, assets: dict) -> "SnowflakeCrawler":
+    def include(self, assets: dict) -> SnowflakeCrawler:
         """
         Defines the filter for assets to include when crawling.
 
         :param assets: Map keyed by database name with each value being a list of schemas
         :returns: crawler, set to include only those assets specified
-        :raises InvalidRequestException: In the unlikely
-        event the provided filter cannot be translated
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
@@ -190,14 +190,12 @@ class SnowflakeCrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, assets: dict) -> "SnowflakeCrawler":
+    def exclude(self, assets: dict) -> SnowflakeCrawler:
         """
         Defines the filter for assets to exclude when crawling.
 
         :param assets: Map keyed by database name with each value being a list of schemas
         :returns: crawler, set to exclude only those assets specified
-        :raises InvalidRequestException: In the unlikely
-        event the provided filter cannot be translated
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
@@ -243,7 +241,7 @@ class SnowflakeCrawler(AbstractCrawler):
                 "orchestration.atlan.com/dependentPackage": "",
                 "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6037440864145",
                 "orchestration.atlan.com/emoji": "\U0001f680",
-                "orchestration.atlan.com/icon": self._PACKAGE_LOGO,
+                "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
                 "orchestration.atlan.com/name": f"{self._NAME.capitalize()} Assets",
