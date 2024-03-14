@@ -1,3 +1,18 @@
+## 2.0.3 (March 11, 2024)
+
+### New features
+
+- **(Experimental)** Adds support for `Sigma` and `SQL Server` crawlers.
+- Adds AWS IoT connector types: `AWS_SITE_WISE` and `AWS_GREENGRASS`.
+
+### Bug fixes
+
+- Fixes `to_dict` method handling of `Range` queries for `datetime` attributes.
+
+### QOL improvements
+
+- Sets `asset_type` keyword argument default value to `Asset` in `get_by_guid` and `retrieve_minimal` methods.
+
 ## 2.0.2 (March 5, 2024)
 
 ### New features
