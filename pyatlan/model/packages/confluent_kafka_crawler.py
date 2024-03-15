@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -50,7 +52,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def direct(self, bootstrap: str, encrypted: bool = True) -> "ConfluentKafkaCrawler":
+    def direct(self, bootstrap: str, encrypted: bool = True) -> ConfluentKafkaCrawler:
         """
         Set up the crawler to extract directly from Kafka.
 
@@ -75,7 +77,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         self,
         api_key: str,
         api_secret: str,
-    ) -> "ConfluentKafkaCrawler":
+    ) -> ConfluentKafkaCrawler:
         """
         Set up the crawler to use API token-based authentication.
 
@@ -91,7 +93,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def include(self, regex: str = "") -> "ConfluentKafkaCrawler":
+    def include(self, regex: str = "") -> ConfluentKafkaCrawler:
         """
         Defines the filter for topics to include when crawling.
 
@@ -104,7 +106,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         self._parameters.append(dict(name="include-filter", value=regex))
         return self
 
-    def exclude(self, regex: str = "") -> "ConfluentKafkaCrawler":
+    def exclude(self, regex: str = "") -> ConfluentKafkaCrawler:
         """
         Defines a regular expression to use for excluding topics when crawling.
 
@@ -118,7 +120,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         self._parameters.append(dict(name="exclude-filter", value=regex))
         return self
 
-    def skip_internal(self, enabled: bool = True) -> "ConfluentKafkaCrawler":
+    def skip_internal(self, enabled: bool = True) -> ConfluentKafkaCrawler:
         """
         Whether to skip internal topics when crawling (True) or include them.
 

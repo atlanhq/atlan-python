@@ -5,12 +5,16 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.packages.confluent_kafka_crawler import ConfluentKafkaCrawler
-from pyatlan.model.packages.dbt_crawler import DbtCrawler
-from pyatlan.model.packages.glue_crawler import GlueCrawler
-from pyatlan.model.packages.powerbi_crawler import PowerBICrawler
-from pyatlan.model.packages.snowflake_crawler import SnowflakeCrawler
-from pyatlan.model.packages.tableau_crawler import TableauCrawler
+from pyatlan.model.packages import (
+    ConfluentKafkaCrawler,
+    DbtCrawler,
+    GlueCrawler,
+    PowerBICrawler,
+    SigmaCrawler,
+    SnowflakeCrawler,
+    SQLServerCrawler,
+    TableauCrawler,
+)
 
 PACKAGE_REQUESTS_DIR = Path(__file__).parent / "data" / "package_requests"
 SNOWFLAKE_BASIC = "snowflake_basic.json"
@@ -23,6 +27,8 @@ POWEBI_SERVICE_PRINCIPAL = "powerbi_service_principal.json"
 CONFLUENT_KAFKA_DIRECT = "confluent_kafka_direct.json"
 DBT_CORE = "dbt_core.json"
 DBT_CLOUD = "dbt_cloud.json"
+SIGMA_API_TOKEN = "sigma_api_token.json"
+SQL_SERVER_BASIC = "sql_server_basic.json"
 
 
 class NonSerializable:
@@ -341,6 +347,69 @@ def test_dbt_package(
     )
     request_json = loads(dbt_cloud.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(DBT_CLOUD)
+
+
+def test_sigma_package(
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+    mock_connection_guid,
+    mock_get_epoch_timestamp,
+):
+    mock_role_cache.validate_idstrs
+    mock_user_cache.validate_names
+    mock_group_cache.validate_aliases
+
+    sigma_api_token = (
+        SigmaCrawler(
+            connection_name="test-sigma-basic-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .direct(hostname=SigmaCrawler.Hostname.AWS, port=1234)
+        .api_token(client_id="test-client-id", api_token="test-api-token")
+        .include(workbooks=["test-workbook-1", "test-workbook-2"])
+        .exclude(workbooks=[])
+        .to_workflow()
+    )
+    request_json = loads(sigma_api_token.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(SIGMA_API_TOKEN)
+
+
+def test_sql_server_package(
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+    mock_connection_guid,
+    mock_get_epoch_timestamp,
+):
+    mock_role_cache.validate_idstrs
+    mock_user_cache.validate_names
+    mock_group_cache.validate_aliases
+
+    sql_server_basic = (
+        SQLServerCrawler(
+            connection_name="test-sigma-basic-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .direct(hostname="11.22.33.44", database="test-db", port=1234)
+        .basic_auth(username="test-user", password="test-pass")
+        .include(
+            assets={
+                "test-db": [
+                    "test-schema-1",
+                    "test-schema-2",
+                ]
+            }
+        )
+        .exclude(assets={})
+        .to_workflow()
+    )
+    request_json = loads(sql_server_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(SQL_SERVER_BASIC)
 
 
 @pytest.mark.parametrize(

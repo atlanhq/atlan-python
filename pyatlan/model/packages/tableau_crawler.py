@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -56,7 +58,7 @@ class TableauCrawler(AbstractCrawler):
         site: str,
         port: int = 443,
         ssl_enabled: bool = True,
-    ) -> "TableauCrawler":
+    ) -> TableauCrawler:
         """
         Set up the crawler to extract directly from Tableau.
 
@@ -80,7 +82,7 @@ class TableauCrawler(AbstractCrawler):
         self._parameters.append({"name": "extraction-method", "value": "direct"})
         return self
 
-    def basic_auth(self, username: str, password: str) -> "TableauCrawler":
+    def basic_auth(self, username: str, password: str) -> TableauCrawler:
         """
         Set up the crawler to use basic authentication.
 
@@ -96,9 +98,7 @@ class TableauCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def personal_access_token(
-        self, username: str, access_token: str
-    ) -> "TableauCrawler":
+    def personal_access_token(self, username: str, access_token: str) -> TableauCrawler:
         """
         Set up the crawler to use PAT-based authentication.
 
@@ -114,7 +114,7 @@ class TableauCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def include(self, projects: List[str]) -> "TableauCrawler":
+    def include(self, projects: List[str]) -> TableauCrawler:
         """
         Defines the filter for projects to include when crawling.
 
@@ -130,7 +130,7 @@ class TableauCrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, projects: List[str]) -> "TableauCrawler":
+    def exclude(self, projects: List[str]) -> TableauCrawler:
         """
         Defines the filter for projects to exclude when crawling.
 
@@ -146,7 +146,7 @@ class TableauCrawler(AbstractCrawler):
         )
         return self
 
-    def crawl_hidden_fields(self, enabled: bool = True) -> "TableauCrawler":
+    def crawl_hidden_fields(self, enabled: bool = True) -> TableauCrawler:
         """
         Whether to crawl hidden datasource fields (True) or not.
 
@@ -162,7 +162,7 @@ class TableauCrawler(AbstractCrawler):
         )
         return self
 
-    def crawl_unpublished(self, enabled: bool = True) -> "TableauCrawler":
+    def crawl_unpublished(self, enabled: bool = True) -> TableauCrawler:
         """
         Whether to crawl unpublished worksheets and dashboards (True) or not.
 
@@ -178,7 +178,7 @@ class TableauCrawler(AbstractCrawler):
         )
         return self
 
-    def alternate_host(self, hostname: str) -> "TableauCrawler":
+    def alternate_host(self, hostname: str) -> TableauCrawler:
         """
         Set an alternate host to use for the "View in Tableau" button for assets in the UI.
 

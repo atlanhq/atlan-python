@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -55,7 +57,7 @@ class DbtCrawler(AbstractCrawler):
         service_token: str,
         hostname: str = "https://cloud.getdbt.com",
         multi_tenant: bool = True,
-    ) -> "DbtCrawler":
+    ) -> DbtCrawler:
         """
         Set up the crawler to extract using dbt Cloud.
 
@@ -85,7 +87,7 @@ class DbtCrawler(AbstractCrawler):
         self._parameters.append(dict(name="control-config-strategy", value="default"))
         return self
 
-    def core(self, s3_bucket: str, s3_prefix: str, s3_region: str) -> "DbtCrawler":
+    def core(self, s3_bucket: str, s3_prefix: str, s3_region: str) -> DbtCrawler:
         """
         Set up the crawler to extract using dbt Core files in S3.
 
@@ -101,7 +103,7 @@ class DbtCrawler(AbstractCrawler):
         self._parameters.append(dict(name="core-extraction-s3-region", value=s3_region))
         return self
 
-    def enrich_materialized_assets(self, enabled: bool = False) -> "DbtCrawler":
+    def enrich_materialized_assets(self, enabled: bool = False) -> DbtCrawler:
         """
         Whether to enable the enrichment of
         materialized SQL assets as part of crawling dbt.
@@ -119,7 +121,7 @@ class DbtCrawler(AbstractCrawler):
         )
         return self
 
-    def tags(self, include: bool = False) -> "DbtCrawler":
+    def tags(self, include: bool = False) -> DbtCrawler:
         """
         Whether to enable dbt tag syncing as part of crawling dbt.
 
@@ -135,7 +137,7 @@ class DbtCrawler(AbstractCrawler):
         )
         return self
 
-    def limit_to_connection(self, connection_qualified_name: str) -> "DbtCrawler":
+    def limit_to_connection(self, connection_qualified_name: str) -> DbtCrawler:
         """
         Limit the crawling to a single connection's assets.
         If not specified, crawling will be
@@ -154,7 +156,7 @@ class DbtCrawler(AbstractCrawler):
         )
         return self
 
-    def include(self, filter: str = "") -> "DbtCrawler":
+    def include(self, filter: str = "") -> DbtCrawler:
         """
         Defines the filter for assets to include when crawling.
 
@@ -170,7 +172,7 @@ class DbtCrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, filter: str = "") -> "DbtCrawler":
+    def exclude(self, filter: str = "") -> DbtCrawler:
         """
         Defines the filter for assets to exclude when crawling.
 
