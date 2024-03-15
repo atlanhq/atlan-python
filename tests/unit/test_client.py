@@ -34,7 +34,7 @@ from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
-from pyatlan.model.user import UserRequest
+from pyatlan.model.user import AtlanUser, UserRequest
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_ASSET_CLIENT_METHODS,
@@ -1296,6 +1296,28 @@ def test_asset_retrieve_minimal_without_asset_type(
     assert response.guid
     assert response.qualified_name
     assert response.attributes
+    mock_api_caller.reset_mock()
+
+
+def test_user_create(
+    mock_api_caller,
+    mock_role_cache,
+):
+    test_role_id = "role-guid-123"
+    client = UserClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [None]
+    mock_role_cache.get_id_for_name.return_value = test_role_id
+
+    test_users = [AtlanUser.create(email="test@test.com", role_name="$member")]
+    response = client.create(users=test_users)
+
+    assert response is None
+    mock_api_call_args = mock_api_caller._call_api.call_args_list
+    user = mock_api_call_args[0].kwargs.get("request_obj").dict().get("users")[0]
+    assert len(mock_api_call_args) == 1
+    assert user.get("role_id") == test_role_id
+    assert user.get("email") == test_users[0].email
+    assert user.get("role_name") == test_users[0].workspace_role
     mock_api_caller.reset_mock()
 
 
