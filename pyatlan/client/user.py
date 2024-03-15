@@ -60,7 +60,7 @@ class UserClient:
         cur = CreateUserRequest(users=[])
         for user in users:
             role_name = str(user.workspace_role)
-            if role_id := RoleCache.get_id_for_name(role_name) and user.email:
+            if (role_id := RoleCache.get_id_for_name(role_name)) and user.email:
                 to_create = CreateUserRequest.CreateUser(
                     email=user.email,
                     role_name=role_name,

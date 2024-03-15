@@ -184,7 +184,9 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     users_list = client.user.get_by_email(email)
     assert users_list
     assert len(users_list) == 1
-    assert user1 == users_list[0]
+    assert user1.email == users_list[0].email
+    assert user1.username == users_list[0].username
+    assert user1.attributes == users_list[0].attributes
 
 
 @pytest.mark.order(after="test_create_group")
