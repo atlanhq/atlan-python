@@ -9,7 +9,14 @@ from pathlib import Path
 from typing import Dict, List, Literal, Optional, Protocol
 
 from jinja2 import Environment, PackageLoader
-from pydantic.v1 import BaseModel, Field, PrivateAttr, StrictStr, validate_arguments
+from pydantic.v1 import (
+    BaseModel,
+    Extra,
+    Field,
+    PrivateAttr,
+    StrictStr,
+    validate_arguments,
+)
 
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.pkg.ui import UIConfig
@@ -212,6 +219,9 @@ class CustomPackage(BaseModel):
         module.exports = dummy;
         """
         )
+
+    class Config:
+        extra = Extra.forbid
 
 
 class PackageWriter(BaseModel):

@@ -14,6 +14,7 @@ from pyatlan.pkg.widgets import (
     ConnectionCreator,
     ConnectionSelector,
     ConnectorTypeSelector,
+    Credential,
     DateInput,
     DropDown,
     FileUploader,

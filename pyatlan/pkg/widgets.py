@@ -21,6 +21,7 @@ Widget = Union[
     "ConnectionCreatorWidget",
     "ConnectionSelectorWidget",
     "ConnectorTypeSelectorWidget",
+    "CredentialWidget",
     "DateInputWidget",
     "DropDownWidget",
     "FileUploaderWidget",
@@ -365,6 +366,45 @@ class ConnectorTypeSelector(AbstractUIElement):
             start=start,
         )
         super().__init__(type_="string", required=required, ui=widget)
+
+
+@dataclasses.dataclass
+class CredentialWidget(AbstractWidget):
+    credential_type: str = ""
+
+    def __init__(self, label: str, credential_type: str):
+        super().__init__(
+            widget="credential",
+            label=label,
+        )
+        self.credential_type = credential_type
+
+    def to_json(self):
+        ret_val = super().to_json()
+        return ret_val.replace("credential_type", "credentialType")
+
+
+@dataclass
+class Credential(AbstractUIElement):
+    @validate_arguments()
+    def __init__(
+        self,
+        label: StrictStr,
+        credential_type: str,
+    ):
+        """
+        Widget that allows you to embed the UI to obtain credentials for a connector defined in the repo
+        marketplace-packages/packages/atlan/connectors
+
+        :param label: name to show in the UI for the widget
+        :param credential_type" a string containing the id of the desired connector for exaample
+        csa-connectors-databricks or csa-connectors-s3
+        """
+        widget = CredentialWidget(
+            label=label,
+            credential_type=credential_type,
+        )
+        super().__init__(type_="string", required=True, ui=widget)
 
 
 @dataclasses.dataclass

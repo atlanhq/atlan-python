@@ -1,9 +1,9 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
-from pydantic.v1 import StrictStr, validate_arguments
+from pydantic.v1 import Extra, StrictStr, validate_arguments
 from pydantic.v1.json import pydantic_encoder
 
 from pyatlan.pkg.widgets import (
@@ -12,6 +12,7 @@ from pyatlan.pkg.widgets import (
     ConnectionCreator,
     ConnectionSelector,
     ConnectorTypeSelector,
+    Credential,
     DateInput,
     DropDown,
     FileUploader,
@@ -34,6 +35,7 @@ UIElement = Union[
     ConnectionCreator,
     ConnectionSelector,
     ConnectorTypeSelector,
+    Credential,
     DateInput,
     DropDown,
     FileUploader,
@@ -140,3 +142,14 @@ class UIConfig:
                 if key in self.properties:
                     LOGGER.warning("Duplicate key found across steps: %s", key)
                 self.properties[key] = value
+
+    @property
+    def credentials(self) -> Optional[Tuple[str, UIElement]]:
+        for step in self.steps:
+            for key, value in step.inputs.items():
+                if isinstance(value, Credential):
+                    return (key, value)
+        return None
+
+    class Config:
+        extra = Extra.forbid
