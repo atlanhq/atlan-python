@@ -1,13 +1,15 @@
-## 2.0.3 (March 11, 2024)
+## 2.0.3 (March 15, 2024)
 
 ### New features
 
 - **(Experimental)** Adds support for `Sigma` and `SQL Server` crawlers.
 - Adds AWS IoT connector types: `AWS_SITE_WISE` and `AWS_GREENGRASS`.
+- Adds credential widget to package toolkit.
 
 ### Bug fixes
 
 - Fixes `to_dict` method handling of `Range` queries for `datetime` attributes.
+- Fixes `UserClient` create method throwing 500 (internal server error).
 
 ### QOL improvements
 
