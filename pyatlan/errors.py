@@ -491,6 +491,15 @@ class ErrorCode(Enum):
         "You must have both CLIENT_ID and CLIENT_SECRET configured to be able to impersonate users.",
         InvalidRequestError,
     )
+    UNABLE_TO_TRANSLATE_ASSETS_DSL = (
+        400,
+        "ATLAN-PYTHON-400-057",
+        "Unable to construct the selected assets DSL JSON string for the data product.",
+        "Verify the assets index search request you provided."
+        + "If the problem persists, please raise an issue on the Python SDK GitHub "
+        + "repository providing context in which this error occurred.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

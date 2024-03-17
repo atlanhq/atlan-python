@@ -2131,6 +2131,12 @@ class DataProductStatus(str, Enum):
     ARCHIVED = "Archived"
 
 
+class DataProductVisibility(str, Enum):
+    PRIVATE = "Private"
+    PROTECTED = "Protected"
+    PUBLIC = "Public"
+
+
 class DomoCardType(str, Enum):
     DOC = "DOC"
     DOC_CARD = "DOC CARD"

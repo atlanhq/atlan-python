@@ -5,19 +5,13 @@
         cls,
         *,
         name: StrictStr,
-        assets: IndexSearchRequest,
-        icon: Optional[AtlanIcon] = None,
-        domain: Optional[DataDomain] = None,
-        domain_qualified_name: Optional[StrictStr] = None,
+        domain_qualified_name: StrictStr,
+        asset_selection: IndexSearchRequest,
     ) -> DataProduct:
-        validate_required_fields(["name", "assets"], [name, assets])
-        assets_dsl = assets.get_dsl_str()
         attributes = DataProduct.Attributes.create(
             name=name,
-            assets_dsl=assets_dsl,
-            icon=icon,
-            domain=domain,
             domain_qualified_name=domain_qualified_name,
+            asset_selection=asset_selection,
         )
         return cls(attributes=attributes)
 
@@ -27,10 +21,8 @@
         cls,
         *,
         name: StrictStr,
-        assets: IndexSearchRequest,
-        icon: Optional[AtlanIcon] = None,
-        domain: Optional[DataDomain] = None,
-        domain_qualified_name: Optional[StrictStr] = None,
+        domain_qualified_name: StrictStr,
+        asset_selection: IndexSearchRequest,
     ) -> DataProduct:
         warn(
             (
@@ -42,10 +34,8 @@
         )
         return cls.creator(
             name=name,
-            assets=assets,
-            icon=icon,
-            domain=domain,
             domain_qualified_name=domain_qualified_name,
+            asset_selection=asset_selection,
         )
 
     @classmethod
@@ -60,7 +50,7 @@
         )
         # Split the data product qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        if len(fields) != 3:
+        if len(fields) <= 3:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
         return cls(
             attributes=cls.Attributes(

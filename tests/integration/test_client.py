@@ -33,7 +33,7 @@ from pyatlan.model.enums import (
     WorkflowPackage,
 )
 from pyatlan.model.fluent_search import FluentSearch
-from pyatlan.model.search import DSL, Bool, SortItem, Term
+from pyatlan.model.search import DSL, Bool, IndexSearchRequest, SortItem, Term
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
@@ -655,12 +655,15 @@ def _view_test_glossary_by_search(
     index = (
         FluentSearch().where(Asset.GUID.eq(sl_glossary.guid, case_insensitive=True))
     ).to_request()
-    index.request_metadata.utm_tags = [
-        UTMTags.ACTION_ASSET_VIEWED,
-        UTMTags.UI_PROFILE,
-        UTMTags.UI_SIDEBAR,
-        UTMTags.PROJECT_SDK_PYTHON,
-    ]
+    index.request_metadata = IndexSearchRequest.Metadata(
+        utm_tags=[
+            UTMTags.ACTION_ASSET_VIEWED,
+            UTMTags.UI_PROFILE,
+            UTMTags.UI_SIDEBAR,
+            UTMTags.PROJECT_SDK_PYTHON,
+        ],
+        save_search_log=True,
+    )
     response = client.asset.search(index)
     assert response.count == 1
     assert response.current_page()[0].name == sl_glossary.name

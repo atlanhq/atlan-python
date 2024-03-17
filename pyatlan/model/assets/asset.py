@@ -1021,6 +1021,12 @@ class Asset(Referenceable):
     """
     TBC
     """
+    INPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
+        "inputPortDataProducts"
+    )
+    """
+    TBC
+    """
     SODA_CHECKS: ClassVar[RelationField] = RelationField("sodaChecks")
     """
     TBC
@@ -1160,6 +1166,7 @@ class Asset(Referenceable):
         "links",
         "metrics",
         "readme",
+        "input_port_data_products",
         "soda_checks",
         "assigned_terms",
     ]
@@ -2896,6 +2903,22 @@ class Asset(Referenceable):
         self.attributes.readme = readme
 
     @property
+    def input_port_data_products(self) -> Optional[List[DataProduct]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.input_port_data_products
+        )
+
+    @input_port_data_products.setter
+    def input_port_data_products(
+        self, input_port_data_products: Optional[List[DataProduct]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_port_data_products = input_port_data_products
+
+    @property
     def soda_checks(self) -> Optional[List[SodaCheck]]:
         return None if self.attributes is None else self.attributes.soda_checks
 
@@ -3163,6 +3186,9 @@ class Asset(Referenceable):
             default=None, description=""
         )  # relationship
         readme: Optional[Readme] = Field(default=None, description="")  # relationship
+        input_port_data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
         soda_checks: Optional[List[SodaCheck]] = Field(
             default=None, description=""
         )  # relationship

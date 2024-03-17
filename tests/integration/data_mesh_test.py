@@ -28,7 +28,9 @@ DATA_SUB_DOMAIN_QUALIFIED_NAME = (
 )
 DATA_PRODUCT_NAME = f"{MODULE_NAME}-data-product"
 DATA_PRODUCT_MESH_SLUG = to_camel_case(DATA_PRODUCT_NAME)
-DATA_PRODUCT_QUALIFIED_NAME = f"default/product/{DATA_PRODUCT_MESH_SLUG}"
+DATA_PRODUCT_QUALIFIED_NAME = (
+    f"{DATA_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_MESH_SLUG}"
+)
 
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
@@ -179,7 +181,7 @@ def product(
     ).to_request()
     to_create = DataProduct.create(
         name=DATA_PRODUCT_NAME,
-        assets=assets,
+        asset_selection=assets,
         domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
     )
     response = client.asset.save(to_create)

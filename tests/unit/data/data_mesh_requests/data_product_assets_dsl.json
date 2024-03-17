@@ -1,0 +1,103 @@
+{
+    "query": {
+      "dsl": {
+        "from": 0,
+        "query": {
+          "bool": {
+            "filter": {
+              "bool": {
+                "filter": [
+                  {
+                    "term": {
+                      "__state": {
+                        "value": "ACTIVE",
+                        "case_insensitive": false
+                      }
+                    }
+                  },
+                  {
+                    "term": {
+                      "__typeName.keyword": {
+                        "value": "AtlasGlossary",
+                        "case_insensitive": false
+                      }
+                    }
+                  },
+                  {
+                    "term": {
+                      "certificateStatus": {
+                        "value": "VERIFIED",
+                        "case_insensitive": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "attributes": [
+        "__traitNames",
+        "connectorName",
+        "__customAttributes",
+        "certificateStatus",
+        "tenantId",
+        "anchor",
+        "parentQualifiedName",
+        "Query.parentQualifiedName",
+        "AtlasGlossaryTerm.anchor",
+        "databaseName",
+        "schemaName",
+        "parent",
+        "connectionQualifiedName",
+        "collectionQualifiedName",
+        "announcementMessage",
+        "announcementTitle",
+        "announcementType",
+        "announcementUpdatedAt",
+        "announcementUpdatedBy",
+        "allowQuery",
+        "allowQueryPreview",
+        "adminGroups",
+        "adminRoles",
+        "adminUsers",
+        "category",
+        "credentialStrategy",
+        "connectionSSOCredentialGuid",
+        "certificateStatus",
+        "certificateUpdatedAt",
+        "certificateUpdatedBy",
+        "classifications",
+        "connectionId",
+        "connectionQualifiedName",
+        "connectorName",
+        "dataType",
+        "defaultDatabaseQualifiedName",
+        "defaultSchemaQualifiedName",
+        "description",
+        "displayName",
+        "links",
+        "link",
+        "meanings",
+        "name",
+        "ownerGroups",
+        "ownerUsers",
+        "qualifiedName",
+        "typeName",
+        "userDescription",
+        "displayDescription",
+        "subDataType",
+        "rowLimit",
+        "queryTimeout",
+        "previewCredentialStrategy",
+        "policyStrategy",
+        "policyStrategyForSamplePreview",
+        "useObjectStorage",
+        "objectStorageUploadThreshold",
+        "outputPortDataProducts"
+      ],
+      "suppressLogs": true
+    },
+    "filterScrubbed": true
+}
