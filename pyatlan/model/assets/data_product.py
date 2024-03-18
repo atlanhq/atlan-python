@@ -79,7 +79,7 @@ class DataProduct(DataMesh):
         )
         # Split the data product qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        if len(fields) <= 3:
+        if len(fields) < 5:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
         return cls(
             attributes=cls.Attributes(
