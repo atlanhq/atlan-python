@@ -463,7 +463,6 @@
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanIcon</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">RelationField</span>
 <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">to_camel_case</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
@@ -482,15 +481,11 @@
         <span class="bp">cls</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-        <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">parent_domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">parent_domain_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataDomain</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
-            <span class="n">parent_domain</span><span class="o">=</span><span class="n">parent_domain</span><span class="p">,</span>
             <span class="n">parent_domain_qualified_name</span><span class="o">=</span><span class="n">parent_domain_qualified_name</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
@@ -501,8 +496,6 @@
         <span class="bp">cls</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-        <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">parent_domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">parent_domain_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataDomain</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span>
@@ -515,8 +508,6 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
-            <span class="n">parent_domain</span><span class="o">=</span><span class="n">parent_domain</span><span class="p">,</span>
             <span class="n">parent_domain_qualified_name</span><span class="o">=</span><span class="n">parent_domain_qualified_name</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -527,10 +518,8 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SelfAsset</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">])</span>
-        <span class="c1"># Split the data domain qualified_name to extract data mesh info</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="n">qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-        <span class="c1"># for domain and subdomain</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid data domain qualified_name: </span><span class="si">{</span><span class="n">qualified_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">attributes</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
@@ -637,26 +626,25 @@
             <span class="bp">cls</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-            <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">parent_domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">parent_domain_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">parent_domain</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">mesh_name</span> <span class="o">=</span> <span class="n">to_camel_case</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="n">qualified_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;default/domain/</span><span class="si">{</span><span class="n">mesh_name</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="c1"># If &quot;qualified name&quot; of the parent domain is specified</span>
+
+            <span class="c1"># In case of sub-domain</span>
             <span class="k">if</span> <span class="n">parent_domain_qualified_name</span><span class="p">:</span>
-                <span class="n">parent_domain</span> <span class="o">=</span> <span class="n">DataDomain</span><span class="p">()</span>
-                <span class="n">parent_domain</span><span class="o">.</span><span class="n">unique_attributes</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;qualifiedName&quot;</span><span class="p">:</span> <span class="n">parent_domain_qualified_name</span>
-                <span class="p">}</span>
+                <span class="n">parent_domain</span> <span class="o">=</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span>
+                    <span class="n">parent_domain_qualified_name</span>
+                <span class="p">)</span>
                 <span class="n">qualified_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">parent_domain_qualified_name</span><span class="si">}</span><span class="s2">/domain/</span><span class="si">{</span><span class="n">mesh_name</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">icon_str</span> <span class="o">=</span> <span class="n">icon</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">icon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
             <span class="k">return</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">parent_domain</span><span class="o">=</span><span class="n">parent_domain</span><span class="p">,</span>
                 <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
-                <span class="n">asset_icon</span><span class="o">=</span><span class="n">icon_str</span><span class="p">,</span>
+                <span class="n">parent_domain</span><span class="o">=</span><span class="n">parent_domain</span><span class="p">,</span>
+                <span class="n">parent_domain_qualified_name</span><span class="o">=</span><span class="n">parent_domain_qualified_name</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;DataDomain.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

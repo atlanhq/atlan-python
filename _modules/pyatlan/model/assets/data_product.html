@@ -458,25 +458,22 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validator</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.model.data_mesh</span> <span class="kn">import</span> <span class="n">DataProductsAssetsDSL</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AtlanIcon</span><span class="p">,</span>
     <span class="n">DataProductCriticality</span><span class="p">,</span>
     <span class="n">DataProductSensitivity</span><span class="p">,</span>
     <span class="n">DataProductStatus</span><span class="p">,</span>
+    <span class="n">DataProductVisibility</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">NumericField</span><span class="p">,</span> <span class="n">RelationField</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.search</span> <span class="kn">import</span> <span class="n">IndexSearchRequest</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">init_guid</span><span class="p">,</span>
-    <span class="n">to_camel_case</span><span class="p">,</span>
-    <span class="n">validate_required_fields</span><span class="p">,</span>
-    <span class="n">validate_single_required_field</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">to_camel_case</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span> <span class="nn">.asset</span> <span class="kn">import</span> <span class="n">SelfAsset</span>
 <span class="kn">from</span> <span class="nn">.data_mesh</span> <span class="kn">import</span> <span class="n">DataMesh</span>
@@ -493,19 +490,13 @@
         <span class="bp">cls</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-        <span class="n">assets</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">,</span>
-        <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">domain_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">domain_qualified_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">asset_selection</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataProduct</span><span class="p">:</span>
-        <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;assets&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">assets</span><span class="p">])</span>
-        <span class="n">assets_dsl</span> <span class="o">=</span> <span class="n">assets</span><span class="o">.</span><span class="n">get_dsl_str</span><span class="p">()</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataProduct</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">assets_dsl</span><span class="o">=</span><span class="n">assets_dsl</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
-            <span class="n">domain</span><span class="o">=</span><span class="n">domain</span><span class="p">,</span>
             <span class="n">domain_qualified_name</span><span class="o">=</span><span class="n">domain_qualified_name</span><span class="p">,</span>
+            <span class="n">asset_selection</span><span class="o">=</span><span class="n">asset_selection</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
@@ -515,10 +506,8 @@
         <span class="bp">cls</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-        <span class="n">assets</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">,</span>
-        <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">domain_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">domain_qualified_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">asset_selection</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataProduct</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="p">(</span>
@@ -530,10 +519,8 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">assets</span><span class="o">=</span><span class="n">assets</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
-            <span class="n">domain</span><span class="o">=</span><span class="n">domain</span><span class="p">,</span>
             <span class="n">domain_qualified_name</span><span class="o">=</span><span class="n">domain_qualified_name</span><span class="p">,</span>
+            <span class="n">asset_selection</span><span class="o">=</span><span class="n">asset_selection</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
@@ -548,7 +535,7 @@
         <span class="p">)</span>
         <span class="c1"># Split the data product qualified_name to extract data mesh info</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="n">qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid data product qualified_name: </span><span class="si">{</span><span class="n">qualified_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">attributes</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
@@ -607,6 +594,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Information sensitivity of this data product.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DATA_PRODUCT_VISIBILITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;dataProductVisibility&quot;</span><span class="p">,</span> <span class="s2">&quot;dataProductVisibility&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Visibility of a data product.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATA_PRODUCT_ASSETS_DSL</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;dataProductAssetsDSL&quot;</span><span class="p">,</span> <span class="s2">&quot;dataProductAssetsDSL&quot;</span>
     <span class="p">)</span>
@@ -625,6 +618,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Score of this data product.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DATA_PRODUCT_SCORE_UPDATED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;dataProductScoreUpdatedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;dataProductScoreUpdatedAt&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Timestamp when the score of this data product was last updated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">DATA_DOMAIN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;dataDomain&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -634,16 +633,23 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INPUT_PORTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;inputPorts&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;data_product_status&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_criticality&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_sensitivity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_product_visibility&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_assets_d_s_l&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_assets_playbook_filter&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_score_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_product_score_updated_at&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_domain&quot;</span><span class="p">,</span>
         <span class="s2">&quot;output_ports&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;input_ports&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -687,6 +693,20 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_sensitivity</span> <span class="o">=</span> <span class="n">data_product_sensitivity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_product_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_visibility</span>
+        <span class="p">)</span>
+
+    <span class="nd">@data_product_visibility</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_product_visibility</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data_product_visibility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_visibility</span> <span class="o">=</span> <span class="n">data_product_visibility</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_product_assets_d_s_l</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -735,6 +755,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_score_value</span> <span class="o">=</span> <span class="n">data_product_score_value</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_product_score_updated_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_score_updated_at</span>
+        <span class="p">)</span>
+
+    <span class="nd">@data_product_score_updated_at</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_product_score_updated_at</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data_product_score_updated_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_score_updated_at</span> <span class="o">=</span> <span class="n">data_product_score_updated_at</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_domain</span>
 
@@ -754,6 +790,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">output_ports</span> <span class="o">=</span> <span class="n">output_ports</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">input_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">input_ports</span>
+
+    <span class="nd">@input_ports</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">input_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ports</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">input_ports</span> <span class="o">=</span> <span class="n">input_ports</span>
+
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">DataMesh</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
         <span class="n">data_product_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
@@ -764,17 +810,46 @@
         <span class="n">data_product_sensitivity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductSensitivity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
+        <span class="n">data_product_visibility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="n">data_product_assets_d_s_l</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">data_product_assets_playbook_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
         <span class="n">data_product_score_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">data_product_score_updated_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="n">data_domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">output_ports</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">input_ports</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">get_super_domain_qualified_name</span><span class="p">(</span><span class="n">domain_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Retrieve the domain&#39;s top-most ancestral domain qualified name.</span>
+
+<span class="sd">            :param domain_qualified_name: of the domain, from which to</span>
+<span class="sd">            retrieve the top-most ancestral domain qualified name</span>
+<span class="sd">            :returns qualified_name: of the top-most ancestral domain, or `None` if it can&#39;t be determined</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="kn">import</span> <span class="nn">re</span>
+
+            <span class="n">domain_qn_prefix</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(default/domain/[a-zA-Z0-9-]+)/.*&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">domain_qualified_name</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">domain_qn_prefix</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">domain_qualified_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">domain_qualified_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;default/domain/&quot;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">domain_qualified_name</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
         <span class="nd">@classmethod</span>
         <span class="nd">@init_guid</span>
@@ -782,27 +857,29 @@
             <span class="bp">cls</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-            <span class="n">assets_dsl</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
-            <span class="n">icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">domain_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">domain_qualified_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+            <span class="n">asset_selection</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataProduct</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
-            <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
-            <span class="n">validate_single_required_field</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="s2">&quot;domain_qualified_name&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">domain</span><span class="p">,</span> <span class="n">domain_qualified_name</span><span class="p">],</span>
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;domain_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;asset_selection&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">domain_qualified_name</span><span class="p">,</span> <span class="n">asset_selection</span><span class="p">],</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">domain_qualified_name</span><span class="p">:</span>
-                <span class="n">domain</span> <span class="o">=</span> <span class="n">DataDomain</span><span class="p">()</span>
-                <span class="n">domain</span><span class="o">.</span><span class="n">unique_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;qualifiedName&quot;</span><span class="p">:</span> <span class="n">domain_qualified_name</span><span class="p">}</span>
-            <span class="n">icon_str</span> <span class="o">=</span> <span class="n">icon</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">icon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="n">camel_case_name</span> <span class="o">=</span> <span class="n">to_camel_case</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">ASSETS_PLAYBOOK_FILTER</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;{&quot;condition&quot;:&quot;AND&quot;,&quot;isGroupLocked&quot;:false,&quot;rules&quot;:[]}&#39;</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">DataProduct</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">data_product_assets_d_s_l</span><span class="o">=</span><span class="n">assets_dsl</span><span class="p">,</span>
-                <span class="n">data_domain</span><span class="o">=</span><span class="n">domain</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default/product/</span><span class="si">{</span><span class="n">camel_case_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">asset_icon</span><span class="o">=</span><span class="n">icon_str</span><span class="p">,</span>
+                <span class="n">data_product_assets_d_s_l</span><span class="o">=</span><span class="n">DataProductsAssetsDSL</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">asset_selection</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(),</span>
+                <span class="n">data_domain</span><span class="o">=</span><span class="n">DataDomain</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span><span class="n">domain_qualified_name</span><span class="p">),</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">domain_qualified_name</span><span class="si">}</span><span class="s2">/product/</span><span class="si">{</span><span class="n">camel_case_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">data_product_assets_playbook_filter</span><span class="o">=</span><span class="n">ASSETS_PLAYBOOK_FILTER</span><span class="p">,</span>
+                <span class="n">parent_domain_qualified_name</span><span class="o">=</span><span class="n">domain_qualified_name</span><span class="p">,</span>
+                <span class="n">super_domain_qualified_name</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_super_domain_qualified_name</span><span class="p">(</span>
+                    <span class="n">domain_qualified_name</span>
+                <span class="p">),</span>
             <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;DataProduct.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

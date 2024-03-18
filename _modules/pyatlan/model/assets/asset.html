@@ -1480,6 +1480,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INPUT_PORT_DATA_PRODUCTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;inputPortDataProducts&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SODA_CHECKS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sodaChecks&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
@@ -1619,6 +1625,7 @@
         <span class="s2">&quot;links&quot;</span><span class="p">,</span>
         <span class="s2">&quot;metrics&quot;</span><span class="p">,</span>
         <span class="s2">&quot;readme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;input_port_data_products&quot;</span><span class="p">,</span>
         <span class="s2">&quot;soda_checks&quot;</span><span class="p">,</span>
         <span class="s2">&quot;assigned_terms&quot;</span><span class="p">,</span>
     <span class="p">]</span>
@@ -3355,6 +3362,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">readme</span> <span class="o">=</span> <span class="n">readme</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">input_port_data_products</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DataProduct</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">input_port_data_products</span>
+        <span class="p">)</span>
+
+    <span class="nd">@input_port_data_products</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">input_port_data_products</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">input_port_data_products</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DataProduct</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">input_port_data_products</span> <span class="o">=</span> <span class="n">input_port_data_products</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">soda_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SodaCheck</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">soda_checks</span>
 
@@ -3622,6 +3645,9 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">readme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Readme</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">input_port_data_products</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DataProduct</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">soda_checks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SodaCheck</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>

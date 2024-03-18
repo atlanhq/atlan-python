@@ -975,6 +975,15 @@
         <span class="s2">&quot;You must have both CLIENT_ID and CLIENT_SECRET configured to be able to impersonate users.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">UNABLE_TO_TRANSLATE_ASSETS_DSL</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-057&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to construct the selected assets DSL JSON string for the data product.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Verify the assets index search request you provided.&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;If the problem persists, please raise an issue on the Python SDK GitHub &quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;repository providing context in which this error occurred.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
