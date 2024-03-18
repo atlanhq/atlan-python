@@ -40,4 +40,4 @@ jobs:
         # to display only the durations of the 25 slowest tests with `pytest-sugar`
         run: |
           pytest tests/unit --force-sugar
-          pytest tests/integration --ignore tests/integration/data_mesh_test.py -p name_of_plugin --timer-top-n 25 --force-sugar
+          pytest tests/integration  -p name_of_plugin --timer-top-n 25 --force-sugar

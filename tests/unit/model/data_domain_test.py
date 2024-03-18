@@ -12,6 +12,7 @@ from tests.unit.model.constants import (
 def _assert_domain(domain: DataDomain) -> None:
     assert domain.name == DATA_DOMAIN_NAME
     assert domain.qualified_name == DATA_DOMAIN_QUALIFIED_NAME
+    assert domain.parent_domain_qualified_name is None
 
 
 @pytest.mark.parametrize(
@@ -23,29 +24,14 @@ def test_create_with_missing_parameters_raise_value_error(name: str, message: st
         DataDomain.create(name=name)
 
 
-@pytest.mark.parametrize(
-    "name, parent_domain, parent_domain_qualified_name",
-    [
-        ("DataDomain", None, None),
-        ("DataDomain", DataDomain(), None),
-        ("DataDomain", None, DATA_DOMAIN_QUALIFIED_NAME),
-    ],
-)
-def test_create_atttributes_with_required_parameters(
-    name: str, parent_domain: DataDomain, parent_domain_qualified_name: str
-):
+def test_create_atttributes_with_required_parameters():
     test_domain = DataDomain.Attributes.create(
-        name=name,
-        parent_domain=parent_domain,
-        parent_domain_qualified_name=parent_domain_qualified_name,
+        name=DATA_DOMAIN_NAME,
+        parent_domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
     )
-
-    if parent_domain:
-        assert parent_domain == test_domain.parent_domain
-    if parent_domain_qualified_name:
-        assert test_domain.parent_domain.unique_attributes == {
-            "qualifiedName": parent_domain_qualified_name
-        }
+    assert test_domain.parent_domain.unique_attributes == {
+        "qualifiedName": DATA_DOMAIN_QUALIFIED_NAME
+    }
 
 
 def test_create():
@@ -59,6 +45,7 @@ def test_create():
     )
     assert test_sub_domain.name == DATA_SUB_DOMAIN_NAME
     assert test_sub_domain.qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
+    assert test_sub_domain.parent_domain_qualified_name == test_domain.qualified_name
 
 
 def test_create_for_modification():

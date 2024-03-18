@@ -1968,6 +1968,17 @@ class AtlanTaskType(str, Enum):
     )
 
 
+class AtlanMeshColor(str, Enum):
+    INDIGO = "#3940E1"
+    VIOLET = "#7F83EC"
+    MAGENTA = "#F34D77"
+    PINK = "#F78BA7"
+    BLUE = "#0CD1FA"
+    GREEN = "#00A680"
+    YELLOW = "#FFB119"
+    GRAY = "#525C73"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************
@@ -2129,6 +2140,12 @@ class DataProductStatus(str, Enum):
     ACTIVE = "Active"
     SUNSET = "Sunset"
     ARCHIVED = "Archived"
+
+
+class DataProductVisibility(str, Enum):
+    PRIVATE = "Private"
+    PROTECTED = "Protected"
+    PUBLIC = "Public"
 
 
 class DomoCardType(str, Enum):

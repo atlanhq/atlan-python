@@ -9,7 +9,6 @@ from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
 
-from pyatlan.model.enums import AtlanIcon
 from pyatlan.model.fields.atlan_fields import RelationField
 from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
 
@@ -26,15 +25,11 @@ class DataDomain(DataMesh):
         cls,
         *,
         name: StrictStr,
-        icon: Optional[AtlanIcon] = None,
-        parent_domain: Optional[DataDomain] = None,
         parent_domain_qualified_name: Optional[StrictStr] = None,
     ) -> DataDomain:
         validate_required_fields(["name"], [name])
         attributes = DataDomain.Attributes.create(
             name=name,
-            icon=icon,
-            parent_domain=parent_domain,
             parent_domain_qualified_name=parent_domain_qualified_name,
         )
         return cls(attributes=attributes)
@@ -45,8 +40,6 @@ class DataDomain(DataMesh):
         cls,
         *,
         name: StrictStr,
-        icon: Optional[AtlanIcon] = None,
-        parent_domain: Optional[DataDomain] = None,
         parent_domain_qualified_name: Optional[StrictStr] = None,
     ) -> DataDomain:
         warn(
@@ -59,8 +52,6 @@ class DataDomain(DataMesh):
         )
         return cls.creator(
             name=name,
-            icon=icon,
-            parent_domain=parent_domain,
             parent_domain_qualified_name=parent_domain_qualified_name,
         )
 
@@ -71,10 +62,8 @@ class DataDomain(DataMesh):
         name: str = "",
     ) -> SelfAsset:
         validate_required_fields(["name", "qualified_name"], [name, qualified_name])
-        # Split the data domain qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        # for domain and subdomain
-        if len(fields) not in (3, 5):
+        if len(fields) < 3:
             raise ValueError(f"Invalid data domain qualified_name: {qualified_name}")
         return cls(
             attributes=cls.Attributes(
@@ -181,26 +170,25 @@ class DataDomain(DataMesh):
             cls,
             *,
             name: StrictStr,
-            icon: Optional[AtlanIcon] = None,
-            parent_domain: Optional[DataDomain] = None,
             parent_domain_qualified_name: Optional[StrictStr] = None,
         ) -> DataDomain.Attributes:
             validate_required_fields(["name"], [name])
+            parent_domain = None
             mesh_name = to_camel_case(name)
             qualified_name = f"default/domain/{mesh_name}"
-            # If "qualified name" of the parent domain is specified
+
+            # In case of sub-domain
             if parent_domain_qualified_name:
-                parent_domain = DataDomain()
-                parent_domain.unique_attributes = {
-                    "qualifiedName": parent_domain_qualified_name
-                }
+                parent_domain = DataDomain.ref_by_qualified_name(
+                    parent_domain_qualified_name
+                )
                 qualified_name = f"{parent_domain_qualified_name}/domain/{mesh_name}"
-            icon_str = icon.value if icon is not None else None
+
             return DataDomain.Attributes(
                 name=name,
-                parent_domain=parent_domain,
                 qualified_name=qualified_name,
-                asset_icon=icon_str,
+                parent_domain=parent_domain,
+                parent_domain_qualified_name=parent_domain_qualified_name,
             )
 
     attributes: "DataDomain.Attributes" = Field(

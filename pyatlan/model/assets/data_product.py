@@ -4,25 +4,22 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, List, Optional
 from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
 
+from pyatlan.model.data_mesh import DataProductsAssetsDSL
 from pyatlan.model.enums import (
-    AtlanIcon,
     DataProductCriticality,
     DataProductSensitivity,
     DataProductStatus,
+    DataProductVisibility,
 )
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.search import IndexSearchRequest
-from pyatlan.utils import (
-    init_guid,
-    to_camel_case,
-    validate_required_fields,
-    validate_single_required_field,
-)
+from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
 
 from .asset import SelfAsset
 from .data_mesh import DataMesh
@@ -37,19 +34,13 @@ class DataProduct(DataMesh):
         cls,
         *,
         name: StrictStr,
-        assets: IndexSearchRequest,
-        icon: Optional[AtlanIcon] = None,
-        domain: Optional[DataDomain] = None,
-        domain_qualified_name: Optional[StrictStr] = None,
+        domain_qualified_name: StrictStr,
+        asset_selection: IndexSearchRequest,
     ) -> DataProduct:
-        validate_required_fields(["name", "assets"], [name, assets])
-        assets_dsl = assets.get_dsl_str()
         attributes = DataProduct.Attributes.create(
             name=name,
-            assets_dsl=assets_dsl,
-            icon=icon,
-            domain=domain,
             domain_qualified_name=domain_qualified_name,
+            asset_selection=asset_selection,
         )
         return cls(attributes=attributes)
 
@@ -59,10 +50,8 @@ class DataProduct(DataMesh):
         cls,
         *,
         name: StrictStr,
-        assets: IndexSearchRequest,
-        icon: Optional[AtlanIcon] = None,
-        domain: Optional[DataDomain] = None,
-        domain_qualified_name: Optional[StrictStr] = None,
+        domain_qualified_name: StrictStr,
+        asset_selection: IndexSearchRequest,
     ) -> DataProduct:
         warn(
             (
@@ -74,10 +63,8 @@ class DataProduct(DataMesh):
         )
         return cls.creator(
             name=name,
-            assets=assets,
-            icon=icon,
-            domain=domain,
             domain_qualified_name=domain_qualified_name,
+            asset_selection=asset_selection,
         )
 
     @classmethod
@@ -92,7 +79,7 @@ class DataProduct(DataMesh):
         )
         # Split the data product qualified_name to extract data mesh info
         fields = qualified_name.split("/")
-        if len(fields) != 3:
+        if len(fields) < 5:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
         return cls(
             attributes=cls.Attributes(
@@ -151,6 +138,12 @@ class DataProduct(DataMesh):
     """
     Information sensitivity of this data product.
     """
+    DATA_PRODUCT_VISIBILITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductVisibility", "dataProductVisibility"
+    )
+    """
+    Visibility of a data product.
+    """
     DATA_PRODUCT_ASSETS_DSL: ClassVar[KeywordField] = KeywordField(
         "dataProductAssetsDSL", "dataProductAssetsDSL"
     )
@@ -169,6 +162,12 @@ class DataProduct(DataMesh):
     """
     Score of this data product.
     """
+    DATA_PRODUCT_SCORE_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "dataProductScoreUpdatedAt", "dataProductScoreUpdatedAt"
+    )
+    """
+    Timestamp when the score of this data product was last updated.
+    """
 
     DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
@@ -178,16 +177,23 @@ class DataProduct(DataMesh):
     """
     TBC
     """
+    INPUT_PORTS: ClassVar[RelationField] = RelationField("inputPorts")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_product_status",
         "data_product_criticality",
         "data_product_sensitivity",
+        "data_product_visibility",
         "data_product_assets_d_s_l",
         "data_product_assets_playbook_filter",
         "data_product_score_value",
+        "data_product_score_updated_at",
         "data_domain",
         "output_ports",
+        "input_ports",
     ]
 
     @property
@@ -231,6 +237,20 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_sensitivity = data_product_sensitivity
+
+    @property
+    def data_product_visibility(self) -> Optional[DataProductVisibility]:
+        return (
+            None if self.attributes is None else self.attributes.data_product_visibility
+        )
+
+    @data_product_visibility.setter
+    def data_product_visibility(
+        self, data_product_visibility: Optional[DataProductVisibility]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_visibility = data_product_visibility
 
     @property
     def data_product_assets_d_s_l(self) -> Optional[str]:
@@ -279,6 +299,22 @@ class DataProduct(DataMesh):
         self.attributes.data_product_score_value = data_product_score_value
 
     @property
+    def data_product_score_updated_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_score_updated_at
+        )
+
+    @data_product_score_updated_at.setter
+    def data_product_score_updated_at(
+        self, data_product_score_updated_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_score_updated_at = data_product_score_updated_at
+
+    @property
     def data_domain(self) -> Optional[DataDomain]:
         return None if self.attributes is None else self.attributes.data_domain
 
@@ -298,6 +334,16 @@ class DataProduct(DataMesh):
             self.attributes = self.Attributes()
         self.attributes.output_ports = output_ports
 
+    @property
+    def input_ports(self) -> Optional[List[Asset]]:
+        return None if self.attributes is None else self.attributes.input_ports
+
+    @input_ports.setter
+    def input_ports(self, input_ports: Optional[List[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_ports = input_ports
+
     class Attributes(DataMesh.Attributes):
         data_product_status: Optional[DataProductStatus] = Field(
             default=None, description=""
@@ -308,17 +354,46 @@ class DataProduct(DataMesh):
         data_product_sensitivity: Optional[DataProductSensitivity] = Field(
             default=None, description=""
         )
+        data_product_visibility: Optional[DataProductVisibility] = Field(
+            default=None, description=""
+        )
         data_product_assets_d_s_l: Optional[str] = Field(default=None, description="")
         data_product_assets_playbook_filter: Optional[str] = Field(
             default=None, description=""
         )
         data_product_score_value: Optional[float] = Field(default=None, description="")
+        data_product_score_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         data_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship
         output_ports: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
+        input_ports: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+
+        @staticmethod
+        def get_super_domain_qualified_name(domain_qualified_name: str):
+            """
+            Retrieve the domain's top-most ancestral domain qualified name.
+
+            :param domain_qualified_name: of the domain, from which to
+            retrieve the top-most ancestral domain qualified name
+            :returns qualified_name: of the top-most ancestral domain, or `None` if it can't be determined
+            """
+            import re
+
+            domain_qn_prefix = re.compile(r"(default/domain/[a-zA-Z0-9-]+)/.*")
+            if domain_qualified_name:
+                match = domain_qn_prefix.match(domain_qualified_name)
+                if match and match.group(1):
+                    return match.group(1)
+                elif domain_qualified_name.startswith("default/domain/"):
+                    return domain_qualified_name
+            return None
 
         @classmethod
         @init_guid
@@ -326,27 +401,29 @@ class DataProduct(DataMesh):
             cls,
             *,
             name: StrictStr,
-            assets_dsl: StrictStr,
-            icon: Optional[AtlanIcon] = None,
-            domain: Optional[DataDomain] = None,
-            domain_qualified_name: Optional[StrictStr] = None,
+            domain_qualified_name: StrictStr,
+            asset_selection: IndexSearchRequest,
         ) -> DataProduct.Attributes:
-            validate_required_fields(["name"], [name])
-            validate_single_required_field(
-                ["domain", "domain_qualified_name"],
-                [domain, domain_qualified_name],
+            validate_required_fields(
+                ["name", "domain_qualified_name", "asset_selection"],
+                [name, domain_qualified_name, asset_selection],
             )
-            if domain_qualified_name:
-                domain = DataDomain()
-                domain.unique_attributes = {"qualifiedName": domain_qualified_name}
-            icon_str = icon.value if icon is not None else None
             camel_case_name = to_camel_case(name)
+            ASSETS_PLAYBOOK_FILTER = (
+                '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+            )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=assets_dsl,
-                data_domain=domain,
-                qualified_name=f"default/product/{camel_case_name}",
-                asset_icon=icon_str,
+                data_product_assets_d_s_l=DataProductsAssetsDSL(
+                    query=asset_selection
+                ).to_string(),
+                data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
+                qualified_name=f"{domain_qualified_name}/product/{camel_case_name}",
+                data_product_assets_playbook_filter=ASSETS_PLAYBOOK_FILTER,
+                parent_domain_qualified_name=domain_qualified_name,
+                super_domain_qualified_name=cls.get_super_domain_qualified_name(
+                    domain_qualified_name
+                ),
             )
 
     attributes: "DataProduct.Attributes" = Field(

@@ -1,29 +1,51 @@
 
+        @staticmethod
+        def get_super_domain_qualified_name(domain_qualified_name: str):
+            """
+            Retrieve the domain's top-most ancestral domain qualified name.
+
+            :param domain_qualified_name: of the domain, from which to
+            retrieve the top-most ancestral domain qualified name
+            :returns qualified_name: of the top-most ancestral domain, or `None` if it can't be determined
+            """
+            import re
+
+            domain_qn_prefix = re.compile(r"(default/domain/[a-zA-Z0-9-]+)/.*")
+            if domain_qualified_name:
+                match = domain_qn_prefix.match(domain_qualified_name)
+                if match and match.group(1):
+                    return match.group(1)
+                elif domain_qualified_name.startswith("default/domain/"):
+                    return domain_qualified_name
+            return None
+
         @classmethod
         @init_guid
         def create(
             cls,
             *,
             name: StrictStr,
-            assets_dsl: StrictStr,
-            icon: Optional[AtlanIcon] = None,
-            domain: Optional[DataDomain] = None,
-            domain_qualified_name: Optional[StrictStr] = None,
+            domain_qualified_name: StrictStr,
+            asset_selection: IndexSearchRequest,
         ) -> DataProduct.Attributes:
-            validate_required_fields(["name"], [name])
-            validate_single_required_field(
-                ["domain", "domain_qualified_name"],
-                [domain, domain_qualified_name],
+            validate_required_fields(
+                ["name", "domain_qualified_name", "asset_selection"],
+                [name, domain_qualified_name, asset_selection],
             )
-            if domain_qualified_name:
-                domain = DataDomain()
-                domain.unique_attributes = {"qualifiedName": domain_qualified_name}
-            icon_str = icon.value if icon is not None else None
             camel_case_name = to_camel_case(name)
+            ASSETS_PLAYBOOK_FILTER = (
+                '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+            )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=assets_dsl,
-                data_domain=domain,
-                qualified_name=f"default/product/{camel_case_name}",
-                asset_icon=icon_str,
+                data_product_assets_d_s_l=DataProductsAssetsDSL(
+                    query=asset_selection
+                ).to_string(),
+                data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
+                qualified_name=f"{domain_qualified_name}/product/{camel_case_name}",
+                data_product_assets_playbook_filter=ASSETS_PLAYBOOK_FILTER,
+                parent_domain_qualified_name=domain_qualified_name,
+                super_domain_qualified_name=cls.get_super_domain_qualified_name(
+                    domain_qualified_name
+                ),
             )

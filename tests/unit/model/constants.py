@@ -86,7 +86,10 @@ DATA_DOMAIN_QUALIFIED_NAME = "default/domain/dataDomain"
 DATA_SUB_DOMAIN_NAME = "data-sub-domain"
 DATA_SUB_DOMAIN_QUALIFIED_NAME = f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/dataSubDomain"
 DATA_PRODUCT_NAME = "data-product"
-DATA_PRODUCT_QUALIFIED_NAME = "default/product/dataProduct"
+DATA_PRODUCT_QUALIFIED_NAME = "default/domain/dataDomain/product/dataProduct"
+DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME = (
+    f"{DATA_SUB_DOMAIN_QUALIFIED_NAME}/product/dataProduct"
+)
 CP_NAME = "column-process"
 CP_PROCESS_ID = "cp-process-id"
 CP_QUALIFIED_NAME_HASH = "ecb5f77380c04710c979acfb8d3bba2f"

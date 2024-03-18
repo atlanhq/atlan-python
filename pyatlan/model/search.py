@@ -6,7 +6,6 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
-from json import dumps, loads
 from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic.v1 import (
@@ -1797,10 +1796,10 @@ class SortItem:
 
 
 class DSL(AtlanObject):
-    from_: int = Field(0, alias="from")
-    size: int = 100
+    from_: int = Field(default=0, alias="from")
+    size: int = Field(default=100)
     aggregations: Dict[str, Aggregation] = Field(default_factory=dict)
-    track_total_hits: bool = Field(default=True, alias="track_total_hits")
+    track_total_hits: Optional[bool] = Field(default=True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(default=None, alias="post_filter")
     query: Optional[Query]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
@@ -1856,45 +1855,49 @@ class DSL(AtlanObject):
 
 class IndexSearchRequest(SearchRequest):
     dsl: DSL
-    relation_attributes: List[str] = Field(
+    relation_attributes: Optional[List[str]] = Field(
         default_factory=list, alias="relationAttributes"
     )
     suppress_logs: Optional[bool] = Field(default=None, alias="suppressLogs")
     show_search_score: Optional[bool] = Field(
+        default=None,
         description="When true, include the score of each result. By default, this is false and scores are excluded.",
         alias="showSearchScore",
     )
     exclude_meanings: Optional[bool] = Field(
+        default=None,
         description="Whether to include term relationships for assets (false) or not (true). By default, this is false "
         "and term relationships are therefore included.",
         alias="excludeMeanings",
     )
     exclude_atlan_tags: Optional[bool] = Field(
+        default=None,
         description="Whether to include Atlan tags for assets (false) or not (true). By default, this is false and "
         "Atlan tags are therefore included.",
         alias="excludeClassifications",
     )
     allow_deleted_relations: Optional[bool] = Field(
+        default=None,
         description="Whether to include deleted relationships to this asset (true) or not (false). By default, "
         "this is false and therefore only active (not deleted) relationships will be included.",
         alias="allowDeletedRelations",
     )
 
     class Metadata(AtlanObject):
-        save_search_log: bool = True
-        utm_tags: List[str] = []
+        save_search_log: bool = Field(
+            default=True, description="Whether to log this search (True) or not (False)"
+        )
+        utm_tags: List[str] = Field(
+            default_factory=list,
+            description="Tags to associate with the search request",
+        )
 
-    request_metadata: Metadata = Field(
+    request_metadata: Optional[Metadata] = Field(
         default_factory=lambda: IndexSearchRequest.Metadata(
             save_search_log=True,
             utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
         ),
     )
-
-    def get_dsl_str(self) -> str:
-        dsl_json_str = self.json(by_alias=True, exclude_none=True)
-        dsl_query_dict = dict(query=loads(dsl_json_str))
-        return dumps(dsl_query_dict)
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
