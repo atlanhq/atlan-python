@@ -1089,7 +1089,9 @@ def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers
     mock_sl_api_call.return_value = sl_most_recent_viewers_json
     recent_viewers_aggs = sl_most_recent_viewers_json["aggregations"]
     recent_viewers_aggs_buckets = recent_viewers_aggs[UNIQUE_USERS]["buckets"]
-    request = SearchLogRequest.most_recent_viewers("test-guid-123")
+    request = SearchLogRequest.most_recent_viewers(
+        guid="test-guid-123", exclude_users=["testuser"]
+    )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
     response = client.search_log.search(request)
     viewers = response.user_views
@@ -1111,7 +1113,9 @@ def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_j
     mock_sl_api_call.return_value = sl_most_viewed_assets_json
     viewed_assets_aggs = sl_most_viewed_assets_json["aggregations"]
     viewed_assets_aggs_buckets = viewed_assets_aggs[UNIQUE_ASSETS]["buckets"][0]
-    request = SearchLogRequest.most_viewed_assets(10)
+    request = SearchLogRequest.most_viewed_assets(
+        max_assets=10, exclude_users=["testuser"]
+    )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
     response = client.search_log.search(request)
     detail = response.asset_views
@@ -1129,7 +1133,9 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     client = AtlanClient()
     mock_sl_api_call.return_value = sl_detailed_log_entries_json
     sl_detailed_log_entries = sl_detailed_log_entries_json["logs"]
-    request = SearchLogRequest.views_by_guid(guid="test-guid-123", size=10)
+    request = SearchLogRequest.views_by_guid(
+        guid="test-guid-123", size=10, exclude_users=["testuser"]
+    )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
     response = client.search_log.search(request)
     log_entries = response.current_page()
