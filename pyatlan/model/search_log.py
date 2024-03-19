@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Any, Dict, Generator, Iterable, List, Optional
 
@@ -27,11 +29,8 @@ class SearchLogRequest(SearchRequest):
     dsl: DSL
     attributes: List[str] = Field(default_factory=list, alias="attributes")
     _EXCLUDE_USERS: List[str] = [
-        "atlansupport",
         "support",
-        "support@atlan.com",
-        "atlansupport@atlan.com",
-        "hello@atlan.com",
+        "atlansupport",
     ]
     _BASE_QUERY_FILTER: List[Query] = [
         Term(
@@ -61,9 +60,11 @@ class SearchLogRequest(SearchRequest):
         from_: int,
         query_filter: Optional[list] = None,
         sort: Optional[list] = None,
+        exclude_users: Optional[List[str]] = None,
     ) -> dict:
-        query_filter = query_filter or []
         sort = sort or []
+        query_filter = query_filter or []
+        exclude_users = exclude_users or []
         BY_TIMESTAMP = [SortItem("timestamp", order=SortOrder.ASCENDING)]
         return dict(
             size=size,
@@ -74,8 +75,8 @@ class SearchLogRequest(SearchRequest):
                 must_not=[
                     Terms(
                         field="userName",
-                        values=cls._EXCLUDE_USERS,
-                    ),
+                        values=exclude_users + cls._EXCLUDE_USERS,
+                    )
                 ],
             ),
         )
@@ -131,12 +132,14 @@ class SearchLogRequest(SearchRequest):
         cls,
         guid: str,
         max_users: int = 20,
-    ) -> "SearchLogRequest":
+        exclude_users: Optional[List[str]] = None,
+    ) -> SearchLogRequest:
         """
         Create a search log request to retrieve views of an asset by its GUID.
 
         :param guid: unique identifier of the asset.
         :param max_users: maximum number of recent users to consider. Defaults to 20.
+        :param exclude_users: a list containing usernames to be excluded from the search log results (optional).
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
@@ -144,7 +147,9 @@ class SearchLogRequest(SearchRequest):
             Term(field="entityGuidsAll", value=guid, case_insensitive=False)
         ]
         dsl = DSL(
-            **cls._get_view_dsl_kwargs(size=0, from_=0, query_filter=query_filter),
+            **cls._get_view_dsl_kwargs(
+                size=0, from_=0, query_filter=query_filter, exclude_users=exclude_users
+            ),
             aggregations=cls._get_recent_viewers_aggs(max_users),
         )
         return SearchLogRequest(dsl=dsl)
@@ -154,18 +159,20 @@ class SearchLogRequest(SearchRequest):
         cls,
         max_assets: int = 10,
         by_different_user: bool = False,
-    ) -> "SearchLogRequest":
+        exclude_users: Optional[List[str]] = None,
+    ) -> SearchLogRequest:
         """
         Create a search log request to retrieve most viewed assets.
 
         :param max_assets: maximum number of assets to consider. Defaults to 10.
         :param by_different_user: when True, will consider assets viewed by more users as more
         important than total view count, otherwise will consider total view count most important.
+        :param exclude_users: a list containing usernames to be excluded from the search log results (optional).
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
         dsl = DSL(
-            **cls._get_view_dsl_kwargs(size=0, from_=0),
+            **cls._get_view_dsl_kwargs(size=0, from_=0, exclude_users=exclude_users),
             aggregations=cls._get_most_viewed_assets_aggs(
                 max_assets, by_different_user
             ),
@@ -179,14 +186,16 @@ class SearchLogRequest(SearchRequest):
         size: int = 20,
         from_: int = 0,
         sort: Optional[List[SortItem]] = None,
-    ) -> "SearchLogRequest":
+        exclude_users: Optional[List[str]] = None,
+    ) -> SearchLogRequest:
         """
         Create a search log request to retrieve recent search logs of an assets.
 
         :param guid: unique identifier of the asset.
         :param size: number of results to retrieve per page. Defaults to 20.
-        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden.
+        :param from_: starting point for paging. Defaults to 0 (very first result) if not overridden.
         :param sort: properties by which to sort the results (optional).
+        :param exclude_users: a list containing usernames to be excluded from the search log results (optional).
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
@@ -195,7 +204,11 @@ class SearchLogRequest(SearchRequest):
         ]
         dsl = DSL(
             **cls._get_view_dsl_kwargs(
-                size=size, from_=from_, query_filter=query_filter, sort=sort
+                size=size,
+                from_=from_,
+                query_filter=query_filter,
+                sort=sort,
+                exclude_users=exclude_users,
             ),
         )
         return SearchLogRequest(dsl=dsl)

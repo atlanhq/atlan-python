@@ -32,11 +32,9 @@
             {
               "terms": {
                 "userName": [
-                  "atlansupport",
+                  "testuser",
                   "support",
-                  "support@atlan.com",
-                  "atlansupport@atlan.com",
-                  "hello@atlan.com"
+                  "atlansupport"
                 ]
               }
             }
