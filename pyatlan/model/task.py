@@ -7,14 +7,14 @@ from pydantic.v1 import Field, ValidationError, parse_obj_as
 from pyatlan.client.common import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
-from pyatlan.model.core import AtlanObject, SearchRequest
+from pyatlan.model.core import AtlanAPIResponse, SearchRequest
 from pyatlan.model.enums import AtlanTaskStatus, AtlanTaskType
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
 from pyatlan.model.search import DSL, Query, SortItem
 from pyatlan.utils import API
 
 
-class AtlanTask(AtlanObject):
+class AtlanTask(AtlanAPIResponse):
     TYPE: ClassVar[KeywordField] = KeywordField("type", "__task_type")
     """Type of the task."""
 

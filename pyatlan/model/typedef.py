@@ -8,7 +8,7 @@ from pydantic.v1 import Field, PrivateAttr
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.atlan_image import AtlanImage
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanAPIResponse, AtlanObject
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
     AtlanIcon,
@@ -973,7 +973,7 @@ class CustomMetadataDef(TypeDef):
         )
 
 
-class TypeDefResponse(AtlanObject):
+class TypeDefResponse(AtlanAPIResponse):
     enum_defs: List[EnumDef] = Field(
         default_factory=list, description="list of enumeration type definitions."
     )

@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Type, TypeVar
 from pydantic.v1 import Field
 
 from pyatlan.model.assets import Asset
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanAPIResponse, AtlanObject
 
 
 class MutatedEntities(AtlanObject):
@@ -39,7 +39,7 @@ class MutatedEntities(AtlanObject):
 A = TypeVar("A", bound=Asset)
 
 
-class AssetMutationResponse(AtlanObject):
+class AssetMutationResponse(AtlanAPIResponse):
     guid_assignments: Optional[Dict[str, str]] = Field(
         default=None,
         description="Map of assigned unique identifiers for the changed assets.",
@@ -88,7 +88,7 @@ class AssetMutationResponse(AtlanObject):
         return []
 
 
-class AccessTokenResponse(AtlanObject):
+class AccessTokenResponse(AtlanAPIResponse):
     access_token: str
     expires_in: int
     refresh_expires_in: int

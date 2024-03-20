@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from pydantic.v1 import Field
 
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanAPIResponse, AtlanObject
 
 
 class AtlanRole(AtlanObject):
@@ -24,7 +24,7 @@ class AtlanRole(AtlanObject):
     user_count: Optional[str] = Field(default=None, description="TBC\n")
 
 
-class RoleResponse(AtlanObject):
+class RoleResponse(AtlanAPIResponse):
     total_record: Optional[int] = Field(
         default=None, description="Total number of roles.\n"
     )

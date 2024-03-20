@@ -16,7 +16,7 @@ else:
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
-from pyatlan.model.core import AtlanObject, SearchRequest
+from pyatlan.model.core import AtlanAPIResponse, AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanComparisonOperator, EntityStatus, LineageDirection
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 from pyatlan.utils import validate_type
@@ -135,7 +135,7 @@ class LineageGraph:
         return list(visited.keys())
 
 
-class LineageResponse(AtlanObject):
+class LineageResponse(AtlanAPIResponse):
     base_entity_guid: str
     lineage_direction: LineageDirection
     lineage_depth: int

@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic.v1 import Field
 
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanAPIResponse, AtlanObject
 from pyatlan.model.enums import (
     HekaFlow,
     ParsingFlow,
@@ -15,8 +15,8 @@ from pyatlan.model.enums import (
 )
 
 
-class ParsedQuery(AtlanObject):
-    class DatabaseColumn(AtlanObject):
+class ParsedQuery(AtlanAPIResponse):
+    class DatabaseColumn(AtlanAPIResponse):
         id: Optional[str] = Field(
             default=None, description="Numeric identifier for the column."
         )
@@ -25,7 +25,7 @@ class ParsedQuery(AtlanObject):
         )
         source: Optional[str] = Field(default=None, description="TBC")
 
-    class RelationshipEndpoint(AtlanObject):
+    class RelationshipEndpoint(AtlanAPIResponse):
         id: Optional[str] = Field(
             default=None,
             description="Numeric identifier for the column referred to by this end of the relationship.",
@@ -43,7 +43,7 @@ class ParsedQuery(AtlanObject):
             description="Name of the parent object in which the column exists.",
         )
 
-    class ParserError(AtlanObject):
+    class ParserError(AtlanAPIResponse):
         error_message: Optional[str] = Field(
             default=None, description="Description of the error."
         )
@@ -52,7 +52,7 @@ class ParsedQuery(AtlanObject):
         )
         coordinates: Optional[List[Any]] = Field(description="TBC")
 
-    class Relationship(AtlanObject):
+    class Relationship(AtlanAPIResponse):
         id: Optional[str] = Field(
             default=None, description="Numeric identifier for the relationship."
         )
@@ -76,7 +76,7 @@ class ParsedQuery(AtlanObject):
             description="Type of procedure (if any) that manages this relationship.",
         )
 
-    class DatabaseObject(AtlanObject):
+    class DatabaseObject(AtlanAPIResponse):
         display_name: Optional[str] = Field(
             default=None,
             description="Fully-qualified name of the SQL object. (Only present on non-process objects.)",
@@ -175,7 +175,7 @@ class QueryRequest(AtlanObject):
     )
 
 
-class QueryResponse(AtlanObject):
+class QueryResponse(AtlanAPIResponse):
     """
     Create a single consolidated response
     from multiple events related to the same query.
@@ -228,7 +228,7 @@ class QueryResponse(AtlanObject):
         "the column values for that row (in order)"
     )
 
-    class ColumnType(AtlanObject):
+    class ColumnType(AtlanAPIResponse):
         id: Optional[int] = Field(
             description="Unique identifier for the request, if there was any error."
         )
@@ -237,7 +237,7 @@ class QueryResponse(AtlanObject):
         )
         rep: Optional[str]
 
-    class ColumnDetails(AtlanObject):
+    class ColumnDetails(AtlanAPIResponse):
         """
         Details about the type of column that was returned from a query that was run.
         """
@@ -287,7 +287,7 @@ class QueryResponse(AtlanObject):
         "the inner list of values for the `rows`."
     )
 
-    class AssetDetails(AtlanObject):
+    class AssetDetails(AtlanAPIResponse):
         connection_name: Optional[str] = Field(
             default=None, description="Simple name of the connection."
         )
@@ -304,7 +304,7 @@ class QueryResponse(AtlanObject):
             default=None, description="Simple name of the table."
         )
 
-    class QueryDetails(AtlanObject):
+    class QueryDetails(AtlanAPIResponse):
         """
         Details about a query that was run.
         """

@@ -9,7 +9,7 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import SEARCH_LOG
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanAPIResponse
 from pyatlan.model.enums import UTMTags
 from pyatlan.model.search import (
     DSL,
@@ -214,7 +214,7 @@ class SearchLogRequest(SearchRequest):
         return SearchLogRequest(dsl=dsl)
 
 
-class AssetViews(AtlanObject):
+class AssetViews(AtlanAPIResponse):
     """
     Captures a specific aggregate result of assets and the views on that asset.
     Instances of this class should be treated as immutable.
@@ -229,7 +229,7 @@ class AssetViews(AtlanObject):
     )
 
 
-class UserViews(AtlanObject):
+class UserViews(AtlanAPIResponse):
     """
     Represents unique user views entry in the search log.
     Instances of this class should be treated as immutable.
@@ -242,7 +242,7 @@ class UserViews(AtlanObject):
     )
 
 
-class SearchLogEntry(AtlanObject):
+class SearchLogEntry(AtlanAPIResponse):
     """
     Represents a log entry for asset search in the search log.
     Instances of this class should be treated as immutable.

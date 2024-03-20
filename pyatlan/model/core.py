@@ -3,7 +3,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, root_validator, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
 
@@ -96,6 +96,33 @@ class AtlanObject(BaseModel):
         extra = Extra.ignore
         json_encoders = encoders()
         validate_assignment = True
+
+
+class AtlanAPIResponse(AtlanObject):
+    """
+    Base class for Atlan API response models
+    """
+
+    __atlan_extra__: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Contains extra fields from the Atlan API response.",
+    )
+
+    class Config(AtlanObject.Config):
+        extra = Extra.allow
+
+    @root_validator(pre=True)
+    def build_extra(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Populates extra fields from the API response.
+        """
+        extra: Dict[str, Any] = {}
+        all_required_field_names = {field.alias for field in cls.__fields__.values()}
+        for field_name in list(values):
+            if field_name not in all_required_field_names:
+                extra[field_name] = values.get(field_name)
+        cls.__atlan_extra__ = extra
+        return values
 
 
 class SearchRequest(AtlanObject, ABC):
@@ -208,7 +235,7 @@ class Meaning(AtlanObject):
 T = TypeVar("T")
 
 
-class AssetResponse(AtlanObject, GenericModel, Generic[T]):
+class AssetResponse(AtlanAPIResponse, GenericModel, Generic[T]):
     entity: T
     referredEntities: Optional[Dict[str, Any]] = Field(
         default=None,

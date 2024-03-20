@@ -8,7 +8,7 @@ from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.errors import ErrorCode
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanAPIResponse, AtlanObject
 from pyatlan.utils import API
 
 
@@ -115,7 +115,7 @@ class AtlanGroup(AtlanObject):
         return internal.replace(" ", "_")
 
 
-class GroupResponse(AtlanObject):
+class GroupResponse(AtlanAPIResponse):
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
     _endpoint: API = PrivateAttr()
@@ -221,8 +221,8 @@ class RemoveFromGroupRequest(AtlanObject):
     )
 
 
-class CreateGroupResponse(AtlanObject):
-    class UserStatus(AtlanObject):
+class CreateGroupResponse(AtlanAPIResponse):
+    class UserStatus(AtlanAPIResponse):
         status: Optional[int] = Field(
             default=None,
             description="Response code for the association (200 is success).",
