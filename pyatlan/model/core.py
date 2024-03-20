@@ -3,7 +3,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, root_validator, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
 
@@ -90,12 +90,40 @@ class AtlanTagName:
 
 
 class AtlanObject(BaseModel):
+    __atlan_extra__: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Contains extra fields from the Atlan API response.",
+    )
+
     class Config:
-        allow_population_by_field_name = True
-        alias_generator = to_camel_case
         extra = Extra.ignore
         json_encoders = encoders()
         validate_assignment = True
+        alias_generator = to_camel_case
+        allow_population_by_field_name = True
+
+    @classmethod
+    def _populate_extra_fields(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Helper method to populate extra fields from the API response.
+        """
+        extra: Dict[str, Any] = {}
+        # Collect all required field names
+        all_required_field_names = {field.alias for field in cls.__fields__.values()}
+        # Populate extra fields not defined in the model
+        for field_name, value in values.items():
+            if field_name not in all_required_field_names:
+                extra[field_name] = value
+        return extra
+
+    @root_validator(pre=True)
+    def build_extra(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Populates extra fields from the API response.
+        """
+        extra = cls._populate_extra_fields(values)
+        cls.__atlan_extra__ = extra
+        return values
 
 
 class SearchRequest(AtlanObject, ABC):
