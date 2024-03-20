@@ -1,8 +1,10 @@
+from typing import no_type_check
 from unittest.mock import call
 
 import pytest
 
-from pyatlan.model.core import AtlanTag, AtlanTagName
+from pyatlan.model.core import AtlanTag, AtlanTagName, AtlanAPIResponse
+from pydantic.v1 import Field
 
 DISPLAY_TEXT = "Something"
 
@@ -59,3 +61,59 @@ class TestAtlanTag:
         sut = AtlanTag(**{"typeName": "123"})
 
         assert sut.type_name == AtlanTagName.get_deleted_sentinel()
+
+
+class TestAtlanAPIResponse:
+    @no_type_check
+    def test_atlan_api_response(self):
+        class TestResponse(AtlanAPIResponse):
+            """
+            Test class inheriting from `AtlanAPIResponse`
+            """
+
+            name: str
+
+        test_data = {"name": "test"}
+        response = TestResponse(**test_data)
+
+        assert response.name
+        assert response.dict() == test_data
+        assert response.__atlan_extra__ == {}
+
+        test_data_extra = {"name": "test", "new1": 123, "new2": 456}
+        response = TestResponse(**test_data_extra)
+
+        assert response.name
+        assert response.dict() == test_data_extra
+        assert response.__atlan_extra__ == {"new1": 123, "new2": 456}
+
+        test_data_extra_nested = {
+            "name": "test",
+            "new1": {"new2": [1, 2, 3]},
+            "new3": "abc",
+        }
+        response = TestResponse(**test_data_extra_nested)
+
+        assert response.name
+        assert response.dict() == test_data_extra_nested
+        assert response.__atlan_extra__ == {"new1": {"new2": [1, 2, 3]}, "new3": "abc"}
+
+        class TestResponseWithAtlanField(AtlanAPIResponse):
+            """
+            To test when API response contains
+            property similar name as `__atlan_extra__`
+            """
+
+            name: str
+            atlan_field: str = Field(alias="__atlan_extra__")
+
+        test_data_contains_atlan_field = {
+            "name": "test",
+            "__atlan_extra__": "test_value",
+        }
+        response = TestResponseWithAtlanField(**test_data_contains_atlan_field)
+
+        # Make sure in this case it shouldn't be populated
+        assert response.__atlan_extra__ == {}
+        assert response.name == test_data_contains_atlan_field["name"]
+        assert response.atlan_field == test_data_contains_atlan_field["__atlan_extra__"]
