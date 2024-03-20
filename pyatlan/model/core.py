@@ -90,37 +90,38 @@ class AtlanTagName:
 
 
 class AtlanObject(BaseModel):
-    class Config:
-        allow_population_by_field_name = True
-        alias_generator = to_camel_case
-        extra = Extra.ignore
-        json_encoders = encoders()
-        validate_assignment = True
-
-
-class AtlanAPIResponse(AtlanObject):
-    """
-    Base class for Atlan API response models
-    """
-
     __atlan_extra__: Dict[str, Any] = Field(
         default_factory=dict,
         description="Contains extra fields from the Atlan API response.",
     )
 
-    class Config(AtlanObject.Config):
-        extra = Extra.allow
+    class Config:
+        extra = Extra.ignore
+        json_encoders = encoders()
+        validate_assignment = True
+        alias_generator = to_camel_case
+        allow_population_by_field_name = True
+
+    @classmethod
+    def _populate_extra_fields(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Helper method to populate extra fields from the API response.
+        """
+        extra: Dict[str, Any] = {}
+        # Collect all required field names
+        all_required_field_names = {field.alias for field in cls.__fields__.values()}
+        # Populate extra fields not defined in the model
+        for field_name, value in values.items():
+            if field_name not in all_required_field_names:
+                extra[field_name] = value
+        return extra
 
     @root_validator(pre=True)
     def build_extra(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """
         Populates extra fields from the API response.
         """
-        extra: Dict[str, Any] = {}
-        all_required_field_names = {field.alias for field in cls.__fields__.values()}
-        for field_name in list(values):
-            if field_name not in all_required_field_names:
-                extra[field_name] = values.get(field_name)
+        extra = cls._populate_extra_fields(values)
         cls.__atlan_extra__ = extra
         return values
 
@@ -235,7 +236,7 @@ class Meaning(AtlanObject):
 T = TypeVar("T")
 
 
-class AssetResponse(AtlanAPIResponse, GenericModel, Generic[T]):
+class AssetResponse(AtlanObject, GenericModel, Generic[T]):
     entity: T
     referredEntities: Optional[Dict[str, Any]] = Field(
         default=None,

@@ -5,7 +5,7 @@ from typing import Any, List, Optional, Set
 
 from pydantic.v1 import Field, root_validator
 
-from pyatlan.model.core import AtlanAPIResponse, AtlanObject
+from pyatlan.model.core import AtlanObject
 
 
 class ApiTokenPersona(AtlanObject):
@@ -152,7 +152,7 @@ class ApiTokenRequest(AtlanObject):
         return values
 
 
-class ApiTokenResponse(AtlanAPIResponse):
+class ApiTokenResponse(AtlanObject):
     total_record: Optional[int] = Field(
         default=None, description="Total number of API tokens."
     )

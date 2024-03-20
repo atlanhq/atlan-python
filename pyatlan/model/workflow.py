@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic.v1 import Field
 
-from pyatlan.model.core import AtlanAPIResponse, AtlanObject
+from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanWorkflowPhase, SortOrder
 from pyatlan.model.search import Query, SortItem
 
@@ -75,7 +75,7 @@ class Workflow(AtlanObject):
     payload: List[PackageParameter] = Field(default_factory=list)
 
 
-class WorkflowSearchResultStatus(AtlanAPIResponse):
+class WorkflowSearchResultStatus(AtlanObject):
     artifact_gc_Status: Optional[Dict[str, Any]] = Field(
         default=None, alias="artifactGCStatus"
     )
@@ -96,7 +96,7 @@ class WorkflowSearchResultStatus(AtlanAPIResponse):
     synchronization: Optional[Dict[str, Any]] = Field(default=None)
 
 
-class WorkflowSearchResultDetail(AtlanAPIResponse):
+class WorkflowSearchResultDetail(AtlanObject):
     api_version: str
     kind: str
     metadata: WorkflowMetadata
@@ -104,7 +104,7 @@ class WorkflowSearchResultDetail(AtlanAPIResponse):
     status: Optional[WorkflowSearchResultStatus] = Field(default=None)
 
 
-class WorkflowSearchResult(AtlanAPIResponse):
+class WorkflowSearchResult(AtlanObject):
     index: str = Field(alias="_index")
     type: str = Field(alias="_type")
     id: str = Field(alias="_id")
@@ -129,7 +129,7 @@ class WorkflowSearchHits(AtlanObject):
     hits: Optional[List[WorkflowSearchResult]] = Field(default=None)
 
 
-class WorkflowSearchResponse(AtlanAPIResponse):
+class WorkflowSearchResponse(AtlanObject):
     took: Optional[int] = Field(default=None)
     hits: WorkflowSearchHits
     shards: Dict[str, Any] = Field(alias="_shards")
@@ -145,7 +145,7 @@ class ReRunRequest(AtlanObject):
         __pydantic_self__.__fields_set__.update(["resource_kind"])
 
 
-class WorkflowResponse(AtlanAPIResponse):
+class WorkflowResponse(AtlanObject):
     metadata: WorkflowMetadata
     spec: WorkflowSpec
     payload: Optional[List[Any]] = Field(default=None)

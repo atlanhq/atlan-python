@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional
 
 from pydantic.v1 import Field
 
-from pyatlan.model.core import AtlanAPIResponse, AtlanObject
+from pyatlan.model.core import AtlanObject
 
 
 class Credential(AtlanObject):
@@ -53,7 +53,7 @@ class Credential(AtlanObject):
     )
 
 
-class CredentialResponse(AtlanAPIResponse):
+class CredentialResponse(AtlanObject):
     id: str
     version: str
     is_active: bool
@@ -91,7 +91,7 @@ class CredentialResponse(AtlanAPIResponse):
         )
 
 
-class CredentialTestResponse(AtlanAPIResponse):
+class CredentialTestResponse(AtlanObject):
     code: Optional[int]
     error: Optional[str]
     info: Optional[object]

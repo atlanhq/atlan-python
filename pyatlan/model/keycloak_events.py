@@ -6,11 +6,11 @@ from pydantic.v1 import Field, parse_obj_as
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import ADMIN_EVENTS, KEYCLOAK_EVENTS
-from pyatlan.model.core import AtlanAPIResponse, AtlanObject
+from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AdminOperationType, AdminResourceType, KeycloakEventType
 
 
-class AuthDetails(AtlanAPIResponse):
+class AuthDetails(AtlanObject):
     client_id: Optional[str] = Field(
         default=None,
         description="Unique identifier (GUID) of the client that carried out the operation.",
@@ -28,7 +28,7 @@ class AuthDetails(AtlanAPIResponse):
     )
 
 
-class KeycloakEvent(AtlanAPIResponse):
+class KeycloakEvent(AtlanObject):
     client_id: Optional[str] = Field(
         default=None, description="Where the login occurred (usually 'atlan-frontend')."
     )
@@ -52,7 +52,7 @@ class KeycloakEvent(AtlanAPIResponse):
     )
 
 
-class AdminEvent(AtlanAPIResponse):
+class AdminEvent(AtlanObject):
     operation_type: Optional[AdminOperationType] = Field(
         default=None, description="Type of admin operation that occurred."
     )

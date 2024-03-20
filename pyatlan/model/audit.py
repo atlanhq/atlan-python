@@ -10,7 +10,7 @@ from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
 from pyatlan.model.constants import DELETED_
-from pyatlan.model.core import AtlanAPIResponse, AtlanTag
+from pyatlan.model.core import AtlanObject, AtlanTag
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -130,7 +130,7 @@ class AuditSearchRequest(SearchRequest):
         return AuditSearchRequest(dsl=dsl)
 
 
-class CustomMetadataAttributesAuditDetail(AtlanAPIResponse):
+class CustomMetadataAttributesAuditDetail(AtlanObject):
     """Capture the attributes and values for custom metadata as tracked through the audit log."""
 
     class Config:
@@ -168,7 +168,7 @@ class CustomMetadataAttributesAuditDetail(AtlanAPIResponse):
         return values
 
 
-class EntityAudit(AtlanAPIResponse):
+class EntityAudit(AtlanObject):
     """
     Detailed entry in the audit log. These objects should be treated as immutable.
     """

@@ -9,12 +9,12 @@ from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 from pyatlan.client.common import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.api_tokens import ApiToken
-from pyatlan.model.core import AtlanAPIResponse, AtlanObject
+from pyatlan.model.core import AtlanObject
 from pyatlan.utils import API
 
 
-class AtlanUser(AtlanAPIResponse):
-    class Attributes(AtlanAPIResponse):
+class AtlanUser(AtlanObject):
+    class Attributes(AtlanObject):
         designation: Optional[List[str]] = Field(
             default=None,
             description="Designation for the user, such as an honorific or title.",
@@ -37,7 +37,7 @@ class AtlanUser(AtlanAPIResponse):
         )
         invited_by_name: Optional[List[str]] = Field(default=None, description="TBC")
 
-    class Persona(AtlanAPIResponse):
+    class Persona(AtlanObject):
         id: Optional[str] = Field(
             default=None, description="Unique identifier (GUID) of the persona."
         )
@@ -48,7 +48,7 @@ class AtlanUser(AtlanAPIResponse):
             default=None, description="Human-readable name of the persona."
         )
 
-    class LoginEvent(AtlanAPIResponse):
+    class LoginEvent(AtlanObject):
         client_id: Optional[str] = Field(
             default=None,
             description="Where the login occurred (usually `atlan-frontend`).",
@@ -74,13 +74,13 @@ class AtlanUser(AtlanAPIResponse):
             description="Unique identifier (GUID) of the user that logged in.",
         )
 
-    class AuthDetails(AtlanAPIResponse):
+    class AuthDetails(AtlanObject):
         client_id: Optional[str] = Field(default=None, description="TBC")
         ip_address: Optional[str] = Field(default=None, description="TBC")
         realm_id: Optional[str] = Field(default=None, description="TBC")
         user_id: Optional[str] = Field(default=None, description="TBC")
 
-    class AdminEvent(AtlanAPIResponse):
+    class AdminEvent(AtlanObject):
         operation_type: Optional[str] = Field(
             default=None, description="Type of admin operation that occurred."
         )
@@ -182,7 +182,7 @@ class AtlanUser(AtlanAPIResponse):
 AtlanUser.AdminEvent.update_forward_refs()
 
 
-class UserMinimalResponse(AtlanAPIResponse):
+class UserMinimalResponse(AtlanObject):
     username: Optional[str] = Field(
         default=None, description="Username of the user within Atlan."
     )
@@ -217,7 +217,7 @@ class UserMinimalResponse(AtlanAPIResponse):
     access: Optional[Any] = Field(default=None, description="TBC")
 
 
-class UserResponse(AtlanAPIResponse):
+class UserResponse(AtlanObject):
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
     _endpoint: API = PrivateAttr()
