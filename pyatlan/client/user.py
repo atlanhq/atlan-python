@@ -2,6 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
+from json import dumps
 from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
@@ -46,14 +47,15 @@ class UserClient:
 
     @validate_arguments
     def create(
-        self,
-        users: List[AtlanUser],
-    ) -> None:
+        self, users: List[AtlanUser], return_info: bool = False
+    ) -> Optional[List[AtlanUser]]:
         """
         Create one or more new users.
 
         :param users: the details of the new users
+        :param return_info: whether to return the details of created users, defaults to `False`
         :raises AtlanError: on any API communication issue
+        :returns: the list of details of created users if `return_info` is `True`, otherwise `None`
         """
         from pyatlan.cache.role_cache import RoleCache
 
@@ -68,6 +70,10 @@ class UserClient:
                 )
                 cur.users.append(to_create)
         self._client._call_api(CREATE_USERS, request_obj=cur, exclude_unset=True)
+        if return_info:
+            users_emails = [user.email for user in cur.users]
+            return self.get_by_emails(emails=users_emails)
+        return None
 
     @validate_arguments
     def update(
@@ -231,6 +237,26 @@ class UserClient:
         return None
 
     @validate_arguments
+    def get_by_emails(
+        self,
+        emails: List[str],
+        limit: int = 20,
+        offset: int = 0,
+    ) -> Optional[List[AtlanUser]]:
+        """
+        Retrieves all users with email addresses that match the provided list of emails.
+
+        :param emails: list of email addresses to filter the users
+        :param limit: maximum number of users to retrieve
+        :param offset: starting point for the list of users when paginating
+        :returns: list of users whose email addresses match the provided list
+        """
+        email_filter = '{"email":{"$in":' + dumps(emails or [""]) + "}}"
+        if response := self.get(offset=offset, limit=limit, post_filter=email_filter):
+            return response.records
+        return None
+
+    @validate_arguments
     def get_by_username(self, username: str) -> Optional[AtlanUser]:
         """
         Retrieves a user based on the username. (This attempts an exact match on username
@@ -246,6 +272,25 @@ class UserClient:
         ):
             if response.records and len(response.records) >= 1:
                 return response.records[0]
+        return None
+
+    @validate_arguments
+    def get_by_usernames(
+        self, usernames: List[str], limit: int = 5, offset: int = 0
+    ) -> Optional[List[AtlanUser]]:
+        """
+        Retrieves users based on their usernames.
+
+        :param usernames: the list of usernames by which to find the users
+        :param limit: maximum number of users to retrieve
+        :param offset: starting point for the list of users when paginating
+        :returns: the users with the specified usernames
+        """
+        username_filter = '{"username":{"$in":' + dumps(usernames or [""]) + "}}"
+        if response := self.get(
+            offset=offset, limit=limit, post_filter=username_filter
+        ):
+            return response.records
         return None
 
     @validate_arguments

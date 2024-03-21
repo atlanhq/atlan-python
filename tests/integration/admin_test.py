@@ -176,6 +176,14 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     assert user1.id
     assert user1.attributes
     assert user1.group_count == 1 + _default_group_count
+    response = client.user.get_by_usernames(usernames=[FIXED_USER])
+    assert response
+    assert len(response) == 1
+    fixed_user = response[0]
+    assert fixed_user
+    assert fixed_user.id
+    users_list = client.user.get_by_usernames(usernames=[])
+    assert users_list == []
     users_list = client.user.get_by_email(EMAIL_DOMAIN)
     assert users_list
     assert len(users_list) >= 1
@@ -187,6 +195,14 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     assert user1.email == users_list[0].email
     assert user1.username == users_list[0].username
     assert user1.attributes == users_list[0].attributes
+    users_list = client.user.get_by_emails(emails=[email])
+    assert users_list
+    assert len(users_list) == 1
+    assert user1.email == users_list[0].email
+    assert user1.username == users_list[0].username
+    assert user1.attributes == users_list[0].attributes
+    users_list = client.user.get_by_emails(emails=[])
+    assert users_list == []
 
 
 @pytest.mark.order(after="test_create_group")

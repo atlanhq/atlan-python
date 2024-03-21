@@ -1327,6 +1327,32 @@ def test_user_create(
     mock_api_caller.reset_mock()
 
 
+def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json):
+    test_role_id = "role-guid-123"
+    client = UserClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [
+        None,
+        {
+            "totalRecord": 3,
+            "filterRecord": 1,
+            "records": [user_list_json["records"][0]],
+        },
+    ]
+    mock_role_cache.get_id_for_name.return_value = test_role_id
+    test_users = [AtlanUser.create(email="test@test.com", role_name="$member")]
+    response = client.create(users=test_users, return_info=True)
+
+    assert len(response) == 1
+    user = response[0]
+    assert user
+    assert user.username
+    assert user.email
+    assert user.attributes
+    assert user.login_events
+    mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+
 @pytest.mark.parametrize(
     "test_method, test_kwargs, test_asset_types",
     [
