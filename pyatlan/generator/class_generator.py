@@ -262,9 +262,11 @@ class AssetInfo:
             ):
                 ancestor_relationship_defs.add(relationship_def["name"])
             return get_ancestor_relationship_defs(
-                ancestor_entity_def.super_types[0]
-                if ancestor_entity_def.super_types
-                else "",
+                (
+                    ancestor_entity_def.super_types[0]
+                    if ancestor_entity_def.super_types
+                    else ""
+                ),
                 ancestor_relationship_defs,
             )
 
@@ -622,9 +624,11 @@ class Generator:
         for relationship_def in ancestor_entity_def.relationship_attribute_defs or []:
             ancestor_relationship_defs.add(relationship_def["name"])
         return self.get_ancestor_relationship_defs(
-            ancestor_entity_def.super_types[0]
-            if ancestor_entity_def.super_types
-            else "",
+            (
+                ancestor_entity_def.super_types[0]
+                if ancestor_entity_def.super_types
+                else ""
+            ),
             ancestor_relationship_defs,
         )
 

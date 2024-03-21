@@ -132,11 +132,11 @@ class ADLSObject(ADLS):
     """
     Whether this object is server encrypted (true) or not (false).
     """
-    ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
-        BooleanField
-    ] = BooleanField(
-        "adlsObjectVersionLevelImmutabilitySupport",
-        "adlsObjectVersionLevelImmutabilitySupport",
+    ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[BooleanField] = (
+        BooleanField(
+            "adlsObjectVersionLevelImmutabilitySupport",
+            "adlsObjectVersionLevelImmutabilitySupport",
+        )
     )
     """
     Whether this object supports version-level immutability (true) or not (false).

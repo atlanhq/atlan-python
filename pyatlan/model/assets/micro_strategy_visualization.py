@@ -39,12 +39,12 @@ class MicroStrategyVisualization(MicroStrategy):
     """
     Type of visualization.
     """
-    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyDossierQualifiedName",
-        "microStrategyDossierQualifiedName",
-        "microStrategyDossierQualifiedName.text",
+    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "microStrategyDossierQualifiedName",
+            "microStrategyDossierQualifiedName",
+            "microStrategyDossierQualifiedName.text",
+        )
     )
     """
     Unique name of the dossier in which this visualization exists.

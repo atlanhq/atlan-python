@@ -88,11 +88,11 @@ class ADLSContainer(ADLS):
     """
     Encryption scope of this container.
     """
-    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
-        BooleanField
-    ] = BooleanField(
-        "adlsContainerVersionLevelImmutabilitySupport",
-        "adlsContainerVersionLevelImmutabilitySupport",
+    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[BooleanField] = (
+        BooleanField(
+            "adlsContainerVersionLevelImmutabilitySupport",
+            "adlsContainerVersionLevelImmutabilitySupport",
+        )
     )
     """
     Whether this container supports version-level immutability (true) or not (false).

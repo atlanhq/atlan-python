@@ -30,11 +30,11 @@ class QuickSightDashboard(QuickSight):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[
-        NumericField
-    ] = NumericField(
-        "quickSightDashboardPublishedVersionNumber",
-        "quickSightDashboardPublishedVersionNumber",
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[NumericField] = (
+        NumericField(
+            "quickSightDashboardPublishedVersionNumber",
+            "quickSightDashboardPublishedVersionNumber",
+        )
     )
     """
     Version number of the published dashboard.
@@ -146,10 +146,8 @@ class QuickSightDashboard(QuickSight):
         quick_sight_dashboard_folders: Optional[List[QuickSightFolder]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_dashboard_visuals: Optional[
-            List[QuickSightDashboardVisual]
-        ] = Field(
-            default=None, description=""
+        quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]] = (
+            Field(default=None, description="")
         )  # relationship
 
     attributes: "QuickSightDashboard.Attributes" = Field(

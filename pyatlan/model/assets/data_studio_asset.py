@@ -95,13 +95,13 @@ class DataStudioAsset(DataStudio):
     """
     Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE.
     """
-    DATA_STUDIO_ASSET_TITLE: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "dataStudioAssetTitle",
-        "dataStudioAssetTitle.keyword",
-        "dataStudioAssetTitle",
-        "dataStudioAssetTitle.stemmed",
+    DATA_STUDIO_ASSET_TITLE: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "dataStudioAssetTitle",
+            "dataStudioAssetTitle.keyword",
+            "dataStudioAssetTitle",
+            "dataStudioAssetTitle.stemmed",
+        )
     )
     """
     Title of the Google Data Studio asset.

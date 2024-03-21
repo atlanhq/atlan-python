@@ -54,11 +54,11 @@ class SchemaRegistrySubject(SchemaRegistry):
     """
     Compatibility of the schema across versions.
     """
-    SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "schemaRegistrySubjectLatestSchemaVersion",
-        "schemaRegistrySubjectLatestSchemaVersion",
+    SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION: ClassVar[KeywordField] = (
+        KeywordField(
+            "schemaRegistrySubjectLatestSchemaVersion",
+            "schemaRegistrySubjectLatestSchemaVersion",
+        )
     )
     """
     Latest schema version of the subject.
@@ -70,11 +70,11 @@ class SchemaRegistrySubject(SchemaRegistry):
     """
     Definition of the latest schema in the subject.
     """
-    SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "schemaRegistrySubjectGoverningAssetQualifiedNames",
-        "schemaRegistrySubjectGoverningAssetQualifiedNames",
+    SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = (
+        KeywordField(
+            "schemaRegistrySubjectGoverningAssetQualifiedNames",
+            "schemaRegistrySubjectGoverningAssetQualifiedNames",
+        )
     )
     """
     List of asset qualified names that this subject is governing/validating.
@@ -237,9 +237,9 @@ class SchemaRegistrySubject(SchemaRegistry):
         schema_registry_subject_latest_schema_definition: Optional[str] = Field(
             default=None, description=""
         )
-        schema_registry_subject_governing_asset_qualified_names: Optional[
-            Set[str]
-        ] = Field(default=None, description="")
+        schema_registry_subject_governing_asset_qualified_names: Optional[Set[str]] = (
+            Field(default=None, description="")
+        )
         assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship

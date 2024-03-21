@@ -39,12 +39,12 @@ class MicroStrategyMetric(MicroStrategy):
     """
     Text specifiying this metric's expression.
     """
-    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyAttributeQualifiedNames",
-        "microStrategyAttributeQualifiedNames",
-        "microStrategyAttributeQualifiedNames.text",
+    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "microStrategyAttributeQualifiedNames",
+            "microStrategyAttributeQualifiedNames",
+            "microStrategyAttributeQualifiedNames.text",
+        )
     )
     """
     List of unique names of attributes related to this metric.
@@ -73,12 +73,12 @@ class MicroStrategyMetric(MicroStrategy):
     """
     List of simple names of facts related to this metric.
     """
-    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyMetricParentQualifiedNames",
-        "microStrategyMetricParentQualifiedNames",
-        "microStrategyMetricParentQualifiedNames.text",
+    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "microStrategyMetricParentQualifiedNames",
+            "microStrategyMetricParentQualifiedNames",
+            "microStrategyMetricParentQualifiedNames.text",
+        )
     )
     """
     List of unique names of parent metrics of this metric.

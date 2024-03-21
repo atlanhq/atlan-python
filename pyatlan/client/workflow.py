@@ -137,20 +137,17 @@ class WorkflowClient:
     @overload
     def rerun(
         self, workflow: WorkflowPackage, idempotent: bool = False
-    ) -> WorkflowRunResponse:
-        ...
+    ) -> WorkflowRunResponse: ...
 
     @overload
     def rerun(
         self, workflow: WorkflowSearchResultDetail, idempotent: bool = False
-    ) -> WorkflowRunResponse:
-        ...
+    ) -> WorkflowRunResponse: ...
 
     @overload
     def rerun(
         self, workflow: WorkflowSearchResult, idempotent: bool = False
-    ) -> WorkflowRunResponse:
-        ...
+    ) -> WorkflowRunResponse: ...
 
     @validate_arguments
     def rerun(

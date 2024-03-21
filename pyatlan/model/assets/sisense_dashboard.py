@@ -33,12 +33,12 @@ class SisenseDashboard(Sisense):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "sisenseDashboardFolderQualifiedName",
-        "sisenseDashboardFolderQualifiedName",
-        "sisenseDashboardFolderQualifiedName.text",
+    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "sisenseDashboardFolderQualifiedName",
+            "sisenseDashboardFolderQualifiedName",
+            "sisenseDashboardFolderQualifiedName.text",
+        )
     )
     """
     Unique name of the folder in which this dashboard exists.

@@ -123,8 +123,7 @@ class Query(ABC):
         return copy.deepcopy(self)
 
     @abstractmethod
-    def to_dict(self) -> Dict[Any, Any]:
-        ...
+    def to_dict(self) -> Dict[Any, Any]: ...
 
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
@@ -718,9 +717,11 @@ class Prefix(Query):
 
     def to_dict(self) -> Dict[Any, Any]:
         parameters: Dict[str, Any] = {
-            "value": int(self.value.timestamp() * 1000)
-            if isinstance(self.value, datetime)
-            else self.value
+            "value": (
+                int(self.value.timestamp() * 1000)
+                if isinstance(self.value, datetime)
+                else self.value
+            )
         }
 
         if self.case_insensitive is not None:
@@ -1752,9 +1753,9 @@ class Match(Query):
         if self.analyzer is not None:
             parameters["analyzer"] = self.analyzer
         if self.auto_generate_synonyms_phrase_query is not None:
-            parameters[
-                "auto_generate_synonyms_phrase_query"
-            ] = self.auto_generate_synonyms_phrase_query
+            parameters["auto_generate_synonyms_phrase_query"] = (
+                self.auto_generate_synonyms_phrase_query
+            )
         if self.fuzziness is not None:
             parameters["fuzziness"] = self.fuzziness
         if self.fuzzy_transpositions is not None:

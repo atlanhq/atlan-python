@@ -35,12 +35,12 @@ class MicroStrategy(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_PROJECT_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyProjectQualifiedName",
-        "microStrategyProjectQualifiedName",
-        "microStrategyProjectQualifiedName.text",
+    MICRO_STRATEGY_PROJECT_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "microStrategyProjectQualifiedName",
+            "microStrategyProjectQualifiedName",
+            "microStrategyProjectQualifiedName.text",
+        )
     )
     """
     Unique name of the project in which this asset exists.
@@ -69,12 +69,12 @@ class MicroStrategy(BI):
     """
     Simple names of the cubes related to this asset.
     """
-    MICRO_STRATEGY_REPORT_QUALIFIED_NAMES: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyReportQualifiedNames",
-        "microStrategyReportQualifiedNames",
-        "microStrategyReportQualifiedNames.text",
+    MICRO_STRATEGY_REPORT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "microStrategyReportQualifiedNames",
+            "microStrategyReportQualifiedNames",
+            "microStrategyReportQualifiedNames.text",
+        )
     )
     """
     Unique names of the reports related to this asset.

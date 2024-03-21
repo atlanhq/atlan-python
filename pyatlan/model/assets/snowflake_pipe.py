@@ -44,12 +44,12 @@ class SnowflakePipe(SQL):
     """
     Whether auto-ingest is enabled for this pipe (true) or not (false).
     """
-    SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "snowflakePipeNotificationChannelName",
-        "snowflakePipeNotificationChannelName",
-        "snowflakePipeNotificationChannelName.text",
+    SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "snowflakePipeNotificationChannelName",
+            "snowflakePipeNotificationChannelName",
+            "snowflakePipeNotificationChannelName.text",
+        )
     )
     """
     Name of the notification channel for this pipe.
