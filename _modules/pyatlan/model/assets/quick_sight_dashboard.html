@@ -486,11 +486,11 @@
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">NumericField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
-        <span class="s2">&quot;quickSightDashboardPublishedVersionNumber&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;quickSightDashboardPublishedVersionNumber&quot;</span><span class="p">,</span>
+    <span class="n">QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">NumericField</span><span class="p">(</span>
+            <span class="s2">&quot;quickSightDashboardPublishedVersionNumber&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quickSightDashboardPublishedVersionNumber&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Version number of the published dashboard.</span>
@@ -602,10 +602,8 @@
         <span class="n">quick_sight_dashboard_folders</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">QuickSightFolder</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">quick_sight_dashboard_visuals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">List</span><span class="p">[</span><span class="n">QuickSightDashboardVisual</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">quick_sight_dashboard_visuals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">QuickSightDashboardVisual</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;QuickSightDashboard.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

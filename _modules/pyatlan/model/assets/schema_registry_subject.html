@@ -510,11 +510,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compatibility of the schema across versions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;schemaRegistrySubjectLatestSchemaVersion&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;schemaRegistrySubjectLatestSchemaVersion&quot;</span><span class="p">,</span>
+    <span class="n">SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordField</span><span class="p">(</span>
+            <span class="s2">&quot;schemaRegistrySubjectLatestSchemaVersion&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;schemaRegistrySubjectLatestSchemaVersion&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Latest schema version of the subject.</span>
@@ -526,11 +526,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Definition of the latest schema in the subject.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;schemaRegistrySubjectGoverningAssetQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;schemaRegistrySubjectGoverningAssetQualifiedNames&quot;</span><span class="p">,</span>
+    <span class="n">SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordField</span><span class="p">(</span>
+            <span class="s2">&quot;schemaRegistrySubjectGoverningAssetQualifiedNames&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;schemaRegistrySubjectGoverningAssetQualifiedNames&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of asset qualified names that this subject is governing/validating.</span>
@@ -693,9 +693,9 @@
         <span class="n">schema_registry_subject_latest_schema_definition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
-        <span class="n">schema_registry_subject_governing_asset_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">schema_registry_subject_governing_asset_qualified_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>

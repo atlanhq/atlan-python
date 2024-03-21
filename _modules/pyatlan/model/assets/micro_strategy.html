@@ -491,12 +491,12 @@
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">MICRO_STRATEGY_PROJECT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordTextField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyProjectQualifiedName.text&quot;</span><span class="p">,</span>
+    <span class="n">MICRO_STRATEGY_PROJECT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordTextField</span><span class="p">(</span>
+            <span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;microStrategyProjectQualifiedName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;microStrategyProjectQualifiedName.text&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unique name of the project in which this asset exists.</span>
@@ -525,12 +525,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple names of the cubes related to this asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MICRO_STRATEGY_REPORT_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordTextField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;microStrategyReportQualifiedNames.text&quot;</span><span class="p">,</span>
+    <span class="n">MICRO_STRATEGY_REPORT_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordTextField</span><span class="p">(</span>
+            <span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;microStrategyReportQualifiedNames&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;microStrategyReportQualifiedNames.text&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unique names of the reports related to this asset.</span>

@@ -1128,11 +1128,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Total duration of the last run of the job that materialized this asset in dbt.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;assetDbtJobLastRunTotalDurationHumanized&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;assetDbtJobLastRunTotalDurationHumanized&quot;</span><span class="p">,</span>
+    <span class="n">ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordField</span><span class="p">(</span>
+            <span class="s2">&quot;assetDbtJobLastRunTotalDurationHumanized&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assetDbtJobLastRunTotalDurationHumanized&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Human-readable total duration of the last run of the job that materialized this asset in dbt.</span>
@@ -1143,11 +1143,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Total duration the job that materialized this asset in dbt spent being queued.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;assetDbtJobLastRunQueuedDurationHumanized&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;assetDbtJobLastRunQueuedDurationHumanized&quot;</span><span class="p">,</span>
+    <span class="n">ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordField</span><span class="p">(</span>
+            <span class="s2">&quot;assetDbtJobLastRunQueuedDurationHumanized&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assetDbtJobLastRunQueuedDurationHumanized&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued.</span>
@@ -1158,11 +1158,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run duration of the last run of the job that materialized this asset in dbt.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;assetDbtJobLastRunRunDurationHumanized&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;assetDbtJobLastRunRunDurationHumanized&quot;</span><span class="p">,</span>
+    <span class="n">ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordField</span><span class="p">(</span>
+            <span class="s2">&quot;assetDbtJobLastRunRunDurationHumanized&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assetDbtJobLastRunRunDurationHumanized&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Human-readable run duration of the last run of the job that materialized this asset in dbt.</span>
@@ -1181,12 +1181,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SHA hash in git for the last run of the job that materialized this asset in dbt.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordTextField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
-        <span class="s2">&quot;assetDbtJobLastRunStatusMessage&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;assetDbtJobLastRunStatusMessage.keyword&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;assetDbtJobLastRunStatusMessage&quot;</span><span class="p">,</span>
+    <span class="n">ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordTextField</span><span class="p">(</span>
+            <span class="s2">&quot;assetDbtJobLastRunStatusMessage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assetDbtJobLastRunStatusMessage.keyword&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;assetDbtJobLastRunStatusMessage&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Status message of the last run of the job that materialized this asset in dbt.</span>
@@ -3463,21 +3463,21 @@
         <span class="n">source_read_top_user_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
-        <span class="n">source_read_popular_query_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">source_read_expensive_query_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">source_read_popular_query_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">source_read_expensive_query_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">source_read_slow_query_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
         <span class="n">source_query_compute_cost_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
-        <span class="n">source_query_compute_cost_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">source_query_compute_cost_record_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PopularityInsights</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">dbt_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">asset_dbt_alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">asset_dbt_meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>

@@ -486,11 +486,11 @@
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="n">KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">KeywordField</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
-        <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
+    <span class="n">KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">KeywordField</span><span class="p">(</span>
+            <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;kafkaConsumerGroupTopicConsumptionProperties&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of consumption properties for Kafka topics, for this consumer group.</span>
