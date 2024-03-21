@@ -30,11 +30,11 @@ class KafkaConsumerGroup(Kafka):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "kafkaConsumerGroupTopicConsumptionProperties",
-        "kafkaConsumerGroupTopicConsumptionProperties",
+    KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES: ClassVar[KeywordField] = (
+        KeywordField(
+            "kafkaConsumerGroupTopicConsumptionProperties",
+            "kafkaConsumerGroupTopicConsumptionProperties",
+        )
     )
     """
     List of consumption properties for Kafka topics, for this consumer group.

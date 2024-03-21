@@ -897,8 +897,7 @@ class AssetClient:
         certificate_status: CertificateStatus,
         glossary_guid: str,
         message: Optional[str] = None,
-    ) -> Optional[AtlasGlossaryTerm]:
-        ...
+    ) -> Optional[AtlasGlossaryTerm]: ...
 
     @overload
     def update_certificate(
@@ -909,8 +908,7 @@ class AssetClient:
         certificate_status: CertificateStatus,
         glossary_guid: str,
         message: Optional[str] = None,
-    ) -> Optional[AtlasGlossaryCategory]:
-        ...
+    ) -> Optional[AtlasGlossaryCategory]: ...
 
     @overload
     def update_certificate(
@@ -921,8 +919,7 @@ class AssetClient:
         certificate_status: CertificateStatus,
         glossary_guid: Optional[str] = None,
         message: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
+    ) -> Optional[A]: ...
 
     @validate_arguments
     def update_certificate(
@@ -963,8 +960,7 @@ class AssetClient:
         qualified_name: str,
         name: str,
         glossary_guid: str,
-    ) -> Optional[AtlasGlossaryTerm]:
-        ...
+    ) -> Optional[AtlasGlossaryTerm]: ...
 
     @overload
     def remove_certificate(
@@ -973,8 +969,7 @@ class AssetClient:
         qualified_name: str,
         name: str,
         glossary_guid: str,
-    ) -> Optional[AtlasGlossaryCategory]:
-        ...
+    ) -> Optional[AtlasGlossaryCategory]: ...
 
     @overload
     def remove_certificate(
@@ -983,8 +978,7 @@ class AssetClient:
         qualified_name: str,
         name: str,
         glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
+    ) -> Optional[A]: ...
 
     @validate_arguments
     def remove_certificate(
@@ -1020,8 +1014,7 @@ class AssetClient:
         name: str,
         announcement: Announcement,
         glossary_guid: str,
-    ) -> Optional[AtlasGlossaryTerm]:
-        ...
+    ) -> Optional[AtlasGlossaryTerm]: ...
 
     @overload
     def update_announcement(
@@ -1031,8 +1024,7 @@ class AssetClient:
         name: str,
         announcement: Announcement,
         glossary_guid: str,
-    ) -> Optional[AtlasGlossaryCategory]:
-        ...
+    ) -> Optional[AtlasGlossaryCategory]: ...
 
     @overload
     def update_announcement(
@@ -1042,8 +1034,7 @@ class AssetClient:
         name: str,
         announcement: Announcement,
         glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
+    ) -> Optional[A]: ...
 
     @validate_arguments
     def update_announcement(
@@ -1080,8 +1071,7 @@ class AssetClient:
         qualified_name: str,
         name: str,
         glossary_guid: str,
-    ) -> Optional[AtlasGlossaryTerm]:
-        ...
+    ) -> Optional[AtlasGlossaryTerm]: ...
 
     @overload
     def remove_announcement(
@@ -1090,8 +1080,7 @@ class AssetClient:
         qualified_name: str,
         name: str,
         glossary_guid: str,
-    ) -> Optional[AtlasGlossaryCategory]:
-        ...
+    ) -> Optional[AtlasGlossaryCategory]: ...
 
     @overload
     def remove_announcement(
@@ -1100,8 +1089,7 @@ class AssetClient:
         qualified_name: str,
         name: str,
         glossary_guid: Optional[str] = None,
-    ) -> Optional[A]:
-        ...
+    ) -> Optional[A]: ...
 
     @validate_arguments
     def remove_announcement(

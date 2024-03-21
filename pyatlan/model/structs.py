@@ -111,9 +111,11 @@ class BadgeCondition(AtlanObject):
         return cls(
             badge_condition_operator=badge_condition_operator.value,
             badge_condition_value=badge_condition_value,
-            badge_condition_colorhex=badge_condition_colorhex.value
-            if isinstance(badge_condition_colorhex, BadgeConditionColor)
-            else badge_condition_colorhex,
+            badge_condition_colorhex=(
+                badge_condition_colorhex.value
+                if isinstance(badge_condition_colorhex, BadgeConditionColor)
+                else badge_condition_colorhex
+            ),
         )
 
     badge_condition_operator: Optional[str] = Field(default=None, description="")

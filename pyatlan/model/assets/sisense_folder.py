@@ -29,12 +29,12 @@ class SisenseFolder(Sisense):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "sisenseFolderParentFolderQualifiedName",
-        "sisenseFolderParentFolderQualifiedName",
-        "sisenseFolderParentFolderQualifiedName.text",
+    SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "sisenseFolderParentFolderQualifiedName",
+            "sisenseFolderParentFolderQualifiedName",
+            "sisenseFolderParentFolderQualifiedName.text",
+        )
     )
     """
     Unique name of the parent folder in which this folder exists.

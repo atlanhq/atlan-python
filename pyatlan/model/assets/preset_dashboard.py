@@ -69,13 +69,13 @@ class PresetDashboard(Preset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.keyword",
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.stemmed",
+    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "presetDashboardChangedByName",
+            "presetDashboardChangedByName.keyword",
+            "presetDashboardChangedByName",
+            "presetDashboardChangedByName.stemmed",
+        )
     )
     """
 

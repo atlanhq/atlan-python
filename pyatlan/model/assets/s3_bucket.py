@@ -28,8 +28,7 @@ class S3Bucket(S3):
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
-    ) -> S3Bucket:
-        ...
+    ) -> S3Bucket: ...
 
     @overload
     @classmethod
@@ -40,8 +39,7 @@ class S3Bucket(S3):
         name: str,
         connection_qualified_name: str,
         aws_arn: Optional[str] = None,
-    ) -> S3Bucket:
-        ...
+    ) -> S3Bucket: ...
 
     @classmethod
     @init_guid
@@ -68,8 +66,7 @@ class S3Bucket(S3):
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
-    ) -> S3Bucket:
-        ...
+    ) -> S3Bucket: ...
 
     @overload
     @classmethod
@@ -80,8 +77,7 @@ class S3Bucket(S3):
         name: str,
         connection_qualified_name: str,
         aws_arn: Optional[str] = None,
-    ) -> S3Bucket:
-        ...
+    ) -> S3Bucket: ...
 
     @classmethod
     @init_guid

@@ -211,10 +211,8 @@ class MicroStrategyProject(MicroStrategy):
         micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_visualizations: Optional[
-            List[MicroStrategyVisualization]
-        ] = Field(
-            default=None, description=""
+        micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]] = (
+            Field(default=None, description="")
         )  # relationship
         micro_strategy_documents: Optional[List[MicroStrategyDocument]] = Field(
             default=None, description=""

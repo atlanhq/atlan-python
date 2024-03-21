@@ -52,12 +52,12 @@ class SisenseWidget(Sisense):
     """
     Size of this widget.
     """
-    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "sisenseWidgetDashboardQualifiedName",
-        "sisenseWidgetDashboardQualifiedName",
-        "sisenseWidgetDashboardQualifiedName.text",
+    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "sisenseWidgetDashboardQualifiedName",
+            "sisenseWidgetDashboardQualifiedName",
+            "sisenseWidgetDashboardQualifiedName.text",
+        )
     )
     """
     Unique name of the dashboard in which this widget exists.

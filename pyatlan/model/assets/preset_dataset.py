@@ -68,13 +68,13 @@ class PresetDataset(Preset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_DATASET_DATASOURCE_NAME: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.keyword",
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.stemmed",
+    PRESET_DATASET_DATASOURCE_NAME: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "presetDatasetDatasourceName",
+            "presetDatasetDatasourceName.keyword",
+            "presetDatasetDatasourceName",
+            "presetDatasetDatasourceName.stemmed",
+        )
     )
     """
 

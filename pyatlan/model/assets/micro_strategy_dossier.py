@@ -109,10 +109,8 @@ class MicroStrategyDossier(MicroStrategy):
         micro_strategy_dossier_chapter_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        micro_strategy_visualizations: Optional[
-            List[MicroStrategyVisualization]
-        ] = Field(
-            default=None, description=""
+        micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]] = (
+            Field(default=None, description="")
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
             default=None, description=""

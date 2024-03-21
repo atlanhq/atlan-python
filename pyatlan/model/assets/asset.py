@@ -669,11 +669,11 @@ class Asset(Referenceable):
     """
     Total duration of the last run of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "assetDbtJobLastRunTotalDurationHumanized",
-        "assetDbtJobLastRunTotalDurationHumanized",
+    ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED: ClassVar[KeywordField] = (
+        KeywordField(
+            "assetDbtJobLastRunTotalDurationHumanized",
+            "assetDbtJobLastRunTotalDurationHumanized",
+        )
     )
     """
     Human-readable total duration of the last run of the job that materialized this asset in dbt.
@@ -684,11 +684,11 @@ class Asset(Referenceable):
     """
     Total duration the job that materialized this asset in dbt spent being queued.
     """
-    ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "assetDbtJobLastRunQueuedDurationHumanized",
-        "assetDbtJobLastRunQueuedDurationHumanized",
+    ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED: ClassVar[KeywordField] = (
+        KeywordField(
+            "assetDbtJobLastRunQueuedDurationHumanized",
+            "assetDbtJobLastRunQueuedDurationHumanized",
+        )
     )
     """
     Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued.
@@ -699,11 +699,11 @@ class Asset(Referenceable):
     """
     Run duration of the last run of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "assetDbtJobLastRunRunDurationHumanized",
-        "assetDbtJobLastRunRunDurationHumanized",
+    ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED: ClassVar[KeywordField] = (
+        KeywordField(
+            "assetDbtJobLastRunRunDurationHumanized",
+            "assetDbtJobLastRunRunDurationHumanized",
+        )
     )
     """
     Human-readable run duration of the last run of the job that materialized this asset in dbt.
@@ -722,12 +722,12 @@ class Asset(Referenceable):
     """
     SHA hash in git for the last run of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "assetDbtJobLastRunStatusMessage",
-        "assetDbtJobLastRunStatusMessage.keyword",
-        "assetDbtJobLastRunStatusMessage",
+    ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "assetDbtJobLastRunStatusMessage",
+            "assetDbtJobLastRunStatusMessage.keyword",
+            "assetDbtJobLastRunStatusMessage",
+        )
     )
     """
     Status message of the last run of the job that materialized this asset in dbt.
@@ -3004,21 +3004,21 @@ class Asset(Referenceable):
         source_read_top_user_record_list: Optional[List[PopularityInsights]] = Field(
             default=None, description=""
         )
-        source_read_popular_query_record_list: Optional[
-            List[PopularityInsights]
-        ] = Field(default=None, description="")
-        source_read_expensive_query_record_list: Optional[
-            List[PopularityInsights]
-        ] = Field(default=None, description="")
+        source_read_popular_query_record_list: Optional[List[PopularityInsights]] = (
+            Field(default=None, description="")
+        )
+        source_read_expensive_query_record_list: Optional[List[PopularityInsights]] = (
+            Field(default=None, description="")
+        )
         source_read_slow_query_record_list: Optional[List[PopularityInsights]] = Field(
             default=None, description=""
         )
         source_query_compute_cost_list: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        source_query_compute_cost_record_list: Optional[
-            List[PopularityInsights]
-        ] = Field(default=None, description="")
+        source_query_compute_cost_record_list: Optional[List[PopularityInsights]] = (
+            Field(default=None, description="")
+        )
         dbt_qualified_name: Optional[str] = Field(default=None, description="")
         asset_dbt_alias: Optional[str] = Field(default=None, description="")
         asset_dbt_meta: Optional[str] = Field(default=None, description="")

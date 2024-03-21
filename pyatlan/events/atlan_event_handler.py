@@ -71,9 +71,9 @@ def get_current_view_of_asset(
     return (
         result
         if (
-            result := response.current_page()[0]
-            if len(response.current_page()) > 0
-            else None
+            result := (
+                response.current_page()[0] if len(response.current_page()) > 0 else None
+            )
         )
         else None
     )
