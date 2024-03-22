@@ -1,3 +1,19 @@
+## 2.0.4 (March 22, 2024)
+
+### New features
+
+- Adds model field (`__atlan_extra__`) to the `AtlanObject` model to accommodate extra properties from API responses.
+- Adds an optional parameter (`return_info`) to the user creation method, allowing control over whether to return the list of created users or not.
+- Adds an optional parameter (`exclude_users`) to the `SearchLogRequest` methods for excluding specific user data from search log results.
+
+### Bug fixes
+
+- Fixes issues related to creating data domains and data products.
+
+### QOL improvements
+
+- Bump black from `23.7.0` to `24.3.0` (Fixes [CVE security vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-21503)).
+
 ## 2.0.3 (March 15, 2024)
 
 ### New features
