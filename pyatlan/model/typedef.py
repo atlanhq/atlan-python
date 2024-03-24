@@ -228,8 +228,27 @@ class EnumDef(TypeDef):
             )
             return elements
 
+        @staticmethod
+        def extend_elements(current: List[str], new: List[str]) -> List[str]:
+            """
+            Extends the element definitions without duplications
+            and also retains the order of the current enum values.
+
+            :param current: current list of element definitions.
+            :param new: list of new element definitions to be added.
+            :return: list of unique element definitions without duplications.
+            """
+            unique_elements = set(current)
+            # Make a copy of current values list
+            extended_list = current[:]
+            for element in new:
+                if element not in unique_elements:
+                    extended_list.append(element)
+                    unique_elements.add(element)
+            return extended_list
+
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
-    element_defs: List["EnumDef.ElementDef"] = Field(
+    element_defs: List[EnumDef.ElementDef] = Field(
         description="Valid values for the enumeration."
     )
     options: Optional[Dict[str, Any]] = Field(
@@ -245,14 +264,33 @@ class EnumDef(TypeDef):
             ["name", "values"],
             [name, values],
         )
-        # Explicitly set all defaults to ensure inclusion during pydantic serialization
+        # Explicitly set all defaults to ensure
+        # inclusion during pydantic serialization
         return EnumDef(
             category=AtlanTypeCategory.ENUM,
             name=name,
             element_defs=EnumDef.ElementDef.list_from(values),
         )
 
-    def get_valid_values(self) -> Optional[List[str]]:
+    @staticmethod
+    def update(name: str, values: List[str]) -> EnumDef:
+        from pyatlan.cache.enum_cache import EnumCache
+        from pyatlan.utils import validate_required_fields
+
+        validate_required_fields(
+            ["name", "values"],
+            [name, values],
+        )
+        update_values = EnumDef.ElementDef.extend_elements(
+            new=values, current=EnumCache.get_by_name(str(name)).get_valid_values()
+        )
+        return EnumDef(
+            name=name,
+            category=AtlanTypeCategory.ENUM,
+            element_defs=EnumDef.ElementDef.list_from(update_values),
+        )
+
+    def get_valid_values(self) -> List[str]:
         """
         Translate the element definitions in this enumeration into simple list of strings.
         """

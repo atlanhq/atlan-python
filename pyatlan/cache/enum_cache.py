@@ -33,14 +33,17 @@ class EnumCache:
         cls.get_cache()._refresh_cache()
 
     @classmethod
-    def get_by_name(cls, name: str) -> Optional[EnumDef]:
+    def get_by_name(cls, name: str) -> EnumDef:
         """
         Retrieve the enumeration definition by its name.
 
-        :param name: human-readable name of the enumeration
-        :returns: the enumeration definition
+        :param name: human-readable name of the enumeration.
+        :raises `NotFoundError`: if the enumeration with the given name does not exist.
+        :returns: enumeration definition
         """
-        return cls.get_cache()._get_by_name(name=name)
+        if not (enum := cls.get_cache()._get_by_name(name=name)):
+            raise ErrorCode.ENUM_NOT_FOUND.exception_with_parameters(name)
+        return enum
 
     def __init__(self, typedef_client: TypeDefClient):
         self.typedef_client: TypeDefClient = typedef_client

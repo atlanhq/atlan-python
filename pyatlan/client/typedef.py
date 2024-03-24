@@ -103,7 +103,7 @@ class TypeDefClient:
         self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]
     ) -> TypeDefResponse:
         """
-        Retrieves  a TypeDefResponse object that contain a list of the specified category type definitions in Atlan.
+        Retrieves a TypeDefResponse object that contain a list of the specified category type definitions in Atlan.
 
         :param type_category: category of type definitions to retrieve
         :returns: TypeDefResponse object that contain a list that contains the requested list of type definitions
@@ -125,13 +125,14 @@ class TypeDefClient:
     def create(self, typedef: TypeDef) -> TypeDefResponse:
         """
         Create a new type definition in Atlan.
-        Note: only custom metadata, enumerations, and Atlan tag type definitions are currently
-        supported. Furthermore, if any of these are created their respective cache will be
-        force-refreshed.
+        Note: only custom metadata, enumerations (options), and Atlan tag type
+        definitions are currently supported. Furthermore, if any of these are
+        created their respective cache will be force-refreshed.
 
         :param typedef: type definition to create
         :returns: the resulting type definition that was created
-        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
+        :raises InvalidRequestError: if the typedef you are
+        trying to create is not one of the allowed types
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
@@ -145,12 +146,14 @@ class TypeDefClient:
     def update(self, typedef: TypeDef) -> TypeDefResponse:
         """
         Update an existing type definition in Atlan.
-        Note: only custom metadata and Atlan tag type definitions are currently supported.
-        Furthermore, if any of these are updated their respective cache will be force-refreshed.
+        Note: only custom metadata, enumerations (options), and Atlan tag type
+        definitions are currently supported. Furthermore, if any of these are
+        updated their respective cache will be force-refreshed.
 
         :param typedef: type definition to update
         :returns: the resulting type definition that was updated
-        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
+        :raises InvalidRequestError: if the typedef you are
+        trying to update is not one of the allowed types
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)

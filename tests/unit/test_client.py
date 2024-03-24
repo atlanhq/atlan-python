@@ -1205,7 +1205,7 @@ def test_group_get_pagination(mock_api_caller, group_list_json):
     mock_api_caller.reset_mock()
 
 
-def test_group_get_members_pagination(client, mock_api_caller, group_members_json):
+def test_group_get_members_pagination(mock_api_caller, group_members_json):
     client = GroupClient(mock_api_caller)
     last_page_response = {"totalRecord": 3, "filterRecord": 3, "records": None}
     mock_api_caller._call_api.side_effect = [group_members_json, last_page_response]
@@ -1349,7 +1349,7 @@ def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json)
     assert user.email
     assert user.attributes
     assert user.login_events
-    mock_api_caller._call_api.call_count == 2
+    assert mock_api_caller._call_api.call_count == 2
     mock_api_caller.reset_mock()
 
 
