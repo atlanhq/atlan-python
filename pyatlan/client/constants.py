@@ -451,10 +451,10 @@ TYPEDEF_BY_GUID = f"{TYPES_API}typedef/guid/"
 GET_BY_NAME_TEMPLATE = TYPES_API + "{path_type}/name/{name}"
 GET_BY_GUID_TEMPLATE = TYPES_API + "{path_type}/guid/{guid}"
 
-GET_TYPEDEF_BY_NAME = API(
+GET_TYPE_DEF_BY_NAME = API(
     TYPEDEF_BY_NAME, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
 )
-GET_TYPEDEF_BY_GUID = API(
+GET_TYPE_DEF_BY_GUID = API(
     TYPEDEF_BY_GUID, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
 )
 GET_ALL_TYPE_DEFS = API(

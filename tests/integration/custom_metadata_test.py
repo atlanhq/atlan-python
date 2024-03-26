@@ -295,6 +295,18 @@ def test_cm_enum(
     assert len(cm_enum.element_defs) == len(DQ_TYPE_LIST)
 
 
+@pytest.mark.order(after="test_cm_enum")
+def test_cm_enum_get_by_name(client: AtlanClient):
+    cm_enum = client.typedef.get_by_name(name=DQ_ENUM)
+
+    assert cm_enum and isinstance(cm_enum, EnumDef)
+    assert cm_enum.guid
+    assert cm_enum.element_defs
+    assert cm_enum.name == DQ_ENUM
+    assert cm_enum.category == AtlanTypeCategory.ENUM
+    assert len(cm_enum.element_defs) == len(DQ_TYPE_LIST)
+
+
 @pytest.fixture(scope="module")
 def cm_enum_update(
     client: AtlanClient,
