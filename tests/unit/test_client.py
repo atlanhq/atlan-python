@@ -12,8 +12,15 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
+from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
-from pyatlan.errors import AtlanError, ErrorCode, InvalidRequestError, NotFoundError
+from pyatlan.errors import (
+    ApiError,
+    AtlanError,
+    ErrorCode,
+    InvalidRequestError,
+    NotFoundError,
+)
 from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
@@ -34,6 +41,7 @@ from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from pyatlan.model.search_log import SearchLogRequest
+from pyatlan.model.typedef import EnumDef
 from pyatlan.model.user import AtlanUser, UserRequest
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
@@ -88,6 +96,8 @@ USER_LIST_JSON = "user_list.json"
 GET_BY_GUID_JSON = "get_by_guid.json"
 RETRIEVE_MINIMAL_JSON = "retrieve_minimal.json"
 ASSET_RESPONSES_DIR = TEST_DATA_DIR / "asset_responses"
+TYPEDEF_GET_BY_NAME_JSON = "get_by_name.json"
+TYPEDEF_RESPONSES_DIR = TEST_DATA_DIR / "typedef_responses"
 
 TEST_ANNOUNCEMENT = Announcement(
     announcement_title="test-title",
@@ -185,6 +195,11 @@ def get_by_guid_json():
 @pytest.fixture()
 def retrieve_minimal_json():
     return load_json(ASSET_RESPONSES_DIR, RETRIEVE_MINIMAL_JSON)
+
+
+@pytest.fixture()
+def type_def_get_by_name_json():
+    return load_json(TYPEDEF_RESPONSES_DIR, TYPEDEF_GET_BY_NAME_JSON)
 
 
 @pytest.mark.parametrize(
@@ -1350,6 +1365,41 @@ def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json)
     assert user.attributes
     assert user.login_events
     assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+
+def test_typedef_get_by_name(mock_api_caller, type_def_get_by_name_json):
+    client = TypeDefClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [type_def_get_by_name_json]
+    response = client.get_by_name(name="test-enum")
+    assert response == EnumDef(**type_def_get_by_name_json)
+    assert mock_api_caller._call_api.call_count == 1
+    mock_api_caller.reset_mock()
+
+
+def test_typedef_get_by_name_unsupported_category(mock_api_caller):
+    client = TypeDefClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [{"category": "TEST"}]
+    with pytest.raises(ApiError) as err:
+        client.get_by_name(name="test-enum")
+
+    assert "Unsupported type definition category: TEST" in str(err.value)
+    mock_api_caller.reset_mock()
+
+
+def test_typedef_get_by_name_invalid_response(mock_api_caller):
+    client = TypeDefClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [123]
+    with pytest.raises(ApiError) as err:
+        client.get_by_name(name="test-enum")
+    assert "Additional details: 'int' object has no attribute 'get'" in str(err.value)
+
+    mock_api_caller._call_api.side_effect = [{"category": "ENUM", "test": "invalid"}]
+    with pytest.raises(ApiError) as err:
+        client.get_by_name(name="test-enum")
+    assert "1 validation error for EnumDef\nelementDefs\n  field required" in str(
+        err.value
+    )
     mock_api_caller.reset_mock()
 
 

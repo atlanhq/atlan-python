@@ -1,0 +1,25 @@
+{
+    "category": "ENUM",
+    "guid": "9c35579e-5696-4f96-9bc7-6f7ae43e2bee",
+    "createdBy": "test-user",
+    "updatedBy": "service-account-apikey-1234",
+    "createTime": 1711289313382,
+    "updateTime": 1711300071397,
+    "version": 23,
+    "name": "test-enum",
+    "typeVersion": "1.0",
+    "elementDefs": [
+      {
+        "value": "test-val0",
+        "ordinal": 0
+      },
+      {
+        "value": "test-val1",
+        "ordinal": 1
+      },
+      {
+        "value": "test-val2",
+        "ordinal": 2
+      }
+    ]
+}

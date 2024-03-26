@@ -2,13 +2,14 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import List, Union
 
-from pydantic.v1 import validate_arguments
+from pydantic.v1 import ValidationError, validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     CREATE_TYPE_DEFS,
     DELETE_TYPE_DEF_BY_NAME,
     GET_ALL_TYPE_DEFS,
+    GET_TYPE_DEF_BY_NAME,
     UPDATE_TYPE_DEFS,
 )
 from pyatlan.errors import ErrorCode
@@ -16,7 +17,10 @@ from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
+    EntityDef,
     EnumDef,
+    RelationshipDef,
+    StructDef,
     TypeDef,
     TypeDefResponse,
 )
@@ -75,6 +79,34 @@ def _refresh_caches(typedef: TypeDef) -> None:
         EnumCache.refresh_cache()
 
 
+class TypeDefFactory:
+    @staticmethod
+    def create(raw_json: dict) -> TypeDef:
+        """
+        Creates a specific type definition object based on the provided raw JSON.
+
+        :param raw_json: raw JSON data representing the type definition
+        :returns: type definition object
+        :raises ApiError: on receiving an unsupported type definition category
+        """
+        TYPE_DEF_MAP = {
+            AtlanTypeCategory.ENUM: EnumDef,
+            AtlanTypeCategory.STRUCT: StructDef,
+            AtlanTypeCategory.CLASSIFICATION: AtlanTagDef,
+            AtlanTypeCategory.ENTITY: EntityDef,
+            AtlanTypeCategory.RELATIONSHIP: RelationshipDef,
+            AtlanTypeCategory.CUSTOM_METADATA: CustomMetadataDef,
+        }
+        category = raw_json.get("category")
+        type_def_model = category and TYPE_DEF_MAP.get(category)
+        if type_def_model:
+            return type_def_model(**raw_json)
+        else:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, f"Unsupported type definition category: {category}"
+            )
+
+
 class TypeDefClient:
     """
     This class can be used to retrieve information pertaining to TypeDefs. This class does not need to be instantiated
@@ -120,6 +152,27 @@ class TypeDefClient:
             query_params,
         )
         return TypeDefResponse(**raw_json)
+
+    @validate_arguments
+    def get_by_name(self, name: str) -> TypeDef:
+        """
+        Retrieves a specific type definition from Atlan.
+
+        :name: internal (hashed-string, if used) name of the type definition
+        :returns: details of that specific type definition
+        :raises ApiError: on receiving an unsupported type definition
+        category or when unable to produce a valid response
+        :raises AtlanError: on any API communication issue
+        """
+        raw_json = self._client._call_api(
+            GET_TYPE_DEF_BY_NAME.format_path_with_params(name)
+        )
+        try:
+            return TypeDefFactory.create(raw_json)
+        except (ValidationError, AttributeError) as err:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
 
     @validate_arguments
     def create(self, typedef: TypeDef) -> TypeDefResponse:
