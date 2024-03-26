@@ -494,14 +494,17 @@
 <div class="viewcode-block" id="EnumCache.get_by_name">
 <a class="viewcode-back" href="../../../cache/enum_cache.html#pyatlan.cache.enum_cache.EnumCache.get_by_name">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_by_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EnumDef</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_by_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve the enumeration definition by its name.</span>
 
-<span class="sd">        :param name: human-readable name of the enumeration</span>
-<span class="sd">        :returns: the enumeration definition</span>
+<span class="sd">        :param name: human-readable name of the enumeration.</span>
+<span class="sd">        :raises `NotFoundError`: if the enumeration with the given name does not exist.</span>
+<span class="sd">        :returns: enumeration definition</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_get_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">enum</span> <span class="o">:=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_get_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ENUM_NOT_FOUND</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">enum</span></div>
 
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typedef_client</span><span class="p">:</span> <span class="n">TypeDefClient</span><span class="p">):</span>

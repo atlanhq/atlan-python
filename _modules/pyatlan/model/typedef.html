@@ -687,8 +687,27 @@
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">elements</span>
 
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">extend_elements</span><span class="p">(</span><span class="n">current</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Extends the element definitions without duplications</span>
+<span class="sd">            and also retains the order of the current enum values.</span>
+
+<span class="sd">            :param current: current list of element definitions.</span>
+<span class="sd">            :param new: list of new element definitions to be added.</span>
+<span class="sd">            :return: list of unique element definitions without duplications.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">unique_elements</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="c1"># Make a copy of current values list</span>
+            <span class="n">extended_list</span> <span class="o">=</span> <span class="n">current</span><span class="p">[:]</span>
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">element</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_elements</span><span class="p">:</span>
+                    <span class="n">extended_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+                    <span class="n">unique_elements</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">extended_list</span>
+
     <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENUM</span>
-    <span class="n">element_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;EnumDef.ElementDef&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">element_defs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Valid values for the enumeration.&quot;</span>
     <span class="p">)</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -696,24 +715,72 @@
     <span class="p">)</span>
     <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="EnumDef.create">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EnumDef.create">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the minimal object necessary to create an enumeration definition.</span>
+
+<span class="sd">        :param name: display name the human-readable name for the enumeration</span>
+<span class="sd">        :param values: the list of additional valid values</span>
+<span class="sd">        (as strings) to add to the existing enumeration</span>
+<span class="sd">        :returns: the minimal object necessary to create the enumeration typedef</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
 
         <span class="n">validate_required_fields</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
+        <span class="c1"># Explicitly set all defaults to ensure</span>
+        <span class="c1"># inclusion during pydantic serialization</span>
         <span class="k">return</span> <span class="n">EnumDef</span><span class="p">(</span>
             <span class="n">category</span><span class="o">=</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENUM</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">element_defs</span><span class="o">=</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="o">.</span><span class="n">list_from</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EnumDef.update">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EnumDef.update">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">replace_existing</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the minimal object necessary to update an enumeration definition.</span>
+
+<span class="sd">        :param name: display name the human-readable name for the enumeration</span>
+<span class="sd">        :param values: the list of additional valid values</span>
+<span class="sd">        (as strings) to add to the existing enumeration</span>
+<span class="sd">        :param replace_existing: if `True`, will replace all</span>
+<span class="sd">        existing values in the enumeration with the new ones;</span>
+<span class="sd">        or if `False` the new ones will be appended to the existing set</span>
+<span class="sd">        :returns: the minimal object necessary to update the enumeration typedef</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.cache.enum_cache</span> <span class="kn">import</span> <span class="n">EnumCache</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;replace_existing&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">replace_existing</span><span class="p">],</span>
         <span class="p">)</span>
+        <span class="n">update_values</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">values</span>
+            <span class="k">if</span> <span class="n">replace_existing</span>
+            <span class="k">else</span> <span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="o">.</span><span class="n">extend_elements</span><span class="p">(</span>
+                <span class="n">new</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="n">EnumCache</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">get_valid_values</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">EnumDef</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENUM</span><span class="p">,</span>
+            <span class="n">element_defs</span><span class="o">=</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="o">.</span><span class="n">list_from</span><span class="p">(</span><span class="n">update_values</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="EnumDef.get_valid_values">
 <a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EnumDef.get_valid_values">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_valid_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">get_valid_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the element definitions in this enumeration into simple list of strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
