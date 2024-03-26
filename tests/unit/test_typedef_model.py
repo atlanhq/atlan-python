@@ -3,11 +3,14 @@
 import json
 import random
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.errors import InvalidRequestError
+from pyatlan.cache.enum_cache import EnumCache
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.common import ApiCaller
+from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
@@ -24,140 +27,42 @@ from pyatlan.model.typedef import (
     _complete_type_list,
 )
 from pyatlan.model.utils import to_camel_case, to_snake_case
-
-APPLICABLE_GLOSSARIES = "applicable_glossaries"
-
-APPLICABLE_CONNECTIONS = "applicable_connections"
-
-APPLICABLE_ENTITY_TYPES = "applicable_entity_types"
-
-APPLICABLE_OTHER_ASSET_TYPES = "applicable_other_asset_types"
-
-APLICABLE_GLOSSARY_TYPES = "applicable_glossary_types"
-
-APPLICABLE_ASSET_TYPES = "applicable_asset_types"
+from tests.unit.constants import (
+    APLICABLE_GLOSSARY_TYPES,
+    APPLICABLE_ASSET_TYPES,
+    APPLICABLE_CONNECTIONS,
+    APPLICABLE_ENTITY_TYPES,
+    APPLICABLE_GLOSSARIES,
+    APPLICABLE_OTHER_ASSET_TYPES,
+    TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES,
+    TEST_ENUM_DEF,
+    TEST_STRUCT_DEF,
+)
 
 PARENT_DIR = Path(__file__).parent
 TYPEDEFS_JSON = PARENT_DIR / "data" / "typedefs.json"
 
-ENUM_DEF = {
-    "category": "ENUM",
-    "guid": "f2e6763b-a29d-4fb5-8447-10ba9da14259",
-    "createdBy": "service-account-atlan-argo",
-    "updatedBy": "service-account-atlan-argo",
-    "createTime": 1646710766297,
-    "updateTime": 1657756889921,
-    "version": 95,
-    "name": "AtlasGlossaryTermRelationshipStatus",
-    "description": "TermRelationshipStatus defines how reliable the relationship is between two glossary terms",
-    "typeVersion": "1.0",
-    "serviceType": "atlas_core",
-    "elementDefs": [
-        {
-            "value": "DRAFT",
-            "description": "DRAFT means the relationship is under development.",
-            "ordinal": 0,
-        },
-        {
-            "value": "ACTIVE",
-            "description": "ACTIVE means the relationship is validated and in use.",
-            "ordinal": 1,
-        },
-        {
-            "value": "DEPRECATED",
-            "description": "DEPRECATED means the the relationship is being phased out.",
-            "ordinal": 2,
-        },
-        {
-            "value": "OBSOLETE",
-            "description": "OBSOLETE means that the relationship should not be used anymore.",
-            "ordinal": 3,
-        },
-        {
-            "value": "OTHER",
-            "description": "OTHER means that there is another status.",
-            "ordinal": 99,
-        },
-    ],
-}
-STRUCT_DEF = {
-    "category": "STRUCT",
-    "guid": "8afb807f-26f7-4787-b15f-7872d00220ea",
-    "createdBy": "service-account-atlan-argo",
-    "updatedBy": "service-account-atlan-argo",
-    "createTime": 1652745663724,
-    "updateTime": 1657756890174,
-    "version": 59,
-    "name": "AwsTag",
-    "description": "Atlas Type representing a tag/value pair associated with an AWS object, eg S3 bucket",
-    "typeVersion": "1.0",
-    "serviceType": "aws",
-    "attributeDefs": [
-        {
-            "description": "stuff",
-            "name": "awsTagKey",
-            "typeName": "string",
-            "isOptional": False,
-            "cardinality": "SINGLE",
-            "valuesMinCount": 1,
-            "valuesMaxCount": 1,
-            "isUnique": False,
-            "isIndexable": True,
-            "includeInNotification": False,
-            "skipScrubbing": False,
-            "searchWeight": -1,
-            "indexType": "STRING",
-            "isNew": True,
-        },
-        {
-            "description": "stuff",
-            "name": "awsTagValue",
-            "typeName": "string",
-            "isOptional": False,
-            "cardinality": "SINGLE",
-            "valuesMinCount": 1,
-            "valuesMaxCount": 1,
-            "isUnique": False,
-            "isIndexable": False,
-            "includeInNotification": False,
-            "skipScrubbing": False,
-            "searchWeight": -1,
-            "indexType": "STRING",
-            "isNew": True,
-        },
-    ],
-}
-CLASSIFICATION_DEF = {
-    "category": "CLASSIFICATION",
-    "guid": "a73d2a3d-984f-4117-b05b-cf8b88dcb559",
-    "createdBy": "markpavletich",
-    "updatedBy": "markpavletich",
-    "createTime": 1646881735887,
-    "updateTime": 1660047587203,
-    "version": 4,
-    "name": "wqDf0vVAF3uL8FXjIyk6St",
-    "description": "",
-    "typeVersion": "1.0",
-    "options": {"color": "Red"},
-    "attributeDefs": [],
-    "superTypes": [],
-    "entityTypes": [],
-    "displayName": "Name",
-    "subTypes": [],
-}
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture(scope="module")
+def mock_api_caller():
+    return Mock(spec=ApiCaller)
 
 
 @pytest.fixture()
 def type_defs():
     with TYPEDEFS_JSON.open() as input_file:
         return json.load(input_file)
-
-
-def test_create_element_def():
-    element_def = EnumDef.ElementDef(**(ENUM_DEF["elementDefs"][0]))
-    assert element_def.description == ENUM_DEF["elementDefs"][0]["description"]
-    assert element_def.value == ENUM_DEF["elementDefs"][0]["value"]
-    assert element_def.ordinal == ENUM_DEF["elementDefs"][0]["ordinal"]
 
 
 def check_type_def_properties(type_def: TypeDef, source: dict):
@@ -180,20 +85,6 @@ def check_type_def_properties(type_def: TypeDef, source: dict):
     check_property("version")
 
 
-def test_create_enum_def():
-    enum_def = EnumDef(**ENUM_DEF)
-    assert enum_def.category == AtlanTypeCategory.ENUM
-    assert len(enum_def.element_defs) == 5
-    check_type_def_properties(enum_def, ENUM_DEF)
-
-
-def test_enum_defs(type_defs):
-    for enum_def_json in type_defs["enumDefs"]:
-        enum_def = EnumDef(**enum_def_json)
-        assert enum_def.category == AtlanTypeCategory.ENUM
-        check_type_def_properties(enum_def, enum_def_json)
-
-
 def check_attribute(model: object, attribute_name: str, source: dict):
     key = to_camel_case(attribute_name)
     attribute = getattr(model, attribute_name)
@@ -205,70 +96,238 @@ def check_attribute(model: object, attribute_name: str, source: dict):
         assert getattr(model, attribute_name) is None
 
 
-@pytest.mark.skip("Need get a new version of the typedefs.json file")
-def test_struct_defs(type_defs):
-    for struct_def_json in type_defs["structDefs"]:
-        struct_def = StructDef(**struct_def_json)
-        assert struct_def.category == AtlanTypeCategory.STRUCT
-        check_type_def_properties(struct_def, struct_def_json)
-        for index, attribute_def in enumerate(struct_def.attribute_defs):
-            attribute_defs = struct_def_json["attributeDefs"][index]
-            for key in attribute_def.__dict__.keys():
-                check_attribute(attribute_def, key, attribute_defs)
-        check_has_attributes(struct_def, struct_def_json)
-
-
-def test_create_struct_def():
-    struct_def = StructDef(**STRUCT_DEF)
-    assert struct_def.category == AtlanTypeCategory.STRUCT
-    check_type_def_properties(struct_def, STRUCT_DEF)
-    for index, attribute_def in enumerate(struct_def.attribute_defs):
-        attribute_defs = STRUCT_DEF["attributeDefs"][index]
-        for key in attribute_def.__dict__.keys():
-            check_attribute(attribute_def, key, attribute_defs)
-
-
-def test_classification_def(type_defs):
-    for classification_def_json in type_defs["classificationDefs"]:
-        classification_def = AtlanTagDef(**classification_def_json)
-        assert classification_def.category == AtlanTypeCategory.CLASSIFICATION
-        check_type_def_properties(classification_def, classification_def_json)
-        check_has_attributes(classification_def, classification_def_json)
-
-
 def check_has_attributes(type_def: TypeDef, type_def_json: dict):
     for key in type_def_json:
         attribute_name = to_snake_case(key)
         assert hasattr(type_def, attribute_name)
 
 
-def test_entity_def(type_defs):
-    for entity_def_json in type_defs["entityDefs"]:
-        entity_def = EntityDef(**entity_def_json)
-        assert entity_def.category == AtlanTypeCategory.ENTITY
-        check_type_def_properties(entity_def, entity_def_json)
-        check_has_attributes(entity_def, entity_def_json)
+class TestEnumDef:
+    @pytest.fixture()
+    def mock_get_enum_cache(self):
+        with patch.object(EnumCache, "get_cache") as cache:
+            yield cache
+
+    def test_create_element_def(self):
+        element_def = EnumDef.ElementDef(**(TEST_ENUM_DEF["elementDefs"][0]))
+        assert element_def.description == TEST_ENUM_DEF["elementDefs"][0]["description"]
+        assert element_def.value == TEST_ENUM_DEF["elementDefs"][0]["value"]
+        assert element_def.ordinal == TEST_ENUM_DEF["elementDefs"][0]["ordinal"]
+
+    def test_create_enum_def(self):
+        enum_def = EnumDef(**TEST_ENUM_DEF)
+        assert enum_def.category == AtlanTypeCategory.ENUM
+        assert len(enum_def.element_defs) == 5
+        check_type_def_properties(enum_def, TEST_ENUM_DEF)
+
+    def test_enum_defs(self, type_defs):
+        for enum_def_json in type_defs["enumDefs"]:
+            enum_def = EnumDef(**enum_def_json)
+            assert enum_def.category == AtlanTypeCategory.ENUM
+            check_type_def_properties(enum_def, enum_def_json)
+
+    @pytest.mark.parametrize(
+        "test_name, test_values, error_msg",
+        [
+            [None, ["val1", "val2"], "name is required"],
+            ["my_enum", None, "values is required"],
+        ],
+    )
+    def test_enum_create_method_required_parameters(
+        self, test_name, test_values, error_msg
+    ):
+        with pytest.raises(ValueError) as err:
+            EnumDef.create(name=test_name, values=test_values)
+        assert error_msg in str(err.value)
+
+    def test_create_method(self):
+        enum = EnumDef.create(name="test-enum", values=["test-val1", "test-val2"])
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 2
+        assert enum.element_defs[0].value == "test-val1"
+        assert enum.element_defs[1].value == "test-val2"
+
+    def test_update_method_enum_not_found(self, client, mock_get_enum_cache):
+        mock_get_by_name = Mock(return_value=None)
+        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+
+        with pytest.raises(
+            NotFoundError,
+            match="ATLAN-PYTHON-404-013 Enumeration with name test-enum does not exist.",
+        ):
+            EnumDef.update(
+                name="test-enum",
+                values=["test-val1", "test-val2"],
+                replace_existing=False,
+            )
+
+    def test_update_method(self, client, mock_get_enum_cache):
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [{"value": "test-val0"}],
+        }
+        mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
+        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 3
+        assert enum.element_defs[0].value == "test-val0"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "test-val2"
+
+        # Test no duplication
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
+        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 3
+        assert enum.element_defs[0].value == "test-val0"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "test-val2"
+
+        # Test with existing values and ordering
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
+        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            name="test-enum",
+            values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
+            replace_existing=False,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 7
+        assert enum.element_defs[0].value == "test-val0"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "test-val2"
+        # Make sure new ones are always append
+        assert enum.element_defs[3].value == "new1"
+        assert enum.element_defs[4].value == "new2"
+        assert enum.element_defs[5].value == "new3"
+        assert enum.element_defs[6].value == "new4"
+
+        # Test when `replace_existing` is `True`
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
+        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            name="test-enum",
+            values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
+            replace_existing=True,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 6
+        assert enum.element_defs[0].value == "new1"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "new2"
+        assert enum.element_defs[3].value == "test-val2"
+        assert enum.element_defs[4].value == "new3"
+        assert enum.element_defs[5].value == "new4"
 
 
-def test_relationship_def(type_defs):
-    for relationship_def_json in type_defs["relationshipDefs"]:
-        relationship_def = RelationshipDef(**relationship_def_json)
-        assert relationship_def.category == AtlanTypeCategory.RELATIONSHIP
-        check_type_def_properties(relationship_def, relationship_def_json)
-        check_has_attributes(relationship_def, relationship_def_json)
+class TestStuctDef:
+    @pytest.mark.skip("Need get a new version of the typedefs.json file")
+    def test_struct_defs(self, type_defs):
+        for struct_def_json in type_defs["structDefs"]:
+            struct_def = StructDef(**struct_def_json)
+            assert struct_def.category == AtlanTypeCategory.STRUCT
+            check_type_def_properties(struct_def, struct_def_json)
+            for index, attribute_def in enumerate(struct_def.attribute_defs):
+                attribute_defs = struct_def_json["attributeDefs"][index]
+                for key in attribute_def.__dict__.keys():
+                    check_attribute(attribute_def, key, attribute_defs)
+            check_has_attributes(struct_def, struct_def_json)
+
+    def test_create_struct_def(self):
+        struct_def = StructDef(**TEST_STRUCT_DEF)
+        assert struct_def.category == AtlanTypeCategory.STRUCT
+        check_type_def_properties(struct_def, TEST_STRUCT_DEF)
+        for index, attribute_def in enumerate(struct_def.attribute_defs):
+            attribute_defs = TEST_STRUCT_DEF["attributeDefs"][index]
+            for key in attribute_def.__dict__.keys():
+                check_attribute(attribute_def, key, attribute_defs)
 
 
-def test_business_metadata_def(type_defs):
-    for business_metadata_def_json in type_defs["businessMetadataDefs"]:
-        business_metadata_def = CustomMetadataDef(**business_metadata_def_json)
-        assert business_metadata_def.category == AtlanTypeCategory.CUSTOM_METADATA
-        check_type_def_properties(business_metadata_def, business_metadata_def_json)
-        check_has_attributes(business_metadata_def, business_metadata_def_json)
+class TestAtlanTagDef:
+    def test_classification_def(self, type_defs):
+        for classification_def_json in type_defs["classificationDefs"]:
+            classification_def = AtlanTagDef(**classification_def_json)
+            assert classification_def.category == AtlanTypeCategory.CLASSIFICATION
+            check_type_def_properties(classification_def, classification_def_json)
+            check_has_attributes(classification_def, classification_def_json)
 
 
-def test_type_def_response(type_defs):
-    type_def_response = TypeDefResponse(**type_defs)
-    assert isinstance(type_def_response, TypeDefResponse)
+class TestEntityDef:
+    def test_entity_def(self, type_defs):
+        for entity_def_json in type_defs["entityDefs"]:
+            entity_def = EntityDef(**entity_def_json)
+            assert entity_def.category == AtlanTypeCategory.ENTITY
+            check_type_def_properties(entity_def, entity_def_json)
+            check_has_attributes(entity_def, entity_def_json)
+
+
+class TestRelationshipDef:
+    def test_relationship_def(self, type_defs):
+        for relationship_def_json in type_defs["relationshipDefs"]:
+            relationship_def = RelationshipDef(**relationship_def_json)
+            assert relationship_def.category == AtlanTypeCategory.RELATIONSHIP
+            check_type_def_properties(relationship_def, relationship_def_json)
+            check_has_attributes(relationship_def, relationship_def_json)
+
+
+class TestCustomMetadataDef:
+    def test_business_metadata_def(self, type_defs):
+        for business_metadata_def_json in type_defs["businessMetadataDefs"]:
+            business_metadata_def = CustomMetadataDef(**business_metadata_def_json)
+            assert business_metadata_def.category == AtlanTypeCategory.CUSTOM_METADATA
+            check_type_def_properties(business_metadata_def, business_metadata_def_json)
+            check_has_attributes(business_metadata_def, business_metadata_def_json)
+
+
+class TestTypeDefResponse:
+    def test_type_def_response(self, type_defs):
+        type_def_response = TypeDefResponse(**type_defs)
+        assert isinstance(type_def_response, TypeDefResponse)
 
 
 class TestAttributeDef:
@@ -303,53 +362,7 @@ class TestAttributeDef:
 
     @pytest.mark.parametrize(
         "attribute, value, message",
-        [
-            (
-                APPLICABLE_ASSET_TYPES,
-                1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be Set\[str\]",
-            ),
-            (
-                APPLICABLE_ASSET_TYPES,
-                {"Bogus"},
-                r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
-            ),
-            (
-                APLICABLE_GLOSSARY_TYPES,
-                1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be Set\[str\]",
-            ),
-            (
-                APLICABLE_GLOSSARY_TYPES,
-                {"Bogus"},
-                r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
-            ),
-            (
-                APPLICABLE_OTHER_ASSET_TYPES,
-                1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be Set\[str\]",
-            ),
-            (
-                APPLICABLE_OTHER_ASSET_TYPES,
-                {"Bogus"},
-                r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_other_asset_types should be in ",
-            ),
-            (
-                APPLICABLE_ENTITY_TYPES,
-                1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be Set\[str\]",
-            ),
-            (
-                APPLICABLE_CONNECTIONS,
-                1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be Set\[str\]",
-            ),
-            (
-                APPLICABLE_GLOSSARIES,
-                1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be Set\[str\]",
-            ),
-        ],
+        TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES,
     )
     def test_applicable_types_with_invalid_type_raises_invalid_request_error(
         self, attribute, value, message, sut: AttributeDef

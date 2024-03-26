@@ -63,6 +63,7 @@ DQ_TYPE_LIST = [
     "Validity",
     "Uniqueness",
 ]
+DQ_TYPE_EXTRA_LIST = ["Unknown", "Others"]
 
 _removal_epoch: Optional[int]
 
@@ -97,6 +98,16 @@ def create_custom_metadata(
 def create_enum(client: AtlanClient, name: str, values: List[str]) -> EnumDef:
     enum_def = EnumDef.create(name=name, values=values)
     r = client.typedef.create(enum_def)
+    return r.enum_defs[0]
+
+
+def update_enum(
+    client: AtlanClient, name: str, values: List[str], replace_existing: bool = False
+) -> EnumDef:
+    enum_def = EnumDef.update(
+        name=name, values=values, replace_existing=replace_existing
+    )
+    r = client.typedef.update(enum_def)
     return r.enum_defs[0]
 
 
@@ -282,6 +293,45 @@ def test_cm_enum(
     assert cm_enum.guid
     assert cm_enum.element_defs
     assert len(cm_enum.element_defs) == len(DQ_TYPE_LIST)
+
+
+@pytest.fixture(scope="module")
+def cm_enum_update(
+    client: AtlanClient,
+) -> Generator[EnumDef, None, None]:
+    enum_def = update_enum(client, name=DQ_ENUM, values=DQ_TYPE_EXTRA_LIST)
+    yield enum_def
+
+
+@pytest.fixture(scope="module")
+def cm_enum_update_with_replace(
+    client: AtlanClient,
+) -> Generator[EnumDef, None, None]:
+    enum_def = update_enum(
+        client, name=DQ_ENUM, values=DQ_TYPE_LIST, replace_existing=True
+    )
+    yield enum_def
+
+
+@pytest.mark.order(after="test_cm_enum")
+def test_cm_enum_update(
+    cm_enum_update: EnumDef,
+    cm_enum_update_with_replace: EnumDef,
+):
+    assert cm_enum_update.guid
+    assert cm_enum_update.name == DQ_ENUM
+    assert cm_enum_update.element_defs
+    assert cm_enum_update.category == AtlanTypeCategory.ENUM
+    EM_VALUES = DQ_TYPE_LIST + DQ_TYPE_EXTRA_LIST
+    assert len(cm_enum_update.element_defs) == len(EM_VALUES)
+    for index, element_def in enumerate(cm_enum_update.element_defs):
+        assert element_def.value == EM_VALUES[index]
+
+    assert cm_enum_update_with_replace.guid
+    assert cm_enum_update_with_replace.name == DQ_ENUM
+    assert cm_enum_update_with_replace.element_defs
+    assert cm_enum_update_with_replace.category == AtlanTypeCategory.ENUM
+    assert len(cm_enum_update_with_replace.element_defs) == len(DQ_TYPE_LIST)
 
 
 @pytest.fixture(scope="module")
