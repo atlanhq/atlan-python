@@ -158,7 +158,11 @@ class TestEnumDef:
             NotFoundError,
             match="ATLAN-PYTHON-404-013 Enumeration with name test-enum does not exist.",
         ):
-            EnumDef.update(name="test-enum", values=["test-val1", "test-val2"])
+            EnumDef.update(
+                name="test-enum",
+                values=["test-val1", "test-val2"],
+                replace_existing=False,
+            )
 
     def test_update_method(self, client, mock_get_enum_cache):
         existing_enum = {
@@ -167,7 +171,9 @@ class TestEnumDef:
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
-        enum = EnumDef.update(name="test-enum", values=["test-val1", "test-val2"])
+        enum = EnumDef.update(
+            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+        )
         assert enum
         assert enum.name == "test-enum"
         assert enum.category == AtlanTypeCategory.ENUM
@@ -188,7 +194,9 @@ class TestEnumDef:
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
-        enum = EnumDef.update(name="test-enum", values=["test-val1", "test-val2"])
+        enum = EnumDef.update(
+            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+        )
         assert enum
         assert enum.name == "test-enum"
         assert enum.category == AtlanTypeCategory.ENUM
@@ -212,6 +220,7 @@ class TestEnumDef:
         enum = EnumDef.update(
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
+            replace_existing=False,
         )
         assert enum
         assert enum.name == "test-enum"
@@ -226,6 +235,34 @@ class TestEnumDef:
         assert enum.element_defs[4].value == "new2"
         assert enum.element_defs[5].value == "new3"
         assert enum.element_defs[6].value == "new4"
+
+        # Test when `replace_existing` is `True`
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
+        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            name="test-enum",
+            values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
+            replace_existing=True,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 6
+        assert enum.element_defs[0].value == "new1"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "new2"
+        assert enum.element_defs[3].value == "test-val2"
+        assert enum.element_defs[4].value == "new3"
+        assert enum.element_defs[5].value == "new4"
 
 
 class TestStuctDef:

@@ -258,6 +258,14 @@ class EnumDef(TypeDef):
 
     @staticmethod
     def create(name: str, values: List[str]) -> EnumDef:
+        """
+        Builds the minimal object necessary to create an enumeration definition.
+
+        :param name: display name the human-readable name for the enumeration
+        :param values: the list of additional valid values
+        (as strings) to add to the existing enumeration
+        :returns: the minimal object necessary to create the enumeration typedef
+        """
         from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
@@ -273,16 +281,31 @@ class EnumDef(TypeDef):
         )
 
     @staticmethod
-    def update(name: str, values: List[str]) -> EnumDef:
+    def update(name: str, values: List[str], replace_existing: bool) -> EnumDef:
+        """
+        Builds the minimal object necessary to update an enumeration definition.
+
+        :param name: display name the human-readable name for the enumeration
+        :param values: the list of additional valid values
+        (as strings) to add to the existing enumeration
+        :param replace_existing: if `True`, will replace all
+        existing values in the enumeration with the new ones;
+        or if `False` the new ones will be appended to the existing set
+        :returns: the minimal object necessary to update the enumeration typedef
+        """
         from pyatlan.cache.enum_cache import EnumCache
         from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
-            ["name", "values"],
-            [name, values],
+            ["name", "values", "replace_existing"],
+            [name, values, replace_existing],
         )
-        update_values = EnumDef.ElementDef.extend_elements(
-            new=values, current=EnumCache.get_by_name(str(name)).get_valid_values()
+        update_values = (
+            values
+            if replace_existing
+            else EnumDef.ElementDef.extend_elements(
+                new=values, current=EnumCache.get_by_name(str(name)).get_valid_values()
+            )
         )
         return EnumDef(
             name=name,
