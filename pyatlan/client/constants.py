@@ -394,6 +394,17 @@ INDEX_API = "search/indexsearch"
 INDEX_SEARCH = API(INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 WORKFLOW_INDEX_API = "workflows/indexsearch"
 WORKFLOW_INDEX_RUN_API = "runs/indexsearch"
+SCHEDULE_QUERY_WORKFLOWS_SEARCH_API = "runs/cron/scheduleQueriesBetweenDuration"
+SCHEDULE_QUERY_WORKFLOWS_MISSED_API = "runs/cron/missedScheduleQueriesBetweenDuration"
+
+SCHEDULE_QUERY_WORKFLOWS_SEARCH = API(
+    SCHEDULE_QUERY_WORKFLOWS_SEARCH_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+
+SCHEDULE_QUERY_WORKFLOWS_MISSED = API(
+    SCHEDULE_QUERY_WORKFLOWS_MISSED_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+
 WORKFLOW_INDEX_SEARCH = API(
     WORKFLOW_INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
