@@ -642,6 +642,14 @@
     <span class="n">restrict_propagation_through_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;restrictPropagationThroughLineage&quot;</span>
     <span class="p">)</span>
+    <span class="n">propagation_only_through_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;If specified as `True`, propagation will only &quot;</span>
+            <span class="s2">&quot;occur downstream lineage and not within hierarchy.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;propagationOnlyThroughLineage&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">validity_periods</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;validityPeriods&quot;</span><span class="p">)</span>
     <span class="n">_source_tag_attachements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SourceTagAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span>
