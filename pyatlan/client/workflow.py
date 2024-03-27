@@ -12,11 +12,12 @@ from pyatlan.client.constants import (
     WORKFLOW_INDEX_SEARCH,
     WORKFLOW_RERUN,
     WORKFLOW_RUN,
-    WORKFLOW_UPDATE,
+    WORKFLOW_UPDATE, SCHEDULE_QUERY_WORKFLOWS_SEARCH, SCHEDULE_QUERY_WORKFLOWS_MISSED,
 )
 from pyatlan.errors import ErrorCode
+from pyatlan.model.argo import RootModel, Item
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
-from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term
+from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term, Wildcard
 from pyatlan.model.workflow import (
     ReRunRequest,
     Workflow,
@@ -25,7 +26,7 @@ from pyatlan.model.workflow import (
     WorkflowSearchRequest,
     WorkflowSearchResponse,
     WorkflowSearchResult,
-    WorkflowSearchResultDetail,
+    WorkflowSearchResultDetail, ScheduleQueriesSearchRequest,
 )
 
 MONITOR_SLEEP_SECONDS = 5
@@ -72,6 +73,63 @@ class WorkflowClient:
         )
         response = WorkflowSearchResponse(**raw_json)
         return response.hits.hits or []
+
+    @validate_arguments
+    def find_schedule_query_cron_by_name(
+        self, cron_name: str, max_results: int = 10
+    ) -> list[WorkflowSearchResult]:
+
+        starts_with = Prefix(
+            field="metadata.name.keyword",
+            value=cron_name
+        )
+        name_starts_with = NestedQuery(
+            path="metadata",
+            query=starts_with,
+        )
+
+        query_type = Term(
+            field="metadata.annotations.package.argoproj.io/name.keyword",
+            value="@atlan/schedule-query",
+        )
+        type_is = NestedQuery(
+            path="metadata",
+            query=query_type,
+        )
+
+        combined = Bool(
+            filter=[name_starts_with, type_is]
+        )
+
+        request = WorkflowSearchRequest(query=combined, size=max_results)
+        raw_json = self._client._call_api(
+            WORKFLOW_INDEX_SEARCH,
+            request_obj=request,
+        )
+        response = WorkflowSearchResponse(**raw_json)
+        return response.hits.hits or []
+
+    @validate_arguments
+    def find_schedule_query_crons_between_duration(self, request: ScheduleQueriesSearchRequest) -> RootModel:
+        query_params = {
+            "startDate": request.start_date,
+            "endDate": request.end_date,
+        }
+        raw_json = self._client._call_api(SCHEDULE_QUERY_WORKFLOWS_SEARCH, query_params=query_params)
+        return RootModel(items=raw_json)
+
+    @validate_arguments
+    def find_missed_schedule_query_crons_between_duration(self, request: ScheduleQueriesSearchRequest) -> RootModel|str:
+        query_params = {
+            "startDate": request.start_date,
+            "endDate": request.end_date,
+        }
+        raw_json = self._client._call_api(SCHEDULE_QUERY_WORKFLOWS_MISSED, query_params=query_params)
+
+        if isinstance(raw_json, list):
+            return RootModel(items=raw_json)
+        else:
+            return RootModel(items=[])  # This returns a string to show there were no missed schedules.
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
@@ -261,7 +319,7 @@ class WorkflowClient:
                 AtlanWorkflowPhase.FAILED,
             }:
                 sleep(MONITOR_SLEEP_SECONDS)
-                if run_details := self._get_run_details(name):
+                if run_details := self.get_run_details(name):
                     status = run_details.status
                 if logger:
                     logger.debug("Workflow status: %s", status)
@@ -272,5 +330,5 @@ class WorkflowClient:
             logger.info("Skipping workflow monitoring — nothing to monitor.")
         return None
 
-    def _get_run_details(self, name: str) -> Optional[WorkflowSearchResult]:
+    def get_run_details(self, name: str) -> Optional[WorkflowSearchResult]:
         return self._find_latest_run(workflow_name=name)
