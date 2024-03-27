@@ -75,13 +75,13 @@ class WorkflowClient:
         return response.hits.hits or []
 
     @validate_arguments
-    def find_schedule_query_cron_by_name(
-        self, cron_name: str, max_results: int = 10
+    def find_schedule_query_cron_by_saved_query_id(
+        self, saved_query_id: str, max_results: int = 10
     ) -> list[WorkflowSearchResult]:
 
         starts_with = Prefix(
             field="metadata.name.keyword",
-            value=cron_name
+            value="asq-"+saved_query_id
         )
         name_starts_with = NestedQuery(
             path="metadata",
@@ -319,7 +319,7 @@ class WorkflowClient:
                 AtlanWorkflowPhase.FAILED,
             }:
                 sleep(MONITOR_SLEEP_SECONDS)
-                if run_details := self.get_run_details(name):
+                if run_details := self._get_run_details(name):
                     status = run_details.status
                 if logger:
                     logger.debug("Workflow status: %s", status)
@@ -330,5 +330,5 @@ class WorkflowClient:
             logger.info("Skipping workflow monitoring — nothing to monitor.")
         return None
 
-    def get_run_details(self, name: str) -> Optional[WorkflowSearchResult]:
+    def _get_run_details(self, name: str) -> Optional[WorkflowSearchResult]:
         return self._find_latest_run(workflow_name=name)
