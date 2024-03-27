@@ -1,3 +1,20 @@
+## 2.1.0 (March 27, 2024)
+
+### New features
+
+- Adds `EnumDef.update()` method to update an existing enumeration with more valid values.
+- Adds `get_by_name()` method to the `TypeDefClient` to retrieve a specific type definition from Atlan.
+- Adds `propagation_only_through_lineage` field to the `AtlanTag`, allowing users to specify that
+propagation will only occur downstream in the lineage and not within the hierarchy.
+
+### Breaking changes
+
+- `EnumCache.get_by_name()` method now raises `NotFoundError` if the enumeration with the given name does not exist. Previously the method would only return `None` in case the enumeration did not exist, rather than raising an error.
+
+### QOL improvements
+
+- Bump pre-commit black from `23.7.0` to `24.3.0` (Fixes [CVE security vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-21503)).
+
 ## 2.0.4 (March 22, 2024)
 
 ### New features
