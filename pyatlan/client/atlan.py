@@ -971,6 +971,7 @@ class AtlanClient(BaseSettings):
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
+        propagation_only_through_lineage: bool = False,
     ) -> None:
         """Deprecated - use asset.add_atlan_tags() instead."""
         warn(
@@ -986,6 +987,7 @@ class AtlanClient(BaseSettings):
             propagate=propagate,
             remove_propagation_on_delete=remove_propagation_on_delete,
             restrict_lineage_propagation=restrict_lineage_propagation,
+            propagation_only_through_lineage=propagation_only_through_lineage,
         )
 
     @validate_arguments
