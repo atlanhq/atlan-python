@@ -352,11 +352,15 @@ def move_struct(data):
     }
     for struct_name in struct_names:
         if (a := data.get("attributes", None)) and (s := a.get(struct_name, None)):
-            records = [
-                record if "attributes" not in record else record["attributes"]
-                for record in s
-            ]
-            a[struct_name] = records
+            if isinstance(s, list):
+                records = [
+                    record if "attributes" not in record else record["attributes"]
+                    for record in s
+                ]
+                a[struct_name] = records
+            elif isinstance(s, dict):
+                if "attributes" in s:
+                    a[struct_name] = s["attributes"]
 
 
 class AuthorizationFilter(logging.Filter):
