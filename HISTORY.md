@@ -1,3 +1,10 @@
+## 2.1.1 (March 28, 2024)
+
+### Bug Fixes
+
+- Fixes an issue where certain structs could cause errors during marshalling and unmarshalling.
+- Fixes `Process.generate_qualified_name()` method to ensure that the generated process `qualified_name` includes the connection prefix. Previously, it only used the MD5 hash as the `qualified_name` for the `Process`.
+
 ## 2.1.0 (March 27, 2024)
 
 ### New features
