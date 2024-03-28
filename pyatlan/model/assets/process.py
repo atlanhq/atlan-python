@@ -250,7 +250,7 @@ class Process(Asset, type_name="Process"):
                 buffer.getvalue().encode()
             ).hexdigest()
             buffer.close()
-            return ret_value
+            return f"{connection_qualified_name}/{ret_value}"
 
         @classmethod
         @init_guid
