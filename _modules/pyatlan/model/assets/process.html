@@ -706,7 +706,7 @@
                 <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
             <span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
             <span class="n">buffer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">ret_value</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">ret_value</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="nd">@classmethod</span>
         <span class="nd">@init_guid</span>
