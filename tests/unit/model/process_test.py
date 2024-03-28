@@ -94,7 +94,9 @@ def test__create(
     name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
 ):
     expected_value = (
-        expected_value if process_id else md5(expected_value.encode()).hexdigest()
+        expected_value
+        if process_id
+        else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
     )
 
     process = Process.create(
@@ -105,7 +107,6 @@ def test__create(
         outputs=outputs,
         parent=parent,
     )
-
     assert process.name == name
     assert process.connection_qualified_name == connection_qualified_name
     assert process.qualified_name == expected_value
@@ -231,7 +232,9 @@ def test_process_attributes_generate_qualified_name(
     name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
 ):
     expected_value = (
-        expected_value if process_id else md5(expected_value.encode()).hexdigest()
+        expected_value
+        if process_id
+        else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
     )
 
     assert (
