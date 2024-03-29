@@ -31,6 +31,7 @@ from .data_quality import DataQuality
 from .b_i import BI
 from .saa_s import SaaS
 from .resource import Resource
+from .multi_dimensional_dataset import MultiDimensionalDataset
 from .data_mesh import DataMesh
 from .s_q_l import SQL
 from .event_store import EventStore
@@ -39,6 +40,7 @@ from .matillion import Matillion
 from .dbt import Dbt
 from .insight import Insight
 from .a_p_i import API
+from .spark import Spark
 from .tag import Tag
 from .schema_registry import SchemaRegistry
 from .google import Google
@@ -68,11 +70,16 @@ from .thoughtspot import Thoughtspot
 from .power_b_i import PowerBI
 from .micro_strategy import MicroStrategy
 from .qlik import Qlik
+from .cognite import Cognite
 from .salesforce import Salesforce
 from .readme_template import ReadmeTemplate
 from .readme import Readme
 from .file import File
 from .link import Link
+from .cube import Cube
+from .cube_hierarchy import CubeHierarchy
+from .cube_field import CubeField
+from .cube_dimension import CubeDimension
 from .data_domain import DataDomain
 from .data_product import DataProduct
 from .table import Table
@@ -85,8 +92,8 @@ from .function import Function
 from .table_partition import TablePartition
 from .column import Column
 from .snowflake_stream import SnowflakeStream
-from .database import Database
 from .calculation_view import CalculationView
+from .database import Database
 from .procedure import Procedure
 from .snowflake_tag import SnowflakeTag
 from .kafka import Kafka
@@ -104,6 +111,7 @@ from .dbt_metric import DbtMetric
 from .dbt_source import DbtSource
 from .a_p_i_spec import APISpec
 from .a_p_i_path import APIPath
+from .spark_job import SparkJob
 from .schema_registry_subject import SchemaRegistrySubject
 from .data_studio_asset import DataStudioAsset
 from .s3_bucket import S3Bucket
@@ -205,6 +213,12 @@ from .qlik_app import QlikApp
 from .qlik_chart import QlikChart
 from .qlik_dataset import QlikDataset
 from .qlik_sheet import QlikSheet
+from .cognite_event import CogniteEvent
+from .cognite_asset import CogniteAsset
+from .cognite_sequence import CogniteSequence
+from .cognite3_d_model import Cognite3DModel
+from .cognite_time_series import CogniteTimeSeries
+from .cognite_file import CogniteFile
 from .salesforce_object import SalesforceObject
 from .salesforce_field import SalesforceField
 from .salesforce_organization import SalesforceOrganization
@@ -257,6 +271,7 @@ DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 SaaS.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
+MultiDimensionalDataset.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
 EventStore.Attributes.update_forward_refs(**localns)
@@ -265,6 +280,7 @@ Matillion.Attributes.update_forward_refs(**localns)
 Dbt.Attributes.update_forward_refs(**localns)
 Insight.Attributes.update_forward_refs(**localns)
 API.Attributes.update_forward_refs(**localns)
+Spark.Attributes.update_forward_refs(**localns)
 Tag.Attributes.update_forward_refs(**localns)
 SchemaRegistry.Attributes.update_forward_refs(**localns)
 Google.Attributes.update_forward_refs(**localns)
@@ -294,11 +310,16 @@ Thoughtspot.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
 MicroStrategy.Attributes.update_forward_refs(**localns)
 Qlik.Attributes.update_forward_refs(**localns)
+Cognite.Attributes.update_forward_refs(**localns)
 Salesforce.Attributes.update_forward_refs(**localns)
 ReadmeTemplate.Attributes.update_forward_refs(**localns)
 Readme.Attributes.update_forward_refs(**localns)
 File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
+Cube.Attributes.update_forward_refs(**localns)
+CubeHierarchy.Attributes.update_forward_refs(**localns)
+CubeField.Attributes.update_forward_refs(**localns)
+CubeDimension.Attributes.update_forward_refs(**localns)
 DataDomain.Attributes.update_forward_refs(**localns)
 DataProduct.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
@@ -311,8 +332,8 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
+Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 Kafka.Attributes.update_forward_refs(**localns)
@@ -330,6 +351,7 @@ DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
 APISpec.Attributes.update_forward_refs(**localns)
 APIPath.Attributes.update_forward_refs(**localns)
+SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
 DataStudioAsset.Attributes.update_forward_refs(**localns)
 S3Bucket.Attributes.update_forward_refs(**localns)
@@ -431,6 +453,12 @@ QlikApp.Attributes.update_forward_refs(**localns)
 QlikChart.Attributes.update_forward_refs(**localns)
 QlikDataset.Attributes.update_forward_refs(**localns)
 QlikSheet.Attributes.update_forward_refs(**localns)
+CogniteEvent.Attributes.update_forward_refs(**localns)
+CogniteAsset.Attributes.update_forward_refs(**localns)
+CogniteSequence.Attributes.update_forward_refs(**localns)
+Cognite3DModel.Attributes.update_forward_refs(**localns)
+CogniteTimeSeries.Attributes.update_forward_refs(**localns)
+CogniteFile.Attributes.update_forward_refs(**localns)
 SalesforceObject.Attributes.update_forward_refs(**localns)
 SalesforceField.Attributes.update_forward_refs(**localns)
 SalesforceOrganization.Attributes.update_forward_refs(**localns)

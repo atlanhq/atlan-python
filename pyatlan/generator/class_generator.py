@@ -792,7 +792,9 @@ class EnumDefInfo:
     @classmethod
     def create(cls, enum_defs):
         for enum_def in enum_defs:
-            cls.enum_def_info.append(EnumDefInfo(enum_def))
+            # Only pick `atlas_core` enums, not user-created ones.
+            if enum_def.service_type == "atlas_core":
+                cls.enum_def_info.append(EnumDefInfo(enum_def))
         cls.enum_def_info = sorted(cls.enum_def_info, key=lambda e: e.name)
 
 

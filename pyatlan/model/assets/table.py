@@ -138,6 +138,10 @@ class Table(SQL):
     """
     List of partitions in this table.
     """
+    IS_SHARDED: ClassVar[BooleanField] = BooleanField("isSharded", "isSharded")
+    """
+    Whether this table is a sharded table (true) or not (false).
+    """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
     """
@@ -179,6 +183,7 @@ class Table(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "is_sharded",
         "columns",
         "facts",
         "atlan_schema",
@@ -336,6 +341,16 @@ class Table(SQL):
         self.attributes.partition_list = partition_list
 
     @property
+    def is_sharded(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_sharded
+
+    @is_sharded.setter
+    def is_sharded(self, is_sharded: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_sharded = is_sharded
+
+    @property
     def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -412,6 +427,7 @@ class Table(SQL):
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
+        is_sharded: Optional[bool] = Field(default=None, description="")
         columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
@@ -456,10 +472,13 @@ class Table(SQL):
                 atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
             )
 
-    attributes: "Table.Attributes" = Field(
+    attributes: Table.Attributes = Field(
         default_factory=lambda: Table.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

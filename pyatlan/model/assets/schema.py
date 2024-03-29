@@ -10,7 +10,7 @@ from warnings import warn
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
@@ -67,6 +67,12 @@ class Schema(SQL):
     """
     Number of views in this schema.
     """
+    LINKED_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "linkedSchemaQualifiedName", "linkedSchemaQualifiedName"
+    )
+    """
+    Unique name of the Linked Schema on which this Schema is dependent. This concept is mostly applicable for linked datasets/datasource in Google BigQuery via Analytics Hub Listing
+    """  # noqa: E501
 
     SNOWFLAKE_TAGS: ClassVar[RelationField] = RelationField("snowflakeTags")
     """
@@ -118,6 +124,7 @@ class Schema(SQL):
     _convenience_properties: ClassVar[List[str]] = [
         "table_count",
         "views_count",
+        "linked_schema_qualified_name",
         "snowflake_tags",
         "functions",
         "tables",
@@ -150,6 +157,20 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.views_count = views_count
+
+    @property
+    def linked_schema_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.linked_schema_qualified_name
+        )
+
+    @linked_schema_qualified_name.setter
+    def linked_schema_qualified_name(self, linked_schema_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.linked_schema_qualified_name = linked_schema_qualified_name
 
     @property
     def snowflake_tags(self) -> Optional[List[SnowflakeTag]]:
@@ -270,6 +291,9 @@ class Schema(SQL):
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(default=None, description="")
         views_count: Optional[int] = Field(default=None, description="")
+        linked_schema_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         snowflake_tags: Optional[List[SnowflakeTag]] = Field(
             default=None, description=""
         )  # relationship
@@ -331,10 +355,13 @@ class Schema(SQL):
                 database=Database.ref_by_qualified_name(database_qualified_name),
             )
 
-    attributes: "Schema.Attributes" = Field(
+    attributes: Schema.Attributes = Field(
         default_factory=lambda: Schema.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

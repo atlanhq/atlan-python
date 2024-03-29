@@ -35,10 +35,21 @@ You can interact with all of the following different kinds of assets:
     asset/calculationview
     asset/catalog
     asset/cloud
+    asset/cognite
+    asset/cognite3dmodel
+    asset/cogniteasset
+    asset/cogniteevent
+    asset/cognitefile
+    asset/cognitesequence
+    asset/cognitetimeseries
     asset/collection
     asset/column
     asset/columnprocess
     asset/connection
+    asset/cube
+    asset/cubedimension
+    asset/cubefield
+    asset/cubehierarchy
     asset/datadomain
     asset/datamesh
     asset/dataproduct
@@ -124,6 +135,7 @@ You can interact with all of the following different kinds of assets:
     asset/mongodbcollection
     asset/mongodbdatabase
     asset/montecarlo
+    asset/multidimensionaldataset
     asset/namespace
     asset/nosql
     asset/objectstore
@@ -206,6 +218,8 @@ You can interact with all of the following different kinds of assets:
     asset/snowflaketag
     asset/soda
     asset/sodacheck
+    asset/spark
+    asset/sparkjob
     asset/table
     asset/tablepartition
     asset/tableau

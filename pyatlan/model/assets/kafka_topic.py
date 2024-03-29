@@ -282,10 +282,13 @@ class KafkaTopic(Kafka):
             default=None, description=""
         )  # relationship
 
-    attributes: "KafkaTopic.Attributes" = Field(
+    attributes: KafkaTopic.Attributes = Field(
         default_factory=lambda: KafkaTopic.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

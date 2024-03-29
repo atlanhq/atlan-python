@@ -55,8 +55,11 @@ class AzureEventHub(KafkaTopic):
     class Attributes(KafkaTopic.Attributes):
         azure_event_hub_status: Optional[str] = Field(default=None, description="")
 
-    attributes: "AzureEventHub.Attributes" = Field(
+    attributes: AzureEventHub.Attributes = Field(
         default_factory=lambda: AzureEventHub.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

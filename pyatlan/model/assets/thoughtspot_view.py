@@ -55,10 +55,13 @@ class ThoughtspotView(Thoughtspot):
             default=None, description=""
         )  # relationship
 
-    attributes: "ThoughtspotView.Attributes" = Field(
+    attributes: ThoughtspotView.Attributes = Field(
         default_factory=lambda: ThoughtspotView.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

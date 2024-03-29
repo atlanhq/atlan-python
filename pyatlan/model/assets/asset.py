@@ -561,6 +561,12 @@ class Asset(Referenceable):
     """
     Unique name of this asset in dbt.
     """
+    ASSET_DBT_WORKFLOW_LAST_UPDATED: ClassVar[KeywordField] = KeywordField(
+        "assetDbtWorkflowLastUpdated", "assetDbtWorkflowLastUpdated"
+    )
+    """
+    Name of the DBT workflow in Atlan that last updated the asset.
+    """
     ASSET_DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtAlias", "assetDbtAlias.keyword", "assetDbtAlias"
     )
@@ -1090,6 +1096,7 @@ class Asset(Referenceable):
         "source_query_compute_cost_list",
         "source_query_compute_cost_record_list",
         "dbt_qualified_name",
+        "asset_dbt_workflow_last_updated",
         "asset_dbt_alias",
         "asset_dbt_meta",
         "asset_dbt_unique_id",
@@ -1833,6 +1840,24 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_qualified_name = dbt_qualified_name
+
+    @property
+    def asset_dbt_workflow_last_updated(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_workflow_last_updated
+        )
+
+    @asset_dbt_workflow_last_updated.setter
+    def asset_dbt_workflow_last_updated(
+        self, asset_dbt_workflow_last_updated: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_dbt_workflow_last_updated = (
+            asset_dbt_workflow_last_updated
+        )
 
     @property
     def asset_dbt_alias(self) -> Optional[str]:
@@ -3020,6 +3045,9 @@ class Asset(Referenceable):
             Field(default=None, description="")
         )
         dbt_qualified_name: Optional[str] = Field(default=None, description="")
+        asset_dbt_workflow_last_updated: Optional[str] = Field(
+            default=None, description=""
+        )
         asset_dbt_alias: Optional[str] = Field(default=None, description="")
         asset_dbt_meta: Optional[str] = Field(default=None, description="")
         asset_dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -3215,10 +3243,13 @@ class Asset(Referenceable):
             self.announcement_title = None
             self.announcement_type = None
 
-    attributes: "Asset.Attributes" = Field(
+    attributes: Asset.Attributes = Field(
         default_factory=lambda: Asset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

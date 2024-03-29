@@ -85,8 +85,11 @@ class DataMesh(Catalog):
         )
         super_domain_qualified_name: Optional[str] = Field(default=None, description="")
 
-    attributes: "DataMesh.Attributes" = Field(
+    attributes: DataMesh.Attributes = Field(
         default_factory=lambda: DataMesh.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

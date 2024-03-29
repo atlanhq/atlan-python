@@ -115,10 +115,13 @@ class QuickSightDatasetField(QuickSight):
             default=None, description=""
         )  # relationship
 
-    attributes: "QuickSightDatasetField.Attributes" = Field(
+    attributes: QuickSightDatasetField.Attributes = Field(
         default_factory=lambda: QuickSightDatasetField.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 
