@@ -53,8 +53,11 @@ class Matillion(Catalog):
     class Attributes(Catalog.Attributes):
         matillion_version: Optional[str] = Field(default=None, description="")
 
-    attributes: "Matillion.Attributes" = Field(
+    attributes: Matillion.Attributes = Field(
         default_factory=lambda: Matillion.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

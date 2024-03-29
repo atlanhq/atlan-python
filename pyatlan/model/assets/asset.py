@@ -3243,10 +3243,13 @@ class Asset(Referenceable):
             self.announcement_title = None
             self.announcement_type = None
 
-    attributes: "Asset.Attributes" = Field(
+    attributes: Asset.Attributes = Field(
         default_factory=lambda: Asset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

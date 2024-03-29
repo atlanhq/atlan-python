@@ -96,10 +96,13 @@ class PowerBIPage(PowerBI):
             default=None, description=""
         )  # relationship
 
-    attributes: "PowerBIPage.Attributes" = Field(
+    attributes: PowerBIPage.Attributes = Field(
         default_factory=lambda: PowerBIPage.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

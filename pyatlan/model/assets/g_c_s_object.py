@@ -441,10 +441,13 @@ class GCSObject(GCS):
                 gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
             )
 
-    attributes: "GCSObject.Attributes" = Field(
+    attributes: GCSObject.Attributes = Field(
         default_factory=lambda: GCSObject.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

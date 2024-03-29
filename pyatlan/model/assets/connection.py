@@ -687,8 +687,11 @@ class Connection(Asset, type_name="Connection"):
                 GroupCache.validate_aliases(aliases=admin_groups)
                 return admin_groups
 
-    attributes: "Connection.Attributes" = Field(
+    attributes: Connection.Attributes = Field(
         default_factory=lambda: Connection.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

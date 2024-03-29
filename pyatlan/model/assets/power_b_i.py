@@ -130,8 +130,11 @@ class PowerBI(BI):
             default=None, description=""
         )
 
-    attributes: "PowerBI.Attributes" = Field(
+    attributes: PowerBI.Attributes = Field(
         default_factory=lambda: PowerBI.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

@@ -165,10 +165,13 @@ class Catalog(Asset, type_name="Catalog"):
             default=None, description=""
         )  # relationship
 
-    attributes: "Catalog.Attributes" = Field(
+    attributes: Catalog.Attributes = Field(
         default_factory=lambda: Catalog.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

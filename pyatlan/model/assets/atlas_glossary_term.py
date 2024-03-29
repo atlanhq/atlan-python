@@ -587,10 +587,13 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
                 qualified_name=next_id(),
             )
 
-    attributes: "AtlasGlossaryTerm.Attributes" = Field(
+    attributes: AtlasGlossaryTerm.Attributes = Field(
         default_factory=lambda: AtlasGlossaryTerm.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

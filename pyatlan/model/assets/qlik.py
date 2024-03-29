@@ -183,8 +183,11 @@ class Qlik(BI):
         qlik_owner_id: Optional[str] = Field(default=None, description="")
         qlik_is_published: Optional[bool] = Field(default=None, description="")
 
-    attributes: "Qlik.Attributes" = Field(
+    attributes: Qlik.Attributes = Field(
         default_factory=lambda: Qlik.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

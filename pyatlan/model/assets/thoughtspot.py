@@ -119,8 +119,11 @@ class Thoughtspot(BI):
         thoughtspot_join_count: Optional[int] = Field(default=None, description="")
         thoughtspot_column_count: Optional[int] = Field(default=None, description="")
 
-    attributes: "Thoughtspot.Attributes" = Field(
+    attributes: Thoughtspot.Attributes = Field(
         default_factory=lambda: Thoughtspot.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

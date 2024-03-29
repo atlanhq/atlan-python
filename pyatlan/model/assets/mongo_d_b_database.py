@@ -434,10 +434,13 @@ class MongoDBDatabase(Database):
             default=None, description=""
         )  # relationship
 
-    attributes: "MongoDBDatabase.Attributes" = Field(
+    attributes: MongoDBDatabase.Attributes = Field(
         default_factory=lambda: MongoDBDatabase.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

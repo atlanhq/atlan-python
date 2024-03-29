@@ -57,8 +57,11 @@ class NoSQL(Catalog):
     class Attributes(Catalog.Attributes):
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
 
-    attributes: "NoSQL.Attributes" = Field(
+    attributes: NoSQL.Attributes = Field(
         default_factory=lambda: NoSQL.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

@@ -67,8 +67,11 @@ class Domo(BI):
         domo_id: Optional[str] = Field(default=None, description="")
         domo_owner_id: Optional[str] = Field(default=None, description="")
 
-    attributes: "Domo.Attributes" = Field(
+    attributes: Domo.Attributes = Field(
         default_factory=lambda: Domo.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

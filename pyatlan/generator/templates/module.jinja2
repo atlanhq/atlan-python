@@ -61,10 +61,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%  if existz('templates/' + file_name) %}
             {% include file_name %}
         {% endif %}
-    attributes: '{{entity_def.name}}.Attributes' = Field(
+    attributes: {{entity_def.name}}.Attributes = Field(
         default_factory = lambda: {{entity_def.name}}.Attributes(),
-        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
-                    'type, so are described in the sub-types of this schema.\n',
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
     {%- endif %}
 {% endif %}

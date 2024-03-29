@@ -91,8 +91,11 @@ class QuickSight(BI):
         quick_sight_sheet_id: Optional[str] = Field(default=None, description="")
         quick_sight_sheet_name: Optional[str] = Field(default=None, description="")
 
-    attributes: "QuickSight.Attributes" = Field(
+    attributes: QuickSight.Attributes = Field(
         default_factory=lambda: QuickSight.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

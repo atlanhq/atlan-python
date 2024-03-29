@@ -72,10 +72,13 @@ class Cube(MultiDimensionalDataset):
             default=None, description=""
         )  # relationship
 
-    attributes: "Cube.Attributes" = Field(
+    attributes: Cube.Attributes = Field(
         default_factory=lambda: Cube.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

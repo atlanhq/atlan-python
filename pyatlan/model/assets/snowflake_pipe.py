@@ -135,10 +135,13 @@ class SnowflakePipe(SQL):
             default=None, description=""
         )  # relationship
 
-    attributes: "SnowflakePipe.Attributes" = Field(
+    attributes: SnowflakePipe.Attributes = Field(
         default_factory=lambda: SnowflakePipe.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 
