@@ -183,10 +183,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/calculationview.html">CalculationView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/catalog.html">Catalog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cloud.html">Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognite.html">Cognite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognite3dmodel.html">Cognite3DModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cogniteasset.html">CogniteAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cogniteevent.html">CogniteEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitefile.html">CogniteFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitesequence.html">CogniteSequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cube.html">Cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubedimension.html">CubeDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubefield.html">CubeField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubehierarchy.html">CubeHierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -272,6 +283,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodbcollection.html">MongoDBCollection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodbdatabase.html">MongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/montecarlo.html">MonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/multidimensionaldataset.html">MultiDimensionalDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/namespace.html">Namespace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/nosql.html">NoSQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/objectstore.html">ObjectStore</a></li>
@@ -354,6 +366,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflaketag.html">SnowflakeTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/soda.html">Soda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sodacheck.html">SodaCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/spark.html">Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sparkjob.html">SparkJob</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableau.html">Tableau</a></li>
@@ -564,6 +578,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SPARK_JOBS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sparkJobs&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;inputs&quot;</span><span class="p">,</span>
@@ -574,6 +592,7 @@
         <span class="s2">&quot;matillion_component&quot;</span><span class="p">,</span>
         <span class="s2">&quot;airflow_tasks&quot;</span><span class="p">,</span>
         <span class="s2">&quot;column_processes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;spark_jobs&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -656,6 +675,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">column_processes</span> <span class="o">=</span> <span class="n">column_processes</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spark_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">spark_jobs</span>
+
+    <span class="nd">@spark_jobs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">spark_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spark_jobs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">spark_jobs</span> <span class="o">=</span> <span class="n">spark_jobs</span>
+
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
         <span class="n">inputs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Catalog</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">outputs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Catalog</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -669,6 +698,9 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">column_processes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ColumnProcess</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">spark_jobs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
@@ -737,10 +769,13 @@
                 <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;Process.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">Process</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Process</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Map of attributes in the instance and their values. &quot;</span>
+            <span class="s2">&quot;The specific keys of this map will vary by type, &quot;</span>
+            <span class="s2">&quot;so are described in the sub-types of this schema.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -749,6 +784,7 @@
 <span class="kn">from</span> <span class="nn">.catalog</span> <span class="kn">import</span> <span class="n">Catalog</span>  <span class="c1"># noqa</span>
 <span class="kn">from</span> <span class="nn">.column_process</span> <span class="kn">import</span> <span class="n">ColumnProcess</span>  <span class="c1"># noqa</span>
 <span class="kn">from</span> <span class="nn">.matillion_component</span> <span class="kn">import</span> <span class="n">MatillionComponent</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">.spark_job</span> <span class="kn">import</span> <span class="n">SparkJob</span>  <span class="c1"># noqa</span>
 </pre></div>
         </article>
       </div>

@@ -182,10 +182,21 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/calculationview.html">CalculationView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/catalog.html">Catalog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/cloud.html">Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cognite.html">Cognite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cognite3dmodel.html">Cognite3DModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cogniteasset.html">CogniteAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cogniteevent.html">CogniteEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cognitefile.html">CogniteFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cognitesequence.html">CogniteSequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cube.html">Cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cubedimension.html">CubeDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cubefield.html">CubeField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/cubehierarchy.html">CubeHierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/dataproduct.html">DataProduct</a></li>
@@ -271,6 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/mongodbcollection.html">MongoDBCollection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/mongodbdatabase.html">MongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/montecarlo.html">MonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/multidimensionaldataset.html">MultiDimensionalDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/namespace.html">Namespace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/nosql.html">NoSQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/objectstore.html">ObjectStore</a></li>
@@ -353,6 +365,8 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/snowflaketag.html">SnowflakeTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/soda.html">Soda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/sodacheck.html">SodaCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/spark.html">Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/sparkjob.html">SparkJob</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/tableau.html">Tableau</a></li>
@@ -747,10 +761,10 @@
 </li>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_glossary_types">applicable_glossary_types (pyatlan.model.typedef.AttributeDef property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="other_model/typedef.html#pyatlan.model.typedef.AttributeDef.applicable_other_asset_types">applicable_other_asset_types (pyatlan.model.typedef.AttributeDef property)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset">Asset (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/link.html#pyatlan.model.assets.Link.ASSET">ASSET (pyatlan.model.assets.Link attribute)</a>
@@ -840,6 +854,8 @@
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_DBT_TEST_STATUS">ASSET_DBT_TEST_STATUS (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_DBT_UNIQUE_ID">ASSET_DBT_UNIQUE_ID (pyatlan.model.assets.Asset attribute)</a>
+</li>
+        <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_DBT_WORKFLOW_LAST_UPDATED">ASSET_DBT_WORKFLOW_LAST_UPDATED (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.ASSET_ICON">ASSET_ICON (pyatlan.model.assets.Asset attribute)</a>
 </li>
@@ -1235,6 +1251,42 @@
           <li><a href="asset/process.html#pyatlan.model.assets.Process.CODE">(pyatlan.model.assets.Process attribute)</a>
 </li>
         </ul></li>
+        <li><a href="asset/cognite.html#pyatlan.model.assets.Cognite">Cognite (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cognite3dmodel.html#pyatlan.model.assets.Cognite3DModel">Cognite3DModel (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cogniteasset.html#pyatlan.model.assets.CogniteAsset.COGNITE3DMODELS">COGNITE3DMODELS (pyatlan.model.assets.CogniteAsset attribute)</a>
+</li>
+        <li><a href="asset/cognite3dmodel.html#pyatlan.model.assets.Cognite3DModel.COGNITE_ASSET">COGNITE_ASSET (pyatlan.model.assets.Cognite3DModel attribute)</a>
+
+        <ul>
+          <li><a href="asset/cogniteevent.html#pyatlan.model.assets.CogniteEvent.COGNITE_ASSET">(pyatlan.model.assets.CogniteEvent attribute)</a>
+</li>
+          <li><a href="asset/cognitefile.html#pyatlan.model.assets.CogniteFile.COGNITE_ASSET">(pyatlan.model.assets.CogniteFile attribute)</a>
+</li>
+          <li><a href="asset/cognitesequence.html#pyatlan.model.assets.CogniteSequence.COGNITE_ASSET">(pyatlan.model.assets.CogniteSequence attribute)</a>
+</li>
+          <li><a href="asset/cognitetimeseries.html#pyatlan.model.assets.CogniteTimeSeries.COGNITE_ASSET">(pyatlan.model.assets.CogniteTimeSeries attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/cogniteasset.html#pyatlan.model.assets.CogniteAsset.COGNITE_EVENTS">COGNITE_EVENTS (pyatlan.model.assets.CogniteAsset attribute)</a>
+</li>
+        <li><a href="asset/cogniteasset.html#pyatlan.model.assets.CogniteAsset.COGNITE_FILES">COGNITE_FILES (pyatlan.model.assets.CogniteAsset attribute)</a>
+</li>
+        <li><a href="asset/cogniteasset.html#pyatlan.model.assets.CogniteAsset.COGNITE_SEQUENCES">COGNITE_SEQUENCES (pyatlan.model.assets.CogniteAsset attribute)</a>
+</li>
+        <li><a href="asset/cogniteasset.html#pyatlan.model.assets.CogniteAsset.COGNITE_TIMESERIES">COGNITE_TIMESERIES (pyatlan.model.assets.CogniteAsset attribute)</a>
+</li>
+        <li><a href="asset/cogniteasset.html#pyatlan.model.assets.CogniteAsset">CogniteAsset (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cogniteevent.html#pyatlan.model.assets.CogniteEvent">CogniteEvent (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cognitefile.html#pyatlan.model.assets.CogniteFile">CogniteFile (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cognitesequence.html#pyatlan.model.assets.CogniteSequence">CogniteSequence (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cognitetimeseries.html#pyatlan.model.assets.CogniteTimeSeries">CogniteTimeSeries (class in pyatlan.model.assets)</a>
+</li>
         <li><a href="asset/collection.html#pyatlan.model.assets.Collection">Collection (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/folder.html#pyatlan.model.assets.Folder.COLLECTION_QUALIFIED_NAME">COLLECTION_QUALIFIED_NAME (pyatlan.model.assets.Folder attribute)</a>
@@ -1267,8 +1319,6 @@
           <li><a href="asset/view.html#pyatlan.model.assets.View.COLUMN_COUNT">(pyatlan.model.assets.View attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_DBT_MODEL_COLUMNS">COLUMN_DBT_MODEL_COLUMNS (pyatlan.model.assets.Column attribute)</a>
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_DEPTH_LEVEL">COLUMN_DEPTH_LEVEL (pyatlan.model.assets.Column attribute)</a>
@@ -1279,6 +1329,8 @@
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_DUPLICATE_VALUES_COUNT">COLUMN_DUPLICATE_VALUES_COUNT (pyatlan.model.assets.Column attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_DUPLICATE_VALUES_COUNT_LONG">COLUMN_DUPLICATE_VALUES_COUNT_LONG (pyatlan.model.assets.Column attribute)</a>
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.COLUMN_HISTOGRAM">COLUMN_HISTOGRAM (pyatlan.model.assets.Column attribute)</a>
@@ -1386,6 +1438,58 @@
         <li><a href="asset/referenceable.html#pyatlan.model.assets.Referenceable.CREATED_BY">CREATED_BY (pyatlan.model.assets.Referenceable attribute)</a>
 </li>
         <li><a href="asset/connection.html#pyatlan.model.assets.Connection.CREDENTIAL_STRATEGY">CREDENTIAL_STRATEGY (pyatlan.model.assets.Connection attribute)</a>
+</li>
+        <li><a href="asset/cube.html#pyatlan.model.assets.Cube">Cube (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cubedimension.html#pyatlan.model.assets.CubeDimension.CUBE">CUBE (pyatlan.model.assets.CubeDimension attribute)</a>
+</li>
+        <li><a href="asset/cubehierarchy.html#pyatlan.model.assets.CubeHierarchy.CUBE_DIMENSION">CUBE_DIMENSION (pyatlan.model.assets.CubeHierarchy attribute)</a>
+</li>
+        <li><a href="asset/cube.html#pyatlan.model.assets.Cube.CUBE_DIMENSION_COUNT">CUBE_DIMENSION_COUNT (pyatlan.model.assets.Cube attribute)</a>
+</li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset.CUBE_DIMENSION_NAME">CUBE_DIMENSION_NAME (pyatlan.model.assets.MultiDimensionalDataset attribute)</a>
+</li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset.CUBE_DIMENSION_QUALIFIED_NAME">CUBE_DIMENSION_QUALIFIED_NAME (pyatlan.model.assets.MultiDimensionalDataset attribute)</a>
+</li>
+        <li><a href="asset/cube.html#pyatlan.model.assets.Cube.CUBE_DIMENSIONS">CUBE_DIMENSIONS (pyatlan.model.assets.Cube attribute)</a>
+</li>
+        <li><a href="asset/cubehierarchy.html#pyatlan.model.assets.CubeHierarchy.CUBE_FIELD_COUNT">CUBE_FIELD_COUNT (pyatlan.model.assets.CubeHierarchy attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_FIELD_LEVEL">CUBE_FIELD_LEVEL (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_FIELD_MEASURE_EXPRESSION">CUBE_FIELD_MEASURE_EXPRESSION (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubehierarchy.html#pyatlan.model.assets.CubeHierarchy.CUBE_FIELDS">CUBE_FIELDS (pyatlan.model.assets.CubeHierarchy attribute)</a>
+</li>
+        <li><a href="asset/cubedimension.html#pyatlan.model.assets.CubeDimension.CUBE_HIERARCHIES">CUBE_HIERARCHIES (pyatlan.model.assets.CubeDimension attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_HIERARCHY">CUBE_HIERARCHY (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubedimension.html#pyatlan.model.assets.CubeDimension.CUBE_HIERARCHY_COUNT">CUBE_HIERARCHY_COUNT (pyatlan.model.assets.CubeDimension attribute)</a>
+</li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset.CUBE_HIERARCHY_NAME">CUBE_HIERARCHY_NAME (pyatlan.model.assets.MultiDimensionalDataset attribute)</a>
+</li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset.CUBE_HIERARCHY_QUALIFIED_NAME">CUBE_HIERARCHY_QUALIFIED_NAME (pyatlan.model.assets.MultiDimensionalDataset attribute)</a>
+</li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset.CUBE_NAME">CUBE_NAME (pyatlan.model.assets.MultiDimensionalDataset attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_NESTED_FIELDS">CUBE_NESTED_FIELDS (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_PARENT_FIELD">CUBE_PARENT_FIELD (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_PARENT_FIELD_NAME">CUBE_PARENT_FIELD_NAME (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_PARENT_FIELD_QUALIFIED_NAME">CUBE_PARENT_FIELD_QUALIFIED_NAME (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset.CUBE_QUALIFIED_NAME">CUBE_QUALIFIED_NAME (pyatlan.model.assets.MultiDimensionalDataset attribute)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField.CUBE_SUB_FIELD_COUNT">CUBE_SUB_FIELD_COUNT (pyatlan.model.assets.CubeField attribute)</a>
+</li>
+        <li><a href="asset/cubedimension.html#pyatlan.model.assets.CubeDimension">CubeDimension (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cubefield.html#pyatlan.model.assets.CubeField">CubeField (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/cubehierarchy.html#pyatlan.model.assets.CubeHierarchy">CubeHierarchy (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="cache/custom_metadata_cache.html#pyatlan.cache.custom_metadata_cache.CustomMetadataCache">CustomMetadataCache (class in pyatlan.cache.custom_metadata_cache)</a>
 </li>
@@ -1755,14 +1859,14 @@
           <li><a href="asset/dbtmodel.html#pyatlan.model.assets.DbtModel.DBT_METRICS">(pyatlan.model.assets.DbtModel attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbtmetric.html#pyatlan.model.assets.DbtMetric.DBT_MODEL">DBT_MODEL (pyatlan.model.assets.DbtMetric attribute)</a>
 
         <ul>
           <li><a href="asset/dbtmodelcolumn.html#pyatlan.model.assets.DbtModelColumn.DBT_MODEL">(pyatlan.model.assets.DbtModelColumn attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/dbtmodelcolumn.html#pyatlan.model.assets.DbtModelColumn.DBT_MODEL_COLUMN_DATA_TYPE">DBT_MODEL_COLUMN_DATA_TYPE (pyatlan.model.assets.DbtModelColumn attribute)</a>
 </li>
         <li><a href="asset/dbtmodelcolumn.html#pyatlan.model.assets.DbtModelColumn.DBT_MODEL_COLUMN_ORDER">DBT_MODEL_COLUMN_ORDER (pyatlan.model.assets.DbtModelColumn attribute)</a>
@@ -1980,6 +2084,8 @@
         <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_CARD_DASHBOARD_COUNT">DOMO_CARD_DASHBOARD_COUNT (pyatlan.model.assets.DomoCard attribute)</a>
 </li>
         <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_CARD_TYPE">DOMO_CARD_TYPE (pyatlan.model.assets.DomoCard attribute)</a>
+</li>
+        <li><a href="asset/domocard.html#pyatlan.model.assets.DomoCard.DOMO_CARD_TYPE_VALUE">DOMO_CARD_TYPE_VALUE (pyatlan.model.assets.DomoCard attribute)</a>
 </li>
         <li><a href="asset/domodashboard.html#pyatlan.model.assets.DomoDashboard.DOMO_CARDS">DOMO_CARDS (pyatlan.model.assets.DomoDashboard attribute)</a>
 
@@ -2677,12 +2783,22 @@
           <li><a href="asset/gcs.html#pyatlan.model.assets.GCS.INPUT_TO_PROCESSES">(pyatlan.model.assets.GCS attribute)</a>
 </li>
         </ul></li>
+        <li><a href="asset/catalog.html#pyatlan.model.assets.Catalog.INPUT_TO_SPARK_JOBS">INPUT_TO_SPARK_JOBS (pyatlan.model.assets.Catalog attribute)</a>
+
+        <ul>
+          <li><a href="asset/datastudio.html#pyatlan.model.assets.DataStudio.INPUT_TO_SPARK_JOBS">(pyatlan.model.assets.DataStudio attribute)</a>
+</li>
+          <li><a href="asset/gcs.html#pyatlan.model.assets.GCS.INPUT_TO_SPARK_JOBS">(pyatlan.model.assets.GCS attribute)</a>
+</li>
+        </ul></li>
         <li><a href="asset/airflowtask.html#pyatlan.model.assets.AirflowTask.INPUTS">INPUTS (pyatlan.model.assets.AirflowTask attribute)</a>
 
         <ul>
           <li><a href="asset/biprocess.html#pyatlan.model.assets.BIProcess.INPUTS">(pyatlan.model.assets.BIProcess attribute)</a>
 </li>
           <li><a href="asset/columnprocess.html#pyatlan.model.assets.ColumnProcess.INPUTS">(pyatlan.model.assets.ColumnProcess attribute)</a>
+</li>
+          <li><a href="asset/sparkjob.html#pyatlan.model.assets.SparkJob.INPUTS">(pyatlan.model.assets.SparkJob attribute)</a>
 </li>
         </ul></li>
         <li><a href="asset/insight.html#pyatlan.model.assets.Insight">Insight (class in pyatlan.model.assets)</a>
@@ -2795,6 +2911,16 @@
 </li>
         <li><a href="other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict.is_set">is_set() (pyatlan.model.custom_metadata.CustomMetadataDict method)</a>
 </li>
+        <li><a href="asset/dynamodbsecondaryindex.html#pyatlan.model.assets.DynamoDBSecondaryIndex.IS_SHARDED">IS_SHARDED (pyatlan.model.assets.DynamoDBSecondaryIndex attribute)</a>
+
+        <ul>
+          <li><a href="asset/dynamodbtable.html#pyatlan.model.assets.DynamoDBTable.IS_SHARDED">(pyatlan.model.assets.DynamoDBTable attribute)</a>
+</li>
+          <li><a href="asset/mongodbcollection.html#pyatlan.model.assets.MongoDBCollection.IS_SHARDED">(pyatlan.model.assets.MongoDBCollection attribute)</a>
+</li>
+          <li><a href="asset/table.html#pyatlan.model.assets.Table.IS_SHARDED">(pyatlan.model.assets.Table attribute)</a>
+</li>
+        </ul></li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.IS_SORT">IS_SORT (pyatlan.model.assets.Column attribute)</a>
 </li>
         <li><a href="asset/query.html#pyatlan.model.assets.Query.IS_SQL_SNIPPET">IS_SQL_SNIPPET (pyatlan.model.assets.Query attribute)</a>
@@ -2945,6 +3071,8 @@
 </li>
         <li><a href="asset/resource.html#pyatlan.model.assets.Resource.LINK">LINK (pyatlan.model.assets.Resource attribute)</a>
 </li>
+        <li><a href="asset/schema.html#pyatlan.model.assets.Schema.LINKED_SCHEMA_QUALIFIED_NAME">LINKED_SCHEMA_QUALIFIED_NAME (pyatlan.model.assets.Schema attribute)</a>
+</li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.LINKS">LINKS (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="exceptions.html#pyatlan.errors.LogicError">LogicError</a>
@@ -2969,10 +3097,10 @@
 </li>
         <li><a href="asset/looker.html#pyatlan.model.assets.Looker">Looker (class in pyatlan.model.assets)</a>
 </li>
-        <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.LOOKER_EXPLORE_QUALIFIED_NAME">LOOKER_EXPLORE_QUALIFIED_NAME (pyatlan.model.assets.LookerField attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.LOOKER_EXPLORE_QUALIFIED_NAME">LOOKER_EXPLORE_QUALIFIED_NAME (pyatlan.model.assets.LookerField attribute)</a>
+</li>
         <li><a href="asset/lookerfield.html#pyatlan.model.assets.LookerField.LOOKER_FIELD_DATA_TYPE">LOOKER_FIELD_DATA_TYPE (pyatlan.model.assets.LookerField attribute)</a>
 </li>
         <li><a href="asset/lookerfolder.html#pyatlan.model.assets.LookerFolder.LOOKER_PARENT_FOLDER">LOOKER_PARENT_FOLDER (pyatlan.model.assets.LookerFolder attribute)</a>
@@ -3607,6 +3735,8 @@
 </li>
         <li><a href="asset/montecarlo.html#pyatlan.model.assets.MonteCarlo">MonteCarlo (class in pyatlan.model.assets)</a>
 </li>
+        <li><a href="asset/multidimensionaldataset.html#pyatlan.model.assets.MultiDimensionalDataset">MultiDimensionalDataset (class in pyatlan.model.assets)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -3737,6 +3867,14 @@
           <li><a href="asset/gcs.html#pyatlan.model.assets.GCS.OUTPUT_FROM_PROCESSES">(pyatlan.model.assets.GCS attribute)</a>
 </li>
         </ul></li>
+        <li><a href="asset/catalog.html#pyatlan.model.assets.Catalog.OUTPUT_FROM_SPARK_JOBS">OUTPUT_FROM_SPARK_JOBS (pyatlan.model.assets.Catalog attribute)</a>
+
+        <ul>
+          <li><a href="asset/datastudio.html#pyatlan.model.assets.DataStudio.OUTPUT_FROM_SPARK_JOBS">(pyatlan.model.assets.DataStudio attribute)</a>
+</li>
+          <li><a href="asset/gcs.html#pyatlan.model.assets.GCS.OUTPUT_FROM_SPARK_JOBS">(pyatlan.model.assets.GCS attribute)</a>
+</li>
+        </ul></li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.OUTPUT_PORT_DATA_PRODUCTS">OUTPUT_PORT_DATA_PRODUCTS (pyatlan.model.assets.Asset attribute)</a>
 </li>
         <li><a href="asset/dataproduct.html#pyatlan.model.assets.DataProduct.OUTPUT_PORTS">OUTPUT_PORTS (pyatlan.model.assets.DataProduct attribute)</a>
@@ -3749,6 +3887,8 @@
           <li><a href="asset/biprocess.html#pyatlan.model.assets.BIProcess.OUTPUTS">(pyatlan.model.assets.BIProcess attribute)</a>
 </li>
           <li><a href="asset/columnprocess.html#pyatlan.model.assets.ColumnProcess.OUTPUTS">(pyatlan.model.assets.ColumnProcess attribute)</a>
+</li>
+          <li><a href="asset/sparkjob.html#pyatlan.model.assets.SparkJob.OUTPUTS">(pyatlan.model.assets.SparkJob attribute)</a>
 </li>
         </ul></li>
         <li><a href="asset/asset.html#pyatlan.model.assets.Asset.OWNER_GROUPS">OWNER_GROUPS (pyatlan.model.assets.Asset attribute)</a>
@@ -3943,10 +4083,10 @@
 </li>
         <li><a href="asset/powerbitable.html#pyatlan.model.assets.PowerBITable">PowerBITable (class in pyatlan.model.assets)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/powerbitile.html#pyatlan.model.assets.PowerBITile">PowerBITile (class in pyatlan.model.assets)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/powerbiworkspace.html#pyatlan.model.assets.PowerBIWorkspace">PowerBIWorkspace (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/column.html#pyatlan.model.assets.Column.PRECISION">PRECISION (pyatlan.model.assets.Column attribute)</a>
@@ -4045,6 +4185,8 @@
           <li><a href="asset/columnprocess.html#pyatlan.model.assets.ColumnProcess.PROCESS">(pyatlan.model.assets.ColumnProcess attribute)</a>
 </li>
           <li><a href="asset/dbtcolumnprocess.html#pyatlan.model.assets.DbtColumnProcess.PROCESS">(pyatlan.model.assets.DbtColumnProcess attribute)</a>
+</li>
+          <li><a href="asset/sparkjob.html#pyatlan.model.assets.SparkJob.PROCESS">(pyatlan.model.assets.SparkJob attribute)</a>
 </li>
         </ul></li>
         <li><a href="asset/processexecution.html#pyatlan.model.assets.ProcessExecution">ProcessExecution (class in pyatlan.model.assets)</a>
@@ -4857,8 +4999,6 @@
           <li><a href="asset/sisensefolder.html#pyatlan.model.assets.SisenseFolder.SISENSE_WIDGETS">(pyatlan.model.assets.SisenseFolder attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/sisensedashboard.html#pyatlan.model.assets.SisenseDashboard">SisenseDashboard (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/sisensedatamodel.html#pyatlan.model.assets.SisenseDatamodel">SisenseDatamodel (class in pyatlan.model.assets)</a>
@@ -4867,6 +5007,8 @@
 </li>
         <li><a href="asset/sisensefolder.html#pyatlan.model.assets.SisenseFolder">SisenseFolder (class in pyatlan.model.assets)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="asset/sisensewidget.html#pyatlan.model.assets.SisenseWidget">SisenseWidget (class in pyatlan.model.assets)</a>
 </li>
         <li><a href="asset/tableauproject.html#pyatlan.model.assets.TableauProject.SITE">SITE (pyatlan.model.assets.TableauProject attribute)</a>
@@ -5071,6 +5213,32 @@
           <li><a href="asset/lookerlook.html#pyatlan.model.assets.LookerLook.SOURCELAST_UPDATER_ID">(pyatlan.model.assets.LookerLook attribute)</a>
 </li>
         </ul></li>
+        <li><a href="asset/spark.html#pyatlan.model.assets.Spark">Spark (class in pyatlan.model.assets)</a>
+</li>
+        <li><a href="asset/sparkjob.html#pyatlan.model.assets.SparkJob.SPARK_APP_NAME">SPARK_APP_NAME (pyatlan.model.assets.SparkJob attribute)</a>
+</li>
+        <li><a href="asset/dbtcolumnprocess.html#pyatlan.model.assets.DbtColumnProcess.SPARK_JOBS">SPARK_JOBS (pyatlan.model.assets.DbtColumnProcess attribute)</a>
+
+        <ul>
+          <li><a href="asset/dbtprocess.html#pyatlan.model.assets.DbtProcess.SPARK_JOBS">(pyatlan.model.assets.DbtProcess attribute)</a>
+</li>
+          <li><a href="asset/process.html#pyatlan.model.assets.Process.SPARK_JOBS">(pyatlan.model.assets.Process attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="asset/sparkjob.html#pyatlan.model.assets.SparkJob.SPARK_MASTER">SPARK_MASTER (pyatlan.model.assets.SparkJob attribute)</a>
+</li>
+        <li><a href="asset/spark.html#pyatlan.model.assets.Spark.SPARK_RUN_END_TIME">SPARK_RUN_END_TIME (pyatlan.model.assets.Spark attribute)</a>
+</li>
+        <li><a href="asset/spark.html#pyatlan.model.assets.Spark.SPARK_RUN_OPEN_LINEAGE_STATE">SPARK_RUN_OPEN_LINEAGE_STATE (pyatlan.model.assets.Spark attribute)</a>
+</li>
+        <li><a href="asset/spark.html#pyatlan.model.assets.Spark.SPARK_RUN_OPEN_LINEAGE_VERSION">SPARK_RUN_OPEN_LINEAGE_VERSION (pyatlan.model.assets.Spark attribute)</a>
+</li>
+        <li><a href="asset/spark.html#pyatlan.model.assets.Spark.SPARK_RUN_START_TIME">SPARK_RUN_START_TIME (pyatlan.model.assets.Spark attribute)</a>
+</li>
+        <li><a href="asset/spark.html#pyatlan.model.assets.Spark.SPARK_RUN_VERSION">SPARK_RUN_VERSION (pyatlan.model.assets.Spark attribute)</a>
+</li>
+        <li><a href="asset/sparkjob.html#pyatlan.model.assets.SparkJob">SparkJob (class in pyatlan.model.assets)</a>
+</li>
         <li><a href="asset/sql.html#pyatlan.model.assets.SQL">SQL (class in pyatlan.model.assets)</a>
 
         <ul>

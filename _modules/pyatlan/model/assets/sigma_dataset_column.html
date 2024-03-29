@@ -183,10 +183,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/calculationview.html">CalculationView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/catalog.html">Catalog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cloud.html">Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognite.html">Cognite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognite3dmodel.html">Cognite3DModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cogniteasset.html">CogniteAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cogniteevent.html">CogniteEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitefile.html">CogniteFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitesequence.html">CogniteSequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cube.html">Cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubedimension.html">CubeDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubefield.html">CubeField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubehierarchy.html">CubeHierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -272,6 +283,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodbcollection.html">MongoDBCollection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/mongodbdatabase.html">MongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/montecarlo.html">MonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/multidimensionaldataset.html">MultiDimensionalDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/namespace.html">Namespace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/nosql.html">NoSQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/objectstore.html">ObjectStore</a></li>
@@ -354,6 +366,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/snowflaketag.html">SnowflakeTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/soda.html">Soda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sodacheck.html">SodaCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/spark.html">Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sparkjob.html">SparkJob</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableau.html">Tableau</a></li>
@@ -554,10 +568,13 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
-    <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;SigmaDatasetColumn.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">SigmaDatasetColumn</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
-        <span class="s2">&quot;type, so are described in the sub-types of this schema.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Map of attributes in the instance and their values. &quot;</span>
+            <span class="s2">&quot;The specific keys of this map will vary by type, &quot;</span>
+            <span class="s2">&quot;so are described in the sub-types of this schema.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span></div>
 
 
