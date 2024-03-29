@@ -117,6 +117,10 @@ class DynamoDBSecondaryIndex(Table):
     """
     List of partitions in this table.
     """
+    IS_SHARDED: ClassVar[BooleanField] = BooleanField("isSharded", "isSharded")
+    """
+    Whether this table is a sharded table (true) or not (false).
+    """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -262,6 +266,7 @@ class DynamoDBSecondaryIndex(Table):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "is_sharded",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -456,6 +461,16 @@ class DynamoDBSecondaryIndex(Table):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.partition_list = partition_list
+
+    @property
+    def is_sharded(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_sharded
+
+    @is_sharded.setter
+    def is_sharded(self, is_sharded: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_sharded = is_sharded
 
     @property
     def query_count(self) -> Optional[int]:
@@ -735,6 +750,7 @@ class DynamoDBSecondaryIndex(Table):
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
+        is_sharded: Optional[bool] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")

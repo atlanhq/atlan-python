@@ -36,6 +36,12 @@ class DomoCard(Domo):
     """
     Type of the Domo Card.
     """
+    DOMO_CARD_TYPE_VALUE: ClassVar[KeywordField] = KeywordField(
+        "domoCardTypeValue", "domoCardTypeValue"
+    )
+    """
+    Type of the Domo Card.
+    """
     DOMO_CARD_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
         "domoCardDashboardCount", "domoCardDashboardCount"
     )
@@ -54,6 +60,7 @@ class DomoCard(Domo):
 
     _convenience_properties: ClassVar[List[str]] = [
         "domo_card_type",
+        "domo_card_type_value",
         "domo_card_dashboard_count",
         "domo_dashboards",
         "domo_dataset",
@@ -68,6 +75,16 @@ class DomoCard(Domo):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.domo_card_type = domo_card_type
+
+    @property
+    def domo_card_type_value(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.domo_card_type_value
+
+    @domo_card_type_value.setter
+    def domo_card_type_value(self, domo_card_type_value: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domo_card_type_value = domo_card_type_value
 
     @property
     def domo_card_dashboard_count(self) -> Optional[int]:
@@ -105,6 +122,7 @@ class DomoCard(Domo):
 
     class Attributes(Domo.Attributes):
         domo_card_type: Optional[DomoCardType] = Field(default=None, description="")
+        domo_card_type_value: Optional[str] = Field(default=None, description="")
         domo_card_dashboard_count: Optional[int] = Field(default=None, description="")
         domo_dashboards: Optional[List[DomoDashboard]] = Field(
             default=None, description=""

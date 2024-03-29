@@ -176,6 +176,10 @@ class DbtProcess(Dbt):
     """
     TBC
     """
+    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "dbt_process_job_status",
@@ -205,6 +209,7 @@ class DbtProcess(Dbt):
         "matillion_component",
         "airflow_tasks",
         "column_processes",
+        "spark_jobs",
     ]
 
     @property
@@ -501,6 +506,16 @@ class DbtProcess(Dbt):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
+    @property
+    def spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.spark_jobs
+
+    @spark_jobs.setter
+    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_jobs = spark_jobs
+
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(default=None, description="")
         dbt_alias: Optional[str] = Field(default=None, description="")
@@ -539,6 +554,9 @@ class DbtProcess(Dbt):
         column_processes: Optional[List[ColumnProcess]] = Field(
             default=None, description=""
         )  # relationship
+        spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: "DbtProcess.Attributes" = Field(
         default_factory=lambda: DbtProcess.Attributes(),
@@ -551,3 +569,4 @@ from .airflow_task import AirflowTask  # noqa
 from .catalog import Catalog  # noqa
 from .column_process import ColumnProcess  # noqa
 from .matillion_component import MatillionComponent  # noqa
+from .spark_job import SparkJob  # noqa

@@ -105,11 +105,11 @@ class View(SQL):
     """
     TBC
     """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
     """
     TBC
     """
-    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    QUERIES: ClassVar[RelationField] = RelationField("queries")
     """
     TBC
     """
@@ -124,8 +124,8 @@ class View(SQL):
         "is_temporary",
         "definition",
         "columns",
-        "queries",
         "atlan_schema",
+        "queries",
     ]
 
     @property
@@ -219,16 +219,6 @@ class View(SQL):
         self.attributes.columns = columns
 
     @property
-    def queries(self) -> Optional[List[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[List[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
     def atlan_schema(self) -> Optional[Schema]:
         return None if self.attributes is None else self.attributes.atlan_schema
 
@@ -237,6 +227,16 @@ class View(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def queries(self) -> Optional[List[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[List[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(default=None, description="")
@@ -252,10 +252,10 @@ class View(SQL):
         columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
-        queries: Optional[List[Query]] = Field(
+        atlan_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
-        atlan_schema: Optional[Schema] = Field(
+        queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
 
