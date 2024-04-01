@@ -119,7 +119,6 @@
         if sub is None:
             raise TypeError(f"Unsupport sub-type: {data_type}")
 
-        move_struct(data)
         return sub(**data)
 
     if TYPE_CHECKING:
