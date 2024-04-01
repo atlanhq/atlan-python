@@ -280,6 +280,7 @@ class AtlanDeleteType(str, Enum):
 class AtlanIcon(str, Enum):
     ATLAN_TAG = "atlanTags"
     ATLAN_SHIELD = "atlanShield"
+    ATLAN_METADATA = "atlanMetadata"
     ADDRESS_BOOK = "PhAddressBook"
     AIR_TRAFFIC_CONTROL = "PhAirTrafficControl"
     AIRPLANE = "PhAirplane"
