@@ -58,6 +58,13 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
+
+
 class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
@@ -67,18 +74,18 @@ class KafkaTopicConsumption(AtlanObject):
     topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
-
-
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional[str] = Field(default=None, description="")
     column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class SourceTagAttachment(AtlanObject):
@@ -94,13 +101,6 @@ class SourceTagAttachment(AtlanObject):
     is_source_tag_synced: Optional[bool] = Field(default=None, description="")
     source_tag_sync_timestamp: Optional[datetime] = Field(default=None, description="")
     source_tag_sync_error: Optional[str] = Field(default=None, description="")
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -242,15 +242,15 @@ MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
-
 Histogram.update_forward_refs()
+
+KafkaTopicConsumption.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachment.update_forward_refs()
-
 SourceTagAttachmentValue.update_forward_refs()
+
+SourceTagAttachment.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
