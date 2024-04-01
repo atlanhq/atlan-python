@@ -1,10 +1,12 @@
-# Copyright 2022 Atlan Pte. Ltd.
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2024 Atlan Pte. Ltd.
+
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
-from pydantic.v1 import BaseModel, Extra, Field
+from pydantic.v1 import BaseModel, Extra, Field, root_validator
 
 from pyatlan.model.enums import (
     BadgeComparisonOperator,
@@ -22,6 +24,18 @@ class AtlanObject(BaseModel):
         extra = Extra.ignore
         json_encoders = {datetime: lambda v: int(v.timestamp() * 1000)}
         validate_assignment = True
+
+    @root_validator(pre=True)
+    def flatten_structs_attributes(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Flatten the 'attributes' of the struct models.
+
+        :param values: dictionary containing the attributes.
+        :returns: modified dictionary with attributes flattened.
+        """
+        attributes = values.pop("attributes", {})
+        values = {**values, **attributes}
+        return values
 
 
 class MCRuleSchedule(AtlanObject):
@@ -44,6 +58,13 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
+
+
 class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
@@ -53,18 +74,18 @@ class KafkaTopicConsumption(AtlanObject):
     topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
-
-
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional[str] = Field(default=None, description="")
     column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class SourceTagAttachment(AtlanObject):
@@ -80,13 +101,6 @@ class SourceTagAttachment(AtlanObject):
     is_source_tag_synced: Optional[bool] = Field(default=None, description="")
     source_tag_sync_timestamp: Optional[datetime] = Field(default=None, description="")
     source_tag_sync_error: Optional[str] = Field(default=None, description="")
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -228,15 +242,15 @@ MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
-
 Histogram.update_forward_refs()
+
+KafkaTopicConsumption.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachment.update_forward_refs()
-
 SourceTagAttachmentValue.update_forward_refs()
+
+SourceTagAttachment.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
