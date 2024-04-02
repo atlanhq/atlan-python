@@ -182,6 +182,14 @@ class AtlanTag(AtlanObject):
         ),
         alias="propagationOnlyThroughLineage",
     )
+    restrict_propagation_through_hierachy: Optional[bool] = Field(
+        default=None,
+        description=(
+            "Whether to prevent this Atlan tag from propagating through "
+            "hierachy (True) or allow it to propagate through hierachy (False)"
+        ),
+        alias="restrictPropagationThroughHierachy",
+    )
     validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
     _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
         default_factory=list
