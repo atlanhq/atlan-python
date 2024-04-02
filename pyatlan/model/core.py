@@ -174,19 +174,11 @@ class AtlanTag(AtlanObject):
     restrict_propagation_through_lineage: Optional[bool] = Field(
         default=None, description="", alias="restrictPropagationThroughLineage"
     )
-    propagation_only_through_lineage: Optional[bool] = Field(
-        default=None,
-        description=(
-            "If specified as `True`, propagation will only "
-            "occur downstream lineage and not within hierarchy."
-        ),
-        alias="propagationOnlyThroughLineage",
-    )
-    restrict_propagation_through_hierachy: Optional[bool] = Field(
+    restrict_propagation_through_hierarchy: Optional[bool] = Field(
         default=None,
         description=(
             "Whether to prevent this Atlan tag from propagating through "
-            "hierachy (True) or allow it to propagate through hierachy (False)"
+            "hierarchy (True) or allow it to propagate through hierarchy (False)"
         ),
         alias="restrictPropagationThroughHierachy",
     )
