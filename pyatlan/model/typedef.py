@@ -712,6 +712,11 @@ class AttributeDef(AtlanObject):
         attribute_type: AtlanCustomAttributePrimitiveType,
         multi_valued: bool = False,
         options_name: Optional[str] = None,
+        applicable_connections: Optional[Set[str]] = None,
+        applicable_asset_types: Optional[Set[str]] = None,
+        applicable_glossaries: Optional[Set[str]] = None,
+        applicable_glossary_types: Optional[Set[str]] = None,
+        applicable_other_asset_types: Optional[Set[str]] = None,
     ) -> AttributeDef:
         from pyatlan.utils import validate_required_fields
 
@@ -760,11 +765,20 @@ class AttributeDef(AtlanObject):
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []
-        attr_def.applicable_asset_types = _complete_type_list
-        attr_def.applicable_glossary_types = _all_glossary_types
-        attr_def.applicable_other_asset_types = _all_other_types
-        attr_def.applicable_connections = _get_all_qualified_names("Connection")
-        attr_def.applicable_glossaries = _get_all_qualified_names("AtlasGlossary")
+
+        attr_def.applicable_asset_types = applicable_asset_types or _complete_type_list
+        attr_def.applicable_glossary_types = (
+            applicable_glossary_types or _all_glossary_types
+        )
+        attr_def.applicable_other_asset_types = (
+            applicable_other_asset_types or _all_other_types
+        )
+        attr_def.applicable_connections = (
+            applicable_connections or _get_all_qualified_names("Connection")
+        )
+        attr_def.applicable_glossaries = (
+            applicable_glossaries or _get_all_qualified_names("AtlasGlossary")
+        )
         return attr_def
 
     def is_archived(self) -> bool:
