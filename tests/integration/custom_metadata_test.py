@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import json
 import time
 from typing import Generator, List, Optional, Tuple
 
@@ -7,7 +8,13 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import Asset, AtlasGlossary, AtlasGlossaryTerm, Badge
+from pyatlan.model.assets import (
+    Asset,
+    AtlasGlossary,
+    AtlasGlossaryTerm,
+    Badge,
+    Connection,
+)
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
@@ -112,13 +119,27 @@ def update_enum(
 
 
 @pytest.fixture(scope="module")
+def limit_attribute_applicability_kwargs(
+    glossary: AtlasGlossary, connection: Connection
+):
+    return dict(
+        applicable_asset_types={"Link"},
+        applicable_other_asset_types={"File"},
+        applicable_glossaries={glossary.qualified_name},
+        applicable_glossary_types={"AtlasGlossary", "AtlasGlossaryTerm"},
+        applicable_connections={connection.qualified_name},
+    )
+
+
+@pytest.fixture(scope="module")
 def cm_ipr(
-    client: AtlanClient,
+    client: AtlanClient, limit_attribute_applicability_kwargs
 ) -> Generator[CustomMetadataDef, None, None]:
     attribute_defs = [
         AttributeDef.create(
             display_name=CM_ATTR_IPR_LICENSE,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            **limit_attribute_applicability_kwargs,
         ),
         AttributeDef.create(
             display_name=CM_ATTR_IPR_VERSION,
@@ -144,9 +165,7 @@ def cm_ipr(
     client.typedef.purge(CM_IPR, CustomMetadataDef)
 
 
-def test_cm_ipr(
-    cm_ipr: CustomMetadataDef,
-):
+def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs):
     cm_name = CM_IPR
     assert cm_ipr.category == AtlanTypeCategory.CUSTOM_METADATA
     assert cm_ipr.guid
@@ -155,14 +174,22 @@ def test_cm_ipr(
     attributes = cm_ipr.attribute_defs
     assert attributes
     assert len(attributes) == 5
-    one = attributes[0]
-    assert one
-    assert one.display_name == CM_ATTR_IPR_LICENSE
-    assert one.name
-    assert one.name != CM_ATTR_IPR_LICENSE
-    assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
-    assert one.options
-    assert not one.options.multi_value_select
+    one_with_limited = attributes[0]
+    assert one_with_limited
+    assert one_with_limited.options
+    assert one_with_limited.display_name == CM_ATTR_IPR_LICENSE
+    assert one_with_limited.name
+    assert one_with_limited.name != CM_ATTR_IPR_LICENSE
+    assert one_with_limited.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert not one_with_limited.options.multi_value_select
+    options = one_with_limited.options
+    for attribute in limit_attribute_applicability_kwargs.keys():
+        assert getattr(
+            one_with_limited, attribute
+        ) == limit_attribute_applicability_kwargs.get(attribute)
+        assert getattr(options, attribute) == json.dumps(
+            list(limit_attribute_applicability_kwargs.get(attribute))
+        )
     one = attributes[1]
     assert one.display_name == CM_ATTR_IPR_VERSION
     assert one.name != CM_ATTR_IPR_VERSION
