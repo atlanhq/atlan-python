@@ -473,7 +473,7 @@ def test_get_user_by_username(mock_type_def_client, client: AtlanClient):
                 "propagate": False,
                 "remove_propagation_on_delete": False,
                 "restrict_lineage_propagation": False,
-                "propagation_only_through_lineage": False,
+                "restrict_propagation_through_hierarchy": False,
             },
         ),
         (

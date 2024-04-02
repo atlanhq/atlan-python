@@ -742,7 +742,7 @@ class AssetClient:
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
-        propagation_only_through_lineage: bool = False,
+        restrict_propagation_through_hierarchy: bool = False,
     ) -> None:
         atlan_tags = AtlanTags(
             __root__=[
@@ -751,7 +751,7 @@ class AssetClient:
                     propagate=propagate,
                     remove_propagations_on_entity_delete=remove_propagation_on_delete,
                     restrict_propagation_through_lineage=restrict_lineage_propagation,
-                    propagation_only_through_lineage=propagation_only_through_lineage,
+                    restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
                 )
                 for name in atlan_tag_names
             ]
@@ -772,7 +772,7 @@ class AssetClient:
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
-        propagation_only_through_lineage: bool = False,
+        restrict_propagation_through_hierarchy: bool = False,
     ) -> None:
         """
         Add one or more Atlan tags to the provided asset.
@@ -787,8 +787,8 @@ class AssetClient:
         when the Atlan tag is removed from this asset (True) or not (False)
         :param restrict_lineage_propagation: whether to avoid propagating
         through lineage (True) or do propagate through lineage (False)
-        :param propagation_only_through_lineage: if specified as `True`,
-        propagation will only occur downstream lineage and not within hierarchy, defaults to `False`.
+        :param restrict_propagation_through_hierarchy: whether to prevent this Atlan tag from
+        propagating through hierarchy (True) or allow it to propagate through hierarchy (False)
         :raises AtlanError: on any API communication issue
         """
         self._modify_tags(
@@ -799,7 +799,7 @@ class AssetClient:
             propagate,
             remove_propagation_on_delete,
             restrict_lineage_propagation,
-            propagation_only_through_lineage,
+            restrict_propagation_through_hierarchy,
         )
 
     @validate_arguments
@@ -811,7 +811,7 @@ class AssetClient:
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
-        propagation_only_through_lineage: bool = False,
+        restrict_propagation_through_hierarchy: bool = False,
     ) -> None:
         """
         Update one or more Atlan tags to the provided asset.
@@ -826,8 +826,8 @@ class AssetClient:
         when the Atlan tag is removed from this asset (True) or not (False)
         :param restrict_lineage_propagation: whether to avoid propagating
         through lineage (True) or do propagate through lineage (False)
-        :param propagation_only_through_lineage: if specified as `True`,
-        propagation will only occur downstream lineage and not within hierarchy, defaults to `False`.
+        :param restrict_propagation_through_hierarchy: whether to prevent this Atlan tag from
+        propagating through hierarchy (True) or allow it to propagate through hierarchy (False)
         :raises AtlanError: on any API communication issue
         """
         self._modify_tags(
@@ -838,7 +838,7 @@ class AssetClient:
             propagate,
             remove_propagation_on_delete,
             restrict_lineage_propagation,
-            propagation_only_through_lineage,
+            restrict_propagation_through_hierarchy,
         )
 
     @validate_arguments
