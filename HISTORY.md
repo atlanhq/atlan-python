@@ -1,3 +1,16 @@
+## 2.1.2 (April 2, 2024)
+
+### New features
+
+- Adds `atlanMetadata` icon to `AtlanIcon` enum.
+- Adds support for `restrict_propagation_through_hierarchy` to the `AtlanTag` model.
+- Adds latest typedef models **(cube, cognite, spark, sparkjob, and multi-dimensional dataset)**.
+- Adds support to limit the applicability of custom metadata attributes directly through the `AttributeDef.create()` method.
+
+### Bug Fixes
+
+- Fixes an issue with direct model deserialization of structs.
+
 ## 2.1.1 (March 28, 2024)
 
 ### Bug Fixes
