@@ -180,7 +180,7 @@ class AtlanTag(AtlanObject):
             "Whether to prevent this Atlan tag from propagating through "
             "hierarchy (True) or allow it to propagate through hierarchy (False)"
         ),
-        alias="restrictPropagationThroughHierachy",
+        alias="restrictPropagationThroughHierarchy",
     )
     validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
     _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
