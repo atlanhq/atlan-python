@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
-from typing import Any, Literal, Optional, Union
+from typing import Any, List, Literal, Optional, Union
 
 from pydantic import Field
 
@@ -84,7 +84,7 @@ class AtlanTagAddPayload(
     operation_type: Literal["CLASSIFICATION_ADD"] = Field(
         description="Type of the operation the event contains a payload for."
     )
-    mutated_details: Optional[AtlanTag] = Field(
+    mutated_details: Optional[List[AtlanTag]] = Field(
         description="Atlan tags that were added to the asset by this event."
     )
 
@@ -95,7 +95,7 @@ class AtlanTagDeletePayload(
     operation_type: Literal["CLASSIFICATION_DELETE"] = Field(
         description="Type of the operation the event contains a payload for."
     )
-    mutated_details: Optional[AtlanTag] = Field(
+    mutated_details: Optional[List[AtlanTag]] = Field(
         description="Atlan tags that were removed from the asset by this event."
     )
 
@@ -118,9 +118,10 @@ class AtlanEvent(AtlanObject):
         Union[
             AssetCreatePayload,
             AssetUpdatePayload,
-            CustomMetadataUpdatePayload,
+            AssetDeletePayload,
             AtlanTagAddPayload,
             AtlanTagDeletePayload,
+            CustomMetadataUpdatePayload,
         ]
     ] = Field(
         description="Detailed contents (payload) of the event.",

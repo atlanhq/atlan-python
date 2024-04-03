@@ -1,0 +1,84 @@
+{
+    "source": {},
+    "version": {
+      "version": "1.0.0",
+      "versionParts": [
+        1
+      ]
+    },
+    "msgCompressionKind": "NONE",
+    "msgSplitIdx": 1,
+    "msgSplitCount": 1,
+    "msgSourceIP": "10.121.193.228",
+    "msgCreatedBy": "",
+    "msgCreationTime": 1667822461771,
+    "spooled": false,
+    "message": {
+      "type": "ENTITY_NOTIFICATION_V2",
+      "entity": {
+        "typeName": "Table",
+        "attributes": {
+          "popularityScore": 1.17549435e-38,
+          "lastSyncWorkflowName": "mabl-qa-006-crawler",
+          "lastSyncRunAt": 1665132063880,
+          "databaseName": "atlan_trial",
+          "connectionQualifiedName": "default/postgres/1665131987",
+          "assetDbtJobLastRunHasSourcesGenerated": false,
+          "assetDbtJobLastRunHasDocsGenerated": false,
+          "queryCount": 0,
+          "isTemporary": false,
+          "lastSyncRun": "atlan-postgres-1665131987-k9cds",
+          "isPartitioned": false,
+          "schemaName": "demo",
+          "adminUsers": [],
+          "partitionCount": 0,
+          "queryUserCount": 0,
+          "assetDbtJobLastRunUpdatedAt": 0,
+          "ownerGroups": [],
+          "sourceUpdatedAt": 0,
+          "assetDbtJobLastRunArtifactsSaved": false,
+          "isEditable": true,
+          "announcementUpdatedAt": 0,
+          "assetDbtJobLastRunStartedAt": 0,
+          "isDiscoverable": true,
+          "rowCount": 134,
+          "isQueryPreview": true,
+          "schemaQualifiedName": "default/postgres/1665131987/atlan_trial/demo",
+          "sourceCreatedAt": 0,
+          "assetDbtJobLastRunDequedAt": 0,
+          "viewerUsers": [],
+          "assetDbtTags": [],
+          "adminRoles": [],
+          "adminGroups": [],
+          "assetDbtJobLastRunCreatedAt": 0,
+          "qualifiedName": "default/postgres/1665131987/atlan_trial/demo/INSTACART_AISLES",
+          "databaseQualifiedName": "default/postgres/1665131987/atlan_trial",
+          "assetDbtJobNextRun": 0,
+          "assetDbtJobLastRunNotificationsSent": false,
+          "columnCount": 2,
+          "sizeBytes": 0,
+          "name": "INSTACART_AISLES",
+          "certificateUpdatedAt": 0,
+          "connectorName": "postgres",
+          "viewerGroups": [],
+          "assetDbtJobLastRun": 0,
+          "ownerUsers": []
+        },
+        "guid": "31ee0651-b031-48c8-8927-ef9b1e949ad4",
+        "status": "ACTIVE",
+        "displayText": "INSTACART_AISLES",
+        "isIncomplete": false,
+        "createdBy": "autoqa",
+        "updatedBy": "autoqa",
+        "createTime": 1665132167750,
+        "updateTime": 1665132175423
+      },
+      "operationType": "BUSINESS_ATTRIBUTE_UPDATE",
+      "eventTime": 1667822461710,
+      "mutatedDetails": {
+        "UuPz0CjWHFuuKTCiTRwapk": {
+          "jpf1oz5ux6MjmaOGPn9jMD": "ssjmdvddf\n"
+        }
+      }
+    }
+}
