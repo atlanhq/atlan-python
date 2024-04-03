@@ -1,3 +1,10 @@
+## 2.1.3 (April 3, 2024)
+
+### Bug fixes
+
+- Fixes field alias typo for `restrict_propagation_through_hierarchy` in the `AtlanTag` model.
+- Fixes issues with `AtlanEvent` model deserialization. Previously, it threw a `ValidationError` for `ENTITY_DELETE`, `CLASSIFICATION_ADD`, and `CLASSIFICATION_DELETE` events.
+
 ## 2.1.2 (April 2, 2024)
 
 ### New features
