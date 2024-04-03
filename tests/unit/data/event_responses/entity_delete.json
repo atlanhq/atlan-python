@@ -1,0 +1,36 @@
+{
+    "source": {},
+    "version": {
+      "version": "1.0.0",
+      "versionParts": [
+        1
+      ]
+    },
+    "msgCompressionKind": "NONE",
+    "msgSplitIdx": 1,
+    "msgSplitCount": 1,
+    "msgSourceIP": "10.121.193.228",
+    "msgCreatedBy": "",
+    "msgCreationTime": 1667822854307,
+    "spooled": false,
+    "message": {
+      "type": "ENTITY_NOTIFICATION_V2",
+      "entity": {
+        "typeName": "Connection",
+        "attributes": {
+          "qualifiedName": "default/bigquery/1665130698"
+        },
+        "guid": "ff9d053f-5bd8-4149-81d3-447ba654dbaa",
+        "status": "DELETED",
+        "displayText": "default/bigquery/1665130698",
+        "isIncomplete": false,
+        "createdBy": "autoqa",
+        "updatedBy": "autoqa",
+        "createTime": 1665131016428,
+        "updateTime": 1665131016428,
+        "deleteHandler": "HARD"
+      },
+      "operationType": "ENTITY_DELETE",
+      "eventTime": 1667822854152
+    }
+}
