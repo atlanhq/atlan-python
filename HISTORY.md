@@ -1,3 +1,15 @@
+## 1.9.6 (April 5, 2024)
+
+### Bug fixes
+
+- Fixes issues with `AtlanEvent` model deserialization.
+
+## 1.9.5 (April 4, 2024)
+
+### New features
+
+- Adds support for `restrict_propagation_through_hierarchy` to the `AtlanTag` model.
+
 ## 1.9.4 (February 13, 2024)
 
 ### New features
