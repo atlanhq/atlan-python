@@ -85,6 +85,15 @@ class AssetSidebarTab(str, Enum):
     SODA = "Soda"
 
 
+class AssetFilter(str, Enum):
+    TERMS = "terms"
+    OWNERS = "owners"
+    USAGE = "usage"
+    TAGS = "__traitNames"
+    PROPERTIES = "properties"
+    CERTIFICATE = "certificateStatus"
+
+
 class AtlanComparisonOperator(str, Enum):
     LT = "<"
     GT = ">"
