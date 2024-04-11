@@ -1740,13 +1740,26 @@ class LineageListResults(SearchResults, Iterable):
         self._criteria.offset = self._start
         self._criteria.size = self._size
         if raw_json := super()._get_next_page_json():
-            self._has_more = parse_obj_as(bool, raw_json["hasMore"])
-            return True
+            self._has_more = parse_obj_as(bool, raw_json.get("hasMore", False))
+            return self._has_more
         return False
 
     @property
     def has_more(self) -> bool:
         return self._has_more
+
+    def __iter__(self) -> Generator[Asset, None, None]:
+        """
+        Iterates through the results, lazily-fetching
+        each next page until there are no more results.
+
+        :returns: an iterable form of each result, across all pages
+        """
+        while True:
+            yield from self.current_page()
+            if not self.has_more:
+                break
+            self.next_page()
 
 
 class CustomMetadataHandling(str, Enum):
