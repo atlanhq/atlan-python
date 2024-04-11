@@ -1184,22 +1184,24 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
 ):
     client = AssetClient(mock_api_caller)
     mock_cm_cache.get_name_for_id.return_value = CM_NAME
-    mock_api_caller._call_api.return_value = lineage_list_json
+    mock_api_caller._call_api.side_effect = [lineage_list_json, {}]
 
     lineage_request = LineageListRequest(
         guid="test-guid", depth=1, direction=LineageDirection.UPSTREAM
     )
     lineage_request.attributes = [CM_NAME]
     lineage_response = client.get_lineage_list(lineage_request=lineage_request)
-    asset = next(iter(lineage_response))
 
-    assert asset
-    assert asset.type_name == "View"
-    assert asset.guid == "test-guid"
-    assert asset.qualified_name == "test-qn"
-    assert asset.attributes
-    assert asset.business_attributes
-    assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
+    for asset in lineage_response:
+        assert asset
+        assert asset.type_name == "View"
+        assert asset.guid == "test-guid"
+        assert asset.qualified_name == "test-qn"
+        assert asset.attributes
+        assert asset.business_attributes
+        assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
+
+    assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
 
