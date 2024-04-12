@@ -253,6 +253,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     def parent_category(self, parent_category: Optional[AtlasGlossaryCategory]):
         if self.attributes is None:
             self.attributes = self.Attributes()
+        if not parent_category:
+            self.relationship_attributes = {"parentCategory": None}
         self.attributes.parent_category = parent_category
 
     @property

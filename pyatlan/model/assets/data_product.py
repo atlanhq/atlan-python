@@ -126,8 +126,18 @@ class DataProduct(DataMesh):
     """
     Status of this data product.
     """
+    DAAP_STATUS: ClassVar[KeywordField] = KeywordField("daapStatus", "daapStatus")
+    """
+    Status of this data product.
+    """
     DATA_PRODUCT_CRITICALITY: ClassVar[KeywordField] = KeywordField(
         "dataProductCriticality", "dataProductCriticality"
+    )
+    """
+    Criticality of this data product.
+    """
+    DAAP_CRITICALITY: ClassVar[KeywordField] = KeywordField(
+        "daapCriticality", "daapCriticality"
     )
     """
     Criticality of this data product.
@@ -138,8 +148,20 @@ class DataProduct(DataMesh):
     """
     Information sensitivity of this data product.
     """
+    DAAP_SENSITIVITY: ClassVar[KeywordField] = KeywordField(
+        "daapSensitivity", "daapSensitivity"
+    )
+    """
+    Information sensitivity of this data product.
+    """
     DATA_PRODUCT_VISIBILITY: ClassVar[KeywordField] = KeywordField(
         "dataProductVisibility", "dataProductVisibility"
+    )
+    """
+    Visibility of a data product.
+    """
+    DAAP_VISIBILITY: ClassVar[KeywordField] = KeywordField(
+        "daapVisibility", "daapVisibility"
     )
     """
     Visibility of a data product.
@@ -184,9 +206,13 @@ class DataProduct(DataMesh):
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_product_status",
+        "daap_status",
         "data_product_criticality",
+        "daap_criticality",
         "data_product_sensitivity",
+        "daap_sensitivity",
         "data_product_visibility",
+        "daap_visibility",
         "data_product_assets_d_s_l",
         "data_product_assets_playbook_filter",
         "data_product_score_value",
@@ -207,6 +233,16 @@ class DataProduct(DataMesh):
         self.attributes.data_product_status = data_product_status
 
     @property
+    def daap_status(self) -> Optional[DataProductStatus]:
+        return None if self.attributes is None else self.attributes.daap_status
+
+    @daap_status.setter
+    def daap_status(self, daap_status: Optional[DataProductStatus]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_status = daap_status
+
+    @property
     def data_product_criticality(self) -> Optional[DataProductCriticality]:
         return (
             None
@@ -221,6 +257,16 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_criticality = data_product_criticality
+
+    @property
+    def daap_criticality(self) -> Optional[DataProductCriticality]:
+        return None if self.attributes is None else self.attributes.daap_criticality
+
+    @daap_criticality.setter
+    def daap_criticality(self, daap_criticality: Optional[DataProductCriticality]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_criticality = daap_criticality
 
     @property
     def data_product_sensitivity(self) -> Optional[DataProductSensitivity]:
@@ -239,6 +285,16 @@ class DataProduct(DataMesh):
         self.attributes.data_product_sensitivity = data_product_sensitivity
 
     @property
+    def daap_sensitivity(self) -> Optional[DataProductSensitivity]:
+        return None if self.attributes is None else self.attributes.daap_sensitivity
+
+    @daap_sensitivity.setter
+    def daap_sensitivity(self, daap_sensitivity: Optional[DataProductSensitivity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_sensitivity = daap_sensitivity
+
+    @property
     def data_product_visibility(self) -> Optional[DataProductVisibility]:
         return (
             None if self.attributes is None else self.attributes.data_product_visibility
@@ -251,6 +307,16 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_visibility = data_product_visibility
+
+    @property
+    def daap_visibility(self) -> Optional[DataProductVisibility]:
+        return None if self.attributes is None else self.attributes.daap_visibility
+
+    @daap_visibility.setter
+    def daap_visibility(self, daap_visibility: Optional[DataProductVisibility]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_visibility = daap_visibility
 
     @property
     def data_product_assets_d_s_l(self) -> Optional[str]:
@@ -348,13 +414,23 @@ class DataProduct(DataMesh):
         data_product_status: Optional[DataProductStatus] = Field(
             default=None, description=""
         )
+        daap_status: Optional[DataProductStatus] = Field(default=None, description="")
         data_product_criticality: Optional[DataProductCriticality] = Field(
+            default=None, description=""
+        )
+        daap_criticality: Optional[DataProductCriticality] = Field(
             default=None, description=""
         )
         data_product_sensitivity: Optional[DataProductSensitivity] = Field(
             default=None, description=""
         )
+        daap_sensitivity: Optional[DataProductSensitivity] = Field(
+            default=None, description=""
+        )
         data_product_visibility: Optional[DataProductVisibility] = Field(
+            default=None, description=""
+        )
+        daap_visibility: Optional[DataProductVisibility] = Field(
             default=None, description=""
         )
         data_product_assets_d_s_l: Optional[str] = Field(default=None, description="")
