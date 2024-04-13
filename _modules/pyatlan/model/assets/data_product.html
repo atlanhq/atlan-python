@@ -596,8 +596,18 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Status of this data product.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DAAP_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;daapStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;daapStatus&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Status of this data product.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATA_PRODUCT_CRITICALITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;dataProductCriticality&quot;</span><span class="p">,</span> <span class="s2">&quot;dataProductCriticality&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Criticality of this data product.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DAAP_CRITICALITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;daapCriticality&quot;</span><span class="p">,</span> <span class="s2">&quot;daapCriticality&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Criticality of this data product.</span>
@@ -608,8 +618,20 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Information sensitivity of this data product.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DAAP_SENSITIVITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;daapSensitivity&quot;</span><span class="p">,</span> <span class="s2">&quot;daapSensitivity&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Information sensitivity of this data product.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATA_PRODUCT_VISIBILITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;dataProductVisibility&quot;</span><span class="p">,</span> <span class="s2">&quot;dataProductVisibility&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Visibility of a data product.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DAAP_VISIBILITY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;daapVisibility&quot;</span><span class="p">,</span> <span class="s2">&quot;daapVisibility&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Visibility of a data product.</span>
@@ -654,9 +676,13 @@
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;data_product_status&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;daap_status&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_criticality&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;daap_criticality&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_sensitivity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;daap_sensitivity&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_visibility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;daap_visibility&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_assets_d_s_l&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_assets_playbook_filter&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_product_score_value&quot;</span><span class="p">,</span>
@@ -677,6 +703,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_status</span> <span class="o">=</span> <span class="n">data_product_status</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">daap_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductStatus</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_status</span>
+
+    <span class="nd">@daap_status</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">daap_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daap_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductStatus</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_status</span> <span class="o">=</span> <span class="n">daap_status</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_product_criticality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductCriticality</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
@@ -691,6 +727,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_criticality</span> <span class="o">=</span> <span class="n">data_product_criticality</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">daap_criticality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductCriticality</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_criticality</span>
+
+    <span class="nd">@daap_criticality</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">daap_criticality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daap_criticality</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductCriticality</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_criticality</span> <span class="o">=</span> <span class="n">daap_criticality</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_product_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductSensitivity</span><span class="p">]:</span>
@@ -709,6 +755,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_sensitivity</span> <span class="o">=</span> <span class="n">data_product_sensitivity</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">daap_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductSensitivity</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_sensitivity</span>
+
+    <span class="nd">@daap_sensitivity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">daap_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daap_sensitivity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductSensitivity</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_sensitivity</span> <span class="o">=</span> <span class="n">daap_sensitivity</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_product_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_visibility</span>
@@ -721,6 +777,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_product_visibility</span> <span class="o">=</span> <span class="n">data_product_visibility</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">daap_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_visibility</span>
+
+    <span class="nd">@daap_visibility</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">daap_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daap_visibility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">daap_visibility</span> <span class="o">=</span> <span class="n">daap_visibility</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_product_assets_d_s_l</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -818,13 +884,23 @@
         <span class="n">data_product_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
+        <span class="n">daap_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">data_product_criticality</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductCriticality</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">daap_criticality</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductCriticality</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
         <span class="n">data_product_sensitivity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductSensitivity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
+        <span class="n">daap_sensitivity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductSensitivity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="n">data_product_visibility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">daap_visibility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataProductVisibility</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
         <span class="n">data_product_assets_d_s_l</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
