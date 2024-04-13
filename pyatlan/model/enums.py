@@ -85,7 +85,7 @@ class AssetSidebarTab(str, Enum):
     SODA = "Soda"
 
 
-class AssetFilter(str, Enum):
+class AssetFilterGroup(str, Enum):
     TERMS = "terms"
     OWNERS = "owners"
     USAGE = "usage"

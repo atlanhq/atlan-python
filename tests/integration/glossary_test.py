@@ -866,3 +866,60 @@ def test_remove_unrelated_relationship(
         f"not exist between entities {term2.guid} and {term1.guid}"
     )
     assert EXPECTED_ERR == str(err.value)
+
+
+def test_move_sub_category_to_category(
+    client: AtlanClient,
+    hierarchy_glossary: AtlasGlossary,
+    top1_category: AtlasGlossaryCategory,
+    top2_category: AtlasGlossaryCategory,
+    mid1a_category: AtlasGlossaryCategory,
+    mid2a_category: AtlasGlossaryCategory,
+):
+    sleep(10)
+    assert mid1a_category.name
+    assert hierarchy_glossary.guid
+    assert top1_category.qualified_name
+    assert top2_category.qualified_name
+    assert mid1a_category.qualified_name
+
+    hierarchy = client.asset.get_hierarchy(glossary=hierarchy_glossary)
+    root_categories = hierarchy.root_categories
+
+    assert len(root_categories) == 2
+    root_category_qns = (
+        root_categories[0].qualified_name,
+        root_categories[1].qualified_name,
+    )
+    assert top1_category.qualified_name in root_category_qns
+    assert top2_category.qualified_name in root_category_qns
+
+    mid1a_category = AtlasGlossaryCategory.updater(
+        name=mid1a_category.name,
+        qualified_name=mid1a_category.qualified_name,
+        glossary_guid=hierarchy_glossary.guid,
+    )
+    mid1a_category.parent_category = None
+    response = client.asset.save(mid1a_category)
+
+    if updated := response.assets_updated(asset_type=AtlasGlossaryCategory):
+        assert updated[0].name == mid1a_category.name
+        assert updated[0].qualified_name == mid1a_category.qualified_name
+    else:
+        pytest.fail(f"Failed to perform update on category: {mid1a_category.name}")
+
+    # Ensure that the sub-category 'mid1a_category'
+    # has been successfully moved to the root category
+    sleep(10)
+    hierarchy = client.asset.get_hierarchy(glossary=hierarchy_glossary)
+    root_categories = hierarchy.root_categories
+
+    assert len(root_categories) == 3
+    root_category_qns_updated = (
+        root_categories[0].qualified_name,
+        root_categories[1].qualified_name,
+        root_categories[2].qualified_name,
+    )
+    assert top1_category.qualified_name in root_category_qns_updated
+    assert top2_category.qualified_name in root_category_qns_updated
+    assert mid1a_category.qualified_name in root_category_qns_updated
