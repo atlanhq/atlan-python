@@ -30,7 +30,7 @@ class AirflowTask(Airflow):
         *,
         name: str,
         airflow_dag_qualified_name: str,
-    ) -> AirflowDag:
+    ) -> AirflowTask:
         validate_required_fields(
             ["name", "airflow_dag_qualified_name"],
             [name, airflow_dag_qualified_name],
@@ -368,7 +368,7 @@ class AirflowTask(Airflow):
             *,
             name: str,
             airflow_dag_qualified_name: str,
-        ) -> AirflowDag.Attributes:
+        ) -> AirflowTask.Attributes:
             validate_required_fields(
                 ["name", "airflow_dag_qualified_name"],
                 [name, airflow_dag_qualified_name],

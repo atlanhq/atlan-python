@@ -6,7 +6,7 @@
         *,
         name: str,
         airflow_dag_qualified_name: str,
-    ) -> AirflowDag:
+    ) -> AirflowTask:
         validate_required_fields(
             ["name", "airflow_dag_qualified_name"],
             [name, airflow_dag_qualified_name],
