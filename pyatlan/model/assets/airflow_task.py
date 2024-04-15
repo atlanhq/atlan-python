@@ -8,18 +8,38 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .airflow import Airflow
 
 
 class AirflowTask(Airflow):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        airflow_dag_qualified_name: str,
+    ) -> AirflowTask:
+        validate_required_fields(
+            ["name", "airflow_dag_qualified_name"],
+            [name, airflow_dag_qualified_name],
+        )
+        attributes = AirflowTask.Attributes.creator(
+            name=name,
+            airflow_dag_qualified_name=airflow_dag_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="AirflowTask", allow_mutation=False)
 
@@ -340,6 +360,38 @@ class AirflowTask(Airflow):
         airflow_dag: Optional[AirflowDag] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            airflow_dag_qualified_name: str,
+        ) -> AirflowTask.Attributes:
+            validate_required_fields(
+                ["name", "airflow_dag_qualified_name"],
+                [name, airflow_dag_qualified_name],
+            )
+            # Split the airflow_dag_qualified_name to extract necessary information
+            fields = airflow_dag_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid airflow_dag_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid airflow_dag_qualified_name") from e
+
+            return AirflowTask.Attributes(
+                name=name,
+                airflow_dag_qualified_name=airflow_dag_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{airflow_dag_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                airflow_dag=AirflowDag.ref_by_qualified_name(
+                    airflow_dag_qualified_name
+                ),
+            )
 
     attributes: AirflowTask.Attributes = Field(
         default_factory=lambda: AirflowTask.Attributes(),
