@@ -1,3 +1,20 @@
+## 2.1.4 (April 16, 2024)
+
+### New features
+
+- Adds `AssetFilterGroup` enum for persona personalization.
+- Adds creator method to `AirflowDag` and `AirflowTask` assets.
+
+### Bug fixes
+
+- Fixes `qualified_name` population for related entities in `Glossary` objects.
+- Fixes logic for removing parent category relationship in `AtlasGlossaryCategory`.
+- Fixes lineage list performance by considering the `hasMore` attribute to optimize lineage paging.
+
+### QOL improvements
+
+- Updates `networkx >= 3.1` and bumped development requirements to the latest version.
+
 ## 2.1.3 (April 3, 2024)
 
 ### Bug fixes
