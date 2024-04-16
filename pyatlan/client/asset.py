@@ -1451,8 +1451,7 @@ class AssetClient:
     ) -> List[A]:
         dsl = DSL(query=query)
         search_request = IndexSearchRequest(
-            dsl=dsl,
-            attributes=attributes,
+            dsl=dsl, attributes=attributes, relation_attributes=["name"]
         )
         results = self.search(search_request)
         if (

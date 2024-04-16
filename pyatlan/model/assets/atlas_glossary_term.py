@@ -26,12 +26,18 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @root_validator()
     def _set_qualified_name_fallback(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
+        attributes = values.get("attributes")
+        unique_attributes = values.get("unique_attributes")
+        qualified_name = attributes.qualified_name if attributes else None
+
+        if not qualified_name:
+            # If the qualified name is present inside unique attributes (in case of a related entity)
+            if unique_attributes and unique_attributes.get("qualifiedName"):
+                values["attributes"].qualified_name = unique_attributes["qualifiedName"]
+            # Otherwise, set the qualified name to the GUID
+            # to avoid collisions when creating glossary objects
+            else:
+                values["attributes"].qualified_name = values["guid"]
         return values
 
     @classmethod
