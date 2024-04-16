@@ -1,8 +1,17 @@
 
     @root_validator()
     def _set_qualified_name_fallback(cls, values):
-        if "attributes" in values  and values["attributes"] and not values["attributes"].qualified_name:
-            values["attributes"].qualified_name = values["guid"]
+        guid = values.get("guid")
+        attributes = values.get("attributes")
+        unique_attributes = values.get("unique_attributes")
+        if attributes and not attributes.qualified_name:
+            # If the qualified name is present inside
+            # unique attributes (in case of a related entity)
+            # Otherwise, set the qualified name to the GUID
+            # to avoid collisions when creating glossary object
+            attributes.qualified_name = (
+                unique_attributes and unique_attributes.get("qualifiedName")
+            ) or guid
         return values
 
     @classmethod

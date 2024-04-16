@@ -1,0 +1,137 @@
+{
+    "queryType": "INDEX",
+    "searchParameters": {
+      "attributes": [
+        "terms",
+        "anchor",
+        "parentCategory"
+      ],
+      "relationAttributes": [
+        "name"
+      ],
+      "showSearchScore": false,
+      "suppressLogs": false,
+      "excludeMeanings": false,
+      "excludeClassifications": false,
+      "includeClassificationNames": false,
+      "requestMetadata": {
+        "searchInput": null,
+        "utmTags": null,
+        "saveSearchLog": false
+      },
+      "async": {
+        "isCallAsync": false,
+        "searchContextId": null,
+        "searchContextSequenceNo": null,
+        "requestTimeoutInSecs": null
+      },
+      "showHighlights": false,
+      "dsl": {
+        "from": 0,
+        "size": 100,
+        "aggregations": {},
+        "track_total_hits": true,
+        "query": {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "__state": {
+                    "value": "ACTIVE"
+                  }
+                }
+              },
+              {
+                "term": {
+                  "__typeName.keyword": {
+                    "value": "AtlasGlossaryCategory"
+                  }
+                }
+              },
+              {
+                "term": {
+                  "name.keyword": {
+                    "value": "test-cat-1-1"
+                  }
+                }
+              },
+              {
+                "term": {
+                  "__glossary": {
+                    "value": "BHjy6jlRgnusXmpYJDxV1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "sort": [
+          {
+            "__guid": {
+              "order": "asc"
+            }
+          }
+        ]
+      },
+      "allowDeletedRelations": false,
+      "accessControlExclusive": false,
+      "query": "{\"from\":0,\"size\":100,\"aggregations\":{},\"track_total_hits\":true,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"__state\":{\"value\":\"ACTIVE\"}}},{\"term\":{\"__typeName.keyword\":{\"value\":\"AtlasGlossaryCategory\"}}},{\"term\":{\"name.keyword\":{\"value\":\"test-cat-1-1\"}}},{\"term\":{\"__glossary\":{\"value\":\"BHjy6jlRgnusXmpYJDxV1\"}}}]}},\"sort\":[{\"__guid\":{\"order\":\"asc\"}}]}",
+      "saveSearchLog": false,
+      "callAsync": false
+    },
+    "entities": [
+      {
+        "typeName": "AtlasGlossaryCategory",
+        "attributes": {
+          "terms": [
+            {
+              "guid": "828d8571-a4fc-42ed-8d47-62377384570c",
+              "typeName": "AtlasGlossaryTerm",
+              "attributes": {
+                "name": "test-term"
+              },
+              "uniqueAttributes": {
+                "qualifiedName": "hGvqXNi2L68JiPaAd2NXk@BHjy6jlRgnusXmpYJDxV1"
+              }
+            }
+          ],
+          "qualifiedName": "O22GldBLInkycVX1b525p@BHjy6jlRgnusXmpYJDxV1",
+          "anchor": {
+            "guid": "fb48e605-b848-43a0-963e-d6cd93e9bda1",
+            "typeName": "AtlasGlossary",
+            "attributes": {
+              "name": "test-glossary"
+            },
+            "uniqueAttributes": {
+              "qualifiedName": "BHjy6jlRgnusXmpYJDxV1"
+            }
+          },
+          "name": "test-cat-1-1",
+          "parentCategory": {
+            "guid": "ea324959-050a-4b6f-914b-737bda68e58b",
+            "typeName": "AtlasGlossaryCategory",
+            "attributes": {
+              "name": "test-cat-1"
+            },
+            "uniqueAttributes": {
+              "qualifiedName": "b3fbkneFAeVevNziw1bDh@BHjy6jlRgnusXmpYJDxV1"
+            }
+          }
+        },
+        "guid": "9f7a35f4-8d37-4273-81ec-c497a83a2472",
+        "status": "ACTIVE",
+        "displayText": "test-cat-1-1",
+        "classificationNames": [],
+        "classifications": [],
+        "meaningNames": [],
+        "meanings": [],
+        "isIncomplete": false,
+        "labels": [],
+        "createdBy": "test.test",
+        "updatedBy": "test.test",
+        "createTime": 1712917818815,
+        "updateTime": 1713257349051
+      }
+    ],
+    "approximateCount": 1
+}

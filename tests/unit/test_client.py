@@ -91,6 +91,7 @@ USER_LIST_JSON = "user_list.json"
 USER_GROUPS_JSON = "user_groups.json"
 USER_RESPONSES_DIR = TEST_DATA_DIR / "user_responses"
 AGGREGATIONS_NULL_RESPONSES_DIR = "aggregations_null_value.json"
+GLOSSARY_CATEGORY_BY_NAME_JSON = "glossary_category_by_name.json"
 SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_responses"
 USER_LIST_JSON = "user_list.json"
 GET_BY_GUID_JSON = "get_by_guid.json"
@@ -200,6 +201,11 @@ def retrieve_minimal_json():
 @pytest.fixture()
 def type_def_get_by_name_json():
     return load_json(TYPEDEF_RESPONSES_DIR, TYPEDEF_GET_BY_NAME_JSON)
+
+
+@pytest.fixture()
+def glossary_category_by_name_json():
+    return load_json(SEARCH_RESPONSES_DIR, GLOSSARY_CATEGORY_BY_NAME_JSON)
 
 
 @pytest.mark.parametrize(
@@ -873,6 +879,63 @@ def test_find_category_by_name():
             attributes=attributes,
         )
         assert mock_find_category_fast_by_name.return_value == category
+
+
+@patch.object(AssetClient, "find_glossary_by_name")
+def test_find_category_by_name_qn_guid_correctly_populated(
+    mock_find_glossary_by_name, mock_api_caller, glossary_category_by_name_json
+):
+
+    client = AssetClient(mock_api_caller)
+    mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
+    mock_api_caller._call_api.side_effect = [glossary_category_by_name_json]
+
+    category = client.find_category_by_name(
+        name="test-cat-1-1",
+        glossary_name="test-glossary",
+        attributes=["terms", "anchor", "parentCategory"],
+    )[0]
+    category_json = glossary_category_by_name_json["entities"][0]
+
+    assert category
+    assert category_json
+    assert category.guid == category_json.get("guid")
+    category_json_attributes = category_json.get("attributes")
+    assert category_json_attributes
+    assert category.name == category_json_attributes.get("name")
+    assert category.qualified_name == category_json_attributes.get("qualifiedName")
+
+    # Glossary
+    assert category.anchor.guid == category_json_attributes.get("anchor").get("guid")
+    assert category.anchor.name == category_json_attributes.get("anchor").get(
+        "attributes"
+    ).get("name")
+    assert category.anchor.qualified_name == category_json_attributes.get("anchor").get(
+        "uniqueAttributes"
+    ).get("qualifiedName")
+
+    # Glossary category
+    assert category.parent_category.guid == category_json_attributes.get(
+        "parentCategory"
+    ).get("guid")
+    assert category.parent_category.name == category_json_attributes.get(
+        "parentCategory"
+    ).get("attributes").get("name")
+    assert category.parent_category.qualified_name == category_json_attributes.get(
+        "parentCategory"
+    ).get("uniqueAttributes").get("qualifiedName")
+
+    # Glossary term
+    assert category.terms[0].guid == category_json_attributes.get("terms")[0].get(
+        "guid"
+    )
+    assert category.terms[0].name == category_json_attributes.get("terms")[0].get(
+        "attributes"
+    ).get("name")
+    assert category.terms[0].qualified_name == category_json_attributes.get("terms")[
+        0
+    ].get("uniqueAttributes").get("qualifiedName")
+    mock_api_caller.reset_mock()
 
 
 @pytest.mark.parametrize(
