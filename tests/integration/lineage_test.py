@@ -17,8 +17,12 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
-from pyatlan.model.assets.asset00 import ColumnProcess
-from pyatlan.model.enums import AtlanConnectorType, EntityStatus, LineageDirection
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    CertificateStatus,
+    EntityStatus,
+    LineageDirection,
+)
 from pyatlan.model.lineage import FluentLineage, LineageRequest
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Prefix, Term
 from tests.integration.client import TestId, delete_asset
@@ -39,6 +43,8 @@ COLUMN_NAME5 = f"{MODULE_NAME}5"
 COLUMN_NAME6 = f"{MODULE_NAME}6"
 
 CONNECTOR_TYPE = AtlanConnectorType.VERTICA
+CERTIFICATE_STATUS = CertificateStatus.VERIFIED
+CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 
 
 @pytest.fixture(scope="module")
@@ -66,6 +72,8 @@ def create_database(client: AtlanClient, connection, database_name: str):
     to_create = Database.create(
         name=database_name, connection_qualified_name=connection.qualified_name
     )
+    to_create.certificate_status = CERTIFICATE_STATUS
+    to_create.certificate_status_message = CERTIFICATE_MESSAGE
     result = client.asset.save(to_create)
     return result.assets_created(asset_type=Database)[0]
 
