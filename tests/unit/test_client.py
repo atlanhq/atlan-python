@@ -1917,3 +1917,13 @@ class TestBulkRequest:
         assert remove_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
         assert "anchor" not in request_json["attributes"]
+
+    def test_asset_attribute_none_assignment(self):
+        table1 = Table.updater(name="test-table-1", qualified_name="test-qn-1")
+        table1.certificate_status = None
+        table1.certificate_status_message = None
+        request = BulkRequest(entities=[table1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert request_json["attributes"]["certificateStatus"] is None
+        assert request_json["attributes"]["certificateStatusMessage"] is None
