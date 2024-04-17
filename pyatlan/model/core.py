@@ -249,10 +249,10 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
 
         # Initialize set for attributes to exclude from serialization
         exclude_attributes = set()
-        # Manually need to set these to "None" so that we can exclude
+        # Manually need to set these to "{}" so that we can exclude
         # them from the request playload when they're not set by the user
-        asset.remove_relationship_attributes = None
-        asset.append_relationship_attributes = None
+        asset.remove_relationship_attributes = {}
+        asset.append_relationship_attributes = {}
         # Process relationship attributes and update exclusion set
         for attribute in asset.attributes:
             exclude_attributes.update(
@@ -308,13 +308,13 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
 
             # Update asset based on processed relationship attributes
             if remove_attributes:
-                asset.remove_relationship_attributes = {
-                    to_camel_case(attribute_name): remove_attributes
-                }
+                asset.remove_relationship_attributes.update(
+                    {to_camel_case(attribute_name): remove_attributes}
+                )
             if append_attributes:
-                asset.append_relationship_attributes = {
-                    to_camel_case(attribute_name): append_attributes
-                }
+                asset.append_relationship_attributes.update(
+                    {to_camel_case(attribute_name): append_attributes}
+                )
             if replace_attributes:
                 setattr(asset, attribute_name, replace_attributes)
 
