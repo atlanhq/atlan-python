@@ -1,3 +1,10 @@
+## 2.1.5 (April 18, 2024)
+
+### Bug fixes
+
+- Fixed an issue where explicit assignment of `None` to asset attributes in `BulkRequest` within the `client.asset.save()` method resulted in exclusion from the request payload.
+- Fixed issues with **multiple remove/append relationships** where values were being overwritten inside append/remove dictionaries.
+
 ## 2.1.4 (April 16, 2024)
 
 ### New features
