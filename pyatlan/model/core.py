@@ -253,8 +253,8 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         # them from the request playload when they're not set by the user
         asset.remove_relationship_attributes = {}
         asset.append_relationship_attributes = {}
-        # Process relationship attributes and update exclusion set
-        for attribute in asset.attributes:
+        # Process relationship attributes set by the user and update exclusion set
+        for attribute in asset.attributes.__fields_set__:
             exclude_attributes.update(
                 cls.process_relationship_attributes(asset, attribute)
             )
@@ -291,9 +291,7 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         replace_attributes = []
         exclude_attributes = set()
 
-        attribute_name, attribute_value = attribute[0], getattr(
-            asset, attribute[0], None
-        )
+        attribute_name, attribute_value = attribute, getattr(asset, attribute, None)
 
         # Process list of relationship attributes
         if attribute_value and isinstance(attribute_value, list):
