@@ -275,17 +275,39 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         if not isinstance(asset, Asset):
             return asset
 
-        # Manually need to set these to "None" so that we can exclude
+        # Initialize set for attributes to exclude from serialization
+        exclude_attributes = set()
+        # Manually need to set these to "{}" so that we can exclude
         # them from the request playload when they're not set by the user
-        asset.remove_relationship_attributes = None
-        asset.append_relationship_attributes = None
-        for attribute in asset.attributes:
-            asset = cls.process_relationship_attributes(asset, attribute)
-
-        # Flush custom metadata
+        asset.remove_relationship_attributes = {}
+        asset.append_relationship_attributes = {}
+        # Process relationship attributes set by the user and update exclusion set
+        for attribute in asset.attributes.__fields_set__:
+            exclude_attributes.update(
+                cls.process_relationship_attributes(asset, attribute)
+            )
+        # Determine relationship attributes to exclude
+        # https://docs.pydantic.dev/1.10/usage/exporting_models/#advanced-include-and-exclude
+        exclude_relationship_attributes = {
+            key: True
+            for key in [
+                "remove_relationship_attributes",
+                "append_relationship_attributes",
+            ]
+            if not getattr(asset, key)
+        }
+        if exclude_attributes:
+            exclude_relationship_attributes = {
+                **{"attributes": exclude_attributes},
+                **exclude_relationship_attributes,
+            }
         asset.flush_custom_metadata()
         return asset.__class__(
-            **asset.dict(by_alias=True, exclude_unset=True, exclude_none=True)
+            **asset.dict(
+                by_alias=True,
+                exclude_unset=True,
+                exclude=exclude_relationship_attributes,
+            )
         )
 
     @classmethod
@@ -295,10 +317,9 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         append_attributes = []
         remove_attributes = []
         replace_attributes = []
+        exclude_attributes = set()
 
-        attribute_name, attribute_value = attribute[0], getattr(
-            asset, attribute[0], None
-        )
+        attribute_name, attribute_value = attribute, getattr(asset, attribute, None)
 
         # Process list of relationship attributes
         if attribute_value and isinstance(attribute_value, list):
@@ -313,40 +334,40 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
 
             # Update asset based on processed relationship attributes
             if remove_attributes:
-                asset.remove_relationship_attributes = {
-                    to_camel_case(attribute_name): remove_attributes
-                }
+                asset.remove_relationship_attributes.update(
+                    {to_camel_case(attribute_name): remove_attributes}
+                )
             if append_attributes:
-                asset.append_relationship_attributes = {
-                    to_camel_case(attribute_name): append_attributes
-                }
+                asset.append_relationship_attributes.update(
+                    {to_camel_case(attribute_name): append_attributes}
+                )
             if replace_attributes:
                 setattr(asset, attribute_name, replace_attributes)
 
-            # If only remove or append attributes are present without any replace attributes,
-            # set the attribute to `None` to exclude it from the bulk request payload
-            # This avoids including unwanted replace attributes that could alter the request behavior
+            # If 'remove', 'append', or both attributes are present and there are no 'replace' attributes,
+            # add the attribute to the set to exclude it from the bulk request payload.
+            # This prevents including unwanted 'replace' attributes that could alter the request behavior.
             if (remove_attributes or append_attributes) and not replace_attributes:
-                setattr(asset, attribute_name, None)
+                exclude_attributes.add(attribute_name)
 
         # Process single relationship attribute
         elif attribute_value and isinstance(attribute_value, Asset):
             if attribute_value.semantic == SaveSemantic.REMOVE:
-                # Set the replace attribute to "None" so that we exclude it
-                # from the request payload's "attributes" property
-                # We only want to pass this attribute under
-                # "remove_relationship_attributes," not both
-                setattr(asset, attribute_name, None)
+                # Add the replace attribute to the set to exclude it
+                # from the "attributes" property in the request payload.
+                # We only want to include this attribute under
+                # "remove_relationship_attributes", not both.
+                exclude_attributes.add(attribute_name)
                 asset.remove_relationship_attributes = {
                     to_camel_case(attribute_name): attribute_value
                 }
             elif attribute_value.semantic == SaveSemantic.APPEND:
-                # Set the replace attribute to "None" so that we exclude it
-                # from the request payload's "attributes" property
-                # We only want to pass this attribute under
-                # "append_relationship_attributes," not both
-                setattr(asset, attribute_name, None)
+                # Add the replace attribute to the set to exclude it
+                # from the "attributes" property in the request payload.
+                # We only want to include this attribute under
+                # "append_relationship_attributes", not both.
+                exclude_attributes.add(attribute_name)
                 asset.append_relationship_attributes = {
                     to_camel_case(attribute_name): attribute_value
                 }
-        return asset
+        return exclude_attributes

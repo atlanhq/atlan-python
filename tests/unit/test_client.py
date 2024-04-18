@@ -1741,6 +1741,7 @@ class TestBulkRequest:
     SEE_ALSO = "seeAlso"
     REMOVE = "removeRelationshipAttributes"
     APPEND = "appendRelationshipAttributes"
+    PREFERRED_TO_TERMS = "preferredToTerms"
 
     @pytest.fixture(scope="class")
     def glossary(self):
@@ -1797,6 +1798,35 @@ class TestBulkRequest:
         assert self.APPEND in request_json
         assert self.SEE_ALSO in request_json[self.APPEND]
         append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
+        assert self.REMOVE not in request_json
+
+        # Test replace and append (list) with multiple relationships
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        term1.attributes.preferred_to_terms = [
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.SEE_ALSO in request_json["attributes"]
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 1
+        assert replace_attributes[0]["guid"] == term2.guid
+        assert self.APPEND in request_json
+        assert self.SEE_ALSO in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
+        append_attributes = request_json[self.APPEND][self.PREFERRED_TO_TERMS]
         assert len(append_attributes) == 1
         assert append_attributes[0]["guid"] == term3.guid
         assert self.REMOVE not in request_json
@@ -1869,6 +1899,7 @@ class TestBulkRequest:
 
         # Test empty (list)
         term1.attributes.see_also = []
+        term1.attributes.preferred_to_terms = []
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
@@ -1917,3 +1948,13 @@ class TestBulkRequest:
         assert remove_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
         assert "anchor" not in request_json["attributes"]
+
+    def test_asset_attribute_none_assignment(self):
+        table1 = Table.updater(name="test-table-1", qualified_name="test-qn-1")
+        table1.certificate_status = None
+        table1.certificate_status_message = None
+        request = BulkRequest(entities=[table1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert request_json["attributes"]["certificateStatus"] is None
+        assert request_json["attributes"]["certificateStatusMessage"] is None
