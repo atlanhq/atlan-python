@@ -1517,7 +1517,9 @@ class TestBulkRequest:
         assert "anchor" not in request_json["attributes"]
 
     def test_asset_attribute_none_assignment(self):
-        table1 = Table.updater(name="test-table-1", qualified_name="test-qn-1")
+        table1 = Table.create_for_modification(
+            name="test-table-1", qualified_name="test-qn-1"
+        )
         table1.certificate_status = None
         table1.certificate_status_message = None
         request = BulkRequest(entities=[table1])

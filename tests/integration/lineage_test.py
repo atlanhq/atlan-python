@@ -9,6 +9,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
     Column,
+    ColumnProcess,
     Connection,
     Database,
     MaterialisedView,
