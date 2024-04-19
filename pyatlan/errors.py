@@ -500,6 +500,13 @@ class ErrorCode(Enum):
         + "repository providing context in which this error occurred.",
         InvalidRequestError,
     )
+    SSO_GROUP_MAPPING_ALREADY_EXISTS = (
+        400,
+        "ATLAN-PYTHON-400-058",
+        "SSO group mapping already exists between {0} (Atlan group) <-> {1} (SSO group).",
+        "You can use SSOClient.update_group_mapping() to update the existing group mapping.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
