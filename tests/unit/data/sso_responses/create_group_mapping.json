@@ -1,0 +1,13 @@
+{
+    "name": "27b60291-67e1-44f5-a1fc-8a77fa96d78e--1713518829204",
+    "identityProviderMapper": "saml-group-idp-mapper",
+    "identityProviderAlias": "auth0",
+    "config": {
+        "are.attribute.values.regex": "",
+        "attribute.name": "memberOf",
+        "attribute.value": "test-sso-group",
+        "attributes": "[]",
+        "group": "test-atlan-group",
+        "syncMode": "FORCE"
+    }
+}
