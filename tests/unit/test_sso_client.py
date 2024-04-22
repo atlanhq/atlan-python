@@ -205,7 +205,8 @@ def test_sso_get_all_group_mapping(
     mock_api_caller._call_api.side_effect = [get_all_group_mapping_json]
     client = SSOClient(client=mock_api_caller)
     response = client.get_all_group_mappings(sso_alias="auth0")
-    assert response == parse_obj_as(List[SSOMapper], get_all_group_mapping_json)
+    # Only returns group mapping
+    assert response == parse_obj_as(List[SSOMapper], [get_all_group_mapping_json[2]])
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 

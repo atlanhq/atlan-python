@@ -152,7 +152,13 @@ class SSOClient:
         raw_json = self._client._call_api(
             GET_ALL_SSO_GROUP_MAPPING.format_path({"sso_alias": sso_alias})
         )
-        return self._parse_sso_mapper(raw_json)
+        # Since `raw_json` includes both user and group mappings
+        group_mappings = [
+            mapping
+            for mapping in raw_json
+            if mapping["identityProviderMapper"] == SSOClient.IDP_GROUP_MAPPER
+        ]
+        return self._parse_sso_mapper(group_mappings)
 
     @validate_arguments
     def get_group_mapping(self, sso_alias: str, group_map_id: str) -> SSOMapper:
