@@ -1,3 +1,10 @@
+## 2.1.6 (April 23, 2024)
+
+### New features
+
+- Adds support for SSO group mapping.
+- Adds `AtlanSSO` to enumerate the options for supported Atlan's SSO providers.
+
 ## 2.1.5 (April 18, 2024)
 
 ### Bug fixes
