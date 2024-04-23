@@ -94,6 +94,14 @@ class AssetFilterGroup(str, Enum):
     CERTIFICATE = "certificateStatus"
 
 
+class AtlanSSO(str, Enum):
+    GOOGLE = "google"
+    AZURE_AD = "azure"
+    OKTA = "okta"
+    JUMPCLOUD = "jumpcloud"
+    ONELOGIN = "onelogin"
+
+
 class AtlanComparisonOperator(str, Enum):
     LT = "<"
     GT = ">"

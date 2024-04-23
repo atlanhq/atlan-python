@@ -38,6 +38,7 @@ from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
+from pyatlan.client.sso import SSOClient
 from pyatlan.client.task import TaskClient
 from pyatlan.client.token import TokenClient
 from pyatlan.client.typedef import TypeDefClient
@@ -143,6 +144,7 @@ class AtlanClient(BaseSettings):
     _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
     _query_client: Optional[QueryClient] = PrivateAttr(default=None)
     _task_client: Optional[TaskClient] = PrivateAttr(default=None)
+    _sso_client: Optional[SSOClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -263,6 +265,12 @@ class AtlanClient(BaseSettings):
         if self._task_client is None:
             self._task_client = TaskClient(client=self)
         return self._task_client
+
+    @property
+    def sso(self) -> SSOClient:
+        if self._sso_client is None:
+            self._sso_client = SSOClient(client=self)
+        return self._sso_client
 
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
