@@ -6,6 +6,7 @@ from typing import List
 from unittest.mock import Mock
 
 import pytest
+from re import escape
 from pydantic.v1 import ValidationError, parse_obj_as
 
 from pyatlan.client.common import ApiCaller
@@ -98,9 +99,8 @@ def test_sso_get_group_mapping_wrong_params_raises_validation_error(
 def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
     sso_alias, error_msg
 ):
-    with pytest.raises(ValidationError) as err:
+    with pytest.raises(ValidationError, match=error_msg):
         SSOClient.get_all_group_mappings(sso_alias=sso_alias)
-    assert error_msg in str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -117,11 +117,10 @@ def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
 def test_sso_create_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, sso_group_name, error_msg
 ):
-    with pytest.raises(ValidationError) as err:
+    with pytest.raises(ValidationError, match=error_msg):
         SSOClient.create_group_mapping(
             sso_alias=sso_alias, atlan_group=atlan_group, sso_group_name=sso_group_name
         )
-    assert error_msg in str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -159,14 +158,13 @@ def test_sso_create_group_mapping_wrong_params_raises_validation_error(
 def test_sso_update_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, group_map_id, sso_group_name, error_msg
 ):
-    with pytest.raises(ValidationError) as err:
+    with pytest.raises(ValidationError, match=error_msg):
         SSOClient.update_group_mapping(
             sso_alias=sso_alias,
             atlan_group=atlan_group,
             group_map_id=group_map_id,
             sso_group_name=sso_group_name,
         )
-    assert error_msg in str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -181,9 +179,8 @@ def test_sso_update_group_mapping_wrong_params_raises_validation_error(
 def test_sso_delete_group_mapping_wrong_params_raises_validation_error(
     sso_alias, group_map_id, error_msg
 ):
-    with pytest.raises(ValidationError) as err:
+    with pytest.raises(ValidationError, match=error_msg):
         SSOClient.delete_group_mapping(sso_alias=sso_alias, group_map_id=group_map_id)
-    assert error_msg in str(err.value)
 
 
 def test_sso_get_group_mapping(
@@ -222,17 +219,18 @@ def test_sso_create_group_mapping_invalid_request_error(
     existing_atlan_group.alias = "existing_atlan_group"
     existing_atlan_group.id = "atlan-group-guid-1234"
     client = SSOClient(client=mock_api_caller)
-
-    with pytest.raises(InvalidRequestError) as err:
+    expected_error = escape(
+        (
+            f"ATLAN-PYTHON-400-058 SSO group mapping already exists between "
+            f"{existing_atlan_group.alias} (Atlan group) <-> test-sso-group (SSO group)"
+        )
+    )
+    with pytest.raises(InvalidRequestError, match=expected_error):
         client.create_group_mapping(
             sso_alias="auth0",
             atlan_group=existing_atlan_group,
             sso_group_name="sso-group",
         )
-    assert (
-        f"ATLAN-PYTHON-400-058 SSO group mapping already exists between "
-        f"{existing_atlan_group.alias} (Atlan group) <-> test-sso-group (SSO group)"
-    ) in str(err.value)
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
