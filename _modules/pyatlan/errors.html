@@ -998,6 +998,13 @@
         <span class="o">+</span> <span class="s2">&quot;repository providing context in which this error occurred.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">SSO_GROUP_MAPPING_ALREADY_EXISTS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-058&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SSO group mapping already exists between </span><span class="si">{0}</span><span class="s2"> (Atlan group) &lt;-&gt; </span><span class="si">{1}</span><span class="s2"> (SSO group).&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;You can use SSOClient.update_group_mapping() to update the existing group mapping.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
