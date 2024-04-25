@@ -2,11 +2,11 @@
 # Copyright 2024 Atlan Pte. Ltd.
 from json import load
 from pathlib import Path
+from re import escape
 from typing import List
 from unittest.mock import Mock
 
 import pytest
-from re import escape
 from pydantic.v1 import ValidationError, parse_obj_as
 
 from pyatlan.client.common import ApiCaller

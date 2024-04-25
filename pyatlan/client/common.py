@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Generator, Protocol, runtime_checkable, Any
+from typing import Any, Generator, Protocol, runtime_checkable
 
 from urllib3.util.retry import Retry
 
