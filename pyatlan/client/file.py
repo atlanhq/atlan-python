@@ -23,7 +23,7 @@ class FileClient:
         self._client = client
 
     def _detect_cloud_storage(self, url: str) -> str:
-        if "amazonaws.com" in url:
+        if PresignedURLResponse.CloudStorageIdentifier.S3 in url:
             return PresignedURLResponse.CloudStorageIdentifier.S3.name
         else:
             return PresignedURLResponse.CloudStorageIdentifier.UNSUPPORTED.name
