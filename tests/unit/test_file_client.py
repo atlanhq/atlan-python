@@ -172,7 +172,7 @@ def test_file_client_get_presigned_url(mock_api_caller, presigned_url):
     ]
     client = FileClient(mock_api_caller)
     # AWS S3
-    response = client.get_presigned_url(
+    response = client.generate_presigned_url(
         request=PresignedURLRequest(
             key="some-directory/test.png",
             expiry="60s",
@@ -184,7 +184,7 @@ def test_file_client_get_presigned_url(mock_api_caller, presigned_url):
     assert response.cloud_storage == PresignedURLResponse.CloudStorageIdentifier.S3.name
 
     # Unsupported cloud storage
-    response = client.get_presigned_url(
+    response = client.generate_presigned_url(
         request=PresignedURLRequest(
             key="some-directory/test.png",
             expiry="60s",

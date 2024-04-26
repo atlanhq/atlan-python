@@ -437,7 +437,7 @@ TEST_USER_CLIENT_METHODS = {
 }
 
 TEST_FILE_CLIENT_METHODS = {
-    "get_presigned_url": [
+    "generate_presigned_url": [
         ([123], "request\n  value is not a valid dict"),
         ([None], "none is not an allowed value"),
     ],

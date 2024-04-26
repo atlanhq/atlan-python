@@ -28,7 +28,7 @@ DOWNLOAD_FILE_PATH = str(TEST_DATA_DIR / "file_requests" / DOWNLOAD_FILE_NAME)
 @pytest.fixture(scope="module")
 def s3_put_presigned_url_response(client: AtlanClient):
     # Presigned URL for upload
-    return client.files.get_presigned_url(
+    return client.files.generate_presigned_url(
         request=PresignedURLRequest(
             key=S3_UPLOAD_FILE_PATH,
             expiry=URL_EXPIRY,
@@ -40,7 +40,7 @@ def s3_put_presigned_url_response(client: AtlanClient):
 @pytest.fixture(scope="module")
 def s3_get_presigned_url_response(client: AtlanClient):
     # Presigned URL for download
-    return client.files.get_presigned_url(
+    return client.files.generate_presigned_url(
         request=PresignedURLRequest(
             key=S3_UPLOAD_FILE_PATH,
             expiry=URL_EXPIRY,
