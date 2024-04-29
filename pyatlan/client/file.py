@@ -22,7 +22,8 @@ class FileClient:
             )
         self._client = client
 
-    def _detect_cloud_storage(self, url: str) -> str:
+    @staticmethod
+    def _detect_cloud_storage(url: str) -> str:
         if PresignedURLResponse.CloudStorageIdentifier.S3 in url:
             return PresignedURLResponse.CloudStorageIdentifier.S3.name
         else:
