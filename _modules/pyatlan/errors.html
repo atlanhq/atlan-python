@@ -1005,6 +1005,27 @@
         <span class="s2">&quot;You can use SSOClient.update_group_mapping() to update the existing group mapping.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">INVALID_UPLOAD_FILE_PATH</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-059&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to upload file, Error: </span><span class="si">{0}</span><span class="s2">, Path: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Please check the provided file path for upload.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNABLE_TO_DOWNLOAD_FILE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-060&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to download file, Error: </span><span class="si">{0}</span><span class="s2">, Path: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Please check the provided download file type and path.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNSUPPORTED_PRESIGNED_URL</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-061&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Provided presigned URL&#39;s cloud provider storage is currently not supported for file uploads.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Please raise a feature request on the Python SDK GitHub to add support for it.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
