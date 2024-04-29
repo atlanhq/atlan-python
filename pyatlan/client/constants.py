@@ -503,3 +503,24 @@ DELETE_SSO_GROUP_MAPPING = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+FILES_API = "files"
+PRESIGNED_URL = API(
+    FILES_API + "/presignedUrl",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PRESIGNED_URL_UPLOAD = API(
+    "{presigned_url_put}",
+    HTTPMethod.PUT,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PRESIGNED_URL_DOWNLOAD = API(
+    "{presigned_url_get}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+    consumes=EVENT_STREAM,
+    produces=EVENT_STREAM,
+)

@@ -507,6 +507,27 @@ class ErrorCode(Enum):
         "You can use SSOClient.update_group_mapping() to update the existing group mapping.",
         InvalidRequestError,
     )
+    INVALID_UPLOAD_FILE_PATH = (
+        400,
+        "ATLAN-PYTHON-400-059",
+        "Unable to upload file, Error: {0}, Path: {1}",
+        "Please check the provided file path for upload.",
+        InvalidRequestError,
+    )
+    UNABLE_TO_DOWNLOAD_FILE = (
+        400,
+        "ATLAN-PYTHON-400-060",
+        "Unable to download file, Error: {0}, Path: {1}",
+        "Please check the provided download file type and path.",
+        InvalidRequestError,
+    )
+    UNSUPPORTED_PRESIGNED_URL = (
+        400,
+        "ATLAN-PYTHON-400-061",
+        "Provided presigned URL's cloud provider storage is currently not supported for file uploads.",
+        "Please raise a feature request on the Python SDK GitHub to add support for it.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
