@@ -17,12 +17,7 @@ class PresignedURLRequest(AtlanObject):
         PUT = "PUT"
 
 
-class PresignedURLResponse(AtlanObject):
-    url: str
-    cloud_storage: str
-
-    class CloudStorageIdentifier(str, Enum):
-        S3 = "amazonaws.com"
-        GCS = "storage.googleapis.com"
-        AZURE_BLOB = "blob.core.windows.net"
-        UNSUPPORTED = "unsupported"
+class CloudStorageIdentifier(str, Enum):
+    S3 = "amazonaws.com"
+    GCS = "storage.googleapis.com"
+    AZURE_BLOB = "blob.core.windows.net"

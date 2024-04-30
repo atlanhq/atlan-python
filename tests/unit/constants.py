@@ -1,5 +1,4 @@
 from pyatlan.model.assets import AtlasGlossary
-from pyatlan.model.file import PresignedURLResponse
 
 TEST_ASSET_CLIENT_METHODS = {
     "find_personas_by_name": [
@@ -442,26 +441,26 @@ TEST_FILE_CLIENT_METHODS = {
         ([None], "none is not an allowed value"),
     ],
     "upload_file": [
-        ([[123], "file-path"], "url_response\n  value is not a valid dict"),
+        ([[123], "file-path"], "presigned_url\n  str type expected"),
         ([None, "file-path"], "none is not an allowed value"),
         (
-            [PresignedURLResponse(url="test-url", cloud_storage="S3"), [123]],
+            ["test-url", [123]],
             "file_path\n  str type expected",
         ),
         (
-            [PresignedURLResponse(url="test-url", cloud_storage="S3"), None],
+            ["test-url", None],
             "none is not an allowed value",
         ),
     ],
     "download_file": [
-        ([[123], "file-path"], "url_response\n  value is not a valid dict"),
+        ([[123], "file-path"], "presigned_url\n  str type expected"),
         ([None, "file-path"], "none is not an allowed value"),
         (
-            [PresignedURLResponse(url="test-url", cloud_storage="S3"), [123]],
+            ["test-url", [123]],
             "file_path\n  str type expected",
         ),
         (
-            [PresignedURLResponse(url="test-url", cloud_storage="S3"), None],
+            ["test-url", None],
             "none is not an allowed value",
         ),
     ],
