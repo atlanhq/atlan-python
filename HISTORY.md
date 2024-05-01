@@ -1,3 +1,9 @@
+## 2.1.7 (April 30, 2024)
+
+### New features
+
+- Adds `FileClient` for uploading and downloading files from Atlan's tenant object storage via presigned URLs.
+
 ## 2.1.6 (April 23, 2024)
 
 ### New features
