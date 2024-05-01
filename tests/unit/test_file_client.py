@@ -12,7 +12,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.file import FileClient
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.file import PresignedURLRequest, PresignedURLResponse
+from pyatlan.model.file import PresignedURLRequest
 from tests.unit.constants import TEST_FILE_CLIENT_METHODS
 
 TEST_DATA_DIR = Path(__file__).parent / "data"
@@ -46,18 +46,10 @@ def mock_api_caller():
 
 
 @pytest.fixture(scope="module")
-def presigned_url():
+def s3_presigned_url():
     return (
         "https://test-vcluster.amazonaws.com/some-directory/test.png"
         "?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240425T09240"
-    )
-
-
-@pytest.fixture(scope="module")
-def presigned_url_response(presigned_url):
-    return PresignedURLResponse(
-        url=presigned_url,
-        cloud_storage=PresignedURLResponse.CloudStorageIdentifier.S3.name,
     )
 
 
@@ -113,16 +105,13 @@ def test_file_client_methods_validation_error(client, method, params):
     ],
 )
 def test_file_client_upload_file_raises_invalid_request_error(
-    mock_api_caller, file_path, expected_error
+    mock_api_caller, s3_presigned_url, file_path, expected_error
 ):
     client = FileClient(client=mock_api_caller)
 
     with pytest.raises(InvalidRequestError, match=expected_error):
         client.upload_file(
-            url_response=PresignedURLResponse(
-                url="test-url",
-                cloud_storage=PresignedURLResponse.CloudStorageIdentifier.UNSUPPORTED.name,
-            ),
+            presigned_url="test-url",
             file_path=file_path,
         )
 
@@ -144,16 +133,13 @@ def test_file_client_download_file_raises_invalid_request_error(
 ):
     with pytest.raises(InvalidRequestError, match=expected_error):
         client.files.download_file(
-            url_response=PresignedURLResponse(
-                url="test-url",
-                cloud_storage=PresignedURLResponse.CloudStorageIdentifier.UNSUPPORTED.name,
-            ),
+            presigned_url="test-url",
             file_path=file_path,
         )
 
 
 def test_file_client_download_file_invalid_format_raises_invalid_request_error(
-    client, presigned_url_response, mock_session_invalid
+    client, s3_presigned_url, mock_session_invalid
 ):
     expected_error = (
         "ATLAN-PYTHON-400-060 Unable to download file, "
@@ -161,17 +147,13 @@ def test_file_client_download_file_invalid_format_raises_invalid_request_error(
     )
     with pytest.raises(InvalidRequestError, match=expected_error):
         client.files.download_file(
-            url_response=presigned_url_response, file_path=DOWNLOAD_FILE_PATH
+            presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
         )
 
 
-def test_file_client_get_presigned_url(mock_api_caller, presigned_url):
-    mock_api_caller._call_api.side_effect = [
-        {"url": presigned_url},
-        {"url": "https://test-vcluster.cloud.com"},
-    ]
+def test_file_client_get_presigned_url(mock_api_caller, s3_presigned_url):
+    mock_api_caller._call_api.side_effect = [{"url": s3_presigned_url}]
     client = FileClient(mock_api_caller)
-    # AWS S3
     response = client.generate_presigned_url(
         request=PresignedURLRequest(
             key="some-directory/test.png",
@@ -180,42 +162,24 @@ def test_file_client_get_presigned_url(mock_api_caller, presigned_url):
         )
     )
     assert mock_api_caller._call_api.call_count == 1
-    assert response.url == presigned_url
-    assert response.cloud_storage == PresignedURLResponse.CloudStorageIdentifier.S3.name
-
-    # Unsupported cloud storage
-    response = client.generate_presigned_url(
-        request=PresignedURLRequest(
-            key="some-directory/test.png",
-            expiry="60s",
-            method=PresignedURLRequest.Method.GET,
-        )
-    )
-    assert mock_api_caller._call_api.call_count == 2
-    assert response.url == "https://test-vcluster.cloud.com"
-    assert (
-        response.cloud_storage
-        == PresignedURLResponse.CloudStorageIdentifier.UNSUPPORTED.name
-    )
+    assert response == s3_presigned_url
     mock_api_caller.reset_mock()
 
 
 @patch.object(AtlanClient, "_call_api_internal", return_value=None)
-def test_file_client_upload_file(
-    mock_call_api_internal, client, presigned_url_response
-):
+def test_file_client_upload_file(mock_call_api_internal, client, s3_presigned_url):
     client = FileClient(client=client)
-    client.upload_file(url_response=presigned_url_response, file_path=UPLOAD_FILE_PATH)
+    client.upload_file(presigned_url=s3_presigned_url, file_path=UPLOAD_FILE_PATH)
 
     assert mock_call_api_internal.call_count == 1
     mock_call_api_internal.reset_mock()
 
 
-def test_file_client_download_file(client, presigned_url_response, mock_session):
+def test_file_client_download_file(client, s3_presigned_url, mock_session):
     # Make sure the download file doesn't exist before downloading
     assert not os.path.exists(DOWNLOAD_FILE_PATH)
     response = client.files.download_file(
-        url_response=presigned_url_response, file_path=DOWNLOAD_FILE_PATH
+        presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
     )
     assert response == DOWNLOAD_FILE_PATH
     assert mock_session.request.call_count == 1

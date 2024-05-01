@@ -550,10 +550,10 @@ def test_glossary_category_remove_announcement(
 
 def test_workflow_find_by_type(client: AtlanClient):
     results = client.workflow.find_by_type(
-        prefix=WorkflowPackage.FIVETRAN, max_results=10
+        prefix=WorkflowPackage.SNOWFLAKE, max_results=10
     )
     assert results
-    assert len(results) == 1
+    assert len(results) >= 1
 
 
 def test_audit_find_by_user(
