@@ -168,7 +168,7 @@ def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
     size = 2
     dsl = DSL(
         query=Term.with_state("ACTIVE"),
-        post_filter=Term.with_type_name("Database"),
+        post_filter=Term.with_type_name("Table"),
         size=size,
     )
     request = IndexSearchRequest(

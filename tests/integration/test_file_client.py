@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.file import PresignedURLRequest, PresignedURLResponse
+from pyatlan.model.file import PresignedURLRequest
 from tests.integration.client import TestId
 
 MODULE_NAME = TestId.make_unique("TaskClient")
@@ -26,7 +26,7 @@ DOWNLOAD_FILE_PATH = str(TEST_DATA_DIR / "file_requests" / DOWNLOAD_FILE_NAME)
 
 
 @pytest.fixture(scope="module")
-def s3_put_presigned_url_response(client: AtlanClient):
+def s3_put_presigned_url(client: AtlanClient) -> str:
     # Presigned URL for upload
     return client.files.generate_presigned_url(
         request=PresignedURLRequest(
@@ -38,7 +38,7 @@ def s3_put_presigned_url_response(client: AtlanClient):
 
 
 @pytest.fixture(scope="module")
-def s3_get_presigned_url_response(client: AtlanClient):
+def s3_get_presigned_url(client: AtlanClient) -> str:
     # Presigned URL for download
     return client.files.generate_presigned_url(
         request=PresignedURLRequest(
@@ -50,32 +50,24 @@ def s3_get_presigned_url_response(client: AtlanClient):
 
 
 def test_file_client_presigned_url_upload(
-    client: AtlanClient, s3_put_presigned_url_response: PresignedURLResponse
+    client: AtlanClient, s3_put_presigned_url: str
 ):
-    assert s3_put_presigned_url_response.url
-    assert (
-        s3_put_presigned_url_response.cloud_storage
-        == PresignedURLResponse.CloudStorageIdentifier.S3.name
-    )
+    assert s3_put_presigned_url
     assert os.path.exists(UPLOAD_FILE_PATH)
 
     client.files.upload_file(
-        url_response=s3_put_presigned_url_response, file_path=UPLOAD_FILE_PATH
+        presigned_url=s3_put_presigned_url, file_path=UPLOAD_FILE_PATH
     )
 
 
 def test_file_client_presigned_url_download(
-    client: AtlanClient, s3_get_presigned_url_response: PresignedURLResponse
+    client: AtlanClient, s3_get_presigned_url: str
 ):
-    assert s3_get_presigned_url_response.url
-    assert (
-        s3_get_presigned_url_response.cloud_storage
-        == PresignedURLResponse.CloudStorageIdentifier.S3.name
-    )
+    assert s3_get_presigned_url
     assert not os.path.exists(DOWNLOAD_FILE_PATH)
 
     client.files.download_file(
-        url_response=s3_get_presigned_url_response, file_path=DOWNLOAD_FILE_PATH
+        presigned_url=s3_get_presigned_url, file_path=DOWNLOAD_FILE_PATH
     )
     assert os.path.exists(DOWNLOAD_FILE_PATH)
     assert imghdr.what(DOWNLOAD_FILE_PATH) == "png"
