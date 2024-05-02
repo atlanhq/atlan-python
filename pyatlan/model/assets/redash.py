@@ -53,8 +53,11 @@ class Redash(BI):
     class Attributes(BI.Attributes):
         redash_is_published: Optional[bool] = Field(default=None, description="")
 
-    attributes: "Redash.Attributes" = Field(
+    attributes: Redash.Attributes = Field(
         default_factory=lambda: Redash.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

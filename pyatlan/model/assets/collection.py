@@ -68,8 +68,11 @@ class Collection(Namespace):
         icon: Optional[str] = Field(default=None, description="")
         icon_type: Optional[IconType] = Field(default=None, description="")
 
-    attributes: "Collection.Attributes" = Field(
+    attributes: Collection.Attributes = Field(
         default_factory=lambda: Collection.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

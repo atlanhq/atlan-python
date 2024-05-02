@@ -17,6 +17,10 @@
     def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
         if self.attributes is None:
             self.attributes = self.Attributes()
+        {% if property_name == "parent_category" -%}
+        if not parent_category:
+            self.relationship_attributes = {"parentCategory": None}
+        {% endif -%}
         self.attributes.{{ attribute_name }} = {{ property_name }}
 
     {%- endfor %}

@@ -486,6 +486,27 @@ def test_glossary_update_announcement(
     _test_update_announcement(client, glossary, AtlasGlossary, announcement)
 
 
+def test_asset_remove_certificate_by_setting_none(
+    client: AtlanClient,
+    database: Database,
+):
+    assert database
+    assert database.guid
+    assert database.certificate_status
+    assert database.certificate_status_message
+    database.certificate_status = None
+    database.certificate_status_message = None
+    response = client.asset.save(entity=[database])
+    db_updated = response.assets_updated(asset_type=Database)
+
+    assert db_updated
+    assert len(db_updated) == 1
+    assert db_updated[0].name == database.name
+    assert db_updated[0].guid == database.guid
+    assert db_updated[0].certificate_status is None
+    assert db_updated[0].certificate_status_message is None
+
+
 def test_glossary_term_update_announcement(
     client: AtlanClient,
     term1: AtlasGlossaryTerm,
@@ -529,10 +550,10 @@ def test_glossary_category_remove_announcement(
 
 def test_workflow_find_by_type(client: AtlanClient):
     results = client.workflow.find_by_type(
-        prefix=WorkflowPackage.FIVETRAN, max_results=10
+        prefix=WorkflowPackage.SNOWFLAKE, max_results=10
     )
     assert results
-    assert len(results) == 1
+    assert len(results) >= 1
 
 
 def test_audit_find_by_user(

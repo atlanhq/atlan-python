@@ -7,11 +7,23 @@ import contextlib
 import copy
 import json
 import logging
+import shutil
 import uuid
 from contextvars import ContextVar
 from importlib.resources import read_text
 from types import SimpleNamespace
-from typing import ClassVar, Dict, Generator, List, Literal, Optional, Set, Type, Union
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Generator,
+    List,
+    Literal,
+    Optional,
+    Set,
+    Type,
+    Union,
+)
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -33,11 +45,13 @@ from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.credential import CredentialClient
+from pyatlan.client.file import FileClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
+from pyatlan.client.sso import SSOClient
 from pyatlan.client.task import TaskClient
 from pyatlan.client.token import TokenClient
 from pyatlan.client.typedef import TypeDefClient
@@ -143,6 +157,8 @@ class AtlanClient(BaseSettings):
     _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
     _query_client: Optional[QueryClient] = PrivateAttr(default=None)
     _task_client: Optional[TaskClient] = PrivateAttr(default=None)
+    _sso_client: Optional[SSOClient] = PrivateAttr(default=None)
+    _file_client: Optional[FileClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -264,10 +280,34 @@ class AtlanClient(BaseSettings):
             self._task_client = TaskClient(client=self)
         return self._task_client
 
+    @property
+    def sso(self) -> SSOClient:
+        if self._sso_client is None:
+            self._sso_client = SSOClient(client=self)
+        return self._sso_client
+
+    @property
+    def files(self) -> FileClient:
+        if self._file_client is None:
+            self._file_client = FileClient(client=self)
+        return self._file_client
+
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
 
-    def _call_api_internal(self, api, path, params, binary_data=None):
+    def _handle_file_download(self, raw_response: Any, file_path: str) -> str:
+        try:
+            download_file = open(file_path, "wb")
+            shutil.copyfileobj(raw_response, download_file)
+        except Exception as err:
+            raise ErrorCode.UNABLE_TO_DOWNLOAD_FILE.exception_with_parameters(
+                str((hasattr(err, "strerror") and err.strerror) or err), file_path
+            )
+        return file_path
+
+    def _call_api_internal(
+        self, api, path, params, binary_data=None, download_file_path=None
+    ):
         token = request_id_var.set(str(uuid.uuid4()))
         try:
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
@@ -279,6 +319,8 @@ class AtlanClient(BaseSettings):
                 response = self._session.request(
                     api.method.value, path, **params, stream=True
                 )
+                if download_file_path:
+                    return self._handle_file_download(response.raw, download_file_path)
             else:
                 response = self._session.request(api.method.value, path, **params)
             if response is not None:
@@ -353,16 +395,19 @@ class AtlanClient(BaseSettings):
         finally:
             request_id_var.reset(token)
 
+    def _api_logger(self, api: API, path: str):
+        LOGGER.debug("------------------------------------------------------")
+        LOGGER.debug("Call         : %s %s", api.method, path)
+        LOGGER.debug("Content-type_ : %s", api.consumes)
+        LOGGER.debug("Accept       : %s", api.produces)
+
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
     ):
         path = self._create_path(api)
         params = self._create_params(api, query_params, request_obj, exclude_unset)
         if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug("------------------------------------------------------")
-            LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type_ : %s", api.consumes)
-            LOGGER.debug("Accept       : %s", api.produces)
+            self._api_logger(api, path)
         return self._call_api_internal(api, path, params)
 
     def _create_path(self, api: API):
@@ -381,11 +426,22 @@ class AtlanClient(BaseSettings):
             api, query_params=None, request_obj=None, exclude_unset=True
         )
         if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug("------------------------------------------------------")
-            LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type_ : %s", api.consumes)
-            LOGGER.debug("Accept       : %s", api.produces)
+            self._api_logger(api, path)
         return self._call_api_internal(api, path, params, binary_data=post_data)
+
+    def _s3_presigned_url_file_upload(self, api: API, upload_file: Any):
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        return self._call_api_internal(api, path, params, binary_data=upload_file)
+
+    def _presigned_url_file_download(self, api: API, file_path: str):
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        return self._call_api_internal(api, path, params, download_file_path=file_path)
 
     def _create_params(
         self, api: API, query_params, request_obj, exclude_unset: bool = True
@@ -971,7 +1027,7 @@ class AtlanClient(BaseSettings):
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
-        propagation_only_through_lineage: bool = False,
+        restrict_propagation_through_hierarchy: bool = False,
     ) -> None:
         """Deprecated - use asset.add_atlan_tags() instead."""
         warn(
@@ -987,7 +1043,7 @@ class AtlanClient(BaseSettings):
             propagate=propagate,
             remove_propagation_on_delete=remove_propagation_on_delete,
             restrict_lineage_propagation=restrict_lineage_propagation,
-            propagation_only_through_lineage=propagation_only_through_lineage,
+            restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
         )
 
     @validate_arguments

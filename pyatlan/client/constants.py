@@ -486,3 +486,52 @@ DELETE_TYPE_DEFS = API(
 DELETE_TYPE_DEF_BY_NAME = API(
     TYPEDEF_BY_NAME, HTTPMethod.DELETE, HTTPStatus.NO_CONTENT, endpoint=EndPoint.ATLAS
 )
+
+SSO_API = "idp/"
+SSO_GROUP_MAPPER = SSO_API + "{sso_alias}/mappers"
+
+GET_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER + "/{group_map_id}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+GET_ALL_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+CREATE_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+UPDATE_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER + "/{group_map_id}",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+DELETE_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER + "/{group_map_id}/delete",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+FILES_API = "files"
+PRESIGNED_URL = API(
+    FILES_API + "/presignedUrl",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PRESIGNED_URL_UPLOAD = API(
+    "{presigned_url_put}",
+    HTTPMethod.PUT,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PRESIGNED_URL_DOWNLOAD = API(
+    "{presigned_url_get}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+    consumes=EVENT_STREAM,
+    produces=EVENT_STREAM,
+)

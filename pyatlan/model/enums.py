@@ -85,6 +85,23 @@ class AssetSidebarTab(str, Enum):
     SODA = "Soda"
 
 
+class AssetFilterGroup(str, Enum):
+    TERMS = "terms"
+    OWNERS = "owners"
+    USAGE = "usage"
+    TAGS = "__traitNames"
+    PROPERTIES = "properties"
+    CERTIFICATE = "certificateStatus"
+
+
+class AtlanSSO(str, Enum):
+    GOOGLE = "google"
+    AZURE_AD = "azure"
+    OKTA = "okta"
+    JUMPCLOUD = "jumpcloud"
+    ONELOGIN = "onelogin"
+
+
 class AtlanComparisonOperator(str, Enum):
     LT = "<"
     GT = ">"
@@ -280,6 +297,7 @@ class AtlanDeleteType(str, Enum):
 class AtlanIcon(str, Enum):
     ATLAN_TAG = "atlanTags"
     ATLAN_SHIELD = "atlanShield"
+    ATLAN_METADATA = "atlanMetadata"
     ADDRESS_BOOK = "PhAddressBook"
     AIR_TRAFFIC_CONTROL = "PhAirTrafficControl"
     AIRPLANE = "PhAirplane"

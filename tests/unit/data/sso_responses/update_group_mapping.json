@@ -1,0 +1,13 @@
+{
+    "id": "83036af2-230c-4c6e-ad3c-55314c01af06",
+    "name": "atlan-group-guid-1234--1713518829204",
+    "identityProviderMapper": "saml-group-idp-mapper",
+    "identityProviderAlias": "auth0",
+    "config": {
+        "attribute.name": "memberOf",
+        "attribute.value": "test-sso-group-update",
+        "attributes": "[]",
+        "group": "test-atlan-group",
+        "syncMode": "FORCE"
+    }
+}

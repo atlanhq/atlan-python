@@ -113,23 +113,23 @@ class TablePartition(SQL):
     List of sub-partitions in this partition.
     """
 
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    PARENT_TABLE: ClassVar[RelationField] = RelationField("parentTable")
+    """
+    TBC
+    """
     CHILD_TABLE_PARTITIONS: ClassVar[RelationField] = RelationField(
         "childTablePartitions"
     )
     """
     TBC
     """
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
     PARENT_TABLE_PARTITION: ClassVar[RelationField] = RelationField(
         "parentTablePartition"
     )
-    """
-    TBC
-    """
-    PARENT_TABLE: ClassVar[RelationField] = RelationField("parentTable")
     """
     TBC
     """
@@ -150,10 +150,10 @@ class TablePartition(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
-        "child_table_partitions",
         "columns",
-        "parent_table_partition",
         "parent_table",
+        "child_table_partitions",
+        "parent_table_partition",
     ]
 
     @property
@@ -315,6 +315,26 @@ class TablePartition(SQL):
         self.attributes.partition_list = partition_list
 
     @property
+    def columns(self) -> Optional[List[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[List[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def parent_table(self) -> Optional[Table]:
+        return None if self.attributes is None else self.attributes.parent_table
+
+    @parent_table.setter
+    def parent_table(self, parent_table: Optional[Table]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_table = parent_table
+
+    @property
     def child_table_partitions(self) -> Optional[List[TablePartition]]:
         return (
             None if self.attributes is None else self.attributes.child_table_partitions
@@ -329,16 +349,6 @@ class TablePartition(SQL):
         self.attributes.child_table_partitions = child_table_partitions
 
     @property
-    def columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[List[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
     def parent_table_partition(self) -> Optional[TablePartition]:
         return (
             None if self.attributes is None else self.attributes.parent_table_partition
@@ -349,16 +359,6 @@ class TablePartition(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent_table_partition = parent_table_partition
-
-    @property
-    def parent_table(self) -> Optional[Table]:
-        return None if self.attributes is None else self.attributes.parent_table
-
-    @parent_table.setter
-    def parent_table(self, parent_table: Optional[Table]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_table = parent_table
 
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(default=None, description="")
@@ -378,23 +378,26 @@ class TablePartition(SQL):
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
-        child_table_partitions: Optional[List[TablePartition]] = Field(
-            default=None, description=""
-        )  # relationship
         columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        parent_table_partition: Optional[TablePartition] = Field(
             default=None, description=""
         )  # relationship
         parent_table: Optional[Table] = Field(
             default=None, description=""
         )  # relationship
+        child_table_partitions: Optional[List[TablePartition]] = Field(
+            default=None, description=""
+        )  # relationship
+        parent_table_partition: Optional[TablePartition] = Field(
+            default=None, description=""
+        )  # relationship
 
-    attributes: "TablePartition.Attributes" = Field(
+    attributes: TablePartition.Attributes = Field(
         default_factory=lambda: TablePartition.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

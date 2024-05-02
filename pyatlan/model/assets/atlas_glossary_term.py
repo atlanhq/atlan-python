@@ -26,12 +26,17 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @root_validator()
     def _set_qualified_name_fallback(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
+        guid = values.get("guid")
+        attributes = values.get("attributes")
+        unique_attributes = values.get("unique_attributes")
+        if attributes and not attributes.qualified_name:
+            # If the qualified name is present inside
+            # unique attributes (in case of a related entity)
+            # Otherwise, set the qualified name to the GUID
+            # to avoid collisions when creating glossary object
+            attributes.qualified_name = (
+                unique_attributes and unique_attributes.get("qualifiedName")
+            ) or guid
         return values
 
     @classmethod
@@ -587,10 +592,13 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
                 qualified_name=next_id(),
             )
 
-    attributes: "AtlasGlossaryTerm.Attributes" = Field(
+    attributes: AtlasGlossaryTerm.Attributes = Field(
         default_factory=lambda: AtlasGlossaryTerm.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

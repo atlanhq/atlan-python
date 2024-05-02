@@ -223,10 +223,13 @@ class LookerDashboard(Looker):
             default=None, description=""
         )  # relationship
 
-    attributes: "LookerDashboard.Attributes" = Field(
+    attributes: LookerDashboard.Attributes = Field(
         default_factory=lambda: LookerDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

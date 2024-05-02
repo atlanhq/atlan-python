@@ -435,6 +435,37 @@ TEST_USER_CLIENT_METHODS = {
     ],
 }
 
+TEST_FILE_CLIENT_METHODS = {
+    "generate_presigned_url": [
+        ([123], "request\n  value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "upload_file": [
+        ([[123], "file-path"], "presigned_url\n  str type expected"),
+        ([None, "file-path"], "none is not an allowed value"),
+        (
+            ["test-url", [123]],
+            "file_path\n  str type expected",
+        ),
+        (
+            ["test-url", None],
+            "none is not an allowed value",
+        ),
+    ],
+    "download_file": [
+        ([[123], "file-path"], "presigned_url\n  str type expected"),
+        ([None, "file-path"], "none is not an allowed value"),
+        (
+            ["test-url", [123]],
+            "file_path\n  str type expected",
+        ),
+        (
+            ["test-url", None],
+            "none is not an allowed value",
+        ),
+    ],
+}
+
 APPLICABLE_GLOSSARIES = "applicable_glossaries"
 
 APPLICABLE_CONNECTIONS = "applicable_connections"

@@ -161,10 +161,13 @@ class MetabaseCollection(Metabase):
             default=None, description=""
         )  # relationship
 
-    attributes: "MetabaseCollection.Attributes" = Field(
+    attributes: MetabaseCollection.Attributes = Field(
         default_factory=lambda: MetabaseCollection.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

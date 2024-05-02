@@ -99,6 +99,23 @@ def test_create_for_modification():
     assert sut.anchor.guid == GLOSSARY_GUID
 
 
+def test_update_when_parent_category_is_removed():
+    category = AtlasGlossaryCategory.updater(
+        qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,
+        name=GLOSSARY_CATEGORY_NAME,
+        glossary_guid=GLOSSARY_GUID,
+    )
+    assert category.parent_category is None
+    assert category.relationship_attributes is None
+    assert category.anchor.guid == GLOSSARY_GUID
+    assert category.name == GLOSSARY_CATEGORY_NAME
+    assert category.qualified_name == GLOSSARY_CATEGORY_QUALIFIED_NAME
+
+    category.parent_category = None
+    assert category.parent_category is None
+    assert category.relationship_attributes == {"parentCategory": None}
+
+
 def test_trim_to_required():
     sut = AtlasGlossaryCategory.create_for_modification(
         qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,

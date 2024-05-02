@@ -1,10 +1,12 @@
-# Copyright 2022 Atlan Pte. Ltd.
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2024 Atlan Pte. Ltd.
+
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
-from pydantic.v1 import BaseModel, Extra, Field
+from pydantic.v1 import BaseModel, Extra, Field, root_validator
 
 from pyatlan.model.enums import (
     BadgeComparisonOperator,
@@ -22,6 +24,18 @@ class AtlanObject(BaseModel):
         extra = Extra.ignore
         json_encoders = {datetime: lambda v: int(v.timestamp() * 1000)}
         validate_assignment = True
+
+    @root_validator(pre=True)
+    def flatten_structs_attributes(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Flatten the 'attributes' of the struct models.
+
+        :param values: dictionary containing the attributes.
+        :returns: modified dictionary with attributes flattened.
+        """
+        attributes = values.pop("attributes", {})
+        values = {**values, **attributes}
+        return values
 
 
 class MCRuleSchedule(AtlanObject):

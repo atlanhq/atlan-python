@@ -1,3 +1,67 @@
+## 2.1.7 (April 30, 2024)
+
+### New features
+
+- Adds `FileClient` for uploading and downloading files from Atlan's tenant object storage via presigned URLs.
+
+## 2.1.6 (April 23, 2024)
+
+### New features
+
+- Adds support for SSO group mapping.
+- Adds `AtlanSSO` to enumerate the options for supported Atlan's SSO providers.
+
+## 2.1.5 (April 18, 2024)
+
+### Bug fixes
+
+- Fixed an issue where explicit assignment of `None` to asset attributes in `BulkRequest` within the `client.asset.save()` method resulted in exclusion from the request payload.
+- Fixed issues with **multiple remove/append relationships** where values were being overwritten inside append/remove dictionaries.
+
+## 2.1.4 (April 16, 2024)
+
+### New features
+
+- Adds `AssetFilterGroup` enum for persona personalization.
+- Adds creator method to `AirflowDag` and `AirflowTask` assets.
+
+### Bug fixes
+
+- Fixes `qualified_name` population for related entities in `Glossary` objects.
+- Fixes logic for removing parent category relationship in `AtlasGlossaryCategory`.
+- Fixes lineage list performance by considering the `hasMore` attribute to optimize lineage paging.
+
+### QOL improvements
+
+- Updates `networkx >= 3.1` and bumped development requirements to the latest version.
+
+## 2.1.3 (April 3, 2024)
+
+### Bug fixes
+
+- Fixes field alias typo for `restrict_propagation_through_hierarchy` in the `AtlanTag` model.
+- Fixes issues with `AtlanEvent` model deserialization. Previously, it threw a `ValidationError` for `ENTITY_DELETE`, `CLASSIFICATION_ADD`, and `CLASSIFICATION_DELETE` events.
+
+## 2.1.2 (April 2, 2024)
+
+### New features
+
+- Adds `atlanMetadata` icon to `AtlanIcon` enum.
+- Adds support for `restrict_propagation_through_hierarchy` to the `AtlanTag` model.
+- Adds latest typedef models **(cube, cognite, spark, sparkjob, and multi-dimensional dataset)**.
+- Adds support to limit the applicability of custom metadata attributes directly through the `AttributeDef.create()` method.
+
+### Bug Fixes
+
+- Fixes an issue with direct model deserialization of structs.
+
+## 2.1.1 (March 28, 2024)
+
+### Bug Fixes
+
+- Fixes an issue where certain structs could cause errors during marshalling and unmarshalling.
+- Fixes `Process.generate_qualified_name()` method to ensure that the generated process `qualified_name` includes the connection prefix. Previously, it only used the MD5 hash as the `qualified_name` for the `Process`.
+
 ## 2.1.0 (March 27, 2024)
 
 ### New features

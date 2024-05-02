@@ -405,10 +405,13 @@ class S3Object(S3):
                 bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
             )
 
-    attributes: "S3Object.Attributes" = Field(
+    attributes: S3Object.Attributes = Field(
         default_factory=lambda: S3Object.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 

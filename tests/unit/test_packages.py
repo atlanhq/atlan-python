@@ -12,6 +12,7 @@ from pyatlan.model.packages import (
     PowerBICrawler,
     SigmaCrawler,
     SnowflakeCrawler,
+    SnowflakeMiner,
     SQLServerCrawler,
     TableauCrawler,
 )
@@ -19,6 +20,9 @@ from pyatlan.model.packages import (
 PACKAGE_REQUESTS_DIR = Path(__file__).parent / "data" / "package_requests"
 SNOWFLAKE_BASIC = "snowflake_basic.json"
 SNOWFLAKE_KEYPAIR = "snowflake_keypair.json"
+SNOWFLAKE_MINER_DEFAULT = "snowflake_miner_default.json"
+SNOWFLAKE_MINER_SOURCE = "snowflake_miner_source.json"
+SNOWFLAKE_MINER_S3_OFFLINE = "snowflake_miner_s3_offline.json"
 GLUE_IAM_USER = "glue_iam_user.json"
 TABLEAU_BASIC = "tableau_basic.json"
 TABLEAU_ACCESS_TOKEN = "tableau_access_token.json"
@@ -60,7 +64,8 @@ def mock_connection_guid():
         yield mock_random
 
 
-def test_snowflake_package(
+@pytest.fixture()
+def mock_package_env(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
@@ -71,6 +76,8 @@ def test_snowflake_package(
     mock_user_cache.validate_names
     mock_group_cache.validate_aliases
 
+
+def test_snowflake_package(mock_package_env):
     snowflake_basic_auth = (
         SnowflakeCrawler(
             connection_name="test-snowflake-basic-conn",
@@ -121,17 +128,7 @@ def test_snowflake_package(
     assert request_json == load_json(SNOWFLAKE_KEYPAIR)
 
 
-def test_glue_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_glue_package(mock_package_env):
     glue_iam_user_auth = (
         GlueCrawler(
             connection_name="test-glue-conn",
@@ -152,17 +149,7 @@ def test_glue_package(
     assert request_json == load_json(GLUE_IAM_USER)
 
 
-def test_tableau_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_tableau_package(mock_package_env):
     tableau_basic_auth = (
         TableauCrawler(
             connection_name="test-tableau-basic-conn",
@@ -210,17 +197,7 @@ def test_tableau_package(
     assert request_json == load_json(TABLEAU_ACCESS_TOKEN)
 
 
-def test_powerbi_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_powerbi_package(mock_package_env):
     powerbi_delegated_user = (
         PowerBICrawler(
             connection_name="test-powerbi-du-conn",
@@ -266,17 +243,7 @@ def test_powerbi_package(
     assert request_json == load_json(POWEBI_SERVICE_PRINCIPAL)
 
 
-def test_confluent_kafka_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_confluent_kafka_package(mock_package_env):
     conf_kafka_direct = (
         ConfluentKafkaCrawler(
             connection_name="test-conf-kafka-direct-conn",
@@ -295,17 +262,7 @@ def test_confluent_kafka_package(
     assert request_json == load_json(CONFLUENT_KAFKA_DIRECT)
 
 
-def test_dbt_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_dbt_package(mock_package_env):
     dbt_core = (
         DbtCrawler(
             connection_name="test-dbt-core-conn",
@@ -349,17 +306,7 @@ def test_dbt_package(
     assert request_json == load_json(DBT_CLOUD)
 
 
-def test_sigma_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_sigma_package(mock_package_env):
     sigma_api_token = (
         SigmaCrawler(
             connection_name="test-sigma-basic-conn",
@@ -377,17 +324,7 @@ def test_sigma_package(
     assert request_json == load_json(SIGMA_API_TOKEN)
 
 
-def test_sql_server_package(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
-
+def test_sql_server_package(mock_package_env):
     sql_server_basic = (
         SQLServerCrawler(
             connection_name="test-sigma-basic-conn",
@@ -412,6 +349,53 @@ def test_sql_server_package(
     assert request_json == load_json(SQL_SERVER_BASIC)
 
 
+def test_snowflake_miner_package(mock_package_env):
+    # With default configuration
+    snowflake_miner_default = (
+        SnowflakeMiner(connection_qualified_name="default/snowflake/1234567890")
+        .direct(start_epoch=9876543210, database="TEST_SNOWFLAKE", schema="TEST_SCHEMA")
+        .exclude_users(users=["test-user-1", "test-user-2"])
+        .to_workflow()
+    )
+    request_json = loads(snowflake_miner_default.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(SNOWFLAKE_MINER_DEFAULT)
+
+    # With advanced configuration (source)
+    snowflake_miner_source = (
+        SnowflakeMiner(connection_qualified_name="default/snowflake/1234567890")
+        .direct(start_epoch=9876543210, database="TEST_SNOWFLAKE", schema="TEST_SCHEMA")
+        .exclude_users(users=["test-user-1", "test-user-2"])
+        .popularity_window(days=15)
+        .native_lineage(enabled=True)
+        .custom_config(config={"test": True, "feature": 1234})
+        .to_workflow()
+    )
+    request_json = loads(snowflake_miner_source.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(SNOWFLAKE_MINER_SOURCE)
+
+    # With advanced configuration (offline)
+    snowflake_miner_s3_offline = (
+        SnowflakeMiner(connection_qualified_name="default/snowflake/1234567890")
+        .s3(
+            s3_bucket="test-s3-bucket",
+            s3_prefix="test-s3-prefix",
+            s3_bucket_region="test-s3-bucket-region",
+            sql_query_key="TEST_QUERY",
+            default_database_key="TEST_SNOWFLAKE",
+            default_schema_key="TEST_SCHEMA",
+            session_id_key="TEST_SESSION_ID",
+        )
+        .popularity_window(days=15)
+        .native_lineage(enabled=True)
+        .custom_config(config={"test": True, "feature": 1234})
+        .to_workflow()
+    )
+    request_json = loads(
+        snowflake_miner_s3_offline.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(SNOWFLAKE_MINER_S3_OFFLINE)
+
+
 @pytest.mark.parametrize(
     "test_assets",
     [
@@ -425,15 +409,8 @@ def test_sql_server_package(
     ],
 )
 def test_wrong_hierarchical_filter_raises_invalid_req_err(
-    test_assets,
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_get_epoch_timestamp,
+    test_assets, mock_package_env
 ):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
 
     with pytest.raises(
         InvalidRequestError,
@@ -451,16 +428,7 @@ def test_wrong_hierarchical_filter_raises_invalid_req_err(
     "test_projects",
     [[NonSerializable()], NonSerializable()],
 )
-def test_wrong_flat_filter_raises_invalid_req_err(
-    test_projects,
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_get_epoch_timestamp,
-):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
+def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_env):
 
     with pytest.raises(
         InvalidRequestError,
@@ -479,15 +447,8 @@ def test_wrong_flat_filter_raises_invalid_req_err(
     [NonSerializable(), [NonSerializable()]],
 )
 def test_wrong_glue_package_filter_raises_invalid_req_err(
-    test_assets,
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_get_epoch_timestamp,
+    test_assets, mock_package_env
 ):
-    mock_role_cache.validate_idstrs
-    mock_user_cache.validate_names
-    mock_group_cache.validate_aliases
 
     with pytest.raises(
         InvalidRequestError,

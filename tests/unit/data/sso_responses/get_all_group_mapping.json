@@ -1,0 +1,62 @@
+[
+    {
+      "id": "12eb9f4c-2f63-47c5-8dfc-5d9440f50e56",
+      "name": "email",
+      "identityProviderMapper": "saml-user-attribute-idp-mapper",
+      "identityProviderAlias": "auth0",
+      "config": {
+        "attribute.friendly.name": "email",
+        "attribute.name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+        "syncMode": "IMPORT",
+        "user.attribute": "email"
+      }
+    },
+    {
+      "id": "a73e8264-4b64-4e93-8635-2abbc40c81c9",
+      "name": "firstName",
+      "identityProviderMapper": "saml-user-attribute-idp-mapper",
+      "identityProviderAlias": "auth0",
+      "config": {
+        "attribute.friendly.name": "firstName",
+        "attribute.name": "http://schemas.auth0.com/nickname",
+        "syncMode": "IMPORT",
+        "user.attribute": "firstName"
+      }
+    },
+    {
+      "id": "83036af2-230c-4c6e-ad3c-55314c01af06",
+      "name": "atlan-group-guid-1234--1713528648788",
+      "identityProviderMapper": "saml-group-idp-mapper",
+      "identityProviderAlias": "auth0",
+      "config": {
+        "attribute.name": "memberOf",
+        "attribute.value": "test-sso-group",
+        "attributes": "[]",
+        "group": "test-atlan-group",
+        "syncMode": "FORCE"
+      }
+    },
+    {
+      "id": "3db148da-fef0-495e-a7f7-109998797a95",
+      "name": "lastName",
+      "identityProviderMapper": "saml-user-attribute-idp-mapper",
+      "identityProviderAlias": "auth0",
+      "config": {
+        "attribute.friendly.name": "lastName",
+        "attribute.name": "http://schemas.auth0.com/nickname",
+        "syncMode": "IMPORT",
+        "user.attribute": "lastName"
+      }
+    },
+    {
+      "id": "811e0480-6ed2-43a8-b04b-a1fd2c672ed2",
+      "name": "hardcodedRole",
+      "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+      "identityProviderAlias": "auth0",
+      "config": {
+        "attributes": "[]",
+        "role": "$guest",
+        "syncMode": "IMPORT"
+      }
+    }
+]

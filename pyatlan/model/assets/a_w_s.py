@@ -188,8 +188,11 @@ class AWS(Cloud):
         aws_owner_id: Optional[str] = Field(default=None, description="")
         aws_tags: Optional[List[AwsTag]] = Field(default=None, description="")
 
-    attributes: "AWS.Attributes" = Field(
+    attributes: AWS.Attributes = Field(
         default_factory=lambda: AWS.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )

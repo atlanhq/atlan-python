@@ -91,6 +91,7 @@ USER_LIST_JSON = "user_list.json"
 USER_GROUPS_JSON = "user_groups.json"
 USER_RESPONSES_DIR = TEST_DATA_DIR / "user_responses"
 AGGREGATIONS_NULL_RESPONSES_DIR = "aggregations_null_value.json"
+GLOSSARY_CATEGORY_BY_NAME_JSON = "glossary_category_by_name.json"
 SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_responses"
 USER_LIST_JSON = "user_list.json"
 GET_BY_GUID_JSON = "get_by_guid.json"
@@ -200,6 +201,11 @@ def retrieve_minimal_json():
 @pytest.fixture()
 def type_def_get_by_name_json():
     return load_json(TYPEDEF_RESPONSES_DIR, TYPEDEF_GET_BY_NAME_JSON)
+
+
+@pytest.fixture()
+def glossary_category_by_name_json():
+    return load_json(SEARCH_RESPONSES_DIR, GLOSSARY_CATEGORY_BY_NAME_JSON)
 
 
 @pytest.mark.parametrize(
@@ -875,6 +881,63 @@ def test_find_category_by_name():
         assert mock_find_category_fast_by_name.return_value == category
 
 
+@patch.object(AssetClient, "find_glossary_by_name")
+def test_find_category_by_name_qn_guid_correctly_populated(
+    mock_find_glossary_by_name, mock_api_caller, glossary_category_by_name_json
+):
+
+    client = AssetClient(mock_api_caller)
+    mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
+    mock_api_caller._call_api.side_effect = [glossary_category_by_name_json]
+
+    category = client.find_category_by_name(
+        name="test-cat-1-1",
+        glossary_name="test-glossary",
+        attributes=["terms", "anchor", "parentCategory"],
+    )[0]
+    category_json = glossary_category_by_name_json["entities"][0]
+
+    assert category
+    assert category_json
+    assert category.guid == category_json.get("guid")
+    category_json_attributes = category_json.get("attributes")
+    assert category_json_attributes
+    assert category.name == category_json_attributes.get("name")
+    assert category.qualified_name == category_json_attributes.get("qualifiedName")
+
+    # Glossary
+    assert category.anchor.guid == category_json_attributes.get("anchor").get("guid")
+    assert category.anchor.name == category_json_attributes.get("anchor").get(
+        "attributes"
+    ).get("name")
+    assert category.anchor.qualified_name == category_json_attributes.get("anchor").get(
+        "uniqueAttributes"
+    ).get("qualifiedName")
+
+    # Glossary category
+    assert category.parent_category.guid == category_json_attributes.get(
+        "parentCategory"
+    ).get("guid")
+    assert category.parent_category.name == category_json_attributes.get(
+        "parentCategory"
+    ).get("attributes").get("name")
+    assert category.parent_category.qualified_name == category_json_attributes.get(
+        "parentCategory"
+    ).get("uniqueAttributes").get("qualifiedName")
+
+    # Glossary term
+    assert category.terms[0].guid == category_json_attributes.get("terms")[0].get(
+        "guid"
+    )
+    assert category.terms[0].name == category_json_attributes.get("terms")[0].get(
+        "attributes"
+    ).get("name")
+    assert category.terms[0].qualified_name == category_json_attributes.get("terms")[
+        0
+    ].get("uniqueAttributes").get("qualifiedName")
+    mock_api_caller.reset_mock()
+
+
 @pytest.mark.parametrize(
     "name, glossary_qualified_name, attributes, message",
     [
@@ -1184,22 +1247,24 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
 ):
     client = AssetClient(mock_api_caller)
     mock_cm_cache.get_name_for_id.return_value = CM_NAME
-    mock_api_caller._call_api.return_value = lineage_list_json
+    mock_api_caller._call_api.side_effect = [lineage_list_json, {}]
 
     lineage_request = LineageListRequest(
         guid="test-guid", depth=1, direction=LineageDirection.UPSTREAM
     )
     lineage_request.attributes = [CM_NAME]
     lineage_response = client.get_lineage_list(lineage_request=lineage_request)
-    asset = next(iter(lineage_response))
 
-    assert asset
-    assert asset.type_name == "View"
-    assert asset.guid == "test-guid"
-    assert asset.qualified_name == "test-qn"
-    assert asset.attributes
-    assert asset.business_attributes
-    assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
+    for asset in lineage_response:
+        assert asset
+        assert asset.type_name == "View"
+        assert asset.guid == "test-guid"
+        assert asset.qualified_name == "test-qn"
+        assert asset.attributes
+        assert asset.business_attributes
+        assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
+
+    assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
 
@@ -1676,6 +1741,7 @@ class TestBulkRequest:
     SEE_ALSO = "seeAlso"
     REMOVE = "removeRelationshipAttributes"
     APPEND = "appendRelationshipAttributes"
+    PREFERRED_TO_TERMS = "preferredToTerms"
 
     @pytest.fixture(scope="class")
     def glossary(self):
@@ -1732,6 +1798,35 @@ class TestBulkRequest:
         assert self.APPEND in request_json
         assert self.SEE_ALSO in request_json[self.APPEND]
         append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
+        assert self.REMOVE not in request_json
+
+        # Test replace and append (list) with multiple relationships
+        term1.attributes.see_also = [
+            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        term1.attributes.preferred_to_terms = [
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
+        ]
+        request = BulkRequest(entities=[term1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert self.SEE_ALSO in request_json["attributes"]
+        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        assert len(replace_attributes) == 1
+        assert replace_attributes[0]["guid"] == term2.guid
+        assert self.APPEND in request_json
+        assert self.SEE_ALSO in request_json[self.APPEND]
+        append_attributes = request_json[self.APPEND][self.SEE_ALSO]
+        assert len(append_attributes) == 1
+        assert append_attributes[0]["guid"] == term3.guid
+        append_attributes = request_json[self.APPEND][self.PREFERRED_TO_TERMS]
         assert len(append_attributes) == 1
         assert append_attributes[0]["guid"] == term3.guid
         assert self.REMOVE not in request_json
@@ -1804,6 +1899,7 @@ class TestBulkRequest:
 
         # Test empty (list)
         term1.attributes.see_also = []
+        term1.attributes.preferred_to_terms = []
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
@@ -1852,3 +1948,13 @@ class TestBulkRequest:
         assert remove_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
         assert "anchor" not in request_json["attributes"]
+
+    def test_asset_attribute_none_assignment(self):
+        table1 = Table.updater(name="test-table-1", qualified_name="test-qn-1")
+        table1.certificate_status = None
+        table1.certificate_status_message = None
+        request = BulkRequest(entities=[table1])
+        request_json = self.to_json(request)
+        assert request_json
+        assert request_json["attributes"]["certificateStatus"] is None
+        assert request_json["attributes"]["certificateStatusMessage"] is None

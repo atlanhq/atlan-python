@@ -388,3 +388,33 @@ class TestAttributeDef:
         assert getattr(sut, attribute) == value
         options = sut.options
         assert getattr(options, attribute) == json.dumps(list(value))
+
+    def test_attribute_create_with_limited_applicability(self):
+        applicable_kwargs = dict(
+            applicable_asset_types={"Link"},
+            applicable_other_asset_types={"File"},
+            applicable_glossaries={"8Jdg4PdxcURBBNDt2RZD3"},
+            applicable_glossary_types={"AtlasGlossaryTerm", "AtlasGlossaryCategory"},
+            applicable_connections={
+                "default/snowflake/1699268171",
+                "default/snowflake/16992681799",
+            },
+        )
+        attribute_def_with_limited = AttributeDef.create(
+            display_name="test-attr-def",
+            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            # Optional kwargs that allow limiting
+            # the applicability of an attribute within Atlan
+            **applicable_kwargs
+        )
+
+        assert attribute_def_with_limited
+        assert attribute_def_with_limited.options
+        options = attribute_def_with_limited.options
+        for attribute in applicable_kwargs.keys():
+            assert getattr(
+                attribute_def_with_limited, attribute
+            ) == applicable_kwargs.get(attribute)
+            assert getattr(options, attribute) == json.dumps(
+                list(applicable_kwargs.get(attribute))
+            )

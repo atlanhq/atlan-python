@@ -134,10 +134,13 @@ class PowerBITile(PowerBI):
             default=None, description=""
         )  # relationship
 
-    attributes: "PowerBITile.Attributes" = Field(
+    attributes: PowerBITile.Attributes = Field(
         default_factory=lambda: PowerBITile.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
     )
 
 
