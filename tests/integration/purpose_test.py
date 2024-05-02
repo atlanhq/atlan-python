@@ -67,11 +67,11 @@ def atlan_tag_def(
 
 @pytest.fixture(scope="module")
 def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
-    token = client.token.create(API_TOKEN_NAME)
-    assert token
-    assert token.guid
-    assert token.display_name
     try:
+        token = client.token.create(API_TOKEN_NAME)
+        assert token
+        assert token.guid
+        assert token.display_name
         # After creating the token, assign it to the
         # "Data Assets" persona to grant it query access
         persona = client.asset.find_personas_by_name(PERSONA_NAME)[0]
@@ -85,7 +85,7 @@ def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
         # its associated personas -- will leave that to later...
         yield token
     finally:
-        client.token.purge(token.guid)
+        token.guid and client.token.purge(token.guid)
 
 
 @pytest.fixture(scope="module")

@@ -15,15 +15,13 @@ def create_token(client: AtlanClient, name: str) -> ApiToken:
     return t
 
 
-def delete_token(client: AtlanClient, guid: str) -> None:
-    client.token.purge(guid)
-
-
 @pytest.fixture(scope="module")
 def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
-    t = create_token(client, API_TOKEN_NAME)
-    yield t
-    delete_token(client, str(t.guid))
+    try:
+        token = create_token(client, API_TOKEN_NAME)
+        yield token
+    finally:
+        token.guid and client.token.purge(token.guid)
 
 
 def test_create_token(client: AtlanClient, token: ApiToken):
