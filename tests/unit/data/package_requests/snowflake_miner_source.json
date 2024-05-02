@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "annotations": {
+      "orchestration.atlan.com/allowSchedule": "true",
+      "orchestration.atlan.com/categories": "warehouse,miner",
+      "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6482067592337",
+      "orchestration.atlan.com/emoji": "🚀",
+      "orchestration.atlan.com/icon": "https://docs.snowflake.com/en/_images/logo-snowflake-sans-text.png",
+      "orchestration.atlan.com/logo": "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg",
+      "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/snowflake-miner",
+      "orchestration.atlan.com/name": "Snowflake Miner",
+      "package.argoproj.io/author": "Atlan",
+      "package.argoproj.io/description": "Package to mine query history data from Snowflake and store it for further processing. The data mined will be used for generating lineage and usage metrics.",
+      "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/snowflake-miner",
+      "package.argoproj.io/keywords": "[\"snowflake\",\"warehouse\",\"connector\",\"miner\"]",
+      "package.argoproj.io/name": "@atlan/snowflake-miner",
+      "package.argoproj.io/registry": "https://packages.atlan.com",
+      "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+      "package.argoproj.io/support": "support@atlan.com",
+      "orchestration.atlan.com/atlanName": "atlan-snowflake-miner-123456"
+    },
+    "labels": {
+      "orchestration.atlan.com/certified": "true",
+      "orchestration.atlan.com/source": "snowflake",
+      "orchestration.atlan.com/sourceCategory": "warehouse",
+      "orchestration.atlan.com/type": "miner",
+      "orchestration.atlan.com/verified": "true",
+      "package.argoproj.io/installer": "argopm",
+      "package.argoproj.io/name": "a-t-ratlans-l-a-s-hsnowflake-miner",
+      "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+      "orchestration.atlan.com/atlan-ui": "true"
+    },
+    "name": "atlan-snowflake-miner-123456",
+    "namespace": "default"
+  },
+  "spec": {
+    "entrypoint": "main",
+    "templates": [
+      {
+        "name": "main",
+        "dag": {
+          "tasks": [
+            {
+              "name": "run",
+              "arguments": {
+                "parameters": [
+                  {
+                    "name": "connection-qualified-name",
+                    "value": "default/snowflake/1234567890"
+                  },
+                  {
+                    "name": "database-name",
+                    "value": "TEST_SNOWFLAKE"
+                  },
+                  {
+                    "name": "schema-name",
+                    "value": "TEST_SCHEMA"
+                  },
+                  {
+                    "name": "extraction-method",
+                    "value": "query_history"
+                  },
+                  {
+                    "name": "miner-start-time-epoch",
+                    "value": "9876543210"
+                  },
+                  {
+                    "name": "popularity-exclude-user-config",
+                    "value": "[\"test-user-1\", \"test-user-2\"]"
+                  },
+                  {
+                    "name": "popularity-window-days",
+                    "value": "15"
+                  },
+                  {
+                    "name": "native-lineage-active",
+                    "value": "true"
+                  },
+                  {
+                    "name": "control-config",
+                    "value": "{\"test\": true, \"feature\": 1234}"
+                  },
+                  {
+                    "name": "control-config-strategy",
+                    "value": "custom"
+                  },
+                  {
+                    "name": "sigle-session",
+                    "value": "false"
+                  }
+                ]
+              },
+              "templateRef": {
+                "name": "atlan-snowflake-miner",
+                "template": "main",
+                "clusterScope": true
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "workflowMetadata": {
+      "annotations": {
+        "package.argoproj.io/name": "@atlan/snowflake-miner"
+      }
+    }
+  },
+  "payload": []
+}
