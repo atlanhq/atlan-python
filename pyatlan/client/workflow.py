@@ -15,7 +15,6 @@ from pyatlan.client.constants import (
     WORKFLOW_UPDATE, SCHEDULE_QUERY_WORKFLOWS_SEARCH, SCHEDULE_QUERY_WORKFLOWS_MISSED,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.argo import RootModel, Item
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term, Wildcard
 from pyatlan.model.workflow import (
@@ -26,7 +25,7 @@ from pyatlan.model.workflow import (
     WorkflowSearchRequest,
     WorkflowSearchResponse,
     WorkflowSearchResult,
-    WorkflowSearchResultDetail, ScheduleQueriesSearchRequest,
+    WorkflowSearchResultDetail, ScheduleQueriesSearchRequest, WorkflowRunResponseList,
 )
 
 MONITOR_SLEEP_SECONDS = 5
@@ -110,16 +109,16 @@ class WorkflowClient:
         return response.hits.hits or []
 
     @validate_arguments
-    def find_schedule_query_crons_between_duration(self, request: ScheduleQueriesSearchRequest) -> RootModel:
+    def find_schedule_query_crons_between_duration(self, request: ScheduleQueriesSearchRequest) -> WorkflowRunResponseList:
         query_params = {
             "startDate": request.start_date,
             "endDate": request.end_date,
         }
         raw_json = self._client._call_api(SCHEDULE_QUERY_WORKFLOWS_SEARCH, query_params=query_params)
-        return RootModel(items=raw_json)
+        return WorkflowRunResponseList(items=raw_json)
 
     @validate_arguments
-    def find_missed_schedule_query_crons_between_duration(self, request: ScheduleQueriesSearchRequest) -> RootModel|str:
+    def find_missed_schedule_query_crons_between_duration(self, request: ScheduleQueriesSearchRequest) -> WorkflowRunResponseList|str:
         query_params = {
             "startDate": request.start_date,
             "endDate": request.end_date,
@@ -127,9 +126,9 @@ class WorkflowClient:
         raw_json = self._client._call_api(SCHEDULE_QUERY_WORKFLOWS_MISSED, query_params=query_params)
 
         if isinstance(raw_json, list):
-            return RootModel(items=raw_json)
+            return WorkflowRunResponseList(items=raw_json)
         else:
-            return RootModel(items=[])  # This returns a string to show there were no missed schedules.
+            return WorkflowRunResponseList(items=[])  # This returns a string to show there were no missed schedules.
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:

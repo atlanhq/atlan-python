@@ -155,9 +155,13 @@ class WorkflowRunResponse(WorkflowResponse):
     status: WorkflowSearchResultStatus
 
 
+class WorkflowRunResponseList(AtlanObject):
+    items: Optional[List[WorkflowRunResponse]]
+
+
 class ScheduleQueriesSearchRequest(AtlanObject):
-        start_date: str = Field(description="Start date in this format 2024-03-25T16:30:00.000+05:30",alias="startDate")
-        end_date: str = Field(description="End date in this format 2024-03-30T16:30:00.000+05:30",alias="endDate")
+    start_date: str = Field(description="Start date in this format 2024-03-25T16:30:00.000+05:30", alias="startDate")
+    end_date: str = Field(description="End date in this format 2024-03-30T16:30:00.000+05:30", alias="endDate")
 
 
 class WorkflowSearchRequest(AtlanObject):
