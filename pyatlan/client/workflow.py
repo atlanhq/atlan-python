@@ -15,6 +15,7 @@ from pyatlan.client.constants import (
     WORKFLOW_UPDATE,
     SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
+    WORKFLOW_CHANGE_OWNER,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
@@ -110,6 +111,18 @@ class WorkflowClient:
         return response.hits.hits or []
 
     @validate_arguments
+    def re_trigger_schedule_query_workflow(
+        self, schedule_query_id: str, namespace: str = "default"
+    ) -> WorkflowRunResponse:
+
+        request = ReRunRequest(namespace=namespace, resource_name=schedule_query_id)
+        raw_json = self._client._call_api(
+            WORKFLOW_RERUN,
+            request_obj=request,
+        )
+        return WorkflowRunResponse(**raw_json)
+
+    @validate_arguments
     def find_schedule_query_crons_between_duration(
         self, request: ScheduleQueriesSearchRequest
     ) -> WorkflowRunResponseList:
@@ -138,6 +151,26 @@ class WorkflowClient:
             return WorkflowRunResponseList(items=raw_json)
         else:
             return WorkflowRunResponseList(items=[])
+
+    def update_workflow_owner(
+        self, workflow_name: str, username: str
+    ) -> WorkflowResponse:
+        """
+        Update a given workflow's configuration.
+
+        :param workflow: request full details of the workflow's revised configuration.
+        :returns: the updated workflow configuration.
+        :raises ValidationError: If the provided `workflow` is invalid.
+        :raises AtlanError: on any API communication issue.
+        """
+        query_params = {"username": username}
+
+        raw_json = self._client._call_api(
+            WORKFLOW_CHANGE_OWNER.format_path({"workflow_name": workflow_name}),
+            query_params=query_params,
+            request_obj={},
+        )
+        return WorkflowResponse(**raw_json)
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:

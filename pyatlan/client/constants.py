@@ -432,6 +432,14 @@ WORKFLOW_UPDATE = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+
+WORKFLOW_CHANGE_OWNER = API(
+    WORKFLOW_UPDATE_API + "/{workflow_name}" + "/changeownership",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 CREDENTIALS_API = "credentials"
 TEST_CREDENTIAL_API = CREDENTIALS_API + "/test"
 TEST_CREDENTIAL = API(
