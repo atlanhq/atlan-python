@@ -82,12 +82,10 @@ class WorkflowClient:
     def find_schedule_query_cron_by_saved_query_id(
         self, saved_query_id: str, max_results: int = 10
     ) -> List[WorkflowSearchResult]:
-
         """
         This method is used to find the schedule query workflows cron by saved query id
         returns an empty list if no schedule query workflows are found
         """
-
         starts_with = Prefix(
             field="metadata.name.keyword", value="asq-" + saved_query_id
         )
@@ -119,12 +117,10 @@ class WorkflowClient:
     def re_trigger_schedule_query_workflow(
         self, schedule_query_id: str, namespace: str = "default"
     ) -> WorkflowRunResponse:
-
         """
         This method is used to re-trigger the schedule query workflow using schedule_query_id
         returns the details of the workflow run
         """
-
         request = ReRunRequest(namespace=namespace, resource_name=schedule_query_id)
         raw_json = self._client._call_api(
             WORKFLOW_RERUN,
@@ -136,7 +132,6 @@ class WorkflowClient:
     def find_schedule_query_crons_between_duration(
         self, request: ScheduleQueriesSearchRequest
     ) -> WorkflowRunResponseList:
-
         """
         This method is used to find the schedule query workflows between the given duration
         returns an empty list if no schedule query workflows are found
@@ -155,12 +150,10 @@ class WorkflowClient:
     def find_missed_schedule_query_crons_between_duration(
         self, request: ScheduleQueriesSearchRequest
     ) -> WorkflowRunResponseList:
-
         """
         This method is used to find the missed schedule query workflows between the given duration
         returns an empty list if no missed schedule query workflows are found
         """
-
         query_params = {
             "startDate": request.start_date,
             "endDate": request.end_date,
