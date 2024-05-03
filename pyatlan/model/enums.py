@@ -273,6 +273,10 @@ class AtlanConnectorType(str, Enum):
     MICROSTRATEGY = ("microstrategy", AtlanConnectionCategory.BI)
     AWS_SITE_WISE = ("aws-sitewise", AtlanConnectionCategory.DATABASE)
     AWS_GREENGRASS = ("aws-greengrass", AtlanConnectionCategory.DATABASE)
+    COGNITE = ("cognite", AtlanConnectionCategory.SAAS)
+    SYNDIGO = ("syndigo", AtlanConnectionCategory.SAAS)
+    NETEZZA = ("netezza", AtlanConnectionCategory.WAREHOUSE)
+    AZURE_SERVICE_BUS = ("azureservicebus", AtlanConnectionCategory.EVENT_BUS)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
