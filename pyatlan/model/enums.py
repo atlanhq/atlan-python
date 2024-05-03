@@ -251,6 +251,14 @@ class AtlanConnectorType(str, Enum):
     SPARK = ("spark", AtlanConnectionCategory.ELT)
     MPARTICLE = ("mparticle", AtlanConnectionCategory.DATABASE)
     GENERIC = ("genericdb", AtlanConnectionCategory.DATABASE)
+    FILE = ("file", AtlanConnectionCategory.OBJECT_STORE)
+    MICROSTRATEGY = ("microstrategy", AtlanConnectionCategory.BI)
+    AWS_SITE_WISE = ("aws-sitewise", AtlanConnectionCategory.DATABASE)
+    AWS_GREENGRASS = ("aws-greengrass", AtlanConnectionCategory.DATABASE)
+    COGNITE = ("cognite", AtlanConnectionCategory.SAAS)
+    SYNDIGO = ("syndigo", AtlanConnectionCategory.SAAS)
+    NETEZZA = ("netezza", AtlanConnectionCategory.WAREHOUSE)
+    AZURE_SERVICE_BUS = ("azureservicebus", AtlanConnectionCategory.EVENT_BUS)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
