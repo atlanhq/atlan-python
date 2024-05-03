@@ -137,9 +137,7 @@ class WorkflowClient:
         if isinstance(raw_json, list):
             return WorkflowRunResponseList(items=raw_json)
         else:
-            return WorkflowRunResponseList(
-                items=[]
-            )
+            return WorkflowRunResponseList(items=[])
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
