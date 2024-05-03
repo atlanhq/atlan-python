@@ -80,7 +80,7 @@ class WorkflowClient:
     @validate_arguments
     def find_schedule_query_cron_by_saved_query_id(
         self, saved_query_id: str, max_results: int = 10
-    ) -> list[WorkflowSearchResult]:
+    ) -> List[WorkflowSearchResult]:
 
         starts_with = Prefix(
             field="metadata.name.keyword", value="asq-" + saved_query_id
@@ -125,7 +125,7 @@ class WorkflowClient:
     @validate_arguments
     def find_missed_schedule_query_crons_between_duration(
         self, request: ScheduleQueriesSearchRequest
-    ) -> WorkflowRunResponseList | str:
+    ) -> WorkflowRunResponseList:
         query_params = {
             "startDate": request.start_date,
             "endDate": request.end_date,
@@ -139,7 +139,7 @@ class WorkflowClient:
         else:
             return WorkflowRunResponseList(
                 items=[]
-            )  # This returns a string to show there were no missed schedules.
+            )
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
