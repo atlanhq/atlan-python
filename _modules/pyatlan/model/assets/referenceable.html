@@ -760,6 +760,16 @@
             <span class="s2">&quot;Semantic for how this relationship should be saved, &quot;</span>
             <span class="s2">&quot;if used in an asset request on which `.save()` is called.&quot;</span>
         <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Depth of this asset within lineage. &quot;</span>
+            <span class="s2">&quot;Note: this will only available in assets &quot;</span>
+            <span class="s2">&quot;retrieved via lineage, and will vary even for &quot;</span>
+            <span class="s2">&quot;the same asset depending on the starting point &quot;</span>
+            <span class="s2">&quot;of the lineage requested.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span></div>
 
 
