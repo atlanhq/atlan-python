@@ -18,7 +18,8 @@
         "createdBy": "service-account-apikey-1234",
         "updatedBy": "service-account-apikey-1234",
         "createTime": 1708145336284,
-        "updateTime": 1708146440004
+        "updateTime": 1708146440004,
+        "depth": 1
       }
     ],
     "hasMore": false,
