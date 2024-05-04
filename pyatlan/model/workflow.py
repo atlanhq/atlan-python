@@ -76,22 +76,24 @@ class Workflow(AtlanObject):
 
 
 class WorkflowSearchResultStatus(AtlanObject):
-    artifact_gc_Status: Optional[dict[str, Any]] = Field(alias="artifactGCStatus")
-    artifact_repository_ref: Optional[Any]
-    compressed_nodes: Optional[str]
-    estimated_duration: Optional[int]
-    conditions: Optional[list[Any]]
-    message: Optional[str]
-    finished_at: Optional[str]
-    nodes: Optional[Any]
-    outputs: Optional[WorkflowParameters]
-    phase: Optional[AtlanWorkflowPhase]
-    progress: Optional[str]
-    resources_duration: Optional[dict[str, int]]
-    startedAt: Optional[str]
-    stored_templates: Any
-    storedWorkflowTemplateSpec: Any
-    synchronization: Optional[dict[str, Any]]
+    artifact_gc_Status: Optional[dict[str, Any]] = Field(
+        default=None, alias="artifactGCStatus"
+    )
+    artifact_repository_ref: Optional[Any] = Field(default=None)
+    compressed_nodes: Optional[str] = Field(default=None)
+    estimated_duration: Optional[int] = Field(default=None)
+    conditions: Optional[list[Any]] = Field(default=None)
+    message: Optional[str] = Field(default=None)
+    finished_at: Optional[str] = Field(default=None)
+    nodes: Optional[Any] = Field(default=None)
+    outputs: Optional[WorkflowParameters] = Field(default=None)
+    phase: Optional[AtlanWorkflowPhase] = Field(default=None)
+    progress: Optional[str] = Field(default=None)
+    resources_duration: Optional[dict[str, int]] = Field(default=None)
+    startedAt: Optional[str] = Field(default=None)
+    stored_templates: Any = Field(default=None)
+    stored_workflow_template_spec: Any = Field(default=None)
+    synchronization: Optional[dict[str, Any]] = Field(default=None)
 
 
 class WorkflowSearchResultDetail(AtlanObject):
@@ -146,11 +148,39 @@ class ReRunRequest(AtlanObject):
 class WorkflowResponse(AtlanObject):
     metadata: WorkflowMetadata
     spec: WorkflowSpec
-    payload: Optional[list[Any]]
+    payload: Optional[list[Any]] = Field(default_factory=list)
 
 
 class WorkflowRunResponse(WorkflowResponse):
     status: WorkflowSearchResultStatus
+
+
+class WorkflowSchedule(AtlanObject):
+    timezone: str
+    cron_schedule: str
+
+
+class WorkflowScheduleSpec(AtlanObject):
+    schedule: Optional[str] = Field(default=None)
+    timezone: Optional[str] = Field(default=None)
+    workflow_spec: Optional[WorkflowSpec] = Field(default=None)
+    concurrency_policy: Optional[str] = Field(default=None)
+    starting_deadline_seconds: Optional[int] = Field(default=None)
+    successful_jobs_history_limit: Optional[int] = Field(default=None)
+    failed_jobs_history_limit: Optional[int] = Field(default=None)
+
+
+class WorkflowScheduleStatus(AtlanObject):
+    active: Optional[Any] = Field(default=None)
+    conditions: Optional[Any] = Field(default=None)
+    last_scheduled_time: Optional[str] = Field(default=None)
+
+
+class WorkflowScheduleResponse(AtlanObject):
+    metadata: Optional[WorkflowMetadata] = Field(default=None)
+    spec: Optional[WorkflowScheduleSpec] = Field(default=None)
+    status: Optional[WorkflowScheduleStatus] = Field(default=None)
+    workflow_metadata: Optional[WorkflowMetadata] = Field(default=None)
 
 
 class WorkflowSearchRequest(AtlanObject):

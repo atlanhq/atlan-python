@@ -1,4 +1,11 @@
 from pyatlan.model.assets import AtlasGlossary
+from pyatlan.model.enums import AtlanWorkflowPhase
+from pyatlan.model.workflow import (
+    WorkflowMetadata,
+    WorkflowResponse,
+    WorkflowSchedule,
+    WorkflowSpec,
+)
 
 TEST_ASSET_CLIENT_METHODS = {
     "find_personas_by_name": [
@@ -438,3 +445,248 @@ TEST_USER_CLIENT_METHODS = {
         (["guid", None], "none is not an allowed value"),
     ],
 }
+
+TEST_FILE_CLIENT_METHODS = {
+    "generate_presigned_url": [
+        ([123], "request\n  value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "upload_file": [
+        ([[123], "file-path"], "presigned_url\n  str type expected"),
+        ([None, "file-path"], "none is not an allowed value"),
+        (
+            ["test-url", [123]],
+            "file_path\n  str type expected",
+        ),
+        (
+            ["test-url", None],
+            "none is not an allowed value",
+        ),
+    ],
+    "download_file": [
+        ([[123], "file-path"], "presigned_url\n  str type expected"),
+        ([None, "file-path"], "none is not an allowed value"),
+        (
+            ["test-url", [123]],
+            "file_path\n  str type expected",
+        ),
+        (
+            ["test-url", None],
+            "none is not an allowed value",
+        ),
+    ],
+}
+
+TEST_WORKFLOW_CLIENT_METHODS = {
+    "run": [
+        (["abc"], "value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "rerun": [
+        (["abc"], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "update": [
+        (["abc"], "value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "find_by_type": [
+        (["abc"], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "monitor": [
+        (["abc", "test-logger"], "value is not a valid dict"),
+        (
+            [
+                WorkflowResponse(metadata=WorkflowMetadata(), spec=WorkflowSpec()),
+                "test-logger",
+            ],
+            "instance of Logger expected",
+        ),
+        ([None, "test-logger"], "none is not an allowed value"),
+    ],
+    "get_runs": [
+        ([[123], AtlanWorkflowPhase.RUNNING, 123, 456], "str type expected"),
+        ([None, AtlanWorkflowPhase.RUNNING, 123, 456], "none is not an allowed value"),
+    ],
+    "stop": [
+        ([[123]], "str type expected"),
+        ([None], "none is not an allowed value"),
+    ],
+    "delete": [
+        ([[123]], "str type expected"),
+        ([None], "none is not an allowed value"),
+    ],
+    "add_schedule": [
+        (
+            [[123], WorkflowSchedule(timezone="atlan", cron_schedule="*")],
+            "value is not a valid dict",
+        ),
+        (
+            [[123], WorkflowSchedule(timezone="atlan", cron_schedule="*")],
+            "value is not a valid enumeration member",
+        ),
+        (
+            [None, WorkflowSchedule(timezone="atlan", cron_schedule="*")],
+            "none is not an allowed value",
+        ),
+    ],
+    "remove_schedule": [
+        ([[123]], "value is not a valid dict"),
+        ([[123]], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "get_scheduled_run": [
+        ([[123]], "str type expected"),
+        ([None], "none is not an allowed value"),
+    ],
+}
+
+APPLICABLE_GLOSSARIES = "applicable_glossaries"
+
+APPLICABLE_CONNECTIONS = "applicable_connections"
+
+APPLICABLE_ENTITY_TYPES = "applicable_entity_types"
+
+APPLICABLE_OTHER_ASSET_TYPES = "applicable_other_asset_types"
+
+APLICABLE_GLOSSARY_TYPES = "applicable_glossary_types"
+
+APPLICABLE_ASSET_TYPES = "applicable_asset_types"
+
+TEST_ENUM_DEF = {
+    "category": "ENUM",
+    "guid": "f2e6763b-a29d-4fb5-8447-10ba9da14259",
+    "createdBy": "service-account-atlan-argo",
+    "updatedBy": "service-account-atlan-argo",
+    "createTime": 1646710766297,
+    "updateTime": 1657756889921,
+    "version": 95,
+    "name": "AtlasGlossaryTermRelationshipStatus",
+    "description": "TermRelationshipStatus defines how reliable the relationship is between two glossary terms",
+    "typeVersion": "1.0",
+    "serviceType": "atlas_core",
+    "elementDefs": [
+        {
+            "value": "DRAFT",
+            "description": "DRAFT means the relationship is under development.",
+            "ordinal": 0,
+        },
+        {
+            "value": "ACTIVE",
+            "description": "ACTIVE means the relationship is validated and in use.",
+            "ordinal": 1,
+        },
+        {
+            "value": "DEPRECATED",
+            "description": "DEPRECATED means the the relationship is being phased out.",
+            "ordinal": 2,
+        },
+        {
+            "value": "OBSOLETE",
+            "description": "OBSOLETE means that the relationship should not be used anymore.",
+            "ordinal": 3,
+        },
+        {
+            "value": "OTHER",
+            "description": "OTHER means that there is another status.",
+            "ordinal": 99,
+        },
+    ],
+}
+
+TEST_STRUCT_DEF = {
+    "category": "STRUCT",
+    "guid": "8afb807f-26f7-4787-b15f-7872d00220ea",
+    "createdBy": "service-account-atlan-argo",
+    "updatedBy": "service-account-atlan-argo",
+    "createTime": 1652745663724,
+    "updateTime": 1657756890174,
+    "version": 59,
+    "name": "AwsTag",
+    "description": "Atlas Type representing a tag/value pair associated with an AWS object, eg S3 bucket",
+    "typeVersion": "1.0",
+    "serviceType": "aws",
+    "attributeDefs": [
+        {
+            "description": "stuff",
+            "name": "awsTagKey",
+            "typeName": "string",
+            "isOptional": False,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": False,
+            "isIndexable": True,
+            "includeInNotification": False,
+            "skipScrubbing": False,
+            "searchWeight": -1,
+            "indexType": "STRING",
+            "isNew": True,
+        },
+        {
+            "description": "stuff",
+            "name": "awsTagValue",
+            "typeName": "string",
+            "isOptional": False,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": False,
+            "isIndexable": False,
+            "includeInNotification": False,
+            "skipScrubbing": False,
+            "searchWeight": -1,
+            "indexType": "STRING",
+            "isNew": True,
+        },
+    ],
+}
+
+TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
+    (
+        APPLICABLE_ASSET_TYPES,
+        1,
+        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be Set\[str\]",
+    ),
+    (
+        APPLICABLE_ASSET_TYPES,
+        {"Bogus"},
+        r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
+    ),
+    (
+        APLICABLE_GLOSSARY_TYPES,
+        1,
+        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be Set\[str\]",
+    ),
+    (
+        APLICABLE_GLOSSARY_TYPES,
+        {"Bogus"},
+        r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
+    ),
+    (
+        APPLICABLE_OTHER_ASSET_TYPES,
+        1,
+        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be Set\[str\]",
+    ),
+    (
+        APPLICABLE_OTHER_ASSET_TYPES,
+        {"Bogus"},
+        r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_other_asset_types should be in ",
+    ),
+    (
+        APPLICABLE_ENTITY_TYPES,
+        1,
+        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be Set\[str\]",
+    ),
+    (
+        APPLICABLE_CONNECTIONS,
+        1,
+        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be Set\[str\]",
+    ),
+    (
+        APPLICABLE_GLOSSARIES,
+        1,
+        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be Set\[str\]",
+    ),
+]
