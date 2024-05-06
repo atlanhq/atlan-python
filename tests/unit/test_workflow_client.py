@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from typing import List
 from unittest.mock import Mock, patch
 
 import pytest
@@ -22,7 +23,7 @@ from pyatlan.model.workflow import (
     WorkflowSearchResult,
     WorkflowSearchResultDetail,
     WorkflowSearchResultStatus,
-    WorkflowSpec,
+    WorkflowSpec, WorkflowRunResponseList, ScheduleQueriesSearchRequest,
 )
 
 
@@ -352,3 +353,101 @@ def test_update_when_given_wrong_parameter_raises_validation_error(
     with pytest.raises(ValidationError) as err:
         client.update(workflow=workflow)
     assert error_msg in str(err.value)
+
+
+def test_update_workflow_owner(client: WorkflowClient, mock_api_caller,run_response: WorkflowResponse,
+):
+    mock_api_caller._call_api.return_value = run_response.dict()
+    response = client.update_workflow_owner(
+        workflow_name="workflow_name", username="new_username"
+    )
+    assert response == run_response
+
+
+@pytest.fixture()
+def workflows_list(search_result: WorkflowSearchResult) -> WorkflowRunResponseList:
+    return WorkflowRunResponseList(
+        items=[]
+    )  # type: ignore[call-arg]
+def test_find_missed_schedule_query_crons_between_duration(client: WorkflowClient, mock_api_caller, workflows_list: WorkflowRunResponseList):
+    response = client.find_missed_schedule_query_crons_between_duration(
+        ScheduleQueriesSearchRequest(
+            start_date="2024-05-03T16:30:00.000+05:30",
+            end_date="2024-05-05T00:59:00.000+05:30",
+        )
+    )
+    assert response == workflows_list
+
+
+@pytest.fixture()
+def saved_query_workflows() -> List[WorkflowSearchResult]:
+    return [
+        WorkflowSearchResult(
+            _index="test_index",
+            _type="test_type",
+            _id="test_id",
+            sort=["test_sort"],
+            _source={
+                "apiVersion": "v1",
+                "kind": "Workflow",
+                "metadata": {
+                    "name": "asq-123456",
+                    "annotations": {
+                        "package.argoproj.io/name": "@atlan/schedule-query"
+                    }
+                },
+                "spec": {}
+            }
+        )
+    ]
+
+def test_find_schedule_query_cron_by_saved_query_id(client: WorkflowClient, mock_api_caller, saved_query_workflows: List[WorkflowSearchResult]):
+    mock_response = {
+        "hits": {
+            "total": {
+                "value": 1,  # Adding total hits count
+                "relation": "eq"
+            },
+            "hits": saved_query_workflows
+        },
+        "_shards": {  # Required field _shards
+            "total": 5,
+            "successful": 5,
+            "skipped": 0,
+            "failed": 0
+        }
+    }
+    mock_api_caller._call_api.return_value = mock_response
+
+    saved_query_id = "123456"
+    results = client.find_schedule_query_cron_by_saved_query_id(saved_query_id)
+
+    # Assertions to check if the method behaves as expected
+    assert len(results) == 1  # Check if one result is returned
+    assert isinstance(results[0], WorkflowSearchResult)  # Validate the type of the result
+    assert results[0].source.metadata.name == "asq-123456"  # Validate the content of the result
+
+
+@pytest.fixture()
+def re_trigger_schedule_query_workflow_response() -> WorkflowRunResponse:
+    return WorkflowRunResponse(
+        status=WorkflowSearchResultStatus(),
+        metadata=WorkflowMetadata(name="scheduled-query-123", namespace="default"),
+        spec=WorkflowSpec(),
+    )
+def test_re_trigger_schedule_query_workflow(client, mock_api_caller, re_trigger_schedule_query_workflow_response: WorkflowRunResponse):
+    """Test the re_trigger_schedule_query_workflow method."""
+
+    mock_api_caller._call_api.return_value = re_trigger_schedule_query_workflow_response.dict()
+
+    schedule_query_id = "scheduled-query-123"
+    namespace = "default"
+
+    # Call the method with a test schedule_query_id and default namespace
+    response = client.re_trigger_schedule_query_workflow(schedule_query_id, namespace)
+
+    # Assertions to check if the method behaves as expected
+    assert isinstance(response, WorkflowRunResponse)
+    assert response.metadata.name == schedule_query_id
+    assert response.metadata.namespace == namespace
+
