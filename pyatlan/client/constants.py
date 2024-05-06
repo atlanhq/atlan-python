@@ -417,12 +417,14 @@ WORKFLOW_INDEX_SEARCH = API(
 WORKFLOW_INDEX_RUN_SEARCH = API(
     WORKFLOW_INDEX_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
-WORKFLOW_RERUN_API = "workflows/submit" #triggers a workflow using the current user's credentials
+# triggers a workflow using the current user's credentials
+WORKFLOW_RERUN_API = "workflows/submit"
 WORKFLOW_RERUN = API(
     WORKFLOW_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 
-WORKFLOW_OWNER_RERUN_API = "workflows/triggerAsOwner" #triggers a workflow using the workflow owner's credentials
+# triggers a workflow using the workflow owner's credentials
+WORKFLOW_OWNER_RERUN_API = "workflows/triggerAsOwner"
 WORKFLOW_OWNER_RERUN = API(
     WORKFLOW_OWNER_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )

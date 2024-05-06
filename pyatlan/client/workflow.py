@@ -15,7 +15,8 @@ from pyatlan.client.constants import (
     WORKFLOW_UPDATE,
     SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
-    WORKFLOW_CHANGE_OWNER, WORKFLOW_OWNER_RERUN,
+    WORKFLOW_CHANGE_OWNER,
+    WORKFLOW_OWNER_RERUN,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
@@ -159,6 +160,7 @@ class WorkflowClient:
             "startDate": request.start_date,
             "endDate": request.end_date,
         }
+
         raw_json = self._client._call_api(
             SCHEDULE_QUERY_WORKFLOWS_MISSED, query_params=query_params
         )
