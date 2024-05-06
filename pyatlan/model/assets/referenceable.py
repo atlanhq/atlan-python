@@ -285,6 +285,16 @@ class Referenceable(AtlanObject):
             "if used in an asset request on which `.save()` is called."
         ),
     )
+    depth: Optional[int] = Field(
+        default=None,
+        description=(
+            "Depth of this asset within lineage. "
+            "Note: this will only available in assets "
+            "retrieved via lineage, and will vary even for "
+            "the same asset depending on the starting point "
+            "of the lineage requested."
+        ),
+    )
 
 
 # Imports required for fixing circular dependencies:

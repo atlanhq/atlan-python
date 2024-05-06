@@ -650,6 +650,7 @@ def test_fetch_lineage_start_list(
     assert isinstance(results[3], View)
     one = results[3]
     assert one.guid == view.guid
+    assert one.depth == 2
     lineage = FluentLineage(
         starting_guid=table.guid, direction=LineageDirection.UPSTREAM
     ).request

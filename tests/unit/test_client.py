@@ -1257,6 +1257,7 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
 
     for asset in lineage_response:
         assert asset
+        assert asset.depth == 1
         assert asset.type_name == "View"
         assert asset.guid == "test-guid"
         assert asset.qualified_name == "test-qn"
