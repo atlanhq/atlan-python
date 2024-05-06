@@ -15,7 +15,7 @@ from pyatlan.client.constants import (
     WORKFLOW_UPDATE,
     SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
-    WORKFLOW_CHANGE_OWNER,
+    WORKFLOW_CHANGE_OWNER, WORKFLOW_OWNER_RERUN,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
@@ -119,11 +119,12 @@ class WorkflowClient:
     ) -> WorkflowRunResponse:
         """
         This method is used to re-trigger the schedule query workflow using schedule_query_id
+        schedule workflows are re-triggered using/impersonating the workflow's owners credential
         returns the details of the workflow run
         """
         request = ReRunRequest(namespace=namespace, resource_name=schedule_query_id)
         raw_json = self._client._call_api(
-            WORKFLOW_RERUN,
+            WORKFLOW_OWNER_RERUN,
             request_obj=request,
         )
         return WorkflowRunResponse(**raw_json)
