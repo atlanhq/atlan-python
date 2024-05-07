@@ -1,4 +1,10 @@
 from pyatlan.model.assets import AtlasGlossary
+from pyatlan.model.workflow import (
+    ScheduleQueriesSearchRequest,
+    WorkflowMetadata,
+    WorkflowResponse,
+    WorkflowSpec,
+)
 
 TEST_ASSET_CLIENT_METHODS = {
     "find_personas_by_name": [
@@ -463,6 +469,65 @@ TEST_FILE_CLIENT_METHODS = {
             ["test-url", None],
             "none is not an allowed value",
         ),
+    ],
+}
+
+
+TEST_WORKFLOW_CLIENT_METHODS = {
+    "run": [
+        (["abc"], "value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "rerun": [
+        (["abc"], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "update": [
+        (["abc"], "value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "find_by_type": [
+        (["abc"], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "monitor": [
+        (["abc", "test-logger"], "value is not a valid dict"),
+        (
+            [
+                WorkflowResponse(metadata=WorkflowMetadata(), spec=WorkflowSpec()),
+                "test-logger",
+            ],
+            "instance of Logger expected",
+        ),
+        ([None, "test-logger"], "none is not an allowed value"),
+    ],
+    "find_schedule_query": [
+        ([[123], 10], "saved_query_id\n  str type expected"),
+        ([None, 10], "none is not an allowed value"),
+        (["test-query-id", [123]], "max_results\n  value is not a valid integer"),
+        (["test-query-id", None], "none is not an allowed value"),
+    ],
+    "re_run_schedule_query": [
+        ([[123]], "schedule_query_id\n  str type expected"),
+        ([None], "none is not an allowed value"),
+    ],
+    "find_schedule_query_between": [
+        ([[123], True], "value is not a valid dict"),
+        ([None, True], "none is not an allowed value"),
+        (
+            [ScheduleQueriesSearchRequest(start_date="start", end_date="end"), [123]],
+            "missed\n  value could not be parsed to a boolean",
+        ),
+        (
+            [ScheduleQueriesSearchRequest(start_date="start", end_date="end"), None],
+            "none is not an allowed value",
+        ),
+    ],
+    "update_owner": [
+        ([[123], 10], "workflow_name\n  str type expected"),
+        ([None, 10], "none is not an allowed value"),
+        (["test-workflow", [123]], "username\n  str type expected"),
+        (["test-workflow", None], "none is not an allowed value"),
     ],
 }
 
