@@ -49,7 +49,7 @@ from .a_w_s import AWS
 from .dbt_column_process import DbtColumnProcess
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
-from .s3 import S3
+# from .s3 import S3
 from .a_d_l_s import ADLS
 from .g_c_s import GCS
 from .monte_carlo import MonteCarlo
@@ -114,8 +114,8 @@ from .a_p_i_path import APIPath
 from .spark_job import SparkJob
 from .schema_registry_subject import SchemaRegistrySubject
 from .data_studio_asset import DataStudioAsset
-from .s3_bucket import S3Bucket
-from .s3_object import S3Object
+# from .s3_bucket import S3Bucket
+# from .s3_object import S3Object
 from .a_d_l_s_account import ADLSAccount
 from .a_d_l_s_container import ADLSContainer
 from .a_d_l_s_object import ADLSObject
@@ -289,7 +289,7 @@ AWS.Attributes.update_forward_refs(**localns)
 DbtColumnProcess.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
-S3.Attributes.update_forward_refs(**localns)
+# S3.Attributes.update_forward_refs(**localns)
 ADLS.Attributes.update_forward_refs(**localns)
 GCS.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
@@ -354,8 +354,8 @@ APIPath.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
 DataStudioAsset.Attributes.update_forward_refs(**localns)
-S3Bucket.Attributes.update_forward_refs(**localns)
-S3Object.Attributes.update_forward_refs(**localns)
+# S3Bucket.Attributes.update_forward_refs(**localns)
+# S3Object.Attributes.update_forward_refs(**localns)
 ADLSAccount.Attributes.update_forward_refs(**localns)
 ADLSContainer.Attributes.update_forward_refs(**localns)
 ADLSObject.Attributes.update_forward_refs(**localns)
