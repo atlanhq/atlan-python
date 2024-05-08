@@ -1535,7 +1535,10 @@ class AssetClient:
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/pydantic/pydantic/issues/2901
     def get_hierarchy(
-        self, glossary: AtlasGlossary, attributes: Optional[List[AtlanField]] = None
+        self,
+        glossary: AtlasGlossary,
+        attributes: Optional[List[AtlanField]] = None,
+        related_attributes: Optional[List[AtlanField]] = None,
     ) -> CategoryHierarchy:
         """
         Retrieve category hierarchy in this Glossary, in a traversable form. You can traverse in either depth_first
@@ -1546,6 +1549,7 @@ class AssetClient:
 
         :param glossary: the glossary to retrieve the category hierarchy for
         :param attributes: attributes to retrieve for each category in the hierarchy
+        :param related_attributes: attributes to retrieve for each related asset in the hierarchy
         :returns: a traversable category hierarchy
         """
         from pyatlan.model.fluent_search import FluentSearch
@@ -1554,6 +1558,8 @@ class AssetClient:
             raise ErrorCode.GLOSSARY_MISSING_QUALIFIED_NAME.exception_with_parameters()
         if attributes is None:
             attributes = []
+        if related_attributes is None:
+            related_attributes = []
         top_categories: Set[str] = set()
         category_dict: Dict[str, AtlasGlossaryCategory] = {}
         search = (
@@ -1565,7 +1571,9 @@ class AssetClient:
             .sort(AtlasGlossaryCategory.NAME.order(SortOrder.ASCENDING))
         )
         for field in attributes:
-            search.include_on_results(field)
+            search = search.include_on_results(field)
+        for field in related_attributes:
+            search = search.include_on_relations(field)
         request = search.to_request()
         response = self.search(request)
         for category in filter(
