@@ -408,9 +408,34 @@ WORKFLOW_RUN_API = "workflows?submit=true"
 WORKFLOW_RUN = API(
     WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
-WORKFLOW_UPDATE_API = "workflows"
+WORKFLOW_API = "workflows"
 WORKFLOW_UPDATE = API(
-    WORKFLOW_UPDATE_API + "/{workflow_name}",
+    WORKFLOW_API + "/{workflow_name}",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+WORKFLOW_ARCHIVE = API(
+    WORKFLOW_API + "/{workflow_name}/archive",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+WORKFLOW_SCHEDULE_RUN = "runs"
+GET_ALL_SCHEDULE_RUNS = API(
+    WORKFLOW_SCHEDULE_RUN + "/cron",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+GET_SCHEDULE_RUN = API(
+    WORKFLOW_SCHEDULE_RUN + "/cron/{workflow_name}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+STOP_WORKFLOW_RUN = API(
+    WORKFLOW_SCHEDULE_RUN + "/{workflow_run_id}/stop",
     HTTPMethod.POST,
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
