@@ -30,7 +30,6 @@ from pyatlan.model.enums import (
     CertificateStatus,
     SortOrder,
     UTMTags,
-    WorkflowPackage,
 )
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, SortItem, Term
@@ -546,14 +545,6 @@ def test_glossary_category_remove_announcement(
     client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
 ):
     _test_remove_announcement(client, category, AtlasGlossaryCategory, glossary.guid)
-
-
-def test_workflow_find_by_type(client: AtlanClient):
-    results = client.workflow.find_by_type(
-        prefix=WorkflowPackage.SNOWFLAKE, max_results=10
-    )
-    assert results
-    assert len(results) >= 1
 
 
 def test_audit_find_by_user(

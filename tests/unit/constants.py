@@ -1,4 +1,11 @@
 from pyatlan.model.assets import AtlasGlossary
+from pyatlan.model.enums import AtlanWorkflowPhase
+from pyatlan.model.workflow import (
+    WorkflowMetadata,
+    WorkflowResponse,
+    WorkflowSchedule,
+    WorkflowSpec,
+)
 
 TEST_ASSET_CLIENT_METHODS = {
     "find_personas_by_name": [
@@ -463,6 +470,71 @@ TEST_FILE_CLIENT_METHODS = {
             ["test-url", None],
             "none is not an allowed value",
         ),
+    ],
+}
+
+TEST_WORKFLOW_CLIENT_METHODS = {
+    "run": [
+        (["abc"], "value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "rerun": [
+        (["abc"], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "update": [
+        (["abc"], "value is not a valid dict"),
+        ([None], "none is not an allowed value"),
+    ],
+    "find_by_type": [
+        (["abc"], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "monitor": [
+        (["abc", "test-logger"], "value is not a valid dict"),
+        (
+            [
+                WorkflowResponse(metadata=WorkflowMetadata(), spec=WorkflowSpec()),
+                "test-logger",
+            ],
+            "instance of Logger expected",
+        ),
+        ([None, "test-logger"], "none is not an allowed value"),
+    ],
+    "get_runs": [
+        ([[123], AtlanWorkflowPhase.RUNNING, 123, 456], "str type expected"),
+        ([None, AtlanWorkflowPhase.RUNNING, 123, 456], "none is not an allowed value"),
+    ],
+    "stop": [
+        ([[123]], "str type expected"),
+        ([None], "none is not an allowed value"),
+    ],
+    "delete": [
+        ([[123]], "str type expected"),
+        ([None], "none is not an allowed value"),
+    ],
+    "add_schedule": [
+        (
+            [[123], WorkflowSchedule(timezone="atlan", cron_schedule="*")],
+            "value is not a valid dict",
+        ),
+        (
+            [[123], WorkflowSchedule(timezone="atlan", cron_schedule="*")],
+            "value is not a valid enumeration member",
+        ),
+        (
+            [None, WorkflowSchedule(timezone="atlan", cron_schedule="*")],
+            "none is not an allowed value",
+        ),
+    ],
+    "remove_schedule": [
+        ([[123]], "value is not a valid dict"),
+        ([[123]], "value is not a valid enumeration member"),
+        ([None], "none is not an allowed value"),
+    ],
+    "get_scheduled_run": [
+        ([[123]], "str type expected"),
+        ([None], "none is not an allowed value"),
     ],
 }
 

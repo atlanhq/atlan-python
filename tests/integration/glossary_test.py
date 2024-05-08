@@ -588,7 +588,6 @@ def test_find_category_by_name_qn_guid_correctly_populated(
     mid1a_term: AtlasGlossaryTerm,
     mid2a_category: AtlasGlossaryCategory,
 ):
-
     category = client.asset.find_category_by_name(
         name=mid1a_category.name,
         glossary_name=hierarchy_glossary.name,
@@ -672,7 +671,11 @@ def test_hierarchy(
     leaf2ba_category: AtlasGlossaryCategory,
 ):
     sleep(10)
-    hierarchy = client.asset.get_hierarchy(glossary=hierarchy_glossary)
+    hierarchy = client.asset.get_hierarchy(
+        glossary=hierarchy_glossary,
+        attributes=[AtlasGlossaryCategory.TERMS],
+        related_attributes=[AtlasGlossaryTerm.NAME],
+    )
 
     root_categories = hierarchy.root_categories
 
@@ -682,9 +685,15 @@ def test_hierarchy(
     assert root_categories[1].name
     assert "top" in root_categories[0].name
     assert "top" in root_categories[1].name
-
     assert hierarchy.get_category(top1_category.guid)
+    category_without_terms = hierarchy.get_category(top1_category.guid)
+    assert category_without_terms.terms is not None
+    assert 0 == len(category_without_terms.terms)
     assert hierarchy.get_category(mid1a_category.guid)
+    category_with_term = hierarchy.get_category(mid1a_category.guid)
+    assert category_with_term.terms
+    assert 1 == len(category_with_term.terms)
+    assert f"mid1a_{TERM_NAME1}" == category_with_term.terms[0].name
     assert hierarchy.get_category(leaf1aa_category.guid)
     assert hierarchy.get_category(leaf1ab_category.guid)
     assert hierarchy.get_category(mid1b_category.guid)
