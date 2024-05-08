@@ -115,17 +115,15 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
 def test_workflow_get_all_scheduled_runs(
     client: AtlanClient, workflow: WorkflowResponse
 ):
-    found = False
     runs = client.workflow.get_all_scheduled_runs()
 
     assert workflow and workflow.metadata.name
     scheduled_workflow_name = f"{workflow.metadata.name}-cron"
     assert runs and len(runs) >= 1
 
-    for run in runs:
-        if run.metadata and run.metadata.name == scheduled_workflow_name:
-            found = True
-            break
+    found = any(
+        run.metadata and run.metadata.name == scheduled_workflow_name for run in runs
+    )
 
     if not found:
         pytest.fail(
