@@ -1,3 +1,17 @@
+## 2.1.8 (May 8, 2024)
+
+### New features
+
+- Added support for `Snowflake Miner`.
+- Introduced new connector types: `COGNITE`, `SYNDIGO`, `NETEZZA`, and `AZURE_SERVICE_BUS`.
+- Added an optional `depth` field to indicate the asset's depth within lineage in the `Referenceable` model.
+- Added an optional parameter (`related_attributes`) to the `get_hierarchy()` method, allowing users to specify a list of attributes to retrieve for each related asset in the hierarchy.
+- Expanded the functionality of the `WorkflowClient` with new methods for scheduling, stopping, and deleting workflows.
+
+### QOL improvements
+
+- Upgraded `jinja2` from `3.1.3` to `3.1.4` to address a security vulnerability: [GHSA-h75v-3vvj-5mfj](https://github.com/advisories/GHSA-h75v-3vvj-5mfj).
+
 ## 2.1.7 (April 30, 2024)
 
 ### New features
