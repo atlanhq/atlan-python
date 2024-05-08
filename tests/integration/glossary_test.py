@@ -687,6 +687,7 @@ def test_hierarchy(
     assert "top" in root_categories[1].name
     assert hierarchy.get_category(top1_category.guid)
     category_without_terms = hierarchy.get_category(top1_category.guid)
+    assert category_without_terms.terms is not None
     assert 0 == len(category_without_terms.terms)
     assert hierarchy.get_category(mid1a_category.guid)
     category_with_term = hierarchy.get_category(mid1a_category.guid)
