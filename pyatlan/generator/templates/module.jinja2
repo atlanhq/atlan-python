@@ -6,6 +6,12 @@
 
 {% include 'imports.jinja2' %}
 
+from pyatlan.model.enums import (
+{% for enum in enum_defs %}
+{{ enum.name }},
+{% endfor %}
+)
+
 {% if asset_info.name != 'Referenceable' and asset_info.name != 'Asset' %}
 from .asset import SelfAsset
 {% endif %}
