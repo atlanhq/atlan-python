@@ -37,9 +37,9 @@ class PowerBICrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[List[str]],
-        admin_groups: Optional[List[str]],
-        admin_users: Optional[List[str]],
+        admin_roles: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_users: Optional[List[str]] = None,
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,
@@ -66,7 +66,7 @@ class PowerBICrawler(AbstractCrawler):
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "host": "api.powerbi.com",
             "port": 443,
-            "connectorConfigName": f"atlan-connectors-{self._NAME}",
+            "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
         self._credentials_body.update(local_creds)
         return self

@@ -33,9 +33,9 @@ class SnowflakeCrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[List[str]],
-        admin_groups: Optional[List[str]],
-        admin_users: Optional[List[str]],
+        admin_roles: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_users: Optional[List[str]] = None,
         allow_query: bool = True,
         allow_query_preview: bool = True,
         row_limit: int = 10000,
