@@ -29,6 +29,9 @@ You can interact with all of the following different kinds of assets:
     asset/azure
     asset/azureeventhub
     asset/azureeventhubconsumergroup
+    asset/azureservicebus
+    asset/azureservicebusnamespace
+    asset/azureservicebustopic
     asset/bi
     asset/biprocess
     asset/badge
@@ -46,10 +49,14 @@ You can interact with all of the following different kinds of assets:
     asset/column
     asset/columnprocess
     asset/connection
+    asset/cosmosmongodb
+    asset/cosmosmongodbcollection
+    asset/cosmosmongodbdatabase
     asset/cube
     asset/cubedimension
     asset/cubefield
     asset/cubehierarchy
+    asset/datacontract
     asset/datadomain
     asset/datamesh
     asset/dataproduct

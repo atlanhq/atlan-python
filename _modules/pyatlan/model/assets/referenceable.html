@@ -177,6 +177,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/azure.html">Azure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureeventhub.html">AzureEventHub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureservicebus.html">AzureServiceBus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureservicebusnamespace.html">AzureServiceBusNamespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureservicebustopic.html">AzureServiceBusTopic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/badge.html">Badge</a></li>
@@ -194,10 +197,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cosmosmongodb.html">CosmosMongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cosmosmongodbcollection.html">CosmosMongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cosmosmongodbdatabase.html">CosmosMongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cube.html">Cube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubedimension.html">CubeDimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubefield.html">CubeField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubehierarchy.html">CubeHierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -520,6 +527,14 @@
 
     <span class="k">def</span> <span class="nf">flush_custom_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">business_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_proxy</span><span class="o">.</span><span class="n">business_attributes</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__get_validators__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_convert_to_real_type_</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_convert_to_real_type_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Asset</span><span class="o">.</span><span class="n">_convert_to_real_type_</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Referenceable.can_be_archived">
 <a class="viewcode-back" href="../../../../asset/referenceable.html#pyatlan.model.assets.Referenceable.can_be_archived">[docs]</a>

@@ -178,6 +178,9 @@
 <li class="toctree-l2"><a class="reference internal" href="azure.html">Azure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="azureeventhub.html">AzureEventHub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebus.html">AzureServiceBus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebusnamespace.html">AzureServiceBusNamespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebustopic.html">AzureServiceBusTopic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="badge.html">Badge</a></li>
@@ -195,10 +198,14 @@
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodb.html">CosmosMongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodbcollection.html">CosmosMongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodbdatabase.html">CosmosMongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cube.html">Cube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cubedimension.html">CubeDimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cubefield.html">CubeField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cubehierarchy.html">CubeHierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
@@ -939,6 +946,18 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.DATA_CONTRACT_LATEST">
+<span class="sig-name descname"><span class="pre">DATA_CONTRACT_LATEST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.DATA_CONTRACT_LATEST" title="Link to this definition">#</a></dt>
+<dd><p>TBC</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.DATA_CONTRACT_LATEST_CERTIFIED">
+<span class="sig-name descname"><span class="pre">DATA_CONTRACT_LATEST_CERTIFIED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.DATA_CONTRACT_LATEST_CERTIFIED" title="Link to this definition">#</a></dt>
+<dd><p>TBC</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.DBT_QUALIFIED_NAME">
 <span class="sig-name descname"><span class="pre">DBT_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.DBT_QUALIFIED_NAME" title="Link to this definition">#</a></dt>
 <dd><p>Unique name of this asset in dbt.</p>
@@ -960,6 +979,12 @@
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.FILES">
 <span class="sig-name descname"><span class="pre">FILES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.FILES" title="Link to this definition">#</a></dt>
 <dd><p>TBC</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.HAS_CONTRACT">
+<span class="sig-name descname"><span class="pre">HAS_CONTRACT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.HAS_CONTRACT" title="Link to this definition">#</a></dt>
+<dd><p>Whether this asset has contract (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1445,10 +1470,13 @@ downstream chain a .direction() call</p>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.CONNECTION_NAME"><code class="docutils literal notranslate"><span class="pre">Asset.CONNECTION_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.CONNECTION_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">Asset.CONNECTION_QUALIFIED_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.CONNECTOR_NAME"><code class="docutils literal notranslate"><span class="pre">Asset.CONNECTOR_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.DATA_CONTRACT_LATEST"><code class="docutils literal notranslate"><span class="pre">Asset.DATA_CONTRACT_LATEST</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.DATA_CONTRACT_LATEST_CERTIFIED"><code class="docutils literal notranslate"><span class="pre">Asset.DATA_CONTRACT_LATEST_CERTIFIED</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.DBT_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">Asset.DBT_QUALIFIED_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.DESCRIPTION"><code class="docutils literal notranslate"><span class="pre">Asset.DESCRIPTION</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.DISPLAY_NAME"><code class="docutils literal notranslate"><span class="pre">Asset.DISPLAY_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.FILES"><code class="docutils literal notranslate"><span class="pre">Asset.FILES</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.HAS_CONTRACT"><code class="docutils literal notranslate"><span class="pre">Asset.HAS_CONTRACT</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.HAS_LINEAGE"><code class="docutils literal notranslate"><span class="pre">Asset.HAS_LINEAGE</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.INPUT_PORT_DATA_PRODUCTS"><code class="docutils literal notranslate"><span class="pre">Asset.INPUT_PORT_DATA_PRODUCTS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.IS_AI_GENERATED"><code class="docutils literal notranslate"><span class="pre">Asset.IS_AI_GENERATED</span></code></a></li>

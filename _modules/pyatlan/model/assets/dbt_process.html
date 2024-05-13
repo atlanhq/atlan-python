@@ -177,6 +177,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/azure.html">Azure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureeventhub.html">AzureEventHub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureservicebus.html">AzureServiceBus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureservicebusnamespace.html">AzureServiceBusNamespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/azureservicebustopic.html">AzureServiceBusTopic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/badge.html">Badge</a></li>
@@ -194,10 +197,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cosmosmongodb.html">CosmosMongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cosmosmongodbcollection.html">CosmosMongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cosmosmongodbdatabase.html">CosmosMongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cube.html">Cube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubedimension.html">CubeDimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubefield.html">CubeField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cubehierarchy.html">CubeHierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
@@ -634,6 +641,10 @@
 <span class="sd">    Parsed AST of the code or SQL statements that describe the logic of this process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">SPARK_JOBS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sparkJobs&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MATILLION_COMPONENT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;matillionComponent&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
@@ -643,10 +654,6 @@
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COLUMN_PROCESSES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;columnProcesses&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TBC</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SPARK_JOBS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;sparkJobs&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -676,10 +683,10 @@
         <span class="s2">&quot;code&quot;</span><span class="p">,</span>
         <span class="s2">&quot;sql&quot;</span><span class="p">,</span>
         <span class="s2">&quot;ast&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;spark_jobs&quot;</span><span class="p">,</span>
         <span class="s2">&quot;matillion_component&quot;</span><span class="p">,</span>
         <span class="s2">&quot;airflow_tasks&quot;</span><span class="p">,</span>
         <span class="s2">&quot;column_processes&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;spark_jobs&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -947,6 +954,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">ast</span> <span class="o">=</span> <span class="n">ast</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spark_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">spark_jobs</span>
+
+    <span class="nd">@spark_jobs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">spark_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spark_jobs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">spark_jobs</span> <span class="o">=</span> <span class="n">spark_jobs</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">matillion_component</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MatillionComponent</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">matillion_component</span>
 
@@ -975,16 +992,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">column_processes</span> <span class="o">=</span> <span class="n">column_processes</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spark_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">spark_jobs</span>
-
-    <span class="nd">@spark_jobs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">spark_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spark_jobs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">spark_jobs</span> <span class="o">=</span> <span class="n">spark_jobs</span>
 
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Dbt</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
         <span class="n">dbt_process_job_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -1015,6 +1022,9 @@
         <span class="n">code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">sql</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">ast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">spark_jobs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">matillion_component</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MatillionComponent</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
@@ -1022,9 +1032,6 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">column_processes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ColumnProcess</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-        <span class="p">)</span>  <span class="c1"># relationship</span>
-        <span class="n">spark_jobs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SparkJob</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
