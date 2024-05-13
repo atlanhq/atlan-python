@@ -1,0 +1,125 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "warehouse,crawler",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6326782856081",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg",
+        "orchestration.atlan.com/logo": "https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/bigquery",
+        "orchestration.atlan.com/name": "BigQuery Assets",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl BigQuery assets and publish to Atlan for discovery",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/bigquery",
+        "package.argoproj.io/keywords": "[\"bigquery\",\"connector\",\"crawler\",\"google\"]",
+        "package.argoproj.io/name": "@atlan/bigquery",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-bigquery-default-bigquery-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "bigquery",
+        "orchestration.atlan.com/sourceCategory": "warehouse",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hbigquery",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-bigquery-123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-bigquery-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "include-filter",
+                      "value": "{\"^test-include$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
+                    },
+                    {
+                      "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
+                      "name": "temp-table-regex",
+                      "value": ".*_TEST"
+                    },
+                    {
+                      "name": "control-config",
+                      "value": "{'test': True, 'feature': 1234}"
+                    },
+                    {
+                      "name": "credentials-fetch-strategy",
+                      "value": "credential_guid"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "control-config-strategy",
+                      "value": "custom"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/bigquery/123456\", \"name\": \"test-big-query-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"bigquery\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    },
+                    {
+                      "name": "publish-mode",
+                      "value": "production"
+                    },
+                    {
+                      "name": "atlas-auth-type",
+                      "value": "internal"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-bigquery",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/bigquery"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "name": "default-bigquery-123456-0",
+          "host": "https://www.googleapis.com/bigquery/v2",
+          "port": 443,
+          "authType": "basic",
+          "username": "test@test.com",
+          "password": "test-account-json",
+          "extra": {
+            "project_id": "test-project-id"
+          },
+          "connectorConfigName": "atlan-connectors-bigquery"
+        }
+      }
+    ]
+}
