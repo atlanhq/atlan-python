@@ -989,6 +989,10 @@ class Asset(Referenceable):
     """
     Color (in hexadecimal RGB) to use to represent this asset.
     """
+    HAS_CONTRACT: ClassVar[BooleanField] = BooleanField("hasContract", "hasContract")
+    """
+    Whether this asset has contract (true) or not (false).
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -996,13 +1000,27 @@ class Asset(Referenceable):
     """
     TBC
     """
-    MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[RelationField] = RelationField(
+        "dataContractLatestCertified"
+    )
     """
     TBC
     """
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
         "outputPortDataProducts"
     )
+    """
+    TBC
+    """
+    README: ClassVar[RelationField] = RelationField("readme")
+    """
+    TBC
+    """
+    DATA_CONTRACT_LATEST: ClassVar[RelationField] = RelationField("dataContractLatest")
+    """
+    TBC
+    """
+    MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
     """
     TBC
     """
@@ -1019,10 +1037,6 @@ class Asset(Referenceable):
     TBC
     """
     METRICS: ClassVar[RelationField] = RelationField("metrics")
-    """
-    TBC
-    """
-    README: ClassVar[RelationField] = RelationField("readme")
     """
     TBC
     """
@@ -1164,17 +1178,20 @@ class Asset(Referenceable):
         "is_a_i_generated",
         "asset_cover_image",
         "asset_theme_hex",
+        "has_contract",
         "schema_registry_subjects",
-        "mc_monitors",
+        "data_contract_latest_certified",
         "output_port_data_products",
+        "readme",
+        "data_contract_latest",
+        "assigned_terms",
+        "mc_monitors",
         "files",
         "mc_incidents",
         "links",
         "metrics",
-        "readme",
         "input_port_data_products",
         "soda_checks",
-        "assigned_terms",
     ]
 
     @property
@@ -2835,6 +2852,16 @@ class Asset(Referenceable):
         self.attributes.asset_theme_hex = asset_theme_hex
 
     @property
+    def has_contract(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.has_contract
+
+    @has_contract.setter
+    def has_contract(self, has_contract: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.has_contract = has_contract
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -2851,14 +2878,20 @@ class Asset(Referenceable):
         self.attributes.schema_registry_subjects = schema_registry_subjects
 
     @property
-    def mc_monitors(self) -> Optional[List[MCMonitor]]:
-        return None if self.attributes is None else self.attributes.mc_monitors
+    def data_contract_latest_certified(self) -> Optional[DataContract]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_latest_certified
+        )
 
-    @mc_monitors.setter
-    def mc_monitors(self, mc_monitors: Optional[List[MCMonitor]]):
+    @data_contract_latest_certified.setter
+    def data_contract_latest_certified(
+        self, data_contract_latest_certified: Optional[DataContract]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mc_monitors = mc_monitors
+        self.attributes.data_contract_latest_certified = data_contract_latest_certified
 
     @property
     def output_port_data_products(self) -> Optional[List[DataProduct]]:
@@ -2875,6 +2908,46 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_port_data_products = output_port_data_products
+
+    @property
+    def readme(self) -> Optional[Readme]:
+        return None if self.attributes is None else self.attributes.readme
+
+    @readme.setter
+    def readme(self, readme: Optional[Readme]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.readme = readme
+
+    @property
+    def data_contract_latest(self) -> Optional[DataContract]:
+        return None if self.attributes is None else self.attributes.data_contract_latest
+
+    @data_contract_latest.setter
+    def data_contract_latest(self, data_contract_latest: Optional[DataContract]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_latest = data_contract_latest
+
+    @property
+    def assigned_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.meanings
+
+    @assigned_terms.setter
+    def assigned_terms(self, assigned_terms: Optional[List[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = assigned_terms
+
+    @property
+    def mc_monitors(self) -> Optional[List[MCMonitor]]:
+        return None if self.attributes is None else self.attributes.mc_monitors
+
+    @mc_monitors.setter
+    def mc_monitors(self, mc_monitors: Optional[List[MCMonitor]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitors = mc_monitors
 
     @property
     def files(self) -> Optional[List[File]]:
@@ -2917,16 +2990,6 @@ class Asset(Referenceable):
         self.attributes.metrics = metrics
 
     @property
-    def readme(self) -> Optional[Readme]:
-        return None if self.attributes is None else self.attributes.readme
-
-    @readme.setter
-    def readme(self, readme: Optional[Readme]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.readme = readme
-
-    @property
     def input_port_data_products(self) -> Optional[List[DataProduct]]:
         return (
             None
@@ -2951,16 +3014,6 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.soda_checks = soda_checks
-
-    @property
-    def assigned_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.meanings
-
-    @assigned_terms.setter
-    def assigned_terms(self, assigned_terms: Optional[List[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
         name: Optional[str] = Field(default=None, description="")
@@ -3191,13 +3244,24 @@ class Asset(Referenceable):
         is_a_i_generated: Optional[bool] = Field(default=None, description="")
         asset_cover_image: Optional[str] = Field(default=None, description="")
         asset_theme_hex: Optional[str] = Field(default=None, description="")
+        has_contract: Optional[bool] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
-        mc_monitors: Optional[List[MCMonitor]] = Field(
+        data_contract_latest_certified: Optional[DataContract] = Field(
             default=None, description=""
         )  # relationship
         output_port_data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
+        readme: Optional[Readme] = Field(default=None, description="")  # relationship
+        data_contract_latest: Optional[DataContract] = Field(
+            default=None, description=""
+        )  # relationship
+        meanings: Optional[List[AtlasGlossaryTerm]] = Field(
+            default=None, description=""
+        )  # relationship
+        mc_monitors: Optional[List[MCMonitor]] = Field(
             default=None, description=""
         )  # relationship
         files: Optional[List[File]] = Field(
@@ -3212,14 +3276,10 @@ class Asset(Referenceable):
         metrics: Optional[List[Metric]] = Field(
             default=None, description=""
         )  # relationship
-        readme: Optional[Readme] = Field(default=None, description="")  # relationship
         input_port_data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
         soda_checks: Optional[List[SodaCheck]] = Field(
-            default=None, description=""
-        )  # relationship
-        meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -3253,6 +3313,7 @@ class Asset(Referenceable):
 
 
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
+from .data_contract import DataContract  # noqa
 from .data_product import DataProduct  # noqa
 from .file import File  # noqa
 from .link import Link  # noqa

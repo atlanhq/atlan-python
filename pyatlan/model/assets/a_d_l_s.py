@@ -8,17 +8,13 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import (
-    KeywordField,
-    KeywordTextField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 from pyatlan.model.structs import AzureTag
 
-from .azure import Azure
+from .object_store import ObjectStore
 
 
-class ADLS(Azure):
+class ADLS(ObjectStore):
     """Description"""
 
     type_name: str = Field(default="ADLS", allow_mutation=False)
@@ -65,51 +61,12 @@ class ADLS(Azure):
     Tags that have been applied to this asset in Azure.
     """
 
-    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
-    """
-    TBC
-    """
-    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
-        "outputFromAirflowTasks"
-    )
-    """
-    TBC
-    """
-    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
-    """
-    TBC
-    """
-    OUTPUT_FROM_SPARK_JOBS: ClassVar[RelationField] = RelationField(
-        "outputFromSparkJobs"
-    )
-    """
-    TBC
-    """
-    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
-        "inputToAirflowTasks"
-    )
-    """
-    TBC
-    """
-    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
-        "outputFromProcesses"
-    )
-    """
-    TBC
-    """
-
     _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
-        "input_to_processes",
-        "output_from_airflow_tasks",
-        "input_to_spark_jobs",
-        "output_from_spark_jobs",
-        "input_to_airflow_tasks",
-        "output_from_processes",
     ]
 
     @property
@@ -174,81 +131,7 @@ class ADLS(Azure):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    @property
-    def input_to_processes(self) -> Optional[List[Process]]:
-        return None if self.attributes is None else self.attributes.input_to_processes
-
-    @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[List[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_processes = input_to_processes
-
-    @property
-    def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.output_from_airflow_tasks
-        )
-
-    @output_from_airflow_tasks.setter
-    def output_from_airflow_tasks(
-        self, output_from_airflow_tasks: Optional[List[AirflowTask]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
-
-    @property
-    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.input_to_spark_jobs
-
-    @input_to_spark_jobs.setter
-    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_spark_jobs = input_to_spark_jobs
-
-    @property
-    def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
-        return (
-            None if self.attributes is None else self.attributes.output_from_spark_jobs
-        )
-
-    @output_from_spark_jobs.setter
-    def output_from_spark_jobs(self, output_from_spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_spark_jobs = output_from_spark_jobs
-
-    @property
-    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
-        return (
-            None if self.attributes is None else self.attributes.input_to_airflow_tasks
-        )
-
-    @input_to_airflow_tasks.setter
-    def input_to_airflow_tasks(
-        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
-
-    @property
-    def output_from_processes(self) -> Optional[List[Process]]:
-        return (
-            None if self.attributes is None else self.attributes.output_from_processes
-        )
-
-    @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[List[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_processes = output_from_processes
-
-    class Attributes(Azure.Attributes):
+    class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(default=None, description="")
         azure_resource_id: Optional[str] = Field(default=None, description="")
         azure_location: Optional[str] = Field(default=None, description="")
@@ -256,24 +139,6 @@ class ADLS(Azure):
             default=None, description=""
         )
         azure_tags: Optional[List[AzureTag]] = Field(default=None, description="")
-        input_to_processes: Optional[List[Process]] = Field(
-            default=None, description=""
-        )  # relationship
-        output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
-            default=None, description=""
-        )  # relationship
-        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        output_from_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
-            default=None, description=""
-        )  # relationship
-        output_from_processes: Optional[List[Process]] = Field(
-            default=None, description=""
-        )  # relationship
 
     attributes: ADLS.Attributes = Field(
         default_factory=lambda: ADLS.Attributes(),
@@ -283,8 +148,3 @@ class ADLS(Azure):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-from .airflow_task import AirflowTask  # noqa
-from .process import Process  # noqa
-from .spark_job import SparkJob  # noqa

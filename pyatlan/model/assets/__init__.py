@@ -26,6 +26,7 @@ from .purpose import Purpose
 from .collection import Collection
 from .folder import Folder
 from .airflow import Airflow
+from .data_contract import DataContract
 from .object_store import ObjectStore
 from .data_quality import DataQuality
 from .b_i import BI
@@ -92,11 +93,13 @@ from .function import Function
 from .table_partition import TablePartition
 from .column import Column
 from .snowflake_stream import SnowflakeStream
-from .calculation_view import CalculationView
 from .database import Database
+from .calculation_view import CalculationView
 from .procedure import Procedure
 from .snowflake_tag import SnowflakeTag
 from .kafka import Kafka
+from .azure_service_bus import AzureServiceBus
+from .cosmos_mongo_d_b import CosmosMongoDB
 from .dynamo_d_b import DynamoDB
 from .mongo_d_b import MongoDB
 from .matillion_group import MatillionGroup
@@ -231,6 +234,10 @@ from .dynamo_dbtable import DynamoDBTable
 from .mongo_d_b_database import MongoDBDatabase
 from .kafka_topic import KafkaTopic
 from .kafka_consumer_group import KafkaConsumerGroup
+from .azure_service_bus_namespace import AzureServiceBusNamespace
+from .azure_service_bus_topic import AzureServiceBusTopic
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
 from .qlik_stream import QlikStream
 from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
@@ -266,6 +273,7 @@ Purpose.Attributes.update_forward_refs(**localns)
 Collection.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
+DataContract.Attributes.update_forward_refs(**localns)
 ObjectStore.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
@@ -332,11 +340,13 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 Kafka.Attributes.update_forward_refs(**localns)
+AzureServiceBus.Attributes.update_forward_refs(**localns)
+CosmosMongoDB.Attributes.update_forward_refs(**localns)
 DynamoDB.Attributes.update_forward_refs(**localns)
 MongoDB.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)
@@ -471,6 +481,10 @@ DynamoDBTable.Attributes.update_forward_refs(**localns)
 MongoDBDatabase.Attributes.update_forward_refs(**localns)
 KafkaTopic.Attributes.update_forward_refs(**localns)
 KafkaConsumerGroup.Attributes.update_forward_refs(**localns)
+AzureServiceBusNamespace.Attributes.update_forward_refs(**localns)
+AzureServiceBusTopic.Attributes.update_forward_refs(**localns)
+CosmosMongoDBCollection.Attributes.update_forward_refs(**localns)
+CosmosMongoDBDatabase.Attributes.update_forward_refs(**localns)
 QlikStream.Attributes.update_forward_refs(**localns)
 DynamoDBLocalSecondaryIndex.Attributes.update_forward_refs(**localns)
 DynamoDBGlobalSecondaryIndex.Attributes.update_forward_refs(**localns)
