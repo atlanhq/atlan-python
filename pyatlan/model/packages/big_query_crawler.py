@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
-class SQLServerCrawler(AbstractCrawler):
+class BigQueryCrawler(AbstractCrawler):
     """
-    Base configuration for a new Microsoft SQL server crawler.
+    Base configuration for a new BigQuery crawler.
 
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
@@ -23,12 +23,12 @@ class SQLServerCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
-    _NAME = "mssql"
-    _PACKAGE_NAME = "@atlan/mssql"
-    _PACKAGE_PREFIX = WorkflowPackage.MSSQL.value
-    _CONNECTOR_TYPE = AtlanConnectorType.MSSQL
-    _PACKAGE_ICON = "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
-    _PACKAGE_LOGO = "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
+    _NAME = "bigquery"
+    _PACKAGE_NAME = "@atlan/bigquery"
+    _PACKAGE_PREFIX = WorkflowPackage.BIGQUERY.value
+    _CONNECTOR_TYPE = AtlanConnectorType.BIGQUERY
+    _PACKAGE_ICON = "https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg"
+    _PACKAGE_LOGO = "https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg"
 
     def __init__(
         self,
@@ -40,6 +40,7 @@ class SQLServerCrawler(AbstractCrawler):
         allow_query_preview: bool = True,
         row_limit: int = 10000,
     ):
+        self._advanced_config = False
         super().__init__(
             connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
@@ -52,49 +53,39 @@ class SQLServerCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def direct(
-        self, hostname: str, database: str, port: int = 1433
-    ) -> SQLServerCrawler:
+    def service_account_auth(
+        self,
+        project_id: str,
+        service_account_json: str,
+        service_account_email: str,
+    ) -> BigQueryCrawler:
         """
-        Set up the crawler to extract directly from the database.
+        Set up the crawler to use service account authentication.
 
-        :param hostname: hostname of the SQL Server host
-        :param database: name of the database to extract
-        :param port: port number of the SQL Server host, default: `1433`
-        :returns: crawler, set up to extract directly from the database
+        :param project_id: project ID of your Google Cloud project
+        :param service_account_json: entire service account json
+        :param service_account_email: service account email
+        :returns: crawler, set up to use service account authentication
         """
-        local_creds = {
-            "name": f"default-{self._NAME}-{self._epoch}-0",
-            "host": hostname,
-            "port": port,
-            "extra": {"database": database},
+        creds = {
+            "name": f"default-bigquery-{self._epoch}-0",
+            "host": "https://www.googleapis.com/bigquery/v2",
+            "port": 443,
+            "auth_type": "basic",
+            "username": service_account_email,
+            "password": service_account_json,
+            "extras": {"project_id": project_id},
             "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
-        self._credentials_body.update(local_creds)
+        self._credentials_body.update(creds)
         return self
 
-    def basic_auth(self, username: str, password: str) -> SQLServerCrawler:
-        """
-        Set up the crawler to use basic authentication.
-
-        :param username: through which to access SQL Server
-        :param password: through which to access SQL Server
-        :returns: crawler, set up to use basic authentication
-        """
-        local_creds = {
-            "authType": "basic",
-            "username": username,
-            "password": password,
-        }
-        self._credentials_body.update(local_creds)
-        return self
-
-    def include(self, assets: dict) -> SQLServerCrawler:
+    def include(self, assets: dict) -> BigQueryCrawler:
         """
         Defines the filter for assets to include when crawling.
 
-        :param assets: map keyed by database name
-        with each value being a list of schemas
+        :param assets: Map keyed by project name
+        with each value being a list of tables
         :returns: crawler, set to include only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
@@ -106,12 +97,12 @@ class SQLServerCrawler(AbstractCrawler):
         )
         return self
 
-    def exclude(self, assets: dict) -> SQLServerCrawler:
+    def exclude(self, assets: dict) -> BigQueryCrawler:
         """
         Defines the filter for assets to exclude when crawling.
 
-        :param assets: map keyed by database name
-        with each value being a list of schemas
+        :param assets: Map keyed by project name
+        with each value being a list of tables
         :returns: crawler, set to exclude only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
@@ -123,17 +114,46 @@ class SQLServerCrawler(AbstractCrawler):
         )
         return self
 
+    def exclude_regex(self, regex: str) -> BigQueryCrawler:
+        """
+        Defines the exclude regex for crawler ignore
+        tables and views based on a naming convention.
+
+        :param regex: exclude regex for the crawler
+        :returns: crawler, set to exclude
+        only those assets specified in the regex
+        """
+        self._parameters.append(dict(name="temp-table-regex", value=str(regex)))
+        return self
+
+    def custom_config(self, config: Dict) -> BigQueryCrawler:
+        """
+        Defines custom JSON configuration controlling
+        experimental feature flags for the crawler.
+
+        :param config: custom configuration dict eg:
+        `{"ignore-all-case": True}` to enable crawling
+        assets with case-sensitive identifiers.
+        :returns: miner, set to include custom configuration
+        """
+        config and self._parameters.append(
+            dict(name="control-config", value=str(config))
+        )
+        self._advanced_config = True
+        return self
+
     def _set_required_metadata_params(self):
+        self._parameters.append(
+            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
+        )
         self._parameters.append(
             {"name": "credential-guid", "value": "{{credentialGuid}}"}
         )
-        self._parameters.append(dict(name="publish-mode", value="production"))
-        self._parameters.append(dict(name="extraction-method", value="direct"))
-        self._parameters.append(dict(name="atlas-auth-type", value="internal"))
-        self._parameters.append(dict(name="use-jdbc-internal-methods", value="true"))
-        self._parameters.append(dict(name="use-source-schema-filtering", value="false"))
         self._parameters.append(
-            dict(name="credentials-fetch-strategy", value="credential_guid")
+            dict(
+                name="control-config-strategy",
+                value="custom" if self._advanced_config else "default",
+            )
         )
         self._parameters.append(
             {
@@ -143,6 +163,8 @@ class SQLServerCrawler(AbstractCrawler):
                 ),
             }
         )
+        self._parameters.append(dict(name="publish-mode", value="production"))
+        self._parameters.append(dict(name="atlas-auth-type", value="internal"))
 
     def _get_metadata(self) -> WorkflowMetadata:
         self._set_required_metadata_params()
@@ -161,21 +183,21 @@ class SQLServerCrawler(AbstractCrawler):
             },
             annotations={
                 "orchestration.atlan.com/allowSchedule": "true",
-                "orchestration.atlan.com/categories": "mssql,crawler",
+                "orchestration.atlan.com/categories": "warehouse,crawler",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6167939436945-How-to-crawl-Microsoft-SQL-Server",  # noqa
+                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6326782856081",
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
-                "orchestration.atlan.com/name": "SQL Server Assets",
+                "orchestration.atlan.com/name": "BigQuery Assets",
                 "package.argoproj.io/author": "Atlan",
-                "package.argoproj.io/description": f"Package to crawl Microsoft SQL Server assets and publish to Atlan for discovery",  # noqa
+                "package.argoproj.io/description": "Package to crawl BigQuery assets and publish to Atlan for discovery",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": '["mssql","database","sql","connector","crawler"]',  # fmt: skip # noqa
+                "package.argoproj.io/keywords": "[\"bigquery\",\"connector\",\"crawler\",\"google\"]",  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
-                "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+                "package.argoproj.io/repository": "https://github.com/atlanhq/marketplace-packages.git",
                 "package.argoproj.io/support": "support@atlan.com",
                 "orchestration.atlan.com/atlanName": f"{self._PACKAGE_PREFIX}-default-{self._NAME}-{self._epoch}",
             },

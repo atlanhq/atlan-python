@@ -1,49 +1,44 @@
-from json import dumps
-from typing import Optional
+from __future__ import annotations
 
-from pyatlan.errors import ErrorCode
+from typing import List, Optional
+
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
 
 
-class GlueCrawler(AbstractCrawler):
+class DynamoDBCrawler(AbstractCrawler):
     """
-    Base configuration for a new Glue crawler.
+    Base configuration for a new Amazon DynamoDB crawler.
 
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
     :param admin_groups: admin groups for the connection
     :param admin_users: admin users for the connection
     :param allow_query: allow data to be queried in the
-    connection (True) or not (False), default: False
+    connection (True) or not (False), default: True
     :param allow_query_preview: allow sample data viewing for
-    assets in the connection (True) or not (False), default: False
+    assets in the connection (True) or not (False), default: True
     :param row_limit: maximum number of rows
-    that can be returned by a query, default: 0
+    that can be returned by a query, default: 10000
     """
 
-    _NAME = "glue"
-    _PACKAGE_NAME = "@atlan/glue"
-    _PACKAGE_PREFIX = WorkflowPackage.GLUE.value
-    _CONNECTOR_TYPE = AtlanConnectorType.GLUE
-    _AWS_DATA_CATALOG = "AwsDataCatalog"
-    _PACKAGE_ICON = (
-        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    )
-    _PACKAGE_LOGO = (
-        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    )
+    _NAME = "dynamodb"
+    _PACKAGE_NAME = "@atlan/dynamodb"
+    _PACKAGE_PREFIX = WorkflowPackage.DYNAMODB.value
+    _CONNECTOR_TYPE = AtlanConnectorType.DYNAMODB
+    _PACKAGE_ICON = "http://assets.atlan.com/assets/aws-dynamodb.svg"
+    _PACKAGE_LOGO = "http://assets.atlan.com/assets/aws-dynamodb.svg"
 
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[list[str]] = None,
-        admin_groups: Optional[list[str]] = None,
-        admin_users: Optional[list[str]] = None,
-        allow_query: bool = False,
-        allow_query_preview: bool = False,
-        row_limit: int = 0,
+        admin_roles: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_users: Optional[List[str]] = None,
+        allow_query: bool = True,
+        allow_query_preview: bool = True,
+        row_limit: int = 10000,
     ):
         super().__init__(
             connection_name=connection_name,
@@ -60,12 +55,12 @@ class GlueCrawler(AbstractCrawler):
     def direct(
         self,
         region: str,
-    ) -> "GlueCrawler":
+    ) -> DynamoDBCrawler:
         """
-        Set up the crawler to extract directly from Glue.
+        Set up the crawler to extract directly from the DynamoDB.
 
-        :param region: AWS region where Glue is set up
-        :returns: crawler, set up to extract directly from Glue
+        :param region: AWS region where database is set up
+        :returns: crawler, set up to extract directly from DynamoDB
         """
         local_creds = {
             "name": f"default-{self._NAME}-{self._epoch}-0",
@@ -73,14 +68,15 @@ class GlueCrawler(AbstractCrawler):
             "connector_config_name": f"atlan-connectors-{self._NAME}",
         }
         self._credentials_body.update(local_creds)
+        self._parameters.append(dict(name="extraction-method", value="direct"))
         return self
 
-    def iam_user_auth(self, access_key: str, secret_key: str) -> "GlueCrawler":
+    def iam_user_auth(self, access_key: str, secret_key: str) -> DynamoDBCrawler:
         """
         Set up the crawler to use IAM user-based authentication.
 
-        :param access_key: through which to access Glue
-        :param secret_key: through which to access Glue
+        :param access_key: through which to access DynamoDB
+        :param secret_key: through which to access DynamoDB
         :returns: crawler, set up to use IAM user-based authentication
         """
         local_creds = {
@@ -91,48 +87,52 @@ class GlueCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def _build_asset_filter(self, filter_type: str, filter_assets: list[str]) -> None:
-        if not filter_assets:
-            self._parameters.append({"name": f"{filter_type}-filter", "value": "{}"})
-            return
-        filter_dict: dict = {self._AWS_DATA_CATALOG: {}}
-        try:
-            for asset in filter_assets:
-                filter_dict[self._AWS_DATA_CATALOG][asset] = {}
-                filter_values = dumps(filter_dict)
-            self._parameters.append(
-                {"name": f"{filter_type}-filter", "value": filter_values}
-            )
-        except TypeError:
-            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
-
-    def include(self, assets: list[str]) -> "GlueCrawler":
+    def iam_user_role_auth(self, arn: str, external_id: str) -> DynamoDBCrawler:
         """
-        Defines the filter for assets to include when crawling.
+        Set up the crawler to use IAM role-based authentication.
 
-        :param assets: list of schema names to include when crawling
-        :returns: crawler, set to include only those assets specified
-        :raises InvalidRequestException: In the unlikely
-        event the provided filter cannot be translated
+        :param arn: ARN of the AWS role
+        :param external_id: AWS external ID
+        :returns: crawler, set up to use IAM user role-based authentication
         """
-        self._build_asset_filter("include", assets)
+        local_creds = {
+            "auth_type": "role",
+            "connector_type": "sdk",
+        }
+        self._credentials_body["extra"].update(
+            {"aws_role_arn": arn, "aws_external_id": external_id}
+        )
+        self._credentials_body.update(local_creds)
         return self
 
-    def exclude(self, assets: list[str]) -> "GlueCrawler":
+    def include_regex(self, regex: str) -> DynamoDBCrawler:
         """
-        Defines the filter for assets to exclude when crawling.
+        Regex of tables to include.
+        By default, everything will be included.
 
-        :param assets: list of schema names to exclude when crawling
-        :returns: crawler, set to exclude only those assets specified
-        :raises InvalidRequestException: In the unlikely
-        event the provided filter cannot be translated
+        :param regex: exclude regex for the crawler
+        :returns: crawler, set to include
+        only those assets specified in the regex
         """
-        self._build_asset_filter("exclude", assets)
+        self._parameters.append(dict(name="include-filter", value=str(regex)))
+        return self
+
+    def exclude_regex(self, regex: str) -> DynamoDBCrawler:
+        """
+        Defines the Regex of tables to ignore.
+        By default, nothing will be excluded.
+        This takes priority over include regex.
+
+        :param regex: exclude regex for the crawler
+        :returns: crawler, set to exclude
+        only those assets specified in the regex
+        """
+        self._parameters.append(dict(name="exclude-filter", value=str(regex)))
         return self
 
     def _set_required_metadata_params(self):
         self._parameters.append(
-            dict(name="credentials-fetch-strategy", value="credential_guid")
+            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
         )
         self._parameters.append(
             {"name": "credential-guid", "value": "{{credentialGuid}}"}
@@ -154,7 +154,7 @@ class GlueCrawler(AbstractCrawler):
             labels={
                 "orchestration.atlan.com/certified": "true",
                 "orchestration.atlan.com/source": self._NAME,
-                "orchestration.atlan.com/sourceCategory": "lake",
+                "orchestration.atlan.com/sourceCategory": "nosql",
                 "orchestration.atlan.com/type": "connector",
                 "orchestration.atlan.com/verified": "true",
                 "package.argoproj.io/installer": "argopm",
@@ -165,21 +165,21 @@ class GlueCrawler(AbstractCrawler):
             },
             annotations={
                 "orchestration.atlan.com/allowSchedule": "true",
+                "orchestration.atlan.com/categories": "nosql,crawler",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6335637665681",
+                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/8362826839823",
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
-                "orchestration.atlan.com/name": f"{self._NAME.capitalize()} Assets",
-                "orchestration.atlan.com/usecase": "crawling,auto-classifications",
+                "orchestration.atlan.com/name": "Amazon DynamoDB Assets",
                 "package.argoproj.io/author": "Atlan",
-                "package.argoproj.io/description": f"Package to crawl AWS {self._NAME.capitalize()} assets and publish to Atlan for discovery.",  # noqa
+                "package.argoproj.io/description": "Package to crawl Amazon DynamoDB assets and publish to Atlan for discovery",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": '["lake","connector","crawler","glue","aws","s3"]',  # fmt: skip # noqa
+                "package.argoproj.io/keywords": '["dynamodb","nosql","document-database","connector","crawler"]',  # fmt: skip  # noqa
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
-                "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+                "package.argoproj.io/repository": "https://github.com/atlanhq/marketplace-packages.git",
                 "package.argoproj.io/support": "support@atlan.com",
                 "orchestration.atlan.com/atlanName": f"{self._PACKAGE_PREFIX}-default-{self._NAME}-{self._epoch}",
             },

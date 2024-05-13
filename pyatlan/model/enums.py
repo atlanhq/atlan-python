@@ -1821,6 +1821,7 @@ class WorkflowPackage(str, Enum):
     CONNECTION_DELETE = "atlan-connection-delete"
     DATABRICKS = "atlan-databricks"
     DATABRICKS_LINEAGE = "atlan-databricks-lineage"
+    DYNAMODB = "atlan-dynamodb"
     DBT = "atlan-dbt"
     FIVETRAN = "atlan-fivetran"
     GLUE = "atlan-glue"

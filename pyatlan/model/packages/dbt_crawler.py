@@ -31,9 +31,9 @@ class DbtCrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_users: Optional[list[str]],
+        admin_roles: Optional[list[str]] = None,
+        admin_groups: Optional[list[str]] = None,
+        admin_users: Optional[list[str]] = None,
         allow_query: bool = False,
         allow_query_preview: bool = False,
         row_limit: int = 0,
