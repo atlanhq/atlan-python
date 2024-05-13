@@ -885,7 +885,6 @@ def test_find_category_by_name():
 def test_find_category_by_name_qn_guid_correctly_populated(
     mock_find_glossary_by_name, mock_api_caller, glossary_category_by_name_json
 ):
-
     client = AssetClient(mock_api_caller)
     mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
     mock_api_caller._call_api.side_effect = [glossary_category_by_name_json]

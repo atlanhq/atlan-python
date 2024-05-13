@@ -411,7 +411,6 @@ def test_snowflake_miner_package(mock_package_env):
 def test_wrong_hierarchical_filter_raises_invalid_req_err(
     test_assets, mock_package_env
 ):
-
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
@@ -429,7 +428,6 @@ def test_wrong_hierarchical_filter_raises_invalid_req_err(
     [[NonSerializable()], NonSerializable()],
 )
 def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_env):
-
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
@@ -449,7 +447,6 @@ def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_en
 def test_wrong_glue_package_filter_raises_invalid_req_err(
     test_assets, mock_package_env
 ):
-
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,

@@ -164,6 +164,10 @@ class DbtProcess(Dbt):
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
 
+    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
+    """
+    TBC
+    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -173,10 +177,6 @@ class DbtProcess(Dbt):
     TBC
     """
     COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
-    """
-    TBC
-    """
-    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
     """
     TBC
     """
@@ -206,10 +206,10 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "spark_jobs",
         "matillion_component",
         "airflow_tasks",
         "column_processes",
-        "spark_jobs",
     ]
 
     @property
@@ -477,6 +477,16 @@ class DbtProcess(Dbt):
         self.attributes.ast = ast
 
     @property
+    def spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.spark_jobs
+
+    @spark_jobs.setter
+    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_jobs = spark_jobs
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -505,16 +515,6 @@ class DbtProcess(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
-
-    @property
-    def spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.spark_jobs
-
-    @spark_jobs.setter
-    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.spark_jobs = spark_jobs
 
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(default=None, description="")
@@ -545,6 +545,9 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
+        spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
@@ -552,9 +555,6 @@ class DbtProcess(Dbt):
             default=None, description=""
         )  # relationship
         column_processes: Optional[List[ColumnProcess]] = Field(
-            default=None, description=""
-        )  # relationship
-        spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
 
