@@ -33,9 +33,9 @@ class SnowflakeCrawler(AbstractCrawler):
     def __init__(
         self,
         connection_name: str,
-        admin_roles: Optional[List[str]],
-        admin_groups: Optional[List[str]],
-        admin_users: Optional[List[str]],
+        admin_roles: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_users: Optional[List[str]] = None,
         allow_query: bool = True,
         allow_query_preview: bool = True,
         row_limit: int = 10000,
@@ -186,7 +186,7 @@ class SnowflakeCrawler(AbstractCrawler):
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
         self._parameters.append(
-            dict(name="include-filter", value=to_include if to_include else "{}")
+            dict(dict(name="include-filter", value=to_include or "{}"))
         )
         return self
 
@@ -201,9 +201,7 @@ class SnowflakeCrawler(AbstractCrawler):
         """
         exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
-        self._parameters.append(
-            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
-        )
+        self._parameters.append(dict(name="exclude-filter", value=to_exclude or "{}"))
         return self
 
     def _set_required_metadata_params(self):
