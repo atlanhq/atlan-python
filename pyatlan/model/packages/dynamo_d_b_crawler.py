@@ -107,7 +107,7 @@ class DynamoDBCrawler(AbstractCrawler):
 
     def include_regex(self, regex: str) -> DynamoDBCrawler:
         """
-        Regex of tables to include.
+        Defines the regex of tables to include.
         By default, everything will be included.
 
         :param regex: exclude regex for the crawler
@@ -119,7 +119,7 @@ class DynamoDBCrawler(AbstractCrawler):
 
     def exclude_regex(self, regex: str) -> DynamoDBCrawler:
         """
-        Defines the Regex of tables to ignore.
+        Defines the regex of tables to ignore.
         By default, nothing will be excluded.
         This takes priority over include regex.
 

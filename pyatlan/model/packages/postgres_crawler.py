@@ -9,7 +9,7 @@ from pyatlan.model.workflow import WorkflowMetadata
 
 class PostgresCrawler(AbstractCrawler):
     """
-    Base configuration for a new Postgres crawler.
+    Base configuration for a new PostgreSQL crawler.
 
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
@@ -219,7 +219,7 @@ class PostgresCrawler(AbstractCrawler):
         internal methods for data extraction.
 
         :param regex: whether to whether to enable (`True`) or
-        disable (`False`) JDBC internal methods for data extraction.
+        disable (`False`) JDBC internal methods for data extraction
         :returns: crawler, with jdbc internal methods for data extraction
         """
         self._parameters.append(dict(name="use-jdbc-internal-methods", value=enable))
