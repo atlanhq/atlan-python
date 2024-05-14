@@ -114,7 +114,7 @@ class DynamoDBCrawler(AbstractCrawler):
         :returns: crawler, set to include
         only those assets specified in the regex
         """
-        self._parameters.append(dict(name="include-filter", value=str(regex)))
+        self._parameters.append(dict(name="include-filter", value=regex))
         return self
 
     def exclude_regex(self, regex: str) -> DynamoDBCrawler:
@@ -127,7 +127,7 @@ class DynamoDBCrawler(AbstractCrawler):
         :returns: crawler, set to exclude
         only those assets specified in the regex
         """
-        self._parameters.append(dict(name="exclude-filter", value=str(regex)))
+        self._parameters.append(dict(name="exclude-filter", value=regex))
         return self
 
     def _set_required_metadata_params(self):

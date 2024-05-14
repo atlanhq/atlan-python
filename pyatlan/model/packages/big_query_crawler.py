@@ -92,9 +92,7 @@ class BigQueryCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        self._parameters.append(
-            dict(name="include-filter", value=to_include if to_include else "{}")
-        )
+        self._parameters.append(dict(name="include-filter", value=to_include or "{}"))
         return self
 
     def exclude(self, assets: dict) -> BigQueryCrawler:
@@ -109,9 +107,7 @@ class BigQueryCrawler(AbstractCrawler):
         """
         exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
-        self._parameters.append(
-            dict(name="exclude-filter", value=to_exclude if to_exclude else "{}")
-        )
+        self._parameters.append(dict(name="exclude-filter", value=to_exclude or "{}"))
         return self
 
     def exclude_regex(self, regex: str) -> BigQueryCrawler:
@@ -123,7 +119,7 @@ class BigQueryCrawler(AbstractCrawler):
         :returns: crawler, set to exclude
         only those assets specified in the regex
         """
-        self._parameters.append(dict(name="temp-table-regex", value=str(regex)))
+        self._parameters.append(dict(name="temp-table-regex", value=regex))
         return self
 
     def custom_config(self, config: Dict) -> BigQueryCrawler:
