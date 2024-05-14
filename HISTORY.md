@@ -3,11 +3,15 @@
 ### New features
 
 - Added support for `BigQuery`, `DynamoDB` and `Postgres` crawlers.
-- Added logic to `Referenceable` model to determine the correct sub type.
+
+### Bug fixes
+
+- Fixed logic in the `Referenceable` model to determine the correct subtype.
 
 ### QOL improvements
 
 - Utilized generated atlas core enums in the import template.
+- Added a shell script (`pyatlan-formatter`) capable of handling code formatting for both tracked and untracked files.
 
 ## 2.1.8 (May 8, 2024)
 
