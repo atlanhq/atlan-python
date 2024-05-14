@@ -101,9 +101,7 @@ class SQLServerCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        self._parameters.append(
-            dict(dict(name="include-filter", value=to_include or "{}"))
-        )
+        self._parameters.append(dict(name="include-filter", value=to_include or "{}"))
         return self
 
     def exclude(self, assets: dict) -> SQLServerCrawler:
