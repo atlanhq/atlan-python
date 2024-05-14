@@ -1,3 +1,14 @@
+## 2.1.9 (May 14, 2024)
+
+### New features
+
+- Added support for `BigQuery`, `DynamoDB` and `Postgres` crawlers.
+- Added logic to `Referenceable` model to determine the correct sub type.
+
+### QOL improvements
+
+- Utilized generated atlas core enums in the import template.
+
 ## 2.1.8 (May 8, 2024)
 
 ### New features
