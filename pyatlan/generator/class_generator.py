@@ -80,6 +80,7 @@ ASSETS_DIR = PARENT.parent / "model" / "assets"
 MODEL_DIR = PARENT.parent / "model"
 DOCS_DIR = PARENT.parent / "documentation"
 SPHINX_DIR = PARENT.parent.parent / "docs"
+TEMPLATES_DIR = PARENT / "templates"
 
 
 def get_type(type_: str):
@@ -642,6 +643,7 @@ class Generator:
                 "asset_info": asset_info,
                 "existz": os.path.exists,
                 "enum_defs": enum_defs,
+                "templates_path": TEMPLATES_DIR.absolute().as_posix(),
             }
         )
         with (ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
