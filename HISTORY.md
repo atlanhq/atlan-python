@@ -1,3 +1,9 @@
+## 2.2.0 (May 15, 2024)
+
+### Breaking changes
+
+- Fixes typos and docstrings in IAM role methods of the `DynamoDB` and `PostgreSQL` crawlers. Previously, the method name was `iam_user_role_auth` instead of `iam_role_auth`.
+
 ## 2.1.9 (May 14, 2024)
 
 ### New features
