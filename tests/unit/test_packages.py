@@ -470,7 +470,7 @@ def test_dynamo_db_package(mock_package_env):
             connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
         )
         .direct(region="test-region")
-        .iam_user_role_auth(
+        .iam_role_auth(
             arn="arn:aws:iam::123456789012:user/test", external_id="test-ext-id"
         )
         .include_regex(regex=".*_TEST_INCLUDE")
@@ -535,7 +535,7 @@ def test_postgres_package(mock_package_env):
             admin_roles=["admin-guid-1234"],
         )
         .direct(hostname="test.com", database="test-db")
-        .iam_user_role_auth(
+        .iam_role_auth(
             username="test-user",
             arn="arn:aws:iam::123456789012:user/test",
             external_id="test-ext-id",

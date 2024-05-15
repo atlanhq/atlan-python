@@ -87,7 +87,7 @@ class DynamoDBCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_user_role_auth(self, arn: str, external_id: str) -> DynamoDBCrawler:
+    def iam_role_auth(self, arn: str, external_id: str) -> DynamoDBCrawler:
         """
         Set up the crawler to use IAM role-based authentication.
 
