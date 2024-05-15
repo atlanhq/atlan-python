@@ -121,7 +121,7 @@ class PostgresCrawler(AbstractCrawler):
         """
         Set up the crawler to use IAM user-based authentication.
 
-        :param username: username for the IAM user
+        :param username: database username to extract from
         :param access_key: through which to access PostgreSQL
         :param secret_key: through which to access PostgreSQL
         :returns: crawler, set up to use IAM user-based authentication
@@ -136,13 +136,13 @@ class PostgresCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_user_role_auth(
+    def iam_role_auth(
         self, username: str, arn: str, external_id: str
     ) -> PostgresCrawler:
         """
-        Set up the crawler to use IAM user role-based authentication.
+        Set up the crawler to use IAM role-based authentication.
 
-        :param username: username for the IAM user
+        :param username: database username to extract from
         :param arn: ARN of the AWS role
         :param external_id: AWS external ID
         :returns: crawler, set up to use IAM user role-based authentication
