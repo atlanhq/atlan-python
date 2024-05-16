@@ -1,3 +1,29 @@
+## 1.9.8 (May 16, 2024)
+
+### New features
+
+- Added support for new connector types:
+  - FILE
+  - COGNITE
+  - SYNDIGO
+  - NETEZZA
+  - MICROSTRATEGY
+  - AWS_SITE_WISE
+  - AWS_GREENGRASS
+  - AZURE_SERVICE_BUS
+
+- Added support for the following workflow packages:
+  - Sigma
+  - BigQuery
+  - DynamoDB
+  - Postgres
+  - SQL Server
+  - Snowflake Miner
+
+- Enhanced the functionality of the `WorkflowClient` with new methods for scheduling, stopping, and deleting workflows.
+
+- Generated latest typedef models (cube, cognite, spark, sparkjob etc).
+
 ## 1.9.7 (April 18, 2024)
 
 ### Bug fixes
