@@ -8,188 +8,518 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
     KeywordTextField,
-    NumericField,
     RelationField,
+    TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset42 import Sigma
+from .asset29 import API
 
 
-class SigmaDatasetColumn(Sigma):
+class APISpec(API):
     """Description"""
 
-    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str) -> APISpec:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = APISpec.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("APISpec", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SigmaDatasetColumn":
-            raise ValueError("must be SigmaDatasetColumn")
+        if v != "APISpec":
+            raise ValueError("must be APISpec")
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaDatasetColumn._convenience_properties:
+        if name in APISpec._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SIGMA_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaDatasetQualifiedName",
-        "sigmaDatasetQualifiedName",
-        "sigmaDatasetQualifiedName.text",
+    API_SPEC_TERMS_OF_SERVICE_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecTermsOfServiceURL",
+        "apiSpecTermsOfServiceURL",
+        "apiSpecTermsOfServiceURL.text",
     )
     """
-    Unique name of the dataset in which this column exists.
+    URL to the terms of service for the API specification.
     """
-    SIGMA_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaDatasetName", "sigmaDatasetName.keyword", "sigmaDatasetName"
+    API_SPEC_CONTACT_EMAIL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactEmail", "apiSpecContactEmail", "apiSpecContactEmail.text"
     )
     """
-    Simple name of the dataset in which this column exists.
+    Email address for a contact responsible for the API specification.
+    """
+    API_SPEC_CONTACT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactName", "apiSpecContactName.keyword", "apiSpecContactName"
+    )
+    """
+    Name of the contact responsible for the API specification.
+    """
+    API_SPEC_CONTACT_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactURL", "apiSpecContactURL", "apiSpecContactURL.text"
+    )
+    """
+    URL pointing to the contact information.
+    """
+    API_SPEC_LICENSE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecLicenseName", "apiSpecLicenseName.keyword", "apiSpecLicenseName"
+    )
+    """
+    Name of the license under which the API specification is available.
+    """
+    API_SPEC_LICENSE_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecLicenseURL", "apiSpecLicenseURL", "apiSpecLicenseURL.text"
+    )
+    """
+    URL to the license under which the API specification is available.
+    """
+    API_SPEC_CONTRACT_VERSION: ClassVar[KeywordField] = KeywordField(
+        "apiSpecContractVersion", "apiSpecContractVersion"
+    )
+    """
+    Version of the contract for the API specification.
+    """
+    API_SPEC_SERVICE_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecServiceAlias", "apiSpecServiceAlias", "apiSpecServiceAlias.text"
+    )
+    """
+    Service alias for the API specification.
     """
 
-    SIGMA_DATASET: ClassVar[RelationField] = RelationField("sigmaDataset")
+    API_PATHS: ClassVar[RelationField] = RelationField("apiPaths")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "sigma_dataset_qualified_name",
-        "sigma_dataset_name",
-        "sigma_dataset",
+        "api_spec_terms_of_service_url",
+        "api_spec_contact_email",
+        "api_spec_contact_name",
+        "api_spec_contact_url",
+        "api_spec_license_name",
+        "api_spec_license_url",
+        "api_spec_contract_version",
+        "api_spec_service_alias",
+        "api_paths",
     ]
 
     @property
-    def sigma_dataset_qualified_name(self) -> Optional[str]:
+    def api_spec_terms_of_service_url(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sigma_dataset_qualified_name
+            else self.attributes.api_spec_terms_of_service_url
         )
 
-    @sigma_dataset_qualified_name.setter
-    def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_qualified_name = sigma_dataset_qualified_name
-
-    @property
-    def sigma_dataset_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_dataset_name
-
-    @sigma_dataset_name.setter
-    def sigma_dataset_name(self, sigma_dataset_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_name = sigma_dataset_name
-
-    @property
-    def sigma_dataset(self) -> Optional[SigmaDataset]:
-        return None if self.attributes is None else self.attributes.sigma_dataset
-
-    @sigma_dataset.setter
-    def sigma_dataset(self, sigma_dataset: Optional[SigmaDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset = sigma_dataset
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetQualifiedName"
-        )
-        sigma_dataset_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetName"
-        )
-        sigma_dataset: Optional[SigmaDataset] = Field(
-            None, description="", alias="sigmaDataset"
-        )  # relationship
-
-    attributes: "SigmaDatasetColumn.Attributes" = Field(
-        default_factory=lambda: SigmaDatasetColumn.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataset(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataset":
-            raise ValueError("must be SigmaDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SigmaDataset._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SIGMA_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
-        "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
-    )
-    """
-    Number of columns in this dataset.
-    """
-
-    SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField(
-        "sigmaDatasetColumns"
-    )
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "sigma_dataset_column_count",
-        "sigma_dataset_columns",
-    ]
-
-    @property
-    def sigma_dataset_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_dataset_column_count
-        )
-
-    @sigma_dataset_column_count.setter
-    def sigma_dataset_column_count(self, sigma_dataset_column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
-
-    @property
-    def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
-        return (
-            None if self.attributes is None else self.attributes.sigma_dataset_columns
-        )
-
-    @sigma_dataset_columns.setter
-    def sigma_dataset_columns(
-        self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
+    @api_spec_terms_of_service_url.setter
+    def api_spec_terms_of_service_url(
+        self, api_spec_terms_of_service_url: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_columns = sigma_dataset_columns
+        self.attributes.api_spec_terms_of_service_url = api_spec_terms_of_service_url
 
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="sigmaDatasetColumnCount"
+    @property
+    def api_spec_contact_email(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_contact_email
         )
-        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
-            None, description="", alias="sigmaDatasetColumns"
+
+    @api_spec_contact_email.setter
+    def api_spec_contact_email(self, api_spec_contact_email: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contact_email = api_spec_contact_email
+
+    @property
+    def api_spec_contact_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_contact_name
+        )
+
+    @api_spec_contact_name.setter
+    def api_spec_contact_name(self, api_spec_contact_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contact_name = api_spec_contact_name
+
+    @property
+    def api_spec_contact_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_spec_contact_url
+
+    @api_spec_contact_url.setter
+    def api_spec_contact_url(self, api_spec_contact_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contact_url = api_spec_contact_url
+
+    @property
+    def api_spec_license_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_license_name
+        )
+
+    @api_spec_license_name.setter
+    def api_spec_license_name(self, api_spec_license_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_license_name = api_spec_license_name
+
+    @property
+    def api_spec_license_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_spec_license_url
+
+    @api_spec_license_url.setter
+    def api_spec_license_url(self, api_spec_license_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_license_url = api_spec_license_url
+
+    @property
+    def api_spec_contract_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_spec_contract_version
+        )
+
+    @api_spec_contract_version.setter
+    def api_spec_contract_version(self, api_spec_contract_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_contract_version = api_spec_contract_version
+
+    @property
+    def api_spec_service_alias(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.api_spec_service_alias
+        )
+
+    @api_spec_service_alias.setter
+    def api_spec_service_alias(self, api_spec_service_alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec_service_alias = api_spec_service_alias
+
+    @property
+    def api_paths(self) -> Optional[list[APIPath]]:
+        return None if self.attributes is None else self.attributes.api_paths
+
+    @api_paths.setter
+    def api_paths(self, api_paths: Optional[list[APIPath]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_paths = api_paths
+
+    class Attributes(API.Attributes):
+        api_spec_terms_of_service_url: Optional[str] = Field(
+            None, description="", alias="apiSpecTermsOfServiceURL"
+        )
+        api_spec_contact_email: Optional[str] = Field(
+            None, description="", alias="apiSpecContactEmail"
+        )
+        api_spec_contact_name: Optional[str] = Field(
+            None, description="", alias="apiSpecContactName"
+        )
+        api_spec_contact_url: Optional[str] = Field(
+            None, description="", alias="apiSpecContactURL"
+        )
+        api_spec_license_name: Optional[str] = Field(
+            None, description="", alias="apiSpecLicenseName"
+        )
+        api_spec_license_url: Optional[str] = Field(
+            None, description="", alias="apiSpecLicenseURL"
+        )
+        api_spec_contract_version: Optional[str] = Field(
+            None, description="", alias="apiSpecContractVersion"
+        )
+        api_spec_service_alias: Optional[str] = Field(
+            None, description="", alias="apiSpecServiceAlias"
+        )
+        api_paths: Optional[list[APIPath]] = Field(
+            None, description="", alias="apiPaths"
         )  # relationship
 
-    attributes: "SigmaDataset.Attributes" = Field(
-        default_factory=lambda: SigmaDataset.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> APISpec.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return APISpec.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+            )
+
+    attributes: "APISpec.Attributes" = Field(
+        default_factory=lambda: APISpec.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-SigmaDatasetColumn.Attributes.update_forward_refs()
+class APIPath(API):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
+        validate_required_fields(
+            ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
+        )
+        attributes = APIPath.Attributes.create(
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("APIPath", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "APIPath":
+            raise ValueError("must be APIPath")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in APIPath._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    API_PATH_SUMMARY: ClassVar[TextField] = TextField(
+        "apiPathSummary", "apiPathSummary"
+    )
+    """
+    Descriptive summary intended to apply to all operations in this path.
+    """
+    API_PATH_RAW_URI: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiPathRawURI", "apiPathRawURI", "apiPathRawURI.text"
+    )
+    """
+    Absolute path to an individual endpoint.
+    """
+    API_PATH_IS_TEMPLATED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsTemplated", "apiPathIsTemplated"
+    )
+    """
+    Whether the endpoint's path contains replaceable parameters (true) or not (false).
+    """
+    API_PATH_AVAILABLE_OPERATIONS: ClassVar[KeywordField] = KeywordField(
+        "apiPathAvailableOperations", "apiPathAvailableOperations"
+    )
+    """
+    List of the operations available on the endpoint.
+    """
+    API_PATH_AVAILABLE_RESPONSE_CODES: ClassVar[KeywordField] = KeywordField(
+        "apiPathAvailableResponseCodes", "apiPathAvailableResponseCodes"
+    )
+    """
+    Response codes available on the path across all operations.
+    """
+    API_PATH_IS_INGRESS_EXPOSED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsIngressExposed", "apiPathIsIngressExposed"
+    )
+    """
+    Whether the path is exposed as an ingress (true) or not (false).
+    """
+
+    API_SPEC: ClassVar[RelationField] = RelationField("apiSpec")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "api_path_summary",
+        "api_path_raw_u_r_i",
+        "api_path_is_templated",
+        "api_path_available_operations",
+        "api_path_available_response_codes",
+        "api_path_is_ingress_exposed",
+        "api_spec",
+    ]
+
+    @property
+    def api_path_summary(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_path_summary
+
+    @api_path_summary.setter
+    def api_path_summary(self, api_path_summary: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_summary = api_path_summary
+
+    @property
+    def api_path_raw_u_r_i(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.api_path_raw_u_r_i
+
+    @api_path_raw_u_r_i.setter
+    def api_path_raw_u_r_i(self, api_path_raw_u_r_i: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_raw_u_r_i = api_path_raw_u_r_i
+
+    @property
+    def api_path_is_templated(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.api_path_is_templated
+        )
+
+    @api_path_is_templated.setter
+    def api_path_is_templated(self, api_path_is_templated: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_is_templated = api_path_is_templated
+
+    @property
+    def api_path_available_operations(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_available_operations
+        )
+
+    @api_path_available_operations.setter
+    def api_path_available_operations(
+        self, api_path_available_operations: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_available_operations = api_path_available_operations
+
+    @property
+    def api_path_available_response_codes(self) -> Optional[dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_available_response_codes
+        )
+
+    @api_path_available_response_codes.setter
+    def api_path_available_response_codes(
+        self, api_path_available_response_codes: Optional[dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_available_response_codes = (
+            api_path_available_response_codes
+        )
+
+    @property
+    def api_path_is_ingress_exposed(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_is_ingress_exposed
+        )
+
+    @api_path_is_ingress_exposed.setter
+    def api_path_is_ingress_exposed(self, api_path_is_ingress_exposed: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_path_is_ingress_exposed = api_path_is_ingress_exposed
+
+    @property
+    def api_spec(self) -> Optional[APISpec]:
+        return None if self.attributes is None else self.attributes.api_spec
+
+    @api_spec.setter
+    def api_spec(self, api_spec: Optional[APISpec]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_spec = api_spec
+
+    class Attributes(API.Attributes):
+        api_path_summary: Optional[str] = Field(
+            None, description="", alias="apiPathSummary"
+        )
+        api_path_raw_u_r_i: Optional[str] = Field(
+            None, description="", alias="apiPathRawURI"
+        )
+        api_path_is_templated: Optional[bool] = Field(
+            None, description="", alias="apiPathIsTemplated"
+        )
+        api_path_available_operations: Optional[set[str]] = Field(
+            None, description="", alias="apiPathAvailableOperations"
+        )
+        api_path_available_response_codes: Optional[dict[str, str]] = Field(
+            None, description="", alias="apiPathAvailableResponseCodes"
+        )
+        api_path_is_ingress_exposed: Optional[bool] = Field(
+            None, description="", alias="apiPathIsIngressExposed"
+        )
+        api_spec: Optional[APISpec] = Field(
+            None, description="", alias="apiSpec"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, path_raw_uri: str, spec_qualified_name: str
+        ) -> APIPath.Attributes:
+            validate_required_fields(
+                ["path_raw_uri", "spec_qualified_name"],
+                [path_raw_uri, spec_qualified_name],
+            )
+
+            # Split the spec_qualified_name to extract necessary information
+            fields = spec_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid spec_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid spec_qualified_name") from e
+
+            return APIPath.Attributes(
+                api_path_raw_u_r_i=path_raw_uri,
+                name=path_raw_uri,
+                api_spec_qualified_name=spec_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{spec_qualified_name}{path_raw_uri}",
+                connector_name=connector_type.value,
+                apiSpec=APISpec.ref_by_qualified_name(spec_qualified_name),
+            )
+
+    attributes: "APIPath.Attributes" = Field(
+        default_factory=lambda: APIPath.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-SigmaDataset.Attributes.update_forward_refs()
+APISpec.Attributes.update_forward_refs()
+
+
+APIPath.Attributes.update_forward_refs()

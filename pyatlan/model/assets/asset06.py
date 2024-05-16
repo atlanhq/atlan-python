@@ -509,6 +509,12 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
+    DISPLAY_PREFERENCES: ClassVar[KeywordField] = KeywordField(
+        "displayPreferences", "displayPreferences"
+    )
+    """
+    TBC
+    """
 
     POLICIES: ClassVar[RelationField] = RelationField("policies")
     """
@@ -524,6 +530,7 @@ class AccessControl(Asset, type_name="AccessControl"):
         "deny_asset_types",
         "deny_navigation_pages",
         "default_navigation",
+        "display_preferences",
         "policies",
     ]
 
@@ -620,6 +627,16 @@ class AccessControl(Asset, type_name="AccessControl"):
         self.attributes.default_navigation = default_navigation
 
     @property
+    def display_preferences(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.display_preferences
+
+    @display_preferences.setter
+    def display_preferences(self, display_preferences: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.display_preferences = display_preferences
+
+    @property
     def policies(self) -> Optional[list[AuthPolicy]]:
         return None if self.attributes is None else self.attributes.policies
 
@@ -651,6 +668,9 @@ class AccessControl(Asset, type_name="AccessControl"):
         )
         default_navigation: Optional[str] = Field(
             None, description="", alias="defaultNavigation"
+        )
+        display_preferences: Optional[set[str]] = Field(
+            None, description="", alias="displayPreferences"
         )
         policies: Optional[list[AuthPolicy]] = Field(
             None, description="", alias="policies"

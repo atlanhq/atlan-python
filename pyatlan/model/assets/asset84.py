@@ -9,1349 +9,924 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import (
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
+)
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
-    TextField,
 )
 
-from .asset00 import Database, Table
+from .asset52 import QuickSight
 
 
-class MongoDBCollection(Table):
+class QuickSightFolder(QuickSight):
     """Description"""
 
-    type_name: str = Field("MongoDBCollection", allow_mutation=False)
+    type_name: str = Field("QuickSightFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MongoDBCollection":
-            raise ValueError("must be MongoDBCollection")
+        if v != "QuickSightFolder":
+            raise ValueError("must be QuickSightFolder")
         return v
 
     def __setattr__(self, name, value):
-        if name in MongoDBCollection._convenience_properties:
+        if name in QuickSightFolder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "mongoDBCollectionSubtype",
-        "mongoDBCollectionSubtype",
-        "mongoDBCollectionSubtype.text",
+    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField(
+        "quickSightFolderType", "quickSightFolderType"
     )
     """
-    Subtype of a MongoDB collection, for example: Capped, Time Series, etc.
+    Type of this folder, for example: SHARED.
     """
-    MONGO_DB_COLLECTION_IS_CAPPED: ClassVar[BooleanField] = BooleanField(
-        "mongoDBCollectionIsCapped", "mongoDBCollectionIsCapped"
+    QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "quickSightFolderHierarchy", "quickSightFolderHierarchy"
     )
     """
-    Whether the collection is capped (true) or not (false).
-    """
-    MONGO_DB_COLLECTION_TIME_FIELD: ClassVar[KeywordField] = KeywordField(
-        "mongoDBCollectionTimeField", "mongoDBCollectionTimeField"
-    )
-    """
-    Name of the field containing the date in each time series document.
-    """
-    MONGO_DB_COLLECTION_TIME_GRANULARITY: ClassVar[KeywordField] = KeywordField(
-        "mongoDBCollectionTimeGranularity", "mongoDBCollectionTimeGranularity"
-    )
-    """
-    Closest match to the time span between consecutive incoming measurements.
-    """
-    MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionExpireAfterSeconds", "mongoDBCollectionExpireAfterSeconds"
-    )
-    """
-    Seconds after which documents in a time series collection or clustered collection expire.
-    """
-    MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionMaximumDocumentCount", "mongoDBCollectionMaximumDocumentCount"
-    )
-    """
-    Maximum number of documents allowed in a capped collection.
-    """
-    MONGO_DB_COLLECTION_MAX_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionMaxSize", "mongoDBCollectionMaxSize"
-    )
-    """
-    Maximum size allowed in a capped collection.
-    """
-    MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionNumOrphanDocs", "mongoDBCollectionNumOrphanDocs"
-    )
-    """
-    Number of orphaned documents in the collection.
-    """
-    MONGO_DB_COLLECTION_NUM_INDEXES: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionNumIndexes", "mongoDBCollectionNumIndexes"
-    )
-    """
-    Number of indexes on the collection.
-    """
-    MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionTotalIndexSize", "mongoDBCollectionTotalIndexSize"
-    )
-    """
-    Total size of all indexes.
-    """
-    MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionAverageObjectSize", "mongoDBCollectionAverageObjectSize"
-    )
-    """
-    Average size of an object in the collection.
-    """
-    MONGO_DB_COLLECTION_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition"
-    )
-    """
-    Definition of the schema applicable for the collection.
-    """
-    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
-    """
-    Number of columns in this table.
-    """
-    ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
-    """
-    Number of rows in this table.
-    """
-    SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
-    """
-    Size of this table, in bytes.
-    """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
-    """
-    Alias for this table.
-    """
-    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
-    """
-    Whether this table is temporary (true) or not (false).
-    """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
-        "isQueryPreview", "isQueryPreview"
-    )
-    """
-    Whether preview queries are allowed for this table (true) or not (false).
-    """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "queryPreviewConfig", "queryPreviewConfig"
-    )
-    """
-    Configuration for preview queries.
-    """
-    EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "externalLocation", "externalLocation"
-    )
-    """
-    External location of this table, for example: an S3 object location.
-    """
-    EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
-        "externalLocationRegion", "externalLocationRegion"
-    )
-    """
-    Region of the external location of this table, for example: S3 region.
-    """
-    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
-        "externalLocationFormat", "externalLocationFormat"
-    )
-    """
-    Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.
-    """
-    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
-        "isPartitioned", "isPartitioned"
-    )
-    """
-    Whether this table is partitioned (true) or not (false).
-    """
-    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
-        "partitionStrategy", "partitionStrategy"
-    )
-    """
-    Partition strategy for this table.
-    """
-    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
-        "partitionCount", "partitionCount"
-    )
-    """
-    Number of partitions in this table.
-    """
-    PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
-        "partitionList", "partitionList"
-    )
-    """
-    List of partitions in this table.
-    """
-    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
-    """
-    Number of times this asset has been queried.
-    """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
-        "queryUserCount", "queryUserCount"
-    )
-    """
-    Number of unique users who have queried this asset.
-    """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
-        "queryUserMap", "queryUserMap"
-    )
-    """
-    Map of unique users who have queried this asset to the number of times they have queried it.
-    """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
-        "queryCountUpdatedAt", "queryCountUpdatedAt"
-    )
-    """
-    Time (epoch) at which the query count was last updated, in milliseconds.
-    """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "databaseName", "databaseName.keyword", "databaseName"
-    )
-    """
-    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
-    """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "databaseQualifiedName", "databaseQualifiedName"
-    )
-    """
-    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
-    """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "schemaName", "schemaName.keyword", "schemaName"
-    )
-    """
-    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
-    """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "schemaQualifiedName", "schemaQualifiedName"
-    )
-    """
-    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
-    """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "tableName", "tableName.keyword", "tableName"
-    )
-    """
-    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
-    """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "tableQualifiedName", "tableQualifiedName"
-    )
-    """
-    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
-    """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
-    """
-    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
-    """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "viewQualifiedName", "viewQualifiedName"
-    )
-    """
-    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
-    """
-    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
-    """
-    Whether this asset has been profiled (true) or not (false).
-    """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
-        "lastProfiledAt", "lastProfiledAt"
-    )
-    """
-    Time (epoch) at which this asset was last profiled, in milliseconds.
-    """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
-    """
-    Represents attributes for describing the key schema for the table and indexes.
+    Detailed path of this folder.
     """
 
-    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
+    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboards"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DATASETS: ClassVar[RelationField] = RelationField("quickSightDatasets")
+    """
+    TBC
+    """
+    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mongo_d_b_collection_subtype",
-        "mongo_d_b_collection_is_capped",
-        "mongo_d_b_collection_time_field",
-        "mongo_d_b_collection_time_granularity",
-        "mongo_d_b_collection_expire_after_seconds",
-        "mongo_d_b_collection_maximum_document_count",
-        "mongo_d_b_collection_max_size",
-        "mongo_d_b_collection_num_orphan_docs",
-        "mongo_d_b_collection_num_indexes",
-        "mongo_d_b_collection_total_index_size",
-        "mongo_d_b_collection_average_object_size",
-        "mongo_d_b_collection_schema_definition",
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "alias",
-        "is_temporary",
-        "is_query_preview",
-        "query_preview_config",
-        "external_location",
-        "external_location_region",
-        "external_location_format",
-        "is_partitioned",
-        "partition_strategy",
-        "partition_count",
-        "partition_list",
-        "query_count",
-        "query_user_count",
-        "query_user_map",
-        "query_count_updated_at",
-        "database_name",
-        "database_qualified_name",
-        "schema_name",
-        "schema_qualified_name",
-        "table_name",
-        "table_qualified_name",
-        "view_name",
-        "view_qualified_name",
-        "is_profiled",
-        "last_profiled_at",
-        "no_s_q_l_schema_definition",
-        "mongo_d_b_database",
+        "quick_sight_folder_type",
+        "quick_sight_folder_hierarchy",
+        "quick_sight_dashboards",
+        "quick_sight_datasets",
+        "quick_sight_analyses",
     ]
 
     @property
-    def mongo_d_b_collection_subtype(self) -> Optional[str]:
+    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_subtype
+            None if self.attributes is None else self.attributes.quick_sight_folder_type
         )
 
-    @mongo_d_b_collection_subtype.setter
-    def mongo_d_b_collection_subtype(self, mongo_d_b_collection_subtype: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_subtype = mongo_d_b_collection_subtype
-
-    @property
-    def mongo_d_b_collection_is_capped(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_is_capped
-        )
-
-    @mongo_d_b_collection_is_capped.setter
-    def mongo_d_b_collection_is_capped(
-        self, mongo_d_b_collection_is_capped: Optional[bool]
+    @quick_sight_folder_type.setter
+    def quick_sight_folder_type(
+        self, quick_sight_folder_type: Optional[QuickSightFolderType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_is_capped = mongo_d_b_collection_is_capped
+        self.attributes.quick_sight_folder_type = quick_sight_folder_type
 
     @property
-    def mongo_d_b_collection_time_field(self) -> Optional[str]:
+    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_field
+            else self.attributes.quick_sight_folder_hierarchy
         )
 
-    @mongo_d_b_collection_time_field.setter
-    def mongo_d_b_collection_time_field(
-        self, mongo_d_b_collection_time_field: Optional[str]
+    @quick_sight_folder_hierarchy.setter
+    def quick_sight_folder_hierarchy(
+        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_field = (
-            mongo_d_b_collection_time_field
-        )
+        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
 
     @property
-    def mongo_d_b_collection_time_granularity(self) -> Optional[str]:
+    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_granularity
+            None if self.attributes is None else self.attributes.quick_sight_dashboards
         )
 
-    @mongo_d_b_collection_time_granularity.setter
-    def mongo_d_b_collection_time_granularity(
-        self, mongo_d_b_collection_time_granularity: Optional[str]
+    @quick_sight_dashboards.setter
+    def quick_sight_dashboards(
+        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_granularity = (
-            mongo_d_b_collection_time_granularity
-        )
+        self.attributes.quick_sight_dashboards = quick_sight_dashboards
 
     @property
-    def mongo_d_b_collection_expire_after_seconds(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_expire_after_seconds
-        )
+    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
+        return None if self.attributes is None else self.attributes.quick_sight_datasets
 
-    @mongo_d_b_collection_expire_after_seconds.setter
-    def mongo_d_b_collection_expire_after_seconds(
-        self, mongo_d_b_collection_expire_after_seconds: Optional[int]
+    @quick_sight_datasets.setter
+    def quick_sight_datasets(
+        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_expire_after_seconds = (
-            mongo_d_b_collection_expire_after_seconds
-        )
+        self.attributes.quick_sight_datasets = quick_sight_datasets
 
     @property
-    def mongo_d_b_collection_maximum_document_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_maximum_document_count
-        )
+    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+        return None if self.attributes is None else self.attributes.quick_sight_analyses
 
-    @mongo_d_b_collection_maximum_document_count.setter
-    def mongo_d_b_collection_maximum_document_count(
-        self, mongo_d_b_collection_maximum_document_count: Optional[int]
+    @quick_sight_analyses.setter
+    def quick_sight_analyses(
+        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_maximum_document_count = (
-            mongo_d_b_collection_maximum_document_count
+        self.attributes.quick_sight_analyses = quick_sight_analyses
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
+            None, description="", alias="quickSightFolderType"
         )
-
-    @property
-    def mongo_d_b_collection_max_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_max_size
+        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="quickSightFolderHierarchy"
         )
-
-    @mongo_d_b_collection_max_size.setter
-    def mongo_d_b_collection_max_size(
-        self, mongo_d_b_collection_max_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_max_size = mongo_d_b_collection_max_size
-
-    @property
-    def mongo_d_b_collection_num_orphan_docs(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_orphan_docs
-        )
-
-    @mongo_d_b_collection_num_orphan_docs.setter
-    def mongo_d_b_collection_num_orphan_docs(
-        self, mongo_d_b_collection_num_orphan_docs: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_orphan_docs = (
-            mongo_d_b_collection_num_orphan_docs
-        )
-
-    @property
-    def mongo_d_b_collection_num_indexes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_indexes
-        )
-
-    @mongo_d_b_collection_num_indexes.setter
-    def mongo_d_b_collection_num_indexes(
-        self, mongo_d_b_collection_num_indexes: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_indexes = (
-            mongo_d_b_collection_num_indexes
-        )
-
-    @property
-    def mongo_d_b_collection_total_index_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_total_index_size
-        )
-
-    @mongo_d_b_collection_total_index_size.setter
-    def mongo_d_b_collection_total_index_size(
-        self, mongo_d_b_collection_total_index_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_total_index_size = (
-            mongo_d_b_collection_total_index_size
-        )
-
-    @property
-    def mongo_d_b_collection_average_object_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_average_object_size
-        )
-
-    @mongo_d_b_collection_average_object_size.setter
-    def mongo_d_b_collection_average_object_size(
-        self, mongo_d_b_collection_average_object_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_average_object_size = (
-            mongo_d_b_collection_average_object_size
-        )
-
-    @property
-    def mongo_d_b_collection_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_schema_definition
-        )
-
-    @mongo_d_b_collection_schema_definition.setter
-    def mongo_d_b_collection_schema_definition(
-        self, mongo_d_b_collection_schema_definition: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_schema_definition = (
-            mongo_d_b_collection_schema_definition
-        )
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def external_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location
-
-    @external_location.setter
-    def external_location(self, external_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location = external_location
-
-    @property
-    def external_location_region(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_region
-        )
-
-    @external_location_region.setter
-    def external_location_region(self, external_location_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_region = external_location_region
-
-    @property
-    def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
-
-    @external_location_format.setter
-    def external_location_format(self, external_location_format: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_format = external_location_format
-
-    @property
-    def is_partitioned(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_partitioned
-
-    @is_partitioned.setter
-    def is_partitioned(self, is_partitioned: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_partitioned = is_partitioned
-
-    @property
-    def partition_strategy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_strategy
-
-    @partition_strategy.setter
-    def partition_strategy(self, partition_strategy: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_strategy = partition_strategy
-
-    @property
-    def partition_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.partition_count
-
-    @partition_count.setter
-    def partition_count(self, partition_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_count = partition_count
-
-    @property
-    def partition_list(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_list
-
-    @partition_list.setter
-    def partition_list(self, partition_list: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_list = partition_list
-
-    @property
-    def query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_count
-
-    @query_count.setter
-    def query_count(self, query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count = query_count
-
-    @property
-    def query_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_user_count
-
-    @query_user_count.setter
-    def query_user_count(self, query_user_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_count = query_user_count
-
-    @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
-        return None if self.attributes is None else self.attributes.query_user_map
-
-    @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_map = query_user_map
-
-    @property
-    def query_count_updated_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
-        )
-
-    @query_count_updated_at.setter
-    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count_updated_at = query_count_updated_at
-
-    @property
-    def database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_name
-
-    @database_name.setter
-    def database_name(self, database_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_name = database_name
-
-    @property
-    def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
-
-    @database_qualified_name.setter
-    def database_qualified_name(self, database_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_qualified_name = database_qualified_name
-
-    @property
-    def schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_name
-
-    @schema_name.setter
-    def schema_name(self, schema_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_name = schema_name
-
-    @property
-    def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
-
-    @schema_qualified_name.setter
-    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_qualified_name = schema_qualified_name
-
-    @property
-    def table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_name
-
-    @table_name.setter
-    def table_name(self, table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_name = table_name
-
-    @property
-    def table_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_qualified_name
-
-    @table_qualified_name.setter
-    def table_qualified_name(self, table_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_qualified_name = table_qualified_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_qualified_name
-
-    @view_qualified_name.setter
-    def view_qualified_name(self, view_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_qualified_name = view_qualified_name
-
-    @property
-    def is_profiled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_profiled
-
-    @is_profiled.setter
-    def is_profiled(self, is_profiled: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_profiled = is_profiled
-
-    @property
-    def last_profiled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.last_profiled_at
-
-    @last_profiled_at.setter
-    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.last_profiled_at = last_profiled_at
-
-    @property
-    def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
-
-    @no_s_q_l_schema_definition.setter
-    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
-
-    @property
-    def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
-        return None if self.attributes is None else self.attributes.mongo_d_b_database
-
-    @mongo_d_b_database.setter
-    def mongo_d_b_database(self, mongo_d_b_database: Optional[MongoDBDatabase]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database = mongo_d_b_database
-
-    class Attributes(Table.Attributes):
-        mongo_d_b_collection_subtype: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionSubtype"
-        )
-        mongo_d_b_collection_is_capped: Optional[bool] = Field(
-            None, description="", alias="mongoDBCollectionIsCapped"
-        )
-        mongo_d_b_collection_time_field: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionTimeField"
-        )
-        mongo_d_b_collection_time_granularity: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionTimeGranularity"
-        )
-        mongo_d_b_collection_expire_after_seconds: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionExpireAfterSeconds"
-        )
-        mongo_d_b_collection_maximum_document_count: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionMaximumDocumentCount"
-        )
-        mongo_d_b_collection_max_size: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionMaxSize"
-        )
-        mongo_d_b_collection_num_orphan_docs: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionNumOrphanDocs"
-        )
-        mongo_d_b_collection_num_indexes: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionNumIndexes"
-        )
-        mongo_d_b_collection_total_index_size: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionTotalIndexSize"
-        )
-        mongo_d_b_collection_average_object_size: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionAverageObjectSize"
-        )
-        mongo_d_b_collection_schema_definition: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionSchemaDefinition"
-        )
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
-        query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
-        )
-        external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
-        )
-        external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
-        )
-        external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
-        )
-        is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
-        )
-        partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
-        )
-        partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
-        )
-        partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
-        )
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
-        )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
-        )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
-        )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
-        database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
-        )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
-        schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
-        )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
-        table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
-        no_s_q_l_schema_definition: Optional[str] = Field(
-            None, description="", alias="noSQLSchemaDefinition"
-        )
-        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
-            None, description="", alias="mongoDBDatabase"
+        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
+            None, description="", alias="quickSightDashboards"
+        )  # relationship
+        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
+            None, description="", alias="quickSightDatasets"
+        )  # relationship
+        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
+            None, description="", alias="quickSightAnalyses"
         )  # relationship
 
-    attributes: "MongoDBCollection.Attributes" = Field(
-        default_factory=lambda: MongoDBCollection.Attributes(),
+    attributes: "QuickSightFolder.Attributes" = Field(
+        default_factory=lambda: QuickSightFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MongoDBDatabase(Database):
+class QuickSightDashboardVisual(QuickSight):
     """Description"""
 
-    type_name: str = Field("MongoDBDatabase", allow_mutation=False)
+    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MongoDBDatabase":
-            raise ValueError("must be MongoDBDatabase")
+        if v != "QuickSightDashboardVisual":
+            raise ValueError("must be QuickSightDashboardVisual")
         return v
 
     def __setattr__(self, name, value):
-        if name in MongoDBDatabase._convenience_properties:
+        if name in QuickSightDashboardVisual._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MONGO_DB_DATABASE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
-        "mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount"
+    QUICK_SIGHT_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightDashboardQualifiedName",
+        "quickSightDashboardQualifiedName",
+        "quickSightDashboardQualifiedName.text",
     )
     """
-    Number of collections in the database.
-    """
-    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
-    """
-    Number of schemas in this database.
-    """
-    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
-    """
-    Number of times this asset has been queried.
-    """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
-        "queryUserCount", "queryUserCount"
-    )
-    """
-    Number of unique users who have queried this asset.
-    """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
-        "queryUserMap", "queryUserMap"
-    )
-    """
-    Map of unique users who have queried this asset to the number of times they have queried it.
-    """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
-        "queryCountUpdatedAt", "queryCountUpdatedAt"
-    )
-    """
-    Time (epoch) at which the query count was last updated, in milliseconds.
-    """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "databaseName", "databaseName.keyword", "databaseName"
-    )
-    """
-    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
-    """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "databaseQualifiedName", "databaseQualifiedName"
-    )
-    """
-    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
-    """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "schemaName", "schemaName.keyword", "schemaName"
-    )
-    """
-    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
-    """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "schemaQualifiedName", "schemaQualifiedName"
-    )
-    """
-    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
-    """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "tableName", "tableName.keyword", "tableName"
-    )
-    """
-    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
-    """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "tableQualifiedName", "tableQualifiedName"
-    )
-    """
-    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
-    """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
-    """
-    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
-    """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "viewQualifiedName", "viewQualifiedName"
-    )
-    """
-    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
-    """
-    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
-    """
-    Whether this asset has been profiled (true) or not (false).
-    """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
-        "lastProfiledAt", "lastProfiledAt"
-    )
-    """
-    Time (epoch) at which this asset was last profiled, in milliseconds.
-    """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
-    """
-    Represents attributes for describing the key schema for the table and indexes.
+    Unique name of the dashboard in which this visual exists.
     """
 
-    MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField("mongoDBCollections")
+    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
+        "quickSightDashboard"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mongo_d_b_database_collection_count",
-        "schema_count",
-        "query_count",
-        "query_user_count",
-        "query_user_map",
-        "query_count_updated_at",
-        "database_name",
-        "database_qualified_name",
-        "schema_name",
-        "schema_qualified_name",
-        "table_name",
-        "table_qualified_name",
-        "view_name",
-        "view_qualified_name",
-        "is_profiled",
-        "last_profiled_at",
-        "no_s_q_l_schema_definition",
-        "mongo_d_b_collections",
+        "quick_sight_dashboard_qualified_name",
+        "quick_sight_dashboard",
     ]
 
     @property
-    def mongo_d_b_database_collection_count(self) -> Optional[int]:
+    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mongo_d_b_database_collection_count
+            else self.attributes.quick_sight_dashboard_qualified_name
         )
 
-    @mongo_d_b_database_collection_count.setter
-    def mongo_d_b_database_collection_count(
-        self, mongo_d_b_database_collection_count: Optional[int]
+    @quick_sight_dashboard_qualified_name.setter
+    def quick_sight_dashboard_qualified_name(
+        self, quick_sight_dashboard_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database_collection_count = (
-            mongo_d_b_database_collection_count
+        self.attributes.quick_sight_dashboard_qualified_name = (
+            quick_sight_dashboard_qualified_name
         )
 
     @property
-    def schema_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.schema_count
-
-    @schema_count.setter
-    def schema_count(self, schema_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_count = schema_count
-
-    @property
-    def query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_count
-
-    @query_count.setter
-    def query_count(self, query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count = query_count
-
-    @property
-    def query_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_user_count
-
-    @query_user_count.setter
-    def query_user_count(self, query_user_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_count = query_user_count
-
-    @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
-        return None if self.attributes is None else self.attributes.query_user_map
-
-    @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_map = query_user_map
-
-    @property
-    def query_count_updated_at(self) -> Optional[datetime]:
+    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
         return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
+            None if self.attributes is None else self.attributes.quick_sight_dashboard
         )
 
-    @query_count_updated_at.setter
-    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count_updated_at = query_count_updated_at
-
-    @property
-    def database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_name
-
-    @database_name.setter
-    def database_name(self, database_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_name = database_name
-
-    @property
-    def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
-
-    @database_qualified_name.setter
-    def database_qualified_name(self, database_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_qualified_name = database_qualified_name
-
-    @property
-    def schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_name
-
-    @schema_name.setter
-    def schema_name(self, schema_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_name = schema_name
-
-    @property
-    def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
-
-    @schema_qualified_name.setter
-    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_qualified_name = schema_qualified_name
-
-    @property
-    def table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_name
-
-    @table_name.setter
-    def table_name(self, table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_name = table_name
-
-    @property
-    def table_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_qualified_name
-
-    @table_qualified_name.setter
-    def table_qualified_name(self, table_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_qualified_name = table_qualified_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_qualified_name
-
-    @view_qualified_name.setter
-    def view_qualified_name(self, view_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_qualified_name = view_qualified_name
-
-    @property
-    def is_profiled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_profiled
-
-    @is_profiled.setter
-    def is_profiled(self, is_profiled: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_profiled = is_profiled
-
-    @property
-    def last_profiled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.last_profiled_at
-
-    @last_profiled_at.setter
-    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.last_profiled_at = last_profiled_at
-
-    @property
-    def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
-
-    @no_s_q_l_schema_definition.setter
-    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
-
-    @property
-    def mongo_d_b_collections(self) -> Optional[list[MongoDBCollection]]:
-        return (
-            None if self.attributes is None else self.attributes.mongo_d_b_collections
-        )
-
-    @mongo_d_b_collections.setter
-    def mongo_d_b_collections(
-        self, mongo_d_b_collections: Optional[list[MongoDBCollection]]
+    @quick_sight_dashboard.setter
+    def quick_sight_dashboard(
+        self, quick_sight_dashboard: Optional[QuickSightDashboard]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collections = mongo_d_b_collections
+        self.attributes.quick_sight_dashboard = quick_sight_dashboard
 
-    class Attributes(Database.Attributes):
-        mongo_d_b_database_collection_count: Optional[int] = Field(
-            None, description="", alias="mongoDBDatabaseCollectionCount"
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDashboardQualifiedName"
         )
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
-        )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
-        )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
-        )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
-        database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
-        )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
-        schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
-        )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
-        table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
-        no_s_q_l_schema_definition: Optional[str] = Field(
-            None, description="", alias="noSQLSchemaDefinition"
-        )
-        mongo_d_b_collections: Optional[list[MongoDBCollection]] = Field(
-            None, description="", alias="mongoDBCollections"
+        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
+            None, description="", alias="quickSightDashboard"
         )  # relationship
 
-    attributes: "MongoDBDatabase.Attributes" = Field(
-        default_factory=lambda: MongoDBDatabase.Attributes(),
+    attributes: "QuickSightDashboardVisual.Attributes" = Field(
+        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MongoDBCollection.Attributes.update_forward_refs()
+class QuickSightAnalysisVisual(QuickSight):
+    """Description"""
+
+    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysisVisual":
+            raise ValueError("must be QuickSightAnalysisVisual")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysisVisual._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightAnalysisQualifiedName",
+        "quickSightAnalysisQualifiedName",
+        "quickSightAnalysisQualifiedName.text",
+    )
+    """
+    Unique name of the QuickSight analysis in which this visual exists.
+    """
+
+    QUICK_SIGHT_ANALYSIS: ClassVar[RelationField] = RelationField("quickSightAnalysis")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_qualified_name",
+        "quick_sight_analysis",
+    ]
+
+    @property
+    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_qualified_name
+        )
+
+    @quick_sight_analysis_qualified_name.setter
+    def quick_sight_analysis_qualified_name(
+        self, quick_sight_analysis_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_qualified_name = (
+            quick_sight_analysis_qualified_name
+        )
+
+    @property
+    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
+        return None if self.attributes is None else self.attributes.quick_sight_analysis
+
+    @quick_sight_analysis.setter
+    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis = quick_sight_analysis
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightAnalysisQualifiedName"
+        )
+        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
+            None, description="", alias="quickSightAnalysis"
+        )  # relationship
+
+    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-MongoDBDatabase.Attributes.update_forward_refs()
+class QuickSightDatasetField(QuickSight):
+    """Description"""
+
+    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDatasetField":
+            raise ValueError("must be QuickSightDatasetField")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDatasetField._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QUICK_SIGHT_DATASET_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "quickSightDatasetFieldType", "quickSightDatasetFieldType"
+    )
+    """
+    Datatype of this field, for example: STRING, INTEGER, etc.
+    """
+    QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightDatasetQualifiedName",
+        "quickSightDatasetQualifiedName",
+        "quickSightDatasetQualifiedName.text",
+    )
+    """
+    Unique name of the dataset in which this field exists.
+    """
+
+    QUICK_SIGHT_DATASET: ClassVar[RelationField] = RelationField("quickSightDataset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "quick_sight_dataset_field_type",
+        "quick_sight_dataset_qualified_name",
+        "quick_sight_dataset",
+    ]
+
+    @property
+    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_field_type
+        )
+
+    @quick_sight_dataset_field_type.setter
+    def quick_sight_dataset_field_type(
+        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
+
+    @property
+    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_qualified_name
+        )
+
+    @quick_sight_dataset_qualified_name.setter
+    def quick_sight_dataset_qualified_name(
+        self, quick_sight_dataset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_qualified_name = (
+            quick_sight_dataset_qualified_name
+        )
+
+    @property
+    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
+        return None if self.attributes is None else self.attributes.quick_sight_dataset
+
+    @quick_sight_dataset.setter
+    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset = quick_sight_dataset
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
+            None, description="", alias="quickSightDatasetFieldType"
+        )
+        quick_sight_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDatasetQualifiedName"
+        )
+        quick_sight_dataset: Optional[QuickSightDataset] = Field(
+            None, description="", alias="quickSightDataset"
+        )  # relationship
+
+    attributes: "QuickSightDatasetField.Attributes" = Field(
+        default_factory=lambda: QuickSightDatasetField.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightAnalysis(QuickSight):
+    """Description"""
+
+    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysis":
+            raise ValueError("must be QuickSightAnalysis")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysis._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisStatus", "quickSightAnalysisStatus"
+    )
+    """
+    Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc.
+    """
+    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
+    )
+    """
+    List of field names calculated by this analysis.
+    """
+    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisParameterDeclarations",
+        "quickSightAnalysisParameterDeclarations",
+    )
+    """
+    List of parameters used for this analysis.
+    """
+    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
+    )
+    """
+    List of filter groups used for this analysis.
+    """
+
+    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisVisuals"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisFolders"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_status",
+        "quick_sight_analysis_calculated_fields",
+        "quick_sight_analysis_parameter_declarations",
+        "quick_sight_analysis_filter_groups",
+        "quick_sight_analysis_visuals",
+        "quick_sight_analysis_folders",
+    ]
+
+    @property
+    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_status
+        )
+
+    @quick_sight_analysis_status.setter
+    def quick_sight_analysis_status(
+        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
+
+    @property
+    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_calculated_fields
+        )
+
+    @quick_sight_analysis_calculated_fields.setter
+    def quick_sight_analysis_calculated_fields(
+        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_calculated_fields = (
+            quick_sight_analysis_calculated_fields
+        )
+
+    @property
+    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_parameter_declarations
+        )
+
+    @quick_sight_analysis_parameter_declarations.setter
+    def quick_sight_analysis_parameter_declarations(
+        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_parameter_declarations = (
+            quick_sight_analysis_parameter_declarations
+        )
+
+    @property
+    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_filter_groups
+        )
+
+    @quick_sight_analysis_filter_groups.setter
+    def quick_sight_analysis_filter_groups(
+        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_filter_groups = (
+            quick_sight_analysis_filter_groups
+        )
+
+    @property
+    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_visuals
+        )
+
+    @quick_sight_analysis_visuals.setter
+    def quick_sight_analysis_visuals(
+        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
+
+    @property
+    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_folders
+        )
+
+    @quick_sight_analysis_folders.setter
+    def quick_sight_analysis_folders(
+        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
+            None, description="", alias="quickSightAnalysisStatus"
+        )
+        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisCalculatedFields"
+        )
+        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisParameterDeclarations"
+        )
+        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisFilterGroups"
+        )
+        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
+            None, description="", alias="quickSightAnalysisVisuals"
+        )  # relationship
+        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightAnalysisFolders"
+        )  # relationship
+
+    attributes: "QuickSightAnalysis.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysis.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDashboard(QuickSight):
+    """Description"""
+
+    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboard":
+            raise ValueError("must be QuickSightDashboard")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDashboard._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[
+        NumericField
+    ] = NumericField(
+        "quickSightDashboardPublishedVersionNumber",
+        "quickSightDashboardPublishedVersionNumber",
+    )
+    """
+    Version number of the published dashboard.
+    """
+    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[NumericField] = NumericField(
+        "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
+    )
+    """
+    Time (epoch) at which this dashboard was last published, in milliseconds.
+    """
+
+    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardFolders"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardVisuals"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "quick_sight_dashboard_published_version_number",
+        "quick_sight_dashboard_last_published_time",
+        "quick_sight_dashboard_folders",
+        "quick_sight_dashboard_visuals",
+    ]
+
+    @property
+    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_published_version_number
+        )
+
+    @quick_sight_dashboard_published_version_number.setter
+    def quick_sight_dashboard_published_version_number(
+        self, quick_sight_dashboard_published_version_number: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_published_version_number = (
+            quick_sight_dashboard_published_version_number
+        )
+
+    @property
+    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_last_published_time
+        )
+
+    @quick_sight_dashboard_last_published_time.setter
+    def quick_sight_dashboard_last_published_time(
+        self, quick_sight_dashboard_last_published_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_last_published_time = (
+            quick_sight_dashboard_last_published_time
+        )
+
+    @property
+    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_folders
+        )
+
+    @quick_sight_dashboard_folders.setter
+    def quick_sight_dashboard_folders(
+        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
+
+    @property
+    def quick_sight_dashboard_visuals(
+        self,
+    ) -> Optional[list[QuickSightDashboardVisual]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_visuals
+        )
+
+    @quick_sight_dashboard_visuals.setter
+    def quick_sight_dashboard_visuals(
+        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_published_version_number: Optional[int] = Field(
+            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+        )
+        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
+            None, description="", alias="quickSightDashboardLastPublishedTime"
+        )
+        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDashboardFolders"
+        )  # relationship
+        quick_sight_dashboard_visuals: Optional[
+            list[QuickSightDashboardVisual]
+        ] = Field(
+            None, description="", alias="quickSightDashboardVisuals"
+        )  # relationship
+
+    attributes: "QuickSightDashboard.Attributes" = Field(
+        default_factory=lambda: QuickSightDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDataset(QuickSight):
+    """Description"""
+
+    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDataset":
+            raise ValueError("must be QuickSightDataset")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDataset._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[KeywordField] = KeywordField(
+        "quickSightDatasetImportMode", "quickSightDatasetImportMode"
+    )
+    """
+    Import mode for this dataset, for example: SPICE or DIRECT_QUERY.
+    """
+    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
+    )
+    """
+    Number of columns present in this dataset.
+    """
+
+    QUICK_SIGHT_DATASET_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDatasetFolders"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DATASET_FIELDS: ClassVar[RelationField] = RelationField(
+        "quickSightDatasetFields"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "quick_sight_dataset_import_mode",
+        "quick_sight_dataset_column_count",
+        "quick_sight_dataset_folders",
+        "quick_sight_dataset_fields",
+    ]
+
+    @property
+    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_import_mode
+        )
+
+    @quick_sight_dataset_import_mode.setter
+    def quick_sight_dataset_import_mode(
+        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_import_mode = (
+            quick_sight_dataset_import_mode
+        )
+
+    @property
+    def quick_sight_dataset_column_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_column_count
+        )
+
+    @quick_sight_dataset_column_count.setter
+    def quick_sight_dataset_column_count(
+        self, quick_sight_dataset_column_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_column_count = (
+            quick_sight_dataset_column_count
+        )
+
+    @property
+    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_folders
+        )
+
+    @quick_sight_dataset_folders.setter
+    def quick_sight_dataset_folders(
+        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
+
+    @property
+    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_fields
+        )
+
+    @quick_sight_dataset_fields.setter
+    def quick_sight_dataset_fields(
+        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
+            None, description="", alias="quickSightDatasetImportMode"
+        )
+        quick_sight_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="quickSightDatasetColumnCount"
+        )
+        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDatasetFolders"
+        )  # relationship
+        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
+            None, description="", alias="quickSightDatasetFields"
+        )  # relationship
+
+    attributes: "QuickSightDataset.Attributes" = Field(
+        default_factory=lambda: QuickSightDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+QuickSightFolder.Attributes.update_forward_refs()
+
+
+QuickSightDashboardVisual.Attributes.update_forward_refs()
+
+
+QuickSightAnalysisVisual.Attributes.update_forward_refs()
+
+
+QuickSightDatasetField.Attributes.update_forward_refs()
+
+
+QuickSightAnalysis.Attributes.update_forward_refs()
+
+
+QuickSightDashboard.Attributes.update_forward_refs()
+
+
+QuickSightDataset.Attributes.update_forward_refs()

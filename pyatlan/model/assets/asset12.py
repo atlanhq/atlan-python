@@ -16,7 +16,14 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
 )
 
-from .asset00 import AirflowTask, Catalog, ColumnProcess, Dbt, MatillionComponent
+from .asset00 import (
+    AirflowTask,
+    Catalog,
+    ColumnProcess,
+    Dbt,
+    MatillionComponent,
+    SparkJob,
+)
 
 
 class DbtProcess(Dbt):
@@ -164,6 +171,10 @@ class DbtProcess(Dbt):
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
 
+    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
+    """
+    TBC
+    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -202,6 +213,7 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "spark_jobs",
         "matillion_component",
         "airflow_tasks",
         "column_processes",
@@ -472,6 +484,16 @@ class DbtProcess(Dbt):
         self.attributes.ast = ast
 
     @property
+    def spark_jobs(self) -> Optional[list[SparkJob]]:
+        return None if self.attributes is None else self.attributes.spark_jobs
+
+    @spark_jobs.setter
+    def spark_jobs(self, spark_jobs: Optional[list[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_jobs = spark_jobs
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -554,6 +576,9 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
+        spark_jobs: Optional[list[SparkJob]] = Field(
+            None, description="", alias="sparkJobs"
+        )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(
             None, description="", alias="matillionComponent"
         )  # relationship

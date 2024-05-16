@@ -10,336 +10,592 @@ from typing import ClassVar, Optional
 from pydantic import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-from .asset45 import Redash
+from .asset43 import Mode
 
 
-class RedashQuery(Redash):
+class ModeReport(Mode):
     """Description"""
 
-    type_name: str = Field("RedashQuery", allow_mutation=False)
+    type_name: str = Field("ModeReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "RedashQuery":
-            raise ValueError("must be RedashQuery")
+        if v != "ModeReport":
+            raise ValueError("must be ModeReport")
         return v
 
     def __setattr__(self, name, value):
-        if name in RedashQuery._convenience_properties:
+        if name in ModeReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    REDASH_QUERY_SQL: ClassVar[KeywordField] = KeywordField(
-        "redashQuerySQL", "redashQuerySQL"
+    MODE_COLLECTION_TOKEN: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionToken", "modeCollectionToken"
     )
-    """
-    SQL code of this query.
-    """
-    REDASH_QUERY_PARAMETERS: ClassVar[KeywordField] = KeywordField(
-        "redashQueryParameters", "redashQueryParameters"
-    )
-    """
-    Parameters of this query.
-    """
-    REDASH_QUERY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
-        "redashQuerySchedule", "redashQuerySchedule"
-    )
-    """
-    Schedule for this query.
-    """
-    REDASH_QUERY_LAST_EXECUTION_RUNTIME: ClassVar[NumericField] = NumericField(
-        "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
-    )
-    """
-    Elapsed time of the last execution of this query.
-    """
-    REDASH_QUERY_LAST_EXECUTED_AT: ClassVar[NumericField] = NumericField(
-        "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
-    )
-    """
-    Time (epoch) when this query was last executed, in milliseconds.
-    """
-    REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
-        "redashQueryScheduleHumanized",
-        "redashQueryScheduleHumanized",
-        "redashQueryScheduleHumanized.text",
-    )
-    """
-    Schdule for this query in readable text for overview tab and filtering.
     """
 
-    REDASH_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
-        "redashVisualizations"
+    """
+    MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField(
+        "modeReportPublishedAt", "modeReportPublishedAt"
     )
+    """
+
+    """
+    MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField(
+        "modeQueryCount", "modeQueryCount"
+    )
+    """
+
+    """
+    MODE_CHART_COUNT: ClassVar[NumericField] = NumericField(
+        "modeChartCount", "modeChartCount"
+    )
+    """
+
+    """
+    MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField(
+        "modeQueryPreview", "modeQueryPreview"
+    )
+    """
+
+    """
+    MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField(
+        "modeIsPublic", "modeIsPublic"
+    )
+    """
+
+    """
+    MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField(
+        "modeIsShared", "modeIsShared"
+    )
+    """
+
+    """
+
+    MODE_QUERIES: ClassVar[RelationField] = RelationField("modeQueries")
+    """
+    TBC
+    """
+    MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "redash_query_s_q_l",
-        "redash_query_parameters",
-        "redash_query_schedule",
-        "redash_query_last_execution_runtime",
-        "redash_query_last_executed_at",
-        "redash_query_schedule_humanized",
-        "redash_visualizations",
+        "mode_collection_token",
+        "mode_report_published_at",
+        "mode_query_count",
+        "mode_chart_count",
+        "mode_query_preview",
+        "mode_is_public",
+        "mode_is_shared",
+        "mode_queries",
+        "mode_collections",
     ]
 
     @property
-    def redash_query_s_q_l(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.redash_query_s_q_l
-
-    @redash_query_s_q_l.setter
-    def redash_query_s_q_l(self, redash_query_s_q_l: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.redash_query_s_q_l = redash_query_s_q_l
-
-    @property
-    def redash_query_parameters(self) -> Optional[str]:
+    def mode_collection_token(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.redash_query_parameters
+            None if self.attributes is None else self.attributes.mode_collection_token
         )
 
-    @redash_query_parameters.setter
-    def redash_query_parameters(self, redash_query_parameters: Optional[str]):
+    @mode_collection_token.setter
+    def mode_collection_token(self, mode_collection_token: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_query_parameters = redash_query_parameters
+        self.attributes.mode_collection_token = mode_collection_token
 
     @property
-    def redash_query_schedule(self) -> Optional[dict[str, str]]:
-        return (
-            None if self.attributes is None else self.attributes.redash_query_schedule
-        )
-
-    @redash_query_schedule.setter
-    def redash_query_schedule(self, redash_query_schedule: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.redash_query_schedule = redash_query_schedule
-
-    @property
-    def redash_query_last_execution_runtime(self) -> Optional[float]:
+    def mode_report_published_at(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.redash_query_last_execution_runtime
+            else self.attributes.mode_report_published_at
         )
 
-    @redash_query_last_execution_runtime.setter
-    def redash_query_last_execution_runtime(
-        self, redash_query_last_execution_runtime: Optional[float]
-    ):
+    @mode_report_published_at.setter
+    def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_query_last_execution_runtime = (
-            redash_query_last_execution_runtime
-        )
+        self.attributes.mode_report_published_at = mode_report_published_at
 
     @property
-    def redash_query_last_executed_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.redash_query_last_executed_at
-        )
+    def mode_query_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.mode_query_count
 
-    @redash_query_last_executed_at.setter
-    def redash_query_last_executed_at(
-        self, redash_query_last_executed_at: Optional[datetime]
-    ):
+    @mode_query_count.setter
+    def mode_query_count(self, mode_query_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_query_last_executed_at = redash_query_last_executed_at
+        self.attributes.mode_query_count = mode_query_count
 
     @property
-    def redash_query_schedule_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.redash_query_schedule_humanized
-        )
+    def mode_chart_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.mode_chart_count
 
-    @redash_query_schedule_humanized.setter
-    def redash_query_schedule_humanized(
-        self, redash_query_schedule_humanized: Optional[str]
-    ):
+    @mode_chart_count.setter
+    def mode_chart_count(self, mode_chart_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_query_schedule_humanized = (
-            redash_query_schedule_humanized
-        )
+        self.attributes.mode_chart_count = mode_chart_count
 
     @property
-    def redash_visualizations(self) -> Optional[list[RedashVisualization]]:
-        return (
-            None if self.attributes is None else self.attributes.redash_visualizations
-        )
+    def mode_query_preview(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_query_preview
 
-    @redash_visualizations.setter
-    def redash_visualizations(
-        self, redash_visualizations: Optional[list[RedashVisualization]]
-    ):
+    @mode_query_preview.setter
+    def mode_query_preview(self, mode_query_preview: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_visualizations = redash_visualizations
+        self.attributes.mode_query_preview = mode_query_preview
 
-    class Attributes(Redash.Attributes):
-        redash_query_s_q_l: Optional[str] = Field(
-            None, description="", alias="redashQuerySQL"
+    @property
+    def mode_is_public(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.mode_is_public
+
+    @mode_is_public.setter
+    def mode_is_public(self, mode_is_public: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_is_public = mode_is_public
+
+    @property
+    def mode_is_shared(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.mode_is_shared
+
+    @mode_is_shared.setter
+    def mode_is_shared(self, mode_is_shared: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_is_shared = mode_is_shared
+
+    @property
+    def mode_queries(self) -> Optional[list[ModeQuery]]:
+        return None if self.attributes is None else self.attributes.mode_queries
+
+    @mode_queries.setter
+    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_queries = mode_queries
+
+    @property
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return None if self.attributes is None else self.attributes.mode_collections
+
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collections = mode_collections
+
+    class Attributes(Mode.Attributes):
+        mode_collection_token: Optional[str] = Field(
+            None, description="", alias="modeCollectionToken"
         )
-        redash_query_parameters: Optional[str] = Field(
-            None, description="", alias="redashQueryParameters"
+        mode_report_published_at: Optional[datetime] = Field(
+            None, description="", alias="modeReportPublishedAt"
         )
-        redash_query_schedule: Optional[dict[str, str]] = Field(
-            None, description="", alias="redashQuerySchedule"
+        mode_query_count: Optional[int] = Field(
+            None, description="", alias="modeQueryCount"
         )
-        redash_query_last_execution_runtime: Optional[float] = Field(
-            None, description="", alias="redashQueryLastExecutionRuntime"
+        mode_chart_count: Optional[int] = Field(
+            None, description="", alias="modeChartCount"
         )
-        redash_query_last_executed_at: Optional[datetime] = Field(
-            None, description="", alias="redashQueryLastExecutedAt"
+        mode_query_preview: Optional[str] = Field(
+            None, description="", alias="modeQueryPreview"
         )
-        redash_query_schedule_humanized: Optional[str] = Field(
-            None, description="", alias="redashQueryScheduleHumanized"
+        mode_is_public: Optional[bool] = Field(
+            None, description="", alias="modeIsPublic"
         )
-        redash_visualizations: Optional[list[RedashVisualization]] = Field(
-            None, description="", alias="redashVisualizations"
+        mode_is_shared: Optional[bool] = Field(
+            None, description="", alias="modeIsShared"
+        )
+        mode_queries: Optional[list[ModeQuery]] = Field(
+            None, description="", alias="modeQueries"
+        )  # relationship
+        mode_collections: Optional[list[ModeCollection]] = Field(
+            None, description="", alias="modeCollections"
         )  # relationship
 
-    attributes: "RedashQuery.Attributes" = Field(
-        default_factory=lambda: RedashQuery.Attributes(),
+    attributes: "ModeReport.Attributes" = Field(
+        default_factory=lambda: ModeReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class RedashVisualization(Redash):
+class ModeQuery(Mode):
     """Description"""
 
-    type_name: str = Field("RedashVisualization", allow_mutation=False)
+    type_name: str = Field("ModeQuery", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "RedashVisualization":
-            raise ValueError("must be RedashVisualization")
+        if v != "ModeQuery":
+            raise ValueError("must be ModeQuery")
         return v
 
     def __setattr__(self, name, value):
-        if name in RedashVisualization._convenience_properties:
+        if name in ModeQuery._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    REDASH_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "redashVisualizationType", "redashVisualizationType"
-    )
-    """
-    Type of this visualization.
-    """
-    REDASH_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "redashQueryName", "redashQueryName.keyword", "redashQueryName"
-    )
-    """
-    Simple name of the query from which this visualization is created.
-    """
-    REDASH_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "redashQueryQualifiedName",
-        "redashQueryQualifiedName",
-        "redashQueryQualifiedName.text",
-    )
-    """
-    Unique name of the query from which this visualization is created.
+    MODE_RAW_QUERY: ClassVar[TextField] = TextField("modeRawQuery", "modeRawQuery")
     """
 
-    REDASH_QUERY: ClassVar[RelationField] = RelationField("redashQuery")
+    """
+    MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField(
+        "modeReportImportCount", "modeReportImportCount"
+    )
+    """
+
+    """
+
+    MODE_CHARTS: ClassVar[RelationField] = RelationField("modeCharts")
+    """
+    TBC
+    """
+    MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "redash_visualization_type",
-        "redash_query_name",
-        "redash_query_qualified_name",
-        "redash_query",
+        "mode_raw_query",
+        "mode_report_import_count",
+        "mode_charts",
+        "mode_report",
     ]
 
     @property
-    def redash_visualization_type(self) -> Optional[str]:
+    def mode_raw_query(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_raw_query
+
+    @mode_raw_query.setter
+    def mode_raw_query(self, mode_raw_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_raw_query = mode_raw_query
+
+    @property
+    def mode_report_import_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.redash_visualization_type
+            else self.attributes.mode_report_import_count
         )
 
-    @redash_visualization_type.setter
-    def redash_visualization_type(self, redash_visualization_type: Optional[str]):
+    @mode_report_import_count.setter
+    def mode_report_import_count(self, mode_report_import_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_visualization_type = redash_visualization_type
+        self.attributes.mode_report_import_count = mode_report_import_count
 
     @property
-    def redash_query_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.redash_query_name
+    def mode_charts(self) -> Optional[list[ModeChart]]:
+        return None if self.attributes is None else self.attributes.mode_charts
 
-    @redash_query_name.setter
-    def redash_query_name(self, redash_query_name: Optional[str]):
+    @mode_charts.setter
+    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_query_name = redash_query_name
+        self.attributes.mode_charts = mode_charts
 
     @property
-    def redash_query_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.redash_query_qualified_name
-        )
+    def mode_report(self) -> Optional[ModeReport]:
+        return None if self.attributes is None else self.attributes.mode_report
 
-    @redash_query_qualified_name.setter
-    def redash_query_qualified_name(self, redash_query_qualified_name: Optional[str]):
+    @mode_report.setter
+    def mode_report(self, mode_report: Optional[ModeReport]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.redash_query_qualified_name = redash_query_qualified_name
+        self.attributes.mode_report = mode_report
 
-    @property
-    def redash_query(self) -> Optional[RedashQuery]:
-        return None if self.attributes is None else self.attributes.redash_query
-
-    @redash_query.setter
-    def redash_query(self, redash_query: Optional[RedashQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.redash_query = redash_query
-
-    class Attributes(Redash.Attributes):
-        redash_visualization_type: Optional[str] = Field(
-            None, description="", alias="redashVisualizationType"
+    class Attributes(Mode.Attributes):
+        mode_raw_query: Optional[str] = Field(
+            None, description="", alias="modeRawQuery"
         )
-        redash_query_name: Optional[str] = Field(
-            None, description="", alias="redashQueryName"
+        mode_report_import_count: Optional[int] = Field(
+            None, description="", alias="modeReportImportCount"
         )
-        redash_query_qualified_name: Optional[str] = Field(
-            None, description="", alias="redashQueryQualifiedName"
-        )
-        redash_query: Optional[RedashQuery] = Field(
-            None, description="", alias="redashQuery"
+        mode_charts: Optional[list[ModeChart]] = Field(
+            None, description="", alias="modeCharts"
+        )  # relationship
+        mode_report: Optional[ModeReport] = Field(
+            None, description="", alias="modeReport"
         )  # relationship
 
-    attributes: "RedashVisualization.Attributes" = Field(
-        default_factory=lambda: RedashVisualization.Attributes(),
+    attributes: "ModeQuery.Attributes" = Field(
+        default_factory=lambda: ModeQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-RedashQuery.Attributes.update_forward_refs()
+class ModeChart(Mode):
+    """Description"""
+
+    type_name: str = Field("ModeChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeChart":
+            raise ValueError("must be ModeChart")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in ModeChart._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MODE_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
+        "modeChartType", "modeChartType"
+    )
+    """
+    Type of chart.
+    """
+
+    MODE_QUERY: ClassVar[RelationField] = RelationField("modeQuery")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "mode_chart_type",
+        "mode_query",
+    ]
+
+    @property
+    def mode_chart_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_chart_type
+
+    @mode_chart_type.setter
+    def mode_chart_type(self, mode_chart_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_chart_type = mode_chart_type
+
+    @property
+    def mode_query(self) -> Optional[ModeQuery]:
+        return None if self.attributes is None else self.attributes.mode_query
+
+    @mode_query.setter
+    def mode_query(self, mode_query: Optional[ModeQuery]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_query = mode_query
+
+    class Attributes(Mode.Attributes):
+        mode_chart_type: Optional[str] = Field(
+            None, description="", alias="modeChartType"
+        )
+        mode_query: Optional[ModeQuery] = Field(
+            None, description="", alias="modeQuery"
+        )  # relationship
+
+    attributes: "ModeChart.Attributes" = Field(
+        default_factory=lambda: ModeChart.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-RedashVisualization.Attributes.update_forward_refs()
+class ModeWorkspace(Mode):
+    """Description"""
+
+    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeWorkspace":
+            raise ValueError("must be ModeWorkspace")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in ModeWorkspace._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MODE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
+        "modeCollectionCount", "modeCollectionCount"
+    )
+    """
+    Number of collections in this workspace.
+    """
+
+    MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "mode_collection_count",
+        "mode_collections",
+    ]
+
+    @property
+    def mode_collection_count(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.mode_collection_count
+        )
+
+    @mode_collection_count.setter
+    def mode_collection_count(self, mode_collection_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_count = mode_collection_count
+
+    @property
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return None if self.attributes is None else self.attributes.mode_collections
+
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collections = mode_collections
+
+    class Attributes(Mode.Attributes):
+        mode_collection_count: Optional[int] = Field(
+            None, description="", alias="modeCollectionCount"
+        )
+        mode_collections: Optional[list[ModeCollection]] = Field(
+            None, description="", alias="modeCollections"
+        )  # relationship
+
+    attributes: "ModeWorkspace.Attributes" = Field(
+        default_factory=lambda: ModeWorkspace.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ModeCollection(Mode):
+    """Description"""
+
+    type_name: str = Field("ModeCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeCollection":
+            raise ValueError("must be ModeCollection")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in ModeCollection._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MODE_COLLECTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionType", "modeCollectionType"
+    )
+    """
+    Type of this collection.
+    """
+    MODE_COLLECTION_STATE: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionState", "modeCollectionState"
+    )
+    """
+    State of this collection.
+    """
+
+    MODE_WORKSPACE: ClassVar[RelationField] = RelationField("modeWorkspace")
+    """
+    TBC
+    """
+    MODE_REPORTS: ClassVar[RelationField] = RelationField("modeReports")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "mode_collection_type",
+        "mode_collection_state",
+        "mode_workspace",
+        "mode_reports",
+    ]
+
+    @property
+    def mode_collection_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_collection_type
+
+    @mode_collection_type.setter
+    def mode_collection_type(self, mode_collection_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_type = mode_collection_type
+
+    @property
+    def mode_collection_state(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.mode_collection_state
+        )
+
+    @mode_collection_state.setter
+    def mode_collection_state(self, mode_collection_state: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_state = mode_collection_state
+
+    @property
+    def mode_workspace(self) -> Optional[ModeWorkspace]:
+        return None if self.attributes is None else self.attributes.mode_workspace
+
+    @mode_workspace.setter
+    def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace = mode_workspace
+
+    @property
+    def mode_reports(self) -> Optional[list[ModeReport]]:
+        return None if self.attributes is None else self.attributes.mode_reports
+
+    @mode_reports.setter
+    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_reports = mode_reports
+
+    class Attributes(Mode.Attributes):
+        mode_collection_type: Optional[str] = Field(
+            None, description="", alias="modeCollectionType"
+        )
+        mode_collection_state: Optional[str] = Field(
+            None, description="", alias="modeCollectionState"
+        )
+        mode_workspace: Optional[ModeWorkspace] = Field(
+            None, description="", alias="modeWorkspace"
+        )  # relationship
+        mode_reports: Optional[list[ModeReport]] = Field(
+            None, description="", alias="modeReports"
+        )  # relationship
+
+    attributes: "ModeCollection.Attributes" = Field(
+        default_factory=lambda: ModeCollection.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+ModeReport.Attributes.update_forward_refs()
+
+
+ModeQuery.Attributes.update_forward_refs()
+
+
+ModeChart.Attributes.update_forward_refs()
+
+
+ModeWorkspace.Attributes.update_forward_refs()
+
+
+ModeCollection.Attributes.update_forward_refs()

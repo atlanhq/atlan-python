@@ -29,15 +29,34 @@ You can interact with all of the following different kinds of assets:
     asset/azure
     asset/azureeventhub
     asset/azureeventhubconsumergroup
+    asset/azureservicebus
+    asset/azureservicebusnamespace
+    asset/azureservicebustopic
     asset/bi
     asset/biprocess
     asset/badge
+    asset/calculationview
     asset/catalog
     asset/cloud
+    asset/cognite
+    asset/cognite3dmodel
+    asset/cogniteasset
+    asset/cogniteevent
+    asset/cognitefile
+    asset/cognitesequence
+    asset/cognitetimeseries
     asset/collection
     asset/column
     asset/columnprocess
     asset/connection
+    asset/cosmosmongodb
+    asset/cosmosmongodbcollection
+    asset/cosmosmongodbdatabase
+    asset/cube
+    asset/cubedimension
+    asset/cubefield
+    asset/cubehierarchy
+    asset/datacontract
     asset/datadomain
     asset/datamesh
     asset/dataproduct
@@ -55,6 +74,11 @@ You can interact with all of the following different kinds of assets:
     asset/dbtsource
     asset/dbttag
     asset/dbttest
+    asset/domo
+    asset/domocard
+    asset/domodashboard
+    asset/domodataset
+    asset/domodatasetcolumn
     asset/dynamodb
     asset/dynamodbglobalsecondaryindex
     asset/dynamodblocalsecondaryindex
@@ -118,6 +142,7 @@ You can interact with all of the following different kinds of assets:
     asset/mongodbcollection
     asset/mongodbdatabase
     asset/montecarlo
+    asset/multidimensionaldataset
     asset/namespace
     asset/nosql
     asset/objectstore
@@ -200,6 +225,10 @@ You can interact with all of the following different kinds of assets:
     asset/snowflaketag
     asset/soda
     asset/sodacheck
+    asset/spark
+    asset/sparkjob
+    asset/stakeholder
+    asset/stakeholdertitle
     asset/table
     asset/tablepartition
     asset/tableau
@@ -217,6 +246,10 @@ You can interact with all of the following different kinds of assets:
     asset/tagattachment
     asset/thoughtspot
     asset/thoughtspotanswer
+    asset/thoughtspotcolumn
     asset/thoughtspotdashlet
     asset/thoughtspotliveboard
+    asset/thoughtspottable
+    asset/thoughtspotview
+    asset/thoughtspotworksheet
     asset/view

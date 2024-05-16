@@ -11,23 +11,23 @@ from pydantic import Field, validator
 from .asset19 import BI
 
 
-class Sisense(BI):
+class Looker(BI):
     """Description"""
 
-    type_name: str = Field("Sisense", allow_mutation=False)
+    type_name: str = Field("Looker", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Sisense":
-            raise ValueError("must be Sisense")
+        if v != "Looker":
+            raise ValueError("must be Looker")
         return v
 
     def __setattr__(self, name, value):
-        if name in Sisense._convenience_properties:
+        if name in Looker._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
 
 
-Sisense.Attributes.update_forward_refs()
+Looker.Attributes.update_forward_refs()

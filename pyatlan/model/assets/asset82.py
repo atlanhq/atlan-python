@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
@@ -14,868 +15,1099 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
-    TextField,
 )
 
-from .asset54 import Salesforce
+from .asset49 import Sisense
 
 
-class SalesforceObject(Salesforce):
+class SisenseFolder(Sisense):
     """Description"""
 
-    type_name: str = Field("SalesforceObject", allow_mutation=False)
+    type_name: str = Field("SisenseFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceObject":
-            raise ValueError("must be SalesforceObject")
+        if v != "SisenseFolder":
+            raise ValueError("must be SisenseFolder")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceObject._convenience_properties:
+        if name in SisenseFolder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    IS_CUSTOM: ClassVar[BooleanField] = BooleanField("isCustom", "isCustom")
+    SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "sisenseFolderParentFolderQualifiedName",
+        "sisenseFolderParentFolderQualifiedName",
+        "sisenseFolderParentFolderQualifiedName.text",
+    )
     """
-    Whether this object is a custom object (true) or not (false).
-    """
-    IS_MERGABLE: ClassVar[BooleanField] = BooleanField("isMergable", "isMergable")
-    """
-    Whether this object is mergable (true) or not (false).
-    """
-    IS_QUERYABLE: ClassVar[BooleanField] = BooleanField("isQueryable", "isQueryable")
-    """
-    Whether this object is queryable (true) or not (false).
-    """
-    FIELD_COUNT: ClassVar[NumericField] = NumericField("fieldCount", "fieldCount")
-    """
-    Number of fields in this object.
+    Unique name of the parent folder in which this folder exists.
     """
 
-    LOOKUP_FIELDS: ClassVar[RelationField] = RelationField("lookupFields")
+    SISENSE_CHILD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "sisenseChildFolders"
+    )
     """
     TBC
     """
-    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
     """
     TBC
     """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    SISENSE_DASHBOARDS: ClassVar[RelationField] = RelationField("sisenseDashboards")
+    """
+    TBC
+    """
+    SISENSE_PARENT_FOLDER: ClassVar[RelationField] = RelationField(
+        "sisenseParentFolder"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "is_custom",
-        "is_mergable",
-        "is_queryable",
-        "field_count",
-        "lookup_fields",
-        "organization",
-        "fields",
+        "sisense_folder_parent_folder_qualified_name",
+        "sisense_child_folders",
+        "sisense_widgets",
+        "sisense_dashboards",
+        "sisense_parent_folder",
     ]
 
     @property
-    def is_custom(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_custom
-
-    @is_custom.setter
-    def is_custom(self, is_custom: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_custom = is_custom
-
-    @property
-    def is_mergable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_mergable
-
-    @is_mergable.setter
-    def is_mergable(self, is_mergable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_mergable = is_mergable
-
-    @property
-    def is_queryable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_queryable
-
-    @is_queryable.setter
-    def is_queryable(self, is_queryable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_queryable = is_queryable
-
-    @property
-    def field_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.field_count
-
-    @field_count.setter
-    def field_count(self, field_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.field_count = field_count
-
-    @property
-    def lookup_fields(self) -> Optional[list[SalesforceField]]:
-        return None if self.attributes is None else self.attributes.lookup_fields
-
-    @lookup_fields.setter
-    def lookup_fields(self, lookup_fields: Optional[list[SalesforceField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.lookup_fields = lookup_fields
-
-    @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    @property
-    def fields(self) -> Optional[list[SalesforceField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[SalesforceField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Salesforce.Attributes):
-        is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
-        is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
-        is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
-        field_count: Optional[int] = Field(None, description="", alias="fieldCount")
-        lookup_fields: Optional[list[SalesforceField]] = Field(
-            None, description="", alias="lookupFields"
-        )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
-        )  # relationship
-        fields: Optional[list[SalesforceField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-
-    attributes: "SalesforceObject.Attributes" = Field(
-        default_factory=lambda: SalesforceObject.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SalesforceField(Salesforce):
-    """Description"""
-
-    type_name: str = Field("SalesforceField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceField":
-            raise ValueError("must be SalesforceField")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SalesforceField._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "dataType", "dataType", "dataType.text"
-    )
-    """
-    Data type of values in this field.
-    """
-    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "objectQualifiedName", "objectQualifiedName"
-    )
-    """
-    Unique name of the object in which this field exists.
-    """
-    ORDER: ClassVar[NumericField] = NumericField("order", "order")
-    """
-    Order (position) of this field within the object.
-    """
-    INLINE_HELP_TEXT: ClassVar[TextField] = TextField(
-        "inlineHelpText", "inlineHelpText.text"
-    )
-    """
-    Help text for this field.
-    """
-    IS_CALCULATED: ClassVar[BooleanField] = BooleanField("isCalculated", "isCalculated")
-    """
-    Whether this field is calculated (true) or not (false).
-    """
-    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
-    """
-    Formula for this field, if it is a calculated field.
-    """
-    IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField(
-        "isCaseSensitive", "isCaseSensitive"
-    )
-    """
-    Whether this field is case sensitive (true) or in-sensitive (false).
-    """
-    IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField("isEncrypted", "isEncrypted")
-    """
-    Whether this field is encrypted (true) or not (false).
-    """
-    MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
-    """
-    Maximum length of this field.
-    """
-    IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
-    """
-    Whether this field allows null values (true) or not (false).
-    """
-    PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
-    """
-    Total number of digits allowed
-    """
-    NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
-    """
-    Number of digits allowed to the right of the decimal point.
-    """
-    IS_UNIQUE: ClassVar[BooleanField] = BooleanField("isUnique", "isUnique")
-    """
-    Whether this field must have unique values (true) or not (false).
-    """
-    PICKLIST_VALUES: ClassVar[KeywordField] = KeywordField(
-        "picklistValues", "picklistValues"
-    )
-    """
-    List of values from which a user can pick while adding a record.
-    """
-    IS_POLYMORPHIC_FOREIGN_KEY: ClassVar[BooleanField] = BooleanField(
-        "isPolymorphicForeignKey", "isPolymorphicForeignKey"
-    )
-    """
-    Whether this field references a record of multiple objects (true) or not (false).
-    """
-    DEFAULT_VALUE_FORMULA: ClassVar[KeywordField] = KeywordField(
-        "defaultValueFormula", "defaultValueFormula"
-    )
-    """
-    Formula for the default value for this field.
-    """
-
-    LOOKUP_OBJECTS: ClassVar[RelationField] = RelationField("lookupObjects")
-    """
-    TBC
-    """
-    OBJECT: ClassVar[RelationField] = RelationField("object")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "data_type",
-        "object_qualified_name",
-        "order",
-        "inline_help_text",
-        "is_calculated",
-        "formula",
-        "is_case_sensitive",
-        "is_encrypted",
-        "max_length",
-        "is_nullable",
-        "precision",
-        "numeric_scale",
-        "is_unique",
-        "picklist_values",
-        "is_polymorphic_foreign_key",
-        "default_value_formula",
-        "lookup_objects",
-        "object",
-    ]
-
-    @property
-    def data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_type
-
-    @data_type.setter
-    def data_type(self, data_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_type = data_type
-
-    @property
-    def object_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.object_qualified_name
-        )
-
-    @object_qualified_name.setter
-    def object_qualified_name(self, object_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.object_qualified_name = object_qualified_name
-
-    @property
-    def order(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.order
-
-    @order.setter
-    def order(self, order: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.order = order
-
-    @property
-    def inline_help_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.inline_help_text
-
-    @inline_help_text.setter
-    def inline_help_text(self, inline_help_text: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.inline_help_text = inline_help_text
-
-    @property
-    def is_calculated(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_calculated
-
-    @is_calculated.setter
-    def is_calculated(self, is_calculated: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_calculated = is_calculated
-
-    @property
-    def formula(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.formula
-
-    @formula.setter
-    def formula(self, formula: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.formula = formula
-
-    @property
-    def is_case_sensitive(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_case_sensitive
-
-    @is_case_sensitive.setter
-    def is_case_sensitive(self, is_case_sensitive: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_case_sensitive = is_case_sensitive
-
-    @property
-    def is_encrypted(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_encrypted
-
-    @is_encrypted.setter
-    def is_encrypted(self, is_encrypted: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_encrypted = is_encrypted
-
-    @property
-    def max_length(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.max_length
-
-    @max_length.setter
-    def max_length(self, max_length: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.max_length = max_length
-
-    @property
-    def is_nullable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_nullable
-
-    @is_nullable.setter
-    def is_nullable(self, is_nullable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_nullable = is_nullable
-
-    @property
-    def precision(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.precision
-
-    @precision.setter
-    def precision(self, precision: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.precision = precision
-
-    @property
-    def numeric_scale(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.numeric_scale
-
-    @numeric_scale.setter
-    def numeric_scale(self, numeric_scale: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.numeric_scale = numeric_scale
-
-    @property
-    def is_unique(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_unique
-
-    @is_unique.setter
-    def is_unique(self, is_unique: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_unique = is_unique
-
-    @property
-    def picklist_values(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.picklist_values
-
-    @picklist_values.setter
-    def picklist_values(self, picklist_values: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.picklist_values = picklist_values
-
-    @property
-    def is_polymorphic_foreign_key(self) -> Optional[bool]:
+    def sisense_folder_parent_folder_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.is_polymorphic_foreign_key
+            else self.attributes.sisense_folder_parent_folder_qualified_name
         )
 
-    @is_polymorphic_foreign_key.setter
-    def is_polymorphic_foreign_key(self, is_polymorphic_foreign_key: Optional[bool]):
+    @sisense_folder_parent_folder_qualified_name.setter
+    def sisense_folder_parent_folder_qualified_name(
+        self, sisense_folder_parent_folder_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.is_polymorphic_foreign_key = is_polymorphic_foreign_key
+        self.attributes.sisense_folder_parent_folder_qualified_name = (
+            sisense_folder_parent_folder_qualified_name
+        )
 
     @property
-    def default_value_formula(self) -> Optional[str]:
+    def sisense_child_folders(self) -> Optional[list[SisenseFolder]]:
         return (
-            None if self.attributes is None else self.attributes.default_value_formula
+            None if self.attributes is None else self.attributes.sisense_child_folders
         )
 
-    @default_value_formula.setter
-    def default_value_formula(self, default_value_formula: Optional[str]):
+    @sisense_child_folders.setter
+    def sisense_child_folders(
+        self, sisense_child_folders: Optional[list[SisenseFolder]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.default_value_formula = default_value_formula
+        self.attributes.sisense_child_folders = sisense_child_folders
 
     @property
-    def lookup_objects(self) -> Optional[list[SalesforceObject]]:
-        return None if self.attributes is None else self.attributes.lookup_objects
+    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
 
-    @lookup_objects.setter
-    def lookup_objects(self, lookup_objects: Optional[list[SalesforceObject]]):
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.lookup_objects = lookup_objects
+        self.attributes.sisense_widgets = sisense_widgets
 
     @property
-    def object(self) -> Optional[SalesforceObject]:
-        return None if self.attributes is None else self.attributes.object
+    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
+        return None if self.attributes is None else self.attributes.sisense_dashboards
 
-    @object.setter
-    def object(self, object: Optional[SalesforceObject]):
+    @sisense_dashboards.setter
+    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.object = object
+        self.attributes.sisense_dashboards = sisense_dashboards
 
-    class Attributes(Salesforce.Attributes):
-        data_type: Optional[str] = Field(None, description="", alias="dataType")
-        object_qualified_name: Optional[str] = Field(
-            None, description="", alias="objectQualifiedName"
+    @property
+    def sisense_parent_folder(self) -> Optional[SisenseFolder]:
+        return (
+            None if self.attributes is None else self.attributes.sisense_parent_folder
         )
-        order: Optional[int] = Field(None, description="", alias="order")
-        inline_help_text: Optional[str] = Field(
-            None, description="", alias="inlineHelpText"
+
+    @sisense_parent_folder.setter
+    def sisense_parent_folder(self, sisense_parent_folder: Optional[SisenseFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_parent_folder = sisense_parent_folder
+
+    class Attributes(Sisense.Attributes):
+        sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseFolderParentFolderQualifiedName"
         )
-        is_calculated: Optional[bool] = Field(
-            None, description="", alias="isCalculated"
-        )
-        formula: Optional[str] = Field(None, description="", alias="formula")
-        is_case_sensitive: Optional[bool] = Field(
-            None, description="", alias="isCaseSensitive"
-        )
-        is_encrypted: Optional[bool] = Field(None, description="", alias="isEncrypted")
-        max_length: Optional[int] = Field(None, description="", alias="maxLength")
-        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
-        precision: Optional[int] = Field(None, description="", alias="precision")
-        numeric_scale: Optional[float] = Field(
-            None, description="", alias="numericScale"
-        )
-        is_unique: Optional[bool] = Field(None, description="", alias="isUnique")
-        picklist_values: Optional[set[str]] = Field(
-            None, description="", alias="picklistValues"
-        )
-        is_polymorphic_foreign_key: Optional[bool] = Field(
-            None, description="", alias="isPolymorphicForeignKey"
-        )
-        default_value_formula: Optional[str] = Field(
-            None, description="", alias="defaultValueFormula"
-        )
-        lookup_objects: Optional[list[SalesforceObject]] = Field(
-            None, description="", alias="lookupObjects"
+        sisense_child_folders: Optional[list[SisenseFolder]] = Field(
+            None, description="", alias="sisenseChildFolders"
         )  # relationship
-        object: Optional[SalesforceObject] = Field(
-            None, description="", alias="object"
+        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+            None, description="", alias="sisenseWidgets"
+        )  # relationship
+        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
+            None, description="", alias="sisenseDashboards"
+        )  # relationship
+        sisense_parent_folder: Optional[SisenseFolder] = Field(
+            None, description="", alias="sisenseParentFolder"
         )  # relationship
 
-    attributes: "SalesforceField.Attributes" = Field(
-        default_factory=lambda: SalesforceField.Attributes(),
+    attributes: "SisenseFolder.Attributes" = Field(
+        default_factory=lambda: SisenseFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SalesforceOrganization(Salesforce):
+class SisenseWidget(Sisense):
     """Description"""
 
-    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+    type_name: str = Field("SisenseWidget", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceOrganization":
-            raise ValueError("must be SalesforceOrganization")
+        if v != "SisenseWidget":
+            raise ValueError("must be SisenseWidget")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceOrganization._convenience_properties:
+        if name in SisenseWidget._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    SISENSE_WIDGET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseWidgetColumnCount", "sisenseWidgetColumnCount"
+    )
     """
-    Identifier of the organization in Salesforce.
+    Number of columns used in this widget.
+    """
+    SISENSE_WIDGET_SUB_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseWidgetSubType", "sisenseWidgetSubType"
+    )
+    """
+    Subtype of this widget.
+    """
+    SISENSE_WIDGET_SIZE: ClassVar[KeywordField] = KeywordField(
+        "sisenseWidgetSize", "sisenseWidgetSize"
+    )
+    """
+    Size of this widget.
+    """
+    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "sisenseWidgetDashboardQualifiedName",
+        "sisenseWidgetDashboardQualifiedName",
+        "sisenseWidgetDashboardQualifiedName.text",
+    )
+    """
+    Unique name of the dashboard in which this widget exists.
+    """
+    SISENSE_WIDGET_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sisenseWidgetFolderQualifiedName",
+        "sisenseWidgetFolderQualifiedName",
+        "sisenseWidgetFolderQualifiedName.text",
+    )
+    """
+    Unique name of the folder in which this widget exists.
     """
 
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
+        "sisenseDatamodelTables"
+    )
     """
     TBC
     """
-    OBJECTS: ClassVar[RelationField] = RelationField("objects")
+    SISENSE_FOLDER: ClassVar[RelationField] = RelationField("sisenseFolder")
     """
     TBC
     """
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    SISENSE_DASHBOARD: ClassVar[RelationField] = RelationField("sisenseDashboard")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_id",
-        "reports",
-        "objects",
-        "dashboards",
+        "sisense_widget_column_count",
+        "sisense_widget_sub_type",
+        "sisense_widget_size",
+        "sisense_widget_dashboard_qualified_name",
+        "sisense_widget_folder_qualified_name",
+        "sisense_datamodel_tables",
+        "sisense_folder",
+        "sisense_dashboard",
     ]
 
     @property
-    def source_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_id
+    def sisense_widget_column_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_widget_column_count
+        )
 
-    @source_id.setter
-    def source_id(self, source_id: Optional[str]):
+    @sisense_widget_column_count.setter
+    def sisense_widget_column_count(self, sisense_widget_column_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_id = source_id
+        self.attributes.sisense_widget_column_count = sisense_widget_column_count
 
     @property
-    def reports(self) -> Optional[list[SalesforceReport]]:
-        return None if self.attributes is None else self.attributes.reports
+    def sisense_widget_sub_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sisense_widget_sub_type
+        )
 
-    @reports.setter
-    def reports(self, reports: Optional[list[SalesforceReport]]):
+    @sisense_widget_sub_type.setter
+    def sisense_widget_sub_type(self, sisense_widget_sub_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.reports = reports
+        self.attributes.sisense_widget_sub_type = sisense_widget_sub_type
 
     @property
-    def objects(self) -> Optional[list[SalesforceObject]]:
-        return None if self.attributes is None else self.attributes.objects
+    def sisense_widget_size(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sisense_widget_size
 
-    @objects.setter
-    def objects(self, objects: Optional[list[SalesforceObject]]):
+    @sisense_widget_size.setter
+    def sisense_widget_size(self, sisense_widget_size: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.objects = objects
+        self.attributes.sisense_widget_size = sisense_widget_size
 
     @property
-    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
+    def sisense_widget_dashboard_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_widget_dashboard_qualified_name
+        )
 
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+    @sisense_widget_dashboard_qualified_name.setter
+    def sisense_widget_dashboard_qualified_name(
+        self, sisense_widget_dashboard_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
+        self.attributes.sisense_widget_dashboard_qualified_name = (
+            sisense_widget_dashboard_qualified_name
+        )
 
-    class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        reports: Optional[list[SalesforceReport]] = Field(
-            None, description="", alias="reports"
+    @property
+    def sisense_widget_folder_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_widget_folder_qualified_name
+        )
+
+    @sisense_widget_folder_qualified_name.setter
+    def sisense_widget_folder_qualified_name(
+        self, sisense_widget_folder_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widget_folder_qualified_name = (
+            sisense_widget_folder_qualified_name
+        )
+
+    @property
+    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_tables
+        )
+
+    @sisense_datamodel_tables.setter
+    def sisense_datamodel_tables(
+        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
+
+    @property
+    def sisense_folder(self) -> Optional[SisenseFolder]:
+        return None if self.attributes is None else self.attributes.sisense_folder
+
+    @sisense_folder.setter
+    def sisense_folder(self, sisense_folder: Optional[SisenseFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_folder = sisense_folder
+
+    @property
+    def sisense_dashboard(self) -> Optional[SisenseDashboard]:
+        return None if self.attributes is None else self.attributes.sisense_dashboard
+
+    @sisense_dashboard.setter
+    def sisense_dashboard(self, sisense_dashboard: Optional[SisenseDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboard = sisense_dashboard
+
+    class Attributes(Sisense.Attributes):
+        sisense_widget_column_count: Optional[int] = Field(
+            None, description="", alias="sisenseWidgetColumnCount"
+        )
+        sisense_widget_sub_type: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetSubType"
+        )
+        sisense_widget_size: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetSize"
+        )
+        sisense_widget_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetDashboardQualifiedName"
+        )
+        sisense_widget_folder_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetFolderQualifiedName"
+        )
+        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
+            None, description="", alias="sisenseDatamodelTables"
         )  # relationship
-        objects: Optional[list[SalesforceObject]] = Field(
-            None, description="", alias="objects"
+        sisense_folder: Optional[SisenseFolder] = Field(
+            None, description="", alias="sisenseFolder"
         )  # relationship
-        dashboards: Optional[list[SalesforceDashboard]] = Field(
-            None, description="", alias="dashboards"
+        sisense_dashboard: Optional[SisenseDashboard] = Field(
+            None, description="", alias="sisenseDashboard"
         )  # relationship
 
-    attributes: "SalesforceOrganization.Attributes" = Field(
-        default_factory=lambda: SalesforceOrganization.Attributes(),
+    attributes: "SisenseWidget.Attributes" = Field(
+        default_factory=lambda: SisenseWidget.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SalesforceDashboard(Salesforce):
+class SisenseDatamodel(Sisense):
     """Description"""
 
-    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+    type_name: str = Field("SisenseDatamodel", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceDashboard":
-            raise ValueError("must be SalesforceDashboard")
+        if v != "SisenseDatamodel":
+            raise ValueError("must be SisenseDatamodel")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceDashboard._convenience_properties:
+        if name in SisenseDatamodel._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
-    """
-    Identifier of the dashboard in Salesforce.
-    """
-    DASHBOARD_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dashboardType", "dashboardType"
+    SISENSE_DATAMODEL_TABLE_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelTableCount", "sisenseDatamodelTableCount"
     )
     """
-    Type of dashboard in Salesforce.
+    Number of tables in this datamodel.
     """
-    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    SISENSE_DATAMODEL_SERVER: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelServer", "sisenseDatamodelServer"
+    )
     """
-    Number of reports linked to the dashboard in Salesforce.
+    Hostname of the server on which this datamodel was created.
     """
+    SISENSE_DATAMODEL_REVISION: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelRevision", "sisenseDatamodelRevision"
+    )
+    """
+    Revision of this datamodel.
+    """
+    SISENSE_DATAMODEL_LAST_BUILD_TIME: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelLastBuildTime", "sisenseDatamodelLastBuildTime"
+    )
+    """
+    Time (epoch) when this datamodel was last built, in milliseconds.
+    """
+    SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelLastSuccessfulBuildTime",
+        "sisenseDatamodelLastSuccessfulBuildTime",
+    )
+    """
+    Time (epoch) when this datamodel was last built successfully, in milliseconds.
+    """
+    SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelLastPublishTime", "sisenseDatamodelLastPublishTime"
+    )
+    """
+    Time (epoch) when this datamodel was last published, in milliseconds.
+    """
+    SISENSE_DATAMODEL_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelType", "sisenseDatamodelType"
+    )
+    """
+    Type of this datamodel, for example: 'extract' or 'custom'.
+    """
+    SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelRelationType", "sisenseDatamodelRelationType"
+    )
+    """
+    Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default.
+    """  # noqa: E501
 
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
+        "sisenseDatamodelTables"
+    )
     """
     TBC
     """
-    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    SISENSE_DASHBOARDS: ClassVar[RelationField] = RelationField("sisenseDashboards")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_id",
-        "dashboard_type",
-        "report_count",
-        "reports",
-        "organization",
+        "sisense_datamodel_table_count",
+        "sisense_datamodel_server",
+        "sisense_datamodel_revision",
+        "sisense_datamodel_last_build_time",
+        "sisense_datamodel_last_successful_build_time",
+        "sisense_datamodel_last_publish_time",
+        "sisense_datamodel_type",
+        "sisense_datamodel_relation_type",
+        "sisense_datamodel_tables",
+        "sisense_dashboards",
     ]
 
     @property
-    def source_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_id
-
-    @source_id.setter
-    def source_id(self, source_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_id = source_id
-
-    @property
-    def dashboard_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dashboard_type
-
-    @dashboard_type.setter
-    def dashboard_type(self, dashboard_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard_type = dashboard_type
-
-    @property
-    def report_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.report_count
-
-    @report_count.setter
-    def report_count(self, report_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_count = report_count
-
-    @property
-    def reports(self) -> Optional[list[SalesforceReport]]:
-        return None if self.attributes is None else self.attributes.reports
-
-    @reports.setter
-    def reports(self, reports: Optional[list[SalesforceReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reports = reports
-
-    @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        dashboard_type: Optional[str] = Field(
-            None, description="", alias="dashboardType"
+    def sisense_datamodel_table_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_count
         )
-        report_count: Optional[int] = Field(None, description="", alias="reportCount")
-        reports: Optional[list[SalesforceReport]] = Field(
-            None, description="", alias="reports"
+
+    @sisense_datamodel_table_count.setter
+    def sisense_datamodel_table_count(
+        self, sisense_datamodel_table_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_count = sisense_datamodel_table_count
+
+    @property
+    def sisense_datamodel_server(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_server
+        )
+
+    @sisense_datamodel_server.setter
+    def sisense_datamodel_server(self, sisense_datamodel_server: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_server = sisense_datamodel_server
+
+    @property
+    def sisense_datamodel_revision(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_revision
+        )
+
+    @sisense_datamodel_revision.setter
+    def sisense_datamodel_revision(self, sisense_datamodel_revision: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_revision = sisense_datamodel_revision
+
+    @property
+    def sisense_datamodel_last_build_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_build_time
+        )
+
+    @sisense_datamodel_last_build_time.setter
+    def sisense_datamodel_last_build_time(
+        self, sisense_datamodel_last_build_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_last_build_time = (
+            sisense_datamodel_last_build_time
+        )
+
+    @property
+    def sisense_datamodel_last_successful_build_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_successful_build_time
+        )
+
+    @sisense_datamodel_last_successful_build_time.setter
+    def sisense_datamodel_last_successful_build_time(
+        self, sisense_datamodel_last_successful_build_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_last_successful_build_time = (
+            sisense_datamodel_last_successful_build_time
+        )
+
+    @property
+    def sisense_datamodel_last_publish_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_publish_time
+        )
+
+    @sisense_datamodel_last_publish_time.setter
+    def sisense_datamodel_last_publish_time(
+        self, sisense_datamodel_last_publish_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_last_publish_time = (
+            sisense_datamodel_last_publish_time
+        )
+
+    @property
+    def sisense_datamodel_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sisense_datamodel_type
+        )
+
+    @sisense_datamodel_type.setter
+    def sisense_datamodel_type(self, sisense_datamodel_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_type = sisense_datamodel_type
+
+    @property
+    def sisense_datamodel_relation_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_relation_type
+        )
+
+    @sisense_datamodel_relation_type.setter
+    def sisense_datamodel_relation_type(
+        self, sisense_datamodel_relation_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_relation_type = (
+            sisense_datamodel_relation_type
+        )
+
+    @property
+    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_tables
+        )
+
+    @sisense_datamodel_tables.setter
+    def sisense_datamodel_tables(
+        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
+
+    @property
+    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
+        return None if self.attributes is None else self.attributes.sisense_dashboards
+
+    @sisense_dashboards.setter
+    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboards = sisense_dashboards
+
+    class Attributes(Sisense.Attributes):
+        sisense_datamodel_table_count: Optional[int] = Field(
+            None, description="", alias="sisenseDatamodelTableCount"
+        )
+        sisense_datamodel_server: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelServer"
+        )
+        sisense_datamodel_revision: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelRevision"
+        )
+        sisense_datamodel_last_build_time: Optional[datetime] = Field(
+            None, description="", alias="sisenseDatamodelLastBuildTime"
+        )
+        sisense_datamodel_last_successful_build_time: Optional[datetime] = Field(
+            None, description="", alias="sisenseDatamodelLastSuccessfulBuildTime"
+        )
+        sisense_datamodel_last_publish_time: Optional[datetime] = Field(
+            None, description="", alias="sisenseDatamodelLastPublishTime"
+        )
+        sisense_datamodel_type: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelType"
+        )
+        sisense_datamodel_relation_type: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelRelationType"
+        )
+        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
+            None, description="", alias="sisenseDatamodelTables"
         )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
+            None, description="", alias="sisenseDashboards"
         )  # relationship
 
-    attributes: "SalesforceDashboard.Attributes" = Field(
-        default_factory=lambda: SalesforceDashboard.Attributes(),
+    attributes: "SisenseDatamodel.Attributes" = Field(
+        default_factory=lambda: SisenseDatamodel.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class SalesforceReport(Salesforce):
+class SisenseDatamodelTable(Sisense):
     """Description"""
 
-    type_name: str = Field("SalesforceReport", allow_mutation=False)
+    type_name: str = Field("SisenseDatamodelTable", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SalesforceReport":
-            raise ValueError("must be SalesforceReport")
+        if v != "SisenseDatamodelTable":
+            raise ValueError("must be SisenseDatamodelTable")
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceReport._convenience_properties:
+        if name in SisenseDatamodelTable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
-    """
-    Identifier of the report in Salesforce.
-    """
-    REPORT_TYPE: ClassVar[KeywordField] = KeywordField("reportType", "reportType")
-    """
-    Type of report in Salesforce.
-    """
-    DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField(
-        "detailColumns", "detailColumns"
+    SISENSE_DATAMODEL_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sisenseDatamodelQualifiedName",
+        "sisenseDatamodelQualifiedName",
+        "sisenseDatamodelQualifiedName.text",
     )
     """
-    List of column names on the report.
+    Unique name of the datamodel in which this datamodel table exists.
+    """
+    SISENSE_DATAMODEL_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelTableColumnCount", "sisenseDatamodelTableColumnCount"
+    )
+    """
+    Number of columns present in this datamodel table.
+    """
+    SISENSE_DATAMODEL_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableType", "sisenseDatamodelTableType"
+    )
+    """
+    Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables.
+    """
+    SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
+    )
+    """
+    SQL expression of this datamodel table.
+    """
+    SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED: ClassVar[BooleanField] = BooleanField(
+        "sisenseDatamodelTableIsMaterialized", "sisenseDatamodelTableIsMaterialized"
+    )
+    """
+    Whether this datamodel table is materialised (true) or not (false).
+    """
+    SISENSE_DATAMODEL_TABLE_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
+        "sisenseDatamodelTableIsHidden", "sisenseDatamodelTableIsHidden"
+    )
+    """
+    Whether this datamodel table is hidden in Sisense (true) or not (false).
+    """
+    SISENSE_DATAMODEL_TABLE_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableSchedule", "sisenseDatamodelTableSchedule"
+    )
+    """
+    JSON specifying the refresh schedule of this datamodel table.
+    """
+    SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableLiveQuerySettings",
+        "sisenseDatamodelTableLiveQuerySettings",
+    )
+    """
+    JSON specifying the LiveQuery settings of this datamodel table.
     """
 
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    SISENSE_DATAMODEL: ClassVar[RelationField] = RelationField("sisenseDatamodel")
     """
     TBC
     """
-    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "source_id",
-        "report_type",
-        "detail_columns",
-        "dashboards",
-        "organization",
+        "sisense_datamodel_qualified_name",
+        "sisense_datamodel_table_column_count",
+        "sisense_datamodel_table_type",
+        "sisense_datamodel_table_expression",
+        "sisense_datamodel_table_is_materialized",
+        "sisense_datamodel_table_is_hidden",
+        "sisense_datamodel_table_schedule",
+        "sisense_datamodel_table_live_query_settings",
+        "sisense_datamodel",
+        "sisense_widgets",
     ]
 
     @property
-    def source_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_id
-
-    @source_id.setter
-    def source_id(self, source_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_id = source_id
-
-    @property
-    def report_type(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.report_type
-
-    @report_type.setter
-    def report_type(self, report_type: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_type = report_type
-
-    @property
-    def detail_columns(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.detail_columns
-
-    @detail_columns.setter
-    def detail_columns(self, detail_columns: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.detail_columns = detail_columns
-
-    @property
-    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
-
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
-
-    @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    class Attributes(Salesforce.Attributes):
-        source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        report_type: Optional[dict[str, str]] = Field(
-            None, description="", alias="reportType"
+    def sisense_datamodel_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_qualified_name
         )
-        detail_columns: Optional[set[str]] = Field(
-            None, description="", alias="detailColumns"
+
+    @sisense_datamodel_qualified_name.setter
+    def sisense_datamodel_qualified_name(
+        self, sisense_datamodel_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_qualified_name = (
+            sisense_datamodel_qualified_name
         )
-        dashboards: Optional[list[SalesforceDashboard]] = Field(
-            None, description="", alias="dashboards"
+
+    @property
+    def sisense_datamodel_table_column_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_column_count
+        )
+
+    @sisense_datamodel_table_column_count.setter
+    def sisense_datamodel_table_column_count(
+        self, sisense_datamodel_table_column_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_column_count = (
+            sisense_datamodel_table_column_count
+        )
+
+    @property
+    def sisense_datamodel_table_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_type
+        )
+
+    @sisense_datamodel_table_type.setter
+    def sisense_datamodel_table_type(self, sisense_datamodel_table_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_type = sisense_datamodel_table_type
+
+    @property
+    def sisense_datamodel_table_expression(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_expression
+        )
+
+    @sisense_datamodel_table_expression.setter
+    def sisense_datamodel_table_expression(
+        self, sisense_datamodel_table_expression: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_expression = (
+            sisense_datamodel_table_expression
+        )
+
+    @property
+    def sisense_datamodel_table_is_materialized(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_is_materialized
+        )
+
+    @sisense_datamodel_table_is_materialized.setter
+    def sisense_datamodel_table_is_materialized(
+        self, sisense_datamodel_table_is_materialized: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_is_materialized = (
+            sisense_datamodel_table_is_materialized
+        )
+
+    @property
+    def sisense_datamodel_table_is_hidden(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_is_hidden
+        )
+
+    @sisense_datamodel_table_is_hidden.setter
+    def sisense_datamodel_table_is_hidden(
+        self, sisense_datamodel_table_is_hidden: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_is_hidden = (
+            sisense_datamodel_table_is_hidden
+        )
+
+    @property
+    def sisense_datamodel_table_schedule(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_schedule
+        )
+
+    @sisense_datamodel_table_schedule.setter
+    def sisense_datamodel_table_schedule(
+        self, sisense_datamodel_table_schedule: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_schedule = (
+            sisense_datamodel_table_schedule
+        )
+
+    @property
+    def sisense_datamodel_table_live_query_settings(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_live_query_settings
+        )
+
+    @sisense_datamodel_table_live_query_settings.setter
+    def sisense_datamodel_table_live_query_settings(
+        self, sisense_datamodel_table_live_query_settings: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_live_query_settings = (
+            sisense_datamodel_table_live_query_settings
+        )
+
+    @property
+    def sisense_datamodel(self) -> Optional[SisenseDatamodel]:
+        return None if self.attributes is None else self.attributes.sisense_datamodel
+
+    @sisense_datamodel.setter
+    def sisense_datamodel(self, sisense_datamodel: Optional[SisenseDatamodel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel = sisense_datamodel
+
+    @property
+    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
+
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widgets = sisense_widgets
+
+    class Attributes(Sisense.Attributes):
+        sisense_datamodel_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelQualifiedName"
+        )
+        sisense_datamodel_table_column_count: Optional[int] = Field(
+            None, description="", alias="sisenseDatamodelTableColumnCount"
+        )
+        sisense_datamodel_table_type: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableType"
+        )
+        sisense_datamodel_table_expression: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableExpression"
+        )
+        sisense_datamodel_table_is_materialized: Optional[bool] = Field(
+            None, description="", alias="sisenseDatamodelTableIsMaterialized"
+        )
+        sisense_datamodel_table_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sisenseDatamodelTableIsHidden"
+        )
+        sisense_datamodel_table_schedule: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableSchedule"
+        )
+        sisense_datamodel_table_live_query_settings: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableLiveQuerySettings"
+        )
+        sisense_datamodel: Optional[SisenseDatamodel] = Field(
+            None, description="", alias="sisenseDatamodel"
         )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
+        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+            None, description="", alias="sisenseWidgets"
         )  # relationship
 
-    attributes: "SalesforceReport.Attributes" = Field(
-        default_factory=lambda: SalesforceReport.Attributes(),
+    attributes: "SisenseDatamodelTable.Attributes" = Field(
+        default_factory=lambda: SisenseDatamodelTable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-SalesforceObject.Attributes.update_forward_refs()
+class SisenseDashboard(Sisense):
+    """Description"""
+
+    type_name: str = Field("SisenseDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SisenseDashboard":
+            raise ValueError("must be SisenseDashboard")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SisenseDashboard._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "sisenseDashboardFolderQualifiedName",
+        "sisenseDashboardFolderQualifiedName",
+        "sisenseDashboardFolderQualifiedName.text",
+    )
+    """
+    Unique name of the folder in which this dashboard exists.
+    """
+    SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
+    )
+    """
+    Number of widgets in this dashboard.
+    """
+
+    SISENSE_DATAMODELS: ClassVar[RelationField] = RelationField("sisenseDatamodels")
+    """
+    TBC
+    """
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
+    """
+    TBC
+    """
+    SISENSE_FOLDER: ClassVar[RelationField] = RelationField("sisenseFolder")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "sisense_dashboard_folder_qualified_name",
+        "sisense_dashboard_widget_count",
+        "sisense_datamodels",
+        "sisense_widgets",
+        "sisense_folder",
+    ]
+
+    @property
+    def sisense_dashboard_folder_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_dashboard_folder_qualified_name
+        )
+
+    @sisense_dashboard_folder_qualified_name.setter
+    def sisense_dashboard_folder_qualified_name(
+        self, sisense_dashboard_folder_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboard_folder_qualified_name = (
+            sisense_dashboard_folder_qualified_name
+        )
+
+    @property
+    def sisense_dashboard_widget_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_dashboard_widget_count
+        )
+
+    @sisense_dashboard_widget_count.setter
+    def sisense_dashboard_widget_count(
+        self, sisense_dashboard_widget_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboard_widget_count = sisense_dashboard_widget_count
+
+    @property
+    def sisense_datamodels(self) -> Optional[list[SisenseDatamodel]]:
+        return None if self.attributes is None else self.attributes.sisense_datamodels
+
+    @sisense_datamodels.setter
+    def sisense_datamodels(self, sisense_datamodels: Optional[list[SisenseDatamodel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodels = sisense_datamodels
+
+    @property
+    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
+
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widgets = sisense_widgets
+
+    @property
+    def sisense_folder(self) -> Optional[SisenseFolder]:
+        return None if self.attributes is None else self.attributes.sisense_folder
+
+    @sisense_folder.setter
+    def sisense_folder(self, sisense_folder: Optional[SisenseFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_folder = sisense_folder
+
+    class Attributes(Sisense.Attributes):
+        sisense_dashboard_folder_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseDashboardFolderQualifiedName"
+        )
+        sisense_dashboard_widget_count: Optional[int] = Field(
+            None, description="", alias="sisenseDashboardWidgetCount"
+        )
+        sisense_datamodels: Optional[list[SisenseDatamodel]] = Field(
+            None, description="", alias="sisenseDatamodels"
+        )  # relationship
+        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+            None, description="", alias="sisenseWidgets"
+        )  # relationship
+        sisense_folder: Optional[SisenseFolder] = Field(
+            None, description="", alias="sisenseFolder"
+        )  # relationship
+
+    attributes: "SisenseDashboard.Attributes" = Field(
+        default_factory=lambda: SisenseDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-SalesforceField.Attributes.update_forward_refs()
+SisenseFolder.Attributes.update_forward_refs()
 
 
-SalesforceOrganization.Attributes.update_forward_refs()
+SisenseWidget.Attributes.update_forward_refs()
 
 
-SalesforceDashboard.Attributes.update_forward_refs()
+SisenseDatamodel.Attributes.update_forward_refs()
 
 
-SalesforceReport.Attributes.update_forward_refs()
+SisenseDatamodelTable.Attributes.update_forward_refs()
+
+
+SisenseDashboard.Attributes.update_forward_refs()

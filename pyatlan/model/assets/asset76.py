@@ -4,929 +4,2197 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import (
-    QuickSightAnalysisStatus,
-    QuickSightDatasetFieldType,
-    QuickSightDatasetImportMode,
-    QuickSightFolderType,
-)
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
-    NumericField,
     RelationField,
 )
 
-from .asset49 import QuickSight
+from .asset45 import Tableau
 
 
-class QuickSightFolder(QuickSight):
+class TableauWorkbook(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+    type_name: str = Field("TableauWorkbook", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightFolder":
-            raise ValueError("must be QuickSightFolder")
+        if v != "TableauWorkbook":
+            raise ValueError("must be TableauWorkbook")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightFolder._convenience_properties:
+        if name in TableauWorkbook._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField(
-        "quickSightFolderType", "quickSightFolderType"
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Type of this folder, for example: SHARED.
+    Unique name of the site in which this workbook exists.
     """
-    QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "quickSightFolderHierarchy", "quickSightFolderHierarchy"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Detailed path of this folder.
+    Unique name of the project in which this workbook exists.
+    """
+    TOP_LEVEL_PROJECT_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectName", "topLevelProjectName"
+    )
+    """
+    Simple name of the top-level project in which this workbook exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this workbook exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
     """
 
-    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboards"
-    )
+    PROJECT: ClassVar[RelationField] = RelationField("project")
     """
     TBC
     """
-    QUICK_SIGHT_DATASETS: ClassVar[RelationField] = RelationField("quickSightDatasets")
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
     """
     TBC
     """
-    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_folder_type",
-        "quick_sight_folder_hierarchy",
-        "quick_sight_dashboards",
-        "quick_sight_datasets",
-        "quick_sight_analyses",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "project",
+        "dashboards",
+        "worksheets",
+        "datasources",
     ]
 
     @property
-    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_folder_type
-        )
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
 
-    @quick_sight_folder_type.setter
-    def quick_sight_folder_type(
-        self, quick_sight_folder_type: Optional[QuickSightFolderType]
-    ):
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_type = quick_sight_folder_type
+        self.attributes.site_qualified_name = site_qualified_name
 
     @property
-    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.top_level_project_name
+        )
+
+    @top_level_project_name.setter
+    def top_level_project_name(self, top_level_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_name = top_level_project_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_folder_hierarchy
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @quick_sight_folder_hierarchy.setter
-    def quick_sight_folder_hierarchy(
-        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
     @property
-    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboards
-        )
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
 
-    @quick_sight_dashboards.setter
-    def quick_sight_dashboards(
-        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
-    ):
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboards = quick_sight_dashboards
+        self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
-        return None if self.attributes is None else self.attributes.quick_sight_datasets
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
 
-    @quick_sight_datasets.setter
-    def quick_sight_datasets(
-        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
-    ):
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_datasets = quick_sight_datasets
+        self.attributes.project = project
 
     @property
-    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analyses
+    def dashboards(self) -> Optional[list[TableauDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
 
-    @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
-    ):
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analyses = quick_sight_analyses
+        self.attributes.dashboards = dashboards
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            None, description="", alias="quickSightFolderType"
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasources(self) -> Optional[list[TableauDatasource]]:
+        return None if self.attributes is None else self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="quickSightFolderHierarchy"
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
         )
-        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
-            None, description="", alias="quickSightDashboards"
+        top_level_project_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
         )  # relationship
-        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
-            None, description="", alias="quickSightDatasets"
+        dashboards: Optional[list[TableauDashboard]] = Field(
+            None, description="", alias="dashboards"
         )  # relationship
-        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
+        )  # relationship
+        datasources: Optional[list[TableauDatasource]] = Field(
+            None, description="", alias="datasources"
         )  # relationship
 
-    attributes: "QuickSightFolder.Attributes" = Field(
-        default_factory=lambda: QuickSightFolder.Attributes(),
+    attributes: "TableauWorkbook.Attributes" = Field(
+        default_factory=lambda: TableauWorkbook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDashboardVisual(QuickSight):
+class TableauDatasourceField(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDashboardVisual":
-            raise ValueError("must be QuickSightDashboardVisual")
+        if v != "TableauDatasourceField":
+            raise ValueError("must be TableauDatasourceField")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDashboardVisual._convenience_properties:
+        if name in TableauDatasourceField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "quickSightDashboardQualifiedName",
-        "quickSightDashboardQualifiedName",
-        "quickSightDashboardQualifiedName.text",
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the dashboard in which this visual exists.
+    Unique name of the site in which this datasource field exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this datasource field exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this datasource field exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this datasource field exists.
+    """
+    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
+    """
+    Unique name of the datasource in which this datasource field exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects and their nested child projects.
+    """
+    FULLY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "fullyQualifiedName", "fullyQualifiedName"
+    )
+    """
+    Name used internally in Tableau to uniquely identify this field.
+    """
+    TABLEAU_DATASOURCE_FIELD_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldDataCategory", "tableauDatasourceFieldDataCategory"
+    )
+    """
+    Data category of this field.
+    """
+    TABLEAU_DATASOURCE_FIELD_ROLE: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldRole", "tableauDatasourceFieldRole"
+    )
+    """
+    Role of this field, for example: 'dimension', 'measure', or 'unknown'.
+    """
+    TABLEAU_DATASOURCE_FIELD_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableauDatasourceFieldDataType",
+        "tableauDatasourceFieldDataType",
+        "tableauDatasourceFieldDataType.text",
+    )
+    """
+    Data type of this field.
+    """
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
+    """
+    Tables upstream to this datasource field.
+    """
+    TABLEAU_DATASOURCE_FIELD_FORMULA: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldFormula", "tableauDatasourceFieldFormula"
+    )
+    """
+    Formula for this field.
+    """
+    TABLEAU_DATASOURCE_FIELD_BIN_SIZE: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldBinSize", "tableauDatasourceFieldBinSize"
+    )
+    """
+    Bin size of this field.
+    """
+    UPSTREAM_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "upstreamColumns", "upstreamColumns"
+    )
+    """
+    Columns upstream to this field.
+    """
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
+    """
+    Fields upstream to this field.
+    """
+    DATASOURCE_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "datasourceFieldType", "datasourceFieldType"
+    )
+    """
+    Type of this datasource field.
     """
 
-    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
-        "quickSightDashboard"
-    )
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+    DATASOURCE: ClassVar[RelationField] = RelationField("datasource")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_qualified_name",
-        "quick_sight_dashboard",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "datasource_qualified_name",
+        "project_hierarchy",
+        "fully_qualified_name",
+        "tableau_datasource_field_data_category",
+        "tableau_datasource_field_role",
+        "tableau_datasource_field_data_type",
+        "upstream_tables",
+        "tableau_datasource_field_formula",
+        "tableau_datasource_field_bin_size",
+        "upstream_columns",
+        "upstream_fields",
+        "datasource_field_type",
+        "worksheets",
+        "datasource",
     ]
 
     @property
-    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dashboard_qualified_name
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @quick_sight_dashboard_qualified_name.setter
-    def quick_sight_dashboard_qualified_name(
-        self, quick_sight_dashboard_qualified_name: Optional[str]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_qualified_name = (
-            quick_sight_dashboard_qualified_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
         )
 
     @property
-    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
+    def workbook_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboard
+            None if self.attributes is None else self.attributes.workbook_qualified_name
         )
 
-    @quick_sight_dashboard.setter
-    def quick_sight_dashboard(
-        self, quick_sight_dashboard: Optional[QuickSightDashboard]
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def datasource_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.datasource_qualified_name
+        )
+
+    @datasource_qualified_name.setter
+    def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_qualified_name = datasource_qualified_name
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def fully_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.fully_qualified_name
+
+    @fully_qualified_name.setter
+    def fully_qualified_name(self, fully_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fully_qualified_name = fully_qualified_name
+
+    @property
+    def tableau_datasource_field_data_category(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_data_category
+        )
+
+    @tableau_datasource_field_data_category.setter
+    def tableau_datasource_field_data_category(
+        self, tableau_datasource_field_data_category: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard = quick_sight_dashboard
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDashboardQualifiedName"
+        self.attributes.tableau_datasource_field_data_category = (
+            tableau_datasource_field_data_category
         )
-        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            None, description="", alias="quickSightDashboard"
+
+    @property
+    def tableau_datasource_field_role(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_role
+        )
+
+    @tableau_datasource_field_role.setter
+    def tableau_datasource_field_role(
+        self, tableau_datasource_field_role: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_datasource_field_role = tableau_datasource_field_role
+
+    @property
+    def tableau_datasource_field_data_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_data_type
+        )
+
+    @tableau_datasource_field_data_type.setter
+    def tableau_datasource_field_data_type(
+        self, tableau_datasource_field_data_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_datasource_field_data_type = (
+            tableau_datasource_field_data_type
+        )
+
+    @property
+    def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_tables
+
+    @upstream_tables.setter
+    def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_tables = upstream_tables
+
+    @property
+    def tableau_datasource_field_formula(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_formula
+        )
+
+    @tableau_datasource_field_formula.setter
+    def tableau_datasource_field_formula(
+        self, tableau_datasource_field_formula: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_datasource_field_formula = (
+            tableau_datasource_field_formula
+        )
+
+    @property
+    def tableau_datasource_field_bin_size(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_bin_size
+        )
+
+    @tableau_datasource_field_bin_size.setter
+    def tableau_datasource_field_bin_size(
+        self, tableau_datasource_field_bin_size: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_datasource_field_bin_size = (
+            tableau_datasource_field_bin_size
+        )
+
+    @property
+    def upstream_columns(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_columns
+
+    @upstream_columns.setter
+    def upstream_columns(self, upstream_columns: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_columns = upstream_columns
+
+    @property
+    def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_fields
+
+    @upstream_fields.setter
+    def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_fields = upstream_fields
+
+    @property
+    def datasource_field_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.datasource_field_type
+        )
+
+    @datasource_field_type.setter
+    def datasource_field_type(self, datasource_field_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_field_type = datasource_field_type
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasource(self) -> Optional[TableauDatasource]:
+        return None if self.attributes is None else self.attributes.datasource
+
+    @datasource.setter
+    def datasource(self, datasource: Optional[TableauDatasource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource = datasource
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        datasource_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasourceQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        fully_qualified_name: Optional[str] = Field(
+            None, description="", alias="fullyQualifiedName"
+        )
+        tableau_datasource_field_data_category: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldDataCategory"
+        )
+        tableau_datasource_field_role: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldRole"
+        )
+        tableau_datasource_field_data_type: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldDataType"
+        )
+        upstream_tables: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamTables"
+        )
+        tableau_datasource_field_formula: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldFormula"
+        )
+        tableau_datasource_field_bin_size: Optional[str] = Field(
+            None, description="", alias="tableauDatasourceFieldBinSize"
+        )
+        upstream_columns: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamColumns"
+        )
+        upstream_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamFields"
+        )
+        datasource_field_type: Optional[str] = Field(
+            None, description="", alias="datasourceFieldType"
+        )
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
+        )  # relationship
+        datasource: Optional[TableauDatasource] = Field(
+            None, description="", alias="datasource"
         )  # relationship
 
-    attributes: "QuickSightDashboardVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
+    attributes: "TableauDatasourceField.Attributes" = Field(
+        default_factory=lambda: TableauDatasourceField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightAnalysisVisual(QuickSight):
+class TableauCalculatedField(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightAnalysisVisual":
-            raise ValueError("must be QuickSightAnalysisVisual")
+        if v != "TableauCalculatedField":
+            raise ValueError("must be TableauCalculatedField")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysisVisual._convenience_properties:
+        if name in TableauCalculatedField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "quickSightAnalysisQualifiedName",
-        "quickSightAnalysisQualifiedName",
-        "quickSightAnalysisQualifiedName.text",
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Unique name of the QuickSight analysis in which this visual exists.
+    Unique name of the site in which this calculated field exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this calculated field exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this calculated field exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this calculated field exists.
+    """
+    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
+    """
+    Unique name of the datasource in which this calculated field exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects and their nested projects.
+    """
+    DATA_CATEGORY: ClassVar[KeywordField] = KeywordField("dataCategory", "dataCategory")
+    """
+    Data category of this field.
+    """
+    ROLE: ClassVar[KeywordField] = KeywordField("role", "role")
+    """
+    Role of this field, for example: 'dimension', 'measure', or 'unknown'.
+    """
+    TABLEAU_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableauDataType", "tableauDataType", "tableauDataType.text"
+    )
+    """
+    Data type of the field, from Tableau.
+    """
+    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    """
+    Formula for this calculated field.
+    """
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
+    """
+    List of fields that are upstream to this calculated field.
     """
 
-    QUICK_SIGHT_ANALYSIS: ClassVar[RelationField] = RelationField("quickSightAnalysis")
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+    DATASOURCE: ClassVar[RelationField] = RelationField("datasource")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_qualified_name",
-        "quick_sight_analysis",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "datasource_qualified_name",
+        "project_hierarchy",
+        "data_category",
+        "role",
+        "tableau_data_type",
+        "formula",
+        "upstream_fields",
+        "worksheets",
+        "datasource",
     ]
 
     @property
-    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_qualified_name
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @quick_sight_analysis_qualified_name.setter
-    def quick_sight_analysis_qualified_name(
-        self, quick_sight_analysis_qualified_name: Optional[str]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_qualified_name = (
-            quick_sight_analysis_qualified_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
         )
 
     @property
-    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
 
-    @quick_sight_analysis.setter
-    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis = quick_sight_analysis
+        self.attributes.workbook_qualified_name = workbook_qualified_name
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightAnalysisQualifiedName"
+    @property
+    def datasource_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.datasource_qualified_name
         )
-        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            None, description="", alias="quickSightAnalysis"
+
+    @datasource_qualified_name.setter
+    def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_qualified_name = datasource_qualified_name
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def data_category(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_category
+
+    @data_category.setter
+    def data_category(self, data_category: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_category = data_category
+
+    @property
+    def role(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.role
+
+    @role.setter
+    def role(self, role: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.role = role
+
+    @property
+    def tableau_data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.tableau_data_type
+
+    @tableau_data_type.setter
+    def tableau_data_type(self, tableau_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_data_type = tableau_data_type
+
+    @property
+    def formula(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.formula
+
+    @formula.setter
+    def formula(self, formula: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.formula = formula
+
+    @property
+    def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_fields
+
+    @upstream_fields.setter
+    def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_fields = upstream_fields
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasource(self) -> Optional[TableauDatasource]:
+        return None if self.attributes is None else self.attributes.datasource
+
+    @datasource.setter
+    def datasource(self, datasource: Optional[TableauDatasource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource = datasource
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        datasource_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasourceQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        data_category: Optional[str] = Field(None, description="", alias="dataCategory")
+        role: Optional[str] = Field(None, description="", alias="role")
+        tableau_data_type: Optional[str] = Field(
+            None, description="", alias="tableauDataType"
+        )
+        formula: Optional[str] = Field(None, description="", alias="formula")
+        upstream_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamFields"
+        )
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
+        )  # relationship
+        datasource: Optional[TableauDatasource] = Field(
+            None, description="", alias="datasource"
         )  # relationship
 
-    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
+    attributes: "TableauCalculatedField.Attributes" = Field(
+        default_factory=lambda: TableauCalculatedField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDatasetField(QuickSight):
+class TableauProject(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+    type_name: str = Field("TableauProject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDatasetField":
-            raise ValueError("must be QuickSightDatasetField")
+        if v != "TableauProject":
+            raise ValueError("must be TableauProject")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDatasetField._convenience_properties:
+        if name in TableauProject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DATASET_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
-        "quickSightDatasetFieldType", "quickSightDatasetFieldType"
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Datatype of this field, for example: STRING, INTEGER, etc.
+    Unique name of the site in which this project exists.
     """
-    QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "quickSightDatasetQualifiedName",
-        "quickSightDatasetQualifiedName",
-        "quickSightDatasetQualifiedName.text",
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
-    Unique name of the dataset in which this field exists.
+    Unique name of the top-level project in which this project exists, if this is a nested project.
+    """
+    IS_TOP_LEVEL_PROJECT: ClassVar[BooleanField] = BooleanField(
+        "isTopLevelProject", "isTopLevelProject"
+    )
+    """
+    Whether this project is a top-level project (true) or not (false).
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
     """
 
-    QUICK_SIGHT_DATASET: ClassVar[RelationField] = RelationField("quickSightDataset")
+    WORKBOOKS: ClassVar[RelationField] = RelationField("workbooks")
+    """
+    TBC
+    """
+    FLOWS: ClassVar[RelationField] = RelationField("flows")
+    """
+    TBC
+    """
+    CHILD_PROJECTS: ClassVar[RelationField] = RelationField("childProjects")
+    """
+    TBC
+    """
+    PARENT_PROJECT: ClassVar[RelationField] = RelationField("parentProject")
+    """
+    TBC
+    """
+    SITE: ClassVar[RelationField] = RelationField("site")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_field_type",
-        "quick_sight_dataset_qualified_name",
-        "quick_sight_dataset",
+        "site_qualified_name",
+        "top_level_project_qualified_name",
+        "is_top_level_project",
+        "project_hierarchy",
+        "workbooks",
+        "flows",
+        "child_projects",
+        "parent_project",
+        "site",
+        "datasources",
     ]
 
     @property
-    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dataset_field_type
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @quick_sight_dataset_field_type.setter
-    def quick_sight_dataset_field_type(
-        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
-
-    @property
-    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_qualified_name
-        )
-
-    @quick_sight_dataset_qualified_name.setter
-    def quick_sight_dataset_qualified_name(
-        self, quick_sight_dataset_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_qualified_name = (
-            quick_sight_dataset_qualified_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
         )
 
     @property
-    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
-        return None if self.attributes is None else self.attributes.quick_sight_dataset
+    def is_top_level_project(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_top_level_project
 
-    @quick_sight_dataset.setter
-    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
+    @is_top_level_project.setter
+    def is_top_level_project(self, is_top_level_project: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset = quick_sight_dataset
+        self.attributes.is_top_level_project = is_top_level_project
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
-            None, description="", alias="quickSightDatasetFieldType"
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def workbooks(self) -> Optional[list[TableauWorkbook]]:
+        return None if self.attributes is None else self.attributes.workbooks
+
+    @workbooks.setter
+    def workbooks(self, workbooks: Optional[list[TableauWorkbook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbooks = workbooks
+
+    @property
+    def flows(self) -> Optional[list[TableauFlow]]:
+        return None if self.attributes is None else self.attributes.flows
+
+    @flows.setter
+    def flows(self, flows: Optional[list[TableauFlow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flows = flows
+
+    @property
+    def child_projects(self) -> Optional[list[TableauProject]]:
+        return None if self.attributes is None else self.attributes.child_projects
+
+    @child_projects.setter
+    def child_projects(self, child_projects: Optional[list[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.child_projects = child_projects
+
+    @property
+    def parent_project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.parent_project
+
+    @parent_project.setter
+    def parent_project(self, parent_project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_project = parent_project
+
+    @property
+    def site(self) -> Optional[TableauSite]:
+        return None if self.attributes is None else self.attributes.site
+
+    @site.setter
+    def site(self, site: Optional[TableauSite]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site = site
+
+    @property
+    def datasources(self) -> Optional[list[TableauDatasource]]:
+        return None if self.attributes is None else self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        quick_sight_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDatasetQualifiedName"
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
         )
-        quick_sight_dataset: Optional[QuickSightDataset] = Field(
-            None, description="", alias="quickSightDataset"
+        is_top_level_project: Optional[bool] = Field(
+            None, description="", alias="isTopLevelProject"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        workbooks: Optional[list[TableauWorkbook]] = Field(
+            None, description="", alias="workbooks"
+        )  # relationship
+        flows: Optional[list[TableauFlow]] = Field(
+            None, description="", alias="flows"
+        )  # relationship
+        child_projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="childProjects"
+        )  # relationship
+        parent_project: Optional[TableauProject] = Field(
+            None, description="", alias="parentProject"
+        )  # relationship
+        site: Optional[TableauSite] = Field(
+            None, description="", alias="site"
+        )  # relationship
+        datasources: Optional[list[TableauDatasource]] = Field(
+            None, description="", alias="datasources"
         )  # relationship
 
-    attributes: "QuickSightDatasetField.Attributes" = Field(
-        default_factory=lambda: QuickSightDatasetField.Attributes(),
+    attributes: "TableauProject.Attributes" = Field(
+        default_factory=lambda: TableauProject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightAnalysis(QuickSight):
+class TableauSite(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+    type_name: str = Field("TableauSite", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightAnalysis":
-            raise ValueError("must be QuickSightAnalysis")
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysis._convenience_properties:
+        if name in TableauSite._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisStatus", "quickSightAnalysisStatus"
-    )
-    """
-    Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc.
-    """
-    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
-    )
-    """
-    List of field names calculated by this analysis.
-    """
-    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisParameterDeclarations",
-        "quickSightAnalysisParameterDeclarations",
-    )
-    """
-    List of parameters used for this analysis.
-    """
-    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
-    )
-    """
-    List of filter groups used for this analysis.
-    """
-
-    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
-        "quickSightAnalysisVisuals"
-    )
-    """
-    TBC
-    """
-    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField(
-        "quickSightAnalysisFolders"
-    )
+    PROJECTS: ClassVar[RelationField] = RelationField("projects")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_status",
-        "quick_sight_analysis_calculated_fields",
-        "quick_sight_analysis_parameter_declarations",
-        "quick_sight_analysis_filter_groups",
-        "quick_sight_analysis_visuals",
-        "quick_sight_analysis_folders",
+        "projects",
     ]
 
     @property
-    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_status
-        )
+    def projects(self) -> Optional[list[TableauProject]]:
+        return None if self.attributes is None else self.attributes.projects
 
-    @quick_sight_analysis_status.setter
-    def quick_sight_analysis_status(
-        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
-    ):
+    @projects.setter
+    def projects(self, projects: Optional[list[TableauProject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
+        self.attributes.projects = projects
 
-    @property
-    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_calculated_fields
-        )
-
-    @quick_sight_analysis_calculated_fields.setter
-    def quick_sight_analysis_calculated_fields(
-        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_calculated_fields = (
-            quick_sight_analysis_calculated_fields
-        )
-
-    @property
-    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_parameter_declarations
-        )
-
-    @quick_sight_analysis_parameter_declarations.setter
-    def quick_sight_analysis_parameter_declarations(
-        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_parameter_declarations = (
-            quick_sight_analysis_parameter_declarations
-        )
-
-    @property
-    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_filter_groups
-        )
-
-    @quick_sight_analysis_filter_groups.setter
-    def quick_sight_analysis_filter_groups(
-        self, quick_sight_analysis_filter_groups: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_filter_groups = (
-            quick_sight_analysis_filter_groups
-        )
-
-    @property
-    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_visuals
-        )
-
-    @quick_sight_analysis_visuals.setter
-    def quick_sight_analysis_visuals(
-        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
-
-    @property
-    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_folders
-        )
-
-    @quick_sight_analysis_folders.setter
-    def quick_sight_analysis_folders(
-        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
-        )
-        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
-        )
-        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
-        )
-        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
-        )
-        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
-        )  # relationship
-        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
+    class Attributes(Tableau.Attributes):
+        projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="projects"
         )  # relationship
 
-    attributes: "QuickSightAnalysis.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysis.Attributes(),
+    attributes: "TableauSite.Attributes" = Field(
+        default_factory=lambda: TableauSite.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDashboard(QuickSight):
+class TableauDatasource(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+    type_name: str = Field("TableauDatasource", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDashboard":
-            raise ValueError("must be QuickSightDashboard")
+        if v != "TableauDatasource":
+            raise ValueError("must be TableauDatasource")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDashboard._convenience_properties:
+        if name in TableauDatasource._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[
-        NumericField
-    ] = NumericField(
-        "quickSightDashboardPublishedVersionNumber",
-        "quickSightDashboardPublishedVersionNumber",
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Version number of the published dashboard.
+    Unique name of the site in which this datasource exists.
     """
-    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[NumericField] = NumericField(
-        "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Time (epoch) at which this dashboard was last published, in milliseconds.
+    Unique name of the project in which this datasource exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this datasource exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this datasource exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+    IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("isPublished", "isPublished")
+    """
+    Whether this datasource is published (true) or embedded (false).
+    """
+    HAS_EXTRACTS: ClassVar[BooleanField] = BooleanField("hasExtracts", "hasExtracts")
+    """
+    Whether this datasource has extracts (true) or not (false).
+    """
+    IS_CERTIFIED: ClassVar[BooleanField] = BooleanField("isCertified", "isCertified")
+    """
+    Whether this datasource is certified in Tableau (true) or not (false).
+    """
+    CERTIFIER: ClassVar[KeywordField] = KeywordField("certifier", "certifier")
+    """
+    Users that have marked this datasource as cerified, in Tableau.
+    """
+    CERTIFICATION_NOTE: ClassVar[KeywordField] = KeywordField(
+        "certificationNote", "certificationNote"
+    )
+    """
+    Notes related to this datasource being cerfified, in Tableau.
+    """
+    CERTIFIER_DISPLAY_NAME: ClassVar[KeywordField] = KeywordField(
+        "certifierDisplayName", "certifierDisplayName"
+    )
+    """
+    Name of the user who cerified this datasource, in Tableau.
+    """
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
+    """
+    List of tables that are upstream of this datasource.
+    """
+    UPSTREAM_DATASOURCES: ClassVar[KeywordField] = KeywordField(
+        "upstreamDatasources", "upstreamDatasources"
+    )
+    """
+    List of datasources that are upstream of this datasource.
     """
 
-    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboardFolders"
-    )
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
     """
     TBC
     """
-    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboardVisuals"
-    )
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_published_version_number",
-        "quick_sight_dashboard_last_published_time",
-        "quick_sight_dashboard_folders",
-        "quick_sight_dashboard_visuals",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "project_hierarchy",
+        "is_published",
+        "has_extracts",
+        "is_certified",
+        "certifier",
+        "certification_note",
+        "certifier_display_name",
+        "upstream_tables",
+        "upstream_datasources",
+        "workbook",
+        "project",
+        "fields",
     ]
 
     @property
-    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dashboard_published_version_number
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @quick_sight_dashboard_published_version_number.setter
-    def quick_sight_dashboard_published_version_number(
-        self, quick_sight_dashboard_published_version_number: Optional[int]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_published_version_number = (
-            quick_sight_dashboard_published_version_number
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
         )
 
     @property
-    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+    def workbook_qualified_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_last_published_time
+            None if self.attributes is None else self.attributes.workbook_qualified_name
         )
 
-    @quick_sight_dashboard_last_published_time.setter
-    def quick_sight_dashboard_last_published_time(
-        self, quick_sight_dashboard_last_published_time: Optional[datetime]
-    ):
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_last_published_time = (
-            quick_sight_dashboard_last_published_time
-        )
+        self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
-    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_folders
-        )
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
 
-    @quick_sight_dashboard_folders.setter
-    def quick_sight_dashboard_folders(
-        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
-    ):
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
+        self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def quick_sight_dashboard_visuals(
-        self,
-    ) -> Optional[list[QuickSightDashboardVisual]]:
+    def is_published(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_published
+
+    @is_published.setter
+    def is_published(self, is_published: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_published = is_published
+
+    @property
+    def has_extracts(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.has_extracts
+
+    @has_extracts.setter
+    def has_extracts(self, has_extracts: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.has_extracts = has_extracts
+
+    @property
+    def is_certified(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_certified
+
+    @is_certified.setter
+    def is_certified(self, is_certified: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_certified = is_certified
+
+    @property
+    def certifier(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.certifier
+
+    @certifier.setter
+    def certifier(self, certifier: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.certifier = certifier
+
+    @property
+    def certification_note(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.certification_note
+
+    @certification_note.setter
+    def certification_note(self, certification_note: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.certification_note = certification_note
+
+    @property
+    def certifier_display_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_visuals
+            None if self.attributes is None else self.attributes.certifier_display_name
         )
 
-    @quick_sight_dashboard_visuals.setter
-    def quick_sight_dashboard_visuals(
-        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
+    @certifier_display_name.setter
+    def certifier_display_name(self, certifier_display_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.certifier_display_name = certifier_display_name
+
+    @property
+    def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_tables
+
+    @upstream_tables.setter
+    def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.upstream_tables = upstream_tables
+
+    @property
+    def upstream_datasources(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.upstream_datasources
+
+    @upstream_datasources.setter
+    def upstream_datasources(
+        self, upstream_datasources: Optional[list[dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
+        self.attributes.upstream_datasources = upstream_datasources
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_published_version_number: Optional[int] = Field(
-            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
+
+    @property
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    @property
+    def fields(self) -> Optional[list[TableauDatasourceField]]:
+        return None if self.attributes is None else self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[TableauDatasourceField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
-            None, description="", alias="quickSightDashboardLastPublishedTime"
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
         )
-        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDashboardFolders"
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        is_published: Optional[bool] = Field(None, description="", alias="isPublished")
+        has_extracts: Optional[bool] = Field(None, description="", alias="hasExtracts")
+        is_certified: Optional[bool] = Field(None, description="", alias="isCertified")
+        certifier: Optional[dict[str, str]] = Field(
+            None, description="", alias="certifier"
+        )
+        certification_note: Optional[str] = Field(
+            None, description="", alias="certificationNote"
+        )
+        certifier_display_name: Optional[str] = Field(
+            None, description="", alias="certifierDisplayName"
+        )
+        upstream_tables: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamTables"
+        )
+        upstream_datasources: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="upstreamDatasources"
+        )
+        workbook: Optional[TableauWorkbook] = Field(
+            None, description="", alias="workbook"
         )  # relationship
-        quick_sight_dashboard_visuals: Optional[
-            list[QuickSightDashboardVisual]
-        ] = Field(
-            None, description="", alias="quickSightDashboardVisuals"
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
+        )  # relationship
+        fields: Optional[list[TableauDatasourceField]] = Field(
+            None, description="", alias="fields"
         )  # relationship
 
-    attributes: "QuickSightDashboard.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboard.Attributes(),
+    attributes: "TableauDatasource.Attributes" = Field(
+        default_factory=lambda: TableauDatasource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDataset(QuickSight):
+class TableauDashboard(Tableau):
     """Description"""
 
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+    type_name: str = Field("TableauDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDataset":
-            raise ValueError("must be QuickSightDataset")
+        if v != "TableauDashboard":
+            raise ValueError("must be TableauDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDataset._convenience_properties:
+        if name in TableauDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[KeywordField] = KeywordField(
-        "quickSightDatasetImportMode", "quickSightDatasetImportMode"
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
     )
     """
-    Import mode for this dataset, for example: SPICE or DIRECT_QUERY.
+    Unique name of the site in which this dashboard exists.
     """
-    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
-        "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
     )
     """
-    Number of columns present in this dataset.
+    Unique name of the project in which this dashboard exists.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this dashboard exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this dashboard exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects and their nested child projects.
     """
 
-    QUICK_SIGHT_DATASET_FOLDERS: ClassVar[RelationField] = RelationField(
-        "quickSightDatasetFolders"
-    )
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
     """
     TBC
     """
-    QUICK_SIGHT_DATASET_FIELDS: ClassVar[RelationField] = RelationField(
-        "quickSightDatasetFields"
-    )
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_import_mode",
-        "quick_sight_dataset_column_count",
-        "quick_sight_dataset_folders",
-        "quick_sight_dataset_fields",
+        "site_qualified_name",
+        "project_qualified_name",
+        "workbook_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "workbook",
+        "worksheets",
     ]
 
     @property
-    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dataset_import_mode
+            else self.attributes.top_level_project_qualified_name
         )
 
-    @quick_sight_dataset_import_mode.setter
-    def quick_sight_dataset_import_mode(
-        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_import_mode = (
-            quick_sight_dataset_import_mode
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
         )
 
     @property
-    def quick_sight_dataset_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_column_count
-        )
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
 
-    @quick_sight_dataset_column_count.setter
-    def quick_sight_dataset_column_count(
-        self, quick_sight_dataset_column_count: Optional[int]
-    ):
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_column_count = (
-            quick_sight_dataset_column_count
-        )
+        self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_folders
-        )
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
 
-    @quick_sight_dataset_folders.setter
-    def quick_sight_dataset_folders(
-        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
-    ):
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
+        self.attributes.workbook = workbook
 
     @property
-    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_fields
-        )
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return None if self.attributes is None else self.attributes.worksheets
 
-    @quick_sight_dataset_fields.setter
-    def quick_sight_dataset_fields(
-        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
-    ):
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
+        self.attributes.worksheets = worksheets
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
-            None, description="", alias="quickSightDatasetImportMode"
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
         )
-        quick_sight_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="quickSightDatasetColumnCount"
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
         )
-        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDatasetFolders"
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        workbook: Optional[TableauWorkbook] = Field(
+            None, description="", alias="workbook"
         )  # relationship
-        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
-            None, description="", alias="quickSightDatasetFields"
+        worksheets: Optional[list[TableauWorksheet]] = Field(
+            None, description="", alias="worksheets"
         )  # relationship
 
-    attributes: "QuickSightDataset.Attributes" = Field(
-        default_factory=lambda: QuickSightDataset.Attributes(),
+    attributes: "TableauDashboard.Attributes" = Field(
+        default_factory=lambda: TableauDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-QuickSightFolder.Attributes.update_forward_refs()
+class TableauFlow(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauFlow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauFlow":
+            raise ValueError("must be TableauFlow")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauFlow._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this flow exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this flow exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this flow exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+    INPUT_FIELDS: ClassVar[KeywordField] = KeywordField("inputFields", "inputFields")
+    """
+    List of fields that are inputs to this flow.
+    """
+    OUTPUT_FIELDS: ClassVar[KeywordField] = KeywordField("outputFields", "outputFields")
+    """
+    List of fields that are outputs from this flow.
+    """
+    OUTPUT_STEPS: ClassVar[KeywordField] = KeywordField("outputSteps", "outputSteps")
+    """
+    List of steps that are outputs from this flow.
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "input_fields",
+        "output_fields",
+        "output_steps",
+        "project",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def input_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.input_fields
+
+    @input_fields.setter
+    def input_fields(self, input_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_fields = input_fields
+
+    @property
+    def output_fields(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.output_fields
+
+    @output_fields.setter
+    def output_fields(self, output_fields: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_fields = output_fields
+
+    @property
+    def output_steps(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.output_steps
+
+    @output_steps.setter
+    def output_steps(self, output_steps: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_steps = output_steps
+
+    @property
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        input_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="inputFields"
+        )
+        output_fields: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="outputFields"
+        )
+        output_steps: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="outputSteps"
+        )
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
+        )  # relationship
+
+    attributes: "TableauFlow.Attributes" = Field(
+        default_factory=lambda: TableauFlow.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QuickSightDashboardVisual.Attributes.update_forward_refs()
+class TableauWorksheet(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauWorksheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauWorksheet":
+            raise ValueError("must be TableauWorksheet")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TableauWorksheet._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this worksheet exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this worksheet exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this worksheet exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    Unique name of the workbook in which this worksheet exists.
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    DATASOURCE_FIELDS: ClassVar[RelationField] = RelationField("datasourceFields")
+    """
+    TBC
+    """
+    CALCULATED_FIELDS: ClassVar[RelationField] = RelationField("calculatedFields")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "workbook_qualified_name",
+        "workbook",
+        "datasource_fields",
+        "calculated_fields",
+        "dashboards",
+    ]
+
+    @property
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
+
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
+
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def workbook_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
+
+    @workbook_qualified_name.setter
+    def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
+
+    @property
+    def datasource_fields(self) -> Optional[list[TableauDatasourceField]]:
+        return None if self.attributes is None else self.attributes.datasource_fields
+
+    @datasource_fields.setter
+    def datasource_fields(
+        self, datasource_fields: Optional[list[TableauDatasourceField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_fields = datasource_fields
+
+    @property
+    def calculated_fields(self) -> Optional[list[TableauCalculatedField]]:
+        return None if self.attributes is None else self.attributes.calculated_fields
+
+    @calculated_fields.setter
+    def calculated_fields(
+        self, calculated_fields: Optional[list[TableauCalculatedField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculated_fields = calculated_fields
+
+    @property
+    def dashboards(self) -> Optional[list[TableauDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="workbookQualifiedName"
+        )
+        workbook: Optional[TableauWorkbook] = Field(
+            None, description="", alias="workbook"
+        )  # relationship
+        datasource_fields: Optional[list[TableauDatasourceField]] = Field(
+            None, description="", alias="datasourceFields"
+        )  # relationship
+        calculated_fields: Optional[list[TableauCalculatedField]] = Field(
+            None, description="", alias="calculatedFields"
+        )  # relationship
+        dashboards: Optional[list[TableauDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+
+    attributes: "TableauWorksheet.Attributes" = Field(
+        default_factory=lambda: TableauWorksheet.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QuickSightAnalysisVisual.Attributes.update_forward_refs()
+TableauWorkbook.Attributes.update_forward_refs()
 
 
-QuickSightDatasetField.Attributes.update_forward_refs()
+TableauDatasourceField.Attributes.update_forward_refs()
 
 
-QuickSightAnalysis.Attributes.update_forward_refs()
+TableauCalculatedField.Attributes.update_forward_refs()
 
 
-QuickSightDashboard.Attributes.update_forward_refs()
+TableauProject.Attributes.update_forward_refs()
 
 
-QuickSightDataset.Attributes.update_forward_refs()
+TableauSite.Attributes.update_forward_refs()
+
+
+TableauDatasource.Attributes.update_forward_refs()
+
+
+TableauDashboard.Attributes.update_forward_refs()
+
+
+TableauFlow.Attributes.update_forward_refs()
+
+
+TableauWorksheet.Attributes.update_forward_refs()

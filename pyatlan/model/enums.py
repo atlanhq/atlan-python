@@ -2107,6 +2107,20 @@ class DataProductStatus(str, Enum):
     ARCHIVED = "Archived"
 
 
+class DataProductVisibility(str, Enum):
+    PRIVATE = "Private"
+    PROTECTED = "Protected"
+    PUBLIC = "Public"
+
+
+class DomoCardType(str, Enum):
+    DOC = "DOC"
+    DOC_CARD = "DOC CARD"
+    CHART = "CHART"
+    DRILL_VIEW = "DRILL VIEW"
+    NOTEBOOK = "NOTEBOOK"
+
+
 class DynamoDBSecondaryIndexProjectionType(str, Enum):
     KEYS_ONLY = "KEYS_ONLY"
     INCLUDE = "INCLUDE"

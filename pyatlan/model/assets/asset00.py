@@ -28,6 +28,7 @@ from pyatlan.model.enums import (
     DataProductCriticality,
     DataProductSensitivity,
     DataProductStatus,
+    DataProductVisibility,
     EntityStatus,
     FileType,
     IconType,
@@ -861,6 +862,12 @@ class Asset(Referenceable):
     """
     Unique name of this asset in dbt.
     """
+    ASSET_DBT_WORKFLOW_LAST_UPDATED: ClassVar[KeywordField] = KeywordField(
+        "assetDbtWorkflowLastUpdated", "assetDbtWorkflowLastUpdated"
+    )
+    """
+    Name of the DBT workflow in Atlan that last updated the asset.
+    """
     ASSET_DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "assetDbtAlias", "assetDbtAlias.keyword", "assetDbtAlias"
     )
@@ -1284,6 +1291,10 @@ class Asset(Referenceable):
     """
     Color (in hexadecimal RGB) to use to represent this asset.
     """
+    HAS_CONTRACT: ClassVar[BooleanField] = BooleanField("hasContract", "hasContract")
+    """
+    Whether this asset has contract (true) or not (false).
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1291,13 +1302,27 @@ class Asset(Referenceable):
     """
     TBC
     """
-    MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[RelationField] = RelationField(
+        "dataContractLatestCertified"
+    )
     """
     TBC
     """
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
         "outputPortDataProducts"
     )
+    """
+    TBC
+    """
+    README: ClassVar[RelationField] = RelationField("readme")
+    """
+    TBC
+    """
+    DATA_CONTRACT_LATEST: ClassVar[RelationField] = RelationField("dataContractLatest")
+    """
+    TBC
+    """
+    MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
     """
     TBC
     """
@@ -1317,7 +1342,9 @@ class Asset(Referenceable):
     """
     TBC
     """
-    README: ClassVar[RelationField] = RelationField("readme")
+    INPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
+        "inputPortDataProducts"
+    )
     """
     TBC
     """
@@ -1384,6 +1411,7 @@ class Asset(Referenceable):
         "source_query_compute_cost_list",
         "source_query_compute_cost_record_list",
         "dbt_qualified_name",
+        "asset_dbt_workflow_last_updated",
         "asset_dbt_alias",
         "asset_dbt_meta",
         "asset_dbt_unique_id",
@@ -1452,16 +1480,20 @@ class Asset(Referenceable):
         "is_a_i_generated",
         "asset_cover_image",
         "asset_theme_hex",
+        "has_contract",
         "schema_registry_subjects",
-        "mc_monitors",
+        "data_contract_latest_certified",
         "output_port_data_products",
+        "readme",
+        "data_contract_latest",
+        "assigned_terms",
+        "mc_monitors",
         "files",
         "mc_incidents",
         "links",
         "metrics",
-        "readme",
+        "input_port_data_products",
         "soda_checks",
-        "assigned_terms",
     ]
 
     @property
@@ -2126,6 +2158,24 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_qualified_name = dbt_qualified_name
+
+    @property
+    def asset_dbt_workflow_last_updated(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_workflow_last_updated
+        )
+
+    @asset_dbt_workflow_last_updated.setter
+    def asset_dbt_workflow_last_updated(
+        self, asset_dbt_workflow_last_updated: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_dbt_workflow_last_updated = (
+            asset_dbt_workflow_last_updated
+        )
 
     @property
     def asset_dbt_alias(self) -> Optional[str]:
@@ -3104,6 +3154,16 @@ class Asset(Referenceable):
         self.attributes.asset_theme_hex = asset_theme_hex
 
     @property
+    def has_contract(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.has_contract
+
+    @has_contract.setter
+    def has_contract(self, has_contract: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.has_contract = has_contract
+
+    @property
     def schema_registry_subjects(self) -> Optional[list[SchemaRegistrySubject]]:
         return (
             None
@@ -3120,14 +3180,20 @@ class Asset(Referenceable):
         self.attributes.schema_registry_subjects = schema_registry_subjects
 
     @property
-    def mc_monitors(self) -> Optional[list[MCMonitor]]:
-        return None if self.attributes is None else self.attributes.mc_monitors
+    def data_contract_latest_certified(self) -> Optional[DataContract]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_latest_certified
+        )
 
-    @mc_monitors.setter
-    def mc_monitors(self, mc_monitors: Optional[list[MCMonitor]]):
+    @data_contract_latest_certified.setter
+    def data_contract_latest_certified(
+        self, data_contract_latest_certified: Optional[DataContract]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mc_monitors = mc_monitors
+        self.attributes.data_contract_latest_certified = data_contract_latest_certified
 
     @property
     def output_port_data_products(self) -> Optional[list[DataProduct]]:
@@ -3144,6 +3210,46 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_port_data_products = output_port_data_products
+
+    @property
+    def readme(self) -> Optional[Readme]:
+        return None if self.attributes is None else self.attributes.readme
+
+    @readme.setter
+    def readme(self, readme: Optional[Readme]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.readme = readme
+
+    @property
+    def data_contract_latest(self) -> Optional[DataContract]:
+        return None if self.attributes is None else self.attributes.data_contract_latest
+
+    @data_contract_latest.setter
+    def data_contract_latest(self, data_contract_latest: Optional[DataContract]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_latest = data_contract_latest
+
+    @property
+    def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.meanings
+
+    @assigned_terms.setter
+    def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = assigned_terms
+
+    @property
+    def mc_monitors(self) -> Optional[list[MCMonitor]]:
+        return None if self.attributes is None else self.attributes.mc_monitors
+
+    @mc_monitors.setter
+    def mc_monitors(self, mc_monitors: Optional[list[MCMonitor]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitors = mc_monitors
 
     @property
     def files(self) -> Optional[list[File]]:
@@ -3186,14 +3292,20 @@ class Asset(Referenceable):
         self.attributes.metrics = metrics
 
     @property
-    def readme(self) -> Optional[Readme]:
-        return None if self.attributes is None else self.attributes.readme
+    def input_port_data_products(self) -> Optional[list[DataProduct]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.input_port_data_products
+        )
 
-    @readme.setter
-    def readme(self, readme: Optional[Readme]):
+    @input_port_data_products.setter
+    def input_port_data_products(
+        self, input_port_data_products: Optional[list[DataProduct]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.readme = readme
+        self.attributes.input_port_data_products = input_port_data_products
 
     @property
     def soda_checks(self) -> Optional[list[SodaCheck]]:
@@ -3204,16 +3316,6 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.soda_checks = soda_checks
-
-    @property
-    def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.meanings
-
-    @assigned_terms.setter
-    def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
         name: Optional[str] = Field(None, description="", alias="name")
@@ -3364,6 +3466,9 @@ class Asset(Referenceable):
         ] = Field(None, description="", alias="sourceQueryComputeCostRecordList")
         dbt_qualified_name: Optional[str] = Field(
             None, description="", alias="dbtQualifiedName"
+        )
+        asset_dbt_workflow_last_updated: Optional[str] = Field(
+            None, description="", alias="assetDbtWorkflowLastUpdated"
         )
         asset_dbt_alias: Optional[str] = Field(
             None, description="", alias="assetDbtAlias"
@@ -3559,14 +3664,27 @@ class Asset(Referenceable):
         asset_theme_hex: Optional[str] = Field(
             None, description="", alias="assetThemeHex"
         )
+        has_contract: Optional[bool] = Field(None, description="", alias="hasContract")
         schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
             None, description="", alias="schemaRegistrySubjects"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
+        data_contract_latest_certified: Optional[DataContract] = Field(
+            None, description="", alias="dataContractLatestCertified"
         )  # relationship
         output_port_data_products: Optional[list[DataProduct]] = Field(
             None, description="", alias="outputPortDataProducts"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        data_contract_latest: Optional[DataContract] = Field(
+            None, description="", alias="dataContractLatest"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
         )  # relationship
         files: Optional[list[File]] = Field(
             None, description="", alias="files"
@@ -3580,14 +3698,11 @@ class Asset(Referenceable):
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
         )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
+        input_port_data_products: Optional[list[DataProduct]] = Field(
+            None, description="", alias="inputPortDataProducts"
         )  # relationship
         soda_checks: Optional[list[SodaCheck]] = Field(
             None, description="", alias="sodaChecks"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
         def remove_description(self):
@@ -4690,6 +4805,10 @@ class Process(Asset, type_name="Process"):
     """
     TBC
     """
+    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[list[str]] = [
         "inputs",
@@ -4700,6 +4819,7 @@ class Process(Asset, type_name="Process"):
         "matillion_component",
         "airflow_tasks",
         "column_processes",
+        "spark_jobs",
     ]
 
     @property
@@ -4782,6 +4902,16 @@ class Process(Asset, type_name="Process"):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
+    @property
+    def spark_jobs(self) -> Optional[list[SparkJob]]:
+        return None if self.attributes is None else self.attributes.spark_jobs
+
+    @spark_jobs.setter
+    def spark_jobs(self, spark_jobs: Optional[list[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_jobs = spark_jobs
+
     class Attributes(Asset.Attributes):
         inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
         outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
@@ -4796,6 +4926,9 @@ class Process(Asset, type_name="Process"):
         )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
+        )  # relationship
+        spark_jobs: Optional[list[SparkJob]] = Field(
+            None, description="", alias="sparkJobs"
         )  # relationship
 
         @staticmethod
@@ -4886,29 +5019,19 @@ class Namespace(Asset, type_name="Namespace"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CHILDREN_QUERIES: ClassVar[RelationField] = RelationField("childrenQueries")
+    CHILDREN_FOLDERS: ClassVar[RelationField] = RelationField("childrenFolders")
     """
     TBC
     """
-    CHILDREN_FOLDERS: ClassVar[RelationField] = RelationField("childrenFolders")
+    CHILDREN_QUERIES: ClassVar[RelationField] = RelationField("childrenQueries")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "children_queries",
         "children_folders",
+        "children_queries",
     ]
-
-    @property
-    def children_queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.children_queries
-
-    @children_queries.setter
-    def children_queries(self, children_queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.children_queries = children_queries
 
     @property
     def children_folders(self) -> Optional[list[Folder]]:
@@ -4920,12 +5043,22 @@ class Namespace(Asset, type_name="Namespace"):
             self.attributes = self.Attributes()
         self.attributes.children_folders = children_folders
 
+    @property
+    def children_queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.children_queries
+
+    @children_queries.setter
+    def children_queries(self, children_queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.children_queries = children_queries
+
     class Attributes(Asset.Attributes):
-        children_queries: Optional[list[Query]] = Field(
-            None, description="", alias="childrenQueries"
-        )  # relationship
         children_folders: Optional[list[Folder]] = Field(
             None, description="", alias="childrenFolders"
+        )  # relationship
+        children_queries: Optional[list[Query]] = Field(
+            None, description="", alias="childrenQueries"
         )  # relationship
 
     attributes: "Namespace.Attributes" = Field(
@@ -5057,6 +5190,16 @@ class Catalog(Asset, type_name="Catalog"):
     """
     TBC
     """
+    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
+    """
+    TBC
+    """
+    OUTPUT_FROM_SPARK_JOBS: ClassVar[RelationField] = RelationField(
+        "outputFromSparkJobs"
+    )
+    """
+    TBC
+    """
     INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "inputToAirflowTasks"
     )
@@ -5073,6 +5216,8 @@ class Catalog(Asset, type_name="Catalog"):
     _convenience_properties: ClassVar[list[str]] = [
         "input_to_processes",
         "output_from_airflow_tasks",
+        "input_to_spark_jobs",
+        "output_from_spark_jobs",
         "input_to_airflow_tasks",
         "output_from_processes",
     ]
@@ -5102,6 +5247,28 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
+
+    @property
+    def input_to_spark_jobs(self) -> Optional[list[SparkJob]]:
+        return None if self.attributes is None else self.attributes.input_to_spark_jobs
+
+    @input_to_spark_jobs.setter
+    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[list[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_spark_jobs = input_to_spark_jobs
+
+    @property
+    def output_from_spark_jobs(self) -> Optional[list[SparkJob]]:
+        return (
+            None if self.attributes is None else self.attributes.output_from_spark_jobs
+        )
+
+    @output_from_spark_jobs.setter
+    def output_from_spark_jobs(self, output_from_spark_jobs: Optional[list[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_spark_jobs = output_from_spark_jobs
 
     @property
     def input_to_airflow_tasks(self) -> Optional[list[AirflowTask]]:
@@ -5136,6 +5303,12 @@ class Catalog(Asset, type_name="Catalog"):
         output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
             None, description="", alias="outputFromAirflowTasks"
         )  # relationship
+        input_to_spark_jobs: Optional[list[SparkJob]] = Field(
+            None, description="", alias="inputToSparkJobs"
+        )  # relationship
+        output_from_spark_jobs: Optional[list[SparkJob]] = Field(
+            None, description="", alias="outputFromSparkJobs"
+        )  # relationship
         input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
             None, description="", alias="inputToAirflowTasks"
         )  # relationship
@@ -5145,6 +5318,204 @@ class Catalog(Asset, type_name="Catalog"):
 
     attributes: "Catalog.Attributes" = Field(
         default_factory=lambda: Catalog.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DataContract(Catalog):
+    """Description"""
+
+    type_name: str = Field("DataContract", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataContract":
+            raise ValueError("must be DataContract")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DataContract._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    DATA_CONTRACT_JSON: ClassVar[KeywordField] = KeywordField(
+        "dataContractJson", "dataContractJson"
+    )
+    """
+    Actual content of the contract in JSON string format. Any changes to this string should create a new instance (with new sequential version number).
+    """  # noqa: E501
+    DATA_CONTRACT_VERSION: ClassVar[NumericField] = NumericField(
+        "dataContractVersion", "dataContractVersion"
+    )
+    """
+    Version of the contract.
+    """
+    DATA_CONTRACT_ASSET_GUID: ClassVar[KeywordField] = KeywordField(
+        "dataContractAssetGuid", "dataContractAssetGuid"
+    )
+    """
+    Unique identifier of the asset associated with this data contract.
+    """
+
+    DATA_CONTRACT_ASSET_LATEST: ClassVar[RelationField] = RelationField(
+        "dataContractAssetLatest"
+    )
+    """
+    TBC
+    """
+    DATA_CONTRACT_ASSET_CERTIFIED: ClassVar[RelationField] = RelationField(
+        "dataContractAssetCertified"
+    )
+    """
+    TBC
+    """
+    DATA_CONTRACT_PREVIOUS_VERSION: ClassVar[RelationField] = RelationField(
+        "dataContractPreviousVersion"
+    )
+    """
+    TBC
+    """
+    DATA_CONTRACT_NEXT_VERSION: ClassVar[RelationField] = RelationField(
+        "dataContractNextVersion"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "data_contract_json",
+        "data_contract_version",
+        "data_contract_asset_guid",
+        "data_contract_asset_latest",
+        "data_contract_asset_certified",
+        "data_contract_previous_version",
+        "data_contract_next_version",
+    ]
+
+    @property
+    def data_contract_json(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_contract_json
+
+    @data_contract_json.setter
+    def data_contract_json(self, data_contract_json: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_json = data_contract_json
+
+    @property
+    def data_contract_version(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.data_contract_version
+        )
+
+    @data_contract_version.setter
+    def data_contract_version(self, data_contract_version: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_version = data_contract_version
+
+    @property
+    def data_contract_asset_guid(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_guid
+        )
+
+    @data_contract_asset_guid.setter
+    def data_contract_asset_guid(self, data_contract_asset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_asset_guid = data_contract_asset_guid
+
+    @property
+    def data_contract_asset_latest(self) -> Optional[Asset]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_latest
+        )
+
+    @data_contract_asset_latest.setter
+    def data_contract_asset_latest(self, data_contract_asset_latest: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_asset_latest = data_contract_asset_latest
+
+    @property
+    def data_contract_asset_certified(self) -> Optional[Asset]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_certified
+        )
+
+    @data_contract_asset_certified.setter
+    def data_contract_asset_certified(
+        self, data_contract_asset_certified: Optional[Asset]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_asset_certified = data_contract_asset_certified
+
+    @property
+    def data_contract_previous_version(self) -> Optional[DataContract]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_previous_version
+        )
+
+    @data_contract_previous_version.setter
+    def data_contract_previous_version(
+        self, data_contract_previous_version: Optional[DataContract]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_previous_version = data_contract_previous_version
+
+    @property
+    def data_contract_next_version(self) -> Optional[DataContract]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_next_version
+        )
+
+    @data_contract_next_version.setter
+    def data_contract_next_version(
+        self, data_contract_next_version: Optional[DataContract]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_next_version = data_contract_next_version
+
+    class Attributes(Catalog.Attributes):
+        data_contract_json: Optional[str] = Field(
+            None, description="", alias="dataContractJson"
+        )
+        data_contract_version: Optional[int] = Field(
+            None, description="", alias="dataContractVersion"
+        )
+        data_contract_asset_guid: Optional[str] = Field(
+            None, description="", alias="dataContractAssetGuid"
+        )
+        data_contract_asset_latest: Optional[Asset] = Field(
+            None, description="", alias="dataContractAssetLatest"
+        )  # relationship
+        data_contract_asset_certified: Optional[Asset] = Field(
+            None, description="", alias="dataContractAssetCertified"
+        )  # relationship
+        data_contract_previous_version: Optional[DataContract] = Field(
+            None, description="", alias="dataContractPreviousVersion"
+        )  # relationship
+        data_contract_next_version: Optional[DataContract] = Field(
+            None, description="", alias="dataContractNextVersion"
+        )  # relationship
+
+    attributes: "DataContract.Attributes" = Field(
+        default_factory=lambda: DataContract.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6952,8 +7323,18 @@ class DataProduct(DataMesh):
     """
     Status of this data product.
     """
+    DAAP_STATUS: ClassVar[KeywordField] = KeywordField("daapStatus", "daapStatus")
+    """
+    Status of this data product.
+    """
     DATA_PRODUCT_CRITICALITY: ClassVar[KeywordField] = KeywordField(
         "dataProductCriticality", "dataProductCriticality"
+    )
+    """
+    Criticality of this data product.
+    """
+    DAAP_CRITICALITY: ClassVar[KeywordField] = KeywordField(
+        "daapCriticality", "daapCriticality"
     )
     """
     Criticality of this data product.
@@ -6963,6 +7344,24 @@ class DataProduct(DataMesh):
     )
     """
     Information sensitivity of this data product.
+    """
+    DAAP_SENSITIVITY: ClassVar[KeywordField] = KeywordField(
+        "daapSensitivity", "daapSensitivity"
+    )
+    """
+    Information sensitivity of this data product.
+    """
+    DATA_PRODUCT_VISIBILITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductVisibility", "dataProductVisibility"
+    )
+    """
+    Visibility of a data product.
+    """
+    DAAP_VISIBILITY: ClassVar[KeywordField] = KeywordField(
+        "daapVisibility", "daapVisibility"
+    )
+    """
+    Visibility of a data product.
     """
     DATA_PRODUCT_ASSETS_DSL: ClassVar[KeywordField] = KeywordField(
         "dataProductAssetsDSL", "dataProductAssetsDSL"
@@ -6976,6 +7375,30 @@ class DataProduct(DataMesh):
     """
     Playbook filter to define which assets are part of this data product.
     """
+    DATA_PRODUCT_SCORE_VALUE: ClassVar[NumericField] = NumericField(
+        "dataProductScoreValue", "dataProductScoreValue"
+    )
+    """
+    Score of this data product.
+    """
+    DATA_PRODUCT_SCORE_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "dataProductScoreUpdatedAt", "dataProductScoreUpdatedAt"
+    )
+    """
+    Timestamp when the score of this data product was last updated.
+    """
+    DAAP_VISIBILITY_USERS: ClassVar[KeywordField] = KeywordField(
+        "daapVisibilityUsers", "daapVisibilityUsers"
+    )
+    """
+    list of users for product visibility control
+    """
+    DAAP_VISIBILITY_GROUPS: ClassVar[KeywordField] = KeywordField(
+        "daapVisibilityGroups", "daapVisibilityGroups"
+    )
+    """
+    list of groups for product visibility control
+    """
 
     DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
@@ -6985,15 +7408,29 @@ class DataProduct(DataMesh):
     """
     TBC
     """
+    INPUT_PORTS: ClassVar[RelationField] = RelationField("inputPorts")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[list[str]] = [
         "data_product_status",
+        "daap_status",
         "data_product_criticality",
+        "daap_criticality",
         "data_product_sensitivity",
+        "daap_sensitivity",
+        "data_product_visibility",
+        "daap_visibility",
         "data_product_assets_d_s_l",
         "data_product_assets_playbook_filter",
+        "data_product_score_value",
+        "data_product_score_updated_at",
+        "daap_visibility_users",
+        "daap_visibility_groups",
         "data_domain",
         "output_ports",
+        "input_ports",
     ]
 
     @property
@@ -7005,6 +7442,16 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_status = data_product_status
+
+    @property
+    def daap_status(self) -> Optional[DataProductStatus]:
+        return None if self.attributes is None else self.attributes.daap_status
+
+    @daap_status.setter
+    def daap_status(self, daap_status: Optional[DataProductStatus]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_status = daap_status
 
     @property
     def data_product_criticality(self) -> Optional[DataProductCriticality]:
@@ -7023,6 +7470,16 @@ class DataProduct(DataMesh):
         self.attributes.data_product_criticality = data_product_criticality
 
     @property
+    def daap_criticality(self) -> Optional[DataProductCriticality]:
+        return None if self.attributes is None else self.attributes.daap_criticality
+
+    @daap_criticality.setter
+    def daap_criticality(self, daap_criticality: Optional[DataProductCriticality]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_criticality = daap_criticality
+
+    @property
     def data_product_sensitivity(self) -> Optional[DataProductSensitivity]:
         return (
             None
@@ -7037,6 +7494,40 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_sensitivity = data_product_sensitivity
+
+    @property
+    def daap_sensitivity(self) -> Optional[DataProductSensitivity]:
+        return None if self.attributes is None else self.attributes.daap_sensitivity
+
+    @daap_sensitivity.setter
+    def daap_sensitivity(self, daap_sensitivity: Optional[DataProductSensitivity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_sensitivity = daap_sensitivity
+
+    @property
+    def data_product_visibility(self) -> Optional[DataProductVisibility]:
+        return (
+            None if self.attributes is None else self.attributes.data_product_visibility
+        )
+
+    @data_product_visibility.setter
+    def data_product_visibility(
+        self, data_product_visibility: Optional[DataProductVisibility]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_visibility = data_product_visibility
+
+    @property
+    def daap_visibility(self) -> Optional[DataProductVisibility]:
+        return None if self.attributes is None else self.attributes.daap_visibility
+
+    @daap_visibility.setter
+    def daap_visibility(self, daap_visibility: Optional[DataProductVisibility]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_visibility = daap_visibility
 
     @property
     def data_product_assets_d_s_l(self) -> Optional[str]:
@@ -7071,6 +7562,60 @@ class DataProduct(DataMesh):
         )
 
     @property
+    def data_product_score_value(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_score_value
+        )
+
+    @data_product_score_value.setter
+    def data_product_score_value(self, data_product_score_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_score_value = data_product_score_value
+
+    @property
+    def data_product_score_updated_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_score_updated_at
+        )
+
+    @data_product_score_updated_at.setter
+    def data_product_score_updated_at(
+        self, data_product_score_updated_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_product_score_updated_at = data_product_score_updated_at
+
+    @property
+    def daap_visibility_users(self) -> Optional[set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.daap_visibility_users
+        )
+
+    @daap_visibility_users.setter
+    def daap_visibility_users(self, daap_visibility_users: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_visibility_users = daap_visibility_users
+
+    @property
+    def daap_visibility_groups(self) -> Optional[set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.daap_visibility_groups
+        )
+
+    @daap_visibility_groups.setter
+    def daap_visibility_groups(self, daap_visibility_groups: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_visibility_groups = daap_visibility_groups
+
+    @property
     def data_domain(self) -> Optional[DataDomain]:
         return None if self.attributes is None else self.attributes.data_domain
 
@@ -7090,15 +7635,40 @@ class DataProduct(DataMesh):
             self.attributes = self.Attributes()
         self.attributes.output_ports = output_ports
 
+    @property
+    def input_ports(self) -> Optional[list[Asset]]:
+        return None if self.attributes is None else self.attributes.input_ports
+
+    @input_ports.setter
+    def input_ports(self, input_ports: Optional[list[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_ports = input_ports
+
     class Attributes(DataMesh.Attributes):
         data_product_status: Optional[DataProductStatus] = Field(
             None, description="", alias="dataProductStatus"
         )
+        daap_status: Optional[DataProductStatus] = Field(
+            None, description="", alias="daapStatus"
+        )
         data_product_criticality: Optional[DataProductCriticality] = Field(
             None, description="", alias="dataProductCriticality"
         )
+        daap_criticality: Optional[DataProductCriticality] = Field(
+            None, description="", alias="daapCriticality"
+        )
         data_product_sensitivity: Optional[DataProductSensitivity] = Field(
             None, description="", alias="dataProductSensitivity"
+        )
+        daap_sensitivity: Optional[DataProductSensitivity] = Field(
+            None, description="", alias="daapSensitivity"
+        )
+        data_product_visibility: Optional[DataProductVisibility] = Field(
+            None, description="", alias="dataProductVisibility"
+        )
+        daap_visibility: Optional[DataProductVisibility] = Field(
+            None, description="", alias="daapVisibility"
         )
         data_product_assets_d_s_l: Optional[str] = Field(
             None, description="", alias="dataProductAssetsDSL"
@@ -7106,11 +7676,26 @@ class DataProduct(DataMesh):
         data_product_assets_playbook_filter: Optional[str] = Field(
             None, description="", alias="dataProductAssetsPlaybookFilter"
         )
+        data_product_score_value: Optional[float] = Field(
+            None, description="", alias="dataProductScoreValue"
+        )
+        data_product_score_updated_at: Optional[datetime] = Field(
+            None, description="", alias="dataProductScoreUpdatedAt"
+        )
+        daap_visibility_users: Optional[set[str]] = Field(
+            None, description="", alias="daapVisibilityUsers"
+        )
+        daap_visibility_groups: Optional[set[str]] = Field(
+            None, description="", alias="daapVisibilityGroups"
+        )
         data_domain: Optional[DataDomain] = Field(
             None, description="", alias="dataDomain"
         )  # relationship
         output_ports: Optional[list[Asset]] = Field(
             None, description="", alias="outputPorts"
+        )  # relationship
+        input_ports: Optional[list[Asset]] = Field(
+            None, description="", alias="inputPorts"
         )  # relationship
 
         @classmethod
@@ -7235,6 +7820,18 @@ class SQL(Catalog):
     """
     Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
+    CALCULATION_VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "calculationViewName", "calculationViewName.keyword", "calculationViewName"
+    )
+    """
+    Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
+    CALCULATION_VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "calculationViewQualifiedName", "calculationViewQualifiedName"
+    )
+    """
+    Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
     Whether this asset has been profiled (true) or not (false).
@@ -7280,6 +7877,8 @@ class SQL(Catalog):
         "table_qualified_name",
         "view_name",
         "view_qualified_name",
+        "calculation_view_name",
+        "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
         "dbt_sources",
@@ -7416,6 +8015,36 @@ class SQL(Catalog):
         self.attributes.view_qualified_name = view_qualified_name
 
     @property
+    def calculation_view_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.calculation_view_name
+        )
+
+    @calculation_view_name.setter
+    def calculation_view_name(self, calculation_view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_name = calculation_view_name
+
+    @property
+    def calculation_view_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_qualified_name
+        )
+
+    @calculation_view_qualified_name.setter
+    def calculation_view_qualified_name(
+        self, calculation_view_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_qualified_name = (
+            calculation_view_qualified_name
+        )
+
+    @property
     def is_profiled(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_profiled
 
@@ -7511,6 +8140,12 @@ class SQL(Catalog):
         view_name: Optional[str] = Field(None, description="", alias="viewName")
         view_qualified_name: Optional[str] = Field(
             None, description="", alias="viewQualifiedName"
+        )
+        calculation_view_name: Optional[str] = Field(
+            None, description="", alias="calculationViewName"
+        )
+        calculation_view_qualified_name: Optional[str] = Field(
+            None, description="", alias="calculationViewQualifiedName"
         )
         is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
         last_profiled_at: Optional[datetime] = Field(
@@ -7939,6 +8574,12 @@ class Schema(SQL):
     """
     Number of views in this schema.
     """
+    LINKED_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "linkedSchemaQualifiedName", "linkedSchemaQualifiedName"
+    )
+    """
+    Unique name of the Linked Schema on which this Schema is dependent. This concept is mostly applicable for linked datasets/datasource in Google BigQuery via Analytics Hub Listing
+    """  # noqa: E501
 
     SNOWFLAKE_TAGS: ClassVar[RelationField] = RelationField("snowflakeTags")
     """
@@ -7982,10 +8623,15 @@ class Schema(SQL):
     """
     TBC
     """
+    CALCULATION_VIEWS: ClassVar[RelationField] = RelationField("calculationViews")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[list[str]] = [
         "table_count",
         "views_count",
+        "linked_schema_qualified_name",
         "snowflake_tags",
         "functions",
         "tables",
@@ -7996,6 +8642,7 @@ class Schema(SQL):
         "snowflake_dynamic_tables",
         "snowflake_pipes",
         "snowflake_streams",
+        "calculation_views",
     ]
 
     @property
@@ -8017,6 +8664,20 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.views_count = views_count
+
+    @property
+    def linked_schema_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.linked_schema_qualified_name
+        )
+
+    @linked_schema_qualified_name.setter
+    def linked_schema_qualified_name(self, linked_schema_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.linked_schema_qualified_name = linked_schema_qualified_name
 
     @property
     def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
@@ -8124,9 +8785,22 @@ class Schema(SQL):
             self.attributes = self.Attributes()
         self.attributes.snowflake_streams = snowflake_streams
 
+    @property
+    def calculation_views(self) -> Optional[list[CalculationView]]:
+        return None if self.attributes is None else self.attributes.calculation_views
+
+    @calculation_views.setter
+    def calculation_views(self, calculation_views: Optional[list[CalculationView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_views = calculation_views
+
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
         views_count: Optional[int] = Field(None, description="", alias="viewsCount")
+        linked_schema_qualified_name: Optional[str] = Field(
+            None, description="", alias="linkedSchemaQualifiedName"
+        )
         snowflake_tags: Optional[list[SnowflakeTag]] = Field(
             None, description="", alias="snowflakeTags"
         )  # relationship
@@ -8156,6 +8830,9 @@ class Schema(SQL):
         )  # relationship
         snowflake_streams: Optional[list[SnowflakeStream]] = Field(
             None, description="", alias="snowflakeStreams"
+        )  # relationship
+        calculation_views: Optional[list[CalculationView]] = Field(
+            None, description="", alias="calculationViews"
         )  # relationship
 
         @classmethod
@@ -8386,11 +9063,11 @@ class View(SQL):
     """
     TBC
     """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
     """
     TBC
     """
-    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    QUERIES: ClassVar[RelationField] = RelationField("queries")
     """
     TBC
     """
@@ -8405,8 +9082,8 @@ class View(SQL):
         "is_temporary",
         "definition",
         "columns",
-        "queries",
         "atlan_schema",
+        "queries",
     ]
 
     @property
@@ -8500,16 +9177,6 @@ class View(SQL):
         self.attributes.columns = columns
 
     @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
     def atlan_schema(self) -> Optional[Schema]:
         return None if self.attributes is None else self.attributes.atlan_schema
 
@@ -8518,6 +9185,16 @@ class View(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -8535,11 +9212,11 @@ class View(SQL):
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
         )  # relationship
 
         @classmethod
@@ -9190,23 +9867,23 @@ class TablePartition(SQL):
     List of sub-partitions in this partition.
     """
 
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    PARENT_TABLE: ClassVar[RelationField] = RelationField("parentTable")
+    """
+    TBC
+    """
     CHILD_TABLE_PARTITIONS: ClassVar[RelationField] = RelationField(
         "childTablePartitions"
     )
     """
     TBC
     """
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
     PARENT_TABLE_PARTITION: ClassVar[RelationField] = RelationField(
         "parentTablePartition"
     )
-    """
-    TBC
-    """
-    PARENT_TABLE: ClassVar[RelationField] = RelationField("parentTable")
     """
     TBC
     """
@@ -9227,10 +9904,10 @@ class TablePartition(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
-        "child_table_partitions",
         "columns",
-        "parent_table_partition",
         "parent_table",
+        "child_table_partitions",
+        "parent_table_partition",
     ]
 
     @property
@@ -9392,6 +10069,26 @@ class TablePartition(SQL):
         self.attributes.partition_list = partition_list
 
     @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def parent_table(self) -> Optional[Table]:
+        return None if self.attributes is None else self.attributes.parent_table
+
+    @parent_table.setter
+    def parent_table(self, parent_table: Optional[Table]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_table = parent_table
+
+    @property
     def child_table_partitions(self) -> Optional[list[TablePartition]]:
         return (
             None if self.attributes is None else self.attributes.child_table_partitions
@@ -9406,16 +10103,6 @@ class TablePartition(SQL):
         self.attributes.child_table_partitions = child_table_partitions
 
     @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
     def parent_table_partition(self) -> Optional[TablePartition]:
         return (
             None if self.attributes is None else self.attributes.parent_table_partition
@@ -9426,16 +10113,6 @@ class TablePartition(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent_table_partition = parent_table_partition
-
-    @property
-    def parent_table(self) -> Optional[Table]:
-        return None if self.attributes is None else self.attributes.parent_table
-
-    @parent_table.setter
-    def parent_table(self, parent_table: Optional[Table]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_table = parent_table
 
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(None, description="", alias="constraint")
@@ -9471,17 +10148,17 @@ class TablePartition(SQL):
         partition_list: Optional[str] = Field(
             None, description="", alias="partitionList"
         )
-        child_table_partitions: Optional[list[TablePartition]] = Field(
-            None, description="", alias="childTablePartitions"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
-        parent_table_partition: Optional[TablePartition] = Field(
-            None, description="", alias="parentTablePartition"
-        )  # relationship
         parent_table: Optional[Table] = Field(
             None, description="", alias="parentTable"
+        )  # relationship
+        child_table_partitions: Optional[list[TablePartition]] = Field(
+            None, description="", alias="childTablePartitions"
+        )  # relationship
+        parent_table_partition: Optional[TablePartition] = Field(
+            None, description="", alias="parentTablePartition"
         )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
@@ -9813,6 +10490,10 @@ class Column(SQL):
     """
     TBC
     """
+    CALCULATION_VIEW: ClassVar[RelationField] = RelationField("calculationView")
+    """
+    TBC
+    """
     PARENT_COLUMN: ClassVar[RelationField] = RelationField("parentColumn")
     """
     TBC
@@ -9901,6 +10582,7 @@ class Column(SQL):
         "table",
         "column_dbt_model_columns",
         "materialised_view",
+        "calculation_view",
         "parent_column",
         "queries",
         "metric_timestamps",
@@ -10595,6 +11277,16 @@ class Column(SQL):
         self.attributes.materialised_view = materialised_view
 
     @property
+    def calculation_view(self) -> Optional[CalculationView]:
+        return None if self.attributes is None else self.attributes.calculation_view
+
+    @calculation_view.setter
+    def calculation_view(self, calculation_view: Optional[CalculationView]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view = calculation_view
+
+    @property
     def parent_column(self) -> Optional[Column]:
         return None if self.attributes is None else self.attributes.parent_column
 
@@ -10794,6 +11486,9 @@ class Column(SQL):
         )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
             None, description="", alias="materialisedView"
+        )  # relationship
+        calculation_view: Optional[CalculationView] = Field(
+            None, description="", alias="calculationView"
         )  # relationship
         parent_column: Optional[Column] = Field(
             None, description="", alias="parentColumn"
@@ -11040,6 +11735,164 @@ class SnowflakeStream(SQL):
     )
 
 
+class CalculationView(SQL):
+    """Description"""
+
+    type_name: str = Field("CalculationView", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "CalculationView":
+            raise ValueError("must be CalculationView")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in CalculationView._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
+    """
+    Number of columns in this calculation view.
+    """
+    CALCULATION_VIEW_VERSION_ID: ClassVar[NumericField] = NumericField(
+        "calculationViewVersionId", "calculationViewVersionId"
+    )
+    """
+    The version ID of this calculation view.
+    """
+    CALCULATION_VIEW_ACTIVATED_BY: ClassVar[KeywordField] = KeywordField(
+        "calculationViewActivatedBy", "calculationViewActivatedBy"
+    )
+    """
+    The owner who activated the calculation view
+    """
+    CALCULATION_VIEW_ACTIVATED_AT: ClassVar[NumericField] = NumericField(
+        "calculationViewActivatedAt", "calculationViewActivatedAt"
+    )
+    """
+    Time at which this calculation view was activated at
+    """
+
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "column_count",
+        "calculation_view_version_id",
+        "calculation_view_activated_by",
+        "calculation_view_activated_at",
+        "columns",
+        "atlan_schema",
+    ]
+
+    @property
+    def column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_count
+
+    @column_count.setter
+    def column_count(self, column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_count = column_count
+
+    @property
+    def calculation_view_version_id(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_version_id
+        )
+
+    @calculation_view_version_id.setter
+    def calculation_view_version_id(self, calculation_view_version_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_version_id = calculation_view_version_id
+
+    @property
+    def calculation_view_activated_by(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_activated_by
+        )
+
+    @calculation_view_activated_by.setter
+    def calculation_view_activated_by(
+        self, calculation_view_activated_by: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_activated_by = calculation_view_activated_by
+
+    @property
+    def calculation_view_activated_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_activated_at
+        )
+
+    @calculation_view_activated_at.setter
+    def calculation_view_activated_at(
+        self, calculation_view_activated_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_activated_at = calculation_view_activated_at
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(SQL.Attributes):
+        column_count: Optional[int] = Field(None, description="", alias="columnCount")
+        calculation_view_version_id: Optional[int] = Field(
+            None, description="", alias="calculationViewVersionId"
+        )
+        calculation_view_activated_by: Optional[str] = Field(
+            None, description="", alias="calculationViewActivatedBy"
+        )
+        calculation_view_activated_at: Optional[datetime] = Field(
+            None, description="", alias="calculationViewActivatedAt"
+        )
+        columns: Optional[list[Column]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+    attributes: "CalculationView.Attributes" = Field(
+        default_factory=lambda: CalculationView.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Procedure(SQL):
     """Description"""
 
@@ -11212,6 +12065,18 @@ class SnowflakeTag(Tag):
     """
     Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
+    CALCULATION_VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "calculationViewName", "calculationViewName.keyword", "calculationViewName"
+    )
+    """
+    Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
+    CALCULATION_VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "calculationViewQualifiedName", "calculationViewQualifiedName"
+    )
+    """
+    Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
     IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
     """
     Whether this asset has been profiled (true) or not (false).
@@ -11231,19 +12096,19 @@ class SnowflakeTag(Tag):
     """
     TBC
     """
-    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
-    """
-    TBC
-    """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
     DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
     """
     TBC
     """
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
     """
     TBC
     """
@@ -11265,14 +12130,16 @@ class SnowflakeTag(Tag):
         "table_qualified_name",
         "view_name",
         "view_qualified_name",
+        "calculation_view_name",
+        "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
         "dbt_sources",
         "sql_dbt_models",
-        "sql_dbt_sources",
-        "dbt_models",
         "dbt_tests",
         "atlan_schema",
+        "sql_dbt_sources",
+        "dbt_models",
     ]
 
     @property
@@ -11444,6 +12311,36 @@ class SnowflakeTag(Tag):
         self.attributes.view_qualified_name = view_qualified_name
 
     @property
+    def calculation_view_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.calculation_view_name
+        )
+
+    @calculation_view_name.setter
+    def calculation_view_name(self, calculation_view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_name = calculation_view_name
+
+    @property
+    def calculation_view_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_qualified_name
+        )
+
+    @calculation_view_qualified_name.setter
+    def calculation_view_qualified_name(
+        self, calculation_view_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_qualified_name = (
+            calculation_view_qualified_name
+        )
+
+    @property
     def is_profiled(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_profiled
 
@@ -11484,26 +12381,6 @@ class SnowflakeTag(Tag):
         self.attributes.sql_dbt_models = sql_dbt_models
 
     @property
-    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
-    def dbt_models(self) -> Optional[list[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
     def dbt_tests(self) -> Optional[list[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
@@ -11522,6 +12399,26 @@ class SnowflakeTag(Tag):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
 
     class Attributes(Tag.Attributes):
         tag_id: Optional[str] = Field(None, description="", alias="tagId")
@@ -11560,6 +12457,12 @@ class SnowflakeTag(Tag):
         view_qualified_name: Optional[str] = Field(
             None, description="", alias="viewQualifiedName"
         )
+        calculation_view_name: Optional[str] = Field(
+            None, description="", alias="calculationViewName"
+        )
+        calculation_view_qualified_name: Optional[str] = Field(
+            None, description="", alias="calculationViewQualifiedName"
+        )
         is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
         last_profiled_at: Optional[datetime] = Field(
             None, description="", alias="lastProfiledAt"
@@ -11570,17 +12473,17 @@ class SnowflakeTag(Tag):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_tests: Optional[list[DbtTest]] = Field(
             None, description="", alias="dbtTests"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
         )  # relationship
 
     attributes: "SnowflakeTag.Attributes" = Field(
@@ -14346,6 +15249,267 @@ class DbtSource(Dbt):
     )
 
 
+class Spark(Catalog):
+    """Description"""
+
+    type_name: str = Field("Spark", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Spark":
+            raise ValueError("must be Spark")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Spark._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SPARK_RUN_VERSION: ClassVar[KeywordField] = KeywordField(
+        "sparkRunVersion", "sparkRunVersion"
+    )
+    """
+    Spark Version for the Spark Job run eg. 3.4.1
+    """
+    SPARK_RUN_OPEN_LINEAGE_VERSION: ClassVar[KeywordField] = KeywordField(
+        "sparkRunOpenLineageVersion", "sparkRunOpenLineageVersion"
+    )
+    """
+    OpenLineage Version of the Spark Job run eg. 1.1.0
+    """
+    SPARK_RUN_START_TIME: ClassVar[NumericField] = NumericField(
+        "sparkRunStartTime", "sparkRunStartTime"
+    )
+    """
+    Start time of the Spark Job eg. 1695673598218
+    """
+    SPARK_RUN_END_TIME: ClassVar[NumericField] = NumericField(
+        "sparkRunEndTime", "sparkRunEndTime"
+    )
+    """
+    End time of the Spark Job eg. 1695673598218
+    """
+    SPARK_RUN_OPEN_LINEAGE_STATE: ClassVar[KeywordField] = KeywordField(
+        "sparkRunOpenLineageState", "sparkRunOpenLineageState"
+    )
+    """
+    OpenLineage state of the Spark Job run eg. COMPLETE
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "spark_run_version",
+        "spark_run_open_lineage_version",
+        "spark_run_start_time",
+        "spark_run_end_time",
+        "spark_run_open_lineage_state",
+    ]
+
+    @property
+    def spark_run_version(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.spark_run_version
+
+    @spark_run_version.setter
+    def spark_run_version(self, spark_run_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_run_version = spark_run_version
+
+    @property
+    def spark_run_open_lineage_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.spark_run_open_lineage_version
+        )
+
+    @spark_run_open_lineage_version.setter
+    def spark_run_open_lineage_version(
+        self, spark_run_open_lineage_version: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_run_open_lineage_version = spark_run_open_lineage_version
+
+    @property
+    def spark_run_start_time(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.spark_run_start_time
+
+    @spark_run_start_time.setter
+    def spark_run_start_time(self, spark_run_start_time: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_run_start_time = spark_run_start_time
+
+    @property
+    def spark_run_end_time(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.spark_run_end_time
+
+    @spark_run_end_time.setter
+    def spark_run_end_time(self, spark_run_end_time: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_run_end_time = spark_run_end_time
+
+    @property
+    def spark_run_open_lineage_state(self) -> Optional[OpenLineageRunState]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.spark_run_open_lineage_state
+        )
+
+    @spark_run_open_lineage_state.setter
+    def spark_run_open_lineage_state(
+        self, spark_run_open_lineage_state: Optional[OpenLineageRunState]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_run_open_lineage_state = spark_run_open_lineage_state
+
+    class Attributes(Catalog.Attributes):
+        spark_run_version: Optional[str] = Field(
+            None, description="", alias="sparkRunVersion"
+        )
+        spark_run_open_lineage_version: Optional[str] = Field(
+            None, description="", alias="sparkRunOpenLineageVersion"
+        )
+        spark_run_start_time: Optional[datetime] = Field(
+            None, description="", alias="sparkRunStartTime"
+        )
+        spark_run_end_time: Optional[datetime] = Field(
+            None, description="", alias="sparkRunEndTime"
+        )
+        spark_run_open_lineage_state: Optional[OpenLineageRunState] = Field(
+            None, description="", alias="sparkRunOpenLineageState"
+        )
+
+    attributes: "Spark.Attributes" = Field(
+        default_factory=lambda: Spark.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SparkJob(Spark):
+    """Description"""
+
+    type_name: str = Field("SparkJob", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SparkJob":
+            raise ValueError("must be SparkJob")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SparkJob._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SPARK_APP_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sparkAppName", "sparkAppName.keyword", "sparkAppName"
+    )
+    """
+    Name of the Spark app containing this Spark Job For eg. extract_raw_data
+    """
+    SPARK_MASTER: ClassVar[KeywordField] = KeywordField("sparkMaster", "sparkMaster")
+    """
+    The Spark master URL eg. local, local[4], or spark://master:7077
+    """
+
+    OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
+    """
+    TBC
+    """
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
+    INPUTS: ClassVar[RelationField] = RelationField("inputs")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "spark_app_name",
+        "spark_master",
+        "outputs",
+        "process",
+        "inputs",
+    ]
+
+    @property
+    def spark_app_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.spark_app_name
+
+    @spark_app_name.setter
+    def spark_app_name(self, spark_app_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_app_name = spark_app_name
+
+    @property
+    def spark_master(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.spark_master
+
+    @spark_master.setter
+    def spark_master(self, spark_master: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_master = spark_master
+
+    @property
+    def outputs(self) -> Optional[list[Catalog]]:
+        return None if self.attributes is None else self.attributes.outputs
+
+    @outputs.setter
+    def outputs(self, outputs: Optional[list[Catalog]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.outputs = outputs
+
+    @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
+    @property
+    def inputs(self) -> Optional[list[Catalog]]:
+        return None if self.attributes is None else self.attributes.inputs
+
+    @inputs.setter
+    def inputs(self, inputs: Optional[list[Catalog]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.inputs = inputs
+
+    class Attributes(Spark.Attributes):
+        spark_app_name: Optional[str] = Field(
+            None, description="", alias="sparkAppName"
+        )
+        spark_master: Optional[str] = Field(None, description="", alias="sparkMaster")
+        outputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="outputs"
+        )  # relationship
+        process: Optional[Process] = Field(
+            None, description="", alias="process"
+        )  # relationship
+        inputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="inputs"
+        )  # relationship
+
+    attributes: "SparkJob.Attributes" = Field(
+        default_factory=lambda: SparkJob.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class SchemaRegistry(Catalog):
     """Description"""
 
@@ -15661,6 +16825,10 @@ class Table(SQL):
     """
     List of partitions in this table.
     """
+    IS_SHARDED: ClassVar[BooleanField] = BooleanField("isSharded", "isSharded")
+    """
+    Whether this table is a sharded table (true) or not (false).
+    """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
     """
@@ -15702,6 +16870,7 @@ class Table(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "is_sharded",
         "columns",
         "facts",
         "atlan_schema",
@@ -15859,6 +17028,16 @@ class Table(SQL):
         self.attributes.partition_list = partition_list
 
     @property
+    def is_sharded(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_sharded
+
+    @is_sharded.setter
+    def is_sharded(self, is_sharded: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_sharded = is_sharded
+
+    @property
     def columns(self) -> Optional[list[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -15951,6 +17130,7 @@ class Table(SQL):
         partition_list: Optional[str] = Field(
             None, description="", alias="partitionList"
         )
+        is_sharded: Optional[bool] = Field(None, description="", alias="isSharded")
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
@@ -16184,6 +17364,9 @@ Folder.Attributes.update_forward_refs()
 Catalog.Attributes.update_forward_refs()
 
 
+DataContract.Attributes.update_forward_refs()
+
+
 Tag.Attributes.update_forward_refs()
 
 
@@ -16256,6 +17439,9 @@ Column.Attributes.update_forward_refs()
 SnowflakeStream.Attributes.update_forward_refs()
 
 
+CalculationView.Attributes.update_forward_refs()
+
+
 Procedure.Attributes.update_forward_refs()
 
 
@@ -16293,6 +17479,12 @@ DbtMetric.Attributes.update_forward_refs()
 
 
 DbtSource.Attributes.update_forward_refs()
+
+
+Spark.Attributes.update_forward_refs()
+
+
+SparkJob.Attributes.update_forward_refs()
 
 
 SchemaRegistry.Attributes.update_forward_refs()

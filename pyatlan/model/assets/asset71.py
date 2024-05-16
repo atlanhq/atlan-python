@@ -9,1920 +9,715 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset44 import Looker
+from .asset39 import GCS
 
 
-class LookerLook(Looker):
+class GCSObject(GCS):
     """Description"""
 
-    type_name: str = Field("LookerLook", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+        validate_required_fields(
+            ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+        )
+        attributes = GCSObject.Attributes.create(
+            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("GCSObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "LookerLook":
-            raise ValueError("must be LookerLook")
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerLook._convenience_properties:
+        if name in GCSObject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
-    """
-    Name of the folder in which the Look is organized.
-    """
-    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
-        "sourceUserId", "sourceUserId"
+    GCS_BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsBucketName", "gcsBucketName.keyword", "gcsBucketName"
     )
     """
-    Identifier of the user who created the Look, from Looker.
+    Simple name of the bucket in which this object exists.
     """
-    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceViewCount", "sourceViewCount"
+    GCS_BUCKET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsBucketQualifiedName",
+        "gcsBucketQualifiedName",
+        "gcsBucketQualifiedName.text",
     )
     """
-    Number of times the look has been viewed in the Looker web UI.
+    Unique name of the bucket in which this object exists.
     """
-    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
-        "sourcelastUpdaterId", "sourcelastUpdaterId"
+    GCS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
+        "gcsObjectSize", "gcsObjectSize"
     )
     """
-    Identifier of the user that last updated the Look, from Looker.
+    Object size in bytes.
     """
-    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastAccessedAt", "sourceLastAccessedAt"
+    GCS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text"
     )
     """
-    Time (epoch) when the Look was last accessed by a user, in milliseconds.
+    Key of this object, in GCS.
     """
-    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastViewedAt", "sourceLastViewedAt"
+    GCS_OBJECT_MEDIA_LINK: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectMediaLink", "gcsObjectMediaLink", "gcsObjectMediaLink.text"
     )
     """
-    Time (epoch) when the Look was last viewed by a user, in milliseconds.
+    Media link to this object.
     """
-    SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceContentMetadataId", "sourceContentMetadataId"
+    GCS_OBJECT_HOLD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectHoldType", "gcsObjectHoldType"
     )
     """
-    Identifier of the Look's content metadata, from Looker.
+    Type of hold on this object.
     """
-    SOURCE_QUERY_ID: ClassVar[NumericField] = NumericField(
-        "sourceQueryId", "sourceQueryId"
+    GCS_OBJECT_GENERATION_ID: ClassVar[NumericField] = NumericField(
+        "gcsObjectGenerationId", "gcsObjectGenerationId"
     )
     """
-    Identifier of the query for the Look, from Looker.
+    Generation ID of this object.
     """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    GCS_OBJECT_CRC32C_HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectCRC32CHash", "gcsObjectCRC32CHash"
+    )
     """
-    Name of the model in which this Look exists.
+    CRC32C hash of this object.
+    """
+    GCS_OBJECT_MD5HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectMD5Hash", "gcsObjectMD5Hash"
+    )
+    """
+    MD5 hash of this object.
+    """
+    GCS_OBJECT_DATA_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "gcsObjectDataLastModifiedTime", "gcsObjectDataLastModifiedTime"
+    )
+    """
+    Time (epoch) at which this object's data was last modified, in milliseconds.
+    """
+    GCS_OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentType", "gcsObjectContentType"
+    )
+    """
+    Type of content in this object.
+    """
+    GCS_OBJECT_CONTENT_ENCODING: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentEncoding", "gcsObjectContentEncoding"
+    )
+    """
+    Content encoding of this object.
+    """
+    GCS_OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentDisposition", "gcsObjectContentDisposition"
+    )
+    """
+    Information about how this object's content should be presented.
+    """
+    GCS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentLanguage", "gcsObjectContentLanguage"
+    )
+    """
+    Language of this object's contents.
+    """
+    GCS_OBJECT_RETENTION_EXPIRATION_DATE: ClassVar[NumericField] = NumericField(
+        "gcsObjectRetentionExpirationDate", "gcsObjectRetentionExpirationDate"
+    )
+    """
+    Retention expiration date of this object.
     """
 
-    QUERY: ClassVar[RelationField] = RelationField("query")
-    """
-    TBC
-    """
-    FOLDER: ClassVar[RelationField] = RelationField("folder")
-    """
-    TBC
-    """
-    TILE: ClassVar[RelationField] = RelationField("tile")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    GCS_BUCKET: ClassVar[RelationField] = RelationField("gcsBucket")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "folder_name",
-        "source_user_id",
-        "source_view_count",
-        "sourcelast_updater_id",
-        "source_last_accessed_at",
-        "source_last_viewed_at",
-        "source_content_metadata_id",
-        "source_query_id",
-        "model_name",
-        "query",
-        "folder",
-        "tile",
-        "model",
-        "dashboard",
+        "gcs_bucket_name",
+        "gcs_bucket_qualified_name",
+        "gcs_object_size",
+        "gcs_object_key",
+        "gcs_object_media_link",
+        "gcs_object_hold_type",
+        "gcs_object_generation_id",
+        "gcs_object_c_r_c32_c_hash",
+        "gcs_object_m_d5_hash",
+        "gcs_object_data_last_modified_time",
+        "gcs_object_content_type",
+        "gcs_object_content_encoding",
+        "gcs_object_content_disposition",
+        "gcs_object_content_language",
+        "gcs_object_retention_expiration_date",
+        "gcs_bucket",
     ]
 
     @property
-    def folder_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.folder_name
+    def gcs_bucket_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_bucket_name
 
-    @folder_name.setter
-    def folder_name(self, folder_name: Optional[str]):
+    @gcs_bucket_name.setter
+    def gcs_bucket_name(self, gcs_bucket_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.folder_name = folder_name
+        self.attributes.gcs_bucket_name = gcs_bucket_name
 
     @property
-    def source_user_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_user_id
-
-    @source_user_id.setter
-    def source_user_id(self, source_user_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_user_id = source_user_id
-
-    @property
-    def source_view_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_view_count
-
-    @source_view_count.setter
-    def source_view_count(self, source_view_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_view_count = source_view_count
-
-    @property
-    def sourcelast_updater_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.sourcelast_updater_id
-        )
-
-    @sourcelast_updater_id.setter
-    def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sourcelast_updater_id = sourcelast_updater_id
-
-    @property
-    def source_last_accessed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_accessed_at
-        )
-
-    @source_last_accessed_at.setter
-    def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_accessed_at = source_last_accessed_at
-
-    @property
-    def source_last_viewed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_viewed_at
-        )
-
-    @source_last_viewed_at.setter
-    def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_viewed_at = source_last_viewed_at
-
-    @property
-    def source_content_metadata_id(self) -> Optional[int]:
+    def gcs_bucket_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.source_content_metadata_id
+            else self.attributes.gcs_bucket_qualified_name
         )
 
-    @source_content_metadata_id.setter
-    def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
+    @gcs_bucket_qualified_name.setter
+    def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_content_metadata_id = source_content_metadata_id
+        self.attributes.gcs_bucket_qualified_name = gcs_bucket_qualified_name
 
     @property
-    def source_query_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_query_id
+    def gcs_object_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.gcs_object_size
 
-    @source_query_id.setter
-    def source_query_id(self, source_query_id: Optional[int]):
+    @gcs_object_size.setter
+    def gcs_object_size(self, gcs_object_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_query_id = source_query_id
+        self.attributes.gcs_object_size = gcs_object_size
 
     @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
+    def gcs_object_key(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_key
 
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
+    @gcs_object_key.setter
+    def gcs_object_key(self, gcs_object_key: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
+        self.attributes.gcs_object_key = gcs_object_key
 
     @property
-    def query(self) -> Optional[LookerQuery]:
-        return None if self.attributes is None else self.attributes.query
-
-    @query.setter
-    def query(self, query: Optional[LookerQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query = query
-
-    @property
-    def folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.folder
-
-    @folder.setter
-    def folder(self, folder: Optional[LookerFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder = folder
-
-    @property
-    def tile(self) -> Optional[LookerTile]:
-        return None if self.attributes is None else self.attributes.tile
-
-    @tile.setter
-    def tile(self, tile: Optional[LookerTile]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tile = tile
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    @property
-    def dashboard(self) -> Optional[LookerDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[LookerDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(None, description="", alias="folderName")
-        source_user_id: Optional[int] = Field(
-            None, description="", alias="sourceUserId"
-        )
-        source_view_count: Optional[int] = Field(
-            None, description="", alias="sourceViewCount"
-        )
-        sourcelast_updater_id: Optional[int] = Field(
-            None, description="", alias="sourcelastUpdaterId"
-        )
-        source_last_accessed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastAccessedAt"
-        )
-        source_last_viewed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastViewedAt"
-        )
-        source_content_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceContentMetadataId"
-        )
-        source_query_id: Optional[int] = Field(
-            None, description="", alias="sourceQueryId"
-        )
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        query: Optional[LookerQuery] = Field(
-            None, description="", alias="query"
-        )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
-        )  # relationship
-        tile: Optional[LookerTile] = Field(
-            None, description="", alias="tile"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-
-    attributes: "LookerLook.Attributes" = Field(
-        default_factory=lambda: LookerLook.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerDashboard(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerDashboard":
-            raise ValueError("must be LookerDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerDashboard._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
-    """
-    Name of the parent folder in Looker that contains this dashboard.
-    """
-    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
-        "sourceUserId", "sourceUserId"
-    )
-    """
-    Identifier of the user who created this dashboard, from Looker.
-    """
-    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceViewCount", "sourceViewCount"
-    )
-    """
-    Number of times the dashboard has been viewed through the Looker web UI.
-    """
-    SOURCE_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceMetadataId", "sourceMetadataId"
-    )
-    """
-    Identifier of the dashboard's content metadata, from Looker.
-    """
-    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
-        "sourcelastUpdaterId", "sourcelastUpdaterId"
-    )
-    """
-    Identifier of the user who last updated the dashboard, from Looker.
-    """
-    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastAccessedAt", "sourceLastAccessedAt"
-    )
-    """
-    Timestamp (epoch) when the dashboard was last accessed by a user, in milliseconds.
-    """
-    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastViewedAt", "sourceLastViewedAt"
-    )
-    """
-    Timestamp (epoch) when the dashboard was last viewed by a user.
-    """
-
-    TILES: ClassVar[RelationField] = RelationField("tiles")
-    """
-    TBC
-    """
-    LOOKS: ClassVar[RelationField] = RelationField("looks")
-    """
-    TBC
-    """
-    FOLDER: ClassVar[RelationField] = RelationField("folder")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "folder_name",
-        "source_user_id",
-        "source_view_count",
-        "source_metadata_id",
-        "sourcelast_updater_id",
-        "source_last_accessed_at",
-        "source_last_viewed_at",
-        "tiles",
-        "looks",
-        "folder",
-    ]
-
-    @property
-    def folder_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.folder_name
-
-    @folder_name.setter
-    def folder_name(self, folder_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder_name = folder_name
-
-    @property
-    def source_user_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_user_id
-
-    @source_user_id.setter
-    def source_user_id(self, source_user_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_user_id = source_user_id
-
-    @property
-    def source_view_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_view_count
-
-    @source_view_count.setter
-    def source_view_count(self, source_view_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_view_count = source_view_count
-
-    @property
-    def source_metadata_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_metadata_id
-
-    @source_metadata_id.setter
-    def source_metadata_id(self, source_metadata_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_metadata_id = source_metadata_id
-
-    @property
-    def sourcelast_updater_id(self) -> Optional[int]:
+    def gcs_object_media_link(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.sourcelast_updater_id
+            None if self.attributes is None else self.attributes.gcs_object_media_link
         )
 
-    @sourcelast_updater_id.setter
-    def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
+    @gcs_object_media_link.setter
+    def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sourcelast_updater_id = sourcelast_updater_id
+        self.attributes.gcs_object_media_link = gcs_object_media_link
 
     @property
-    def source_last_accessed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_accessed_at
-        )
+    def gcs_object_hold_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_hold_type
 
-    @source_last_accessed_at.setter
-    def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
+    @gcs_object_hold_type.setter
+    def gcs_object_hold_type(self, gcs_object_hold_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_last_accessed_at = source_last_accessed_at
+        self.attributes.gcs_object_hold_type = gcs_object_hold_type
 
     @property
-    def source_last_viewed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_viewed_at
-        )
-
-    @source_last_viewed_at.setter
-    def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_last_viewed_at = source_last_viewed_at
-
-    @property
-    def tiles(self) -> Optional[list[LookerTile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[LookerTile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
-
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looks = looks
-
-    @property
-    def folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.folder
-
-    @folder.setter
-    def folder(self, folder: Optional[LookerFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder = folder
-
-    class Attributes(Looker.Attributes):
-        folder_name: Optional[str] = Field(None, description="", alias="folderName")
-        source_user_id: Optional[int] = Field(
-            None, description="", alias="sourceUserId"
-        )
-        source_view_count: Optional[int] = Field(
-            None, description="", alias="sourceViewCount"
-        )
-        source_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceMetadataId"
-        )
-        sourcelast_updater_id: Optional[int] = Field(
-            None, description="", alias="sourcelastUpdaterId"
-        )
-        source_last_accessed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastAccessedAt"
-        )
-        source_last_viewed_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastViewedAt"
-        )
-        tiles: Optional[list[LookerTile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
-        )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
-        )  # relationship
-
-    attributes: "LookerDashboard.Attributes" = Field(
-        default_factory=lambda: LookerDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerFolder(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerFolder", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerFolder":
-            raise ValueError("must be LookerFolder")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerFolder._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceContentMetadataId", "sourceContentMetadataId"
-    )
-    """
-    Identifier for the folder's content metadata in Looker.
-    """
-    SOURCE_CREATOR_ID: ClassVar[NumericField] = NumericField(
-        "sourceCreatorId", "sourceCreatorId"
-    )
-    """
-    Identifier of the user who created the folder, from Looker.
-    """
-    SOURCE_CHILD_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceChildCount", "sourceChildCount"
-    )
-    """
-    Number of subfolders in this folder.
-    """
-    SOURCE_PARENT_ID: ClassVar[NumericField] = NumericField(
-        "sourceParentID", "sourceParentID"
-    )
-    """
-    Identifier of the parent folder of this folder, from Looker.
-    """
-
-    LOOKER_SUB_FOLDERS: ClassVar[RelationField] = RelationField("lookerSubFolders")
-    """
-    TBC
-    """
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
-    """
-    TBC
-    """
-    LOOKS: ClassVar[RelationField] = RelationField("looks")
-    """
-    TBC
-    """
-    LOOKER_PARENT_FOLDER: ClassVar[RelationField] = RelationField("lookerParentFolder")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "source_content_metadata_id",
-        "source_creator_id",
-        "source_child_count",
-        "source_parent_i_d",
-        "looker_sub_folders",
-        "dashboards",
-        "looks",
-        "looker_parent_folder",
-    ]
-
-    @property
-    def source_content_metadata_id(self) -> Optional[int]:
+    def gcs_object_generation_id(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.source_content_metadata_id
+            else self.attributes.gcs_object_generation_id
         )
 
-    @source_content_metadata_id.setter
-    def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
+    @gcs_object_generation_id.setter
+    def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_content_metadata_id = source_content_metadata_id
+        self.attributes.gcs_object_generation_id = gcs_object_generation_id
 
     @property
-    def source_creator_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_creator_id
-
-    @source_creator_id.setter
-    def source_creator_id(self, source_creator_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_creator_id = source_creator_id
-
-    @property
-    def source_child_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_child_count
-
-    @source_child_count.setter
-    def source_child_count(self, source_child_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_child_count = source_child_count
-
-    @property
-    def source_parent_i_d(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_parent_i_d
-
-    @source_parent_i_d.setter
-    def source_parent_i_d(self, source_parent_i_d: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_parent_i_d = source_parent_i_d
-
-    @property
-    def looker_sub_folders(self) -> Optional[list[LookerFolder]]:
-        return None if self.attributes is None else self.attributes.looker_sub_folders
-
-    @looker_sub_folders.setter
-    def looker_sub_folders(self, looker_sub_folders: Optional[list[LookerFolder]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looker_sub_folders = looker_sub_folders
-
-    @property
-    def dashboards(self) -> Optional[list[LookerDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
-
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[LookerDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
-
-    @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
-
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looks = looks
-
-    @property
-    def looker_parent_folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.looker_parent_folder
-
-    @looker_parent_folder.setter
-    def looker_parent_folder(self, looker_parent_folder: Optional[LookerFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looker_parent_folder = looker_parent_folder
-
-    class Attributes(Looker.Attributes):
-        source_content_metadata_id: Optional[int] = Field(
-            None, description="", alias="sourceContentMetadataId"
-        )
-        source_creator_id: Optional[int] = Field(
-            None, description="", alias="sourceCreatorId"
-        )
-        source_child_count: Optional[int] = Field(
-            None, description="", alias="sourceChildCount"
-        )
-        source_parent_i_d: Optional[int] = Field(
-            None, description="", alias="sourceParentID"
-        )
-        looker_sub_folders: Optional[list[LookerFolder]] = Field(
-            None, description="", alias="lookerSubFolders"
-        )  # relationship
-        dashboards: Optional[list[LookerDashboard]] = Field(
-            None, description="", alias="dashboards"
-        )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
-        )  # relationship
-        looker_parent_folder: Optional[LookerFolder] = Field(
-            None, description="", alias="lookerParentFolder"
-        )  # relationship
-
-    attributes: "LookerFolder.Attributes" = Field(
-        default_factory=lambda: LookerFolder.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerTile(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerTile", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerTile":
-            raise ValueError("must be LookerTile")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerTile._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    LOOKML_LINK_ID: ClassVar[KeywordField] = KeywordField(
-        "lookmlLinkId", "lookmlLinkId"
-    )
-    """
-    Identifier for the LoomML link.
-    """
-    MERGE_RESULT_ID: ClassVar[KeywordField] = KeywordField(
-        "mergeResultId", "mergeResultId"
-    )
-    """
-    Identifier for the merge result.
-    """
-    NOTE_TEXT: ClassVar[KeywordField] = KeywordField("noteText", "noteText")
-    """
-    Text of notes added to the tile.
-    """
-    QUERY_ID: ClassVar[NumericField] = NumericField("queryID", "queryID")
-    """
-    Identifier for the query used to build this tile, from Looker.
-    """
-    RESULT_MAKER_ID: ClassVar[NumericField] = NumericField(
-        "resultMakerID", "resultMakerID"
-    )
-    """
-    Identifier of the ResultMarkerLookup entry, from Looker.
-    """
-    SUBTITLE_TEXT: ClassVar[KeywordField] = KeywordField("subtitleText", "subtitleText")
-    """
-    Text for the subtitle for text tiles.
-    """
-    LOOK_ID: ClassVar[NumericField] = NumericField("lookId", "lookId")
-    """
-    Identifier of the Look used to create this tile, from Looker.
-    """
-
-    QUERY: ClassVar[RelationField] = RelationField("query")
-    """
-    TBC
-    """
-    LOOK: ClassVar[RelationField] = RelationField("look")
-    """
-    TBC
-    """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "lookml_link_id",
-        "merge_result_id",
-        "note_text",
-        "query_i_d",
-        "result_maker_i_d",
-        "subtitle_text",
-        "look_id",
-        "query",
-        "look",
-        "dashboard",
-    ]
-
-    @property
-    def lookml_link_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.lookml_link_id
-
-    @lookml_link_id.setter
-    def lookml_link_id(self, lookml_link_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.lookml_link_id = lookml_link_id
-
-    @property
-    def merge_result_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.merge_result_id
-
-    @merge_result_id.setter
-    def merge_result_id(self, merge_result_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.merge_result_id = merge_result_id
-
-    @property
-    def note_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.note_text
-
-    @note_text.setter
-    def note_text(self, note_text: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.note_text = note_text
-
-    @property
-    def query_i_d(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_i_d
-
-    @query_i_d.setter
-    def query_i_d(self, query_i_d: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_i_d = query_i_d
-
-    @property
-    def result_maker_i_d(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.result_maker_i_d
-
-    @result_maker_i_d.setter
-    def result_maker_i_d(self, result_maker_i_d: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.result_maker_i_d = result_maker_i_d
-
-    @property
-    def subtitle_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.subtitle_text
-
-    @subtitle_text.setter
-    def subtitle_text(self, subtitle_text: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.subtitle_text = subtitle_text
-
-    @property
-    def look_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.look_id
-
-    @look_id.setter
-    def look_id(self, look_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.look_id = look_id
-
-    @property
-    def query(self) -> Optional[LookerQuery]:
-        return None if self.attributes is None else self.attributes.query
-
-    @query.setter
-    def query(self, query: Optional[LookerQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query = query
-
-    @property
-    def look(self) -> Optional[LookerLook]:
-        return None if self.attributes is None else self.attributes.look
-
-    @look.setter
-    def look(self, look: Optional[LookerLook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.look = look
-
-    @property
-    def dashboard(self) -> Optional[LookerDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[LookerDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    class Attributes(Looker.Attributes):
-        lookml_link_id: Optional[str] = Field(
-            None, description="", alias="lookmlLinkId"
-        )
-        merge_result_id: Optional[str] = Field(
-            None, description="", alias="mergeResultId"
-        )
-        note_text: Optional[str] = Field(None, description="", alias="noteText")
-        query_i_d: Optional[int] = Field(None, description="", alias="queryID")
-        result_maker_i_d: Optional[int] = Field(
-            None, description="", alias="resultMakerID"
-        )
-        subtitle_text: Optional[str] = Field(None, description="", alias="subtitleText")
-        look_id: Optional[int] = Field(None, description="", alias="lookId")
-        query: Optional[LookerQuery] = Field(
-            None, description="", alias="query"
-        )  # relationship
-        look: Optional[LookerLook] = Field(
-            None, description="", alias="look"
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-
-    attributes: "LookerTile.Attributes" = Field(
-        default_factory=lambda: LookerTile.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerModel(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerModel", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerModel":
-            raise ValueError("must be LookerModel")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerModel._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    Name of the project in which the model exists.
-    """
-
-    EXPLORES: ClassVar[RelationField] = RelationField("explores")
-    """
-    TBC
-    """
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    LOOK: ClassVar[RelationField] = RelationField("look")
-    """
-    TBC
-    """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "explores",
-        "project",
-        "look",
-        "queries",
-        "fields",
-    ]
-
-    @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
-
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
-
-    @property
-    def explores(self) -> Optional[list[LookerExplore]]:
-        return None if self.attributes is None else self.attributes.explores
-
-    @explores.setter
-    def explores(self, explores: Optional[list[LookerExplore]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.explores = explores
-
-    @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
-
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project = project
-
-    @property
-    def look(self) -> Optional[LookerLook]:
-        return None if self.attributes is None else self.attributes.look
-
-    @look.setter
-    def look(self, look: Optional[LookerLook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.look = look
-
-    @property
-    def queries(self) -> Optional[list[LookerQuery]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[LookerQuery]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        explores: Optional[list[LookerExplore]] = Field(
-            None, description="", alias="explores"
-        )  # relationship
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        look: Optional[LookerLook] = Field(
-            None, description="", alias="look"
-        )  # relationship
-        queries: Optional[list[LookerQuery]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-
-    attributes: "LookerModel.Attributes" = Field(
-        default_factory=lambda: LookerModel.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerExplore(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerExplore", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerExplore":
-            raise ValueError("must be LookerExplore")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerExplore._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    Name of the parent project of this Explore.
-    """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
-    """
-    Name of the parent model of this Explore.
-    """
-    SOURCE_CONNECTION_NAME: ClassVar[KeywordField] = KeywordField(
-        "sourceConnectionName", "sourceConnectionName"
-    )
-    """
-    Connection name for the Explore, from Looker.
-    """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
-    """
-    Name of the view for the Explore.
-    """
-    SQL_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
-        "sqlTableName", "sqlTableName"
-    )
-    """
-    Name of the SQL table used to declare the Explore.
-    """
-
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "model_name",
-        "source_connection_name",
-        "view_name",
-        "sql_table_name",
-        "project",
-        "model",
-        "fields",
-    ]
-
-    @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
-
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
-
-    @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
-
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
-
-    @property
-    def source_connection_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.source_connection_name
-        )
-
-    @source_connection_name.setter
-    def source_connection_name(self, source_connection_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_connection_name = source_connection_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def sql_table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sql_table_name
-
-    @sql_table_name.setter
-    def sql_table_name(self, sql_table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_table_name = sql_table_name
-
-    @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
-
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project = project
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        source_connection_name: Optional[str] = Field(
-            None, description="", alias="sourceConnectionName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        sql_table_name: Optional[str] = Field(
-            None, description="", alias="sqlTableName"
-        )
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-
-    attributes: "LookerExplore.Attributes" = Field(
-        default_factory=lambda: LookerExplore.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerProject(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerProject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerProject":
-            raise ValueError("must be LookerProject")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerProject._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    MODELS: ClassVar[RelationField] = RelationField("models")
-    """
-    TBC
-    """
-    EXPLORES: ClassVar[RelationField] = RelationField("explores")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
-    VIEWS: ClassVar[RelationField] = RelationField("views")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "models",
-        "explores",
-        "fields",
-        "views",
-    ]
-
-    @property
-    def models(self) -> Optional[list[LookerModel]]:
-        return None if self.attributes is None else self.attributes.models
-
-    @models.setter
-    def models(self, models: Optional[list[LookerModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.models = models
-
-    @property
-    def explores(self) -> Optional[list[LookerExplore]]:
-        return None if self.attributes is None else self.attributes.explores
-
-    @explores.setter
-    def explores(self, explores: Optional[list[LookerExplore]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.explores = explores
-
-    @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    @property
-    def views(self) -> Optional[list[LookerView]]:
-        return None if self.attributes is None else self.attributes.views
-
-    @views.setter
-    def views(self, views: Optional[list[LookerView]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.views = views
-
-    class Attributes(Looker.Attributes):
-        models: Optional[list[LookerModel]] = Field(
-            None, description="", alias="models"
-        )  # relationship
-        explores: Optional[list[LookerExplore]] = Field(
-            None, description="", alias="explores"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-        views: Optional[list[LookerView]] = Field(
-            None, description="", alias="views"
-        )  # relationship
-
-    attributes: "LookerProject.Attributes" = Field(
-        default_factory=lambda: LookerProject.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerQuery(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerQuery":
-            raise ValueError("must be LookerQuery")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerQuery._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinition", "sourceDefinition"
-    )
-    """
-    Deprecated.
-    """
-    SOURCE_DEFINITION_DATABASE: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinitionDatabase", "sourceDefinitionDatabase"
-    )
-    """
-    Deprecated.
-    """
-    SOURCE_DEFINITION_SCHEMA: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinitionSchema", "sourceDefinitionSchema"
-    )
-    """
-    Deprecated.
-    """
-    FIELDS: ClassVar[KeywordField] = KeywordField("fields", "fields")
-    """
-    Deprecated.
-    """
-
-    TILES: ClassVar[RelationField] = RelationField("tiles")
-    """
-    TBC
-    """
-    LOOKS: ClassVar[RelationField] = RelationField("looks")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "source_definition",
-        "source_definition_database",
-        "source_definition_schema",
-        "fields",
-        "tiles",
-        "looks",
-        "model",
-    ]
-
-    @property
-    def source_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_definition
-
-    @source_definition.setter
-    def source_definition(self, source_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_definition = source_definition
-
-    @property
-    def source_definition_database(self) -> Optional[str]:
+    def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.source_definition_database
+            else self.attributes.gcs_object_c_r_c32_c_hash
         )
 
-    @source_definition_database.setter
-    def source_definition_database(self, source_definition_database: Optional[str]):
+    @gcs_object_c_r_c32_c_hash.setter
+    def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_definition_database = source_definition_database
+        self.attributes.gcs_object_c_r_c32_c_hash = gcs_object_c_r_c32_c_hash
 
     @property
-    def source_definition_schema(self) -> Optional[str]:
+    def gcs_object_m_d5_hash(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_m_d5_hash
+
+    @gcs_object_m_d5_hash.setter
+    def gcs_object_m_d5_hash(self, gcs_object_m_d5_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_m_d5_hash = gcs_object_m_d5_hash
+
+    @property
+    def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.source_definition_schema
+            else self.attributes.gcs_object_data_last_modified_time
         )
 
-    @source_definition_schema.setter
-    def source_definition_schema(self, source_definition_schema: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_definition_schema = source_definition_schema
-
-    @property
-    def fields(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    @property
-    def tiles(self) -> Optional[list[LookerTile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[LookerTile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
-
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looks = looks
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    class Attributes(Looker.Attributes):
-        source_definition: Optional[str] = Field(
-            None, description="", alias="sourceDefinition"
-        )
-        source_definition_database: Optional[str] = Field(
-            None, description="", alias="sourceDefinitionDatabase"
-        )
-        source_definition_schema: Optional[str] = Field(
-            None, description="", alias="sourceDefinitionSchema"
-        )
-        fields: Optional[set[str]] = Field(None, description="", alias="fields")
-        tiles: Optional[list[LookerTile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
-
-    attributes: "LookerQuery.Attributes" = Field(
-        default_factory=lambda: LookerQuery.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class LookerField(Looker):
-    """Description"""
-
-    type_name: str = Field("LookerField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerField":
-            raise ValueError("must be LookerField")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in LookerField._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    Name of the project in which this field exists.
-    """
-    LOOKER_EXPLORE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "lookerExploreQualifiedName",
-        "lookerExploreQualifiedName",
-        "lookerExploreQualifiedName.text",
-    )
-    """
-    Unique name of the Explore in which this field exists.
-    """
-    LOOKER_VIEW_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "lookerViewQualifiedName",
-        "lookerViewQualifiedName",
-        "lookerViewQualifiedName.text",
-    )
-    """
-    Unique name of the view in which this field exists.
-    """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
-    """
-    Name of the model in which this field exists.
-    """
-    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
-        "sourceDefinition", "sourceDefinition"
-    )
-    """
-    Deprecated.
-    """
-    LOOKER_FIELD_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
-        "lookerFieldDataType", "lookerFieldDataType"
-    )
-    """
-    Deprecated.
-    """
-    LOOKER_TIMES_USED: ClassVar[NumericField] = NumericField(
-        "lookerTimesUsed", "lookerTimesUsed"
-    )
-    """
-    Deprecated.
-    """
-
-    EXPLORE: ClassVar[RelationField] = RelationField("explore")
-    """
-    TBC
-    """
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    VIEW: ClassVar[RelationField] = RelationField("view")
-    """
-    TBC
-    """
-    MODEL: ClassVar[RelationField] = RelationField("model")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "looker_explore_qualified_name",
-        "looker_view_qualified_name",
-        "model_name",
-        "source_definition",
-        "looker_field_data_type",
-        "looker_times_used",
-        "explore",
-        "project",
-        "view",
-        "model",
-    ]
-
-    @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
-
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
-
-    @property
-    def looker_explore_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.looker_explore_qualified_name
-        )
-
-    @looker_explore_qualified_name.setter
-    def looker_explore_qualified_name(
-        self, looker_explore_qualified_name: Optional[str]
+    @gcs_object_data_last_modified_time.setter
+    def gcs_object_data_last_modified_time(
+        self, gcs_object_data_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_explore_qualified_name = looker_explore_qualified_name
+        self.attributes.gcs_object_data_last_modified_time = (
+            gcs_object_data_last_modified_time
+        )
 
     @property
-    def looker_view_qualified_name(self) -> Optional[str]:
+    def gcs_object_content_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.gcs_object_content_type
+        )
+
+    @gcs_object_content_type.setter
+    def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_type = gcs_object_content_type
+
+    @property
+    def gcs_object_content_encoding(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.looker_view_qualified_name
+            else self.attributes.gcs_object_content_encoding
         )
 
-    @looker_view_qualified_name.setter
-    def looker_view_qualified_name(self, looker_view_qualified_name: Optional[str]):
+    @gcs_object_content_encoding.setter
+    def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_view_qualified_name = looker_view_qualified_name
+        self.attributes.gcs_object_content_encoding = gcs_object_content_encoding
 
     @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
-
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
-
-    @property
-    def source_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.source_definition
-
-    @source_definition.setter
-    def source_definition(self, source_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.source_definition = source_definition
-
-    @property
-    def looker_field_data_type(self) -> Optional[str]:
+    def gcs_object_content_disposition(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.looker_field_data_type
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_disposition
         )
 
-    @looker_field_data_type.setter
-    def looker_field_data_type(self, looker_field_data_type: Optional[str]):
+    @gcs_object_content_disposition.setter
+    def gcs_object_content_disposition(
+        self, gcs_object_content_disposition: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_field_data_type = looker_field_data_type
+        self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
 
     @property
-    def looker_times_used(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.looker_times_used
+    def gcs_object_content_language(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_language
+        )
 
-    @looker_times_used.setter
-    def looker_times_used(self, looker_times_used: Optional[int]):
+    @gcs_object_content_language.setter
+    def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_times_used = looker_times_used
+        self.attributes.gcs_object_content_language = gcs_object_content_language
 
     @property
-    def explore(self) -> Optional[LookerExplore]:
-        return None if self.attributes is None else self.attributes.explore
+    def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_retention_expiration_date
+        )
 
-    @explore.setter
-    def explore(self, explore: Optional[LookerExplore]):
+    @gcs_object_retention_expiration_date.setter
+    def gcs_object_retention_expiration_date(
+        self, gcs_object_retention_expiration_date: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.explore = explore
+        self.attributes.gcs_object_retention_expiration_date = (
+            gcs_object_retention_expiration_date
+        )
 
     @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
+    def gcs_bucket(self) -> Optional[GCSBucket]:
+        return None if self.attributes is None else self.attributes.gcs_bucket
 
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
+    @gcs_bucket.setter
+    def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.project = project
+        self.attributes.gcs_bucket = gcs_bucket
 
-    @property
-    def view(self) -> Optional[LookerView]:
-        return None if self.attributes is None else self.attributes.view
-
-    @view.setter
-    def view(self, view: Optional[LookerView]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view = view
-
-    @property
-    def model(self) -> Optional[LookerModel]:
-        return None if self.attributes is None else self.attributes.model
-
-    @model.setter
-    def model(self, model: Optional[LookerModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model = model
-
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        looker_explore_qualified_name: Optional[str] = Field(
-            None, description="", alias="lookerExploreQualifiedName"
+    class Attributes(GCS.Attributes):
+        gcs_bucket_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketName"
         )
-        looker_view_qualified_name: Optional[str] = Field(
-            None, description="", alias="lookerViewQualifiedName"
+        gcs_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketQualifiedName"
         )
-        model_name: Optional[str] = Field(None, description="", alias="modelName")
-        source_definition: Optional[str] = Field(
-            None, description="", alias="sourceDefinition"
+        gcs_object_size: Optional[int] = Field(
+            None, description="", alias="gcsObjectSize"
         )
-        looker_field_data_type: Optional[str] = Field(
-            None, description="", alias="lookerFieldDataType"
+        gcs_object_key: Optional[str] = Field(
+            None, description="", alias="gcsObjectKey"
         )
-        looker_times_used: Optional[int] = Field(
-            None, description="", alias="lookerTimesUsed"
+        gcs_object_media_link: Optional[str] = Field(
+            None, description="", alias="gcsObjectMediaLink"
         )
-        explore: Optional[LookerExplore] = Field(
-            None, description="", alias="explore"
+        gcs_object_hold_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectHoldType"
+        )
+        gcs_object_generation_id: Optional[int] = Field(
+            None, description="", alias="gcsObjectGenerationId"
+        )
+        gcs_object_c_r_c32_c_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectCRC32CHash"
+        )
+        gcs_object_m_d5_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectMD5Hash"
+        )
+        gcs_object_data_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectDataLastModifiedTime"
+        )
+        gcs_object_content_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentType"
+        )
+        gcs_object_content_encoding: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentEncoding"
+        )
+        gcs_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentDisposition"
+        )
+        gcs_object_content_language: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentLanguage"
+        )
+        gcs_object_retention_expiration_date: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectRetentionExpirationDate"
+        )
+        gcs_bucket: Optional[GCSBucket] = Field(
+            None, description="", alias="gcsBucket"
         )  # relationship
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        view: Optional[LookerView] = Field(
-            None, description="", alias="view"
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            None, description="", alias="model"
-        )  # relationship
 
-    attributes: "LookerField.Attributes" = Field(
-        default_factory=lambda: LookerField.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, gcs_bucket_qualified_name: str
+        ) -> GCSObject.Attributes:
+            validate_required_fields(
+                ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+            )
+
+            # Split the gcs_bucket_qualified_name to extract necessary information
+            fields = gcs_bucket_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid gcs_bucket_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid gcs_bucket_qualified_name") from e
+
+            return GCSObject.Attributes(
+                name=name,
+                gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{gcs_bucket_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
+            )
+
+    attributes: "GCSObject.Attributes" = Field(
+        default_factory=lambda: GCSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class LookerView(Looker):
+class GCSBucket(GCS):
     """Description"""
 
-    type_name: str = Field("LookerView", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = GCSBucket.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("GCSBucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "LookerView":
-            raise ValueError("must be LookerView")
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerView._convenience_properties:
+        if name in GCSBucket._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
-    """
-    Name of the project in which this view exists.
-    """
-    LOOKER_VIEW_FILE_PATH: ClassVar[KeywordField] = KeywordField(
-        "lookerViewFilePath", "lookerViewFilePath"
+    GCS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "gcsObjectCount", "gcsObjectCount"
     )
     """
-    File path of this view within the project.
+    Number of objects within the bucket.
     """
-    LOOKER_VIEW_FILE_NAME: ClassVar[KeywordField] = KeywordField(
-        "lookerViewFileName", "lookerViewFileName"
+    GCS_BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "gcsBucketVersioningEnabled", "gcsBucketVersioningEnabled"
     )
     """
-    File name of this view.
+    Whether versioning is enabled on the bucket (true) or not (false).
+    """
+    GCS_BUCKET_RETENTION_LOCKED: ClassVar[BooleanField] = BooleanField(
+        "gcsBucketRetentionLocked", "gcsBucketRetentionLocked"
+    )
+    """
+    Whether retention is locked for this bucket (true) or not (false).
+    """
+    GCS_BUCKET_RETENTION_PERIOD: ClassVar[NumericField] = NumericField(
+        "gcsBucketRetentionPeriod", "gcsBucketRetentionPeriod"
+    )
+    """
+    Retention period for objects in this bucket.
+    """
+    GCS_BUCKET_RETENTION_EFFECTIVE_TIME: ClassVar[NumericField] = NumericField(
+        "gcsBucketRetentionEffectiveTime", "gcsBucketRetentionEffectiveTime"
+    )
+    """
+    Effective time for retention of objects in this bucket.
+    """
+    GCS_BUCKET_LIFECYCLE_RULES: ClassVar[TextField] = TextField(
+        "gcsBucketLifecycleRules", "gcsBucketLifecycleRules"
+    )
+    """
+    Lifecycle rules for this bucket.
+    """
+    GCS_BUCKET_RETENTION_POLICY: ClassVar[TextField] = TextField(
+        "gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy"
+    )
+    """
+    Retention policy for this bucket.
     """
 
-    PROJECT: ClassVar[RelationField] = RelationField("project")
-    """
-    TBC
-    """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    GCS_OBJECTS: ClassVar[RelationField] = RelationField("gcsObjects")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "project_name",
-        "looker_view_file_path",
-        "looker_view_file_name",
-        "project",
-        "fields",
+        "gcs_object_count",
+        "gcs_bucket_versioning_enabled",
+        "gcs_bucket_retention_locked",
+        "gcs_bucket_retention_period",
+        "gcs_bucket_retention_effective_time",
+        "gcs_bucket_lifecycle_rules",
+        "gcs_bucket_retention_policy",
+        "gcs_objects",
     ]
 
     @property
-    def project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_name
+    def gcs_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.gcs_object_count
 
-    @project_name.setter
-    def project_name(self, project_name: Optional[str]):
+    @gcs_object_count.setter
+    def gcs_object_count(self, gcs_object_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.project_name = project_name
+        self.attributes.gcs_object_count = gcs_object_count
 
     @property
-    def looker_view_file_path(self) -> Optional[str]:
+    def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
         return (
-            None if self.attributes is None else self.attributes.looker_view_file_path
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_versioning_enabled
         )
 
-    @looker_view_file_path.setter
-    def looker_view_file_path(self, looker_view_file_path: Optional[str]):
+    @gcs_bucket_versioning_enabled.setter
+    def gcs_bucket_versioning_enabled(
+        self, gcs_bucket_versioning_enabled: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_view_file_path = looker_view_file_path
+        self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
 
     @property
-    def looker_view_file_name(self) -> Optional[str]:
+    def gcs_bucket_retention_locked(self) -> Optional[bool]:
         return (
-            None if self.attributes is None else self.attributes.looker_view_file_name
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_locked
         )
 
-    @looker_view_file_name.setter
-    def looker_view_file_name(self, looker_view_file_name: Optional[str]):
+    @gcs_bucket_retention_locked.setter
+    def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_view_file_name = looker_view_file_name
+        self.attributes.gcs_bucket_retention_locked = gcs_bucket_retention_locked
 
     @property
-    def project(self) -> Optional[LookerProject]:
-        return None if self.attributes is None else self.attributes.project
+    def gcs_bucket_retention_period(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_period
+        )
 
-    @project.setter
-    def project(self, project: Optional[LookerProject]):
+    @gcs_bucket_retention_period.setter
+    def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.project = project
+        self.attributes.gcs_bucket_retention_period = gcs_bucket_retention_period
 
     @property
-    def fields(self) -> Optional[list[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
+    def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_effective_time
+        )
 
-    @fields.setter
-    def fields(self, fields: Optional[list[LookerField]]):
+    @gcs_bucket_retention_effective_time.setter
+    def gcs_bucket_retention_effective_time(
+        self, gcs_bucket_retention_effective_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    class Attributes(Looker.Attributes):
-        project_name: Optional[str] = Field(None, description="", alias="projectName")
-        looker_view_file_path: Optional[str] = Field(
-            None, description="", alias="lookerViewFilePath"
+        self.attributes.gcs_bucket_retention_effective_time = (
+            gcs_bucket_retention_effective_time
         )
-        looker_view_file_name: Optional[str] = Field(
-            None, description="", alias="lookerViewFileName"
+
+    @property
+    def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_lifecycle_rules
         )
-        project: Optional[LookerProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
+
+    @gcs_bucket_lifecycle_rules.setter
+    def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_lifecycle_rules = gcs_bucket_lifecycle_rules
+
+    @property
+    def gcs_bucket_retention_policy(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_policy
+        )
+
+    @gcs_bucket_retention_policy.setter
+    def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
+
+    @property
+    def gcs_objects(self) -> Optional[list[GCSObject]]:
+        return None if self.attributes is None else self.attributes.gcs_objects
+
+    @gcs_objects.setter
+    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_objects = gcs_objects
+
+    class Attributes(GCS.Attributes):
+        gcs_object_count: Optional[int] = Field(
+            None, description="", alias="gcsObjectCount"
+        )
+        gcs_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="gcsBucketVersioningEnabled"
+        )
+        gcs_bucket_retention_locked: Optional[bool] = Field(
+            None, description="", alias="gcsBucketRetentionLocked"
+        )
+        gcs_bucket_retention_period: Optional[int] = Field(
+            None, description="", alias="gcsBucketRetentionPeriod"
+        )
+        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
+            None, description="", alias="gcsBucketRetentionEffectiveTime"
+        )
+        gcs_bucket_lifecycle_rules: Optional[str] = Field(
+            None, description="", alias="gcsBucketLifecycleRules"
+        )
+        gcs_bucket_retention_policy: Optional[str] = Field(
+            None, description="", alias="gcsBucketRetentionPolicy"
+        )
+        gcs_objects: Optional[list[GCSObject]] = Field(
+            None, description="", alias="gcsObjects"
         )  # relationship
 
-    attributes: "LookerView.Attributes" = Field(
-        default_factory=lambda: LookerView.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> GCSBucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return GCSBucket.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+            )
+
+    attributes: "GCSBucket.Attributes" = Field(
+        default_factory=lambda: GCSBucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-LookerLook.Attributes.update_forward_refs()
+GCSObject.Attributes.update_forward_refs()
 
 
-LookerDashboard.Attributes.update_forward_refs()
-
-
-LookerFolder.Attributes.update_forward_refs()
-
-
-LookerTile.Attributes.update_forward_refs()
-
-
-LookerModel.Attributes.update_forward_refs()
-
-
-LookerExplore.Attributes.update_forward_refs()
-
-
-LookerProject.Attributes.update_forward_refs()
-
-
-LookerQuery.Attributes.update_forward_refs()
-
-
-LookerField.Attributes.update_forward_refs()
-
-
-LookerView.Attributes.update_forward_refs()
+GCSBucket.Attributes.update_forward_refs()

@@ -8,171 +8,148 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordTextField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .asset50 import Thoughtspot
+from .asset45 import Tableau
+from .asset76 import TableauProject
 
 
-class ThoughtspotLiveboard(Thoughtspot):
+class TableauMetric(Tableau):
     """Description"""
 
-    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
+    type_name: str = Field("TableauMetric", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ThoughtspotLiveboard":
-            raise ValueError("must be ThoughtspotLiveboard")
+        if v != "TableauMetric":
+            raise ValueError("must be TableauMetric")
         return v
 
     def __setattr__(self, name, value):
-        if name in ThoughtspotLiveboard._convenience_properties:
+        if name in TableauMetric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    THOUGHTSPOT_DASHLETS: ClassVar[RelationField] = RelationField("thoughtspotDashlets")
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    Unique name of the site in which this metric exists.
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    Unique name of the project in which this metric exists.
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    Unique name of the top-level project in which this metric exists.
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    List of top-level projects with their nested child projects.
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "thoughtspot_dashlets",
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "project",
     ]
 
     @property
-    def thoughtspot_dashlets(self) -> Optional[list[ThoughtspotDashlet]]:
-        return None if self.attributes is None else self.attributes.thoughtspot_dashlets
+    def site_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.site_qualified_name
 
-    @thoughtspot_dashlets.setter
-    def thoughtspot_dashlets(
-        self, thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]]
+    @site_qualified_name.setter
+    def site_qualified_name(self, site_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site_qualified_name = site_qualified_name
+
+    @property
+    def project_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
+
+    @project_qualified_name.setter
+    def project_qualified_name(self, project_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_qualified_name = project_qualified_name
+
+    @property
+    def top_level_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
+
+    @top_level_project_qualified_name.setter
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
-    class Attributes(Thoughtspot.Attributes):
-        thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
-            None, description="", alias="thoughtspotDashlets"
+    @property
+    def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.project_hierarchy
+
+    @project_hierarchy.setter
+    def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def project(self) -> Optional[TableauProject]:
+        return None if self.attributes is None else self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    class Attributes(Tableau.Attributes):
+        site_qualified_name: Optional[str] = Field(
+            None, description="", alias="siteQualifiedName"
+        )
+        project_qualified_name: Optional[str] = Field(
+            None, description="", alias="projectQualifiedName"
+        )
+        top_level_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="topLevelProjectQualifiedName"
+        )
+        project_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="projectHierarchy"
+        )
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
         )  # relationship
 
-    attributes: "ThoughtspotLiveboard.Attributes" = Field(
-        default_factory=lambda: ThoughtspotLiveboard.Attributes(),
+    attributes: "TableauMetric.Attributes" = Field(
+        default_factory=lambda: TableauMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ThoughtspotDashlet(Thoughtspot):
-    """Description"""
-
-    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ThoughtspotDashlet":
-            raise ValueError("must be ThoughtspotDashlet")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ThoughtspotDashlet._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    THOUGHTSPOT_LIVEBOARD_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "thoughtspotLiveboardName",
-        "thoughtspotLiveboardName.keyword",
-        "thoughtspotLiveboardName",
-    )
-    """
-    Simple name of the liveboard in which this dashlet exists.
-    """
-    THOUGHTSPOT_LIVEBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "thoughtspotLiveboardQualifiedName",
-        "thoughtspotLiveboardQualifiedName",
-        "thoughtspotLiveboardQualifiedName.text",
-    )
-    """
-    Unique name of the liveboard in which this dashlet exists.
-    """
-
-    THOUGHTSPOT_LIVEBOARD: ClassVar[RelationField] = RelationField(
-        "thoughtspotLiveboard"
-    )
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "thoughtspot_liveboard_name",
-        "thoughtspot_liveboard_qualified_name",
-        "thoughtspot_liveboard",
-    ]
-
-    @property
-    def thoughtspot_liveboard_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.thoughtspot_liveboard_name
-        )
-
-    @thoughtspot_liveboard_name.setter
-    def thoughtspot_liveboard_name(self, thoughtspot_liveboard_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard_name = thoughtspot_liveboard_name
-
-    @property
-    def thoughtspot_liveboard_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.thoughtspot_liveboard_qualified_name
-        )
-
-    @thoughtspot_liveboard_qualified_name.setter
-    def thoughtspot_liveboard_qualified_name(
-        self, thoughtspot_liveboard_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard_qualified_name = (
-            thoughtspot_liveboard_qualified_name
-        )
-
-    @property
-    def thoughtspot_liveboard(self) -> Optional[ThoughtspotLiveboard]:
-        return (
-            None if self.attributes is None else self.attributes.thoughtspot_liveboard
-        )
-
-    @thoughtspot_liveboard.setter
-    def thoughtspot_liveboard(
-        self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
-
-    class Attributes(Thoughtspot.Attributes):
-        thoughtspot_liveboard_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardName"
-        )
-        thoughtspot_liveboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardQualifiedName"
-        )
-        thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
-            None, description="", alias="thoughtspotLiveboard"
-        )  # relationship
-
-    attributes: "ThoughtspotDashlet.Attributes" = Field(
-        default_factory=lambda: ThoughtspotDashlet.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-ThoughtspotLiveboard.Attributes.update_forward_refs()
-
-
-ThoughtspotDashlet.Attributes.update_forward_refs()
+TableauMetric.Attributes.update_forward_refs()

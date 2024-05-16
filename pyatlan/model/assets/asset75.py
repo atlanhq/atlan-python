@@ -11,392 +11,431 @@ from pydantic import Field, validator
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-from .asset48 import Metabase
+from .asset44 import Sigma
 
 
-class MetabaseQuestion(Metabase):
+class SigmaWorkbook(Sigma):
     """Description"""
 
-    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MetabaseQuestion":
-            raise ValueError("must be MetabaseQuestion")
+        if v != "SigmaWorkbook":
+            raise ValueError("must be SigmaWorkbook")
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseQuestion._convenience_properties:
+        if name in SigmaWorkbook._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
-        "metabaseDashboardCount", "metabaseDashboardCount"
+    SIGMA_PAGE_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaPageCount", "sigmaPageCount"
     )
     """
-
-    """
-    METABASE_QUERY_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
-    )
+    Number of pages in this workbook.
     """
 
-    """
-    METABASE_QUERY: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseQuery", "metabaseQuery.keyword", "metabaseQuery"
-    )
-    """
-
-    """
-
-    METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
-    """
-    TBC
-    """
-    METABASE_COLLECTION: ClassVar[RelationField] = RelationField("metabaseCollection")
+    SIGMA_PAGES: ClassVar[RelationField] = RelationField("sigmaPages")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "metabase_dashboard_count",
-        "metabase_query_type",
-        "metabase_query",
-        "metabase_dashboards",
-        "metabase_collection",
+        "sigma_page_count",
+        "sigma_pages",
     ]
 
     @property
-    def metabase_dashboard_count(self) -> Optional[int]:
+    def sigma_page_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.sigma_page_count
+
+    @sigma_page_count.setter
+    def sigma_page_count(self, sigma_page_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page_count = sigma_page_count
+
+    @property
+    def sigma_pages(self) -> Optional[list[SigmaPage]]:
+        return None if self.attributes is None else self.attributes.sigma_pages
+
+    @sigma_pages.setter
+    def sigma_pages(self, sigma_pages: Optional[list[SigmaPage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_pages = sigma_pages
+
+    class Attributes(Sigma.Attributes):
+        sigma_page_count: Optional[int] = Field(
+            None, description="", alias="sigmaPageCount"
+        )
+        sigma_pages: Optional[list[SigmaPage]] = Field(
+            None, description="", alias="sigmaPages"
+        )  # relationship
+
+    attributes: "SigmaWorkbook.Attributes" = Field(
+        default_factory=lambda: SigmaWorkbook.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElementField(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElementField":
+            raise ValueError("must be SigmaDataElementField")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SigmaDataElementField._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
+        "sigmaDataElementFieldIsHidden", "sigmaDataElementFieldIsHidden"
+    )
+    """
+    Whether this field is hidden (true) or not (false).
+    """
+    SIGMA_DATA_ELEMENT_FIELD_FORMULA: ClassVar[TextField] = TextField(
+        "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
+    )
+    """
+
+    """
+
+    SIGMA_DATA_ELEMENT: ClassVar[RelationField] = RelationField("sigmaDataElement")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "sigma_data_element_field_is_hidden",
+        "sigma_data_element_field_formula",
+        "sigma_data_element",
+    ]
+
+    @property
+    def sigma_data_element_field_is_hidden(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.metabase_dashboard_count
+            else self.attributes.sigma_data_element_field_is_hidden
         )
 
-    @metabase_dashboard_count.setter
-    def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_dashboard_count = metabase_dashboard_count
-
-    @property
-    def metabase_query_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_query_type
-
-    @metabase_query_type.setter
-    def metabase_query_type(self, metabase_query_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_query_type = metabase_query_type
-
-    @property
-    def metabase_query(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_query
-
-    @metabase_query.setter
-    def metabase_query(self, metabase_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_query = metabase_query
-
-    @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
-        return None if self.attributes is None else self.attributes.metabase_dashboards
-
-    @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    @sigma_data_element_field_is_hidden.setter
+    def sigma_data_element_field_is_hidden(
+        self, sigma_data_element_field_is_hidden: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_dashboards = metabase_dashboards
-
-    @property
-    def metabase_collection(self) -> Optional[MetabaseCollection]:
-        return None if self.attributes is None else self.attributes.metabase_collection
-
-    @metabase_collection.setter
-    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_collection = metabase_collection
-
-    class Attributes(Metabase.Attributes):
-        metabase_dashboard_count: Optional[int] = Field(
-            None, description="", alias="metabaseDashboardCount"
+        self.attributes.sigma_data_element_field_is_hidden = (
+            sigma_data_element_field_is_hidden
         )
-        metabase_query_type: Optional[str] = Field(
-            None, description="", alias="metabaseQueryType"
-        )
-        metabase_query: Optional[str] = Field(
-            None, description="", alias="metabaseQuery"
-        )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
-        )  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
-        )  # relationship
-
-    attributes: "MetabaseQuestion.Attributes" = Field(
-        default_factory=lambda: MetabaseQuestion.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class MetabaseCollection(Metabase):
-    """Description"""
-
-    type_name: str = Field("MetabaseCollection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseCollection":
-            raise ValueError("must be MetabaseCollection")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in MetabaseCollection._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    METABASE_SLUG: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseSlug", "metabaseSlug", "metabaseSlug.text"
-    )
-    """
-
-    """
-    METABASE_COLOR: ClassVar[KeywordField] = KeywordField(
-        "metabaseColor", "metabaseColor"
-    )
-    """
-
-    """
-    METABASE_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseNamespace", "metabaseNamespace", "metabaseNamespace.text"
-    )
-    """
-
-    """
-    METABASE_IS_PERSONAL_COLLECTION: ClassVar[BooleanField] = BooleanField(
-        "metabaseIsPersonalCollection", "metabaseIsPersonalCollection"
-    )
-    """
-
-    """
-
-    METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
-    """
-    TBC
-    """
-    METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "metabase_slug",
-        "metabase_color",
-        "metabase_namespace",
-        "metabase_is_personal_collection",
-        "metabase_dashboards",
-        "metabase_questions",
-    ]
 
     @property
-    def metabase_slug(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_slug
-
-    @metabase_slug.setter
-    def metabase_slug(self, metabase_slug: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_slug = metabase_slug
-
-    @property
-    def metabase_color(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_color
-
-    @metabase_color.setter
-    def metabase_color(self, metabase_color: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_color = metabase_color
-
-    @property
-    def metabase_namespace(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metabase_namespace
-
-    @metabase_namespace.setter
-    def metabase_namespace(self, metabase_namespace: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_namespace = metabase_namespace
-
-    @property
-    def metabase_is_personal_collection(self) -> Optional[bool]:
+    def sigma_data_element_field_formula(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.metabase_is_personal_collection
+            else self.attributes.sigma_data_element_field_formula
         )
 
-    @metabase_is_personal_collection.setter
-    def metabase_is_personal_collection(
-        self, metabase_is_personal_collection: Optional[bool]
+    @sigma_data_element_field_formula.setter
+    def sigma_data_element_field_formula(
+        self, sigma_data_element_field_formula: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_is_personal_collection = (
-            metabase_is_personal_collection
+        self.attributes.sigma_data_element_field_formula = (
+            sigma_data_element_field_formula
         )
 
     @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
-        return None if self.attributes is None else self.attributes.metabase_dashboards
+    def sigma_data_element(self) -> Optional[SigmaDataElement]:
+        return None if self.attributes is None else self.attributes.sigma_data_element
 
-    @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
-    ):
+    @sigma_data_element.setter
+    def sigma_data_element(self, sigma_data_element: Optional[SigmaDataElement]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_dashboards = metabase_dashboards
+        self.attributes.sigma_data_element = sigma_data_element
 
-    @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
-        return None if self.attributes is None else self.attributes.metabase_questions
-
-    @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_questions = metabase_questions
-
-    class Attributes(Metabase.Attributes):
-        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
-        metabase_color: Optional[str] = Field(
-            None, description="", alias="metabaseColor"
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_field_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sigmaDataElementFieldIsHidden"
         )
-        metabase_namespace: Optional[str] = Field(
-            None, description="", alias="metabaseNamespace"
+        sigma_data_element_field_formula: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementFieldFormula"
         )
-        metabase_is_personal_collection: Optional[bool] = Field(
-            None, description="", alias="metabaseIsPersonalCollection"
-        )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
-        )  # relationship
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+        sigma_data_element: Optional[SigmaDataElement] = Field(
+            None, description="", alias="sigmaDataElement"
         )  # relationship
 
-    attributes: "MetabaseCollection.Attributes" = Field(
-        default_factory=lambda: MetabaseCollection.Attributes(),
+    attributes: "SigmaDataElementField.Attributes" = Field(
+        default_factory=lambda: SigmaDataElementField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MetabaseDashboard(Metabase):
+class SigmaPage(Sigma):
     """Description"""
 
-    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+    type_name: str = Field("SigmaPage", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MetabaseDashboard":
-            raise ValueError("must be MetabaseDashboard")
+        if v != "SigmaPage":
+            raise ValueError("must be SigmaPage")
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseDashboard._convenience_properties:
+        if name in SigmaPage._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_QUESTION_COUNT: ClassVar[NumericField] = NumericField(
-        "metabaseQuestionCount", "metabaseQuestionCount"
+    SIGMA_DATA_ELEMENT_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaDataElementCount", "sigmaDataElementCount"
     )
     """
-
+    Number of data elements on this page.
     """
 
-    METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")
+    SIGMA_DATA_ELEMENTS: ClassVar[RelationField] = RelationField("sigmaDataElements")
     """
     TBC
     """
-    METABASE_COLLECTION: ClassVar[RelationField] = RelationField("metabaseCollection")
+    SIGMA_WORKBOOK: ClassVar[RelationField] = RelationField("sigmaWorkbook")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "metabase_question_count",
-        "metabase_questions",
-        "metabase_collection",
+        "sigma_data_element_count",
+        "sigma_data_elements",
+        "sigma_workbook",
     ]
 
     @property
-    def metabase_question_count(self) -> Optional[int]:
+    def sigma_data_element_count(self) -> Optional[int]:
         return (
-            None if self.attributes is None else self.attributes.metabase_question_count
+            None
+            if self.attributes is None
+            else self.attributes.sigma_data_element_count
         )
 
-    @metabase_question_count.setter
-    def metabase_question_count(self, metabase_question_count: Optional[int]):
+    @sigma_data_element_count.setter
+    def sigma_data_element_count(self, sigma_data_element_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_question_count = metabase_question_count
+        self.attributes.sigma_data_element_count = sigma_data_element_count
 
     @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
-        return None if self.attributes is None else self.attributes.metabase_questions
+    def sigma_data_elements(self) -> Optional[list[SigmaDataElement]]:
+        return None if self.attributes is None else self.attributes.sigma_data_elements
 
-    @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+    @sigma_data_elements.setter
+    def sigma_data_elements(
+        self, sigma_data_elements: Optional[list[SigmaDataElement]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_questions = metabase_questions
+        self.attributes.sigma_data_elements = sigma_data_elements
 
     @property
-    def metabase_collection(self) -> Optional[MetabaseCollection]:
-        return None if self.attributes is None else self.attributes.metabase_collection
+    def sigma_workbook(self) -> Optional[SigmaWorkbook]:
+        return None if self.attributes is None else self.attributes.sigma_workbook
 
-    @metabase_collection.setter
-    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+    @sigma_workbook.setter
+    def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_collection = metabase_collection
+        self.attributes.sigma_workbook = sigma_workbook
 
-    class Attributes(Metabase.Attributes):
-        metabase_question_count: Optional[int] = Field(
-            None, description="", alias="metabaseQuestionCount"
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementCount"
         )
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
+            None, description="", alias="sigmaDataElements"
         )  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
+        sigma_workbook: Optional[SigmaWorkbook] = Field(
+            None, description="", alias="sigmaWorkbook"
         )  # relationship
 
-    attributes: "MetabaseDashboard.Attributes" = Field(
-        default_factory=lambda: MetabaseDashboard.Attributes(),
+    attributes: "SigmaPage.Attributes" = Field(
+        default_factory=lambda: SigmaPage.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MetabaseQuestion.Attributes.update_forward_refs()
+class SigmaDataElement(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElement":
+            raise ValueError("must be SigmaDataElement")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SigmaDataElement._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SIGMA_DATA_ELEMENT_QUERY: ClassVar[KeywordField] = KeywordField(
+        "sigmaDataElementQuery", "sigmaDataElementQuery"
+    )
+    """
+
+    """
+    SIGMA_DATA_ELEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sigmaDataElementType", "sigmaDataElementType"
+    )
+    """
+
+    """
+    SIGMA_DATA_ELEMENT_FIELD_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaDataElementFieldCount", "sigmaDataElementFieldCount"
+    )
+    """
+    Number of fields in this data element.
+    """
+
+    SIGMA_PAGE: ClassVar[RelationField] = RelationField("sigmaPage")
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_FIELDS: ClassVar[RelationField] = RelationField(
+        "sigmaDataElementFields"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "sigma_data_element_query",
+        "sigma_data_element_type",
+        "sigma_data_element_field_count",
+        "sigma_page",
+        "sigma_data_element_fields",
+    ]
+
+    @property
+    def sigma_data_element_query(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_data_element_query
+        )
+
+    @sigma_data_element_query.setter
+    def sigma_data_element_query(self, sigma_data_element_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_query = sigma_data_element_query
+
+    @property
+    def sigma_data_element_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sigma_data_element_type
+        )
+
+    @sigma_data_element_type.setter
+    def sigma_data_element_type(self, sigma_data_element_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_type = sigma_data_element_type
+
+    @property
+    def sigma_data_element_field_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_data_element_field_count
+        )
+
+    @sigma_data_element_field_count.setter
+    def sigma_data_element_field_count(
+        self, sigma_data_element_field_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
+
+    @property
+    def sigma_page(self) -> Optional[SigmaPage]:
+        return None if self.attributes is None else self.attributes.sigma_page
+
+    @sigma_page.setter
+    def sigma_page(self, sigma_page: Optional[SigmaPage]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page = sigma_page
+
+    @property
+    def sigma_data_element_fields(self) -> Optional[list[SigmaDataElementField]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_data_element_fields
+        )
+
+    @sigma_data_element_fields.setter
+    def sigma_data_element_fields(
+        self, sigma_data_element_fields: Optional[list[SigmaDataElementField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_fields = sigma_data_element_fields
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_query: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQuery"
+        )
+        sigma_data_element_type: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementType"
+        )
+        sigma_data_element_field_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementFieldCount"
+        )
+        sigma_page: Optional[SigmaPage] = Field(
+            None, description="", alias="sigmaPage"
+        )  # relationship
+        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
+            None, description="", alias="sigmaDataElementFields"
+        )  # relationship
+
+    attributes: "SigmaDataElement.Attributes" = Field(
+        default_factory=lambda: SigmaDataElement.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-MetabaseCollection.Attributes.update_forward_refs()
+SigmaWorkbook.Attributes.update_forward_refs()
 
 
-MetabaseDashboard.Attributes.update_forward_refs()
+SigmaDataElementField.Attributes.update_forward_refs()
+
+
+SigmaPage.Attributes.update_forward_refs()
+
+
+SigmaDataElement.Attributes.update_forward_refs()

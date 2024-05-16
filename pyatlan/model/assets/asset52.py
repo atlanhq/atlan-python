@@ -4,320 +4,104 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
-    KeywordField,
-    KeywordTextField,
-    NumericField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 
 from .asset19 import BI
 
 
-class MicroStrategy(BI):
+class QuickSight(BI):
     """Description"""
 
-    type_name: str = Field("MicroStrategy", allow_mutation=False)
+    type_name: str = Field("QuickSight", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategy":
-            raise ValueError("must be MicroStrategy")
+        if v != "QuickSight":
+            raise ValueError("must be QuickSight")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategy._convenience_properties:
+        if name in QuickSight._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_PROJECT_QUALIFIED_NAME: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyProjectQualifiedName",
-        "microStrategyProjectQualifiedName",
-        "microStrategyProjectQualifiedName.text",
+    QUICK_SIGHT_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightId", "quickSightId"
     )
     """
-    Unique name of the project in which this asset exists.
+
     """
-    MICRO_STRATEGY_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyProjectName",
-        "microStrategyProjectName.keyword",
-        "microStrategyProjectName",
+    QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightSheetId", "quickSightSheetId"
     )
     """
-    Simple name of the project in which this asset exists.
+
     """
-    MICRO_STRATEGY_CUBE_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyCubeQualifiedNames",
-        "microStrategyCubeQualifiedNames",
-        "microStrategyCubeQualifiedNames.text",
+    QUICK_SIGHT_SHEET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightSheetName", "quickSightSheetName.keyword", "quickSightSheetName"
     )
     """
-    Unique names of the cubes related to this asset.
-    """
-    MICRO_STRATEGY_CUBE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyCubeNames",
-        "microStrategyCubeNames.keyword",
-        "microStrategyCubeNames",
-    )
-    """
-    Simple names of the cubes related to this asset.
-    """
-    MICRO_STRATEGY_REPORT_QUALIFIED_NAMES: ClassVar[
-        KeywordTextField
-    ] = KeywordTextField(
-        "microStrategyReportQualifiedNames",
-        "microStrategyReportQualifiedNames",
-        "microStrategyReportQualifiedNames.text",
-    )
-    """
-    Unique names of the reports related to this asset.
-    """
-    MICRO_STRATEGY_REPORT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyReportNames",
-        "microStrategyReportNames.keyword",
-        "microStrategyReportNames",
-    )
-    """
-    Simple names of the reports related to this asset.
-    """
-    MICRO_STRATEGY_IS_CERTIFIED: ClassVar[BooleanField] = BooleanField(
-        "microStrategyIsCertified", "microStrategyIsCertified"
-    )
-    """
-    Whether the asset is certified in MicroStrategy (true) or not (false).
-    """
-    MICRO_STRATEGY_CERTIFIED_BY: ClassVar[KeywordField] = KeywordField(
-        "microStrategyCertifiedBy", "microStrategyCertifiedBy"
-    )
-    """
-    User who certified this asset, in MicroStrategy.
-    """
-    MICRO_STRATEGY_CERTIFIED_AT: ClassVar[NumericField] = NumericField(
-        "microStrategyCertifiedAt", "microStrategyCertifiedAt"
-    )
-    """
-    Time (epoch) this asset was certified in MicroStrategy, in milliseconds.
-    """
-    MICRO_STRATEGY_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "microStrategyLocation", "microStrategyLocation"
-    )
-    """
-    Location of this asset in MicroStrategy.
+
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "micro_strategy_project_qualified_name",
-        "micro_strategy_project_name",
-        "micro_strategy_cube_qualified_names",
-        "micro_strategy_cube_names",
-        "micro_strategy_report_qualified_names",
-        "micro_strategy_report_names",
-        "micro_strategy_is_certified",
-        "micro_strategy_certified_by",
-        "micro_strategy_certified_at",
-        "micro_strategy_location",
+        "quick_sight_id",
+        "quick_sight_sheet_id",
+        "quick_sight_sheet_name",
     ]
 
     @property
-    def micro_strategy_project_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_project_qualified_name
-        )
+    def quick_sight_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.quick_sight_id
 
-    @micro_strategy_project_qualified_name.setter
-    def micro_strategy_project_qualified_name(
-        self, micro_strategy_project_qualified_name: Optional[str]
-    ):
+    @quick_sight_id.setter
+    def quick_sight_id(self, quick_sight_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project_qualified_name = (
-            micro_strategy_project_qualified_name
-        )
+        self.attributes.quick_sight_id = quick_sight_id
 
     @property
-    def micro_strategy_project_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_project_name
-        )
+    def quick_sight_sheet_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.quick_sight_sheet_id
 
-    @micro_strategy_project_name.setter
-    def micro_strategy_project_name(self, micro_strategy_project_name: Optional[str]):
+    @quick_sight_sheet_id.setter
+    def quick_sight_sheet_id(self, quick_sight_sheet_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project_name = micro_strategy_project_name
+        self.attributes.quick_sight_sheet_id = quick_sight_sheet_id
 
     @property
-    def micro_strategy_cube_qualified_names(self) -> Optional[set[str]]:
+    def quick_sight_sheet_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_cube_qualified_names
+            None if self.attributes is None else self.attributes.quick_sight_sheet_name
         )
 
-    @micro_strategy_cube_qualified_names.setter
-    def micro_strategy_cube_qualified_names(
-        self, micro_strategy_cube_qualified_names: Optional[set[str]]
-    ):
+    @quick_sight_sheet_name.setter
+    def quick_sight_sheet_name(self, quick_sight_sheet_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cube_qualified_names = (
-            micro_strategy_cube_qualified_names
-        )
-
-    @property
-    def micro_strategy_cube_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_cube_names
-        )
-
-    @micro_strategy_cube_names.setter
-    def micro_strategy_cube_names(self, micro_strategy_cube_names: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cube_names = micro_strategy_cube_names
-
-    @property
-    def micro_strategy_report_qualified_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_report_qualified_names
-        )
-
-    @micro_strategy_report_qualified_names.setter
-    def micro_strategy_report_qualified_names(
-        self, micro_strategy_report_qualified_names: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_report_qualified_names = (
-            micro_strategy_report_qualified_names
-        )
-
-    @property
-    def micro_strategy_report_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_report_names
-        )
-
-    @micro_strategy_report_names.setter
-    def micro_strategy_report_names(
-        self, micro_strategy_report_names: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_report_names = micro_strategy_report_names
-
-    @property
-    def micro_strategy_is_certified(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_is_certified
-        )
-
-    @micro_strategy_is_certified.setter
-    def micro_strategy_is_certified(self, micro_strategy_is_certified: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_is_certified = micro_strategy_is_certified
-
-    @property
-    def micro_strategy_certified_by(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_certified_by
-        )
-
-    @micro_strategy_certified_by.setter
-    def micro_strategy_certified_by(self, micro_strategy_certified_by: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_certified_by = micro_strategy_certified_by
-
-    @property
-    def micro_strategy_certified_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_certified_at
-        )
-
-    @micro_strategy_certified_at.setter
-    def micro_strategy_certified_at(
-        self, micro_strategy_certified_at: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_certified_at = micro_strategy_certified_at
-
-    @property
-    def micro_strategy_location(self) -> Optional[list[dict[str, str]]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_location
-        )
-
-    @micro_strategy_location.setter
-    def micro_strategy_location(
-        self, micro_strategy_location: Optional[list[dict[str, str]]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_location = micro_strategy_location
+        self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
 
     class Attributes(BI.Attributes):
-        micro_strategy_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectQualifiedName"
+        quick_sight_id: Optional[str] = Field(
+            None, description="", alias="quickSightId"
         )
-        micro_strategy_project_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectName"
+        quick_sight_sheet_id: Optional[str] = Field(
+            None, description="", alias="quickSightSheetId"
         )
-        micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeQualifiedNames"
-        )
-        micro_strategy_cube_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeNames"
-        )
-        micro_strategy_report_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportQualifiedNames"
-        )
-        micro_strategy_report_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportNames"
-        )
-        micro_strategy_is_certified: Optional[bool] = Field(
-            None, description="", alias="microStrategyIsCertified"
-        )
-        micro_strategy_certified_by: Optional[str] = Field(
-            None, description="", alias="microStrategyCertifiedBy"
-        )
-        micro_strategy_certified_at: Optional[datetime] = Field(
-            None, description="", alias="microStrategyCertifiedAt"
-        )
-        micro_strategy_location: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="microStrategyLocation"
+        quick_sight_sheet_name: Optional[str] = Field(
+            None, description="", alias="quickSightSheetName"
         )
 
-    attributes: "MicroStrategy.Attributes" = Field(
-        default_factory=lambda: MicroStrategy.Attributes(),
+    attributes: "QuickSight.Attributes" = Field(
+        default_factory=lambda: QuickSight.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MicroStrategy.Attributes.update_forward_refs()
+QuickSight.Attributes.update_forward_refs()
