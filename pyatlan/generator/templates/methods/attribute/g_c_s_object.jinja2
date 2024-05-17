@@ -5,22 +5,14 @@
             validate_required_fields(
                 ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
             )
-
-            # Split the gcs_bucket_qualified_name to extract necessary information
-            fields = gcs_bucket_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid gcs_bucket_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid gcs_bucket_qualified_name") from e
-
-            return {{ entity_def.name }}.Attributes(
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                gcs_bucket_qualified_name, "gcs_bucket_qualified_name", 4
+            )
+            return GCSObject.Attributes(
                 name=name,
                 gcs_bucket_qualified_name=gcs_bucket_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connection_qualified_name=connection_qn,
                 qualified_name=f"{gcs_bucket_qualified_name}/{name}",
-                connector_name=connector_type.value,
+                connector_name=connector_name,
                 gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
             )

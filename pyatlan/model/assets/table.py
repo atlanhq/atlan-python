@@ -454,21 +454,18 @@ class Table(SQL):
                 raise ValueError("name cannot be blank")
             validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
             fields = schema_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid schema_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid schema_qualified_name") from e
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                schema_qualified_name, "schema_qualified_name", 5
+            )
             return Table.Attributes(
                 name=name,
                 database_name=fields[3],
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connection_qualified_name=connection_qn,
                 database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
                 qualified_name=f"{schema_qualified_name}/{name}",
                 schema_qualified_name=schema_qualified_name,
                 schema_name=fields[4],
-                connector_name=connector_type.value,
+                connector_name=connector_name,
                 atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
             )
 

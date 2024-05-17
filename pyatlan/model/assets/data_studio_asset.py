@@ -346,22 +346,13 @@ class DataStudioAsset(DataStudio):
                 ["name", "connection_qualified_name", "data_studio_asset_type"],
                 [name, connection_qualified_name, data_studio_asset_type],
             )
-
-            # Split the connection_qualified_name to extract necessary information
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-
             return DataStudioAsset.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{gdsid}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=connector_type.value,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
                 data_studio_asset_type=data_studio_asset_type,
             )
 
