@@ -61,10 +61,12 @@ def test_file(
     assert file.guid
     assert file.qualified_name
     assert file.name == FILE_NAME
-    assert not file.connector_name
     assert file.connection_qualified_name == connection.qualified_name
     assert file.file_type == FileType.PDF
     assert file.file_path == "https://www.example.com"
+    assert file.connector_name == AtlanConnectorType.get_connector_name(
+        connection.qualified_name
+    )
 
 
 @pytest.mark.order(after="test_file")

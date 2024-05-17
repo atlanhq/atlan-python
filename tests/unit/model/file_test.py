@@ -1,7 +1,7 @@
 import pytest
 
 from pyatlan.model.assets import File
-from pyatlan.model.enums import FileType
+from pyatlan.model.enums import AtlanConnectorType, FileType
 from tests.unit.model.constants import (
     FILE_CONNECTION_QUALIFIED_NAME,
     FILE_NAME,
@@ -42,6 +42,9 @@ def test_create_with_required_parameters():
     assert attributes.name == FILE_NAME
     assert attributes.connection_qualified_name == FILE_CONNECTION_QUALIFIED_NAME
     assert attributes.qualified_name == FILE_QUALIFIED_NAME
+    assert attributes.connector_name == AtlanConnectorType.get_connector_name(
+        FILE_CONNECTION_QUALIFIED_NAME
+    )
 
 
 @pytest.mark.parametrize(

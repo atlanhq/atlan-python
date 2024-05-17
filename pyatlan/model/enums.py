@@ -163,6 +163,31 @@ class AtlanConnectorType(str, Enum):
     def to_qualified_name(self):
         return f"default/{self.value}/{int(utils.get_epoch_timestamp())}"
 
+    def get_connector_name(
+        qualified_name: str,
+        attribute_name: str = "connection_qualified_name",
+        qualified_name_len: int = 3,
+    ) -> str:
+        """
+        Extracts and returns the connector name from a given qualified name.
+
+        :param qualified_name: qualified name to extract the connector name from.
+        :param attribute_name: name of the attribute. Defaults to `connection_qualified_name`.
+        :param qualified_name_len: expected length of the split qualified name. Defaults to `3`.
+        :raises: `ValueError` if the qualified name is invalid or the connector type is not recognized.
+        :returns: connector name extracted from the qualified name.
+        """
+        err = f"Invalid {attribute_name}"
+        # Split the qualified name
+        # to extract necessary information
+        fields = qualified_name.split("/")
+        if len(fields) != qualified_name_len:
+            raise ValueError(err)
+        try:
+            return AtlanConnectorType(fields[1]).value  # type:ignore
+        except ValueError as e:
+            raise ValueError(err) from e
+
     SNOWFLAKE = ("snowflake", AtlanConnectionCategory.WAREHOUSE)
     TABLEAU = ("tableau", AtlanConnectionCategory.BI)
     REDSHIFT = ("redshift", AtlanConnectionCategory.WAREHOUSE)
