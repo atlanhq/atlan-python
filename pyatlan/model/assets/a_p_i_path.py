@@ -232,24 +232,16 @@ class APIPath(API):
                 ["path_raw_uri", "spec_qualified_name"],
                 [path_raw_uri, spec_qualified_name],
             )
-
-            # Split the spec_qualified_name to extract necessary information
-            fields = spec_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid spec_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid spec_qualified_name") from e
-
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                spec_qualified_name, "spec_qualified_name", 4
+            )
             return APIPath.Attributes(
                 api_path_raw_u_r_i=path_raw_uri,
                 name=path_raw_uri,
                 api_spec_qualified_name=spec_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connector_name=connector_name,
+                connection_qualified_name=connection_qn,
                 qualified_name=f"{spec_qualified_name}{path_raw_uri}",
-                connector_name=connector_type.value,
                 api_spec=APISpec.ref_by_qualified_name(spec_qualified_name),
             )
 

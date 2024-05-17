@@ -9,7 +9,7 @@ from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import FileType
+from pyatlan.model.enums import AtlanConnectorType, FileType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
@@ -134,6 +134,9 @@ class File(Resource):
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
                 file_type=file_type,
             )
 

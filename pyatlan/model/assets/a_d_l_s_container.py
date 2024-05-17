@@ -263,23 +263,15 @@ class ADLSContainer(ADLS):
                 ["name", "adls_account_qualified_name"],
                 [name, adls_account_qualified_name],
             )
-
-            # Split the adls_account_qualified_name to extract necessary information
-            fields = adls_account_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid adls_account_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid adls_account_qualified_name") from e
-
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                adls_account_qualified_name, "adls_account_qualified_name", 4
+            )
             return ADLSContainer.Attributes(
                 name=name,
                 adls_account_qualified_name=adls_account_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connector_name=connector_name,
+                connection_qualified_name=connection_qn,
                 qualified_name=f"{adls_account_qualified_name}/{name}",
-                connector_name=connector_type.value,
                 adls_account=ADLSAccount.ref_by_qualified_name(
                     adls_account_qualified_name
                 ),

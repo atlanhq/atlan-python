@@ -521,26 +521,18 @@ class ADLSObject(ADLS):
                 ["name", "adls_container_qualified_name"],
                 [name, adls_container_qualified_name],
             )
-
-            # Split the qualified_name to extract necessary information
-            fields = adls_container_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid qualified_name") from e
             adls_account_qualified_name = get_parent_qualified_name(
                 adls_container_qualified_name
             )
-
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                adls_container_qualified_name, "adls_container_qualified_name", 5
+            )
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
                 qualified_name=f"{adls_container_qualified_name}/{name}",
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                connector_name=connector_type.value,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qn,
                 adls_container=ADLSContainer.ref_by_qualified_name(
                     adls_container_qualified_name
                 ),
