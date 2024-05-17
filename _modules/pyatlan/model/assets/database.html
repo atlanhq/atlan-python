@@ -594,18 +594,13 @@
             <span class="n">validate_required_fields</span><span class="p">(</span>
                 <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
             <span class="p">)</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">connection_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
             <span class="k">return</span> <span class="n">Database</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
                 <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">connector_name</span><span class="o">=</span><span class="n">AtlanConnectorType</span><span class="o">.</span><span class="n">get_connector_name</span><span class="p">(</span>
+                    <span class="n">connection_qualified_name</span>
+                <span class="p">),</span>
             <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="n">Database</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

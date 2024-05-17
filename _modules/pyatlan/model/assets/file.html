@@ -484,7 +484,7 @@
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">FileType</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span><span class="p">,</span> <span class="n">FileType</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">RelationField</span>
 <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
@@ -611,6 +611,9 @@
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
+                <span class="n">connector_name</span><span class="o">=</span><span class="n">AtlanConnectorType</span><span class="o">.</span><span class="n">get_connector_name</span><span class="p">(</span>
+                    <span class="n">connection_qualified_name</span>
+                <span class="p">),</span>
                 <span class="n">file_type</span><span class="o">=</span><span class="n">file_type</span><span class="p">,</span>
             <span class="p">)</span>
 
