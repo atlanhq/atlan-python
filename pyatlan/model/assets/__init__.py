@@ -7,6 +7,7 @@ from .tag_attachment import TagAttachment
 from .connection import Connection
 from .process import Process
 from .atlas_glossary_category import AtlasGlossaryCategory
+from .stakeholder_title import StakeholderTitle
 from .badge import Badge
 from .access_control import AccessControl
 from .namespace import Namespace
@@ -48,6 +49,7 @@ from .google import Google
 from .azure import Azure
 from .a_w_s import AWS
 from .dbt_column_process import DbtColumnProcess
+from .stakeholder import Stakeholder
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
 from .s3 import S3
@@ -70,6 +72,7 @@ from .quick_sight import QuickSight
 from .thoughtspot import Thoughtspot
 from .power_b_i import PowerBI
 from .micro_strategy import MicroStrategy
+from .cognos import Cognos
 from .qlik import Qlik
 from .cognite import Cognite
 from .salesforce import Salesforce
@@ -211,6 +214,14 @@ from .micro_strategy_fact import MicroStrategyFact
 from .micro_strategy_document import MicroStrategyDocument
 from .micro_strategy_attribute import MicroStrategyAttribute
 from .micro_strategy_visualization import MicroStrategyVisualization
+from .cognos_exploration import CognosExploration
+from .cognos_dashboard import CognosDashboard
+from .cognos_report import CognosReport
+from .cognos_module import CognosModule
+from .cognos_file import CognosFile
+from .cognos_folder import CognosFolder
+from .cognos_package import CognosPackage
+from .cognos_datasource import CognosDatasource
 from .qlik_space import QlikSpace
 from .qlik_app import QlikApp
 from .qlik_chart import QlikChart
@@ -254,6 +265,7 @@ TagAttachment.Attributes.update_forward_refs(**localns)
 Connection.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
+StakeholderTitle.Attributes.update_forward_refs(**localns)
 Badge.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
 Namespace.Attributes.update_forward_refs(**localns)
@@ -295,6 +307,7 @@ Google.Attributes.update_forward_refs(**localns)
 Azure.Attributes.update_forward_refs(**localns)
 AWS.Attributes.update_forward_refs(**localns)
 DbtColumnProcess.Attributes.update_forward_refs(**localns)
+Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
 S3.Attributes.update_forward_refs(**localns)
@@ -317,6 +330,7 @@ QuickSight.Attributes.update_forward_refs(**localns)
 Thoughtspot.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
 MicroStrategy.Attributes.update_forward_refs(**localns)
+Cognos.Attributes.update_forward_refs(**localns)
 Qlik.Attributes.update_forward_refs(**localns)
 Cognite.Attributes.update_forward_refs(**localns)
 Salesforce.Attributes.update_forward_refs(**localns)
@@ -458,6 +472,14 @@ MicroStrategyFact.Attributes.update_forward_refs(**localns)
 MicroStrategyDocument.Attributes.update_forward_refs(**localns)
 MicroStrategyAttribute.Attributes.update_forward_refs(**localns)
 MicroStrategyVisualization.Attributes.update_forward_refs(**localns)
+CognosExploration.Attributes.update_forward_refs(**localns)
+CognosDashboard.Attributes.update_forward_refs(**localns)
+CognosReport.Attributes.update_forward_refs(**localns)
+CognosModule.Attributes.update_forward_refs(**localns)
+CognosFile.Attributes.update_forward_refs(**localns)
+CognosFolder.Attributes.update_forward_refs(**localns)
+CognosPackage.Attributes.update_forward_refs(**localns)
+CognosDatasource.Attributes.update_forward_refs(**localns)
 QlikSpace.Attributes.update_forward_refs(**localns)
 QlikApp.Attributes.update_forward_refs(**localns)
 QlikChart.Attributes.update_forward_refs(**localns)

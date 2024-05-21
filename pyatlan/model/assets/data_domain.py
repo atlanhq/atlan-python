@@ -108,6 +108,10 @@ class DataDomain(DataMesh):
     """
     TBC
     """
+    STAKEHOLDERS: ClassVar[RelationField] = RelationField("stakeholders")
+    """
+    TBC
+    """
     PARENT_DOMAIN: ClassVar[RelationField] = RelationField("parentDomain")
     """
     TBC
@@ -119,6 +123,7 @@ class DataDomain(DataMesh):
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_products",
+        "stakeholders",
         "parent_domain",
         "sub_domains",
     ]
@@ -132,6 +137,16 @@ class DataDomain(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_products = data_products
+
+    @property
+    def stakeholders(self) -> Optional[List[Stakeholder]]:
+        return None if self.attributes is None else self.attributes.stakeholders
+
+    @stakeholders.setter
+    def stakeholders(self, stakeholders: Optional[List[Stakeholder]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.stakeholders = stakeholders
 
     @property
     def parent_domain(self) -> Optional[DataDomain]:
@@ -155,6 +170,9 @@ class DataDomain(DataMesh):
 
     class Attributes(DataMesh.Attributes):
         data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
+        stakeholders: Optional[List[Stakeholder]] = Field(
             default=None, description=""
         )  # relationship
         parent_domain: Optional[DataDomain] = Field(
@@ -204,3 +222,4 @@ class DataDomain(DataMesh):
 
 
 from .data_product import DataProduct  # noqa
+from .stakeholder import Stakeholder  # noqa

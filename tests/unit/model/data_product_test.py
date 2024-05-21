@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from pyatlan.model.assets import AtlasGlossary, DataProduct
-from pyatlan.model.enums import CertificateStatus
+from pyatlan.model.enums import CertificateStatus, DataProductStatus
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import IndexSearchRequest
 from tests.unit.model.constants import (
@@ -133,6 +133,7 @@ def test_create_under_sub_domain(
     _assert_product(
         test_product, qualified_name=DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME
     )
+    assert test_product.daap_status == DataProductStatus.ACTIVE
 
 
 def test_create_for_modification():
