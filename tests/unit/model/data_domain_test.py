@@ -5,7 +5,6 @@ from tests.unit.model.constants import (
     DATA_DOMAIN_NAME,
     DATA_DOMAIN_QUALIFIED_NAME,
     DATA_SUB_DOMAIN_NAME,
-    DATA_SUB_DOMAIN_QUALIFIED_NAME,
 )
 
 
@@ -44,7 +43,7 @@ def test_create():
         parent_domain_qualified_name=test_domain.qualified_name,
     )
     assert test_sub_domain.name == DATA_SUB_DOMAIN_NAME
-    assert test_sub_domain.qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
+    assert test_sub_domain.qualified_name == DATA_SUB_DOMAIN_NAME
     assert test_sub_domain.parent_domain_qualified_name == test_domain.qualified_name
 
 
