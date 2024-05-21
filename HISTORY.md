@@ -1,3 +1,21 @@
+## 2.2.1 (May 21, 2024)
+
+### New features
+
+- Added `find_domain_by_name()` and `find_product_by_name` methods to `AssetClient` to find data mesh objects by their human-readable names.
+- Modified the type of the `attributes` and `related_attributes` keyword parameters in `asset.get_hierarchy()` to accept `str` in addition to `AtlanField`.
+
+### Bug fixes
+
+- Fixed issues with data domain and data product creation.
+- Added the `AtlanConnectorType.get_connector_name()` method, which handles connection qualified name validation for assets and returns the connector name. Previously, this logic was repeated in most Asset `creator()` methods, which sometimes resulted in the `connector_name` field being mistakenly omitted (this bug was found in the `File` asset).
+
+### QOL improvements
+
+- Added data mesh integration tests.
+- Added a fallback delete mechanism for API tokens in tests.
+- Generated the latest typedef models, such as `Cognos`, `Stakeholder`, etc.
+
 ## 2.2.0 (May 15, 2024)
 
 ### Breaking changes
