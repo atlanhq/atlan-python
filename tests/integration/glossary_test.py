@@ -3,7 +3,7 @@
 import itertools
 import logging
 from time import sleep
-from typing import Generator, List, Optional
+from typing import Generator, List, Optional, Union
 
 import pytest
 from pydantic.v1 import StrictStr
@@ -13,6 +13,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
 from pyatlan.model.enums import SaveSemantic
+from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, IndexSearchRequest
 from tests.integration.client import TestId, delete_asset
@@ -654,6 +655,16 @@ def test_find_term_by_name(
     )
 
 
+@pytest.mark.parametrize(
+    "attributes, related_attributes",
+    [
+        (AtlasGlossaryCategory.TERMS, AtlasGlossaryTerm.NAME),
+        (
+            AtlasGlossaryCategory.TERMS.atlan_field_name,
+            AtlasGlossaryTerm.NAME.atlan_field_name,
+        ),
+    ],
+)
 def test_hierarchy(
     client: AtlanClient,
     hierarchy_glossary: AtlasGlossary,
@@ -669,12 +680,14 @@ def test_hierarchy(
     leaf2ab_category: AtlasGlossaryCategory,
     mid2b_category: AtlasGlossaryCategory,
     leaf2ba_category: AtlasGlossaryCategory,
+    attributes: Union[AtlanField, str],
+    related_attributes: Union[AtlanField, str],
 ):
     sleep(10)
     hierarchy = client.asset.get_hierarchy(
         glossary=hierarchy_glossary,
-        attributes=[AtlasGlossaryCategory.TERMS],
-        related_attributes=[AtlasGlossaryTerm.NAME],
+        attributes=[attributes],
+        related_attributes=[related_attributes],
     )
 
     root_categories = hierarchy.root_categories
