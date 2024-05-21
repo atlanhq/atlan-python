@@ -1587,8 +1587,8 @@ class AssetClient:
     def get_hierarchy(
         self,
         glossary: AtlasGlossary,
-        attributes: Optional[List[AtlanField]] = None,
-        related_attributes: Optional[List[AtlanField]] = None,
+        attributes: Optional[List[Union[AtlanField, str]]] = None,
+        related_attributes: Optional[List[Union[AtlanField, str]]] = None,
     ) -> CategoryHierarchy:
         """
         Retrieve category hierarchy in this Glossary, in a traversable form. You can traverse in either depth_first
