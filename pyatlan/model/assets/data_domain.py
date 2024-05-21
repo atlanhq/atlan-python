@@ -10,7 +10,7 @@ from warnings import warn
 from pydantic.v1 import Field, StrictStr, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
-from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import SelfAsset
 from .data_mesh import DataMesh
@@ -174,21 +174,23 @@ class DataDomain(DataMesh):
         ) -> DataDomain.Attributes:
             validate_required_fields(["name"], [name])
             parent_domain = None
-            mesh_name = to_camel_case(name)
-            qualified_name = f"default/domain/{mesh_name}"
+            super_domain_qualified_name = None
 
             # In case of sub-domain
             if parent_domain_qualified_name:
                 parent_domain = DataDomain.ref_by_qualified_name(
                     parent_domain_qualified_name
                 )
-                qualified_name = f"{parent_domain_qualified_name}/domain/{mesh_name}"
+                super_domain_qualified_name = DataMesh.get_super_domain_qualified_name(
+                    parent_domain_qualified_name
+                )
 
             return DataDomain.Attributes(
                 name=name,
-                qualified_name=qualified_name,
+                qualified_name=name,
                 parent_domain=parent_domain,
                 parent_domain_qualified_name=parent_domain_qualified_name,
+                super_domain_qualified_name=super_domain_qualified_name,
             )
 
     attributes: DataDomain.Attributes = Field(

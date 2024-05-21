@@ -19,7 +19,7 @@ from pyatlan.model.enums import (
 )
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.search import IndexSearchRequest
-from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import SelfAsset
 from .data_mesh import DataMesh
@@ -451,26 +451,6 @@ class DataProduct(DataMesh):
             default=None, description=""
         )  # relationship
 
-        @staticmethod
-        def get_super_domain_qualified_name(domain_qualified_name: str):
-            """
-            Retrieve the domain's top-most ancestral domain qualified name.
-
-            :param domain_qualified_name: of the domain, from which to
-            retrieve the top-most ancestral domain qualified name
-            :returns qualified_name: of the top-most ancestral domain, or `None` if it can't be determined
-            """
-            import re
-
-            domain_qn_prefix = re.compile(r"(default/domain/[a-zA-Z0-9-]+)/.*")
-            if domain_qualified_name:
-                match = domain_qn_prefix.match(domain_qualified_name)
-                if match and match.group(1):
-                    return match.group(1)
-                elif domain_qualified_name.startswith("default/domain/"):
-                    return domain_qualified_name
-            return None
-
         @classmethod
         @init_guid
         def create(
@@ -484,7 +464,6 @@ class DataProduct(DataMesh):
                 ["name", "domain_qualified_name", "asset_selection"],
                 [name, domain_qualified_name, asset_selection],
             )
-            camel_case_name = to_camel_case(name)
             ASSETS_PLAYBOOK_FILTER = (
                 '{"condition":"AND","isGroupLocked":false,"rules":[]}'
             )
@@ -494,12 +473,13 @@ class DataProduct(DataMesh):
                     query=asset_selection
                 ).to_string(),
                 data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
-                qualified_name=f"{domain_qualified_name}/product/{camel_case_name}",
+                qualified_name=f"{domain_qualified_name}/product/{name}",
                 data_product_assets_playbook_filter=ASSETS_PLAYBOOK_FILTER,
                 parent_domain_qualified_name=domain_qualified_name,
-                super_domain_qualified_name=cls.get_super_domain_qualified_name(
+                super_domain_qualified_name=DataMesh.get_super_domain_qualified_name(
                     domain_qualified_name
                 ),
+                daap_status=DataProductStatus.ACTIVE,
             )
 
     attributes: DataProduct.Attributes = Field(

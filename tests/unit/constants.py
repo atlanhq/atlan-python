@@ -241,6 +241,34 @@ TEST_ASSET_CLIENT_METHODS = {
         (["name", [123]], "glossary_name\n  str type expected"),
         (["name", None], "none is not an allowed value"),
     ],
+    "find_domain_by_name": [
+        (
+            [None, ["attributes"]],
+            "1 validation error for FindDomainByName\nname\n  none is not an allowed value",
+        ),
+        (
+            [" ", ["attributes"]],
+            "1 validation error for FindDomainByName\nname\n  ensure this value has at least 1 characters",
+        ),
+        (
+            ["test-domain", "attributes"],
+            "1 validation error for FindDomainByName\nattributes\n  value is not a valid list",
+        ),
+    ],
+    "find_product_by_name": [
+        (
+            [None, ["attributes"]],
+            "1 validation error for FindProductByName\nname\n  none is not an allowed value",
+        ),
+        (
+            [" ", ["attributes"]],
+            "1 validation error for FindProductByName\nname\n  ensure this value has at least 1 characters",
+        ),
+        (
+            ["test-product", "attributes"],
+            "1 validation error for FindProductByName\nattributes\n  value is not a valid list",
+        ),
+    ],
 }
 
 TEST_ADMIN_CLIENT_METHODS = {
