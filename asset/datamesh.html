@@ -194,6 +194,15 @@
 <li class="toctree-l2"><a class="reference internal" href="cognitefile.html">CogniteFile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cognitetimeseries.html">CogniteTimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdatasource.html">CognosDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosexploration.html">CognosExploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosfile.html">CognosFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosfolder.html">CognosFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosmodule.html">CognosModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognospackage.html">CognosPackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosreport.html">CognosReport</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
@@ -376,6 +385,8 @@
 <li class="toctree-l2"><a class="reference internal" href="sodacheck.html">SodaCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spark.html">Spark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sparkjob.html">SparkJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stakeholder.html">Stakeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stakeholdertitle.html">StakeholderTitle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tableau.html">Tableau</a></li>
@@ -492,6 +503,19 @@
 <dd><p>Unique name of the top-level domain in which this asset exists.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.assets.DataMesh.get_super_domain_qualified_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_super_domain_qualified_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain_qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/assets/data_mesh.html#DataMesh.get_super_domain_qualified_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.assets.DataMesh.get_super_domain_qualified_name" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the domain’s top-most ancestral domain qualified name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domain_qualified_name</strong> – of the domain, from which to</p>
+</dd>
+</dl>
+<p>retrieve the top-most ancestral domain qualified name
+:returns qualified_name: of the top-most ancestral domain, or <cite>None</cite> if it can’t be determined</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -555,6 +579,7 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.DataMesh"><code class="docutils literal notranslate"><span class="pre">DataMesh</span></code></a><ul>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataMesh.PARENT_DOMAIN_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">DataMesh.PARENT_DOMAIN_QUALIFIED_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataMesh.SUPER_DOMAIN_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">DataMesh.SUPER_DOMAIN_QUALIFIED_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.DataMesh.get_super_domain_qualified_name"><code class="docutils literal notranslate"><span class="pre">DataMesh.get_super_domain_qualified_name()</span></code></a></li>
 </ul>
 </li>
 </ul>

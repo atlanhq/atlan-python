@@ -193,6 +193,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitefile.html">CogniteFile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosdatasource.html">CognosDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosexploration.html">CognosExploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosfile.html">CognosFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosfolder.html">CognosFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosmodule.html">CognosModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognospackage.html">CognosPackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosreport.html">CognosReport</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
@@ -375,6 +384,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sodacheck.html">SodaCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/spark.html">Spark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sparkjob.html">SparkJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/stakeholder.html">Stakeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/stakeholdertitle.html">StakeholderTitle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableau.html">Tableau</a></li>
@@ -485,7 +496,7 @@
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validator</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">RelationField</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">to_camel_case</span><span class="p">,</span> <span class="n">validate_required_fields</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span> <span class="nn">.asset</span> <span class="kn">import</span> <span class="n">SelfAsset</span>
 <span class="kn">from</span> <span class="nn">.data_mesh</span> <span class="kn">import</span> <span class="n">DataMesh</span>
@@ -585,6 +596,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">STAKEHOLDERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;stakeholders&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">PARENT_DOMAIN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;parentDomain&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
@@ -596,6 +611,7 @@
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;data_products&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;stakeholders&quot;</span><span class="p">,</span>
         <span class="s2">&quot;parent_domain&quot;</span><span class="p">,</span>
         <span class="s2">&quot;sub_domains&quot;</span><span class="p">,</span>
     <span class="p">]</span>
@@ -609,6 +625,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">data_products</span> <span class="o">=</span> <span class="n">data_products</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stakeholders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Stakeholder</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">stakeholders</span>
+
+    <span class="nd">@stakeholders</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">stakeholders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stakeholders</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Stakeholder</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">stakeholders</span> <span class="o">=</span> <span class="n">stakeholders</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parent_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]:</span>
@@ -634,6 +660,9 @@
         <span class="n">data_products</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DataProduct</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">stakeholders</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Stakeholder</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">parent_domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataDomain</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
@@ -651,21 +680,23 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
             <span class="n">parent_domain</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">mesh_name</span> <span class="o">=</span> <span class="n">to_camel_case</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">qualified_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;default/domain/</span><span class="si">{</span><span class="n">mesh_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">super_domain_qualified_name</span> <span class="o">=</span> <span class="kc">None</span>
 
             <span class="c1"># In case of sub-domain</span>
             <span class="k">if</span> <span class="n">parent_domain_qualified_name</span><span class="p">:</span>
                 <span class="n">parent_domain</span> <span class="o">=</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span>
                     <span class="n">parent_domain_qualified_name</span>
                 <span class="p">)</span>
-                <span class="n">qualified_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">parent_domain_qualified_name</span><span class="si">}</span><span class="s2">/domain/</span><span class="si">{</span><span class="n">mesh_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">super_domain_qualified_name</span> <span class="o">=</span> <span class="n">DataMesh</span><span class="o">.</span><span class="n">get_super_domain_qualified_name</span><span class="p">(</span>
+                    <span class="n">parent_domain_qualified_name</span>
+                <span class="p">)</span>
 
             <span class="k">return</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">parent_domain</span><span class="o">=</span><span class="n">parent_domain</span><span class="p">,</span>
                 <span class="n">parent_domain_qualified_name</span><span class="o">=</span><span class="n">parent_domain_qualified_name</span><span class="p">,</span>
+                <span class="n">super_domain_qualified_name</span><span class="o">=</span><span class="n">super_domain_qualified_name</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="n">DataDomain</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -680,6 +711,7 @@
 
 
 <span class="kn">from</span> <span class="nn">.data_product</span> <span class="kn">import</span> <span class="n">DataProduct</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">.stakeholder</span> <span class="kn">import</span> <span class="n">Stakeholder</span>  <span class="c1"># noqa</span>
 </pre></div>
         </article>
       </div>

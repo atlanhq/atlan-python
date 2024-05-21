@@ -194,6 +194,15 @@
 <li class="toctree-l2"><a class="reference internal" href="cognitefile.html">CogniteFile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cognitetimeseries.html">CogniteTimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdatasource.html">CognosDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosexploration.html">CognosExploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosfile.html">CognosFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosfolder.html">CognosFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosmodule.html">CognosModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognospackage.html">CognosPackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosreport.html">CognosReport</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
@@ -376,6 +385,8 @@
 <li class="toctree-l2"><a class="reference internal" href="sodacheck.html">SodaCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spark.html">Spark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sparkjob.html">SparkJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stakeholder.html">Stakeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stakeholdertitle.html">StakeholderTitle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tableau.html">Tableau</a></li>
@@ -502,6 +513,18 @@
 <dt class="sig sig-object py" id="pyatlan.model.assets.DataProduct.DAAP_VISIBILITY">
 <span class="sig-name descname"><span class="pre">DAAP_VISIBILITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DataProduct.DAAP_VISIBILITY" title="Link to this definition">#</a></dt>
 <dd><p>Visibility of a data product.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.DataProduct.DAAP_VISIBILITY_GROUPS">
+<span class="sig-name descname"><span class="pre">DAAP_VISIBILITY_GROUPS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DataProduct.DAAP_VISIBILITY_GROUPS" title="Link to this definition">#</a></dt>
+<dd><p>list of groups for product visibility control</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.DataProduct.DAAP_VISIBILITY_USERS">
+<span class="sig-name descname"><span class="pre">DAAP_VISIBILITY_USERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DataProduct.DAAP_VISIBILITY_USERS" title="Link to this definition">#</a></dt>
+<dd><p>list of users for product visibility control</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -635,6 +658,8 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DAAP_SENSITIVITY"><code class="docutils literal notranslate"><span class="pre">DataProduct.DAAP_SENSITIVITY</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DAAP_STATUS"><code class="docutils literal notranslate"><span class="pre">DataProduct.DAAP_STATUS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DAAP_VISIBILITY"><code class="docutils literal notranslate"><span class="pre">DataProduct.DAAP_VISIBILITY</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DAAP_VISIBILITY_GROUPS"><code class="docutils literal notranslate"><span class="pre">DataProduct.DAAP_VISIBILITY_GROUPS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DAAP_VISIBILITY_USERS"><code class="docutils literal notranslate"><span class="pre">DataProduct.DAAP_VISIBILITY_USERS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DATA_DOMAIN"><code class="docutils literal notranslate"><span class="pre">DataProduct.DATA_DOMAIN</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DATA_PRODUCT_ASSETS_DSL"><code class="docutils literal notranslate"><span class="pre">DataProduct.DATA_PRODUCT_ASSETS_DSL</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER"><code class="docutils literal notranslate"><span class="pre">DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER</span></code></a></li>

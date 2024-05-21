@@ -193,6 +193,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitefile.html">CogniteFile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosdatasource.html">CognosDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosexploration.html">CognosExploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosfile.html">CognosFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosfolder.html">CognosFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosmodule.html">CognosModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognospackage.html">CognosPackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/cognosreport.html">CognosReport</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/collection.html">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/column.html">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/columnprocess.html">ColumnProcess</a></li>
@@ -375,6 +384,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sodacheck.html">SodaCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/spark.html">Spark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sparkjob.html">SparkJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/stakeholder.html">Stakeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/stakeholdertitle.html">StakeholderTitle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/table.html">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tablepartition.html">TablePartition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/tableau.html">Tableau</a></li>
@@ -492,6 +503,29 @@
 <a class="viewcode-back" href="../../../../asset/datamesh.html#pyatlan.model.assets.DataMesh">[docs]</a>
 <span class="k">class</span> <span class="nc">DataMesh</span><span class="p">(</span><span class="n">Catalog</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DataMesh.get_super_domain_qualified_name">
+<a class="viewcode-back" href="../../../../asset/datamesh.html#pyatlan.model.assets.DataMesh.get_super_domain_qualified_name">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_super_domain_qualified_name</span><span class="p">(</span><span class="n">domain_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the domain&#39;s top-most ancestral domain qualified name.</span>
+
+<span class="sd">        :param domain_qualified_name: of the domain, from which to</span>
+<span class="sd">        retrieve the top-most ancestral domain qualified name</span>
+<span class="sd">        :returns qualified_name: of the top-most ancestral domain, or `None` if it can&#39;t be determined</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">re</span>
+
+        <span class="n">domain_qn_prefix</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(default/domain/[a-zA-Z0-9-]+/super)/.*&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">domain_qualified_name</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">domain_qn_prefix</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">domain_qualified_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">domain_qualified_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;default/domain/&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">domain_qualified_name</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;DataMesh&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
