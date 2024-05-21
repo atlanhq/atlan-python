@@ -1548,11 +1548,7 @@ class AssetClient:
         :raises NotFoundError: if no domain with the provided name exists
         """
         attributes = attributes or []
-        query = (
-            Term.with_name(name)
-            + Term.with_state("ACTIVE")
-            + Term.with_type_name("DataDomain")
-        )
+        query = Term.with_name(name) + Term.with_type_name("DataDomain")
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=DataDomain, attributes=attributes
         )[0]
@@ -1572,11 +1568,7 @@ class AssetClient:
         :raises NotFoundError: if no product with the provided name exists
         """
         attributes = attributes or []
-        query = (
-            Term.with_name(name)
-            + Term.with_state("ACTIVE")
-            + Term.with_type_name("DataProduct")
-        )
+        query = Term.with_name(name) + Term.with_type_name("DataProduct")
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=DataProduct, attributes=attributes
         )[0]
