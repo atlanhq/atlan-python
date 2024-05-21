@@ -1,3 +1,4 @@
+import re
 from typing import Generator
 
 import pytest
@@ -5,10 +6,14 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossaryTerm, DataDomain, DataProduct
 from pyatlan.model.core import Announcement
-from pyatlan.model.enums import AnnouncementType, CertificateStatus, EntityStatus
+from pyatlan.model.enums import (
+    AnnouncementType,
+    CertificateStatus,
+    DataProductStatus,
+    EntityStatus,
+)
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.utils import to_camel_case
 from tests.integration.client import TestId, delete_asset
 from tests.integration.utils import block
 
@@ -19,18 +24,18 @@ DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = (
 MODULE_NAME = TestId.make_unique("DM")
 
 DATA_DOMAIN_NAME = f"{MODULE_NAME}-data-domain"
-DATA_DOMAIN_MESH_SLUG = to_camel_case(DATA_DOMAIN_NAME)
-DATA_DOMAIN_QUALIFIED_NAME = f"default/domain/{DATA_DOMAIN_MESH_SLUG}"
+DATA_DOMAIN_QUALIFIED_NAME = f"default/domain/{DATA_DOMAIN_NAME}/super"
+DATA_DOMAIN_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super"
 DATA_SUB_DOMAIN_NAME = f"{MODULE_NAME}-data-sub-domain"
-DATA_SUB_DOMAIN_MESH_SLUG = to_camel_case(DATA_SUB_DOMAIN_NAME)
 DATA_SUB_DOMAIN_QUALIFIED_NAME = (
-    f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/{DATA_SUB_DOMAIN_MESH_SLUG}"
+    f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/{DATA_SUB_DOMAIN_NAME}"
 )
+DATA_SUB_DOMAIN_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super/domain/[a-zA-Z0-9-]+"
 DATA_PRODUCT_NAME = f"{MODULE_NAME}-data-product"
-DATA_PRODUCT_MESH_SLUG = to_camel_case(DATA_PRODUCT_NAME)
 DATA_PRODUCT_QUALIFIED_NAME = (
-    f"{DATA_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_MESH_SLUG}"
+    f"{DATA_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_NAME}"
 )
+DATA_PRODUCT_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super/product/[a-zA-Z0-9-]+"
 
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
@@ -39,10 +44,6 @@ ANNOUNCEMENT_TITLE = "Python SDK testing."
 ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 response = block(AtlanClient(), AssetMutationResponse())
-
-pytestmark = pytest.mark.skip(
-    "Reset broke data mesh stuff. Some bootstrap policies need to be reset"
-)
 
 
 @pytest.fixture(scope="module")
@@ -59,7 +60,9 @@ def test_data_domain(client: AtlanClient, domain: DataDomain):
     assert domain.guid
     assert domain.qualified_name
     assert domain.name == DATA_DOMAIN_NAME
-    assert domain.qualified_name == DATA_DOMAIN_QUALIFIED_NAME
+    assert re.search(DATA_DOMAIN_QN_REGEX, domain.qualified_name)
+    assert domain.parent_domain_qualified_name is None
+    assert domain.super_domain_qualified_name is None
 
 
 @pytest.fixture(scope="module")
@@ -70,7 +73,7 @@ def sub_domain(
     assert domain.guid
     to_create = DataDomain.create(
         name=DATA_SUB_DOMAIN_NAME,
-        parent_domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
+        parent_domain_qualified_name=domain.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataDomain)[0]
@@ -82,8 +85,12 @@ def test_data_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     assert sub_domain
     assert sub_domain.guid
     assert sub_domain.qualified_name
+    assert sub_domain.parent_domain_qualified_name
+    assert sub_domain.super_domain_qualified_name
     assert sub_domain.name == DATA_SUB_DOMAIN_NAME
-    assert sub_domain.qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
+    assert re.search(DATA_SUB_DOMAIN_QN_REGEX, sub_domain.qualified_name)
+    assert re.search(DATA_DOMAIN_QN_REGEX, sub_domain.parent_domain_qualified_name)
+    assert re.search(DATA_DOMAIN_QN_REGEX, sub_domain.super_domain_qualified_name)
 
 
 def test_update_domain(client: AtlanClient, domain: DataDomain):
@@ -127,6 +134,17 @@ def test_retrieve_domain(client: AtlanClient, domain: DataDomain):
     assert test_domain.certificate_status_message == CERTIFICATE_MESSAGE
 
 
+@pytest.mark.order(after="test_retrieve_domain")
+def test_find_domain_by_name(client: AtlanClient, domain: DataDomain):
+    response = client.asset.find_domain_by_name(
+        name=domain.name, attributes=["certificateStatus"]
+    )
+
+    assert response
+    assert response.guid == domain.guid
+    assert response.certificate_status == CertificateStatus.VERIFIED
+
+
 def test_update_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     assert sub_domain.qualified_name
     assert sub_domain.name
@@ -168,6 +186,17 @@ def test_retrieve_sub_domain(client: AtlanClient, sub_domain: DataDomain):
     assert test_sub_domain.certificate_status_message == CERTIFICATE_MESSAGE
 
 
+@pytest.mark.order(after="test_retrieve_sub_domain")
+def test_find_sub_domain_by_name(client: AtlanClient, sub_domain: DataDomain):
+    response = client.asset.find_domain_by_name(
+        name=sub_domain.name, attributes=["certificateStatus"]
+    )
+
+    assert response
+    assert response.guid == sub_domain.guid
+    assert response.certificate_status == CertificateStatus.VERIFIED
+
+
 @pytest.fixture(scope="module")
 def product(
     client: AtlanClient,
@@ -182,7 +211,7 @@ def product(
     to_create = DataProduct.create(
         name=DATA_PRODUCT_NAME,
         asset_selection=assets,
-        domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
+        domain_qualified_name=domain.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataProduct)[0]
@@ -194,12 +223,16 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert product
     assert product.guid
     assert product.qualified_name
+    assert product.parent_domain_qualified_name
+    assert product.super_domain_qualified_name
     assert product.name == DATA_PRODUCT_NAME
-    assert product.qualified_name == DATA_PRODUCT_QUALIFIED_NAME
     assert (
         product.data_product_assets_playbook_filter
         == DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER
     )
+    assert re.search(DATA_PRODUCT_QN_REGEX, product.qualified_name)
+    assert re.search(DATA_DOMAIN_QN_REGEX, product.parent_domain_qualified_name)
+    assert re.search(DATA_DOMAIN_QN_REGEX, product.super_domain_qualified_name)
 
 
 def test_update_product(client: AtlanClient, product: DataProduct):
@@ -243,6 +276,17 @@ def test_retrieve_product(client: AtlanClient, product: DataProduct):
     assert test_product.name == product.name
     assert test_product.certificate_status == CERTIFICATE_STATUS
     assert test_product.certificate_status_message == CERTIFICATE_MESSAGE
+
+
+@pytest.mark.order(after="test_retrieve_product")
+def test_find_product_by_name(client: AtlanClient, product: DataProduct):
+    response = client.asset.find_product_by_name(
+        name=product.name, attributes=["daapStatus"]
+    )
+
+    assert response
+    assert response.guid == product.guid
+    assert response.daap_status == DataProductStatus.ACTIVE
 
 
 @pytest.mark.order(after="test_retrieve_product")

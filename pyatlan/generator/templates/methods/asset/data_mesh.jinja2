@@ -1,0 +1,20 @@
+
+    @staticmethod
+    def get_super_domain_qualified_name(domain_qualified_name: str):
+        """
+        Retrieve the domain's top-most ancestral domain qualified name.
+
+        :param domain_qualified_name: of the domain, from which to
+        retrieve the top-most ancestral domain qualified name
+        :returns qualified_name: of the top-most ancestral domain, or `None` if it can't be determined
+        """
+        import re
+
+        domain_qn_prefix = re.compile(r"(default/domain/[a-zA-Z0-9-]+/super)/.*")
+        if domain_qualified_name:
+            match = domain_qn_prefix.match(domain_qualified_name)
+            if match and match.group(1):
+                return match.group(1)
+            elif domain_qualified_name.startswith("default/domain/"):
+                return domain_qualified_name
+        return None

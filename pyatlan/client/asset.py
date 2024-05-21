@@ -54,6 +54,8 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    DataDomain,
+    DataProduct,
     MaterialisedView,
     Persona,
     Purpose,
@@ -1530,6 +1532,46 @@ class AssetClient:
             glossary_qualified_name=glossary.qualified_name,
             attributes=attributes,
         )
+
+    @validate_arguments
+    def find_domain_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[List[StrictStr]] = None,
+    ) -> DataDomain:
+        """
+        Find a data domain by its human-readable name.
+
+        :param name: of the domain
+        :param attributes: (optional) collection of attributes to retrieve for the domain
+        :returns: the domain, if found
+        :raises NotFoundError: if no domain with the provided name exists
+        """
+        attributes = attributes or []
+        query = Term.with_name(name) + Term.with_type_name("DataDomain")
+        return self._search_for_asset_with_name(
+            query=query, name=name, asset_type=DataDomain, attributes=attributes
+        )[0]
+
+    @validate_arguments
+    def find_product_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[List[StrictStr]] = None,
+    ) -> DataProduct:
+        """
+        Find a data product by its human-readable name.
+
+        :param name: of the product
+        :param attributes: (optional) collection of attributes to retrieve for the product
+        :returns: the product, if found
+        :raises NotFoundError: if no product with the provided name exists
+        """
+        attributes = attributes or []
+        query = Term.with_name(name) + Term.with_type_name("DataProduct")
+        return self._search_for_asset_with_name(
+            query=query, name=name, asset_type=DataProduct, attributes=attributes
+        )[0]
 
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2

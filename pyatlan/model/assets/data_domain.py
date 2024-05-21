@@ -10,7 +10,7 @@ from warnings import warn
 from pydantic.v1 import Field, StrictStr, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
-from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import SelfAsset
 from .data_mesh import DataMesh
@@ -108,6 +108,10 @@ class DataDomain(DataMesh):
     """
     TBC
     """
+    STAKEHOLDERS: ClassVar[RelationField] = RelationField("stakeholders")
+    """
+    TBC
+    """
     PARENT_DOMAIN: ClassVar[RelationField] = RelationField("parentDomain")
     """
     TBC
@@ -119,6 +123,7 @@ class DataDomain(DataMesh):
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_products",
+        "stakeholders",
         "parent_domain",
         "sub_domains",
     ]
@@ -132,6 +137,16 @@ class DataDomain(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_products = data_products
+
+    @property
+    def stakeholders(self) -> Optional[List[Stakeholder]]:
+        return None if self.attributes is None else self.attributes.stakeholders
+
+    @stakeholders.setter
+    def stakeholders(self, stakeholders: Optional[List[Stakeholder]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.stakeholders = stakeholders
 
     @property
     def parent_domain(self) -> Optional[DataDomain]:
@@ -157,6 +172,9 @@ class DataDomain(DataMesh):
         data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
+        stakeholders: Optional[List[Stakeholder]] = Field(
+            default=None, description=""
+        )  # relationship
         parent_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship
@@ -174,21 +192,23 @@ class DataDomain(DataMesh):
         ) -> DataDomain.Attributes:
             validate_required_fields(["name"], [name])
             parent_domain = None
-            mesh_name = to_camel_case(name)
-            qualified_name = f"default/domain/{mesh_name}"
+            super_domain_qualified_name = None
 
             # In case of sub-domain
             if parent_domain_qualified_name:
                 parent_domain = DataDomain.ref_by_qualified_name(
                     parent_domain_qualified_name
                 )
-                qualified_name = f"{parent_domain_qualified_name}/domain/{mesh_name}"
+                super_domain_qualified_name = DataMesh.get_super_domain_qualified_name(
+                    parent_domain_qualified_name
+                )
 
             return DataDomain.Attributes(
                 name=name,
-                qualified_name=qualified_name,
+                qualified_name=name,
                 parent_domain=parent_domain,
                 parent_domain_qualified_name=parent_domain_qualified_name,
+                super_domain_qualified_name=super_domain_qualified_name,
             )
 
     attributes: DataDomain.Attributes = Field(
@@ -202,3 +222,4 @@ class DataDomain(DataMesh):
 
 
 from .data_product import DataProduct  # noqa
+from .stakeholder import Stakeholder  # noqa
