@@ -52,9 +52,10 @@ class WorkflowClient:
     @staticmethod
     def _parse_response(raw_json, response_type):
         try:
-            if isinstance(raw_json, list):
+            if raw_json is None:
+                return None
+            elif isinstance(raw_json, list):
                 return parse_obj_as(List[response_type], raw_json)
-            return parse_obj_as(response_type, raw_json)
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
@@ -370,7 +371,7 @@ class WorkflowClient:
             else SCHEDULE_QUERY_WORKFLOWS_SEARCH
         )
         raw_json = self._client._call_api(SEARCH_API, query_params=query_params)
-        return self._parse_response(raw_json.get("items"), WorkflowRunResponse)
+        return self._parse_response(raw_json, WorkflowRunResponse)
 
     @validate_arguments
     def update_owner(self, workflow_name: str, username: str) -> WorkflowResponse:
