@@ -52,10 +52,11 @@ class WorkflowClient:
     @staticmethod
     def _parse_response(raw_json, response_type):
         try:
-            if raw_json is None:
-                return None
+            if not raw_json:
+                return
             elif isinstance(raw_json, list):
                 return parse_obj_as(List[response_type], raw_json)
+            return parse_obj_as(response_type, raw_json)
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
@@ -256,6 +257,22 @@ class WorkflowClient:
         )
         return WorkflowResponse(**raw_json)
 
+    @validate_arguments
+    def update_owner(self, workflow_name: str, username: str) -> WorkflowResponse:
+        """
+        Update the owner of the specified workflow.
+
+        :param workflow_name: name of the workflow to update.
+        :param username: username of the new owner.
+        :raises AtlanError: on any API communication issue.
+        :returns: updated workflow.
+        """
+        raw_json = self._client._call_api(
+            WORKFLOW_CHANGE_OWNER.format_path({"workflow_name": workflow_name}),
+            query_params={"username": username},
+        )
+        return WorkflowResponse(**raw_json)
+
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def monitor(
         self, workflow_response: WorkflowResponse, logger: Optional[Logger] = None
@@ -350,7 +367,7 @@ class WorkflowClient:
     @validate_arguments
     def find_schedule_query_between(
         self, request: ScheduleQueriesSearchRequest, missed: bool = False
-    ) -> List[WorkflowRunResponse]:
+    ) -> Optional[List[WorkflowRunResponse]]:
         """
         Find scheduled query workflows within the specified duration.
 
@@ -372,19 +389,3 @@ class WorkflowClient:
         )
         raw_json = self._client._call_api(SEARCH_API, query_params=query_params)
         return self._parse_response(raw_json, WorkflowRunResponse)
-
-    @validate_arguments
-    def update_owner(self, workflow_name: str, username: str) -> WorkflowResponse:
-        """
-        Update the owner of the specified workflow.
-
-        :param workflow_name: name of the workflow to update.
-        :param username: username of the new owner.
-        :raises AtlanError: on any API communication issue.
-        :returns: updated workflow.
-        """
-        raw_json = self._client._call_api(
-            WORKFLOW_CHANGE_OWNER.format_path({"workflow_name": workflow_name}),
-            query_params={"username": username},
-        )
-        return WorkflowResponse(**raw_json)

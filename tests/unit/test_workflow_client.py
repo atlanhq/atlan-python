@@ -321,7 +321,7 @@ def test_workflow_update_owner(
 def test_workflow_find_schedule_query_between(
     client: WorkflowClient, mock_api_caller, workflow_run_response: WorkflowRunResponse
 ):
-    mock_api_caller._call_api.return_value = {"items": workflow_run_response}
+    mock_api_caller._call_api.return_value = [workflow_run_response]
     response = client.find_schedule_query_between(
         ScheduleQueriesSearchRequest(
             start_date="2024-05-03T16:30:00.000+05:30",
@@ -330,7 +330,11 @@ def test_workflow_find_schedule_query_between(
     )
 
     assert mock_api_caller._call_api.call_count == 1
-    assert response == WorkflowRunResponse(**workflow_run_response.dict())
+    assert (
+        response
+        and len(response) == 1
+        and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
+    )
     # Ensure it is called by the correct API endpoint
     assert (
         mock_api_caller._call_api.call_args[0][0].path
@@ -339,7 +343,7 @@ def test_workflow_find_schedule_query_between(
     mock_api_caller.reset_mock()
 
     # Missed schedule query workflows
-    mock_api_caller._call_api.return_value = {"items": workflow_run_response}
+    mock_api_caller._call_api.return_value = [workflow_run_response]
     response = client.find_schedule_query_between(
         ScheduleQueriesSearchRequest(
             start_date="2024-05-03T16:30:00.000+05:30",
@@ -354,7 +358,24 @@ def test_workflow_find_schedule_query_between(
         mock_api_caller._call_api.call_args[0][0].path
         == SCHEDULE_QUERY_WORKFLOWS_MISSED.path
     )
-    assert response == WorkflowRunResponse(**workflow_run_response.dict())
+    assert (
+        response
+        and len(response) == 1
+        and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
+    )
+    mock_api_caller.reset_mock()
+
+    # None response
+    mock_api_caller._call_api.return_value = None
+    response = client.find_schedule_query_between(
+        ScheduleQueriesSearchRequest(
+            start_date="2024-05-03T16:30:00.000+05:30",
+            end_date="2024-05-05T00:59:00.000+05:30",
+        )
+    )
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert response is None
     mock_api_caller.reset_mock()
 
 
