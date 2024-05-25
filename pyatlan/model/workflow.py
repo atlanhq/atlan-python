@@ -92,7 +92,7 @@ class WorkflowSearchResultStatus(AtlanObject):
     resources_duration: Optional[Dict[str, int]] = Field(default=None)
     startedAt: Optional[str] = Field(default=None)
     stored_templates: Any = Field(default=None)
-    storedWorkflowTemplateSpec: Any = Field(default=None)
+    stored_workflow_template_spec: Any = Field(default=None)
     synchronization: Optional[Dict[str, Any]] = Field(default=None)
 
 
@@ -148,7 +148,7 @@ class ReRunRequest(AtlanObject):
 class WorkflowResponse(AtlanObject):
     metadata: WorkflowMetadata
     spec: WorkflowSpec
-    payload: Optional[List[Any]] = Field(default=None)
+    payload: Optional[List[Any]] = Field(default_factory=list)
 
 
 class WorkflowRunResponse(WorkflowResponse):
@@ -158,6 +158,34 @@ class WorkflowRunResponse(WorkflowResponse):
 class ScheduleQueriesSearchRequest(AtlanObject):
     start_date: str = Field(description="Start date in ISO 8601 format")
     end_date: str = Field(description="End date in ISO 8601 format")
+
+
+class WorkflowSchedule(AtlanObject):
+    timezone: str
+    cron_schedule: str
+
+
+class WorkflowScheduleSpec(AtlanObject):
+    schedule: Optional[str] = Field(default=None)
+    timezone: Optional[str] = Field(default=None)
+    workflow_spec: Optional[WorkflowSpec] = Field(default=None)
+    concurrency_policy: Optional[str] = Field(default=None)
+    starting_deadline_seconds: Optional[int] = Field(default=None)
+    successful_jobs_history_limit: Optional[int] = Field(default=None)
+    failed_jobs_history_limit: Optional[int] = Field(default=None)
+
+
+class WorkflowScheduleStatus(AtlanObject):
+    active: Optional[Any] = Field(default=None)
+    conditions: Optional[Any] = Field(default=None)
+    last_scheduled_time: Optional[str] = Field(default=None)
+
+
+class WorkflowScheduleResponse(AtlanObject):
+    metadata: Optional[WorkflowMetadata] = Field(default=None)
+    spec: Optional[WorkflowScheduleSpec] = Field(default=None)
+    status: Optional[WorkflowScheduleStatus] = Field(default=None)
+    workflow_metadata: Optional[WorkflowMetadata] = Field(default=None)
 
 
 class WorkflowSearchRequest(AtlanObject):

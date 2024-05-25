@@ -1,0 +1,124 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "postgres,crawler",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6329557275793",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://www.postgresql.org/media/img/about/press/elephant.png",
+        "orchestration.atlan.com/logo": "https://www.postgresql.org/media/img/about/press/elephant.png",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/postgres",
+        "orchestration.atlan.com/name": "Postgres Assets",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl PostgreSQL assets and publish to Atlan for discovery",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/postgres",
+        "package.argoproj.io/keywords": "[\"postgres\",\"database\",\"sql\",\"connector\",\"crawler\"]",
+        "package.argoproj.io/name": "@atlan/postgres",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-postgres-default-postgres-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "postgres",
+        "orchestration.atlan.com/sourceCategory": "database",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hpostgres",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-postgres-123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true",
+        "orchestration.atlan.com/dependentPackage": ""
+      },
+      "name": "atlan-postgres-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "extraction-method",
+                      "value": "direct"
+                    },
+                    {
+                      "name": "include-filter",
+                      "value": "{\"^test-include$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
+                    },
+                    {
+                      "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
+                      "name": "temp-table-regex",
+                      "value": ".*_TEST"
+                    },
+                    {
+                      "name": "use-source-schema-filtering",
+                      "value": true
+                    },
+                    {
+                      "name": "use-jdbc-internal-methods",
+                      "value": true
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/postgres/123456\", \"name\": \"test-sdk-postgresql\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"postgres\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"database\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://www.postgresql.org/media/img/about/press/elephant.png\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    },
+                    {
+                      "name": "publish-mode",
+                      "value": "production"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-postgres",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/postgres"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "name": "default-postgres-123456-0",
+          "host": "test.com",
+          "port": 5432,
+          "authType": "iam_role",
+          "connectorType": "jdbc",
+          "extra": {
+            "database": "test-db",
+            "username": "test-user",
+            "aws_role_arn": "arn:aws:iam::123456789012:user/test",
+            "aws_external_id": "test-ext-id"
+          },
+          "connectorConfigName": "atlan-connectors-postgres"
+        }
+      }
+    ]
+}

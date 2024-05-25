@@ -25,18 +25,13 @@ class Database(SQL):
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        fields = connection_qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError("Invalid connection_qualified_name")
-        try:
-            connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError as e:
-            raise ValueError("Invalid connection_qualified_name") from e
         attributes = Database.Attributes(
             name=name,
             connection_qualified_name=connection_qualified_name,
             qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=connector_type.value,
+            connector_name=AtlanConnectorType.get_connector_name(
+                connection_qualified_name
+            ),
         )
         return cls(attributes=attributes)
 
@@ -117,18 +112,13 @@ class Database(SQL):
             validate_required_fields(
                 ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
             return Database.Attributes(
                 name=name,
                 connection_qualified_name=connection_qualified_name,
                 qualified_name=f"{connection_qualified_name}/{name}",
-                connector_name=connector_type.value,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: Database.Attributes = Field(

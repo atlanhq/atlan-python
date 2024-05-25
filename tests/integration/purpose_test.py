@@ -24,6 +24,7 @@ from pyatlan.model.enums import (
 from pyatlan.model.query import QueryRequest
 from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId, delete_asset
+from tests.integration.requests_test import delete_token
 
 MODULE_NAME = TestId.make_unique("Purpose")
 PERSONA_NAME = "Data Assets"
@@ -67,6 +68,7 @@ def atlan_tag_def(
 
 @pytest.fixture(scope="module")
 def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+    token = None
     try:
         token = client.token.create(API_TOKEN_NAME)
         assert token
@@ -85,7 +87,7 @@ def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
         # its associated personas -- will leave that to later...
         yield token
     finally:
-        token.guid and client.token.purge(token.guid)
+        delete_token(client, token)
 
 
 @pytest.fixture(scope="module")

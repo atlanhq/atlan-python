@@ -125,20 +125,13 @@ class AirflowDag(Airflow):
             validate_required_fields(
                 ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
-            # Split the connection_qualified_name to extract necessary information
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-
             return AirflowDag.Attributes(
                 name=name,
-                connector_name=connector_type.value,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: AirflowDag.Attributes = Field(

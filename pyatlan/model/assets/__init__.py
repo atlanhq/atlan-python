@@ -7,6 +7,7 @@ from .tag_attachment import TagAttachment
 from .connection import Connection
 from .process import Process
 from .atlas_glossary_category import AtlasGlossaryCategory
+from .stakeholder_title import StakeholderTitle
 from .badge import Badge
 from .access_control import AccessControl
 from .namespace import Namespace
@@ -26,6 +27,7 @@ from .purpose import Purpose
 from .collection import Collection
 from .folder import Folder
 from .airflow import Airflow
+from .data_contract import DataContract
 from .object_store import ObjectStore
 from .data_quality import DataQuality
 from .b_i import BI
@@ -47,6 +49,7 @@ from .google import Google
 from .azure import Azure
 from .a_w_s import AWS
 from .dbt_column_process import DbtColumnProcess
+from .stakeholder import Stakeholder
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
 from .s3 import S3
@@ -69,6 +72,7 @@ from .quick_sight import QuickSight
 from .thoughtspot import Thoughtspot
 from .power_b_i import PowerBI
 from .micro_strategy import MicroStrategy
+from .cognos import Cognos
 from .qlik import Qlik
 from .cognite import Cognite
 from .salesforce import Salesforce
@@ -92,11 +96,13 @@ from .function import Function
 from .table_partition import TablePartition
 from .column import Column
 from .snowflake_stream import SnowflakeStream
-from .calculation_view import CalculationView
 from .database import Database
+from .calculation_view import CalculationView
 from .procedure import Procedure
 from .snowflake_tag import SnowflakeTag
 from .kafka import Kafka
+from .azure_service_bus import AzureServiceBus
+from .cosmos_mongo_d_b import CosmosMongoDB
 from .dynamo_d_b import DynamoDB
 from .mongo_d_b import MongoDB
 from .matillion_group import MatillionGroup
@@ -208,6 +214,14 @@ from .micro_strategy_fact import MicroStrategyFact
 from .micro_strategy_document import MicroStrategyDocument
 from .micro_strategy_attribute import MicroStrategyAttribute
 from .micro_strategy_visualization import MicroStrategyVisualization
+from .cognos_exploration import CognosExploration
+from .cognos_dashboard import CognosDashboard
+from .cognos_report import CognosReport
+from .cognos_module import CognosModule
+from .cognos_file import CognosFile
+from .cognos_folder import CognosFolder
+from .cognos_package import CognosPackage
+from .cognos_datasource import CognosDatasource
 from .qlik_space import QlikSpace
 from .qlik_app import QlikApp
 from .qlik_chart import QlikChart
@@ -231,6 +245,10 @@ from .dynamo_dbtable import DynamoDBTable
 from .mongo_d_b_database import MongoDBDatabase
 from .kafka_topic import KafkaTopic
 from .kafka_consumer_group import KafkaConsumerGroup
+from .azure_service_bus_namespace import AzureServiceBusNamespace
+from .azure_service_bus_topic import AzureServiceBusTopic
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
 from .qlik_stream import QlikStream
 from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
@@ -247,6 +265,7 @@ TagAttachment.Attributes.update_forward_refs(**localns)
 Connection.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
+StakeholderTitle.Attributes.update_forward_refs(**localns)
 Badge.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
 Namespace.Attributes.update_forward_refs(**localns)
@@ -266,6 +285,7 @@ Purpose.Attributes.update_forward_refs(**localns)
 Collection.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
+DataContract.Attributes.update_forward_refs(**localns)
 ObjectStore.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
@@ -287,6 +307,7 @@ Google.Attributes.update_forward_refs(**localns)
 Azure.Attributes.update_forward_refs(**localns)
 AWS.Attributes.update_forward_refs(**localns)
 DbtColumnProcess.Attributes.update_forward_refs(**localns)
+Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
 S3.Attributes.update_forward_refs(**localns)
@@ -309,6 +330,7 @@ QuickSight.Attributes.update_forward_refs(**localns)
 Thoughtspot.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
 MicroStrategy.Attributes.update_forward_refs(**localns)
+Cognos.Attributes.update_forward_refs(**localns)
 Qlik.Attributes.update_forward_refs(**localns)
 Cognite.Attributes.update_forward_refs(**localns)
 Salesforce.Attributes.update_forward_refs(**localns)
@@ -332,11 +354,13 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 Kafka.Attributes.update_forward_refs(**localns)
+AzureServiceBus.Attributes.update_forward_refs(**localns)
+CosmosMongoDB.Attributes.update_forward_refs(**localns)
 DynamoDB.Attributes.update_forward_refs(**localns)
 MongoDB.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)
@@ -448,6 +472,14 @@ MicroStrategyFact.Attributes.update_forward_refs(**localns)
 MicroStrategyDocument.Attributes.update_forward_refs(**localns)
 MicroStrategyAttribute.Attributes.update_forward_refs(**localns)
 MicroStrategyVisualization.Attributes.update_forward_refs(**localns)
+CognosExploration.Attributes.update_forward_refs(**localns)
+CognosDashboard.Attributes.update_forward_refs(**localns)
+CognosReport.Attributes.update_forward_refs(**localns)
+CognosModule.Attributes.update_forward_refs(**localns)
+CognosFile.Attributes.update_forward_refs(**localns)
+CognosFolder.Attributes.update_forward_refs(**localns)
+CognosPackage.Attributes.update_forward_refs(**localns)
+CognosDatasource.Attributes.update_forward_refs(**localns)
 QlikSpace.Attributes.update_forward_refs(**localns)
 QlikApp.Attributes.update_forward_refs(**localns)
 QlikChart.Attributes.update_forward_refs(**localns)
@@ -471,6 +503,10 @@ DynamoDBTable.Attributes.update_forward_refs(**localns)
 MongoDBDatabase.Attributes.update_forward_refs(**localns)
 KafkaTopic.Attributes.update_forward_refs(**localns)
 KafkaConsumerGroup.Attributes.update_forward_refs(**localns)
+AzureServiceBusNamespace.Attributes.update_forward_refs(**localns)
+AzureServiceBusTopic.Attributes.update_forward_refs(**localns)
+CosmosMongoDBCollection.Attributes.update_forward_refs(**localns)
+CosmosMongoDBDatabase.Attributes.update_forward_refs(**localns)
 QlikStream.Attributes.update_forward_refs(**localns)
 DynamoDBLocalSecondaryIndex.Attributes.update_forward_refs(**localns)
 DynamoDBGlobalSecondaryIndex.Attributes.update_forward_refs(**localns)

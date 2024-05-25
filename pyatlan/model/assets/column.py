@@ -1361,23 +1361,20 @@ class Column(SQL):
                 [name, parent_qualified_name, parent_type, order],
             )
             fields = parent_qualified_name.split("/")
-            if len(fields) != 6:
-                raise ValueError("Invalid parent_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid parent_qualified_name") from e
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                parent_qualified_name, "parent_qualified_name", 6
+            )
             if order < 0:
                 raise ValueError("Order must be be a positive integer")
             ret_value = Column.Attributes(
                 name=name,
                 qualified_name=f"{parent_qualified_name}/{name}",
-                connector_name=connector_type.value,
+                connector_name=connector_name,
                 schema_name=fields[4],
                 schema_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
                 database_name=fields[3],
                 database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connection_qualified_name=connection_qn,
                 order=order,
             )
             if parent_type == Table:

@@ -24,6 +24,14 @@
         self.business_attributes = self._metadata_proxy.business_attributes
 
     @classmethod
+    def __get_validators__(cls):
+        yield cls._convert_to_real_type_
+
+    @classmethod
+    def _convert_to_real_type_(cls, data):
+        return Asset._convert_to_real_type_(data)
+
+    @classmethod
     def can_be_archived(self) -> bool:
         """
         Indicates if an asset can be archived via the asset.delete_by_guid method.

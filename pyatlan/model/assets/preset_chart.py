@@ -143,23 +143,15 @@ class PresetChart(Preset):
                 ["name", "preset_dashboard_qualified_name"],
                 [name, preset_dashboard_qualified_name],
             )
-
-            # Split the preset_dashboard_qualified_name to extract necessary information
-            fields = preset_dashboard_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid preset_dashboard_qualified_name")
-
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid preset_dashboard_qualified_name") from e
-
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                preset_dashboard_qualified_name, "preset_dashboard_qualified_name", 5
+            )
             return PresetChart.Attributes(
                 name=name,
                 preset_dashboard_qualified_name=preset_dashboard_qualified_name,
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connection_qualified_name=connection_qn,
                 qualified_name=f"{preset_dashboard_qualified_name}/{name}",
-                connector_name=connector_type.value,
+                connector_name=connector_name,
                 preset_dashboard=PresetDashboard.ref_by_qualified_name(
                     preset_dashboard_qualified_name
                 ),

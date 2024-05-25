@@ -80,6 +80,7 @@ ASSETS_DIR = PARENT.parent / "model" / "assets"
 MODEL_DIR = PARENT.parent / "model"
 DOCS_DIR = PARENT.parent / "documentation"
 SPHINX_DIR = PARENT.parent.parent / "docs"
+TEMPLATES_DIR = PARENT / "templates"
 
 
 def get_type(type_: str):
@@ -635,12 +636,14 @@ class Generator:
     def render_modules(self, modules: List[ModuleInfo]):
         self.render_init(modules)  # type: ignore
 
-    def render_module(self, asset_info: AssetInfo):
+    def render_module(self, asset_info: AssetInfo, enum_defs: List["EnumDefInfo"]):
         template = self.environment.get_template("module.jinja2")
         content = template.render(
             {
                 "asset_info": asset_info,
                 "existz": os.path.exists,
+                "enum_defs": enum_defs,
+                "templates_path": TEMPLATES_DIR.absolute().as_posix(),
             }
         )
         with (ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
@@ -830,11 +833,11 @@ if __name__ == "__main__":
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
     generator = Generator()
+    EnumDefInfo.create(type_defs.enum_defs)
     for asset_info in ModuleInfo.assets.values():
-        generator.render_module(asset_info)
+        generator.render_module(asset_info, EnumDefInfo.enum_def_info)
     generator.render_init(ModuleInfo.assets.values())  # type: ignore
     generator.render_structs(type_defs.struct_defs)
-    EnumDefInfo.create(type_defs.enum_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)
     generator.render_docs_struct_snippets(type_defs.struct_defs)
     generator.render_docs_entity_properties(type_defs.reserved_entity_defs)

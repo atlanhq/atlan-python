@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Optional
 
 import pytest
 
@@ -15,13 +15,35 @@ def create_token(client: AtlanClient, name: str) -> ApiToken:
     return t
 
 
+def delete_token(client: AtlanClient, token: Optional[ApiToken] = None):
+    # If there is a partial failure on the server side
+    # and the token is still visible in the Atlan UI,
+    # in that case, the create method may not return a token.
+    # We should retrieve the list of all tokens and delete them here.
+    if not token:
+        tokens = client.token.get().records
+        assert tokens
+        delete_tokens = [
+            token
+            for token in tokens
+            if token.display_name and "psdk_Requests" in token.display_name
+        ]
+        for token in delete_tokens:
+            assert token and token.guid
+            client.token.purge(token.guid)
+        return
+    # In case of no partial failure, directly delete the token
+    token.guid and client.token.purge(token.guid)
+
+
 @pytest.fixture(scope="module")
 def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+    token = None
     try:
         token = create_token(client, API_TOKEN_NAME)
         yield token
     finally:
-        token.guid and client.token.purge(token.guid)
+        delete_token(client, token)
 
 
 def test_create_token(client: AtlanClient, token: ApiToken):

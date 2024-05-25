@@ -25,6 +25,8 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    DataDomain,
+    DataProduct,
     Table,
 )
 from pyatlan.model.assets.column import Column
@@ -57,6 +59,8 @@ from tests.unit.constants import (
 from tests.unit.model.constants import (
     CONNECTION_NAME,
     CONNECTOR_TYPE,
+    DATA_DOMAIN_NAME,
+    DATA_PRODUCT_NAME,
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
     GLOSSARY_QUALIFIED_NAME,
@@ -885,7 +889,6 @@ def test_find_category_by_name():
 def test_find_category_by_name_qn_guid_correctly_populated(
     mock_find_glossary_by_name, mock_api_caller, glossary_category_by_name_json
 ):
-
     client = AssetClient(mock_api_caller)
     mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
     mock_api_caller._call_api.side_effect = [glossary_category_by_name_json]
@@ -1159,6 +1162,38 @@ def test_find_term_by_name():
             attributes=attributes,
         )
         assert mock_find_term_fast_by_name.return_value == term
+
+
+@patch.object(AssetClient, "_search_for_asset_with_name")
+def test_find_domain_by_name(mock_search_for_asset_with_name):
+    client = AtlanClient()
+    test_domain = DataDomain()
+    test_domain.name = DATA_DOMAIN_NAME
+    mock_search_for_asset_with_name.return_value = [test_domain]
+
+    domain = client.asset.find_domain_by_name(
+        name=DATA_DOMAIN_NAME,
+        attributes=["name"],
+    )
+
+    assert domain and domain == test_domain
+    assert mock_search_for_asset_with_name.call_count == 1
+
+
+@patch.object(AssetClient, "_search_for_asset_with_name")
+def test_find_product_by_name(mock_search_for_asset_with_name):
+    client = AtlanClient()
+    test_product = DataProduct()
+    test_product.name = DATA_PRODUCT_NAME
+    mock_search_for_asset_with_name.return_value = [test_product]
+
+    product = client.asset.find_product_by_name(
+        name=DATA_PRODUCT_NAME,
+        attributes=["name"],
+    )
+
+    assert product and product == test_product
+    assert mock_search_for_asset_with_name.call_count == 1
 
 
 @patch.object(SearchLogClient, "_call_search_api")

@@ -48,15 +48,15 @@ class PowerBIDataset(PowerBI):
     """
     TBC
     """
-    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
-    """
-    TBC
-    """
     TILES: ClassVar[RelationField] = RelationField("tiles")
     """
     TBC
     """
     TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
     """
     TBC
     """
@@ -70,9 +70,9 @@ class PowerBIDataset(PowerBI):
         "web_url",
         "reports",
         "workspace",
-        "dataflows",
         "tiles",
         "tables",
+        "dataflows",
         "datasources",
     ]
 
@@ -121,16 +121,6 @@ class PowerBIDataset(PowerBI):
         self.attributes.workspace = workspace
 
     @property
-    def dataflows(self) -> Optional[List[PowerBIDataflow]]:
-        return None if self.attributes is None else self.attributes.dataflows
-
-    @dataflows.setter
-    def dataflows(self, dataflows: Optional[List[PowerBIDataflow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflows = dataflows
-
-    @property
     def tiles(self) -> Optional[List[PowerBITile]]:
         return None if self.attributes is None else self.attributes.tiles
 
@@ -151,6 +141,16 @@ class PowerBIDataset(PowerBI):
         self.attributes.tables = tables
 
     @property
+    def dataflows(self) -> Optional[List[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[List[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    @property
     def datasources(self) -> Optional[List[PowerBIDatasource]]:
         return None if self.attributes is None else self.attributes.datasources
 
@@ -169,13 +169,13 @@ class PowerBIDataset(PowerBI):
         workspace: Optional[PowerBIWorkspace] = Field(
             default=None, description=""
         )  # relationship
-        dataflows: Optional[List[PowerBIDataflow]] = Field(
-            default=None, description=""
-        )  # relationship
         tiles: Optional[List[PowerBITile]] = Field(
             default=None, description=""
         )  # relationship
         tables: Optional[List[PowerBITable]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
             default=None, description=""
         )  # relationship
         datasources: Optional[List[PowerBIDatasource]] = Field(

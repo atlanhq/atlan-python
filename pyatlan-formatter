@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Get the filenames of changed files and untracked files
+changed_files=$(git diff --name-only HEAD)
+untracked_files=$(git ls-files --others --exclude-standard)
+
+# Combine changed and untracked files
+all_files="${changed_files}
+${untracked_files}"
+
+# Pass the filenames to pre-commit run --files
+echo "$all_files" | tr '\n' '\0' | xargs -0 pre-commit run --files

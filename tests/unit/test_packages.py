@@ -6,9 +6,12 @@ import pytest
 
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.packages import (
+    BigQueryCrawler,
     ConfluentKafkaCrawler,
     DbtCrawler,
+    DynamoDBCrawler,
     GlueCrawler,
+    PostgresCrawler,
     PowerBICrawler,
     SigmaCrawler,
     SnowflakeCrawler,
@@ -33,6 +36,13 @@ DBT_CORE = "dbt_core.json"
 DBT_CLOUD = "dbt_cloud.json"
 SIGMA_API_TOKEN = "sigma_api_token.json"
 SQL_SERVER_BASIC = "sql_server_basic.json"
+BIG_QUERY_DIRECT = "big_query_direct.json"
+DYNAMO_DB_IAM_USER = "dynamo_db_iam_user.json"
+DYNAMO_DB_IAM_USER_ROLE = "dynamo_db_iam_user_role.json"
+POSTGRES_DIRECT_BASIC = "postgres_direct_basic.json"
+POSTGRES_DIRECT_IAM_USER = "postgres_direct_iam_user.json"
+POSTGRES_DIRECT_IAM_ROLE = "postgres_direct_iam_role.json"
+POSTGRES_S3_OFFLINE = "postgres_s3_offline.json"
 
 
 class NonSerializable:
@@ -78,6 +88,29 @@ def mock_package_env(
 
 
 def test_snowflake_package(mock_package_env):
+    snowflake_with_connection_default = (
+        SnowflakeCrawler(
+            connection_name="test-snowflake-basic-conn",
+            admin_roles=["admin-guid-1234"],
+        )
+        .information_schema(hostname="test-hostname")
+        .basic_auth(
+            username="test-user",
+            password="test-pass",
+            role="test-role",
+            warehouse="test-warehouse",
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
+        .lineage(True)
+        .tags(True)
+        .to_workflow()
+    )
+    request_json = loads(
+        snowflake_with_connection_default.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(SNOWFLAKE_BASIC)
+
     snowflake_basic_auth = (
         SnowflakeCrawler(
             connection_name="test-snowflake-basic-conn",
@@ -396,6 +429,152 @@ def test_snowflake_miner_package(mock_package_env):
     assert request_json == load_json(SNOWFLAKE_MINER_S3_OFFLINE)
 
 
+def test_big_query_package(mock_package_env):
+    big_query_direct = (
+        BigQueryCrawler(
+            connection_name="test-big-query-conn", admin_roles=["admin-guid-1234"]
+        )
+        .service_account_auth(
+            project_id="test-project-id",
+            service_account_json="test-account-json",
+            service_account_email="test@test.com",
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
+        .exclude_regex(regex=".*_TEST")
+        .custom_config(config={"test": True, "feature": 1234})
+        .to_workflow()
+    )
+    request_json = loads(big_query_direct.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(BIG_QUERY_DIRECT)
+
+
+def test_dynamo_db_package(mock_package_env):
+    dynamo_db_direct_iam_user = (
+        DynamoDBCrawler(
+            connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
+        )
+        .direct(region="test-region")
+        .iam_user_auth(access_key="test-access-key", secret_key="test-secret-key")
+        .include_regex(regex=".*_TEST_INCLUDE")
+        .exclude_regex(regex=".*_TEST_EXCLUDE")
+        .to_workflow()
+    )
+    request_json = loads(
+        dynamo_db_direct_iam_user.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DYNAMO_DB_IAM_USER)
+
+    dynamo_db_direct_iam_user_role = (
+        DynamoDBCrawler(
+            connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
+        )
+        .direct(region="test-region")
+        .iam_role_auth(
+            arn="arn:aws:iam::123456789012:user/test", external_id="test-ext-id"
+        )
+        .include_regex(regex=".*_TEST_INCLUDE")
+        .exclude_regex(regex=".*_TEST_EXCLUDE")
+        .to_workflow()
+    )
+    request_json = loads(
+        dynamo_db_direct_iam_user_role.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DYNAMO_DB_IAM_USER_ROLE)
+
+
+def test_postgres_package(mock_package_env):
+    postgres_direct_basic = (
+        PostgresCrawler(
+            connection_name="test-sdk-postgresql",
+            admin_roles=["admin-guid-1234"],
+        )
+        .direct(hostname="test.com", database="test-db")
+        .basic_auth(
+            username="test-user",
+            password="test-password",
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
+        .exclude_regex(regex=".*_TEST")
+        .source_level_filtering(enable=True)
+        .jdbc_internal_methods(enable=True)
+        .to_workflow()
+    )
+
+    request_json = loads(postgres_direct_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(POSTGRES_DIRECT_BASIC)
+
+    postgres_direct_iam_user = (
+        PostgresCrawler(
+            connection_name="test-sdk-postgresql",
+            admin_roles=["admin-guid-1234"],
+        )
+        .direct(hostname="test.com", database="test-db")
+        .iam_user_auth(
+            username="test-user",
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
+        .exclude_regex(regex=".*_TEST")
+        .source_level_filtering(enable=True)
+        .jdbc_internal_methods(enable=True)
+        .to_workflow()
+    )
+
+    request_json = loads(
+        postgres_direct_iam_user.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(POSTGRES_DIRECT_IAM_USER)
+
+    postgres_direct_iam_role = (
+        PostgresCrawler(
+            connection_name="test-sdk-postgresql",
+            admin_roles=["admin-guid-1234"],
+        )
+        .direct(hostname="test.com", database="test-db")
+        .iam_role_auth(
+            username="test-user",
+            arn="arn:aws:iam::123456789012:user/test",
+            external_id="test-ext-id",
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
+        .exclude_regex(regex=".*_TEST")
+        .source_level_filtering(enable=True)
+        .jdbc_internal_methods(enable=True)
+        .to_workflow()
+    )
+
+    request_json = loads(
+        postgres_direct_iam_role.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(POSTGRES_DIRECT_IAM_ROLE)
+
+    postgres_s3_offline = (
+        PostgresCrawler(
+            connection_name="test-sdk-postgresql",
+            admin_roles=["admin-guid-1234"],
+        )
+        .s3(
+            bucket_name="test-bucket",
+            bucket_prefix="test-prefix",
+            bucket_region="test-region",
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets=None)
+        .exclude_regex(regex=".*_TEST")
+        .source_level_filtering(enable=True)
+        .jdbc_internal_methods(enable=True)
+        .to_workflow()
+    )
+
+    request_json = loads(postgres_s3_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(POSTGRES_S3_OFFLINE)
+
+
 @pytest.mark.parametrize(
     "test_assets",
     [
@@ -411,7 +590,6 @@ def test_snowflake_miner_package(mock_package_env):
 def test_wrong_hierarchical_filter_raises_invalid_req_err(
     test_assets, mock_package_env
 ):
-
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
@@ -429,7 +607,6 @@ def test_wrong_hierarchical_filter_raises_invalid_req_err(
     [[NonSerializable()], NonSerializable()],
 )
 def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_env):
-
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
@@ -449,7 +626,6 @@ def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_en
 def test_wrong_glue_package_filter_raises_invalid_req_err(
     test_assets, mock_package_env
 ):
-
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,

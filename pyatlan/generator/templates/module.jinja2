@@ -6,6 +6,12 @@
 
 {% include 'imports.jinja2' %}
 
+from pyatlan.model.enums import (
+{% for enum in enum_defs %}
+{{ enum.name }},
+{% endfor %}
+)
+
 {% if asset_info.name != 'Referenceable' and asset_info.name != 'Asset' %}
 from .asset import SelfAsset
 {% endif %}
@@ -13,7 +19,7 @@ from .asset import SelfAsset
 {% set entity_def = asset_info.entity_def %}
 
 {% set file_name = 'methods/imports/' + entity_def.name | to_snake_case + '.jinja2' %}
-{%  if existz('templates/' + file_name) %}
+{%  if existz(templates_path + '/' + file_name) %}
 {% include file_name %}
 {% endif %}
 
@@ -34,7 +40,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {% include 'referenceable_attributes.jinja2' %}
 {%- else %}
     {% set file_name = 'methods/asset/' + entity_def.name | to_snake_case + '.jinja2' %}
-    {%  if existz('templates/' + file_name) %}
+    {%  if existz(templates_path + '/' + file_name) %}
         {% include file_name %}
     {% endif %}
 
@@ -58,7 +64,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {{attribute_def.name | to_snake_case }}: Optional[{{type}}]= Field(default=None, description='') # relationship
         {%- endfor %}
         {% set file_name = 'methods/attribute/' + entity_def.name | to_snake_case + '.jinja2' %}
-        {%  if existz('templates/' + file_name) %}
+        {%  if existz(templates_path + '/' + file_name) %}
             {% include file_name %}
         {% endif %}
     attributes: {{entity_def.name}}.Attributes = Field(

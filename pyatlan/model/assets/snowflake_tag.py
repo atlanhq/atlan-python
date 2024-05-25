@@ -160,19 +160,19 @@ class SnowflakeTag(Tag):
     """
     TBC
     """
-    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
-    """
-    TBC
-    """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
     DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
     """
     TBC
     """
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
     """
     TBC
     """
@@ -200,10 +200,10 @@ class SnowflakeTag(Tag):
         "last_profiled_at",
         "dbt_sources",
         "sql_dbt_models",
-        "sql_dbt_sources",
-        "dbt_models",
         "dbt_tests",
         "atlan_schema",
+        "sql_dbt_sources",
+        "dbt_models",
     ]
 
     @property
@@ -445,26 +445,6 @@ class SnowflakeTag(Tag):
         self.attributes.sql_dbt_models = sql_dbt_models
 
     @property
-    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
     def dbt_tests(self) -> Optional[List[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
@@ -483,6 +463,26 @@ class SnowflakeTag(Tag):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
 
     class Attributes(Tag.Attributes):
         tag_id: Optional[str] = Field(default=None, description="")
@@ -515,16 +515,16 @@ class SnowflakeTag(Tag):
         sql_dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
         dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
 
