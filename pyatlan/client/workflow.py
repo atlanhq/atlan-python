@@ -10,14 +10,10 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     GET_ALL_SCHEDULE_RUNS,
     GET_SCHEDULE_RUN,
-    SCHEDULE_QUERY_WORKFLOWS_MISSED,
-    SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     STOP_WORKFLOW_RUN,
     WORKFLOW_ARCHIVE,
-    WORKFLOW_CHANGE_OWNER,
     WORKFLOW_INDEX_RUN_SEARCH,
     WORKFLOW_INDEX_SEARCH,
-    WORKFLOW_OWNER_RERUN,
     WORKFLOW_RERUN,
     WORKFLOW_RUN,
     WORKFLOW_UPDATE,
@@ -27,7 +23,6 @@ from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term
 from pyatlan.model.workflow import (
     ReRunRequest,
-    ScheduleQueriesSearchRequest,
     Workflow,
     WorkflowResponse,
     WorkflowRunResponse,
@@ -61,44 +56,13 @@ class WorkflowClient:
     @staticmethod
     def _parse_response(raw_json, response_type):
         try:
-            if not raw_json:
-                return
-            elif isinstance(raw_json, list):
+            if isinstance(raw_json, List):
                 return parse_obj_as(List[response_type], raw_json)
             return parse_obj_as(response_type, raw_json)
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
-
-    @validate_arguments
-    def find_by_type(
-        self, prefix: WorkflowPackage, max_results: int = 10
-    ) -> List[WorkflowSearchResult]:
-        """
-        Find workflows based on their type (prefix). Note: Only workflows that have been run will be found.
-
-        :param prefix: name of the specific workflow to find (for example CONNECTION_DELETE)
-        :param max_results: the maximum number of results to retrieve
-        :returns: the list of workflows of the provided type, with the most-recently created first
-        :raises ValidationError: If the provided prefix is invalid workflow package
-        :raises AtlanError: on any API communication issue
-        """
-        query = Bool(
-            filter=[
-                NestedQuery(
-                    query=Prefix(field="metadata.name.keyword", value=prefix.value),
-                    path="metadata",
-                )
-            ]
-        )
-        request = WorkflowSearchRequest(query=query, size=max_results)
-        raw_json = self._client._call_api(
-            WORKFLOW_INDEX_SEARCH,
-            request_obj=request,
-        )
-        response = WorkflowSearchResponse(**raw_json)
-        return response.hits.hits or []
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
@@ -189,6 +153,36 @@ class WorkflowClient:
                 self._WORKFLOW_RUN_TIMEZONE: workflow_schedule.timezone,
             }
         )
+
+    @validate_arguments
+    def find_by_type(
+        self, prefix: WorkflowPackage, max_results: int = 10
+    ) -> List[WorkflowSearchResult]:
+        """
+        Find workflows based on their type (prefix).
+        Note: Only workflows that have been run will be found.
+
+        :param prefix: name of the specific workflow to find (for example CONNECTION_DELETE)
+        :param max_results: the maximum number of results to retrieve
+        :returns: the list of workflows of the provided type, with the most-recently created first
+        :raises ValidationError: If the provided prefix is invalid workflow package
+        :raises AtlanError: on any API communication issue
+        """
+        query = Bool(
+            filter=[
+                NestedQuery(
+                    query=Prefix(field="metadata.name.keyword", value=prefix.value),
+                    path="metadata",
+                )
+            ]
+        )
+        request = WorkflowSearchRequest(query=query, size=max_results)
+        raw_json = self._client._call_api(
+            WORKFLOW_INDEX_SEARCH,
+            request_obj=request,
+        )
+        response = WorkflowSearchResponse(**raw_json)
+        return response.hits.hits or []
 
     def _handle_workflow_types(self, workflow):
         if isinstance(workflow, WorkflowPackage):
@@ -308,22 +302,6 @@ class WorkflowClient:
         )
         return WorkflowResponse(**raw_json)
 
-    @validate_arguments
-    def update_owner(self, workflow_name: str, username: str) -> WorkflowResponse:
-        """
-        Update the owner of the specified workflow.
-
-        :param workflow_name: name of the workflow to update.
-        :param username: username of the new owner.
-        :raises AtlanError: on any API communication issue.
-        :returns: updated workflow.
-        """
-        raw_json = self._client._call_api(
-            WORKFLOW_CHANGE_OWNER.format_path({"workflow_name": workflow_name}),
-            query_params={"username": username},
-        )
-        return WorkflowResponse(**raw_json)
-
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def monitor(
         self, workflow_response: WorkflowResponse, logger: Optional[Logger] = None
@@ -361,6 +339,7 @@ class WorkflowClient:
     def _get_run_details(self, name: str) -> Optional[WorkflowSearchResult]:
         return self._find_latest_run(workflow_name=name)
 
+    @validate_arguments
     def get_runs(
         self,
         workflow_name: str,
@@ -549,84 +528,3 @@ class WorkflowClient:
             GET_SCHEDULE_RUN.format_path({"workflow_name": f"{workflow_name}-cron"}),
         )
         return self._parse_response(raw_json, WorkflowScheduleResponse)
-
-    @validate_arguments
-    def find_schedule_query(
-        self, saved_query_id: str, max_results: int = 10
-    ) -> List[WorkflowSearchResult]:
-        """
-        Find scheduled query workflows by their saved query identifier.
-
-        :param saved_query_id: identifier of the saved query.
-        :param max_results: maximum number of results to retrieve. Defaults to `10`.
-        :raises AtlanError: on any API communication issue.
-        :returns: a list of scheduled query workflows.
-        """
-        query = Bool(
-            filter=[
-                NestedQuery(
-                    path="metadata",
-                    query=Prefix(
-                        field="metadata.name.keyword", value=f"asq-{saved_query_id}"
-                    ),
-                ),
-                NestedQuery(
-                    path="metadata",
-                    query=Term(
-                        field="metadata.annotations.package.argoproj.io/name.keyword",
-                        value="@atlan/schedule-query",
-                    ),
-                ),
-            ]
-        )
-        request = WorkflowSearchRequest(query=query, size=max_results)
-        raw_json = self._client._call_api(
-            WORKFLOW_INDEX_SEARCH,
-            request_obj=request,
-        )
-        response = WorkflowSearchResponse(**raw_json)
-        return response.hits.hits or []
-
-    @validate_arguments
-    def re_run_schedule_query(self, schedule_query_id: str) -> WorkflowRunResponse:
-        """
-        Re-run the scheduled query workflow by its schedule query identifier.
-        NOTE: Scheduled query workflows are re-triggered using
-        or impersonating the workflow owner's credentials.
-
-        :param schedule_query_id: identifier of the schedule query.
-        :raises AtlanError: on any API communication issue.
-        :returns: details of the workflow run.
-        """
-        request = ReRunRequest(namespace="default", resource_name=schedule_query_id)
-        raw_json = self._client._call_api(
-            WORKFLOW_OWNER_RERUN,
-            request_obj=request,
-        )
-        return WorkflowRunResponse(**raw_json)
-
-    @validate_arguments
-    def find_schedule_query_between(
-        self, request: ScheduleQueriesSearchRequest, missed: bool = False
-    ) -> Optional[List[WorkflowRunResponse]]:
-        """
-        Find scheduled query workflows within the specified duration.
-
-        :param request: a `ScheduleQueriesSearchRequest` object containing
-        start and end dates in ISO 8601 format (e.g: `2024-03-25T16:30:00.000+05:30`).
-        :param missed: if `True`, perform a search for missed
-        scheduled query workflows. Defaults to `False`.
-        :raises AtlanError: on any API communication issue.
-        :returns: a list of scheduled query workflows found within the specified duration.
-        """
-        query_params = {
-            "startDate": request.start_date,
-            "endDate": request.end_date,
-        }
-        SEARCH_API = (
-            SCHEDULE_QUERY_WORKFLOWS_MISSED
-            if missed
-            else SCHEDULE_QUERY_WORKFLOWS_SEARCH
-        )
-        raw_json = self._client._call_api(SEARCH_API, query_params=query_params)
-        return self._parse_response(raw_json, WorkflowRunResponse)
