@@ -394,16 +394,41 @@ INDEX_API = "search/indexsearch"
 INDEX_SEARCH = API(INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 WORKFLOW_INDEX_API = "workflows/indexsearch"
 WORKFLOW_INDEX_RUN_API = "runs/indexsearch"
+SCHEDULE_QUERY_WORKFLOWS_SEARCH_API = "runs/cron/scheduleQueriesBetweenDuration"
+SCHEDULE_QUERY_WORKFLOWS_MISSED_API = "runs/cron/missedScheduleQueriesBetweenDuration"
+
+SCHEDULE_QUERY_WORKFLOWS_SEARCH = API(
+    SCHEDULE_QUERY_WORKFLOWS_SEARCH_API,
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
+SCHEDULE_QUERY_WORKFLOWS_MISSED = API(
+    SCHEDULE_QUERY_WORKFLOWS_MISSED_API,
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 WORKFLOW_INDEX_SEARCH = API(
     WORKFLOW_INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 WORKFLOW_INDEX_RUN_SEARCH = API(
     WORKFLOW_INDEX_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+# triggers a workflow using the current user's credentials
 WORKFLOW_RERUN_API = "workflows/submit"
 WORKFLOW_RERUN = API(
     WORKFLOW_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+
+# triggers a workflow using the workflow owner's credentials
+WORKFLOW_OWNER_RERUN_API = "workflows/triggerAsOwner"
+WORKFLOW_OWNER_RERUN = API(
+    WORKFLOW_OWNER_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+
 WORKFLOW_RUN_API = "workflows?submit=true"
 WORKFLOW_RUN = API(
     WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
@@ -440,6 +465,14 @@ STOP_WORKFLOW_RUN = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+
+WORKFLOW_CHANGE_OWNER = API(
+    WORKFLOW_API + "/{workflow_name}" + "/changeownership",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 CREDENTIALS_API = "credentials"
 TEST_CREDENTIAL_API = CREDENTIALS_API + "/test"
 TEST_CREDENTIAL = API(

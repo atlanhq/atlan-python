@@ -7,12 +7,17 @@ from pydantic.v1 import ValidationError
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH
+from pyatlan.client.constants import (
+    SCHEDULE_QUERY_WORKFLOWS_MISSED,
+    SCHEDULE_QUERY_WORKFLOWS_SEARCH,
+    WORKFLOW_INDEX_SEARCH,
+)
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.workflow import (
     PackageParameter,
+    ScheduleQueriesSearchRequest,
     Workflow,
     WorkflowMetadata,
     WorkflowResponse,
@@ -159,6 +164,14 @@ def update_response() -> WorkflowResponse:
     )
 
 
+@pytest.mark.parametrize("method, params", TEST_WORKFLOW_CLIENT_METHODS.items())
+def test_workflow_client_methods_validation_error(method, params):
+    client_method = getattr(AtlanClient().workflow, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValidationError, match=error_msg):
+            client_method(*param_values)
+
+
 @pytest.mark.parametrize("api_caller", ["abc", None])
 def test_init_when_wrong_class_raises_exception(api_caller):
     with pytest.raises(
@@ -166,14 +179,6 @@ def test_init_when_wrong_class_raises_exception(api_caller):
         match="ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller",
     ):
         WorkflowClient(api_caller)
-
-
-@pytest.mark.parametrize("method, params", TEST_WORKFLOW_CLIENT_METHODS.items())
-def test_workflow_client_methods_validation_error(method, params):
-    client_method = getattr(AtlanClient().workflow, method)
-    for param_values, error_msg in params:
-        with pytest.raises(ValidationError, match=error_msg):
-            client_method(*param_values)
 
 
 def test_find_by_type(client: WorkflowClient, mock_api_caller):
@@ -354,6 +359,19 @@ def test_update_when_given_workflow(
     mock_api_caller.reset_mock()
 
 
+def test_workflow_update_owner(
+    client: WorkflowClient,
+    mock_api_caller,
+    workflow_response: WorkflowResponse,
+):
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+    response = client.update_owner(workflow_name="test-workflow", username="test-owner")
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert response == WorkflowResponse(**workflow_response.dict())
+    mock_api_caller.reset_mock()
+
+
 def test_workflow_get_runs(
     client: WorkflowClient,
     mock_api_caller,
@@ -428,6 +446,96 @@ def test_workflow_add_schedule(
     assert mock_api_caller._call_api.call_count == 1
     assert response == WorkflowResponse(**workflow_response.dict())
     mock_api_caller.reset_mock()
+
+
+def test_workflow_find_schedule_query_between(
+    client: WorkflowClient, mock_api_caller, workflow_run_response: WorkflowRunResponse
+):
+    mock_api_caller._call_api.return_value = [workflow_run_response]
+    response = client.find_schedule_query_between(
+        ScheduleQueriesSearchRequest(
+            start_date="2024-05-03T16:30:00.000+05:30",
+            end_date="2024-05-05T00:59:00.000+05:30",
+        )
+    )
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert (
+        response
+        and len(response) == 1
+        and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
+    )
+    # Ensure it is called by the correct API endpoint
+    assert (
+        mock_api_caller._call_api.call_args[0][0].path
+        == SCHEDULE_QUERY_WORKFLOWS_SEARCH.path
+    )
+    mock_api_caller.reset_mock()
+
+    # Missed schedule query workflows
+    mock_api_caller._call_api.return_value = [workflow_run_response]
+    response = client.find_schedule_query_between(
+        ScheduleQueriesSearchRequest(
+            start_date="2024-05-03T16:30:00.000+05:30",
+            end_date="2024-05-05T00:59:00.000+05:30",
+        ),
+        missed=True,
+    )
+
+    assert mock_api_caller._call_api.call_count == 1
+    # Ensure it is called by the correct API endpoint
+    assert (
+        mock_api_caller._call_api.call_args[0][0].path
+        == SCHEDULE_QUERY_WORKFLOWS_MISSED.path
+    )
+    assert (
+        response
+        and len(response) == 1
+        and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
+    )
+    mock_api_caller.reset_mock()
+
+    # None response
+    mock_api_caller._call_api.return_value = None
+    response = client.find_schedule_query_between(
+        ScheduleQueriesSearchRequest(
+            start_date="2024-05-03T16:30:00.000+05:30",
+            end_date="2024-05-05T00:59:00.000+05:30",
+        )
+    )
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert response is None
+    mock_api_caller.reset_mock()
+
+
+def test_workflow_find_schedule_query(
+    client: WorkflowClient,
+    mock_api_caller,
+    search_response: WorkflowSearchResponse,
+    search_result: WorkflowSearchResult,
+):
+    mock_api_caller._call_api.return_value = search_response.dict()
+    response = client.find_schedule_query(
+        saved_query_id="test-query-id", max_results=50
+    )
+
+    assert len(response) == 1
+    assert mock_api_caller._call_api.call_count == 1
+    assert response[0] == WorkflowSearchResult(**search_result.dict())
+    mock_api_caller.reset_mock()
+
+
+def test_workflow_rerun_schedule_query_workflow(
+    client,
+    mock_api_caller,
+    workflow_run_response: WorkflowRunResponse,
+):
+    mock_api_caller._call_api.return_value = workflow_run_response.dict()
+    response = client.re_run_schedule_query(schedule_query_id="test-query-id")
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert response == WorkflowRunResponse(**workflow_run_response.dict())
 
 
 def test_workflow_remove_schedule(
