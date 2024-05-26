@@ -2342,3 +2342,34 @@ class SourceCostUnitType(str, Enum):
     CREDITS = "Credits"
     BYTES = "bytes"
     SLOT_MS = "slot-ms"
+
+
+class WorkflowRunStatus(str, Enum):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+    WITHDRAWN = "WITHDRAWN"
+    EXPIRED = "EXPIRED"
+    TERMINATED = "TERMINATED"
+
+
+class WorkflowRunType(str, Enum):
+    DATA_ACCESS = "DATA_ACCESS"
+    POLICY = "POLICY"
+    CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
+    PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
+
+
+class WorkflowStatus(str, Enum):
+    PUBLISHED = "PUBLISHED"
+    DRAFT = "DRAFT"
+    DISABLED = "DISABLED"
+
+
+class WorkflowType(str, Enum):
+    DATA_ACCESS = "DATA_ACCESS"
+    POLICY = "POLICY"
+    CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
+    PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"

@@ -253,6 +253,7 @@ You can interact with all of the following different kinds of assets:
     asset/tableauworksheet
     asset/tag
     asset/tagattachment
+    asset/task
     asset/thoughtspot
     asset/thoughtspotanswer
     asset/thoughtspotcolumn
@@ -262,3 +263,5 @@ You can interact with all of the following different kinds of assets:
     asset/thoughtspotview
     asset/thoughtspotworksheet
     asset/view
+    asset/workflow
+    asset/workflowrun
