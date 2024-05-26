@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional  # noqa
+from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
@@ -30,9 +30,24 @@ class AzureEventHubConsumerGroup(KafkaConsumerGroup):
             ["name", "event_hub_qualified_names"],
             [name, event_hub_qualified_names],
         )
-        attributes = AzureEventHubConsumerGroup.Attributes.creator(
+        event_hubs = []
+        for event_hub_qn in event_hub_qualified_names:
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                event_hub_qn, "event_hub_qualified_names", 5
+            )
+            event_hubs.append(AzureEventHub.ref_by_qualified_name(event_hub_qn))
+
+        # Following a similar approach to construct the qualified name:
+        # https://github.com/atlanhq/marketplace-packages/blob/master/packages/atlan/azure-event-hub/transformers/eh-consumer-group.jinja2#L9
+        first_event_hub_name = event_hub_qualified_names[0].split("/")[4]
+
+        attributes = AzureEventHubConsumerGroup.Attributes(
             name=name,
-            event_hub_qualified_names=event_hub_qualified_names,
+            connector_name=connector_name,
+            connection_qualified_name=connection_qn,
+            kafka_topics=event_hubs,  # type:ignore[arg-type]
+            kafka_topic_qualified_names=set(event_hub_qualified_names),
+            qualified_name=f"{connection_qn}/consumer-group/{first_event_hub_name}/{name}",
         )
         return cls(attributes=attributes)
 
@@ -48,39 +63,5 @@ class AzureEventHubConsumerGroup(KafkaConsumerGroup):
         if name in AzureEventHubConsumerGroup._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
-
-    class Attributes(KafkaConsumerGroup.Attributes):
-
-        @classmethod
-        @init_guid
-        def creator(
-            cls,
-            *,
-            name: str,
-            event_hub_qualified_names: List[str],
-        ) -> AzureEventHubConsumerGroup.Attributes:
-            validate_required_fields(
-                ["name", "event_hub_qualified_names"],
-                [name, event_hub_qualified_names],
-            )
-            event_hubs = []
-            for event_hub_qn in event_hub_qualified_names:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    event_hub_qn, "event_hub_qualified_names", 5
-                )
-                event_hubs.append(AzureEventHub.ref_by_qualified_name(event_hub_qn))
-
-            # Following a similar approach to construct the qualified name:
-            # https://github.com/atlanhq/marketplace-packages/blob/master/packages/atlan/azure-event-hub/transformers/eh-consumer-group.jinja2#L9
-            first_event_hub_name = event_hub_qualified_names[0].split("/")[4]
-
-            return AzureEventHubConsumerGroup.Attributes(
-                name=name,
-                connector_name=connector_name,
-                connection_qualified_name=connection_qn,
-                kafka_topics=event_hubs,  # type:ignore[arg-type]
-                kafka_topic_qualified_names=set(event_hub_qualified_names),
-                qualified_name=f"{connection_qn}/consumer-group/{first_event_hub_name}/{name}",
-            )
 
     _convenience_properties: ClassVar[List[str]] = []
