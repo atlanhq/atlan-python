@@ -8,19 +8,35 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import KafkaTopicCleanupPolicy, KafkaTopicCompressionType
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    KafkaTopicCleanupPolicy,
+    KafkaTopicCompressionType,
+)
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     NumericField,
     RelationField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .kafka import Kafka
 
 
 class KafkaTopic(Kafka):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str, connection_qualified_name: str) -> KafkaTopic:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = KafkaTopic.Attributes.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="KafkaTopic", allow_mutation=False)
 
@@ -281,6 +297,23 @@ class KafkaTopic(Kafka):
         kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> KafkaTopic.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return KafkaTopic.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/topic/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: KafkaTopic.Attributes = Field(
         default_factory=lambda: KafkaTopic.Attributes(),

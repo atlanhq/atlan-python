@@ -1,0 +1,18 @@
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        kafka_topic_qualified_names: List[str],
+    ) -> KafkaConsumerGroup:
+        validate_required_fields(
+            ["name", "kafka_topic_qualified_names"],
+            [name, kafka_topic_qualified_names],
+        )
+        attributes = KafkaConsumerGroup.Attributes.creator(
+            name=name,
+            kafka_topic_qualified_names=kafka_topic_qualified_names,
+        )
+        return cls(attributes=attributes)

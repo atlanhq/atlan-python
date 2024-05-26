@@ -1,0 +1,18 @@
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        event_hub_qualified_names: List[str],
+    ) -> AzureEventHubConsumerGroup:
+        validate_required_fields(
+            ["name", "event_hub_qualified_names"],
+            [name, event_hub_qualified_names],
+        )
+        attributes = AzureEventHubConsumerGroup.Attributes.creator(
+            name=name,
+            event_hub_qualified_names=event_hub_qualified_names,
+        )
+        return cls(attributes=attributes)
