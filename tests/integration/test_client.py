@@ -435,6 +435,34 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 
 
 @pytest.mark.order(after="test_add_classification")
+def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1 and term1.qualified_name
+    query = Term.with_type_name(term1.type_name) + Term.with_name(term1.name)
+    request = IndexSearchRequest(
+        dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=False
+    )
+    response = client.asset.search(criteria=request)
+
+    # Ensure classification names are not present
+    assert response
+    assert response.current_page() and len(response.current_page()) == 1
+    assert response.current_page()[0].guid == term1.guid
+    assert response.current_page()[0].classification_names is None
+
+    request = IndexSearchRequest(
+        dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=True
+    )
+    response = client.asset.search(criteria=request)
+
+    # Ensure classification names are present
+    assert response
+    assert response.current_page() and len(response.current_page()) == 1
+    assert response.current_page()[0].guid == term1.guid
+    classification_names = response.current_page()[0].classification_names
+    assert classification_names and len(classification_names) == 1
+
+
+@pytest.mark.order(after="test_add_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
     client.asset.remove_atlan_tag(
