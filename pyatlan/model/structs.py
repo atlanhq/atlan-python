@@ -74,6 +74,15 @@ class Histogram(AtlanObject):
     frequencies: Set[float] = Field(description="")
 
 
+class Action(AtlanObject):
+    """Description"""
+
+    task_action_fulfillment_url: Optional[str] = Field(default=None, description="")
+    task_action_fulfillment_method: Optional[str] = Field(default=None, description="")
+    task_action_fulfillment_payload: Optional[str] = Field(default=None, description="")
+    task_action_display_text: Optional[str] = Field(default=None, description="")
+
+
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
@@ -245,6 +254,8 @@ AwsCloudWatchMetric.update_forward_refs()
 KafkaTopicConsumption.update_forward_refs()
 
 Histogram.update_forward_refs()
+
+Action.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 

@@ -8,14 +8,34 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.structs import KafkaTopicConsumption
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .kafka import Kafka
 
 
 class KafkaConsumerGroup(Kafka):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        kafka_topic_qualified_names: List[str],
+    ) -> KafkaConsumerGroup:
+        validate_required_fields(
+            ["name", "kafka_topic_qualified_names"],
+            [name, kafka_topic_qualified_names],
+        )
+        attributes = KafkaConsumerGroup.Attributes.creator(
+            name=name,
+            kafka_topic_qualified_names=kafka_topic_qualified_names,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="KafkaConsumerGroup", allow_mutation=False)
 
@@ -162,6 +182,34 @@ class KafkaConsumerGroup(Kafka):
         kafka_topics: Optional[List[KafkaTopic]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            kafka_topic_qualified_names: List[str],
+        ) -> KafkaConsumerGroup.Attributes:
+            validate_required_fields(
+                ["name", "kafka_topic_qualified_names"],
+                [name, kafka_topic_qualified_names],
+            )
+            kafka_topics = []
+            for kafka_topic_qn in kafka_topic_qualified_names:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    kafka_topic_qn, "kafka_topic_qualified_names", 5
+                )
+                kafka_topics.append(KafkaTopic.ref_by_qualified_name(kafka_topic_qn))
+
+            return KafkaConsumerGroup.Attributes(
+                name=name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qn,
+                kafka_topics=kafka_topics,
+                kafka_topic_qualified_names=set(kafka_topic_qualified_names),
+                qualified_name=f"{connection_qn}/consumer-group/{name}",
+            )
 
     attributes: KafkaConsumerGroup.Attributes = Field(
         default_factory=lambda: KafkaConsumerGroup.Attributes(),

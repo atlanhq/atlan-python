@@ -1,0 +1,17 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> KafkaTopic.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return KafkaTopic.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/topic/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )

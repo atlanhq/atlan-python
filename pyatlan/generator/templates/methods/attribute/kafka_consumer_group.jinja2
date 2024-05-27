@@ -1,0 +1,28 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            kafka_topic_qualified_names: List[str],
+        ) -> KafkaConsumerGroup.Attributes:
+            validate_required_fields(
+                ["name", "kafka_topic_qualified_names"],
+                [name, kafka_topic_qualified_names],
+            )
+            kafka_topics = []
+            for kafka_topic_qn in kafka_topic_qualified_names:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    kafka_topic_qn, "kafka_topic_qualified_names", 5
+                )
+                kafka_topics.append(KafkaTopic.ref_by_qualified_name(kafka_topic_qn))
+
+            return KafkaConsumerGroup.Attributes(
+                name=name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qn,
+                kafka_topics=kafka_topics,
+                kafka_topic_qualified_names=set(kafka_topic_qualified_names),
+                qualified_name=f"{connection_qn}/consumer-group/{name}",
+            )
