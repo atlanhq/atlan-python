@@ -27,7 +27,7 @@ def delete_group(client: AtlanClient, guid: str) -> None:
 
 def delete_sso_mapping(client: AtlanClient, group_map_id: str) -> None:
     response = client.sso.delete_group_mapping(
-        sso_alias=AtlanSSO.AZURE_AD, group_map_id=group_map_id
+        sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=group_map_id
     )
     assert response is None
 
@@ -53,12 +53,12 @@ def sso_mapping(
     assert group
     assert group.id
     response = client.sso.create_group_mapping(
-        sso_alias=AtlanSSO.AZURE_AD, atlan_group=group, sso_group_name=SSO_GROUP_NAME
+        sso_alias=AtlanSSO.JUMPCLOUD, atlan_group=group, sso_group_name=SSO_GROUP_NAME
     )
     assert response
 
     azure_group_mapping = None
-    sso_mappings = client.sso.get_all_group_mappings(sso_alias=AtlanSSO.AZURE_AD)
+    sso_mappings = client.sso.get_all_group_mappings(sso_alias=AtlanSSO.JUMPCLOUD)
     for mapping in sso_mappings:
         if (
             group.id
@@ -77,7 +77,7 @@ def _assert_sso_group_mapping(
 ):
     assert sso_mapping
     assert sso_mapping.id
-    assert sso_mapping.identity_provider_alias == AtlanSSO.AZURE_AD
+    assert sso_mapping.identity_provider_alias == AtlanSSO.JUMPCLOUD
     assert sso_mapping.identity_provider_mapper == SSOClient.IDP_GROUP_MAPPER
     assert sso_mapping.config.attributes == "[]"
     assert sso_mapping.config.group_name == group.name
@@ -115,7 +115,7 @@ def test_sso_create_group_mapping_again_raises_invalid_request_error(
 
     with pytest.raises(InvalidRequestError) as err:
         client.sso.create_group_mapping(
-            sso_alias=AtlanSSO.AZURE_AD,
+            sso_alias=AtlanSSO.JUMPCLOUD,
             atlan_group=group,
             sso_group_name=SSO_GROUP_NAME,
         )
@@ -139,7 +139,7 @@ def test_sso_retrieve_group_mapping(
     time.sleep(5)
 
     retrieved_sso_mapping = client.sso.get_group_mapping(
-        sso_alias=AtlanSSO.AZURE_AD, group_map_id=sso_mapping.id
+        sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=sso_mapping.id
     )
     _assert_sso_group_mapping(group, retrieved_sso_mapping)
 
@@ -155,7 +155,7 @@ def test_sso_retrieve_all_group_mappings(
     assert sso_mapping
     time.sleep(5)
 
-    retrieved_mappings = client.sso.get_all_group_mappings(sso_alias=AtlanSSO.AZURE_AD)
+    retrieved_mappings = client.sso.get_all_group_mappings(sso_alias=AtlanSSO.JUMPCLOUD)
     assert len(retrieved_mappings) >= 1
     mapping_found = False
     for mapping in retrieved_mappings:
@@ -169,7 +169,7 @@ def test_sso_retrieve_all_group_mappings(
     if not mapping_found:
         pytest.fail(
             f"{group.alias} (Atlan Group) <-> ({sso_mapping.config.attribute_value}) "
-            f"{AtlanSSO.AZURE_AD} SSO group mapping not found."
+            f"{AtlanSSO.JUMPCLOUD} SSO group mapping not found."
         )
 
 
@@ -184,7 +184,7 @@ def test_update_group_mapping(
     assert sso_mapping.id
 
     updated_mapping = client.sso.update_group_mapping(
-        sso_alias=AtlanSSO.AZURE_AD,
+        sso_alias=AtlanSSO.JUMPCLOUD,
         atlan_group=group,
         group_map_id=sso_mapping.id,
         sso_group_name=SSO_GROUP_NAME_UPDATED,
