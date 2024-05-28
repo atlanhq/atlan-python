@@ -1883,6 +1883,14 @@ class IndexSearchRequest(SearchRequest):
         "this is false and therefore only active (not deleted) relationships will be included.",
         alias="allowDeletedRelations",
     )
+    include_atlan_tag_names: Optional[bool] = Field(
+        default=None,
+        description=(
+            "Whether to include Atlan tag names for this asset (`True`) or not (`False`) "
+            "Note: This will only work when `exclude_atlan_tags` is set to `True`."
+        ),
+        alias="includeClassificationNames",
+    )
 
     class Metadata(AtlanObject):
         save_search_log: bool = Field(

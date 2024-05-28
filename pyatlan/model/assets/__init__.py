@@ -2,9 +2,11 @@
 # isort: skip_file
 from .referenceable import Referenceable
 from .asset import Asset
+from .task import Task
 from .data_set import DataSet
 from .tag_attachment import TagAttachment
 from .connection import Connection
+from .workflow import Workflow
 from .process import Process
 from .atlas_glossary_category import AtlasGlossaryCategory
 from .stakeholder_title import StakeholderTitle
@@ -12,6 +14,7 @@ from .badge import Badge
 from .access_control import AccessControl
 from .namespace import Namespace
 from .catalog import Catalog
+from .workflow_run import WorkflowRun
 from .atlas_glossary import AtlasGlossary
 from .auth_policy import AuthPolicy
 from .process_execution import ProcessExecution
@@ -260,9 +263,11 @@ from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
 localns = locals()
 Referenceable.Attributes.update_forward_refs(**localns)
 Asset.Attributes.update_forward_refs(**localns)
+Task.Attributes.update_forward_refs(**localns)
 DataSet.Attributes.update_forward_refs(**localns)
 TagAttachment.Attributes.update_forward_refs(**localns)
 Connection.Attributes.update_forward_refs(**localns)
+Workflow.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
 StakeholderTitle.Attributes.update_forward_refs(**localns)
@@ -270,6 +275,7 @@ Badge.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
 Namespace.Attributes.update_forward_refs(**localns)
 Catalog.Attributes.update_forward_refs(**localns)
+WorkflowRun.Attributes.update_forward_refs(**localns)
 AtlasGlossary.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 ProcessExecution.Attributes.update_forward_refs(**localns)

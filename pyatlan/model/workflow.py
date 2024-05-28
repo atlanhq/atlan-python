@@ -155,6 +155,11 @@ class WorkflowRunResponse(WorkflowResponse):
     status: WorkflowSearchResultStatus
 
 
+class ScheduleQueriesSearchRequest(AtlanObject):
+    start_date: str = Field(description="Start date in ISO 8601 format")
+    end_date: str = Field(description="End date in ISO 8601 format")
+
+
 class WorkflowSchedule(AtlanObject):
     timezone: str
     cron_schedule: str
