@@ -78,7 +78,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         return cls.creator(name=name, anchor=anchor, parent_category=parent_category)
 
     def trim_to_required(self) -> AtlasGlossaryCategory:
-        # Then back end raises an exception unless the glossary_guid is provided. Providing the glossary_qualified_name
+        # The back end raises an exception unless the glossary_guid is provided. Providing the glossary_qualified_name
         # won't work
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
