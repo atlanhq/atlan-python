@@ -99,8 +99,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             ["name", "qualified_name", "glossary_guid"],
             [name, qualified_name, glossary_guid],
         )
-        glossary = AtlasGlossary()
-        glossary.guid = glossary_guid
+        glossary = AtlasGlossary.ref_by_guid(glossary_guid)
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name, name=name, anchor=glossary
