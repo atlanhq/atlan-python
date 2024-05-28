@@ -572,9 +572,11 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">,</span> <span class="n">parent_category</span><span class="o">=</span><span class="n">parent_category</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">trim_to_required</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryCategory</span><span class="p">:</span>
+        <span class="c1"># The backend raises an exception unless the `glossary_guid` is provided.</span>
+        <span class="c1"># Providing the `glossary_qualified_name` won&#39;t work</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">guid</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;anchor.guid must be available&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_for_modification</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">updater</span><span class="p">(</span>
             <span class="n">qualified_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="n">glossary_guid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">guid</span><span class="p">,</span>
@@ -591,8 +593,7 @@
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;glossary_guid&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">,</span> <span class="n">glossary_guid</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">glossary</span> <span class="o">=</span> <span class="n">AtlasGlossary</span><span class="p">()</span>
-        <span class="n">glossary</span><span class="o">.</span><span class="n">guid</span> <span class="o">=</span> <span class="n">glossary_guid</span>
+        <span class="n">glossary</span> <span class="o">=</span> <span class="n">AtlasGlossary</span><span class="o">.</span><span class="n">ref_by_guid</span><span class="p">(</span><span class="n">glossary_guid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">attributes</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
                 <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">glossary</span>
