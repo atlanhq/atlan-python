@@ -1,3 +1,21 @@
+## 2.2.2 (May 28, 2024)
+
+### New features
+
+- Added creator methods to `Kafka` and `AzureEventHub` assets.
+- Added support for `includeClassificationNames` in `IndexSearchRequest`.
+- Expanded the functionality of the `WorkflowClient` with new methods for scheduled query workflows.
+
+### Bug fixes
+
+- Fixed the `AtlasGlossaryCategory.trim_to_required()` method to use `updater()` instead of `create_for_modification()`.
+
+### QOL improvements
+
+- Generated the latest typedef models, including `Workflow` and `WorkflowRun`.
+- Updated the SSO provider in `test_sso_client.py` to check for `JUMPCLOUD` instead of `AZURE_AD`.
+- Updated the Pydantic dependency (`pydantic>=2.0.0,<3.0.0`) to provide more flexibility for users.
+
 ## 2.2.1 (May 21, 2024)
 
 ### New features
