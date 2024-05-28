@@ -117,7 +117,7 @@ def test_update_when_parent_category_is_removed():
 
 
 def test_trim_to_required():
-    sut = AtlasGlossaryCategory.create_for_modification(
+    sut = AtlasGlossaryCategory.updater(
         qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,
         name=GLOSSARY_CATEGORY_NAME,
         glossary_guid=GLOSSARY_GUID,
@@ -133,7 +133,7 @@ def test_trim_to_required():
     [(None), (AtlasGlossary())],
 )
 def test_trim_to_required_raises_value_error_when_anchor_is_none(anchor):
-    sut = AtlasGlossaryCategory.create_for_modification(
+    sut = AtlasGlossaryCategory.updater(
         qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,
         name=GLOSSARY_CATEGORY_NAME,
         glossary_guid=GLOSSARY_GUID,

@@ -58,9 +58,11 @@
         return cls.creator(name=name, anchor=anchor, parent_category=parent_category)
 
     def trim_to_required(self) -> AtlasGlossaryCategory:
+        # The backend raises an exception unless the `glossary_guid` is provided.
+        # Providing the `glossary_qualified_name` won't work
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
-        return self.create_for_modification(
+        return self.updater(
             qualified_name=self.qualified_name or "",
             name=self.name or "",
             glossary_guid=self.anchor.guid,
@@ -77,8 +79,7 @@
             ["name", "qualified_name", "glossary_guid"],
             [name, qualified_name, glossary_guid],
         )
-        glossary = AtlasGlossary()
-        glossary.guid = glossary_guid
+        glossary = AtlasGlossary.ref_by_guid(glossary_guid)
         return cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name, name=name, anchor=glossary

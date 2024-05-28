@@ -97,7 +97,7 @@ def test_create_with_missing_parameters_raise_value_error(
             None,
             GLOSSARY_GUID,
             [
-                AtlasGlossaryCategory.create_for_modification(
+                AtlasGlossaryCategory.updater(
                     qualified_name="123", name="Category", glossary_guid=GLOSSARY_GUID
                 )
             ],
