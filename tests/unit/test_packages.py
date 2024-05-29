@@ -8,6 +8,7 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.packages import (
     BigQueryCrawler,
     ConfluentKafkaCrawler,
+    ConnectionDelete,
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
@@ -43,6 +44,8 @@ POSTGRES_DIRECT_BASIC = "postgres_direct_basic.json"
 POSTGRES_DIRECT_IAM_USER = "postgres_direct_iam_user.json"
 POSTGRES_DIRECT_IAM_ROLE = "postgres_direct_iam_role.json"
 POSTGRES_S3_OFFLINE = "postgres_s3_offline.json"
+CONNECTION_DELETE_HARD = "connection_delete_hard.json"
+CONNECTION_DELETE_SOFT = "connection_delete_soft.json"
 
 
 class NonSerializable:
@@ -573,6 +576,22 @@ def test_postgres_package(mock_package_env):
 
     request_json = loads(postgres_s3_offline.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(POSTGRES_S3_OFFLINE)
+
+
+def test_connection_delete_package(mock_package_env):
+    # With PURGE (hard delete)
+    connection_delete_hard = ConnectionDelete(
+        qualified_name="default/snowflake/1234567890", purge=True
+    ).to_workflow()
+    request_json = loads(connection_delete_hard.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(CONNECTION_DELETE_HARD)
+
+    # Without PURGE (soft delete)
+    connection_delete_soft = ConnectionDelete(
+        qualified_name="default/snowflake/1234567890", purge=False
+    ).to_workflow()
+    request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(CONNECTION_DELETE_SOFT)
 
 
 @pytest.mark.parametrize(
