@@ -1,10 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from threading import Lock
 from typing import Dict, Iterable, Optional
 
 from pyatlan.client.token import SERVICE_ACCOUNT_, TokenClient
 from pyatlan.client.user import UserClient
 from pyatlan.errors import ErrorCode
+
+lock = Lock()
 
 
 class UserCache:
@@ -18,13 +21,14 @@ class UserCache:
     def get_cache(cls) -> "UserCache":
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client()
-        cache_key = client.cache_key
-        if cache_key not in cls.caches:
-            cls.caches[cache_key] = UserCache(
-                user_client=client.user, token_client=client.token
-            )
-        return cls.caches[cache_key]
+        with lock:
+            client = AtlanClient.get_default_client()
+            cache_key = client.cache_key
+            if cache_key not in cls.caches:
+                cls.caches[cache_key] = UserCache(
+                    user_client=client.user, token_client=client.token
+                )
+            return cls.caches[cache_key]
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
@@ -71,20 +75,22 @@ class UserCache:
         self.map_id_to_name: Dict[str, str] = {}
         self.map_name_to_id: Dict[str, str] = {}
         self.map_email_to_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
-        users = self.user_client.get_all()
-        if users is not None:
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            self.map_email_to_id = {}
-            for user in users:
-                user_id = str(user.id)
-                username = str(user.username)
-                user_email = str(user.email)
-                self.map_id_to_name[user_id] = username
-                self.map_name_to_id[username] = user_id
-                self.map_email_to_id[user_email] = user_id
+        with self.lock:
+            users = self.user_client.get_all()
+            if users is not None:
+                self.map_id_to_name = {}
+                self.map_name_to_id = {}
+                self.map_email_to_id = {}
+                for user in users:
+                    user_id = str(user.id)
+                    username = str(user.username)
+                    user_email = str(user.email)
+                    self.map_id_to_name[user_id] = username
+                    self.map_name_to_id[username] = user_id
+                    self.map_email_to_id[user_email] = user_id
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """

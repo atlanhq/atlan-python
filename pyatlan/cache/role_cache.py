@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from threading import Lock
 from typing import Dict, Iterable, Optional
 
 from pyatlan.client.role import RoleClient
 from pyatlan.model.role import AtlanRole
+
+lock: Lock = Lock()
 
 
 class RoleCache:
@@ -17,11 +20,12 @@ class RoleCache:
     def get_cache(cls) -> "RoleCache":
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client()
-        cache_key = client.cache_key
-        if cache_key not in cls.caches:
-            cls.caches[cache_key] = RoleCache(role_client=client.role)
-        return cls.caches[cache_key]
+        with lock:
+            client = AtlanClient.get_default_client()
+            cache_key = client.cache_key
+            if cache_key not in cls.caches:
+                cls.caches[cache_key] = RoleCache(role_client=client.role)
+            return cls.caches[cache_key]
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
@@ -57,21 +61,23 @@ class RoleCache:
         self.cache_by_id: Dict[str, AtlanRole] = {}
         self.map_id_to_name: Dict[str, str] = {}
         self.map_name_to_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
-        response = self.role_client.get(
-            limit=100, post_filter='{"name":{"$ilike":"$%"}}'
-        )
-        if response is not None:
-            self.cache_by_id = {}
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            for role in response.records:
-                role_id = role.id
-                role_name = role.name
-                self.cache_by_id[role_id] = role
-                self.map_id_to_name[role_id] = role_name
-                self.map_name_to_id[role_name] = role_id
+        with self.lock:
+            response = self.role_client.get(
+                limit=100, post_filter='{"name":{"$ilike":"$%"}}'
+            )
+            if response is not None:
+                self.cache_by_id = {}
+                self.map_id_to_name = {}
+                self.map_name_to_id = {}
+                for role in response.records:
+                    role_id = role.id
+                    role_name = role.name
+                    self.cache_by_id[role_id] = role
+                    self.map_id_to_name[role_id] = role_name
+                    self.map_name_to_id[role_name] = role_id
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """

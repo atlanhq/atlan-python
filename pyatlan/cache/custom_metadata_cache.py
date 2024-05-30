@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from threading import Lock
 from typing import Dict, List, Optional, Set
 
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
+
+lock = Lock()
 
 
 class CustomMetadataCache:
@@ -20,11 +23,15 @@ class CustomMetadataCache:
     def get_cache(cls) -> "CustomMetadataCache":
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client()
-        cache_key = client.cache_key
-        if cache_key not in cls.caches:
-            cls.caches[cache_key] = CustomMetadataCache(typedef_client=client.typedef)
-        return cls.caches[cache_key]
+        with lock:
+            client = AtlanClient.get_default_client()
+            cache_key = client.cache_key
+            if cache_key not in cls.caches:
+                cls.caches[cache_key] = CustomMetadataCache(
+                    typedef_client=client.typedef
+                )
+            cache = cls.caches[cache_key]
+        return cache
 
     @classmethod
     def refresh_cache(cls) -> None:
@@ -176,6 +183,7 @@ class CustomMetadataCache:
         self.map_attr_name_to_id: Dict[str, Dict[str, str]] = {}
         self.archived_attr_ids: Dict[str, str] = {}
         self.types_by_asset: Dict[str, Set[type]] = {}
+        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
         """
@@ -183,41 +191,45 @@ class CustomMetadataCache:
         structures from Atlan.
         :raises LogicError: if duplicate custom attributes are detected
         """
-        response = self.typedef_client.get(
-            type_category=[AtlanTypeCategory.CUSTOM_METADATA, AtlanTypeCategory.STRUCT]
-        )
-        if not response or not response.struct_defs:
-            raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
-        if response is not None:
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            self.map_attr_id_to_name = {}
-            self.map_attr_name_to_id = {}
-            self.archived_attr_ids = {}
-            self.cache_by_id = {}
-            self.attr_cache_by_id = {}
-            for cm in response.custom_metadata_defs:
-                type_id = cm.name
-                type_name = cm.display_name
-                self.cache_by_id[type_id] = cm
-                self.map_id_to_name[type_id] = type_name
-                self.map_name_to_id[type_name] = type_id
-                self.map_attr_id_to_name[type_id] = {}
-                self.map_attr_name_to_id[type_id] = {}
-                if cm.attribute_defs:
-                    for attr in cm.attribute_defs:
-                        attr_id = str(attr.name)
-                        attr_name = str(attr.display_name)
-                        self.map_attr_id_to_name[type_id][attr_id] = attr_name
-                        self.attr_cache_by_id[attr_id] = attr
-                        if attr.options and attr.options.is_archived:
-                            self.archived_attr_ids[attr_id] = attr_name
-                        elif attr_name in self.map_attr_name_to_id[type_id]:
-                            raise ErrorCode.DUPLICATE_CUSTOM_ATTRIBUTES.exception_with_parameters(
-                                attr_name, type_name
-                            )
-                        else:
-                            self.map_attr_name_to_id[type_id][attr_name] = attr_id
+        with self.lock:
+            response = self.typedef_client.get(
+                type_category=[
+                    AtlanTypeCategory.CUSTOM_METADATA,
+                    AtlanTypeCategory.STRUCT,
+                ]
+            )
+            if not response or not response.struct_defs:
+                raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
+            if response is not None:
+                self.map_id_to_name = {}
+                self.map_name_to_id = {}
+                self.map_attr_id_to_name = {}
+                self.map_attr_name_to_id = {}
+                self.archived_attr_ids = {}
+                self.cache_by_id = {}
+                self.attr_cache_by_id = {}
+                for cm in response.custom_metadata_defs:
+                    type_id = cm.name
+                    type_name = cm.display_name
+                    self.cache_by_id[type_id] = cm
+                    self.map_id_to_name[type_id] = type_name
+                    self.map_name_to_id[type_name] = type_id
+                    self.map_attr_id_to_name[type_id] = {}
+                    self.map_attr_name_to_id[type_id] = {}
+                    if cm.attribute_defs:
+                        for attr in cm.attribute_defs:
+                            attr_id = str(attr.name)
+                            attr_name = str(attr.display_name)
+                            self.map_attr_id_to_name[type_id][attr_id] = attr_name
+                            self.attr_cache_by_id[attr_id] = attr
+                            if attr.options and attr.options.is_archived:
+                                self.archived_attr_ids[attr_id] = attr_name
+                            elif attr_name in self.map_attr_name_to_id[type_id]:
+                                raise ErrorCode.DUPLICATE_CUSTOM_ATTRIBUTES.exception_with_parameters(
+                                    attr_name, type_name
+                                )
+                            else:
+                                self.map_attr_name_to_id[type_id][attr_name] = attr_id
 
     def _get_id_for_name(self, name: str) -> str:
         """
