@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import time
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, cast
+from typing import Any, Callable, ClassVar, Dict, List, Literal, Optional, Set, cast
 
 from pydantic.v1 import Field, PrivateAttr
 
@@ -145,7 +145,10 @@ _all_glossary_types: Set[str] = {
 
 _all_domains: Set[str] = {"*/super"}
 
-_all_domain_types: Set[str] = {"DataDomain", "DataProduct"}
+_all_domain_types: Set[Literal["DataDomain", "DataProduct"]] = {
+    "DataDomain",
+    "DataProduct",
+}
 
 _all_other_types: Set[str] = {"File"}
 
@@ -658,7 +661,7 @@ class AttributeDef(AtlanObject):
         self.options.applicable_glossary_types = json.dumps(list(glossary_types))
 
     @property
-    def applicable_domain_types(self) -> Set[str]:
+    def applicable_domain_types(self) -> Set[Literal["DataDomain", "DataProduct"]]:
         """
         Data product type names to which to restrict the attribute.
         These cover asset types in data products and data domains.
@@ -669,7 +672,9 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_domain_types.setter
-    def applicable_domain_types(self, domain_types: Set[str]):
+    def applicable_domain_types(
+        self, domain_types: Set[Literal["DataDomain", "DataProduct"]]
+    ):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(domain_types, set):
@@ -782,7 +787,9 @@ class AttributeDef(AtlanObject):
         applicable_glossary_types: Optional[Set[str]] = None,
         applicable_other_asset_types: Optional[Set[str]] = None,
         applicable_domains: Optional[Set[str]] = None,
-        applicable_domain_types: Optional[Set[str]] = None,
+        applicable_domain_types: Optional[
+            Set[Literal["DataDomain", "DataProduct"]]
+        ] = None,
     ) -> AttributeDef:
         from pyatlan.utils import validate_required_fields
 
