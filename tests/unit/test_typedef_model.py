@@ -3,6 +3,7 @@
 import json
 import random
 from pathlib import Path
+from re import escape
 from unittest.mock import Mock, patch
 
 import pytest
@@ -22,17 +23,20 @@ from pyatlan.model.typedef import (
     StructDef,
     TypeDef,
     TypeDefResponse,
+    _all_domain_types,
     _all_glossary_types,
     _all_other_types,
     _complete_type_list,
 )
 from pyatlan.model.utils import to_camel_case, to_snake_case
 from tests.unit.constants import (
-    APLICABLE_GLOSSARY_TYPES,
     APPLICABLE_ASSET_TYPES,
     APPLICABLE_CONNECTIONS,
+    APPLICABLE_DOMAIN_TYPES,
+    APPLICABLE_DOMAINS,
     APPLICABLE_ENTITY_TYPES,
     APPLICABLE_GLOSSARIES,
+    APPLICABLE_GLOSSARY_TYPES,
     APPLICABLE_OTHER_ASSET_TYPES,
     TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES,
     TEST_ENUM_DEF,
@@ -344,7 +348,8 @@ class TestAttributeDef:
         "attribute, value",
         [
             (APPLICABLE_ASSET_TYPES, {"Table"}),
-            (APLICABLE_GLOSSARY_TYPES, {"AtlasGlossary"}),
+            (APPLICABLE_GLOSSARY_TYPES, {"AtlasGlossary"}),
+            (APPLICABLE_DOMAIN_TYPES, {"DataDomain", "DataProduct"}),
             (APPLICABLE_OTHER_ASSET_TYPES, {"File"}),
             (APPLICABLE_ENTITY_TYPES, {"Asset"}),
         ],
@@ -367,18 +372,20 @@ class TestAttributeDef:
     def test_applicable_types_with_invalid_type_raises_invalid_request_error(
         self, attribute, value, message, sut: AttributeDef
     ):
-        with pytest.raises(InvalidRequestError, match=message):
+        with pytest.raises(InvalidRequestError, match=escape(message)):
             setattr(sut, attribute, value)
 
     @pytest.mark.parametrize(
         "attribute, value",
         [
             (APPLICABLE_ASSET_TYPES, {random.choice(list(_complete_type_list))}),
-            (APLICABLE_GLOSSARY_TYPES, {random.choice(list(_all_glossary_types))}),
+            (APPLICABLE_GLOSSARY_TYPES, {random.choice(list(_all_glossary_types))}),
+            (APPLICABLE_DOMAIN_TYPES, {random.choice(list(_all_domain_types))}),
             (APPLICABLE_OTHER_ASSET_TYPES, {random.choice(list(_all_other_types))}),
             (APPLICABLE_ENTITY_TYPES, {"Asset"}),
             (APPLICABLE_CONNECTIONS, {"default/snowflake/1699268171"}),
             (APPLICABLE_GLOSSARIES, {"8Jdg4PdxcURBBNDt2RZD3"}),
+            (APPLICABLE_DOMAINS, {"default/domain/uuBI8WSqeom1PXs7oo20L/super"}),
         ],
     )
     def test_applicable_types_with_valid_value(
@@ -395,10 +402,12 @@ class TestAttributeDef:
             applicable_other_asset_types={"File"},
             applicable_glossaries={"8Jdg4PdxcURBBNDt2RZD3"},
             applicable_glossary_types={"AtlasGlossaryTerm", "AtlasGlossaryCategory"},
+            applicable_domain_types={"DataDomain", "DataProduct"},
             applicable_connections={
                 "default/snowflake/1699268171",
                 "default/snowflake/16992681799",
             },
+            applicable_domains={"default/domain/uuBI8WSqeom1PXs7oo20L/super"},
         )
         attribute_def_with_limited = AttributeDef.create(
             display_name="test-attr-def",
