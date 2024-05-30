@@ -1796,6 +1796,11 @@ class PersonaDomainAction(str, Enum):
     READ_PRODUCTS = "persona-domain-product-read"
     UPDATE_PRODUCTS = "persona-domain-product-update"
     DELETE_PRODUCTS = "persona-domain-product-delete"
+    UPDATE_DOMAIN_CUSTOM_METADATA = "persona-domain-business-update-metadata"
+    UPDATE_SUBDOMAIN_CUSTOM_METADATA = (
+        "persona-domain-sub-domain-business-update-metadata"
+    )
+    UPDATE_PRODUCT_CUSTOM_METADATA = "persona-domain-product-business-update-metadata"
 
 
 class PurposeMetadataAction(str, Enum):

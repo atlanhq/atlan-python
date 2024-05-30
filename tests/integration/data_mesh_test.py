@@ -8,13 +8,17 @@ from pyatlan.model.assets import AtlasGlossaryTerm, DataDomain, DataProduct
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
+    AtlanCustomAttributePrimitiveType,
+    AtlanTypeCategory,
     CertificateStatus,
     DataProductStatus,
     EntityStatus,
 )
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.response import AssetMutationResponse
+from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 from tests.integration.client import TestId, delete_asset
+from tests.integration.custom_metadata_test import create_custom_metadata
 from tests.integration.utils import block
 
 DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = (
@@ -36,7 +40,8 @@ DATA_PRODUCT_QUALIFIED_NAME = (
     f"{DATA_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_NAME}"
 )
 DATA_PRODUCT_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super/product/[a-zA-Z0-9-]+"
-
+DD_CM = f"{MODULE_NAME}_CM"
+DD_ATTR = f"{MODULE_NAME}_ATTRIBUTE"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
@@ -195,6 +200,41 @@ def test_find_sub_domain_by_name(client: AtlanClient, sub_domain: DataDomain):
     assert response
     assert response.guid == sub_domain.guid
     assert response.certificate_status == CertificateStatus.VERIFIED
+
+
+@pytest.fixture(scope="module")
+def data_domain_cm(
+    client: AtlanClient, domain: DataDomain
+) -> Generator[CustomMetadataDef, None, None]:
+    assert domain.qualified_name
+    attribute_defs = [
+        AttributeDef.create(
+            display_name=DD_ATTR,
+            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            applicable_domain_types={"DataDomain", "DataProduct"},
+            applicable_domains={domain.qualified_name},
+        )
+    ]
+    dd_cm = create_custom_metadata(
+        client, name=DD_CM, attribute_defs=attribute_defs, logo="📦", locked=True
+    )
+    yield dd_cm
+    client.typedef.purge(DD_CM, CustomMetadataDef)
+
+
+def test_data_domain_cm(data_domain_cm: CustomMetadataDef):
+    assert data_domain_cm.guid
+    assert data_domain_cm.name != DD_CM
+    assert data_domain_cm.display_name == DD_CM
+    assert data_domain_cm.category == AtlanTypeCategory.CUSTOM_METADATA
+
+    attributes = data_domain_cm.attribute_defs
+    attribute = attributes[0]
+    assert attribute.name != DD_ATTR
+    assert attribute.display_name == DD_ATTR
+    assert attribute.options
+    assert not attribute.options.multi_value_select
+    assert attribute.type_name == AtlanCustomAttributePrimitiveType.STRING.value
 
 
 @pytest.fixture(scope="module")
