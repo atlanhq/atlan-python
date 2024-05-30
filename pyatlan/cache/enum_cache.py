@@ -26,8 +26,8 @@ class EnumCache:
             client = AtlanClient.get_default_client()
             cache_key = client.cache_key
             if cache_key not in cls.caches:
-                cache = cls.caches[cache_key] = EnumCache(typedef_client=client.typedef)
-        return cache
+                cls.caches[cache_key] = EnumCache(typedef_client=client.typedef)
+            return cls.caches[cache_key]
 
     @classmethod
     def refresh_cache(cls) -> None:

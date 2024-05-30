@@ -24,8 +24,7 @@ class GroupCache:
             cache_key = client.cache_key
             if cache_key not in cls.caches:
                 cls.caches[cache_key] = GroupCache(group_client=client.group)
-            cache = cls.caches[cache_key]
-        return cache
+            return cls.caches[cache_key]
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
