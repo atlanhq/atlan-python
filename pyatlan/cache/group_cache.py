@@ -95,11 +95,10 @@ class GroupCache:
         :param name: internal name of the group
         :returns: unique identifier (GUID) of the group
         """
-        with self.lock:
-            if group_id := self.map_name_to_id.get(name):
-                return group_id
-            self._refresh_cache()
-            return self.map_name_to_id.get(name)
+        if group_id := self.map_name_to_id.get(name):
+            return group_id
+        self._refresh_cache()
+        return self.map_name_to_id.get(name)
 
     def _get_id_for_alias(self, alias: str) -> Optional[str]:
         """
@@ -108,11 +107,10 @@ class GroupCache:
         :param alias: name of the group as it appears in the UI
         :returns: unique identifier (GUID) of the group
         """
-        with self.lock:
-            if group_id := self.map_alias_to_id.get(alias):
-                return group_id
-            self._refresh_cache()
-            return self.map_alias_to_id.get(alias)
+        if group_id := self.map_alias_to_id.get(alias):
+            return group_id
+        self._refresh_cache()
+        return self.map_alias_to_id.get(alias)
 
     def _get_name_for_id(self, idstr: str) -> Optional[str]:
         """
@@ -121,11 +119,10 @@ class GroupCache:
         :param idstr: unique identifier (GUID) of the group
         :returns: internal name of the group
         """
-        with self.lock:
-            if group_name := self.map_id_to_name.get(idstr):
-                return group_name
-            self._refresh_cache()
-            return self.map_id_to_name.get(idstr)
+        if group_name := self.map_id_to_name.get(idstr):
+            return group_name
+        self._refresh_cache()
+        return self.map_id_to_name.get(idstr)
 
     def _validate_aliases(self, aliases: Iterable[str]):
         """
@@ -133,9 +130,8 @@ class GroupCache:
 
         :param aliases: a collection of (internal) group names to be checked
         """
-        with self.lock:
-            for group_alias in aliases:
-                if not self.get_id_for_name(group_alias):
-                    raise ValueError(
-                        f"Provided group name {group_alias} was not found in Atlan."
-                    )
+        for group_alias in aliases:
+            if not self.get_id_for_name(group_alias):
+                raise ValueError(
+                    f"Provided group name {group_alias} was not found in Atlan."
+                )

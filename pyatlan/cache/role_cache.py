@@ -86,11 +86,10 @@ class RoleCache:
         :param name: human-readable name of the role
         :returns: unique identifier (GUID) of the role
         """
-        with self.lock:
-            if role_id := self.map_name_to_id.get(name):
-                return role_id
-            self._refresh_cache()
-            return self.map_name_to_id.get(name)
+        if role_id := self.map_name_to_id.get(name):
+            return role_id
+        self._refresh_cache()
+        return self.map_name_to_id.get(name)
 
     def _get_name_for_id(self, idstr: str) -> Optional[str]:
         """
@@ -99,11 +98,10 @@ class RoleCache:
         :param idstr: unique identifier (GUID) of the role
         :returns: human-readable name of the role
         """
-        with self.lock:
-            if role_name := self.map_id_to_name.get(idstr):
-                return role_name
-            self._refresh_cache()
-            return self.map_id_to_name.get(idstr)
+        if role_name := self.map_id_to_name.get(idstr):
+            return role_name
+        self._refresh_cache()
+        return self.map_id_to_name.get(idstr)
 
     def _validate_idstrs(self, idstrs: Iterable[str]):
         """
@@ -111,9 +109,6 @@ class RoleCache:
 
         :param idstrs: a collection of unique identifiers (GUID) of the roles to be checked
         """
-        with self.lock:
-            for role_id in idstrs:
-                if not self.get_name_for_id(role_id):
-                    raise ValueError(
-                        f"Provided role ID {role_id} was not found in Atlan."
-                    )
+        for role_id in idstrs:
+            if not self.get_name_for_id(role_id):
+                raise ValueError(f"Provided role ID {role_id} was not found in Atlan.")

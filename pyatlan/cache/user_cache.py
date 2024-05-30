@@ -99,22 +99,21 @@ class UserCache:
         :param name: human-readable name of the user
         :returns: unique identifier (GUID) of the user
         """
-        with self.lock:
-            if user_id := self.map_name_to_id.get(name):
-                return user_id
-            # If we are translating an API token,
-            # short-circuit any further cache refresh
-            if name.startswith(SERVICE_ACCOUNT_):
-                token = self.token_client.get_by_id(client_id=name)
-                if token and token.guid:
-                    self.map_name_to_id[name] = token.guid
-                    return token.guid
-                else:
-                    raise ErrorCode.API_TOKEN_NOT_FOUND_BY_NAME.exception_with_parameters(
-                        name
-                    )
-            self._refresh_cache()
-            return self.map_name_to_id.get(name)
+        if user_id := self.map_name_to_id.get(name):
+            return user_id
+        # If we are translating an API token,
+        # short-circuit any further cache refresh
+        if name.startswith(SERVICE_ACCOUNT_):
+            token = self.token_client.get_by_id(client_id=name)
+            if token and token.guid:
+                self.map_name_to_id[name] = token.guid
+                return token.guid
+            else:
+                raise ErrorCode.API_TOKEN_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    name
+                )
+        self._refresh_cache()
+        return self.map_name_to_id.get(name)
 
     def _get_id_for_email(self, email: str) -> Optional[str]:
         """
@@ -123,11 +122,10 @@ class UserCache:
         :param email: email address of the user
         :returns: unique identifier (GUID) of the user
         """
-        with self.lock:
-            if user_id := self.map_email_to_id.get(email):
-                return user_id
-            self._refresh_cache()
-            return self.map_email_to_id.get(email)
+        if user_id := self.map_email_to_id.get(email):
+            return user_id
+        self._refresh_cache()
+        return self.map_email_to_id.get(email)
 
     def _get_name_for_id(self, idstr: str) -> Optional[str]:
         """
@@ -136,17 +134,16 @@ class UserCache:
         :param idstr: unique identifier (GUID) of the user
         :returns: username of the user
         """
-        with self.lock:
-            if username := self.map_id_to_name.get(idstr):
-                return username
-            # If the username isn't found, check if it is an API token
-            token = self.token_client.get_by_guid(guid=idstr)
-            if token and token.client_id:
-                username = f"{SERVICE_ACCOUNT_}{token.client_id}"
-                return username
-            else:
-                self._refresh_cache()
-                return self.map_id_to_name.get(idstr)
+        if username := self.map_id_to_name.get(idstr):
+            return username
+        # If the username isn't found, check if it is an API token
+        token = self.token_client.get_by_guid(guid=idstr)
+        if token and token.client_id:
+            username = f"{SERVICE_ACCOUNT_}{token.client_id}"
+            return username
+        else:
+            self._refresh_cache()
+            return self.map_id_to_name.get(idstr)
 
     def _validate_names(self, names: Iterable[str]):
         """
@@ -154,11 +151,10 @@ class UserCache:
 
         :param names: a collection of usernames to be checked
         """
-        with self.lock:
-            for username in names:
-                if not self.get_id_for_name(
-                    username
-                ) and not self.token_client.get_by_id(username):
-                    raise ValueError(
-                        f"Provided username {username} was not found in Atlan."
-                    )
+        for username in names:
+            if not self.get_id_for_name(username) and not self.token_client.get_by_id(
+                username
+            ):
+                raise ValueError(
+                    f"Provided username {username} was not found in Atlan."
+                )

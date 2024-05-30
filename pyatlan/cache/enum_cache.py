@@ -75,10 +75,9 @@ class EnumCache:
         :param name: human-readable name of the enumeration
         :returns: the enumeration definition
         """
-        with self.lock:
-            if name:
-                if enum_def := self.cache_by_name.get(name):
-                    return enum_def
-                self._refresh_cache()
-                return self.cache_by_name.get(name)
-            return None
+        if name:
+            if enum_def := self.cache_by_name.get(name):
+                return enum_def
+            self._refresh_cache()
+            return self.cache_by_name.get(name)
+        return None
