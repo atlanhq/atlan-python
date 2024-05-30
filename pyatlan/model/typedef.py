@@ -143,6 +143,9 @@ _all_glossary_types: Set[str] = {
     "AtlasGlossaryTerm",
 }
 
+_all_domains: Set[str] = {"*/super"}
+
+_all_domain_types: Set[str] = {"DataDomain", "DataProduct"}
 
 _all_other_types: Set[str] = {"File"}
 
@@ -415,6 +418,12 @@ class AttributeDef(AtlanObject):
             "Only glossary assets within one of these glossaries will have this attribute available. "
             "To further restrict the types of assets within the glossaries, see applicable_glossary_types.",
         )
+        applicable_domains: Optional[str] = Field(
+            default=None,
+            description="Qualified names of domains to which to restrict the attribute. "
+            "Only domains and data products within one of these domains will have this attribute available. "
+            "To further restrict the types of assets within the domains, see applicable_domain_types.",
+        )
         applicable_asset_types: Optional[str] = Field(
             default=None,
             alias="assetTypesList",
@@ -430,6 +439,13 @@ class AttributeDef(AtlanObject):
             "Only glossary assets of one of these types will have this attribute available. "
             "To further restrict the glossary content for this "
             "custom metadata by glossary, see applicable_glossaries.",
+        )
+        applicable_domain_types: Optional[str] = Field(
+            default=None,
+            alias="domainTypesList",
+            description="Data product type names to which to restrict the attribute. "
+            "These cover asset types in data products and data domains. "
+            "Only assets of one of these types will have this attribute available.",
         )
         applicable_other_asset_types: Optional[str] = Field(
             default=None,
@@ -562,10 +578,12 @@ class AttributeDef(AtlanObject):
     _convenience_properties: ClassVar[List[str]] = [
         "applicable_asset_types",
         "applicable_glossary_types",
+        "applicable_domain_types",
         "applicable_other_asset_types",
         "applicable_entity_types",
         "applicable_connections",
         "applicable_glossaries",
+        "applicable_domains",
     ]
 
     @property
@@ -640,6 +658,31 @@ class AttributeDef(AtlanObject):
         self.options.applicable_glossary_types = json.dumps(list(glossary_types))
 
     @property
+    def applicable_domain_types(self) -> Set[str]:
+        """
+        Data product type names to which to restrict the attribute.
+        These cover asset types in data products and data domains.
+        Only assets of one of these types will have this attribute available.
+        """
+        if self.options and self.options.applicable_domain_types:
+            return set(json.loads(self.options.applicable_domain_types))
+        return set()
+
+    @applicable_domain_types.setter
+    def applicable_domain_types(self, domain_types: Set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(domain_types, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_domain_types", "Set[str]"
+            )
+        if not domain_types.issubset(_all_domain_types):
+            raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
+                domain_types, "applicable_domain_types", _all_domain_types
+            )
+        self.options.applicable_domain_types = json.dumps(list(domain_types))
+
+    @property
     def applicable_other_asset_types(self) -> Set[str]:
         """
         Any other asset type names to which to restrict the attribute.
@@ -690,7 +733,7 @@ class AttributeDef(AtlanObject):
         """
         Qualified names of glossaries to which to restrict the attribute.
         Only glossary assets within one of these glossaries will have this attribute available.
-        To further restrict the types of assets within the glossaries, see applicable_glossary_types}.
+        To further restrict the types of assets within the glossaries, see applicable_glossary_types.
         """
         if self.options and self.options.applicable_glossaries:
             return set(json.loads(self.options.applicable_glossaries))
@@ -706,6 +749,27 @@ class AttributeDef(AtlanObject):
             )
         self.options.applicable_glossaries = json.dumps(list(glossaries))
 
+    @property
+    def applicable_domains(self) -> Set[str]:
+        """
+        Qualified names of domains to which to restrict the attribute.
+        Only domains and data products within one of these domains will have this attribute available.
+        To further restrict the types of assets within the domains, see applicable_domain_types.
+        """
+        if self.options and self.options.applicable_domains:
+            return set(json.loads(self.options.applicable_domains))
+        return set()
+
+    @applicable_domains.setter
+    def applicable_domains(self, domains: Set[str]):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(domains, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_domains", "Set[str]"
+            )
+        self.options.applicable_domains = json.dumps(list(domains))
+
     @staticmethod
     def create(
         display_name: str,
@@ -717,6 +781,8 @@ class AttributeDef(AtlanObject):
         applicable_glossaries: Optional[Set[str]] = None,
         applicable_glossary_types: Optional[Set[str]] = None,
         applicable_other_asset_types: Optional[Set[str]] = None,
+        applicable_domains: Optional[Set[str]] = None,
+        applicable_domain_types: Optional[Set[str]] = None,
     ) -> AttributeDef:
         from pyatlan.utils import validate_required_fields
 
@@ -770,6 +836,7 @@ class AttributeDef(AtlanObject):
         attr_def.applicable_glossary_types = (
             applicable_glossary_types or _all_glossary_types
         )
+        attr_def.applicable_domain_types = applicable_domain_types or _all_domain_types
         attr_def.applicable_other_asset_types = (
             applicable_other_asset_types or _all_other_types
         )
@@ -779,6 +846,7 @@ class AttributeDef(AtlanObject):
         attr_def.applicable_glossaries = (
             applicable_glossaries or _get_all_qualified_names("AtlasGlossary")
         )
+        attr_def.applicable_domains = applicable_domains or _all_domains
         return attr_def
 
     def is_archived(self) -> bool:

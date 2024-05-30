@@ -598,13 +598,17 @@ TEST_WORKFLOW_CLIENT_METHODS = {
 
 APPLICABLE_GLOSSARIES = "applicable_glossaries"
 
+APPLICABLE_DOMAINS = "applicable_domains"
+
 APPLICABLE_CONNECTIONS = "applicable_connections"
 
 APPLICABLE_ENTITY_TYPES = "applicable_entity_types"
 
 APPLICABLE_OTHER_ASSET_TYPES = "applicable_other_asset_types"
 
-APLICABLE_GLOSSARY_TYPES = "applicable_glossary_types"
+APPLICABLE_GLOSSARY_TYPES = "applicable_glossary_types"
+
+APPLICABLE_DOMAIN_TYPES = "applicable_domain_types"
 
 APPLICABLE_ASSET_TYPES = "applicable_asset_types"
 
@@ -709,12 +713,12 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
         r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
     ),
     (
-        APLICABLE_GLOSSARY_TYPES,
+        APPLICABLE_GLOSSARY_TYPES,
         1,
         r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be Set\[str\]",
     ),
     (
-        APLICABLE_GLOSSARY_TYPES,
+        APPLICABLE_GLOSSARY_TYPES,
         {"Bogus"},
         r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
     ),
