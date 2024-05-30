@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+from threading import Lock
 from typing import Dict, Optional
 
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import EnumDef
+
+lock: Lock = Lock()
 
 
 class EnumCache:
@@ -19,11 +22,12 @@ class EnumCache:
     def get_cache(cls) -> "EnumCache":
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client()
-        cache_key = client.cache_key
-        if cache_key not in cls.caches:
-            cls.caches[cache_key] = EnumCache(typedef_client=client.typedef)
-        return cls.caches[cache_key]
+        with lock:
+            client = AtlanClient.get_default_client()
+            cache_key = client.cache_key
+            if cache_key not in cls.caches:
+                cls.caches[cache_key] = EnumCache(typedef_client=client.typedef)
+            return cls.caches[cache_key]
 
     @classmethod
     def refresh_cache(cls) -> None:
@@ -48,19 +52,21 @@ class EnumCache:
     def __init__(self, typedef_client: TypeDefClient):
         self.typedef_client: TypeDefClient = typedef_client
         self.cache_by_name: Dict[str, EnumDef] = {}
+        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
         """
         Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
         """
-        response = self.typedef_client.get(type_category=AtlanTypeCategory.ENUM)
-        if not response or not response.enum_defs:
-            raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
-        self.cache_by_name = {}
-        if response is not None:
-            for enum in response.enum_defs:
-                type_name = enum.name
-                self.cache_by_name[type_name] = enum
+        with self.lock:
+            response = self.typedef_client.get(type_category=AtlanTypeCategory.ENUM)
+            if not response or not response.enum_defs:
+                raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
+            self.cache_by_name = {}
+            if response is not None:
+                for enum in response.enum_defs:
+                    type_name = enum.name
+                    self.cache_by_name[type_name] = enum
 
     def _get_by_name(self, name: str) -> Optional[EnumDef]:
         """

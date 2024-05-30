@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from threading import Lock
 from typing import Dict, Iterable, Optional
 
 from pyatlan.client.group import GroupClient
+
+lock: Lock = Lock()
 
 
 class GroupCache:
@@ -16,11 +19,12 @@ class GroupCache:
     def get_cache(cls) -> "GroupCache":
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client()
-        cache_key = client.cache_key
-        if cache_key not in cls.caches:
-            cls.caches[cache_key] = GroupCache(group_client=client.group)
-        return cls.caches[cache_key]
+        with lock:
+            client = AtlanClient.get_default_client()
+            cache_key = client.cache_key
+            if cache_key not in cls.caches:
+                cls.caches[cache_key] = GroupCache(group_client=client.group)
+            return cls.caches[cache_key]
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
@@ -66,20 +70,22 @@ class GroupCache:
         self.map_id_to_name: Dict[str, str] = {}
         self.map_name_to_id: Dict[str, str] = {}
         self.map_alias_to_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
-        groups = self.group_client.get_all()
-        if groups is not None:
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            self.map_alias_to_id = {}
-            for group in groups:
-                group_id = str(group.id)
-                group_name = str(group.name)
-                group_alias = str(group.alias)
-                self.map_id_to_name[group_id] = group_name
-                self.map_name_to_id[group_name] = group_id
-                self.map_alias_to_id[group_alias] = group_id
+        with self.lock:
+            groups = self.group_client.get_all()
+            if groups is not None:
+                self.map_id_to_name = {}
+                self.map_name_to_id = {}
+                self.map_alias_to_id = {}
+                for group in groups:
+                    group_id = str(group.id)
+                    group_name = str(group.name)
+                    group_alias = str(group.alias)
+                    self.map_id_to_name[group_id] = group_name
+                    self.map_name_to_id[group_name] = group_id
+                    self.map_alias_to_id[group_alias] = group_id
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """
