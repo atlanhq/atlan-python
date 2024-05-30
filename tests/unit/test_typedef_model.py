@@ -3,6 +3,7 @@
 import json
 import random
 from pathlib import Path
+from re import escape
 from unittest.mock import Mock, patch
 
 import pytest
@@ -371,7 +372,7 @@ class TestAttributeDef:
     def test_applicable_types_with_invalid_type_raises_invalid_request_error(
         self, attribute, value, message, sut: AttributeDef
     ):
-        with pytest.raises(InvalidRequestError, match=message):
+        with pytest.raises(InvalidRequestError, match=escape(message)):
             setattr(sut, attribute, value)
 
     @pytest.mark.parametrize(

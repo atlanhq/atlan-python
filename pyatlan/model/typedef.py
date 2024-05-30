@@ -2,12 +2,19 @@ from __future__ import annotations
 
 import json
 import time
-from typing import Any, Callable, ClassVar, Dict, List, Literal, Optional, Set, cast
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, cast
 
 from pydantic.v1 import Field, PrivateAttr
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.atlan_image import AtlanImage
+from pyatlan.model.constants import (
+    ASSET_TYPES,
+    DOMAIN_TYPES,
+    ENTITY_TYPES,
+    GLOSSARY_TYPES,
+    OTHER_ASSET_TYPES,
+)
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
@@ -19,7 +26,7 @@ from pyatlan.model.enums import (
     TagIconType,
 )
 
-_complete_type_list: Set[str] = {
+_complete_type_list: Set[ASSET_TYPES] = {
     "ADLSAccount",
     "ADLSContainer",
     "ADLSObject",
@@ -137,7 +144,8 @@ _complete_type_list: Set[str] = {
     "ThoughtspotLiveboard",
     "View",
 }
-_all_glossary_types: Set[str] = {
+
+_all_glossary_types: Set[GLOSSARY_TYPES] = {
     "AtlasGlossary",
     "AtlasGlossaryCategory",
     "AtlasGlossaryTerm",
@@ -145,12 +153,12 @@ _all_glossary_types: Set[str] = {
 
 _all_domains: Set[str] = {"*/super"}
 
-_all_domain_types: Set[Literal["DataDomain", "DataProduct"]] = {
+_all_domain_types: Set[DOMAIN_TYPES] = {
     "DataDomain",
     "DataProduct",
 }
 
-_all_other_types: Set[str] = {"File"}
+_all_other_types: Set[OTHER_ASSET_TYPES] = {"File"}
 
 
 def _get_all_qualified_names(asset_type: str) -> Set[str]:
@@ -590,7 +598,7 @@ class AttributeDef(AtlanObject):
     ]
 
     @property
-    def applicable_entity_types(self) -> Set[str]:
+    def applicable_entity_types(self) -> Set[ENTITY_TYPES]:
         """
         Set of entities on which this attribute can be applied.
         Note: generally this should be left as-is. Any overrides should instead be applied through
@@ -601,17 +609,17 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_entity_types.setter
-    def applicable_entity_types(self, entity_types: Set[str]):
+    def applicable_entity_types(self, entity_types: Set[ENTITY_TYPES]):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(entity_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "applicable_entity_types", "Set[str]"
+                "applicable_entity_types", f"Set[{ENTITY_TYPES}]"
             )
         self.options.applicable_entity_types = json.dumps(list(entity_types))
 
     @property
-    def applicable_asset_types(self) -> Set[str]:
+    def applicable_asset_types(self) -> Set[ASSET_TYPES]:
         """
         Asset type names to which to restrict the attribute.
         Only assets of one of these types will have this attribute available.
@@ -622,12 +630,12 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_asset_types.setter
-    def applicable_asset_types(self, asset_types: Set[str]):
+    def applicable_asset_types(self, asset_types: Set[ASSET_TYPES]):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "applicable_asset_types", "Set[str]"
+                "applicable_asset_types", f"Set[{ASSET_TYPES}]"
             )
         if not asset_types.issubset(_complete_type_list):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
@@ -636,7 +644,7 @@ class AttributeDef(AtlanObject):
         self.options.applicable_asset_types = json.dumps(list(asset_types))
 
     @property
-    def applicable_glossary_types(self) -> Set[str]:
+    def applicable_glossary_types(self) -> Set[GLOSSARY_TYPES]:
         """
         Glossary type names to which to restrict the attribute.
         Only glossary assets of one of these types will have this attribute available.
@@ -647,12 +655,12 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_glossary_types.setter
-    def applicable_glossary_types(self, glossary_types: Set[str]):
+    def applicable_glossary_types(self, glossary_types: Set[GLOSSARY_TYPES]):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(glossary_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "applicable_glossary_types", "Set[str]"
+                "applicable_glossary_types", f"Set[{GLOSSARY_TYPES}]"
             )
         if not glossary_types.issubset(_all_glossary_types):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
@@ -661,7 +669,7 @@ class AttributeDef(AtlanObject):
         self.options.applicable_glossary_types = json.dumps(list(glossary_types))
 
     @property
-    def applicable_domain_types(self) -> Set[Literal["DataDomain", "DataProduct"]]:
+    def applicable_domain_types(self) -> Set[DOMAIN_TYPES]:
         """
         Data product type names to which to restrict the attribute.
         These cover asset types in data products and data domains.
@@ -672,14 +680,12 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_domain_types.setter
-    def applicable_domain_types(
-        self, domain_types: Set[Literal["DataDomain", "DataProduct"]]
-    ):
+    def applicable_domain_types(self, domain_types: Set[DOMAIN_TYPES]):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(domain_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "applicable_domain_types", "Set[str]"
+                "applicable_domain_types", f"Set[{DOMAIN_TYPES}]"
             )
         if not domain_types.issubset(_all_domain_types):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
@@ -688,7 +694,7 @@ class AttributeDef(AtlanObject):
         self.options.applicable_domain_types = json.dumps(list(domain_types))
 
     @property
-    def applicable_other_asset_types(self) -> Set[str]:
+    def applicable_other_asset_types(self) -> Set[OTHER_ASSET_TYPES]:
         """
         Any other asset type names to which to restrict the attribute.
         These cover any asset type that is not managed within a connection or a glossary.
@@ -699,16 +705,18 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_other_asset_types.setter
-    def applicable_other_asset_types(self, other_asset_types: Set[str]):
+    def applicable_other_asset_types(self, other_asset_types: Set[OTHER_ASSET_TYPES]):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(other_asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "applicable_other_asset_types", "Set[str]"
+                "applicable_other_asset_types", f"Set[{OTHER_ASSET_TYPES}]"
             )
         if not other_asset_types.issubset(_all_other_types):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
-                other_asset_types, "applicable_other_asset_types", _all_other_types
+                other_asset_types,
+                "applicable_other_asset_types",
+                f"Set[{OTHER_ASSET_TYPES}]",
             )
         self.options.applicable_other_asset_types = json.dumps(list(other_asset_types))
 
@@ -782,14 +790,12 @@ class AttributeDef(AtlanObject):
         multi_valued: bool = False,
         options_name: Optional[str] = None,
         applicable_connections: Optional[Set[str]] = None,
-        applicable_asset_types: Optional[Set[str]] = None,
+        applicable_asset_types: Optional[Set[ASSET_TYPES]] = None,
         applicable_glossaries: Optional[Set[str]] = None,
-        applicable_glossary_types: Optional[Set[str]] = None,
-        applicable_other_asset_types: Optional[Set[str]] = None,
+        applicable_glossary_types: Optional[Set[GLOSSARY_TYPES]] = None,
+        applicable_other_asset_types: Optional[Set[OTHER_ASSET_TYPES]] = None,
         applicable_domains: Optional[Set[str]] = None,
-        applicable_domain_types: Optional[
-            Set[Literal["DataDomain", "DataProduct"]]
-        ] = None,
+        applicable_domain_types: Optional[Set[DOMAIN_TYPES]] = None,
     ) -> AttributeDef:
         from pyatlan.utils import validate_required_fields
 

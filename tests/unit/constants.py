@@ -1,4 +1,10 @@
 from pyatlan.model.assets import AtlasGlossary
+from pyatlan.model.constants import (
+    ASSET_TYPES,
+    ENTITY_TYPES,
+    GLOSSARY_TYPES,
+    OTHER_ASSET_TYPES,
+)
 from pyatlan.model.enums import AtlanWorkflowPhase
 from pyatlan.model.workflow import (
     ScheduleQueriesSearchRequest,
@@ -705,46 +711,46 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
     (
         APPLICABLE_ASSET_TYPES,
         1,
-        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be Set\[str\]",
+        f"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_asset_types should be Set[{ASSET_TYPES}]",
     ),
     (
         APPLICABLE_ASSET_TYPES,
         {"Bogus"},
-        r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
+        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
     ),
     (
         APPLICABLE_GLOSSARY_TYPES,
         1,
-        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be Set\[str\]",
+        f"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossary_types should be Set[{GLOSSARY_TYPES}]",
     ),
     (
         APPLICABLE_GLOSSARY_TYPES,
         {"Bogus"},
-        r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
+        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
     ),
     (
         APPLICABLE_OTHER_ASSET_TYPES,
         1,
-        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be Set\[str\]",
+        f"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_other_asset_types should be Set[{OTHER_ASSET_TYPES}]",  # noqa
     ),
     (
         APPLICABLE_OTHER_ASSET_TYPES,
         {"Bogus"},
-        r"ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_other_asset_types should be in ",
+        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_other_asset_types should be in ",
     ),
     (
         APPLICABLE_ENTITY_TYPES,
         1,
-        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be Set\[str\]",
+        f"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_entity_types should be Set[{ENTITY_TYPES}]",
     ),
     (
         APPLICABLE_CONNECTIONS,
         1,
-        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be Set\[str\]",
+        "ATLAN-PYTHON-400-048 Invalid parameter type for applicable_connections should be Set[str]",
     ),
     (
         APPLICABLE_GLOSSARIES,
         1,
-        r"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be Set\[str\]",
+        "ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be Set[str]",
     ),
 ]
