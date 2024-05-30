@@ -489,12 +489,15 @@
           <h1>Source code for pyatlan.cache.custom_metadata_cache</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.client.typedef</span> <span class="kn">import</span> <span class="n">TypeDefClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanTypeCategory</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">AttributeDef</span><span class="p">,</span> <span class="n">CustomMetadataDef</span>
+
+<span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="CustomMetadataCache">
@@ -511,11 +514,15 @@
     <span class="k">def</span> <span class="nf">get_cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CustomMetadataCache&quot;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">pyatlan.client.atlan</span> <span class="kn">import</span> <span class="n">AtlanClient</span>
 
-        <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">get_default_client</span><span class="p">()</span>
-        <span class="n">cache_key</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">cache_key</span>
-        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="p">(</span><span class="n">typedef_client</span><span class="o">=</span><span class="n">client</span><span class="o">.</span><span class="n">typedef</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">lock</span><span class="p">:</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">get_default_client</span><span class="p">()</span>
+            <span class="n">cache_key</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">cache_key</span>
+            <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="p">(</span>
+                    <span class="n">typedef_client</span><span class="o">=</span><span class="n">client</span><span class="o">.</span><span class="n">typedef</span>
+                <span class="p">)</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cache</span>
 
 <div class="viewcode-block" id="CustomMetadataCache.refresh_cache">
 <a class="viewcode-back" href="../../../cache/custom_metadata_cache.html#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.refresh_cache">[docs]</a>
@@ -700,6 +707,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archived_attr_ids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">types_by_asset</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">type</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span> <span class="n">Lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_refresh_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -707,41 +715,45 @@
 <span class="sd">        structures from Atlan.</span>
 <span class="sd">        :raises LogicError: if duplicate custom attributes are detected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typedef_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">type_category</span><span class="o">=</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span><span class="p">,</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">STRUCT</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">struct_defs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">EXPIRED_API_TOKEN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_id_to_name</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">archived_attr_ids</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cache_by_id</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attr_cache_by_id</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">custom_metadata_defs</span><span class="p">:</span>
-                <span class="n">type_id</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">name</span>
-                <span class="n">type_name</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">display_name</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cache_by_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_name</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">[</span><span class="n">type_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_id</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="k">if</span> <span class="n">cm</span><span class="o">.</span><span class="n">attribute_defs</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">attribute_defs</span><span class="p">:</span>
-                        <span class="n">attr_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                        <span class="n">attr_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">type_id</span><span class="p">][</span><span class="n">attr_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_name</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">attr_cache_by_id</span><span class="p">[</span><span class="n">attr_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span>
-                        <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="n">attr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">is_archived</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">archived_attr_ids</span><span class="p">[</span><span class="n">attr_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_name</span>
-                        <span class="k">elif</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">]:</span>
-                            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">DUPLICATE_CUSTOM_ATTRIBUTES</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                                <span class="n">attr_name</span><span class="p">,</span> <span class="n">type_name</span>
-                            <span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">][</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_id</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typedef_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">type_category</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span><span class="p">,</span>
+                    <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">STRUCT</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">struct_defs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">EXPIRED_API_TOKEN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_id_to_name</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">archived_attr_ids</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cache_by_id</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">attr_cache_by_id</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">custom_metadata_defs</span><span class="p">:</span>
+                    <span class="n">type_id</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">type_name</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">display_name</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cache_by_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_name</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">[</span><span class="n">type_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_id</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">if</span> <span class="n">cm</span><span class="o">.</span><span class="n">attribute_defs</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">attribute_defs</span><span class="p">:</span>
+                            <span class="n">attr_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                            <span class="n">attr_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">type_id</span><span class="p">][</span><span class="n">attr_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_name</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">attr_cache_by_id</span><span class="p">[</span><span class="n">attr_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span>
+                            <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">options</span> <span class="ow">and</span> <span class="n">attr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">is_archived</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">archived_attr_ids</span><span class="p">[</span><span class="n">attr_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_name</span>
+                            <span class="k">elif</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">]:</span>
+                                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">DUPLICATE_CUSTOM_ATTRIBUTES</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                                    <span class="n">attr_name</span><span class="p">,</span> <span class="n">type_name</span>
+                                <span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">map_attr_name_to_id</span><span class="p">[</span><span class="n">type_id</span><span class="p">][</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_id</span>
 
     <span class="k">def</span> <span class="nf">_get_id_for_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
