@@ -98,6 +98,7 @@ from .materialised_view import MaterialisedView
 from .function import Function
 from .table_partition import TablePartition
 from .column import Column
+from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .snowflake_stream import SnowflakeStream
 from .database import Database
 from .calculation_view import CalculationView
@@ -359,6 +360,7 @@ MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
+DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)

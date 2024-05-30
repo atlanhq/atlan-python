@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional, Set
+from typing import ClassVar, Dict, List, Optional, Set, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -27,10 +27,61 @@ from .s_q_l import SQL
 class Column(SQL):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        parent_qualified_name: str,
+        parent_type: type,
+        order: int,
+        parent_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        schema_name: str,
+        schema_qualified_name: str,
+        table_name: str,
+        table_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> Column: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        parent_qualified_name: str,
+        parent_type: type,
+        order: int,
+        parent_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
+        table_name: Optional[str] = None,
+        table_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Column: ...
+
     @classmethod
     @init_guid
     def creator(
-        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+        cls,
+        *,
+        name: str,
+        parent_qualified_name: str,
+        parent_type: type,
+        order: int,
+        parent_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
+        table_name: Optional[str] = None,
+        table_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
     ) -> Column:
         return Column(
             attributes=Column.Attributes.create(
@@ -38,13 +89,25 @@ class Column(SQL):
                 parent_qualified_name=parent_qualified_name,
                 parent_type=parent_type,
                 order=order,
+                parent_name=parent_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                schema_name=schema_name,
+                schema_qualified_name=schema_qualified_name,
+                table_name=table_name,
+                table_qualified_name=table_qualified_name,
+                connection_qualified_name=connection_qualified_name,
             )
         )
 
     @classmethod
-    @init_guid
     def create(
-        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+        cls,
+        *,
+        name: str,
+        parent_qualified_name: str,
+        parent_type: type,
+        order: int,
     ) -> Column:
         warn(
             (
@@ -1354,48 +1417,77 @@ class Column(SQL):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+            cls,
+            *,
+            name: str,
+            parent_qualified_name: str,
+            parent_type: type,
+            order: int,
+            parent_name: Optional[str] = None,
+            database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
+            schema_name: Optional[str] = None,
+            schema_qualified_name: Optional[str] = None,
+            table_name: Optional[str] = None,
+            table_qualified_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
         ) -> Column.Attributes:
             validate_required_fields(
                 ["name", "parent_qualified_name", "parent_type", "order"],
                 [name, parent_qualified_name, parent_type, order],
             )
+
             fields = parent_qualified_name.split("/")
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                parent_qualified_name, "parent_qualified_name", 6
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    parent_qualified_name, "parent_qualified_name", 6
+                )
             if order < 0:
                 raise ValueError("Order must be be a positive integer")
-            ret_value = Column.Attributes(
+
+            column = Column.Attributes(
                 name=name,
-                qualified_name=f"{parent_qualified_name}/{name}",
-                connector_name=connector_name,
-                schema_name=fields[4],
-                schema_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
-                database_name=fields[3],
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                connection_qualified_name=connection_qn,
                 order=order,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                qualified_name=f"{parent_qualified_name}/{name}",
+                schema_name=schema_name or fields[4],
+                schema_qualified_name=schema_qualified_name
+                or f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
+                database_name=database_name or fields[3],
+                database_qualified_name=database_qualified_name
+                or f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
             )
+
             if parent_type == Table:
-                ret_value.table_qualified_name = parent_qualified_name
-                ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
-                ret_value.table_name = fields[5]
+                column.table_qualified_name = parent_qualified_name
+                column.table = Table.ref_by_qualified_name(parent_qualified_name)
+                column.table_name = parent_name or fields[5]
             elif parent_type == View:
-                ret_value.view_qualified_name = parent_qualified_name
-                ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
-                ret_value.view_name = fields[5]
+                column.view_qualified_name = parent_qualified_name
+                column.view = View.ref_by_qualified_name(parent_qualified_name)
+                column.view_name = parent_name or fields[5]
             elif parent_type == MaterialisedView:
-                ret_value.view_qualified_name = parent_qualified_name
-                ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
+                column.view_qualified_name = parent_qualified_name
+                column.materialised_view = MaterialisedView.ref_by_qualified_name(
                     parent_qualified_name
                 )
-                ret_value.view_name = fields[5]
+                column.view_name = parent_name or fields[5]
+            elif parent_type == TablePartition:
+                column.table_qualified_name = table_qualified_name
+                column.table_partition = TablePartition.ref_by_qualified_name(
+                    parent_qualified_name
+                )
+                column.table_name = table_name or fields[5]
             else:
                 raise ValueError(
-                    "parent_type must be either Table, View or MaterializeView"
+                    "parent_type must be either Table, View, MaterializeView or TablePartition"
                 )
-            return ret_value
+            return column
 
     attributes: Column.Attributes = Field(
         default_factory=lambda: Column.Attributes(),

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -19,14 +19,46 @@ from .s_q_l import SQL
 class Schema(SQL):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: str,
+        connection_qualified_name: str,
+    ) -> Schema: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Schema: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, database_qualified_name: str) -> Schema:
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Schema:
         validate_required_fields(
             ["name", "database_qualified_name"], [name, database_qualified_name]
         )
         attributes = Schema.Attributes.create(
-            name=name, database_qualified_name=database_qualified_name
+            name=name,
+            database_qualified_name=database_qualified_name,
+            database_name=database_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -331,7 +363,12 @@ class Schema(SQL):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, database_qualified_name: str
+            cls,
+            *,
+            name: str,
+            database_qualified_name: str,
+            database_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
         ) -> Schema.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
@@ -339,17 +376,22 @@ class Schema(SQL):
                 ["database_qualified_name"], [database_qualified_name]
             )
             fields = database_qualified_name.split("/")
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                database_qualified_name, "database_qualified_name", 4
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    database_qualified_name, "database_qualified_name", 4
+                )
             return Schema.Attributes(
                 name=name,
-                database_name=fields[3],
-                connection_qualified_name=connection_qn,
+                database_name=database_name or fields[3],
                 database_qualified_name=database_qualified_name,
                 qualified_name=f"{database_qualified_name}/{name}",
-                connector_name=connector_name,
                 database=Database.ref_by_qualified_name(database_qualified_name),
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name or connection_qn,
             )
 
     attributes: Schema.Attributes = Field(

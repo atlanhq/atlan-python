@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -24,14 +24,54 @@ from .s_q_l import SQL
 class Table(SQL):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> Table: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Table: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, schema_qualified_name: str) -> Table:
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Table:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
         attributes = Table.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
+            name=name,
+            schema_qualified_name=schema_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -449,24 +489,39 @@ class Table(SQL):
 
         @classmethod
         @init_guid
-        def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
-            fields = schema_qualified_name.split("/")
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                schema_qualified_name, "schema_qualified_name", 5
+        def create(
+            cls,
+            *,
+            name: str,
+            schema_qualified_name: str,
+            schema_name: Optional[str] = None,
+            database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> Table.Attributes:
+            validate_required_fields(
+                ["name, schema_qualified_name"], [name, schema_qualified_name]
             )
+            fields = schema_qualified_name.split("/")
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    schema_qualified_name, "schema_qualified_name", 5
+                )
             return Table.Attributes(
                 name=name,
-                database_name=fields[3],
-                connection_qualified_name=connection_qn,
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                database_name=database_name or fields[3],
+                database_qualified_name=database_qualified_name
+                or f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
                 qualified_name=f"{schema_qualified_name}/{name}",
                 schema_qualified_name=schema_qualified_name,
-                schema_name=fields[4],
-                connector_name=connector_name,
+                schema_name=schema_name or fields[4],
                 atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name or connection_qn,
             )
 
     attributes: Table.Attributes = Field(
