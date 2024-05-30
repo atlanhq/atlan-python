@@ -498,11 +498,11 @@
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.atlan_image</span> <span class="kn">import</span> <span class="n">AtlanImage</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.constants</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ASSET_TYPES</span><span class="p">,</span>
-    <span class="n">DOMAIN_TYPES</span><span class="p">,</span>
-    <span class="n">ENTITY_TYPES</span><span class="p">,</span>
-    <span class="n">GLOSSARY_TYPES</span><span class="p">,</span>
-    <span class="n">OTHER_ASSET_TYPES</span><span class="p">,</span>
+    <span class="n">AssetTypes</span><span class="p">,</span>
+    <span class="n">DomainTypes</span><span class="p">,</span>
+    <span class="n">EntityTypes</span><span class="p">,</span>
+    <span class="n">GlossaryTypes</span><span class="p">,</span>
+    <span class="n">OtherAssetTypes</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
@@ -515,7 +515,7 @@
     <span class="n">TagIconType</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">_complete_type_list</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">ASSET_TYPES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">_complete_type_list</span><span class="p">:</span> <span class="n">AssetTypes</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;ADLSAccount&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ADLSContainer&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ADLSObject&quot;</span><span class="p">,</span>
@@ -634,7 +634,7 @@
     <span class="s2">&quot;View&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">_all_glossary_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">GLOSSARY_TYPES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">_all_glossary_types</span><span class="p">:</span> <span class="n">GlossaryTypes</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;AtlasGlossary&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AtlasGlossaryCategory&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AtlasGlossaryTerm&quot;</span><span class="p">,</span>
@@ -642,12 +642,12 @@
 
 <span class="n">_all_domains</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;*/super&quot;</span><span class="p">}</span>
 
-<span class="n">_all_domain_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">DOMAIN_TYPES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">_all_domain_types</span><span class="p">:</span> <span class="n">DomainTypes</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;DataDomain&quot;</span><span class="p">,</span>
     <span class="s2">&quot;DataProduct&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">_all_other_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">OTHER_ASSET_TYPES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;File&quot;</span><span class="p">}</span>
+<span class="n">_all_other_types</span><span class="p">:</span> <span class="n">OtherAssetTypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;File&quot;</span><span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">_get_all_qualified_names</span><span class="p">(</span><span class="n">asset_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -1104,7 +1104,7 @@
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">ENTITY_TYPES</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntityTypes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set of entities on which this attribute can be applied.</span>
 <span class="sd">        Note: generally this should be left as-is. Any overrides should instead be applied through</span>
@@ -1115,17 +1115,17 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_entity_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">ENTITY_TYPES</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_entity_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_types</span><span class="p">:</span> <span class="n">EntityTypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_entity_types&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set[</span><span class="si">{</span><span class="n">ENTITY_TYPES</span><span class="si">}</span><span class="s2">]&quot;</span>
+                <span class="s2">&quot;applicable_entity_types&quot;</span><span class="p">,</span> <span class="n">EntityTypes</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_entity_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">entity_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">ASSET_TYPES</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetTypes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Asset type names to which to restrict the attribute.</span>
 <span class="sd">        Only assets of one of these types will have this attribute available.</span>
@@ -1136,12 +1136,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_asset_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">ASSET_TYPES</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_types</span><span class="p">:</span> <span class="n">AssetTypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set[</span><span class="si">{</span><span class="n">ASSET_TYPES</span><span class="si">}</span><span class="s2">]&quot;</span>
+                <span class="s2">&quot;applicable_asset_types&quot;</span><span class="p">,</span> <span class="n">AssetTypes</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">asset_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_complete_type_list</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
@@ -1150,7 +1150,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_asset_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">asset_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">GLOSSARY_TYPES</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GlossaryTypes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Glossary type names to which to restrict the attribute.</span>
 <span class="sd">        Only glossary assets of one of these types will have this attribute available.</span>
@@ -1161,12 +1161,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_glossary_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossary_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">GLOSSARY_TYPES</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_glossary_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glossary_types</span><span class="p">:</span> <span class="n">GlossaryTypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">glossary_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set[</span><span class="si">{</span><span class="n">GLOSSARY_TYPES</span><span class="si">}</span><span class="s2">]&quot;</span>
+                <span class="s2">&quot;applicable_glossary_types&quot;</span><span class="p">,</span> <span class="n">GlossaryTypes</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">glossary_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_glossary_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
@@ -1175,7 +1175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_glossary_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">glossary_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_domain_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">DOMAIN_TYPES</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_domain_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DomainTypes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data product type names to which to restrict the attribute.</span>
 <span class="sd">        These cover asset types in data products and data domains.</span>
@@ -1186,12 +1186,12 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_domain_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_domain_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">DOMAIN_TYPES</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_domain_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain_types</span><span class="p">:</span> <span class="n">DomainTypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_domain_types&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set[</span><span class="si">{</span><span class="n">DOMAIN_TYPES</span><span class="si">}</span><span class="s2">]&quot;</span>
+                <span class="s2">&quot;applicable_domain_types&quot;</span><span class="p">,</span> <span class="n">DomainTypes</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">domain_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_domain_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
@@ -1200,7 +1200,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_domain_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">domain_types</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">OTHER_ASSET_TYPES</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OtherAssetTypes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Any other asset type names to which to restrict the attribute.</span>
 <span class="sd">        These cover any asset type that is not managed within a connection or a glossary.</span>
@@ -1211,18 +1211,18 @@
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="nd">@applicable_other_asset_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_asset_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">OTHER_ASSET_TYPES</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">applicable_other_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_asset_types</span><span class="p">:</span> <span class="n">OtherAssetTypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_OPTIONS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other_asset_types</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set[</span><span class="si">{</span><span class="n">OTHER_ASSET_TYPES</span><span class="si">}</span><span class="s2">]&quot;</span>
+                <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span> <span class="n">OtherAssetTypes</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">other_asset_types</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">_all_other_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_VALUE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
                 <span class="n">other_asset_types</span><span class="p">,</span>
                 <span class="s2">&quot;applicable_other_asset_types&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;Set[</span><span class="si">{</span><span class="n">OTHER_ASSET_TYPES</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
+                <span class="n">OtherAssetTypes</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">applicable_other_asset_types</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other_asset_types</span><span class="p">))</span>
 
@@ -1296,12 +1296,12 @@
         <span class="n">multi_valued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">options_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">applicable_connections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">applicable_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="n">ASSET_TYPES</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">applicable_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetTypes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">applicable_glossaries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">applicable_glossary_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="n">GLOSSARY_TYPES</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">applicable_other_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="n">OTHER_ASSET_TYPES</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">applicable_glossary_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GlossaryTypes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">applicable_other_asset_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OtherAssetTypes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">applicable_domains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">applicable_domain_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="n">DOMAIN_TYPES</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">applicable_domain_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DomainTypes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeDef</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
 
