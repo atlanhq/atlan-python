@@ -620,7 +620,8 @@ def test_category_delete_by_guid_raises_error_invalid_request_error(
     with pytest.raises(
         InvalidRequestError,
         match=f"ATLAN-PYTHON-400-052 Asset with guid: {category.guid} is an asset "
-        f"of type AtlasGlossaryCategory which does not support archiving",
+        "of type AtlasGlossaryCategory which does not support archiving. "
+        "Suggestion: Please use purge if you wish to remove assets of this type.",
     ):
         client.asset.delete_by_guid(guid=category.guid)
 
@@ -944,7 +945,8 @@ def test_remove_unrelated_relationship(
     EXPECTED_ERR = (
         "ATLAN-PYTHON-404-000 Server responded with ATLAS-409-00-0021: "
         "relationship AtlasGlossaryRelatedTerm does "
-        f"not exist between entities {term2.guid} and {term1.guid}"
+        f"not exist between entities {term2.guid} and {term1.guid}. "
+        "Suggestion: Check the details of the server's message to correct your request."
     )
     assert EXPECTED_ERR == str(err.value)
 
