@@ -33,7 +33,6 @@ class View(SQL):
         schema_qualified_name: str,
         schema_name: str,
         database_name: str,
-        database_qualified_name: str,
         connection_qualified_name: str,
     ) -> View: ...
 
@@ -46,7 +45,6 @@ class View(SQL):
         schema_qualified_name: str,
         schema_name: Optional[str] = None,
         database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> View: ...
 
@@ -59,7 +57,6 @@ class View(SQL):
         schema_qualified_name: str,
         schema_name: Optional[str] = None,
         database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> View:
         validate_required_fields(
@@ -70,7 +67,6 @@ class View(SQL):
             schema_qualified_name=schema_qualified_name,
             schema_name=schema_name,
             database_name=database_name,
-            database_qualified_name=database_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
@@ -308,13 +304,11 @@ class View(SQL):
             schema_qualified_name: str,
             schema_name: Optional[str] = None,
             database_name: Optional[str] = None,
-            database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> View.Attributes:
             validate_required_fields(
                 ["name, schema_qualified_name"], [name, schema_qualified_name]
             )
-            fields = schema_qualified_name.split("/")
             if connection_qualified_name:
                 connector_name = AtlanConnectorType.get_connector_name(
                     connection_qualified_name
@@ -323,17 +317,25 @@ class View(SQL):
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     schema_qualified_name, "schema_qualified_name", 5
                 )
+
+            fields = schema_qualified_name.split("/")
+            qualified_name = f"{schema_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database_name = database_name or fields[3]
+            schema_name = schema_name or fields[4]
+            database_qualified_name = f"{connection_qualified_name}/{database_name}"
+            atlan_schema = Schema.ref_by_qualified_name(schema_qualified_name)
+
             return View.Attributes(
                 name=name,
-                database_name=database_name or fields[3],
-                database_qualified_name=database_qualified_name
-                or f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                qualified_name=f"{schema_qualified_name}/{name}",
+                qualified_name=qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
                 schema_qualified_name=schema_qualified_name,
-                schema_name=schema_name or fields[4],
-                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+                schema_name=schema_name,
+                atlan_schema=atlan_schema,
                 connector_name=connector_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
+                connection_qualified_name=connection_qualified_name,
             )
 
     attributes: View.Attributes = Field(

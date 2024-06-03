@@ -10,11 +10,8 @@
         order: int,
         parent_name: str,
         database_name: str,
-        database_qualified_name: str,
         schema_name: str,
-        schema_qualified_name: str,
         table_name: str,
-        table_qualified_name: str,
         connection_qualified_name: str,
     ) -> Column: ...
 
@@ -29,11 +26,8 @@
         order: int,
         parent_name: Optional[str] = None,
         database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
         schema_name: Optional[str] = None,
-        schema_qualified_name: Optional[str] = None,
         table_name: Optional[str] = None,
-        table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column: ...
 
@@ -48,11 +42,8 @@
         order: int,
         parent_name: Optional[str] = None,
         database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
         schema_name: Optional[str] = None,
-        schema_qualified_name: Optional[str] = None,
         table_name: Optional[str] = None,
-        table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column:
         return Column(
@@ -63,11 +54,8 @@
                 order=order,
                 parent_name=parent_name,
                 database_name=database_name,
-                database_qualified_name=database_qualified_name,
                 schema_name=schema_name,
-                schema_qualified_name=schema_qualified_name,
                 table_name=table_name,
-                table_qualified_name=table_qualified_name,
                 connection_qualified_name=connection_qualified_name,
             )
         )

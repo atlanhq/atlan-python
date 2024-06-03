@@ -38,11 +38,8 @@ class Column(SQL):
         order: int,
         parent_name: str,
         database_name: str,
-        database_qualified_name: str,
         schema_name: str,
-        schema_qualified_name: str,
         table_name: str,
-        table_qualified_name: str,
         connection_qualified_name: str,
     ) -> Column: ...
 
@@ -57,11 +54,8 @@ class Column(SQL):
         order: int,
         parent_name: Optional[str] = None,
         database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
         schema_name: Optional[str] = None,
-        schema_qualified_name: Optional[str] = None,
         table_name: Optional[str] = None,
-        table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column: ...
 
@@ -76,11 +70,8 @@ class Column(SQL):
         order: int,
         parent_name: Optional[str] = None,
         database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
         schema_name: Optional[str] = None,
-        schema_qualified_name: Optional[str] = None,
         table_name: Optional[str] = None,
-        table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column:
         return Column(
@@ -91,11 +82,8 @@ class Column(SQL):
                 order=order,
                 parent_name=parent_name,
                 database_name=database_name,
-                database_qualified_name=database_qualified_name,
                 schema_name=schema_name,
-                schema_qualified_name=schema_qualified_name,
                 table_name=table_name,
-                table_qualified_name=table_qualified_name,
                 connection_qualified_name=connection_qualified_name,
             )
         )
@@ -1425,19 +1413,14 @@ class Column(SQL):
             order: int,
             parent_name: Optional[str] = None,
             database_name: Optional[str] = None,
-            database_qualified_name: Optional[str] = None,
             schema_name: Optional[str] = None,
-            schema_qualified_name: Optional[str] = None,
             table_name: Optional[str] = None,
-            table_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> Column.Attributes:
             validate_required_fields(
                 ["name", "parent_qualified_name", "parent_type", "order"],
                 [name, parent_qualified_name, parent_type, order],
             )
-
-            fields = parent_qualified_name.split("/")
             if connection_qualified_name:
                 connector_name = AtlanConnectorType.get_connector_name(
                     connection_qualified_name
@@ -1449,18 +1432,26 @@ class Column(SQL):
             if order < 0:
                 raise ValueError("Order must be be a positive integer")
 
+            fields = parent_qualified_name.split("/")
+            qualified_name = f"{parent_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database_name = database_name or fields[3]
+            schema_name = schema_name or fields[4]
+            table_name = table_name or fields[5]
+            database_qualified_name = f"{connection_qualified_name}/{database_name}"
+            schema_qualified_name = f"{database_qualified_name}/{schema_name}"
+            table_qualified_name = f"{schema_qualified_name}/{table_name}"
+
             column = Column.Attributes(
                 name=name,
                 order=order,
+                qualified_name=qualified_name,
                 connector_name=connector_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
-                qualified_name=f"{parent_qualified_name}/{name}",
-                schema_name=schema_name or fields[4],
-                schema_qualified_name=schema_qualified_name
-                or f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
-                database_name=database_name or fields[3],
-                database_qualified_name=database_qualified_name
-                or f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                connection_qualified_name=connection_qualified_name,
+                schema_name=schema_name,
+                schema_qualified_name=schema_qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
             )
 
             if parent_type == Table:

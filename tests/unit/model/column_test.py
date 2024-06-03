@@ -127,9 +127,7 @@ def test_overload_creator():
         order=2,
         parent_name=VIEW_NAME,
         database_name=DATABASE_NAME,
-        database_qualified_name=DATABASE_QUALIFIED_NAME,
         schema_name=SCHEMA_NAME,
-        schema_qualified_name=SCHEMA_QUALIFIED_NAME,
         connection_qualified_name=CONNECTION_QUALIFIED_NAME,
     )
     assert sut.name == COLUMN_NAME
