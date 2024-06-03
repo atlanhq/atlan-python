@@ -23,11 +23,10 @@ class AtlanError(Exception):
     def __init__(self, error_code: ErrorInfo, *args):
         message = error_code.error_message.format(*args)
         super().__init__(message)
-        self.code = error_code.error_id
-        self.status_code = error_code.http_error_code
+        self.error_code = error_code
 
     def __str__(self):
-        return f"{self.code or ''} {super().__str__()}"
+        return f"{self.error_code.error_id or ''} {super().__str__()} {self.error_code.user_action}"
 
 
 class ApiConnectionError(AtlanError):
