@@ -3,6 +3,7 @@ import pytest
 from pyatlan.model.assets import GCSObject
 from tests.unit.model.constants import (
     GCS_BUCKET_QUALIFIED_NAME,
+    GCS_CONNECTION_QUALIFIED_NAME,
     GCS_OBJECT_NAME,
     GCS_OBJECT_QUALIFIED_NAME,
 )
@@ -30,6 +31,20 @@ def test_create():
     assert sut.name == GCS_OBJECT_NAME
     assert sut.gcs_bucket_qualified_name == GCS_BUCKET_QUALIFIED_NAME
     assert sut.qualified_name == GCS_OBJECT_QUALIFIED_NAME
+    assert sut.connection_qualified_name == GCS_CONNECTION_QUALIFIED_NAME
+
+
+def test_overload_creator():
+    sut = GCSObject.creator(
+        name=GCS_OBJECT_NAME,
+        gcs_bucket_qualified_name=GCS_BUCKET_QUALIFIED_NAME,
+        connection_qualified_name=GCS_CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.name == GCS_OBJECT_NAME
+    assert sut.gcs_bucket_qualified_name == GCS_BUCKET_QUALIFIED_NAME
+    assert sut.qualified_name == GCS_OBJECT_QUALIFIED_NAME
+    assert sut.connection_qualified_name == GCS_CONNECTION_QUALIFIED_NAME
 
 
 @pytest.mark.parametrize(

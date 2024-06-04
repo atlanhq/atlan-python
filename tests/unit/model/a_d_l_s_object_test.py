@@ -48,6 +48,26 @@ def test_create():
     )
 
 
+def test_overload_creator():
+    sut = ADLSObject.creator(
+        name=ADLS_OBJECT_NAME,
+        adls_container_qualified_name=ADLS_CONTAINER_QUALIFIED_NAME,
+        adls_account_qualified_name=get_parent_qualified_name(
+            ADLS_CONTAINER_QUALIFIED_NAME
+        ),
+        connection_qualified_name=ADLS_CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.name == ADLS_OBJECT_NAME
+    assert sut.adls_container_qualified_name == ADLS_CONTAINER_QUALIFIED_NAME
+    assert sut.qualified_name == f"{ADLS_CONTAINER_QUALIFIED_NAME}/{ADLS_OBJECT_NAME}"
+    assert sut.connection_qualified_name == ADLS_CONNECTION_QUALIFIED_NAME
+    assert sut.connector_name == ADLS_CONNECTOR_TYPE
+    assert sut.adls_account_qualified_name == get_parent_qualified_name(
+        ADLS_CONTAINER_QUALIFIED_NAME
+    )
+
+
 # Test cases for creating ADLSObject for modification
 @pytest.mark.parametrize(
     "qualified_name, name, message",
