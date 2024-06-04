@@ -1,3 +1,16 @@
+## 2.2.3 (June 4, 2024)
+
+### New features
+
+- Added thread lock to cache methods (`get_cache()` and `_refresh_cache()`).
+- Added support for the `Connection Delete` package.
+- Added support for custom metadata handling for data domains and products.
+
+### QOL improvements
+
+- Generated the latest typedef models (`DatabricksUnityCatalogTag`).
+- Updated `AtlanError` to include `user_action` when throwing an exception.
+
 ## 2.2.2 (May 28, 2024)
 
 ### New features
