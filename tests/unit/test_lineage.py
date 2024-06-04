@@ -961,17 +961,20 @@ class TestFluentLineage:
             (
                 "include_in_results",
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter. "
+                r"Suggestion: Check that you have used the correct type of parameter.",
             ),
             (
                 "where_assets",
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter. "
+                r"Suggestion: Check that you have used the correct type of parameter.",
             ),
             (
                 "where_relationships",
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter. "
+                r"Suggestion: Check that you have used the correct type of parameter.",
             ),
         ],
     )
