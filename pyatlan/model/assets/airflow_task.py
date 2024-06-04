@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
@@ -23,6 +23,26 @@ from .airflow import Airflow
 class AirflowTask(Airflow):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        airflow_dag_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> AirflowTask: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        airflow_dag_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> AirflowTask: ...
+
     @classmethod
     @init_guid
     def creator(
@@ -30,6 +50,7 @@ class AirflowTask(Airflow):
         *,
         name: str,
         airflow_dag_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
     ) -> AirflowTask:
         validate_required_fields(
             ["name", "airflow_dag_qualified_name"],
@@ -38,6 +59,7 @@ class AirflowTask(Airflow):
         attributes = AirflowTask.Attributes.creator(
             name=name,
             airflow_dag_qualified_name=airflow_dag_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -368,18 +390,25 @@ class AirflowTask(Airflow):
             *,
             name: str,
             airflow_dag_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
         ) -> AirflowTask.Attributes:
             validate_required_fields(
                 ["name", "airflow_dag_qualified_name"],
                 [name, airflow_dag_qualified_name],
             )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                airflow_dag_qualified_name, "airflow_dag_qualified_name", 4
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    airflow_dag_qualified_name, "airflow_dag_qualified_name", 4
+                )
+
             return AirflowTask.Attributes(
                 name=name,
                 airflow_dag_qualified_name=airflow_dag_qualified_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{airflow_dag_qualified_name}/{name}",
                 connector_name=connector_name,
                 airflow_dag=AirflowDag.ref_by_qualified_name(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -24,17 +24,43 @@ from .preset import Preset
 class PresetDataset(Preset):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_dashboard_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> PresetDataset: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_dashboard_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> PresetDataset: ...
+
     @classmethod
     @init_guid
     def creator(
-        cls, *, name: str, preset_dashboard_qualified_name: str
+        cls,
+        *,
+        name: str,
+        preset_dashboard_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
     ) -> PresetDataset:
         validate_required_fields(
             ["name", "preset_dashboard_qualified_name"],
             [name, preset_dashboard_qualified_name],
         )
         attributes = PresetDataset.Attributes.create(
-            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
+            name=name,
+            preset_dashboard_qualified_name=preset_dashboard_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -163,19 +189,31 @@ class PresetDataset(Preset):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, preset_dashboard_qualified_name: str
+            cls,
+            *,
+            name: str,
+            preset_dashboard_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
         ) -> PresetDataset.Attributes:
             validate_required_fields(
                 ["name", "preset_dashboard_qualified_name"],
                 [name, preset_dashboard_qualified_name],
             )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                preset_dashboard_qualified_name, "preset_dashboard_qualified_name", 5
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    preset_dashboard_qualified_name,
+                    "preset_dashboard_qualified_name",
+                    5,
+                )
+
             return PresetDataset.Attributes(
                 name=name,
                 preset_dashboard_qualified_name=preset_dashboard_qualified_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{preset_dashboard_qualified_name}/{name}",
                 connector_name=connector_name,
                 preset_dashboard=PresetDashboard.ref_by_qualified_name(
