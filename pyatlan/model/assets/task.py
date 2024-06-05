@@ -91,6 +91,18 @@ class Task(Asset, type_name="Task"):
     """
     action executed by the recipient
     """
+    TASK_CREATED_BY: ClassVar[KeywordField] = KeywordField(
+        "taskCreatedBy", "taskCreatedBy"
+    )
+    """
+    username of the user who created this task
+    """
+    TASK_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "taskUpdatedBy", "taskUpdatedBy"
+    )
+    """
+    username of the user who updated this task
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "task_recipient",
@@ -104,6 +116,8 @@ class Task(Asset, type_name="Task"):
         "task_actions",
         "task_execution_comment",
         "task_execution_action",
+        "task_created_by",
+        "task_updated_by",
     ]
 
     @property
@@ -224,6 +238,26 @@ class Task(Asset, type_name="Task"):
             self.attributes = self.Attributes()
         self.attributes.task_execution_action = task_execution_action
 
+    @property
+    def task_created_by(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.task_created_by
+
+    @task_created_by.setter
+    def task_created_by(self, task_created_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.task_created_by = task_created_by
+
+    @property
+    def task_updated_by(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.task_updated_by
+
+    @task_updated_by.setter
+    def task_updated_by(self, task_updated_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.task_updated_by = task_updated_by
+
     class Attributes(Asset.Attributes):
         task_recipient: Optional[str] = Field(default=None, description="")
         task_type: Optional[str] = Field(default=None, description="")
@@ -236,6 +270,8 @@ class Task(Asset, type_name="Task"):
         task_actions: Optional[List[Action]] = Field(default=None, description="")
         task_execution_comment: Optional[str] = Field(default=None, description="")
         task_execution_action: Optional[str] = Field(default=None, description="")
+        task_created_by: Optional[str] = Field(default=None, description="")
+        task_updated_by: Optional[str] = Field(default=None, description="")
 
     attributes: Task.Attributes = Field(
         default_factory=lambda: Task.Attributes(),
