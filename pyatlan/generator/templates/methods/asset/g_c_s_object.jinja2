@@ -1,12 +1,39 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        gcs_bucket_qualified_name: str,
+    ) -> GCSObject: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        gcs_bucket_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> GCSObject: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+    def creator(
+        cls,
+        *,
+        name: str,
+        gcs_bucket_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> GCSObject:
         validate_required_fields(
             ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
         )
         attributes = GCSObject.Attributes.create(
-            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+            name=name,
+            gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 

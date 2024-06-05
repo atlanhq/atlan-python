@@ -1,4 +1,24 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+    ) -> ADLSObject: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+        adls_account_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> ADLSObject: ...
+
     @classmethod
     @init_guid
     def creator(
@@ -6,13 +26,18 @@
         *,
         name: str,
         adls_container_qualified_name: str,
+        adls_account_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
     ) -> ADLSObject:
         validate_required_fields(
             ["name", "adls_container_qualified_name"],
             [name, adls_container_qualified_name],
         )
         attributes = ADLSObject.Attributes.create(
-            name=name, adls_container_qualified_name=adls_container_qualified_name
+            name=name,
+            adls_container_qualified_name=adls_container_qualified_name,
+            adls_account_qualified_name=adls_account_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 

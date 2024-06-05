@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -25,17 +25,42 @@ from .preset import Preset
 class PresetDashboard(Preset):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_workspace_qualified_name: str,
+    ) -> PresetDashboard: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_workspace_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> PresetDashboard: ...
+
     @classmethod
     @init_guid
     def creator(
-        cls, *, name: str, preset_workspace_qualified_name: str
+        cls,
+        *,
+        name: str,
+        preset_workspace_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
     ) -> PresetDashboard:
         validate_required_fields(
             ["name", "preset_workspace_qualified_name"],
             [name, preset_workspace_qualified_name],
         )
         attributes = PresetDashboard.Attributes.create(
-            name=name, preset_workspace_qualified_name=preset_workspace_qualified_name
+            name=name,
+            preset_workspace_qualified_name=preset_workspace_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -298,19 +323,31 @@ class PresetDashboard(Preset):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, preset_workspace_qualified_name: str
+            cls,
+            *,
+            name: str,
+            preset_workspace_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
         ) -> PresetDashboard.Attributes:
             validate_required_fields(
                 ["name", "preset_workspace_qualified_name"],
                 [name, preset_workspace_qualified_name],
             )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                preset_workspace_qualified_name, "preset_workspace_qualified_name", 4
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    preset_workspace_qualified_name,
+                    "preset_workspace_qualified_name",
+                    4,
+                )
+
             return PresetDashboard.Attributes(
                 name=name,
                 preset_workspace_qualified_name=preset_workspace_qualified_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{preset_workspace_qualified_name}/{name}",
                 connector_name=connector_name,
                 preset_workspace=PresetWorkspace.ref_by_qualified_name(

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Dict, List, Optional, Set
+from typing import ClassVar, Dict, List, Optional, Set, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -25,14 +25,41 @@ from .a_p_i import API
 class APIPath(API):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        path_raw_uri: str,
+        spec_qualified_name: str,
+    ) -> APIPath: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        path_raw_uri: str,
+        spec_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> APIPath: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
+    def creator(
+        cls,
+        *,
+        path_raw_uri: str,
+        spec_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> APIPath:
         validate_required_fields(
             ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
         )
         attributes = APIPath.Attributes.create(
-            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+            path_raw_uri=path_raw_uri,
+            spec_qualified_name=spec_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -226,21 +253,31 @@ class APIPath(API):
         @classmethod
         @init_guid
         def create(
-            cls, *, path_raw_uri: str, spec_qualified_name: str
+            cls,
+            *,
+            path_raw_uri: str,
+            spec_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
         ) -> APIPath.Attributes:
             validate_required_fields(
                 ["path_raw_uri", "spec_qualified_name"],
                 [path_raw_uri, spec_qualified_name],
             )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                spec_qualified_name, "spec_qualified_name", 4
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    spec_qualified_name, "spec_qualified_name", 4
+                )
+
             return APIPath.Attributes(
                 api_path_raw_u_r_i=path_raw_uri,
                 name=path_raw_uri,
                 api_spec_qualified_name=spec_qualified_name,
                 connector_name=connector_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{spec_qualified_name}{path_raw_uri}",
                 api_spec=APISpec.ref_by_qualified_name(spec_qualified_name),
             )

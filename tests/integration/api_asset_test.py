@@ -21,9 +21,11 @@ MODULE_NAME = TestId.make_unique("API")
 CONNECTOR_TYPE = AtlanConnectorType.API
 API_SPEC_NAME = "api-spec"
 API_PATH_NAME = "/api/path"
+API_PATH_NAME_OVERLOAD = "/api/path/overload"
 API_CONNECTION_QUALIFIED_NAME = "default/api/1696792060"
 API_QUALIFIED_NAME = f"{API_CONNECTION_QUALIFIED_NAME}/{API_SPEC_NAME}"
 API_PATH_RAW_URI = "/api/path"
+API_PATH_RAW_URI_OVERLOAD = "/api/path/overload"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
@@ -87,6 +89,37 @@ def test_api_path(client: AtlanClient, api_spec: APISpec, api_path: APIPath):
     assert api_path.name == API_PATH_NAME
     assert api_path.connection_qualified_name == api_spec.connection_qualified_name
     assert api_path.connector_name == AtlanConnectorType.API.value
+
+
+@pytest.fixture(scope="module")
+def api_path_overload(
+    client: AtlanClient, api_spec: APISpec
+) -> Generator[APIPath, None, None]:
+    assert api_spec.qualified_name
+    to_create = APIPath.creator(
+        path_raw_uri=API_PATH_RAW_URI_OVERLOAD,
+        spec_qualified_name=api_spec.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=APIPath)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=APIPath)
+
+
+def test_overload_api_path(
+    client: AtlanClient, api_spec: APISpec, api_path_overload: APIPath
+):
+    assert api_path_overload
+    assert api_path_overload.guid
+    assert api_path_overload.qualified_name
+    assert api_path_overload.api_spec_qualified_name
+    assert api_path_overload.api_path_raw_u_r_i == API_PATH_RAW_URI_OVERLOAD
+    assert api_path_overload.name == API_PATH_NAME_OVERLOAD
+    assert (
+        api_path_overload.connection_qualified_name
+        == api_spec.connection_qualified_name
+    )
+    assert api_path_overload.connector_name == AtlanConnectorType.API.value
 
 
 def test_update_api_path(

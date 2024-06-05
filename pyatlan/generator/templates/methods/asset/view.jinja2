@@ -1,12 +1,48 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+    ) -> View: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> View: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, schema_qualified_name: str) -> View:
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> View:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
         attributes = View.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
+            name=name,
+            schema_qualified_name=schema_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 

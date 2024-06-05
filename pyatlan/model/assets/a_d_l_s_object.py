@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -34,6 +34,26 @@ from .a_d_l_s import ADLS
 class ADLSObject(ADLS):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+    ) -> ADLSObject: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+        adls_account_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> ADLSObject: ...
+
     @classmethod
     @init_guid
     def creator(
@@ -41,13 +61,18 @@ class ADLSObject(ADLS):
         *,
         name: str,
         adls_container_qualified_name: str,
+        adls_account_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
     ) -> ADLSObject:
         validate_required_fields(
             ["name", "adls_container_qualified_name"],
             [name, adls_container_qualified_name],
         )
         attributes = ADLSObject.Attributes.create(
-            name=name, adls_container_qualified_name=adls_container_qualified_name
+            name=name,
+            adls_container_qualified_name=adls_container_qualified_name,
+            adls_account_qualified_name=adls_account_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -515,24 +540,35 @@ class ADLSObject(ADLS):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, adls_container_qualified_name: str
+            cls,
+            *,
+            name: str,
+            adls_container_qualified_name: str,
+            adls_account_qualified_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
         ) -> ADLSObject.Attributes:
             validate_required_fields(
                 ["name", "adls_container_qualified_name"],
                 [name, adls_container_qualified_name],
             )
-            adls_account_qualified_name = get_parent_qualified_name(
-                adls_container_qualified_name
-            )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                adls_container_qualified_name, "adls_container_qualified_name", 5
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    adls_container_qualified_name, "adls_container_qualified_name", 5
+                )
+            adls_account_qualified_name = (
+                adls_account_qualified_name
+                or get_parent_qualified_name(adls_container_qualified_name)
             )
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connector_name=connector_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 adls_container=ADLSContainer.ref_by_qualified_name(
                     adls_container_qualified_name
                 ),

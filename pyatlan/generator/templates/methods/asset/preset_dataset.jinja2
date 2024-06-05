@@ -1,15 +1,40 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_dashboard_qualified_name: str,
+    ) -> PresetDataset: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_dashboard_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> PresetDataset: ...
+
     @classmethod
     @init_guid
     def creator(
-        cls, *, name: str, preset_dashboard_qualified_name: str
+        cls,
+        *,
+        name: str,
+        preset_dashboard_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
     ) -> PresetDataset:
         validate_required_fields(
             ["name", "preset_dashboard_qualified_name"],
             [name, preset_dashboard_qualified_name],
         )
         attributes = PresetDataset.Attributes.create(
-            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
+            name=name,
+            preset_dashboard_qualified_name=preset_dashboard_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 

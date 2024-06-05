@@ -22,6 +22,7 @@ MODULE_NAME = TestId.make_unique("AIRFLOW")
 
 AIRFLOW_DAG_NAME = f"test_dag_{MODULE_NAME}"
 AIRFLOW_TASK_NAME = f"test_task_{MODULE_NAME}"
+AIRFLOW_TASK_NAME_OVERLOAD = f"test_task_overload_{MODULE_NAME}"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 
 ANNOUNCEMENT_TITLE = "Python SDK testing."
@@ -94,6 +95,38 @@ def test_airflow_task(
     assert airflow_task.name == AIRFLOW_TASK_NAME
     assert airflow_task.connector_name == AtlanConnectorType.AIRFLOW
     assert airflow_task.airflow_dag_qualified_name == airflow_dag.qualified_name
+
+
+@pytest.fixture(scope="module")
+def airflow_task_overload(
+    client: AtlanClient, airflow_dag: AirflowDag, connection: Connection
+) -> Generator[AirflowTask, None, None]:
+    assert airflow_dag.qualified_name
+    assert connection.qualified_name
+    to_create = AirflowTask.creator(
+        name=AIRFLOW_TASK_NAME_OVERLOAD,
+        airflow_dag_qualified_name=airflow_dag.qualified_name,
+        connection_qualified_name=connection.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=AirflowTask)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=AirflowTask)
+
+
+def test_overload_airflow_task(
+    client: AtlanClient,
+    airflow_dag: AirflowDag,
+    airflow_task_overload: AirflowTask,
+):
+    assert airflow_task_overload
+    assert airflow_task_overload.guid
+    assert airflow_task_overload.qualified_name
+    assert airflow_task_overload.name == AIRFLOW_TASK_NAME_OVERLOAD
+    assert airflow_task_overload.connector_name == AtlanConnectorType.AIRFLOW
+    assert (
+        airflow_task_overload.airflow_dag_qualified_name == airflow_dag.qualified_name
+    )
 
 
 def _update_cert_and_annoucement(client, asset, asset_type):

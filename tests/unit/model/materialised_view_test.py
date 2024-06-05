@@ -49,6 +49,26 @@ def test_create():
     assert sut.atlan_schema.qualified_name == SCHEMA_QUALIFIED_NAME
 
 
+def test_overload_creator():
+    sut = MaterialisedView.creator(
+        name=VIEW_NAME,
+        schema_qualified_name=SCHEMA_QUALIFIED_NAME,
+        schema_name=SCHEMA_NAME,
+        database_name=DATABASE_NAME,
+        connection_qualified_name=CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.name == VIEW_NAME
+    assert sut.database_name == DATABASE_NAME
+    assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
+    assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
+    assert sut.qualified_name == VIEW_QUALIFIED_NAME
+    assert sut.schema_qualified_name == SCHEMA_QUALIFIED_NAME
+    assert sut.schema_name == SCHEMA_NAME
+    assert sut.connector_name == CONNECTOR_TYPE
+    assert sut.atlan_schema.qualified_name == SCHEMA_QUALIFIED_NAME
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [

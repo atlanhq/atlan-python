@@ -1,12 +1,39 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        path_raw_uri: str,
+        spec_qualified_name: str,
+    ) -> APIPath: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        path_raw_uri: str,
+        spec_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> APIPath: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
+    def creator(
+        cls,
+        *,
+        path_raw_uri: str,
+        spec_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> APIPath:
         validate_required_fields(
             ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
         )
         attributes = APIPath.Attributes.create(
-            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+            path_raw_uri=path_raw_uri,
+            spec_qualified_name=spec_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 

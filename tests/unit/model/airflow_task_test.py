@@ -39,6 +39,20 @@ def test_creator():
     assert task.qualified_name == f"{AIRFLOW_DAG_QUALIFIED_NAME}/{AIRFLOW_TASK_NAME}"
 
 
+def test_overload_creator():
+    task = AirflowTask.creator(
+        name=AIRFLOW_TASK_NAME,
+        airflow_dag_qualified_name=AIRFLOW_DAG_QUALIFIED_NAME,
+        connection_qualified_name=AIRFLOW_CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert task.name == AIRFLOW_TASK_NAME
+    assert task.connector_name == AtlanConnectorType.AIRFLOW
+    assert task.airflow_dag_qualified_name == AIRFLOW_DAG_QUALIFIED_NAME
+    assert task.connection_qualified_name == AIRFLOW_CONNECTION_QUALIFIED_NAME
+    assert task.qualified_name == f"{AIRFLOW_DAG_QUALIFIED_NAME}/{AIRFLOW_TASK_NAME}"
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [

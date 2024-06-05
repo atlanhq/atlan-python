@@ -74,6 +74,7 @@ You can interact with all of the following different kinds of assets:
     asset/datastudio
     asset/datastudioasset
     asset/database
+    asset/databricksunitycatalogtag
     asset/dbt
     asset/dbtcolumnprocess
     asset/dbtmetric

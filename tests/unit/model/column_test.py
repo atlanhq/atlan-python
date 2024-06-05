@@ -59,7 +59,7 @@ from tests.unit.model.constants import (
             TABLE_QUALIFIED_NAME,
             Column,
             1,
-            "parent_type must be either Table, View or MaterializeView",
+            "parent_type must be either Table, View, MaterializeView or TablePartition",
         ),
     ],
 )
@@ -115,6 +115,33 @@ def test_create_when_parent_is_view():
     assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.order == 1
     assert sut.view_qualified_name == VIEW_QUALIFIED_NAME
+    assert sut.view_name == VIEW_NAME
+
+
+def test_overload_creator():
+    sut = Column.creator(
+        name=COLUMN_NAME,
+        parent_qualified_name=VIEW_QUALIFIED_NAME,
+        parent_type=View,
+        order=2,
+        parent_name=VIEW_NAME,
+        database_name=DATABASE_NAME,
+        database_qualified_name=DATABASE_QUALIFIED_NAME,
+        schema_name=SCHEMA_NAME,
+        schema_qualified_name=SCHEMA_QUALIFIED_NAME,
+        table_name=TABLE_NAME,
+        table_qualified_name=TABLE_QUALIFIED_NAME,
+        connection_qualified_name=CONNECTION_QUALIFIED_NAME,
+    )
+    assert sut.name == COLUMN_NAME
+    assert sut.qualified_name == VIEW_COLUMN_QUALIFIED_NAME
+    assert sut.connector_name == CONNECTOR_TYPE
+    assert sut.schema_name == SCHEMA_NAME
+    assert sut.schema_qualified_name == SCHEMA_QUALIFIED_NAME
+    assert sut.database_name == DATABASE_NAME
+    assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
+    assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
+    assert sut.order == 2
     assert sut.view.qualified_name == VIEW_QUALIFIED_NAME
     assert sut.view_name == VIEW_NAME
 

@@ -1,12 +1,42 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+    ) -> Schema: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: str,
+        connection_qualified_name: str,
+    ) -> Schema: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, database_qualified_name: str) -> Schema:
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Schema:
         validate_required_fields(
             ["name", "database_qualified_name"], [name, database_qualified_name]
         )
         attributes = Schema.Attributes.create(
-            name=name, database_qualified_name=database_qualified_name
+            name=name,
+            database_qualified_name=database_qualified_name,
+            database_name=database_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 

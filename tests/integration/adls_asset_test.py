@@ -23,7 +23,9 @@ CONNECTOR_TYPE = AtlanConnectorType.ADLS
 ADLS_ACCOUNT_NAME = MODULE_NAME
 ADLS_CONNECTION_QUALIFIED_NAME = f"{MODULE_NAME}"
 CONTAINER_NAME = f"mycontainer_{MODULE_NAME}"
+CONTAINER_NAME_OVERLOAD = f"mycontainer_overload_{MODULE_NAME}"
 OBJECT_NAME = f"myobject_{MODULE_NAME}.csv"
+OBJECT_NAME_OVERLOAD = f"myobject_overload_{MODULE_NAME}.csv"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
@@ -98,6 +100,39 @@ def test_adls_container(
 
 
 @pytest.fixture(scope="module")
+def adls_container_overload(
+    client: AtlanClient, adls_account: ADLSAccount, connection: Connection
+) -> Generator[ADLSContainer, None, None]:
+    assert adls_account.qualified_name
+    assert connection.qualified_name
+    to_create = ADLSContainer.creator(
+        name=CONTAINER_NAME_OVERLOAD,
+        adls_account_qualified_name=adls_account.qualified_name,
+        connection_qualified_name=connection.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=ADLSContainer)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=ADLSContainer)
+
+
+def test_overload_adls_container(
+    client: AtlanClient,
+    adls_account: ADLSAccount,
+    adls_container_overload: ADLSContainer,
+):
+    assert adls_container_overload
+    assert adls_container_overload.guid
+    assert adls_container_overload.qualified_name
+    assert (
+        adls_container_overload.adls_account_qualified_name
+        == adls_account.qualified_name
+    )
+    assert adls_container_overload.name == CONTAINER_NAME_OVERLOAD
+    assert adls_container_overload.connector_name == AtlanConnectorType.ADLS.value
+
+
+@pytest.fixture(scope="module")
 def adls_object(
     client: AtlanClient, adls_container: ADLSContainer
 ) -> Generator[ADLSObject, None, None]:
@@ -110,6 +145,49 @@ def adls_object(
     result = response.assets_created(asset_type=ADLSObject)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=ADLSObject)
+
+
+@pytest.fixture(scope="module")
+def adls_object_overload(
+    client: AtlanClient,
+    adls_container_overload: ADLSContainer,
+    adls_account: ADLSAccount,
+    connection: Connection,
+) -> Generator[ADLSObject, None, None]:
+    assert adls_container_overload.qualified_name
+    assert adls_account.qualified_name
+    assert connection.qualified_name
+    to_create = ADLSObject.creator(
+        name=OBJECT_NAME_OVERLOAD,
+        adls_container_qualified_name=adls_container_overload.qualified_name,
+        adls_account_qualified_name=adls_account.qualified_name,
+        connection_qualified_name=connection.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=ADLSObject)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=ADLSObject)
+
+
+def test_overload_adls_object(
+    client: AtlanClient,
+    adls_container_overload: ADLSContainer,
+    adls_object_overload: ADLSObject,
+):
+    assert adls_object_overload
+    assert adls_object_overload.guid
+    assert adls_object_overload.qualified_name
+    assert (
+        adls_object_overload.adls_container_qualified_name
+        == adls_container_overload.qualified_name
+    )
+    assert adls_object_overload.name == OBJECT_NAME_OVERLOAD
+    assert adls_object_overload.connector_name == AtlanConnectorType.ADLS.value
+    assert adls_container_overload.qualified_name
+    assert (
+        adls_object_overload.adls_account_qualified_name
+        == get_parent_qualified_name(adls_container_overload.qualified_name)
+    )
 
 
 def test_adls_object(

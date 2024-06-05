@@ -44,6 +44,21 @@ def test_create():
     assert sut.api_path_raw_u_r_i == API_PATH_RAW_URI
 
 
+def test_overload_creator():
+    sut = APIPath.creator(
+        path_raw_uri=API_PATH_RAW_URI,
+        spec_qualified_name=API_SPEC_QUALIFIED_NAME,
+        connection_qualified_name=API_CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.name == API_PATH_NAME
+    assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
+    assert sut.qualified_name == API_PATH_QUALIFIED_NAME
+    assert sut.connector_name == API_CONNECTOR_TYPE
+    assert sut.api_spec_qualified_name == API_SPEC_QUALIFIED_NAME
+    assert sut.api_path_raw_u_r_i == API_PATH_RAW_URI
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [

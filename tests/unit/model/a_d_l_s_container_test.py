@@ -41,6 +41,20 @@ def test_create():
     assert sut.qualified_name == f"{ADLS_ACCOUNT_QUALIFIED_NAME}/{ADLS_CONTAINER_NAME}"
 
 
+def test_overload_creator():
+    sut = ADLSContainer.creator(
+        name=ADLS_CONTAINER_NAME,
+        adls_account_qualified_name=ADLS_ACCOUNT_QUALIFIED_NAME,
+        connection_qualified_name=ADLS_CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.name == ADLS_CONTAINER_NAME
+    assert sut.adls_account_qualified_name == ADLS_ACCOUNT_QUALIFIED_NAME
+    assert sut.connection_qualified_name == ADLS_CONNECTION_QUALIFIED_NAME
+    assert sut.connector_name == ADLS_CONNECTOR_TYPE
+    assert sut.qualified_name == f"{ADLS_ACCOUNT_QUALIFIED_NAME}/{ADLS_CONTAINER_NAME}"
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [

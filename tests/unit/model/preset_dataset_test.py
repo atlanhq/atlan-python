@@ -41,6 +41,22 @@ def test_create():
     assert sut.connector_name == PRESET_CONNECTOR_TYPE
 
 
+def test_creator():
+    sut = PresetDataset.creator(
+        name=PRESET_DATASET_NAME,
+        preset_dashboard_qualified_name=PRESET_DASHBOARD_QUALIFIED_NAME,
+        connection_qualified_name=PRESET_CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.name == PRESET_DATASET_NAME
+    assert sut.preset_dashboard_qualified_name == PRESET_DASHBOARD_QUALIFIED_NAME
+    assert sut.connection_qualified_name == PRESET_CONNECTION_QUALIFIED_NAME
+    assert (
+        sut.qualified_name == f"{PRESET_DASHBOARD_QUALIFIED_NAME}/{PRESET_DATASET_NAME}"
+    )
+    assert sut.connector_name == PRESET_CONNECTOR_TYPE
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [

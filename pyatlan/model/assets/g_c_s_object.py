@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -25,14 +25,41 @@ from .g_c_s import GCS
 class GCSObject(GCS):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        gcs_bucket_qualified_name: str,
+    ) -> GCSObject: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        gcs_bucket_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> GCSObject: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+    def creator(
+        cls,
+        *,
+        name: str,
+        gcs_bucket_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> GCSObject:
         validate_required_fields(
             ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
         )
         attributes = GCSObject.Attributes.create(
-            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+            name=name,
+            gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -416,18 +443,28 @@ class GCSObject(GCS):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, gcs_bucket_qualified_name: str
+            cls,
+            *,
+            name: str,
+            gcs_bucket_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
         ) -> GCSObject.Attributes:
             validate_required_fields(
                 ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
             )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                gcs_bucket_qualified_name, "gcs_bucket_qualified_name", 4
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    gcs_bucket_qualified_name, "gcs_bucket_qualified_name", 4
+                )
+
             return GCSObject.Attributes(
                 name=name,
                 gcs_bucket_qualified_name=gcs_bucket_qualified_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{gcs_bucket_qualified_name}/{name}",
                 connector_name=connector_name,
                 gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),

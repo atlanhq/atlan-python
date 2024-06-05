@@ -204,6 +204,40 @@ class TestSchema:
         assert schemas[0].guid == schema.guid
         TestSchema.schema = schema
 
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        schema_name = TestId.make_unique("My_Overload_Schema")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        schema = Schema.creator(
+            name=schema_name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            database_name=TestDatabase.database.name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(schema)
+        assert (schemas := response.assets_created(asset_type=Schema))
+        assert len(schemas) == 1
+        overload_schema = client.asset.get_by_guid(schemas[0].guid, Schema)
+        assert (databases := response.assets_updated(asset_type=Database))
+        assert len(databases) == 1
+        database = client.asset.get_by_guid(databases[0].guid, Database)
+        assert database.attributes.schemas
+        schemas = database.attributes.schemas
+        assert len(schemas) == 2
+        # `database.attributes.schemas` ordering can differ,
+        # so it's better to use "in" operator
+        schema_guids = [schema.guid for schema in schemas]
+        assert TestSchema.schema and TestSchema.schema.guid in schema_guids
+        assert overload_schema.guid and overload_schema.guid in schema_guids
+
     @pytest.mark.order(after="test_create")
     def test_create_for_modification(
         self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
@@ -272,6 +306,45 @@ class TestTable:
         assert len(tables) == 1
         assert tables[0].guid == table.guid
         TestTable.table = table
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_name = TestId.make_unique("My_Overload_Table")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        table = Table.creator(
+            name=table_name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            schema_name=TestSchema.schema.name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(table)
+        assert (tables := response.assets_created(asset_type=Table))
+        assert len(tables) == 1
+        overload_table = client.asset.get_by_guid(guid=tables[0].guid, asset_type=Table)
+        assert (schemas := response.assets_updated(asset_type=Schema))
+        assert len(schemas) == 1
+        schema = client.asset.get_by_guid(guid=schemas[0].guid, asset_type=Schema)
+        assert schema.attributes.tables
+        tables = schema.attributes.tables
+        assert len(tables) == 2
+        # `schema.attributes.tables` ordering can differ,
+        # so it's better to use "in" operator
+        table_guids = [table.guid for table in tables]
+        assert TestTable.table and TestTable.table.guid in table_guids
+        assert overload_table.guid and overload_table.guid in table_guids
 
     @pytest.mark.order(after="test_create")
     def test_create_for_modification(
@@ -399,6 +472,36 @@ class TestView:
         view = response.mutated_entities.CREATE[0]
         TestView.view = view
 
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        view_name = TestId.make_unique("My_View_Overload")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        view = View.creator(
+            name=view_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(view)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], View)
+        assert response.guid_assignments
+
     @pytest.mark.order(after="test_create")
     def test_create_for_modification(
         self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
@@ -453,6 +556,66 @@ class TestColumn:
         assert len(columns) == 1
         assert columns[0].guid == column.guid
         TestColumn.column = column
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+    ):
+        column_name = TestId.make_unique("My_Column_Overload")
+        assert TestTable.table is not None
+        assert TestTable.table.name
+        assert TestTable.table.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        column = Column.creator(
+            name=column_name,
+            parent_type=Table,
+            order=2,
+            parent_name=TestTable.table.name,
+            parent_qualified_name=TestTable.table.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            table_name=TestTable.table.name,
+            table_qualified_name=TestTable.table.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = client.asset.save(column)
+
+        assert (columns := response.assets_created(asset_type=Column))
+        assert len(columns) == 1
+        overload_column = client.asset.get_by_guid(
+            asset_type=Column, guid=columns[0].guid
+        )
+        table = client.asset.get_by_guid(asset_type=Table, guid=TestTable.table.guid)
+        assert table.attributes.columns
+        columns = table.attributes.columns
+
+        assert len(columns) == 2
+        # `table.attributes.columns` ordering can differ,
+        # so it's better to use "in" operator
+        column_guids = [column.guid for column in columns]
+        assert TestColumn.column and TestColumn.column.guid in column_guids
+        assert overload_column.guid and overload_column.guid in column_guids
+        assert overload_column.attributes
+        assert overload_column.attributes.schema_name == TestSchema.schema.name
+        assert (
+            overload_column.attributes.schema_qualified_name
+            == TestSchema.schema.qualified_name
+        )
+        assert overload_column.attributes.database_name == TestDatabase.database.name
+        assert (
+            overload_column.attributes.database_qualified_name
+            == TestDatabase.database.qualified_name
+        )
 
     @pytest.mark.order(after="test_create")
     def test_create_for_modification(

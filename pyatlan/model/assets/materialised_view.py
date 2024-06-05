@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -25,14 +25,50 @@ from .s_q_l import SQL
 class MaterialisedView(SQL):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+    ) -> MaterialisedView: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> MaterialisedView: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> MaterialisedView:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
         attributes = MaterialisedView.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
+            name=name,
+            schema_qualified_name=schema_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -310,25 +346,48 @@ class MaterialisedView(SQL):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, schema_qualified_name: str
+            cls,
+            *,
+            name: str,
+            schema_qualified_name: str,
+            schema_name: Optional[str] = None,
+            database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
         ) -> MaterialisedView.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
-            fields = schema_qualified_name.split("/")
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                schema_qualified_name, "schema_qualified_name", 5
+            validate_required_fields(
+                ["name, schema_qualified_name"], [name, schema_qualified_name]
             )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    schema_qualified_name, "schema_qualified_name", 5
+                )
+
+            fields = schema_qualified_name.split("/")
+            qualified_name = f"{schema_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database_name = database_name or fields[3]
+            schema_name = schema_name or fields[4]
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+            atlan_schema = Schema.ref_by_qualified_name(schema_qualified_name)
+
             return MaterialisedView.Attributes(
                 name=name,
-                database_name=fields[3],
-                connection_qualified_name=connection_qn,
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                qualified_name=f"{schema_qualified_name}/{name}",
+                qualified_name=qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
                 schema_qualified_name=schema_qualified_name,
-                schema_name=fields[4],
+                schema_name=schema_name,
+                atlan_schema=atlan_schema,
                 connector_name=connector_name,
-                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+                connection_qualified_name=connection_qualified_name,
             )
 
     attributes: MaterialisedView.Attributes = Field(

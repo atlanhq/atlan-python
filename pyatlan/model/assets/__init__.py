@@ -13,8 +13,8 @@ from .stakeholder_title import StakeholderTitle
 from .badge import Badge
 from .access_control import AccessControl
 from .namespace import Namespace
-from .catalog import Catalog
 from .workflow_run import WorkflowRun
+from .catalog import Catalog
 from .atlas_glossary import AtlasGlossary
 from .auth_policy import AuthPolicy
 from .process_execution import ProcessExecution
@@ -99,6 +99,7 @@ from .function import Function
 from .table_partition import TablePartition
 from .column import Column
 from .snowflake_stream import SnowflakeStream
+from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .database import Database
 from .calculation_view import CalculationView
 from .procedure import Procedure
@@ -274,8 +275,8 @@ StakeholderTitle.Attributes.update_forward_refs(**localns)
 Badge.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
 Namespace.Attributes.update_forward_refs(**localns)
-Catalog.Attributes.update_forward_refs(**localns)
 WorkflowRun.Attributes.update_forward_refs(**localns)
+Catalog.Attributes.update_forward_refs(**localns)
 AtlasGlossary.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 ProcessExecution.Attributes.update_forward_refs(**localns)
@@ -360,6 +361,7 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
+DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)

@@ -1,4 +1,23 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        airflow_dag_qualified_name: str,
+    ) -> AirflowTask: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        airflow_dag_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> AirflowTask: ...
+
     @classmethod
     @init_guid
     def creator(
@@ -6,6 +25,7 @@
         *,
         name: str,
         airflow_dag_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
     ) -> AirflowTask:
         validate_required_fields(
             ["name", "airflow_dag_qualified_name"],
@@ -14,5 +34,6 @@
         attributes = AirflowTask.Attributes.creator(
             name=name,
             airflow_dag_qualified_name=airflow_dag_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)

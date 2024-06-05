@@ -1,15 +1,40 @@
 
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_workspace_qualified_name: str,
+    ) -> PresetDashboard: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        preset_workspace_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> PresetDashboard: ...
+
     @classmethod
     @init_guid
     def creator(
-        cls, *, name: str, preset_workspace_qualified_name: str
+        cls,
+        *,
+        name: str,
+        preset_workspace_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
     ) -> PresetDashboard:
         validate_required_fields(
             ["name", "preset_workspace_qualified_name"],
             [name, preset_workspace_qualified_name],
         )
         attributes = PresetDashboard.Attributes.create(
-            name=name, preset_workspace_qualified_name=preset_workspace_qualified_name
+            name=name,
+            preset_workspace_qualified_name=preset_workspace_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
