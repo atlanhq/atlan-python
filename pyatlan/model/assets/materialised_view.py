@@ -32,10 +32,6 @@ class MaterialisedView(SQL):
         *,
         name: str,
         schema_qualified_name: str,
-        schema_name: str,
-        database_name: str,
-        database_qualified_name: str,
-        connection_qualified_name: str,
     ) -> MaterialisedView: ...
 
     @overload
@@ -45,6 +41,10 @@ class MaterialisedView(SQL):
         *,
         name: str,
         schema_qualified_name: str,
+        schema_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        connection_qualified_name: str,
     ) -> MaterialisedView: ...
 
     @classmethod

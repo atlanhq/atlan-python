@@ -26,8 +26,6 @@ class Schema(SQL):
         *,
         name: str,
         database_qualified_name: str,
-        database_name: str,
-        connection_qualified_name: str,
     ) -> Schema: ...
 
     @overload
@@ -37,6 +35,8 @@ class Schema(SQL):
         *,
         name: str,
         database_qualified_name: str,
+        database_name: str,
+        connection_qualified_name: str,
     ) -> Schema: ...
 
     @classmethod

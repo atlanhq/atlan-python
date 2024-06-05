@@ -36,14 +36,6 @@ class Column(SQL):
         parent_qualified_name: str,
         parent_type: type,
         order: int,
-        parent_name: str,
-        database_name: str,
-        database_qualified_name: str,
-        schema_name: str,
-        schema_qualified_name: str,
-        table_name: str,
-        table_qualified_name: str,
-        connection_qualified_name: str,
     ) -> Column: ...
 
     @overload
@@ -55,6 +47,14 @@ class Column(SQL):
         parent_qualified_name: str,
         parent_type: type,
         order: int,
+        parent_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        schema_name: str,
+        schema_qualified_name: str,
+        table_name: str,
+        table_qualified_name: str,
+        connection_qualified_name: str,
     ) -> Column: ...
 
     @classmethod
@@ -93,13 +93,9 @@ class Column(SQL):
         )
 
     @classmethod
+    @init_guid
     def create(
-        cls,
-        *,
-        name: str,
-        parent_qualified_name: str,
-        parent_type: type,
-        order: int,
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
     ) -> Column:
         warn(
             (

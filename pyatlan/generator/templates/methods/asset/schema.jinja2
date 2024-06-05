@@ -6,8 +6,6 @@
         *,
         name: str,
         database_qualified_name: str,
-        database_name: str,
-        connection_qualified_name: str,
     ) -> Schema: ...
 
     @overload
@@ -17,6 +15,8 @@
         *,
         name: str,
         database_qualified_name: str,
+        database_name: str,
+        connection_qualified_name: str,
     ) -> Schema: ...
 
     @classmethod

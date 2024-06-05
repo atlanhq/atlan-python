@@ -6,7 +6,6 @@
         *,
         name: str,
         airflow_dag_qualified_name: str,
-        connection_qualified_name: str,
     ) -> AirflowTask: ...
 
     @overload
@@ -16,6 +15,7 @@
         *,
         name: str,
         airflow_dag_qualified_name: str,
+        connection_qualified_name: str,
     ) -> AirflowTask: ...
 
     @classmethod

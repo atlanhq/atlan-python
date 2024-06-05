@@ -32,7 +32,6 @@ class GCSObject(GCS):
         *,
         name: str,
         gcs_bucket_qualified_name: str,
-        connection_qualified_name: str,
     ) -> GCSObject: ...
 
     @overload
@@ -42,6 +41,7 @@ class GCSObject(GCS):
         *,
         name: str,
         gcs_bucket_qualified_name: str,
+        connection_qualified_name: str,
     ) -> GCSObject: ...
 
     @classmethod

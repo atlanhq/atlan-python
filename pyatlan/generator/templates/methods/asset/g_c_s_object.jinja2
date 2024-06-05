@@ -6,7 +6,6 @@
         *,
         name: str,
         gcs_bucket_qualified_name: str,
-        connection_qualified_name: str,
     ) -> GCSObject: ...
 
     @overload
@@ -16,6 +15,7 @@
         *,
         name: str,
         gcs_bucket_qualified_name: str,
+        connection_qualified_name: str,
     ) -> GCSObject: ...
 
     @classmethod

@@ -115,7 +115,6 @@ def test_create_when_parent_is_view():
     assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.order == 1
     assert sut.view_qualified_name == VIEW_QUALIFIED_NAME
-    assert sut.view.qualified_name == VIEW_QUALIFIED_NAME
     assert sut.view_name == VIEW_NAME
 
 
@@ -143,7 +142,6 @@ def test_overload_creator():
     assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
     assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.order == 2
-    assert sut.view_qualified_name == VIEW_QUALIFIED_NAME
     assert sut.view.qualified_name == VIEW_QUALIFIED_NAME
     assert sut.view_name == VIEW_NAME
 

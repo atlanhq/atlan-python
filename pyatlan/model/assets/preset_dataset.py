@@ -31,7 +31,6 @@ class PresetDataset(Preset):
         *,
         name: str,
         preset_dashboard_qualified_name: str,
-        connection_qualified_name: str,
     ) -> PresetDataset: ...
 
     @overload
@@ -41,6 +40,7 @@ class PresetDataset(Preset):
         *,
         name: str,
         preset_dashboard_qualified_name: str,
+        connection_qualified_name: str,
     ) -> PresetDataset: ...
 
     @classmethod

@@ -32,7 +32,6 @@ class PresetDashboard(Preset):
         *,
         name: str,
         preset_workspace_qualified_name: str,
-        connection_qualified_name: str,
     ) -> PresetDashboard: ...
 
     @overload
@@ -42,6 +41,7 @@ class PresetDashboard(Preset):
         *,
         name: str,
         preset_workspace_qualified_name: str,
+        connection_qualified_name: str,
     ) -> PresetDashboard: ...
 
     @classmethod

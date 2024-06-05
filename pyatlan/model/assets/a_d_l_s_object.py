@@ -41,8 +41,6 @@ class ADLSObject(ADLS):
         *,
         name: str,
         adls_container_qualified_name: str,
-        adls_account_qualified_name: str,
-        connection_qualified_name: str,
     ) -> ADLSObject: ...
 
     @overload
@@ -52,6 +50,8 @@ class ADLSObject(ADLS):
         *,
         name: str,
         adls_container_qualified_name: str,
+        adls_account_qualified_name: str,
+        connection_qualified_name: str,
     ) -> ADLSObject: ...
 
     @classmethod

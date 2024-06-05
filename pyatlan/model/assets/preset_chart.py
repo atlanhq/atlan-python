@@ -26,7 +26,6 @@ class PresetChart(Preset):
         *,
         name: str,
         preset_dashboard_qualified_name: str,
-        connection_qualified_name: str,
     ) -> PresetChart: ...
 
     @overload
@@ -36,6 +35,7 @@ class PresetChart(Preset):
         *,
         name: str,
         preset_dashboard_qualified_name: str,
+        connection_qualified_name: str,
     ) -> PresetChart: ...
 
     @classmethod

@@ -6,7 +6,6 @@
         *,
         name: str,
         adls_account_qualified_name: str,
-        connection_qualified_name: str,
     ) -> ADLSContainer: ...
 
     @overload
@@ -16,6 +15,7 @@
         *,
         name: str,
         adls_account_qualified_name: str,
+        connection_qualified_name: str,
     ) -> ADLSContainer: ...
 
     @classmethod
