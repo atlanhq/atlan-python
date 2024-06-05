@@ -211,6 +211,7 @@ class TestSchema:
     ):
         schema_name = TestId.make_unique("My_Overload_Schema")
         assert TestDatabase.database is not None
+        assert TestDatabase.database.name
         assert TestDatabase.database.qualified_name
         assert TestConnection.connection is not None
         assert TestConnection.connection.qualified_name
@@ -313,9 +314,11 @@ class TestTable:
     ):
         table_name = TestId.make_unique("My_Overload_Table")
         assert TestSchema.schema is not None
+        assert TestSchema.schema.name
         assert TestSchema.schema.qualified_name
         assert TestDatabase.database is not None
         assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
         assert TestConnection.connection is not None
         assert TestConnection.connection.qualified_name
 
@@ -324,6 +327,7 @@ class TestTable:
             schema_qualified_name=TestSchema.schema.qualified_name,
             schema_name=TestSchema.schema.name,
             database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
             connection_qualified_name=TestConnection.connection.qualified_name,
         )
         response = upsert(table)
@@ -488,6 +492,7 @@ class TestView:
             schema_name=TestSchema.schema.name,
             schema_qualified_name=TestSchema.schema.qualified_name,
             database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
             connection_qualified_name=TestConnection.connection.qualified_name,
         )
         response = upsert(view)
@@ -576,7 +581,11 @@ class TestColumn:
             parent_name=TestTable.table.name,
             parent_qualified_name=TestTable.table.qualified_name,
             database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
             schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            table_name=TestTable.table.name,
+            table_qualified_name=TestTable.table.qualified_name,
             connection_qualified_name=TestConnection.connection.qualified_name,
         )
         response = client.asset.save(column)

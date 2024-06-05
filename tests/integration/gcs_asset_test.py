@@ -21,6 +21,7 @@ MODULE_NAME = TestId.make_unique("GCS")
 CONNECTOR_TYPE = AtlanConnectorType.GCS
 GCS_BUCKET_NAME = MODULE_NAME
 GCS_OBJECT_NAME = f"{MODULE_NAME}.csv"
+GCS_OBJECT_NAME_OVERLOAD = f"{MODULE_NAME}_overload.csv"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
@@ -88,6 +89,37 @@ def test_gcs_object(
     assert gcs_object.gcs_bucket_qualified_name == gcs_bucket.qualified_name
     assert gcs_object.name == GCS_OBJECT_NAME
     assert gcs_object.connector_name == AtlanConnectorType.GCS.value
+
+
+@pytest.fixture(scope="module")
+def gcs_object_overload(
+    client: AtlanClient, connection: Connection, gcs_bucket: GCSBucket
+) -> Generator[GCSObject, None, None]:
+    assert gcs_bucket.qualified_name
+    assert connection.qualified_name
+    to_create = GCSObject.creator(
+        name=GCS_OBJECT_NAME_OVERLOAD,
+        gcs_bucket_qualified_name=gcs_bucket.qualified_name,
+        connection_qualified_name=connection.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=GCSObject)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=GCSObject)
+
+
+def test_overload_gcs_object(
+    client: AtlanClient,
+    connection: Connection,
+    gcs_bucket: GCSBucket,
+    gcs_object_overload: GCSObject,
+):
+    assert gcs_object_overload
+    assert gcs_object_overload.guid
+    assert gcs_object_overload.qualified_name
+    assert gcs_object_overload.gcs_bucket_qualified_name == gcs_bucket.qualified_name
+    assert gcs_object_overload.name == GCS_OBJECT_NAME_OVERLOAD
+    assert gcs_object_overload.connector_name == AtlanConnectorType.GCS.value
 
 
 def test_update_gcs_object(
