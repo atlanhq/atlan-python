@@ -34,6 +34,7 @@ class MaterialisedView(SQL):
         schema_qualified_name: str,
         schema_name: str,
         database_name: str,
+        database_qualified_name: str,
         connection_qualified_name: str,
     ) -> MaterialisedView: ...
 
@@ -44,9 +45,6 @@ class MaterialisedView(SQL):
         *,
         name: str,
         schema_qualified_name: str,
-        schema_name: Optional[str] = None,
-        database_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
     ) -> MaterialisedView: ...
 
     @classmethod
@@ -58,6 +56,7 @@ class MaterialisedView(SQL):
         schema_qualified_name: str,
         schema_name: Optional[str] = None,
         database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> MaterialisedView:
         validate_required_fields(
@@ -68,6 +67,7 @@ class MaterialisedView(SQL):
             schema_qualified_name=schema_qualified_name,
             schema_name=schema_name,
             database_name=database_name,
+            database_qualified_name=database_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
@@ -352,6 +352,7 @@ class MaterialisedView(SQL):
             schema_qualified_name: str,
             schema_name: Optional[str] = None,
             database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> MaterialisedView.Attributes:
             validate_required_fields(
@@ -371,7 +372,10 @@ class MaterialisedView(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = f"{connection_qualified_name}/{database_name}"
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
             atlan_schema = Schema.ref_by_qualified_name(schema_qualified_name)
 
             return MaterialisedView.Attributes(

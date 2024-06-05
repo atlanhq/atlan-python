@@ -33,6 +33,7 @@ class Table(SQL):
         schema_qualified_name: str,
         schema_name: str,
         database_name: str,
+        database_qualified_name: str,
         connection_qualified_name: str,
     ) -> Table: ...
 
@@ -43,9 +44,6 @@ class Table(SQL):
         *,
         name: str,
         schema_qualified_name: str,
-        schema_name: Optional[str] = None,
-        database_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
     ) -> Table: ...
 
     @classmethod
@@ -57,6 +55,7 @@ class Table(SQL):
         schema_qualified_name: str,
         schema_name: Optional[str] = None,
         database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Table:
         validate_required_fields(
@@ -67,6 +66,7 @@ class Table(SQL):
             schema_qualified_name=schema_qualified_name,
             schema_name=schema_name,
             database_name=database_name,
+            database_qualified_name=database_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
@@ -492,6 +492,7 @@ class Table(SQL):
             schema_qualified_name: str,
             schema_name: Optional[str] = None,
             database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> Table.Attributes:
             validate_required_fields(
@@ -511,8 +512,10 @@ class Table(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = f"{connection_qualified_name}/{database_name}"
-            schema_qualified_name = f"{database_qualified_name}/{schema_name}"
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
 
             return Table.Attributes(
                 name=name,

@@ -40,7 +40,6 @@ class AirflowTask(Airflow):
         *,
         name: str,
         airflow_dag_qualified_name: str,
-        connection_qualified_name: Optional[str] = None,
     ) -> AirflowTask: ...
 
     @classmethod

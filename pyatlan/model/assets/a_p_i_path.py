@@ -42,7 +42,6 @@ class APIPath(API):
         *,
         path_raw_uri: str,
         spec_qualified_name: str,
-        connection_qualified_name: Optional[str] = None,
     ) -> APIPath: ...
 
     @classmethod

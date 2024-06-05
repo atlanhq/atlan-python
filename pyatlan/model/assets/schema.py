@@ -37,8 +37,6 @@ class Schema(SQL):
         *,
         name: str,
         database_qualified_name: str,
-        database_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
     ) -> Schema: ...
 
     @classmethod

@@ -38,8 +38,11 @@ class Column(SQL):
         order: int,
         parent_name: str,
         database_name: str,
+        database_qualified_name: str,
         schema_name: str,
+        schema_qualified_name: str,
         table_name: str,
+        table_qualified_name: str,
         connection_qualified_name: str,
     ) -> Column: ...
 
@@ -52,11 +55,6 @@ class Column(SQL):
         parent_qualified_name: str,
         parent_type: type,
         order: int,
-        parent_name: Optional[str] = None,
-        database_name: Optional[str] = None,
-        schema_name: Optional[str] = None,
-        table_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
     ) -> Column: ...
 
     @classmethod
@@ -70,8 +68,11 @@ class Column(SQL):
         order: int,
         parent_name: Optional[str] = None,
         database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
         schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
         table_name: Optional[str] = None,
+        table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column:
         return Column(
@@ -82,8 +83,11 @@ class Column(SQL):
                 order=order,
                 parent_name=parent_name,
                 database_name=database_name,
+                database_qualified_name=database_qualified_name,
                 schema_name=schema_name,
+                schema_qualified_name=schema_qualified_name,
                 table_name=table_name,
+                table_qualified_name=table_qualified_name,
                 connection_qualified_name=connection_qualified_name,
             )
         )
@@ -1413,8 +1417,11 @@ class Column(SQL):
             order: int,
             parent_name: Optional[str] = None,
             database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
             schema_name: Optional[str] = None,
+            schema_qualified_name: Optional[str] = None,
             table_name: Optional[str] = None,
+            table_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> Column.Attributes:
             validate_required_fields(
@@ -1437,10 +1444,14 @@ class Column(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            table_name = table_name or fields[5]
-            database_qualified_name = f"{connection_qualified_name}/{database_name}"
-            schema_qualified_name = f"{database_qualified_name}/{schema_name}"
-            table_qualified_name = f"{schema_qualified_name}/{table_name}"
+            parent_name = parent_name or fields[5]
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+            schema_qualified_name = (
+                schema_qualified_name or f"{database_qualified_name}/{schema_name}"
+            )
 
             column = Column.Attributes(
                 name=name,
@@ -1457,23 +1468,23 @@ class Column(SQL):
             if parent_type == Table:
                 column.table_qualified_name = parent_qualified_name
                 column.table = Table.ref_by_qualified_name(parent_qualified_name)
-                column.table_name = parent_name or fields[5]
+                column.table_name = parent_name
             elif parent_type == View:
                 column.view_qualified_name = parent_qualified_name
                 column.view = View.ref_by_qualified_name(parent_qualified_name)
-                column.view_name = parent_name or fields[5]
+                column.view_name = parent_name
             elif parent_type == MaterialisedView:
                 column.view_qualified_name = parent_qualified_name
                 column.materialised_view = MaterialisedView.ref_by_qualified_name(
                     parent_qualified_name
                 )
-                column.view_name = parent_name or fields[5]
+                column.view_name = parent_name
             elif parent_type == TablePartition:
                 column.table_qualified_name = table_qualified_name
                 column.table_partition = TablePartition.ref_by_qualified_name(
                     parent_qualified_name
                 )
-                column.table_name = table_name or fields[5]
+                column.table_name = table_name
             else:
                 raise ValueError(
                     "parent_type must be either Table, View, MaterializeView or TablePartition"

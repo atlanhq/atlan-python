@@ -42,7 +42,6 @@ class PresetDashboard(Preset):
         *,
         name: str,
         preset_workspace_qualified_name: str,
-        connection_qualified_name: Optional[str] = None,
     ) -> PresetDashboard: ...
 
     @classmethod

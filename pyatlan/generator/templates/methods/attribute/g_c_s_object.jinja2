@@ -1,17 +1,29 @@
 
         @classmethod
         @init_guid
-        def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> {{ entity_def.name }}.Attributes:
+        def create(
+            cls,
+            *,
+            name: str,
+            gcs_bucket_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> GCSObject.Attributes:
             validate_required_fields(
                 ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
             )
-            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                gcs_bucket_qualified_name, "gcs_bucket_qualified_name", 4
-            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    gcs_bucket_qualified_name, "gcs_bucket_qualified_name", 4
+                )
+
             return GCSObject.Attributes(
                 name=name,
                 gcs_bucket_qualified_name=gcs_bucket_qualified_name,
-                connection_qualified_name=connection_qn,
+                connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{gcs_bucket_qualified_name}/{name}",
                 connector_name=connector_name,
                 gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),

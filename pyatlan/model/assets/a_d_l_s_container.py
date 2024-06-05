@@ -42,7 +42,6 @@ class ADLSContainer(ADLS):
         *,
         name: str,
         adls_account_qualified_name: str,
-        connection_qualified_name: Optional[str] = None,
     ) -> ADLSContainer: ...
 
     @classmethod

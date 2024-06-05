@@ -33,6 +33,7 @@ class View(SQL):
         schema_qualified_name: str,
         schema_name: str,
         database_name: str,
+        database_qualified_name: str,
         connection_qualified_name: str,
     ) -> View: ...
 
@@ -43,9 +44,6 @@ class View(SQL):
         *,
         name: str,
         schema_qualified_name: str,
-        schema_name: Optional[str] = None,
-        database_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
     ) -> View: ...
 
     @classmethod
@@ -57,6 +55,7 @@ class View(SQL):
         schema_qualified_name: str,
         schema_name: Optional[str] = None,
         database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> View:
         validate_required_fields(
@@ -67,6 +66,7 @@ class View(SQL):
             schema_qualified_name=schema_qualified_name,
             schema_name=schema_name,
             database_name=database_name,
+            database_qualified_name=database_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
@@ -304,6 +304,7 @@ class View(SQL):
             schema_qualified_name: str,
             schema_name: Optional[str] = None,
             database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> View.Attributes:
             validate_required_fields(
@@ -323,7 +324,10 @@ class View(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = f"{connection_qualified_name}/{database_name}"
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
             atlan_schema = Schema.ref_by_qualified_name(schema_qualified_name)
 
             return View.Attributes(
