@@ -9,12 +9,29 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .catalog import Catalog
 
 
 class DataContract(Catalog):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls, *, name: str, asset_qualified_name: str, contract_json: str
+    ) -> DataContract:
+        validate_required_fields(
+            ["name", "asset_qualified_name", "contract_json"],
+            [name, asset_qualified_name, contract_json],
+        )
+        attributes = DataContract.Attributes.creator(
+            name=name,
+            asset_qualified_name=asset_qualified_name,
+            contract_json=contract_json,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="DataContract", allow_mutation=False)
 
@@ -197,6 +214,21 @@ class DataContract(Catalog):
         data_contract_next_version: Optional[DataContract] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls, *, name: str, asset_qualified_name: str, contract_json: str
+        ) -> DataContract.Attributes:
+            validate_required_fields(
+                ["name", "asset_qualified_name", "contract_json"],
+                [name, asset_qualified_name, contract_json],
+            )
+            return DataContract.Attributes(
+                name=name,
+                qualified_name=f"{asset_qualified_name}/contract",
+                data_contract_json=contract_json,
+            )
 
     attributes: DataContract.Attributes = Field(
         default_factory=lambda: DataContract.Attributes(),
