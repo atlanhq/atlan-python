@@ -1,10 +1,11 @@
 import re
+from json import dumps
 from typing import Generator
 
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AtlasGlossaryTerm, DataDomain, DataProduct
+from pyatlan.model.assets import Asset, DataContract, DataDomain, DataProduct, Table
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
@@ -14,7 +15,7 @@ from pyatlan.model.enums import (
     DataProductStatus,
     EntityStatus,
 )
-from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 from tests.integration.client import TestId, delete_asset
@@ -42,6 +43,7 @@ DATA_PRODUCT_QUALIFIED_NAME = (
 DATA_PRODUCT_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super/product/[a-zA-Z0-9-]+"
 DD_CM = f"{MODULE_NAME}_CM"
 DD_ATTR = f"{MODULE_NAME}_ATTRIBUTE"
+DATA_CONTRACT_NAME = f"{MODULE_NAME}-data-contract"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
@@ -241,19 +243,18 @@ def test_data_domain_cm(data_domain_cm: CustomMetadataDef):
 def product(
     client: AtlanClient,
     domain: DataDomain,
+    table: Table,
 ) -> Generator[DataProduct, None, None]:
     assert domain.guid
-    assets = (
-        FluentSearch()
-        .where(CompoundQuery.active_assets())
-        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-    ).to_request()
-    to_create = DataProduct.create(
+    assert table and table.guid
+    assets = FluentSearch().where(Asset.GUID.eq(table.guid)).to_request()
+    product = DataProduct.create(
         name=DATA_PRODUCT_NAME,
         asset_selection=assets,
         domain_qualified_name=domain.qualified_name,
     )
-    response = client.asset.save(to_create)
+    product.output_ports = [table]
+    response = client.asset.save(product)
     result = response.assets_created(asset_type=DataProduct)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=DataProduct)
@@ -273,6 +274,92 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert re.search(DATA_PRODUCT_QN_REGEX, product.qualified_name)
     assert re.search(DATA_DOMAIN_QN_REGEX, product.parent_domain_qualified_name)
     assert re.search(DATA_DOMAIN_QN_REGEX, product.super_domain_qualified_name)
+
+
+@pytest.fixture(scope="module")
+def contract(
+    client: AtlanClient,
+    table: Table,
+) -> Generator[DataContract, None, None]:
+    assert table and table.guid
+    contract_json = {
+        "type": table.type_name,
+        "status": CertificateStatus.DRAFT,
+        "kind": "DataContract",
+        "data_source": table.connection_qualified_name,
+        "dataset": table.name,
+        "description": "Automated testing of the Python SDK.",
+    }
+    contract = DataContract.creator(
+        name=DATA_CONTRACT_NAME,
+        asset_qualified_name=table.qualified_name,
+        contract_json=dumps(contract_json),
+    )
+    response = client.asset.save(contract)
+    result = response.assets_created(asset_type=DataContract)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=DataContract)
+
+
+@pytest.fixture(scope="module")
+def updated_contract(
+    client: AtlanClient,
+    table: Table,
+) -> Generator[DataContract, None, None]:
+    assert table and table.guid
+    contract_json = {
+        "type": table.type_name,
+        "status": CertificateStatus.DRAFT,
+        "kind": "DataContract",
+        "data_source": table.connection_qualified_name,
+        "dataset": table.name,
+        "description": "Automated testing of the Python SDK (UPDATED).",
+    }
+    contract = DataContract.creator(
+        name=DATA_CONTRACT_NAME,
+        asset_qualified_name=table.qualified_name,
+        contract_json=dumps(contract_json),
+    )
+    response = client.asset.save(contract)
+    result = response.assets_created(asset_type=DataContract)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=DataContract)
+
+
+def test_contract(
+    client: AtlanClient, table: Table, product: DataProduct, contract: DataContract
+):
+    assert product and product.guid
+    product = client.asset.get_by_guid(guid=product.guid, asset_type=DataProduct)
+    assert product and product.output_ports and len(product.output_ports)
+    table_asset = product.output_ports[0]
+    assert table and table.guid
+    assert table.guid == table_asset.guid
+    table = client.asset.get_by_guid(guid=table_asset.guid, asset_type=Table)
+    assert table.has_contract
+    assert table.data_contract_latest
+    table_data_contract = table.data_contract_latest
+    assert contract and table_data_contract
+    assert contract.guid == table_data_contract.guid
+    assert contract.data_contract_json
+    assert contract.data_contract_version == 1
+    assert contract.data_contract_asset_guid == table.guid
+
+
+def test_update_contract(
+    client: AtlanClient, table: Table, updated_contract: DataContract
+):
+    assert table and table.guid
+    table = client.asset.get_by_guid(guid=table.guid, asset_type=Table)
+    assert table.has_contract
+    assert table.data_contract_latest
+    table_data_contract = table.data_contract_latest
+    assert updated_contract and table_data_contract
+    assert updated_contract.guid == table_data_contract.guid
+    assert updated_contract.data_contract_asset_guid == table.guid
+    assert updated_contract.data_contract_json
+    assert updated_contract.data_contract_version == 2
+    assert "(UPDATED)" in updated_contract.data_contract_json
 
 
 def test_update_product(client: AtlanClient, product: DataProduct):
@@ -318,6 +405,23 @@ def test_retrieve_product(client: AtlanClient, product: DataProduct):
     assert test_product.certificate_status_message == CERTIFICATE_MESSAGE
 
 
+@pytest.mark.order(after="test_update_contract")
+def test_retrieve_contract(
+    client: AtlanClient, table: Table, updated_contract: DataContract
+):
+    test_contract = client.asset.get_by_guid(
+        updated_contract.guid, asset_type=DataContract
+    )
+    assert test_contract
+    assert test_contract.name == updated_contract.name
+    assert test_contract.guid == updated_contract.guid
+    assert test_contract.qualified_name == updated_contract.qualified_name
+    assert test_contract.data_contract_asset_guid == table.guid
+    assert test_contract.data_contract_json
+    assert test_contract.data_contract_version == 2
+    assert "(UPDATED)" in test_contract.data_contract_json
+
+
 @pytest.mark.order(after="test_retrieve_product")
 def test_find_product_by_name(client: AtlanClient, product: DataProduct):
     response = client.asset.find_product_by_name(
@@ -327,6 +431,21 @@ def test_find_product_by_name(client: AtlanClient, product: DataProduct):
     assert response
     assert response.guid == product.guid
     assert response.daap_status == DataProductStatus.ACTIVE
+
+
+@pytest.mark.order(after="test_retrieve_contract")
+def test_delete_contract(client: AtlanClient, contract: DataContract):
+    response = client.asset.purge_by_guid(contract.guid)
+    assert response
+    assert not response.assets_created(asset_type=DataContract)
+    assert not response.assets_updated(asset_type=DataContract)
+    deleted = response.assets_deleted(asset_type=DataContract)
+    assert deleted
+    assert len(deleted) == 1
+    assert deleted[0].guid == contract.guid
+    assert deleted[0].qualified_name == contract.qualified_name
+    assert deleted[0].delete_handler == "PURGE"
+    assert deleted[0].status == EntityStatus.DELETED
 
 
 @pytest.mark.order(after="test_retrieve_product")
