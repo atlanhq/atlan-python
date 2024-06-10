@@ -494,10 +494,13 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">loads</span>
+<span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">NumericField</span><span class="p">,</span> <span class="n">RelationField</span>
 <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
@@ -511,15 +514,12 @@
 
     <span class="nd">@classmethod</span>
     <span class="nd">@init_guid</span>
-    <span class="k">def</span> <span class="nf">creator</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">asset_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataContract</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">creator</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">asset_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataContract</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;asset_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;contract_json&quot;</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">asset_qualified_name</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;asset_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;contract_json&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">asset_qualified_name</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataContract</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">asset_qualified_name</span><span class="o">=</span><span class="n">asset_qualified_name</span><span class="p">,</span>
             <span class="n">contract_json</span><span class="o">=</span><span class="n">contract_json</span><span class="p">,</span>
         <span class="p">)</span>
@@ -710,14 +710,19 @@
         <span class="nd">@classmethod</span>
         <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">creator</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">asset_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">:</span> <span class="nb">str</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">asset_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">:</span> <span class="nb">str</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataContract</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">validate_required_fields</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;asset_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;contract_json&quot;</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">asset_qualified_name</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;asset_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;contract_json&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">asset_qualified_name</span><span class="p">,</span> <span class="n">contract_json</span><span class="p">],</span>
             <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">contract_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Data contract for </span><span class="si">{</span><span class="n">loads</span><span class="p">(</span><span class="n">contract_json</span><span class="p">)[</span><span class="s1">&#39;dataset&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_CONTRACT_JSON</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
+
             <span class="k">return</span> <span class="n">DataContract</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">contract_name</span><span class="p">,</span>
                 <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">asset_qualified_name</span><span class="si">}</span><span class="s2">/contract&quot;</span><span class="p">,</span>
                 <span class="n">data_contract_json</span><span class="o">=</span><span class="n">contract_json</span><span class="p">,</span>
             <span class="p">)</span>
