@@ -100,7 +100,7 @@ DATA_CONTRACT_JSON = {
     "type": "Table",
     "status": "DRAFT",
     "kind": "DataContract",
-    "data_source": ASSET_QUALIFIED_NAME,
+    "data_source": "some-asset-connection-name",
     "dataset": "some-asset-name",
 }
 DATA_CONTRACT_NAME = f"Data contract for {DATA_CONTRACT_JSON['dataset']}"

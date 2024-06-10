@@ -5,7 +5,14 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import Asset, DataContract, DataDomain, DataProduct, Table
+from pyatlan.model.assets import (
+    Asset,
+    Connection,
+    DataContract,
+    DataDomain,
+    DataProduct,
+    Table,
+)
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
@@ -280,18 +287,18 @@ def test_product(client: AtlanClient, product: DataProduct):
 def contract(
     client: AtlanClient,
     table: Table,
+    connection: Connection,
 ) -> Generator[DataContract, None, None]:
     assert table and table.guid
     contract_json = {
         "type": table.type_name,
         "status": CertificateStatus.DRAFT,
         "kind": "DataContract",
-        "data_source": table.connection_qualified_name,
+        "data_source": connection.name,
         "dataset": table.name,
         "description": "Automated testing of the Python SDK.",
     }
     contract = DataContract.creator(
-        name=DATA_CONTRACT_NAME,
         asset_qualified_name=table.qualified_name,
         contract_json=dumps(contract_json),
     )
@@ -305,18 +312,18 @@ def contract(
 def updated_contract(
     client: AtlanClient,
     table: Table,
+    connection: Connection,
 ) -> Generator[DataContract, None, None]:
     assert table and table.guid
     contract_json = {
         "type": table.type_name,
         "status": CertificateStatus.DRAFT,
         "kind": "DataContract",
-        "data_source": table.connection_qualified_name,
+        "data_source": connection.name,
         "dataset": table.name,
         "description": "Automated testing of the Python SDK (UPDATED).",
     }
     contract = DataContract.creator(
-        name=DATA_CONTRACT_NAME,
         asset_qualified_name=table.qualified_name,
         contract_json=dumps(contract_json),
     )
@@ -340,6 +347,7 @@ def test_contract(
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
     assert contract and table_data_contract
+    assert table.name and contract.name and table.name in contract.name
     assert contract.guid == table_data_contract.guid
     assert contract.data_contract_json
     assert contract.data_contract_version == 1
@@ -354,7 +362,8 @@ def test_update_contract(
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
-    assert updated_contract and table_data_contract
+    assert table.name and updated_contract and table_data_contract
+    assert updated_contract.name and table.name in updated_contract.name
     assert updated_contract.guid == table_data_contract.guid
     assert updated_contract.data_contract_asset_guid == table.guid
     assert updated_contract.data_contract_json
@@ -414,6 +423,7 @@ def test_retrieve_contract(
     )
     assert test_contract
     assert test_contract.name == updated_contract.name
+    assert table.name and updated_contract.name and table.name in updated_contract.name
     assert test_contract.guid == updated_contract.guid
     assert test_contract.qualified_name == updated_contract.qualified_name
     assert test_contract.data_contract_asset_guid == table.guid
