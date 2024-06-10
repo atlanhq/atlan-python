@@ -530,6 +530,13 @@ class ErrorCode(Enum):
         "Please raise a feature request on the Python SDK GitHub to add support for it.",
         InvalidRequestError,
     )
+    INVALID_CONTRACT_JSON = (
+        400,
+        "ATLAN-PYTHON-400-062",
+        "Provided data contract JSON is invalid.",
+        "Please double-check your provided data contract JSON.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

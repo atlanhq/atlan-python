@@ -1,15 +1,12 @@
 
     @classmethod
     @init_guid
-    def creator(
-        cls, *, name: str, asset_qualified_name: str, contract_json: str
-    ) -> DataContract:
+    def creator(cls, *, asset_qualified_name: str, contract_json: str) -> DataContract:
         validate_required_fields(
-            ["name", "asset_qualified_name", "contract_json"],
-            [name, asset_qualified_name, contract_json],
+            ["asset_qualified_name", "contract_json"],
+            [asset_qualified_name, contract_json],
         )
         attributes = DataContract.Attributes.creator(
-            name=name,
             asset_qualified_name=asset_qualified_name,
             contract_json=contract_json,
         )
