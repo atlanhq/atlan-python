@@ -4,10 +4,13 @@
 
 from __future__ import annotations
 
+from json import loads
+from json.decoder import JSONDecodeError
 from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
@@ -19,15 +22,12 @@ class DataContract(Catalog):
 
     @classmethod
     @init_guid
-    def creator(
-        cls, *, name: str, asset_qualified_name: str, contract_json: str
-    ) -> DataContract:
+    def creator(cls, *, asset_qualified_name: str, contract_json: str) -> DataContract:
         validate_required_fields(
-            ["name", "asset_qualified_name", "contract_json"],
-            [name, asset_qualified_name, contract_json],
+            ["asset_qualified_name", "contract_json"],
+            [asset_qualified_name, contract_json],
         )
         attributes = DataContract.Attributes.creator(
-            name=name,
             asset_qualified_name=asset_qualified_name,
             contract_json=contract_json,
         )
@@ -218,14 +218,19 @@ class DataContract(Catalog):
         @classmethod
         @init_guid
         def creator(
-            cls, *, name: str, asset_qualified_name: str, contract_json: str
+            cls, *, asset_qualified_name: str, contract_json: str
         ) -> DataContract.Attributes:
             validate_required_fields(
-                ["name", "asset_qualified_name", "contract_json"],
-                [name, asset_qualified_name, contract_json],
+                ["asset_qualified_name", "contract_json"],
+                [asset_qualified_name, contract_json],
             )
+            try:
+                contract_name = f"Data contract for {loads(contract_json)['dataset']}"
+            except (JSONDecodeError, KeyError):
+                raise ErrorCode.INVALID_CONTRACT_JSON.exception_with_parameters()
+
             return DataContract.Attributes(
-                name=name,
+                name=contract_name,
                 qualified_name=f"{asset_qualified_name}/contract",
                 data_contract_json=contract_json,
             )

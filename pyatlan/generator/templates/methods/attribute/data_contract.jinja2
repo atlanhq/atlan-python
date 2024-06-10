@@ -2,14 +2,19 @@
         @classmethod
         @init_guid
         def creator(
-            cls, *, name: str, asset_qualified_name: str, contract_json: str
+            cls, *, asset_qualified_name: str, contract_json: str
         ) -> DataContract.Attributes:
             validate_required_fields(
-                ["name", "asset_qualified_name", "contract_json"],
-                [name, asset_qualified_name, contract_json],
+                ["asset_qualified_name", "contract_json"],
+                [asset_qualified_name, contract_json],
             )
+            try:
+                contract_name = f"Data contract for {loads(contract_json)['dataset']}"
+            except (JSONDecodeError, KeyError):
+                raise ErrorCode.INVALID_CONTRACT_JSON.exception_with_parameters()
+
             return DataContract.Attributes(
-                name=name,
+                name=contract_name,
                 qualified_name=f"{asset_qualified_name}/contract",
                 data_contract_json=contract_json,
             )

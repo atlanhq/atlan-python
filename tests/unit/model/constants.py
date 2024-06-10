@@ -94,16 +94,16 @@ DATA_PRODUCT_QUALIFIED_NAME = (
 DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME = (
     f"{DATA_SUB_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_NAME}"
 )
-DATA_CONTRACT_NAME = "data-contract"
 ASSET_QUALIFIED_NAME = "some-asset-qualified-name"
 DATA_CONTRACT_QUALIFIED_NAME = f"{ASSET_QUALIFIED_NAME}/contract"
 DATA_CONTRACT_JSON = {
     "type": "Table",
     "status": "DRAFT",
     "kind": "DataContract",
-    "data_source": ASSET_QUALIFIED_NAME,
+    "data_source": "some-asset-connection-name",
     "dataset": "some-asset-name",
 }
+DATA_CONTRACT_NAME = f"Data contract for {DATA_CONTRACT_JSON['dataset']}"
 CP_NAME = "column-process"
 CP_PROCESS_ID = "cp-process-id"
 CP_CONNECTION_QUALIFIED_NAME = "default/vertica/123456789"
