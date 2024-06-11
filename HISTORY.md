@@ -1,3 +1,15 @@
+## 2.2.4 (June 11, 2024)
+
+### New features
+
+- Added the `creator()` method for `DataContract`.
+- Overloaded the `creator()` methods to explicitly handle ancestral `qualified_name` and `name`. This enhancement allows users to create objects when the ancestral asset name contains `/`, which `creator()` was previously unable to handle.
+
+### QOL improvements
+
+- Generated the latest typedef models.
+- Updated the latest set of Phosphor icons in the `AtlanIcon` enum.
+
 ## 2.2.3 (June 4, 2024)
 
 ### New features
