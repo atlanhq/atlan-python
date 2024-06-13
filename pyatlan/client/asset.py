@@ -92,8 +92,11 @@ from pyatlan.model.lineage import (
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import (
     DSL,
+    Bool,
     IndexSearchRequest,
     Query,
+    Range,
+    SortItem,
     Term,
     with_active_category,
     with_active_glossary,
@@ -1653,6 +1656,10 @@ class SearchResults(ABC, Iterable):
         self._start = start
         self._size = size
         self._assets = assets
+        self._processed_guids = set()
+        self._current_guids = set()
+        self._first_record_ct = -1
+        self._last_record_ct = -1
 
     def current_page(self) -> List[Asset]:
         """
@@ -1669,6 +1676,7 @@ class SearchResults(ABC, Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
+        self._processed_guids.update(asset.guid for asset in self._assets)
         if size:
             self._size = size
         return self._get_next_page() if self._assets else False
@@ -1700,6 +1708,22 @@ class SearchResults(ABC, Iterable):
                     entity=entity, attributes=self._criteria.attributes
                 )
             self._assets = parse_obj_as(List[Asset], raw_json["entities"])
+            # s = {asset.name for asset in self._assets}
+            # print(s, "in", self._processed_guids, s.issubset(self._processed_guids))
+
+            self._first_record_ct = -1
+            if self._assets and len(self._assets) > 1:
+                self._first_record_ct = self._assets[0].create_time
+                self._last_record_ct = self._assets[-1].create_time
+            else:
+                self._last_record_ct = -1
+            new_assets = []
+            for asset in self._assets:
+                if asset.guid in self._processed_guids:
+                    continue
+                new_assets.append(asset)
+            self._assets = new_assets
+
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -1744,14 +1768,74 @@ class IndexSearchResults(SearchResults, Iterable):
     def aggregations(self) -> Optional[Aggregations]:
         return self._aggregations
 
+    # def next_page(self) -> bool:
+    #     """
+    #     Indicates whether there is a next page of results.
+
+    #     :returns: True if there is a next page of results, otherwise False
+    #     """
+    #     self._processed_guids.update(asset.name for asset in self._assets)
+    #     return self._get_next_page()
+
     def _get_next_page(self):
         """
         Fetches the next page of results.
 
         :returns: True if the next page of results was fetched, False if there was no next page
         """
-        self._criteria.dsl.from_ = self._start
+        # # Check for a timestamp condition to
+        # # determine if this query is being executed with infinite pagination.
+        # executing_fs = False
+        rewritten_filters = []
+        query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
+        # self._start = self._start + len(self._assets)
+        self._criteria.dsl.from_ = self._start
+
+        # import ipdb
+
+        # ipdb.set_trace()
+
+        if isinstance(query, Bool):
+            for filter_ in query.filter:
+                if self.is_paging_timestamp_query(filter_):
+                    continue
+                rewritten_filters.append(filter_)
+
+        if self._first_record_ct != self._last_record_ct:
+            print("\n -- Using 'timestamp' based paging -- \n")
+            # print(self._criteria.dsl.sort)
+            rewritten_filters.append(
+                self.get_paging_timestamp_query(self._last_record_ct)
+            )
+            rewritten_query = Bool(
+                filter=rewritten_filters,
+                must=query.must,
+                must_not=query.must_not,
+                should=query.should,
+                boost=query.boost,
+                minimum_should_match=query.minimum_should_match,
+            )
+            self._criteria.dsl.from_ = 0
+            self._criteria.dsl.query = rewritten_query
+        else:
+            print("\n -- Using 'offset' based paging -- \n")
+            # DSL(from_=0, size=self._size, query=rewritten_query, sort=self._criteria.dsl.sort)
+        # else:
+        #     print("\n -- Using 'normal' offset-based paging -- \n")
+        #     # If the first and last record in the page have the same timestamp,
+        #     # or we're not executing FS, use "normal" offset-based paging
+        #     # self._start = self._start +
+        #     self._criteria.dsl.from_ = self._start + len(self._assets)
+        #     print("Offset", self._criteria.dsl.from_)
+        print(
+            self._assets[0].name,
+            self._first_record_ct,
+            self._assets[-1].name,
+            self._last_record_ct,
+        )
+        print("size ->", self._criteria.dsl.size)
+        print("offset ->", self._criteria.dsl.from_)
         if raw_json := super()._get_next_page_json():
             self._count = raw_json.get("approximateCount", 0)
             return True
@@ -1760,6 +1844,74 @@ class IndexSearchResults(SearchResults, Iterable):
     @property
     def count(self) -> int:
         return self._count
+
+    # def __iter__(self) -> Generator[Asset, None, None]:
+    #     """
+    #     Iterates through the results, lazily-fetching each next page until there
+    #     are no more results.
+
+    #     :returns: an iterable form of each result, across all pages
+    #     """
+    #     while True:
+    #         yield from self.current_page()
+    #         if not self.next_page():
+    #             break
+
+    @staticmethod
+    def presorted_by_timestamp(sorts: List[SortItem]) -> bool:
+        """
+        Indicates whether the sort options prioritize
+        creation-time in ascending order as the first
+        sorting key (`True`) or anything else (`False`).
+
+        :param sorts: list of sorting options
+        :returns: `True` if the sorting options have
+        creation time and ascending as the first option
+        """
+        return (
+            sorts
+            and sorts[0].field
+            and sorts[0].field == Asset.CREATE_TIME.internal_field_name
+            and sorts[0].order == SortOrder.ASCENDING
+        )
+
+    @staticmethod
+    def sort_by_timestamp_first(sorts: List[SortItem]) -> List[SortItem]:
+        """
+        Rewrites the sorting options to ensure that
+        sorting by creation time, ascending, is the top
+        priority. Adds this condition if it does not
+        already exist, or moves it up to the top sorting
+        priority if it does already exist in the list.
+
+        :param sorts: list of sorting options
+        :returns: sorting options, making sorting by
+        creation time in ascending order the top priority
+        """
+        creation_asc_sort = [Asset.CREATE_TIME.order(SortOrder.ASCENDING)]
+
+        if not sorts:
+            return creation_asc_sort
+
+        rewritten_sorts = [
+            sort
+            for sort in sorts
+            if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
+        ]
+        return creation_asc_sort + rewritten_sorts
+
+    @staticmethod
+    def is_paging_timestamp_query(filter_: Query) -> bool:
+        return (
+            isinstance(filter_, Range)
+            and filter_.field == Asset.CREATE_TIME.internal_field_name
+            and filter_.gte
+            and filter_.gte > 0
+        )
+
+    @staticmethod
+    def get_paging_timestamp_query(last_timestamp: int) -> Query:
+        return Asset.CREATE_TIME.gte(last_timestamp)
 
 
 class LineageListResults(SearchResults, Iterable):

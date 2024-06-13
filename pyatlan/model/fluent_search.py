@@ -399,13 +399,23 @@ class FluentSearch(CompoundQuery):
         request = IndexSearchRequest(dsl=dsl)
         return client.asset.search(request).count
 
-    def execute(self, client: AtlanClient) -> IndexSearchResults:
+    def execute(
+        self, client: AtlanClient, infinite_paging: bool = False
+    ) -> IndexSearchResults:
         """
         Run the fluent search to retrieve assets that match the supplied criteria.
 
         :param client: client through which to retrieve the assets
+        :param infinite_paging: whether to use infinite paging approach or not, defaults to `False`
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
+        if not infinite_paging:
+            return client.asset.search(self.to_request())
+
+        if not IndexSearchResults.presorted_by_timestamp(self.sorts):
+            # Pre-sort by creation time (ascending) for mass-sequential iteration,
+            # if not already sorted by creation time first
+            self.sorts = IndexSearchResults.sort_by_timestamp_first(self.sorts)
         return client.asset.search(self.to_request())
 
 
