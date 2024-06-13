@@ -1658,8 +1658,8 @@ class SearchResults(ABC, Iterable):
         self._assets = assets
         self._processed_guids = set()
         self._current_guids = set()
-        self._first_record_ct = -1
-        self._last_record_ct = -1
+        self._first_record_creation_time = -2
+        self._last_record_creation_time = -2
 
     def current_page(self) -> List[Asset]:
         """
@@ -1676,9 +1676,14 @@ class SearchResults(ABC, Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
-        self._processed_guids.update(asset.guid for asset in self._assets)
         if size:
             self._size = size
+        # Used in the "timestamp-based" paging approach
+        # to check if `asset.guid` has already been processed
+        # in a previous page of results.
+        # If it has,then exclude it from the current results;
+        # otherwise, we may encounter duplicate asset records.
+        self._processed_guids.update(asset.guid for asset in self._assets)
         return self._get_next_page() if self._assets else False
 
     @abc.abstractmethod
@@ -1689,7 +1694,7 @@ class SearchResults(ABC, Iterable):
         """
 
     # TODO Rename this here and in `next_page`
-    def _get_next_page_json(self):
+    def _get_next_page_json(self, is_timestamp_paging: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
 
@@ -1701,34 +1706,38 @@ class SearchResults(ABC, Iterable):
         )
         if "entities" not in raw_json:
             self._assets = []
-            return None
+            return
         try:
-            for entity in raw_json["entities"]:
-                unflatten_custom_metadata_for_entity(
-                    entity=entity, attributes=self._criteria.attributes
-                )
-            self._assets = parse_obj_as(List[Asset], raw_json["entities"])
-            # s = {asset.name for asset in self._assets}
-            # print(s, "in", self._processed_guids, s.issubset(self._processed_guids))
-
-            self._first_record_ct = -1
-            if self._assets and len(self._assets) > 1:
-                self._first_record_ct = self._assets[0].create_time
-                self._last_record_ct = self._assets[-1].create_time
-            else:
-                self._last_record_ct = -1
-            new_assets = []
-            for asset in self._assets:
-                if asset.guid in self._processed_guids:
-                    continue
-                new_assets.append(asset)
-            self._assets = new_assets
-
+            self._process_entities(raw_json["entities"])
+            if is_timestamp_paging:
+                self._update_first_last_record_creation_times()
+                self._filter_processed_assets()
             return raw_json
+
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
+
+    def _process_entities(self, entities):
+        for entity in entities:
+            unflatten_custom_metadata_for_entity(
+                entity=entity, attributes=self._criteria.attributes
+            )
+        self._assets = parse_obj_as(List[Asset], entities)
+
+    def _update_first_last_record_creation_times(self):
+        self._first_record_creation_time = -2
+        if self._assets and len(self._assets) > 1:
+            self._first_record_creation_time = self._assets[0].create_time
+            self._last_record_creation_time = self._assets[-1].create_time
+        else:
+            self._last_record_creation_time = -2
+
+    def _filter_processed_assets(self):
+        self._assets = [
+            asset for asset in self._assets if asset.guid not in self._processed_guids
+        ]
 
     def __iter__(self) -> Generator[Asset, None, None]:
         """
@@ -1750,6 +1759,8 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
+    MASS_EXTRACT_THRESHOLD = 10000
+
     def __init__(
         self,
         client: ApiCaller,
@@ -1760,53 +1771,35 @@ class IndexSearchResults(SearchResults, Iterable):
         assets: List[Asset],
         aggregations: Optional[Aggregations],
     ):
-        super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
+        super().__init__(
+            client,
+            INDEX_SEARCH,
+            criteria,
+            start,
+            size,
+            assets,
+        )
         self._count = count
+        self._approximate_count = count
         self._aggregations = aggregations
 
     @property
     def aggregations(self) -> Optional[Aggregations]:
         return self._aggregations
 
-    # def next_page(self) -> bool:
-    #     """
-    #     Indicates whether there is a next page of results.
-
-    #     :returns: True if there is a next page of results, otherwise False
-    #     """
-    #     self._processed_guids.update(asset.name for asset in self._assets)
-    #     return self._get_next_page()
-
-    def _get_next_page(self):
-        """
-        Fetches the next page of results.
-
-        :returns: True if the next page of results was fetched, False if there was no next page
-        """
-        # # Check for a timestamp condition to
-        # # determine if this query is being executed with infinite pagination.
-        # executing_fs = False
+    def _contract_query_for_timestamp_paging(self, query: Query):
         rewritten_filters = []
-        query = self._criteria.dsl.query
-        self._criteria.dsl.size = self._size
-        # self._start = self._start + len(self._assets)
-        self._criteria.dsl.from_ = self._start
-
-        # import ipdb
-
-        # ipdb.set_trace()
-
         if isinstance(query, Bool):
             for filter_ in query.filter:
                 if self.is_paging_timestamp_query(filter_):
                     continue
                 rewritten_filters.append(filter_)
 
-        if self._first_record_ct != self._last_record_ct:
+        if self._first_record_creation_time != self._last_record_creation_time:
             print("\n -- Using 'timestamp' based paging -- \n")
             # print(self._criteria.dsl.sort)
             rewritten_filters.append(
-                self.get_paging_timestamp_query(self._last_record_ct)
+                self.get_paging_timestamp_query(self._last_record_creation_time)
             )
             rewritten_query = Bool(
                 filter=rewritten_filters,
@@ -1819,24 +1812,42 @@ class IndexSearchResults(SearchResults, Iterable):
             self._criteria.dsl.from_ = 0
             self._criteria.dsl.query = rewritten_query
         else:
-            print("\n -- Using 'offset' based paging -- \n")
-            # DSL(from_=0, size=self._size, query=rewritten_query, sort=self._criteria.dsl.sort)
-        # else:
-        #     print("\n -- Using 'normal' offset-based paging -- \n")
-        #     # If the first and last record in the page have the same timestamp,
-        #     # or we're not executing FS, use "normal" offset-based paging
-        #     # self._start = self._start +
-        #     self._criteria.dsl.from_ = self._start + len(self._assets)
-        #     print("Offset", self._criteria.dsl.from_)
+            print(
+                "\n -- Similar timestamp found; falling back to offset-based paging -- \n"
+            )
+
+    def _get_next_page(self):
+        """
+        Fetches the next page of results.
+
+        :returns: True if the next page of results was fetched, False if there was no next page
+        """
+        query = self._criteria.dsl.query
+        self._criteria.dsl.size = self._size
+        self._criteria.dsl.from_ = self._start
+        is_timestamp_paging = self._approximate_count > self.MASS_EXTRACT_THRESHOLD
+
+        # import ipdb
+
+        # ipdb.set_trace()
+
+        if is_timestamp_paging:
+            self._contract_query_for_timestamp_paging(query)
+        else:
+            print(
+                f"\n -- Approx count ({self._approximate_count}) < Threshold "
+                f"({self.MASS_EXTRACT_THRESHOLD}); falling back to offset-based paging -- \n"
+            )
+
         print(
             self._assets[0].name,
-            self._first_record_ct,
+            self._first_record_creation_time,
             self._assets[-1].name,
-            self._last_record_ct,
+            self._last_record_creation_time,
         )
-        print("size ->", self._criteria.dsl.size)
         print("offset ->", self._criteria.dsl.from_)
-        if raw_json := super()._get_next_page_json():
+        print("size ->", self._criteria.dsl.size)
+        if raw_json := super()._get_next_page_json(is_timestamp_paging):
             self._count = raw_json.get("approximateCount", 0)
             return True
         return False
@@ -1844,18 +1855,6 @@ class IndexSearchResults(SearchResults, Iterable):
     @property
     def count(self) -> int:
         return self._count
-
-    # def __iter__(self) -> Generator[Asset, None, None]:
-    #     """
-    #     Iterates through the results, lazily-fetching each next page until there
-    #     are no more results.
-
-    #     :returns: an iterable form of each result, across all pages
-    #     """
-    #     while True:
-    #         yield from self.current_page()
-    #         if not self.next_page():
-    #             break
 
     @staticmethod
     def presorted_by_timestamp(sorts: List[SortItem]) -> bool:
