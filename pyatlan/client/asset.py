@@ -146,7 +146,7 @@ class AssetClient:
         self._client = client
 
     @staticmethod
-    def _prepare_sorts_for_bulk_search(sorts: SortItem):
+    def _prepare_sorts_for_bulk_search(sorts: List[SortItem]):
         if not IndexSearchResults.presorted_by_timestamp(sorts):
             # Pre-sort by creation time (ascending) for mass-sequential iteration,
             # if not already sorted by creation time first
@@ -1681,8 +1681,8 @@ class SearchResults(ABC, Iterable):
         self._start = start
         self._size = size
         self._assets = assets
-        self._processed_guids = set()
-        self._current_guids = set()
+        self._processed_guids: Set[str] = set()
+        self._current_guid: Set[str] = set()
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
 
@@ -1823,12 +1823,12 @@ class IndexSearchResults(SearchResults, Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
-            bool_kwargs = {}
             rewritten_filters.append(
                 self.get_paging_timestamp_query(self._last_record_creation_time)
             )
             if isinstance(query, Bool):
-                bool_kwargs = dict(
+                rewritten_query = Bool(
+                    filter=rewritten_filters,
                     must=query.must,
                     must_not=query.must_not,
                     should=query.should,
@@ -1836,12 +1836,22 @@ class IndexSearchResults(SearchResults, Iterable):
                     minimum_should_match=query.minimum_should_match,
                 )
             else:
-                # If a Term, Range, etc, query type is found
+                # If a Term, Range, etc., query type is found
                 # in the DSL, append it to the Bool `filter`.
                 rewritten_filters.append(query)
-            rewritten_query = Bool(filter=rewritten_filters, **bool_kwargs)
-            self._criteria.dsl.from_ = 0
-            self._criteria.dsl.query = rewritten_query
+                rewritten_query = Bool(filter=rewritten_filters)
+            self._criteria.dsl.from_ = 0  # type: ignore[attr-defined]
+            self._criteria.dsl.query = rewritten_query  # type: ignore[attr-defined]
+
+    def _get_bulk_search_log_message(self):
+        return (
+            (
+                "Bulk search option is enabled. "
+                if self._bulk
+                else "Result size (%s) exceeds threshold (%s). "
+            )
+            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
+        )
 
     def _get_next_page(self):
         """
@@ -1857,9 +1867,7 @@ class IndexSearchResults(SearchResults, Iterable):
         )
         if is_bulk_search:
             LOGGER.debug(
-                "Result size (%s) exceeds threshold (%s). "
-                "Ignoring requests for offset-based paging, "
-                "using timestamp-based paging instead.",
+                self._get_bulk_search_log_message(),
                 self._approximate_count,
                 self._MASS_EXTRACT_THRESHOLD,
             )
@@ -1885,8 +1893,9 @@ class IndexSearchResults(SearchResults, Iterable):
         creation time and ascending as the first option
         """
         return (
-            sorts
-            and sorts[0].field
+            isinstance(sorts, list)
+            and len(sorts) > 0
+            and isinstance(sorts[0], SortItem)
             and sorts[0].field == Asset.CREATE_TIME.internal_field_name
             and sorts[0].order == SortOrder.ASCENDING
         )
@@ -1920,8 +1929,8 @@ class IndexSearchResults(SearchResults, Iterable):
     def is_paging_timestamp_query(filter_: Query) -> bool:
         return (
             isinstance(filter_, Range)
+            and isinstance(filter_.gte, int)
             and filter_.field == Asset.CREATE_TIME.internal_field_name
-            and filter_.gte
             and filter_.gte > 0
         )
 

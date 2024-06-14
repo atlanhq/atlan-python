@@ -8,6 +8,7 @@ import pytest
 from pydantic.v1 import ValidationError
 
 from pyatlan.client.asset import (
+    LOGGER,
     AssetClient,
     Batch,
     CustomMetadataHandling,
@@ -1416,7 +1417,10 @@ def _assert_search_results(results, response_json, sorts, bulk=False):
     assert results._criteria.dsl.sort == sorts
 
 
-def test_index_search_pagination(mock_api_caller, index_search_paging_json):
+@patch.object(LOGGER, "debug")
+def test_index_search_pagination(
+    mock_logger, mock_api_caller, index_search_paging_json
+):
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
 
@@ -1451,6 +1455,9 @@ def test_index_search_pagination(mock_api_caller, index_search_paging_json):
 
     _assert_search_results(results, index_search_paging_json, expected_sorts, True)
     assert mock_api_caller._call_api.call_count == 2
+    assert mock_logger.call_count == 1
+    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    mock_logger.reset_mock()
     mock_api_caller.reset_mock()
 
     # Test search(): when the number of results exceeds the predefined threshold
@@ -1477,6 +1484,12 @@ def test_index_search_pagination(mock_api_caller, index_search_paging_json):
 
         _assert_search_results(results, index_search_paging_json, expected_sorts)
         assert mock_api_caller._call_api.call_count == 3
+        assert mock_logger.call_count == 1
+        assert (
+            "Result size (%s) exceeds threshold (%s)"
+            in mock_logger.call_args_list[0][0][0]
+        )
+        mock_logger.reset_mock()
         mock_api_caller.reset_mock()
 
 
