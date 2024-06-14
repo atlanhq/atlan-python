@@ -399,18 +399,19 @@ class FluentSearch(CompoundQuery):
         request = IndexSearchRequest(dsl=dsl)
         return client.asset.search(request).count
 
-    def execute(self, client: AtlanClient) -> IndexSearchResults:
+    def execute(self, client: AtlanClient, bulk: bool = False) -> IndexSearchResults:
         """
         Run the fluent search to retrieve assets that match the supplied criteria.
+        `Note:` if the number of results exceeds the predefined threshold
+        (100,000 assets) this will be automatically converted into a `bulk` search.
 
-        :param client: client through which to retrieve the assets
+        :param client: client through which to retrieve the assets.
+        :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
+        for large numbers of results (> `100,000`). Note: this will reorder the results in order to iterate
+        through a large number (more than `100,000`) results, so any sort ordering you have specified may be ignored.
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
-        if not IndexSearchResults.presorted_by_timestamp(self.sorts):
-            # Pre-sort by creation time (ascending) for mass-sequential iteration,
-            # if not already sorted by creation time first
-            self.sorts = IndexSearchResults.sort_by_timestamp_first(self.sorts)
-        return client.asset.search(self.to_request())
+        return client.asset.search(criteria=self.to_request(), bulk=bulk)
 
 
 from pyatlan.client.atlan import AtlanClient  # noqa: E402

@@ -145,17 +145,31 @@ class AssetClient:
             )
         self._client = client
 
+    @staticmethod
+    def _prepare_sorts_for_bulk_search(sorts: SortItem):
+        if not IndexSearchResults.presorted_by_timestamp(sorts):
+            # Pre-sort by creation time (ascending) for mass-sequential iteration,
+            # if not already sorted by creation time first
+            return IndexSearchResults.sort_by_timestamp_first(sorts)
+
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
-    def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
+    def search(self, criteria: IndexSearchRequest, bulk=False) -> IndexSearchResults:
         """
         Search for assets using the provided criteria.
+        `Note:` if the number of results exceeds the predefined threshold
+        (100,000 assets) this will be automatically converted into a `bulk` search.
 
         :param criteria: detailing the search query, parameters, and so on to run
+        :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
+        for large numbers of results (> `100,000`). Note: this will reorder the results in order to iterate
+        through a large number (more than `100,000`) results, so any sort ordering you have specified may be ignored.
         :returns: the results of the search
         :raises AtlanError: on any API communication issue
         """
+        if bulk:
+            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
         raw_json = self._client._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
@@ -175,6 +189,16 @@ class AssetClient:
             assets = []
         aggregations = self._get_aggregations(raw_json)
         count = raw_json.get("approximateCount", 0)
+
+        if (
+            count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
+            and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)
+        ):
+            # Re-fetch the first page results with updated timestamp sorting
+            # for bulk search if count > _MASS_EXTRACT_THRESHOLD (100,000 assets)
+            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
+            return self.search(criteria)
+
         return IndexSearchResults(
             client=self._client,
             criteria=criteria,
@@ -183,6 +207,7 @@ class AssetClient:
             count=count,
             assets=assets,
             aggregations=aggregations,
+            bulk=bulk,
         )
 
     def _get_aggregations(self, raw_json) -> Optional[Aggregations]:
@@ -1694,10 +1719,10 @@ class SearchResults(ABC, Iterable):
         """
 
     # TODO Rename this here and in `next_page`
-    def _get_next_page_json(self, is_timestamp_paging: bool = False):
+    def _get_next_page_json(self, is_bulk_search: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
-
+        :param is_bulk_search: whether to retrieve results for a bulk search.
         :returns: JSON for the next page of results, as-is
         """
         raw_json = self._client._call_api(
@@ -1709,7 +1734,7 @@ class SearchResults(ABC, Iterable):
             return
         try:
             self._process_entities(raw_json["entities"])
-            if is_timestamp_paging:
+            if is_bulk_search:
                 self._update_first_last_record_creation_times()
                 self._filter_processed_assets()
             return raw_json
@@ -1759,7 +1784,7 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
-    MASS_EXTRACT_THRESHOLD = 10000
+    _MASS_EXTRACT_THRESHOLD = 100000
 
     def __init__(
         self,
@@ -1770,6 +1795,7 @@ class IndexSearchResults(SearchResults, Iterable):
         count: int,
         assets: List[Asset],
         aggregations: Optional[Aggregations],
+        bulk: bool = False,
     ):
         super().__init__(
             client,
@@ -1782,12 +1808,13 @@ class IndexSearchResults(SearchResults, Iterable):
         self._count = count
         self._approximate_count = count
         self._aggregations = aggregations
+        self._bulk = bulk
 
     @property
     def aggregations(self) -> Optional[Aggregations]:
         return self._aggregations
 
-    def _contract_query_for_timestamp_paging(self, query: Query):
+    def _prepare_query_for_timestamp_paging(self, query: Query):
         rewritten_filters = []
         if isinstance(query, Bool):
             for filter_ in query.filter:
@@ -1796,25 +1823,25 @@ class IndexSearchResults(SearchResults, Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
-            print("\n -- Using 'timestamp' based paging -- \n")
-            # print(self._criteria.dsl.sort)
+            bool_kwargs = {}
             rewritten_filters.append(
                 self.get_paging_timestamp_query(self._last_record_creation_time)
             )
-            rewritten_query = Bool(
-                filter=rewritten_filters,
-                must=query.must,
-                must_not=query.must_not,
-                should=query.should,
-                boost=query.boost,
-                minimum_should_match=query.minimum_should_match,
-            )
+            if isinstance(query, Bool):
+                bool_kwargs = dict(
+                    must=query.must,
+                    must_not=query.must_not,
+                    should=query.should,
+                    boost=query.boost,
+                    minimum_should_match=query.minimum_should_match,
+                )
+            else:
+                # If a Term, Range, etc, query type is found
+                # in the DSL, append it to the Bool `filter`.
+                rewritten_filters.append(query)
+            rewritten_query = Bool(filter=rewritten_filters, **bool_kwargs)
             self._criteria.dsl.from_ = 0
             self._criteria.dsl.query = rewritten_query
-        else:
-            print(
-                "\n -- Similar timestamp found; falling back to offset-based paging -- \n"
-            )
 
     def _get_next_page(self):
         """
@@ -1825,29 +1852,19 @@ class IndexSearchResults(SearchResults, Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
         self._criteria.dsl.from_ = self._start
-        is_timestamp_paging = self._approximate_count > self.MASS_EXTRACT_THRESHOLD
-
-        # import ipdb
-
-        # ipdb.set_trace()
-
-        if is_timestamp_paging:
-            self._contract_query_for_timestamp_paging(query)
-        else:
-            print(
-                f"\n -- Approx count ({self._approximate_count}) < Threshold "
-                f"({self.MASS_EXTRACT_THRESHOLD}); falling back to offset-based paging -- \n"
-            )
-
-        print(
-            self._assets[0].name,
-            self._first_record_creation_time,
-            self._assets[-1].name,
-            self._last_record_creation_time,
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
         )
-        print("offset ->", self._criteria.dsl.from_)
-        print("size ->", self._criteria.dsl.size)
-        if raw_json := super()._get_next_page_json(is_timestamp_paging):
+        if is_bulk_search:
+            LOGGER.debug(
+                "Result size (%s) exceeds threshold (%s). "
+                "Ignoring requests for offset-based paging, "
+                "using timestamp-based paging instead.",
+                self._approximate_count,
+                self._MASS_EXTRACT_THRESHOLD,
+            )
+            self._prepare_query_for_timestamp_paging(query)
+        if raw_json := super()._get_next_page_json(is_bulk_search):
             self._count = raw_json.get("approximateCount", 0)
             return True
         return False
