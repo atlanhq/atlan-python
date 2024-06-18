@@ -7,7 +7,13 @@ from unittest.mock import DEFAULT, Mock, call, patch
 import pytest
 from pydantic.v1 import ValidationError
 
-from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
+from pyatlan.client.asset import (
+    LOGGER,
+    AssetClient,
+    Batch,
+    CustomMetadataHandling,
+    IndexSearchResults,
+)
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.group import GroupClient
@@ -22,6 +28,7 @@ from pyatlan.errors import (
     NotFoundError,
 )
 from pyatlan.model.assets import (
+    Asset,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
@@ -36,8 +43,9 @@ from pyatlan.model.enums import (
     CertificateStatus,
     LineageDirection,
     SaveSemantic,
+    SortOrder,
 )
-from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.group import GroupRequest
 from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
@@ -95,6 +103,7 @@ USER_LIST_JSON = "user_list.json"
 USER_GROUPS_JSON = "user_groups.json"
 USER_RESPONSES_DIR = TEST_DATA_DIR / "user_responses"
 AGGREGATIONS_NULL_RESPONSES_DIR = "aggregations_null_value.json"
+INDEX_SEARCH_PAGING_JSON = "index_search_paging.json"
 GLOSSARY_CATEGORY_BY_NAME_JSON = "glossary_category_by_name.json"
 SEARCH_RESPONSES_DIR = TEST_DATA_DIR / "search_responses"
 USER_LIST_JSON = "user_list.json"
@@ -190,6 +199,11 @@ def user_groups_json():
 @pytest.fixture()
 def aggregations_null_json():
     return load_json(SEARCH_RESPONSES_DIR, AGGREGATIONS_NULL_RESPONSES_DIR)
+
+
+@pytest.fixture()
+def index_search_paging_json():
+    return load_json(SEARCH_RESPONSES_DIR, INDEX_SEARCH_PAGING_JSON)
 
 
 @pytest.fixture()
@@ -1389,6 +1403,109 @@ def test_index_search_with_no_aggregation_results(
     assert response.count == 0
     assert response.aggregations is None
     mock_api_caller.reset_mock()
+
+
+def _assert_search_results(results, response_json, sorts, bulk=False):
+    for i, result in enumerate(results):
+        assert result and response_json["entities"][i]
+        assert result.guid == response_json["entities"][i]["guid"]
+
+    assert results
+    assert results.count == 2
+    assert results._bulk == bulk
+    assert results.aggregations is None
+    assert results._criteria.dsl.sort == sorts
+
+
+@patch.object(LOGGER, "debug")
+def test_index_search_pagination(
+    mock_logger, mock_api_caller, index_search_paging_json
+):
+    client = AssetClient(mock_api_caller)
+    mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
+
+    # Test search(): using default offset-based pagination
+    # when results are less than the predefined threshold (i.e: 100,000 assets)
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+    ).to_request()
+    results = client.search(criteria=request)
+    expected_sorts = [Asset.GUID.order(SortOrder.ASCENDING)]
+
+    _assert_search_results(results, index_search_paging_json, expected_sorts)
+    assert mock_api_caller._call_api.call_count == 2
+    mock_api_caller.reset_mock()
+
+    # Test search(): with `bulk` option using timestamp-based pagination
+    mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+    ).to_request()
+    results = client.search(criteria=request, bulk=True)
+    expected_sorts = [
+        Asset.CREATE_TIME.order(SortOrder.ASCENDING),
+        Asset.GUID.order(SortOrder.ASCENDING),
+    ]
+
+    _assert_search_results(results, index_search_paging_json, expected_sorts, True)
+    assert mock_api_caller._call_api.call_count == 2
+    assert mock_logger.call_count == 1
+    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    mock_logger.reset_mock()
+    mock_api_caller.reset_mock()
+
+    # Test search(): Raise an exception suggesting the user switch to bulk search
+    # when the number of results exceeds the predefined threshold
+    TEST_THRESHOLD = 1
+    with patch.object(IndexSearchResults, "_MASS_EXTRACT_THRESHOLD", TEST_THRESHOLD):
+        mock_api_caller._call_api.side_effect = [
+            index_search_paging_json,
+            # Extra call to re-fetch the first page
+            # results with updated timestamp sorting
+            index_search_paging_json,
+            {},
+        ]
+        request = (
+            FluentSearch()
+            .where(CompoundQuery.active_assets())
+            .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+            .page_size(2)
+        ).to_request()
+        with pytest.raises(
+            InvalidRequestError,
+            match=(
+                "ATLAN-PYTHON-400-063 Number of results exceeds the predefined threshold "
+                f"{TEST_THRESHOLD}. Please execute the search again with `bulk=True`."
+            ),
+        ):
+            results = client.search(criteria=request)
+
+    # Test search(): Raise an exception when
+    # bulk search is attempted with any user-defined sorting options
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+        .sort(Asset.NAME.order(SortOrder.ASCENDING))
+    ).to_request()
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-063 Unable to execute "
+            "bulk search with user-defined sorting options. "
+            "Suggestion: Please ensure that no sorting options are "
+            "included in your search request when performing a bulk search."
+        ),
+    ):
+        client.search(criteria=request, bulk=True)
 
 
 def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json):

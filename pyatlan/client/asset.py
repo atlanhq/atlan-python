@@ -92,8 +92,11 @@ from pyatlan.model.lineage import (
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import (
     DSL,
+    Bool,
     IndexSearchRequest,
     Query,
+    Range,
+    SortItem,
     Term,
     with_active_category,
     with_active_glossary,
@@ -142,17 +145,31 @@ class AssetClient:
             )
         self._client = client
 
+    @staticmethod
+    def _prepare_sorts_for_bulk_search(sorts: List[SortItem]):
+        if not IndexSearchResults.presorted_by_timestamp(sorts):
+            # Pre-sort by creation time (ascending) for mass-sequential iteration,
+            # if not already sorted by creation time first
+            return IndexSearchResults.sort_by_timestamp_first(sorts)
+
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
-    def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
+    def search(self, criteria: IndexSearchRequest, bulk=False) -> IndexSearchResults:
         """
         Search for assets using the provided criteria.
 
         :param criteria: detailing the search query, parameters, and so on to run
+        :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
+        for large numbers of results (> `100,000`), defaults to `False`. Note: this will reorder the results
+        (based on creation timestamp) in order to iterate through a large number (more than `100,000`) results.
         :returns: the results of the search
         :raises AtlanError: on any API communication issue
         """
+        if bulk:
+            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
+                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
+            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
         raw_json = self._client._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
@@ -172,6 +189,12 @@ class AssetClient:
             assets = []
         aggregations = self._get_aggregations(raw_json)
         count = raw_json.get("approximateCount", 0)
+
+        if not bulk and count > IndexSearchResults._MASS_EXTRACT_THRESHOLD:
+            raise ErrorCode.ENABLE_BULK_FOR_MASS_EXTRACTION.exception_with_parameters(
+                IndexSearchResults._MASS_EXTRACT_THRESHOLD
+            )
+
         return IndexSearchResults(
             client=self._client,
             criteria=criteria,
@@ -180,6 +203,7 @@ class AssetClient:
             count=count,
             assets=assets,
             aggregations=aggregations,
+            bulk=bulk,
         )
 
     def _get_aggregations(self, raw_json) -> Optional[Aggregations]:
@@ -1653,6 +1677,10 @@ class SearchResults(ABC, Iterable):
         self._start = start
         self._size = size
         self._assets = assets
+        self._processed_guids: Set[str] = set()
+        self._current_guid: Set[str] = set()
+        self._first_record_creation_time = -2
+        self._last_record_creation_time = -2
 
     def current_page(self) -> List[Asset]:
         """
@@ -1671,6 +1699,12 @@ class SearchResults(ABC, Iterable):
         self._start = start or self._start + self._size
         if size:
             self._size = size
+        # Used in the "timestamp-based" paging approach
+        # to check if `asset.guid` has already been processed
+        # in a previous page of results.
+        # If it has,then exclude it from the current results;
+        # otherwise, we may encounter duplicate asset records.
+        self._processed_guids.update(asset.guid for asset in self._assets)
         return self._get_next_page() if self._assets else False
 
     @abc.abstractmethod
@@ -1681,10 +1715,10 @@ class SearchResults(ABC, Iterable):
         """
 
     # TODO Rename this here and in `next_page`
-    def _get_next_page_json(self):
+    def _get_next_page_json(self, is_bulk_search: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
-
+        :param is_bulk_search: whether to retrieve results for a bulk search.
         :returns: JSON for the next page of results, as-is
         """
         raw_json = self._client._call_api(
@@ -1693,18 +1727,38 @@ class SearchResults(ABC, Iterable):
         )
         if "entities" not in raw_json:
             self._assets = []
-            return None
+            return
         try:
-            for entity in raw_json["entities"]:
-                unflatten_custom_metadata_for_entity(
-                    entity=entity, attributes=self._criteria.attributes
-                )
-            self._assets = parse_obj_as(List[Asset], raw_json["entities"])
+            self._process_entities(raw_json["entities"])
+            if is_bulk_search:
+                self._update_first_last_record_creation_times()
+                self._filter_processed_assets()
             return raw_json
+
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
+
+    def _process_entities(self, entities):
+        for entity in entities:
+            unflatten_custom_metadata_for_entity(
+                entity=entity, attributes=self._criteria.attributes
+            )
+        self._assets = parse_obj_as(List[Asset], entities)
+
+    def _update_first_last_record_creation_times(self):
+        self._first_record_creation_time = -2
+        if self._assets and len(self._assets) > 1:
+            self._first_record_creation_time = self._assets[0].create_time
+            self._last_record_creation_time = self._assets[-1].create_time
+        else:
+            self._last_record_creation_time = -2
+
+    def _filter_processed_assets(self):
+        self._assets = [
+            asset for asset in self._assets if asset.guid not in self._processed_guids
+        ]
 
     def __iter__(self) -> Generator[Asset, None, None]:
         """
@@ -1726,6 +1780,8 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
+    _MASS_EXTRACT_THRESHOLD = 100000
+
     def __init__(
         self,
         client: ApiCaller,
@@ -1735,14 +1791,53 @@ class IndexSearchResults(SearchResults, Iterable):
         count: int,
         assets: List[Asset],
         aggregations: Optional[Aggregations],
+        bulk: bool = False,
     ):
-        super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
+        super().__init__(
+            client,
+            INDEX_SEARCH,
+            criteria,
+            start,
+            size,
+            assets,
+        )
         self._count = count
+        self._approximate_count = count
         self._aggregations = aggregations
+        self._bulk = bulk
 
     @property
     def aggregations(self) -> Optional[Aggregations]:
         return self._aggregations
+
+    def _prepare_query_for_timestamp_paging(self, query: Query):
+        rewritten_filters = []
+        if isinstance(query, Bool):
+            for filter_ in query.filter:
+                if self.is_paging_timestamp_query(filter_):
+                    continue
+                rewritten_filters.append(filter_)
+
+        if self._first_record_creation_time != self._last_record_creation_time:
+            rewritten_filters.append(
+                self.get_paging_timestamp_query(self._last_record_creation_time)
+            )
+            if isinstance(query, Bool):
+                rewritten_query = Bool(
+                    filter=rewritten_filters,
+                    must=query.must,
+                    must_not=query.must_not,
+                    should=query.should,
+                    boost=query.boost,
+                    minimum_should_match=query.minimum_should_match,
+                )
+            else:
+                # If a Term, Range, etc., query type is found
+                # in the DSL, append it to the Bool `filter`.
+                rewritten_filters.append(query)
+                rewritten_query = Bool(filter=rewritten_filters)
+            self._criteria.dsl.from_ = 0  # type: ignore[attr-defined]
+            self._criteria.dsl.query = rewritten_query  # type: ignore[attr-defined]
 
     def _get_next_page(self):
         """
@@ -1750,9 +1845,17 @@ class IndexSearchResults(SearchResults, Iterable):
 
         :returns: True if the next page of results was fetched, False if there was no next page
         """
-        self._criteria.dsl.from_ = self._start
+        query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
-        if raw_json := super()._get_next_page_json():
+        self._criteria.dsl.from_ = self._start
+
+        if self._bulk:
+            LOGGER.debug(
+                "Bulk search option is enabled. Ignoring requests for default offset-based "
+                "paging and switching to a creation timestamp-based paging approach."
+            )
+            self._prepare_query_for_timestamp_paging(query)
+        if raw_json := super()._get_next_page_json(self._bulk):
             self._count = raw_json.get("approximateCount", 0)
             return True
         return False
@@ -1760,6 +1863,63 @@ class IndexSearchResults(SearchResults, Iterable):
     @property
     def count(self) -> int:
         return self._count
+
+    @staticmethod
+    def presorted_by_timestamp(sorts: List[SortItem]) -> bool:
+        """
+        Indicates whether the sort options prioritize
+        creation-time in ascending order as the first
+        sorting key (`True`) or anything else (`False`).
+
+        :param sorts: list of sorting options
+        :returns: `True` if the sorting options have
+        creation time and ascending as the first option
+        """
+        return (
+            isinstance(sorts, list)
+            and len(sorts) > 0
+            and isinstance(sorts[0], SortItem)
+            and sorts[0].field == Asset.CREATE_TIME.internal_field_name
+            and sorts[0].order == SortOrder.ASCENDING
+        )
+
+    @staticmethod
+    def sort_by_timestamp_first(sorts: List[SortItem]) -> List[SortItem]:
+        """
+        Rewrites the sorting options to ensure that
+        sorting by creation time, ascending, is the top
+        priority. Adds this condition if it does not
+        already exist, or moves it up to the top sorting
+        priority if it does already exist in the list.
+
+        :param sorts: list of sorting options
+        :returns: sorting options, making sorting by
+        creation time in ascending order the top priority
+        """
+        creation_asc_sort = [Asset.CREATE_TIME.order(SortOrder.ASCENDING)]
+
+        if not sorts:
+            return creation_asc_sort
+
+        rewritten_sorts = [
+            sort
+            for sort in sorts
+            if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
+        ]
+        return creation_asc_sort + rewritten_sorts
+
+    @staticmethod
+    def is_paging_timestamp_query(filter_: Query) -> bool:
+        return (
+            isinstance(filter_, Range)
+            and isinstance(filter_.gte, int)
+            and filter_.field == Asset.CREATE_TIME.internal_field_name
+            and filter_.gte > 0
+        )
+
+    @staticmethod
+    def get_paging_timestamp_query(last_timestamp: int) -> Query:
+        return Asset.CREATE_TIME.gte(last_timestamp)
 
 
 class LineageListResults(SearchResults, Iterable):

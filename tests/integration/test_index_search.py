@@ -4,14 +4,17 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from time import time
 from typing import Generator, Set
+from unittest.mock import patch
 
 import pytest
 
+from pyatlan.client.asset import LOGGER
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Table
+from pyatlan.model.assets.atlas_glossary_term import AtlasGlossaryTerm
 from pyatlan.model.assets.column import Column
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
-from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import (
     DSL,
     Exists,
@@ -149,6 +152,102 @@ def test_search_next_page(client: AtlanClient):
         if results.next_page() is not True:
             break
     assert counter == results.count
+
+
+def _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, bulk=False):
+    assert results.count > size
+    assert len(results.current_page()) == size
+    counter = 0
+    for term in results:
+        assert term
+        counter += 1
+    assert counter == TOTAL_ASSETS
+    assert results
+    assert results._bulk is bulk
+    assert results.aggregations is None
+    assert results._criteria.dsl.sort == expected_sorts
+
+
+@patch.object(LOGGER, "debug")
+def test_search_pagination(mock_logger, client: AtlanClient):
+    size = 2
+
+    # Test search() with DSL: using default offset-based pagination
+    # when results are less than the predefined threshold (i.e: 100,000 assets)
+    dsl = DSL(
+        query=Term.with_state("ACTIVE"),
+        post_filter=Term.with_type_name(value="AtlasGlossaryTerm"),
+        size=size,
+    )
+    request = IndexSearchRequest(dsl=dsl)
+    results = client.asset.search(criteria=request)
+    # Assigning this here to ensure the total assets
+    # remain constant across different test cases
+    TOTAL_ASSETS = results.count
+    expected_sorts = [Asset.GUID.order(SortOrder.ASCENDING)]
+    _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS)
+
+    # Test search() DSL: with `bulk` option using timestamp-based pagination
+    dsl = DSL(
+        query=Term.with_state("ACTIVE"),
+        post_filter=Term.with_type_name(value="AtlasGlossaryTerm"),
+        size=size,
+    )
+    request = IndexSearchRequest(dsl=dsl)
+    results = client.asset.search(criteria=request, bulk=True)
+    expected_sorts = [
+        Asset.CREATE_TIME.order(SortOrder.ASCENDING),
+        Asset.GUID.order(SortOrder.ASCENDING),
+    ]
+    _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, True)
+    assert mock_logger.call_count < TOTAL_ASSETS
+    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    mock_logger.reset_mock()
+
+    # Test search(): using default offset-based pagination
+    # when results are less than the predefined threshold (i.e: 100,000 assets)
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+    ).to_request()
+    results = client.asset.search(criteria=request)
+    expected_sorts = [Asset.GUID.order(SortOrder.ASCENDING)]
+    _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS)
+
+    # Test search(): with `bulk` option using timestamp-based pagination
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+    ).to_request()
+    results = client.asset.search(criteria=request, bulk=True)
+    expected_sorts = [
+        Asset.CREATE_TIME.order(SortOrder.ASCENDING),
+        Asset.GUID.order(SortOrder.ASCENDING),
+    ]
+    _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, True)
+    assert mock_logger.call_count < TOTAL_ASSETS
+    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    mock_logger.reset_mock()
+
+    # Test search() execute(): with `bulk` option using timestamp-based pagination
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+    ).execute(client, bulk=True)
+    expected_sorts = [
+        Asset.CREATE_TIME.order(SortOrder.ASCENDING),
+        Asset.GUID.order(SortOrder.ASCENDING),
+    ]
+    _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, True)
+    assert mock_logger.call_count < TOTAL_ASSETS
+    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    mock_logger.reset_mock()
 
 
 def test_search_iter(client: AtlanClient):

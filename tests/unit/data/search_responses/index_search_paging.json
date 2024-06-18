@@ -1,0 +1,115 @@
+{
+    "queryType": "INDEX",
+    "searchParameters": {
+      "showSearchScore": false,
+      "suppressLogs": false,
+      "excludeMeanings": false,
+      "excludeClassifications": false,
+      "includeClassificationNames": false,
+      "requestMetadata": {
+        "searchInput": null,
+        "utmTags": [
+          "project_sdk_python"
+        ],
+        "saveSearchLog": true
+      },
+      "async": {
+        "isCallAsync": false,
+        "searchContextId": null,
+        "searchContextSequenceNo": null,
+        "requestTimeoutInSecs": null
+      },
+      "showHighlights": false,
+      "dsl": {
+        "from": 0,
+        "size": 10,
+        "aggregations": {},
+        "track_total_hits": true,
+        "query": {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "__state": {
+                    "value": "ACTIVE",
+                    "case_insensitive": false
+                  }
+                }
+              },
+              {
+                "term": {
+                  "__typeName.keyword": {
+                    "value": "AtlasGlossaryTerm",
+                    "case_insensitive": false
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "sort": [
+          {
+            "__timestamp": {
+              "order": "asc"
+            }
+          },
+          {
+            "__guid": {
+              "order": "asc"
+            }
+          }
+        ]
+      },
+      "allowDeletedRelations": false,
+      "accessControlExclusive": false,
+      "query": "{\"from\":0,\"size\":10,\"aggregations\":{},\"track_total_hits\":true,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"__state\":{\"value\":\"ACTIVE\",\"case_insensitive\":false}}},{\"term\":{\"__typeName.keyword\":{\"value\":\"AtlasGlossaryTerm\",\"case_insensitive\":false}}}]}},\"sort\":[{\"__timestamp\":{\"order\":\"asc\"}},{\"__guid\":{\"order\":\"asc\"}}]}",
+      "saveSearchLog": true,
+      "callAsync": false,
+      "utmTags": [
+        "project_sdk_python"
+      ]
+    },
+    "entities": [
+      {
+        "typeName": "AtlasGlossaryTerm",
+        "attributes": {
+          "qualifiedName": "FngX3ZMT2zkbZ9hmR0r4J@06VYiNgoIymrGSbO5pgBA",
+          "name": "Net Revenue Retention"
+        },
+        "guid": "045acd66-e6fc-470b-8383-4011fc66c385",
+        "status": "ACTIVE",
+        "displayText": "Net Revenue Retention",
+        "classificationNames": [],
+        "classifications": [],
+        "meaningNames": [],
+        "meanings": [],
+        "isIncomplete": false,
+        "labels": [],
+        "createdBy": "service-account-apikey-6c22ccb5-bf09-48cf-b300-05c121fd2ed8",
+        "updatedBy": "service-account-apikey-6c22ccb5-bf09-48cf-b300-05c121fd2ed8",
+        "createTime": 1717514296594,
+        "updateTime": 1717514301062
+      },
+      {
+        "typeName": "AtlasGlossaryTerm",
+        "attributes": {
+          "qualifiedName": "Axz1oe9r0mCPceOhu72Sr@YRlSMKbmqb61J1brCAYwD",
+          "name": "Customer"
+        },
+        "guid": "6fab3fea-b85d-488a-b474-7c9651ac6b7a",
+        "status": "ACTIVE",
+        "displayText": "Customer",
+        "classificationNames": [],
+        "classifications": [],
+        "meaningNames": [],
+        "meanings": [],
+        "isIncomplete": false,
+        "labels": [],
+        "createdBy": "service-account-apikey-6c22ccb5-bf09-48cf-b300-05c121fd2ed8",
+        "updatedBy": "service-account-apikey-6c22ccb5-bf09-48cf-b300-05c121fd2ed8",
+        "createTime": 1717514296594,
+        "updateTime": 1717514301062
+      }
+    ],
+    "approximateCount": 2
+}
