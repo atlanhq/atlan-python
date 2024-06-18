@@ -402,13 +402,11 @@ class FluentSearch(CompoundQuery):
     def execute(self, client: AtlanClient, bulk: bool = False) -> IndexSearchResults:
         """
         Run the fluent search to retrieve assets that match the supplied criteria.
-        `Note:` if the number of results exceeds the predefined threshold
-        (100,000 assets) this will be automatically converted into a `bulk` search.
 
         :param client: client through which to retrieve the assets.
         :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
-        for large numbers of results (> `100,000`). Note: this will reorder the results in order to iterate
-        through a large number (more than `100,000`) results, so any sort ordering you have specified may be ignored.
+        for large numbers of results (> `100,000`), defaults to `False`. Note: this will reorder the results
+        (based on creation timestamp) in order to iterate through a large number (more than `100,000`) results.
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
         return client.asset.search(criteria=self.to_request(), bulk=bulk)

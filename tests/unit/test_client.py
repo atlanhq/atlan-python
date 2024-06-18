@@ -1460,9 +1460,10 @@ def test_index_search_pagination(
     mock_logger.reset_mock()
     mock_api_caller.reset_mock()
 
-    # Test search(): when the number of results exceeds the predefined threshold
-    # it will automatically convert to a `bulk` search.
-    with patch.object(IndexSearchResults, "_MASS_EXTRACT_THRESHOLD", 1):
+    # Test search(): Raise an exception suggesting the user switch to bulk search
+    # when the number of results exceeds the predefined threshold
+    TEST_THRESHOLD = 1
+    with patch.object(IndexSearchResults, "_MASS_EXTRACT_THRESHOLD", TEST_THRESHOLD):
         mock_api_caller._call_api.side_effect = [
             index_search_paging_json,
             # Extra call to re-fetch the first page
@@ -1476,21 +1477,35 @@ def test_index_search_pagination(
             .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
             .page_size(2)
         ).to_request()
-        results = client.search(criteria=request)
-        expected_sorts = [
-            Asset.CREATE_TIME.order(SortOrder.ASCENDING),
-            Asset.GUID.order(SortOrder.ASCENDING),
-        ]
+        with pytest.raises(
+            InvalidRequestError,
+            match=(
+                "ATLAN-PYTHON-400-063 Number of results exceeds the predefined threshold "
+                f"{TEST_THRESHOLD}. Please execute the search again with `bulk=True`."
+            ),
+        ):
+            results = client.search(criteria=request)
 
-        _assert_search_results(results, index_search_paging_json, expected_sorts)
-        assert mock_api_caller._call_api.call_count == 3
-        assert mock_logger.call_count == 1
-        assert (
-            "Result size (%s) exceeds threshold (%s)"
-            in mock_logger.call_args_list[0][0][0]
-        )
-        mock_logger.reset_mock()
-        mock_api_caller.reset_mock()
+    # Test search(): Raise an exception when
+    # bulk search is attempted with any user-defined sorting options
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .page_size(2)
+        .sort(Asset.NAME.order(SortOrder.ASCENDING))
+    ).to_request()
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-063 Unable to execute "
+            "bulk search with user-defined sorting options. "
+            "Suggestion: Please ensure that no sorting options are "
+            "included in your search request when performing a bulk search."
+        ),
+    ):
+        client.search(criteria=request, bulk=True)
 
 
 def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json):

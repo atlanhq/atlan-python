@@ -537,6 +537,20 @@ class ErrorCode(Enum):
         "Please double-check your provided data contract JSON.",
         InvalidRequestError,
     )
+    UNABLE_TO_RUN_BULK_WITH_SORTS = (
+        400,
+        "ATLAN-PYTHON-400-063",
+        "Unable to execute bulk search with user-defined sorting options.",
+        "Please ensure that no sorting options are included in your search request when performing a bulk search.",
+        InvalidRequestError,
+    )
+    ENABLE_BULK_FOR_MASS_EXTRACTION = (
+        400,
+        "ATLAN-PYTHON-400-063",
+        "Number of results exceeds the predefined threshold {}. Please execute the search again with `bulk=True`.",
+        "Please note that this will reorder the results based on creation timestamp to efficiently handle a large number of results.",  # noqa
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

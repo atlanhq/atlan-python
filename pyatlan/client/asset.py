@@ -158,17 +158,17 @@ class AssetClient:
     def search(self, criteria: IndexSearchRequest, bulk=False) -> IndexSearchResults:
         """
         Search for assets using the provided criteria.
-        `Note:` if the number of results exceeds the predefined threshold
-        (100,000 assets) this will be automatically converted into a `bulk` search.
 
         :param criteria: detailing the search query, parameters, and so on to run
         :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
-        for large numbers of results (> `100,000`). Note: this will reorder the results in order to iterate
-        through a large number (more than `100,000`) results, so any sort ordering you have specified may be ignored.
+        for large numbers of results (> `100,000`), defaults to `False`. Note: this will reorder the results
+        (based on creation timestamp) in order to iterate through a large number (more than `100,000`) results.
         :returns: the results of the search
         :raises AtlanError: on any API communication issue
         """
         if bulk:
+            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
+                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
             criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
         raw_json = self._client._call_api(
             INDEX_SEARCH,
@@ -194,6 +194,10 @@ class AssetClient:
             count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
             and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)
         ):
+            if not bulk:
+                raise ErrorCode.ENABLE_BULK_FOR_MASS_EXTRACTION.exception_with_parameters(
+                    IndexSearchResults._MASS_EXTRACT_THRESHOLD
+                )
             # Re-fetch the first page results with updated timestamp sorting
             # for bulk search if count > _MASS_EXTRACT_THRESHOLD (100,000 assets)
             criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
@@ -1843,16 +1847,6 @@ class IndexSearchResults(SearchResults, Iterable):
             self._criteria.dsl.from_ = 0  # type: ignore[attr-defined]
             self._criteria.dsl.query = rewritten_query  # type: ignore[attr-defined]
 
-    def _get_bulk_search_log_message(self):
-        return (
-            (
-                "Bulk search option is enabled. "
-                if self._bulk
-                else "Result size (%s) exceeds threshold (%s). "
-            )
-            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
-        )
-
     def _get_next_page(self):
         """
         Fetches the next page of results.
@@ -1862,17 +1856,14 @@ class IndexSearchResults(SearchResults, Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
         self._criteria.dsl.from_ = self._start
-        is_bulk_search = (
-            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
-        )
-        if is_bulk_search:
+
+        if self._bulk:
             LOGGER.debug(
-                self._get_bulk_search_log_message(),
-                self._approximate_count,
-                self._MASS_EXTRACT_THRESHOLD,
+                "Bulk search option is enabled. Ignoring requests for default offset-based "
+                "paging and switching to a creation timestamp-based paging approach."
             )
             self._prepare_query_for_timestamp_paging(query)
-        if raw_json := super()._get_next_page_json(is_bulk_search):
+        if raw_json := super()._get_next_page_json(self._bulk):
             self._count = raw_json.get("approximateCount", 0)
             return True
         return False
