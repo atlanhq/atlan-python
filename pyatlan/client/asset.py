@@ -190,18 +190,10 @@ class AssetClient:
         aggregations = self._get_aggregations(raw_json)
         count = raw_json.get("approximateCount", 0)
 
-        if (
-            count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
-            and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)
-        ):
-            if not bulk:
-                raise ErrorCode.ENABLE_BULK_FOR_MASS_EXTRACTION.exception_with_parameters(
-                    IndexSearchResults._MASS_EXTRACT_THRESHOLD
-                )
-            # Re-fetch the first page results with updated timestamp sorting
-            # for bulk search if count > _MASS_EXTRACT_THRESHOLD (100,000 assets)
-            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
-            return self.search(criteria)
+        if not bulk and count > IndexSearchResults._MASS_EXTRACT_THRESHOLD:
+            raise ErrorCode.ENABLE_BULK_FOR_MASS_EXTRACTION.exception_with_parameters(
+                IndexSearchResults._MASS_EXTRACT_THRESHOLD
+            )
 
         return IndexSearchResults(
             client=self._client,
