@@ -407,6 +407,14 @@ class FluentSearch(CompoundQuery):
         :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
         for large numbers of results (> `100,000`), defaults to `False`. Note: this will reorder the results
         (based on creation timestamp) in order to iterate through a large number (more than `100,000`) results.
+        :raises InvalidRequestError:
+
+            - if bulk search is enabled (`bulk=True`) and any user-specified
+              sorting option is found in the search request.
+            - if bulk search is disabled (`bulk=False`) and the number of results
+              exceeds the predefined threshold (i.e: `100,000` assets)
+
+        :raises AtlanError: on any API communication issue
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
         return client.asset.search(criteria=self.to_request(), bulk=bulk)
