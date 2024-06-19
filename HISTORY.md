@@ -2,13 +2,15 @@
 
 ### Breaking changes
 
-- Introduced a new pagination approach for `AssetClient.search()` and `FluentSearch.execute()`, known as **bulk search** (disabled by default), based on asset creation timestamps. This approach will be used when the number of results exceeds the predefined threshold (i.e: `100,000` assets). Users can explicitly run this search by setting the optional keyword argument `bulk=True`.
+- Introduced a new pagination approach in `AssetClient.search()` and `FluentSearch.execute()` called **bulk search** (disabled by default). It minimizes system impact when handling large result sets. The SDK switches to this search operation automatically if results exceed a predefined threshold (i.e: `100,000` results). Users can enable bulk search explicitly by setting `bulk=True` in `AssetClient.search()` or `FluentSearch.execute()`. One side effect of this search operation is that any requested sorting of the results will be overridden. If you need to sort such a large number of results, you will have to do so after retrieving them.
 
-- The `AssetClient.search()` and `FluentSearch.execute()` methods will now raise `InvalidRequestError` in the following scenarios:
+- The `AssetClient.search()` and `FluentSearch.execute()` methods will now raise an exception (`InvalidRequestError`) in the following scenarios:
 
-  - When bulk search is enabled (`bulk=True`) and any user-specified sorting option is found in the search request, the method raises an exception. This is because the bulk search approach ignores user-specified sorting and instead reorders the results based on the creation timestamps of assets to handle large numbers of assets efficiently.
+  - when bulk search is enabled (`bulk=True`) and any user-specified sorting options are found in the search request.
 
-  - When bulk search is disabled (`bulk=False`) and the number of results exceeds the predefined threshold (i.e: `100,000` assets). The error message will suggest that the user re-run the search with `bulk=True` to extract a large number of records.
+  - when bulk search is disabled (`bulk=False`), the number of results exceeds the predefined threshold (i.e: `100,000` assets), and any user-specified sorting options are found in the search request.
+
+  _This is because the bulk search approach ignores user-specified sorting and instead reorders the results based on the creation timestamps of assets to handle large numbers of assets efficiently._
 
 ### QOL improvements
 

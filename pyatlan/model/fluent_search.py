@@ -402,6 +402,8 @@ class FluentSearch(CompoundQuery):
     def execute(self, client: AtlanClient, bulk: bool = False) -> IndexSearchResults:
         """
         Run the fluent search to retrieve assets that match the supplied criteria.
+        `Note:` if the number of results exceeds the predefined threshold
+        (100,000 assets) this will be automatically converted into a `bulk` search.
 
         :param client: client through which to retrieve the assets.
         :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
@@ -409,10 +411,11 @@ class FluentSearch(CompoundQuery):
         (based on creation timestamp) in order to iterate through a large number (more than `100,000`) results.
         :raises InvalidRequestError:
 
-            - if bulk search is enabled (`bulk=True`) and any user-specified
-              sorting option is found in the search request.
+            - if bulk search is enabled (`bulk=True`) and any
+              user-specified sorting options are found in the search request.
             - if bulk search is disabled (`bulk=False`) and the number of results
               exceeds the predefined threshold (i.e: `100,000` assets)
+              and any user-specified sorting options are found in the search request.
 
         :raises AtlanError: on any API communication issue
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
