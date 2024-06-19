@@ -1064,13 +1064,6 @@
         <span class="s2">&quot;Please ensure that no sorting options are included in your search request when performing a bulk search.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ENABLE_BULK_FOR_MASS_EXTRACTION</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="mi">400</span><span class="p">,</span>
-        <span class="s2">&quot;ATLAN-PYTHON-400-063&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Number of results exceeds the predefined threshold </span><span class="si">{}</span><span class="s2">. Please execute the search again with `bulk=True`.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Please note that this will reorder the results based on creation timestamp to efficiently handle a large number of results.&quot;</span><span class="p">,</span>  <span class="c1"># noqa</span>
-        <span class="n">InvalidRequestError</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
