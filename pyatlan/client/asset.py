@@ -1885,8 +1885,6 @@ class IndexSearchResults(SearchResults, Iterable):
                 self._get_bulk_search_log_message(),
                 self._approximate_count,
                 self._MASS_EXTRACT_THRESHOLD,
-                "Bulk search option is enabled. Ignoring requests for default offset-based "
-                "paging and switching to a creation timestamp-based paging approach.",
             )
             self._prepare_query_for_timestamp_paging(query)
         if raw_json := super()._get_next_page_json(is_bulk_search):
