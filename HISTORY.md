@@ -2,7 +2,7 @@
 
 ### Breaking changes
 
-- Introduced a new pagination approach in `AssetClient.search()` and `FluentSearch.execute()` called **bulk search** (disabled by default). It minimizes system impact when handling large result sets. The SDK switches to this search operation automatically if results exceed a predefined threshold (i.e: `100,000` results). Alternatively, users can enable bulk search explicitly by setting `bulk=True` in `AssetClient.search()` or `FluentSearch.execute()`. One side effect of this search operation is that any requested sorting of the results will be overridden. If you need to sort such a large number of results, you will have to do so after retrieving them.
+- Introduced a new pagination approach in `AssetClient.search()` and `FluentSearch.execute()` called **bulk search** (disabled by default). It minimizes system impact when handling large result sets. The SDK switches to this search operation automatically if results exceed a predefined threshold (i.e: `100,000` results). Alternatively, users can enable bulk search explicitly by setting `bulk=True` in `AssetClient.search()` or `FluentSearch.execute()`. The breaking change is in regards to searches that return more than `100,000` results — either the results will now be sorted differently or an error will be thrown.
 
 - The `AssetClient.search()` and `FluentSearch.execute()` methods will now raise an exception (`InvalidRequestError`) in the following scenarios:
 

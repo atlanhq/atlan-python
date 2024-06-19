@@ -152,6 +152,16 @@ class AssetClient:
             # if not already sorted by creation time first
             return IndexSearchResults.sort_by_timestamp_first(sorts)
 
+    def _get_bulk_search_log_message(self, bulk):
+        return (
+            (
+                "Bulk search option is enabled. "
+                if bulk
+                else "Result size (%s) exceeds threshold (%s). "
+            )
+            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
+        )
+
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
@@ -181,6 +191,7 @@ class AssetClient:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
             criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
+            LOGGER.debug(self._get_bulk_search_log_message(bulk))
         raw_json = self._client._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
@@ -211,6 +222,11 @@ class AssetClient:
             # Re-fetch the first page results with updated timestamp sorting
             # for bulk search if count > _MASS_EXTRACT_THRESHOLD (100,000 assets)
             criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
+            LOGGER.debug(
+                self._get_bulk_search_log_message(bulk),
+                count,
+                IndexSearchResults._MASS_EXTRACT_THRESHOLD,
+            )
             return self.search(criteria)
 
         return IndexSearchResults(
@@ -1857,16 +1873,6 @@ class IndexSearchResults(SearchResults, Iterable):
             self._criteria.dsl.from_ = 0  # type: ignore[attr-defined]
             self._criteria.dsl.query = rewritten_query  # type: ignore[attr-defined]
 
-    def _get_bulk_search_log_message(self):
-        return (
-            (
-                "Bulk search option is enabled. "
-                if self._bulk
-                else "Result size (%s) exceeds threshold (%s). "
-            )
-            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
-        )
-
     def _get_next_page(self):
         """
         Fetches the next page of results.
@@ -1881,11 +1887,6 @@ class IndexSearchResults(SearchResults, Iterable):
         )
 
         if is_bulk_search:
-            LOGGER.debug(
-                self._get_bulk_search_log_message(),
-                self._approximate_count,
-                self._MASS_EXTRACT_THRESHOLD,
-            )
             self._prepare_query_for_timestamp_paging(query)
         if raw_json := super()._get_next_page_json(is_bulk_search):
             self._count = raw_json.get("approximateCount", 0)
