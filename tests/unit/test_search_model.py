@@ -267,7 +267,7 @@ def test_dsl():
     )
     assert (
         dsl.json(by_alias=True, exclude_none=True)
-        == '{"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        == '{"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
         '{"__typeName.keyword": {"value": "Schema"}}}, "sort": []}'
@@ -283,7 +283,7 @@ def test_index_search_request():
     assert (
         request.json(by_alias=True, exclude_none=True)
         == '{"attributes": ["schemaName", "databaseName"],'
-        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": [], '
@@ -300,7 +300,7 @@ def test_audit_search_request():
     assert (
         request.json(by_alias=True, exclude_none=True)
         == '{"attributes": ["schemaName", "databaseName"],'
-        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"entityId": {"order": "asc"}}]}}'
@@ -316,7 +316,7 @@ def test_search_log_request():
     assert (
         request.json(by_alias=True, exclude_none=True)
         == '{"attributes": ["schemaName", "databaseName"],'
-        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"entityGuidsAll": {"order": "asc"}}]}}'

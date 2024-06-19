@@ -1798,7 +1798,7 @@ class SortItem:
 
 class DSL(AtlanObject):
     from_: int = Field(default=0, alias="from")
-    size: int = Field(default=100)
+    size: int = Field(default=300)
     aggregations: Dict[str, Aggregation] = Field(default_factory=dict)
     track_total_hits: Optional[bool] = Field(default=True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(default=None, alias="post_filter")

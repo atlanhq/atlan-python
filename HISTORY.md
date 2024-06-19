@@ -1,3 +1,21 @@
+## 2.3.0 (June 19, 2024)
+
+### Breaking changes
+
+- Introduced a new pagination approach in `AssetClient.search()` and `FluentSearch.execute()` called **bulk search** (disabled by default). It minimizes system impact when handling large result sets. The SDK switches to this search operation automatically if results exceed a predefined threshold (i.e: `100,000` results). Alternatively, users can enable bulk search explicitly by setting `bulk=True` in `AssetClient.search()` or `FluentSearch.execute()`. The breaking change is in regards to searches that return more than `100,000` results — either the results will now be sorted differently or an error will be thrown.
+
+- The `AssetClient.search()` and `FluentSearch.execute()` methods will now raise an exception (`InvalidRequestError`) in the following scenarios:
+
+  - when bulk search is enabled (`bulk=True`) and any user-specified sorting options are found in the search request.
+
+  - when bulk search is disabled (`bulk=False`), the number of results exceeds the predefined threshold (i.e: `100,000` assets), and any user-specified sorting options are found in the search request.
+
+  _This is because the bulk search approach ignores user-specified sorting and instead reorders the results based on the creation timestamps of assets to handle large numbers of assets efficiently._
+
+### QOL improvements
+
+- Pinned `urllib3>=1.26.0,<3` and moved `networkx` to the dev requirements to avoid potential version mismatches.
+
 ## 2.2.4 (June 11, 2024)
 
 ### New features
