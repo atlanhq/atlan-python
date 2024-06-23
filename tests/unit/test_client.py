@@ -1788,6 +1788,38 @@ def test_user_client_methods_validation_error(client, method, params):
         assert error_msg in str(err.value)
 
 
+@pytest.mark.parametrize(
+    "test_error_msg",
+    [
+        "{'error': 123}",
+        "{'error': 123, 'code': 465}",
+        "{'error': 123} with text",
+        "Some error message...",
+    ],
+)
+@patch.object(AtlanClient, "_session")
+def test_atlan_call_api_server_error_messages(
+    mock_session,
+    client: AtlanClient,
+    test_error_msg,
+):
+    mock_response = Mock()
+    mock_response.status_code = 500
+    mock_response.text = test_error_msg
+    mock_session.request.return_value = mock_response
+    glossary = AtlasGlossary.creator(name="test-glossary")
+
+    with pytest.raises(
+        AtlanError,
+        match=(
+            f"ATLAN-PYTHON-500-000 {test_error_msg} "
+            "Suggestion: Check the details of the "
+            "server's message to correct your request."
+        ),
+    ):
+        client.asset.save(glossary)
+
+
 class TestBatch:
     def test_init(self, mock_asset_client):
         sut = Batch(client=mock_asset_client, max_size=10)
