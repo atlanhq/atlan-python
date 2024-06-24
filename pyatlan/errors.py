@@ -21,7 +21,10 @@ class ErrorInfo(Protocol):
 
 class AtlanError(Exception):
     def __init__(self, error_code: ErrorInfo, *args):
-        message = error_code.error_message.format(*args)
+        try:
+            message = error_code.error_message.format(*args)
+        except KeyError:
+            message = error_code.error_message
         super().__init__(message)
         self.error_code = error_code
 

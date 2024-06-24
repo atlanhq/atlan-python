@@ -388,7 +388,7 @@ class AtlanClient(BaseSettings):
                     SimpleNamespace(
                         http_error_code=response.status_code,
                         error_id=f"ATLAN-PYTHON-{response.status_code}-000",
-                        error_message="",
+                        error_message=response.text,
                         user_action=ErrorCode.ERROR_PASSTHROUGH.user_action,
                     )
                 )
