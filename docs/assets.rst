@@ -239,6 +239,11 @@ You can interact with all of the following different kinds of assets:
     asset/sparkjob
     asset/stakeholder
     asset/stakeholdertitle
+    asset/superset
+    asset/supersetchart
+    asset/supersetdashboard
+    asset/supersetdataset
+    asset/supersetworkspace
     asset/table
     asset/tablepartition
     asset/tableau
