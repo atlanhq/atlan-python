@@ -193,6 +193,23 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     )
 
 
+def test_find_by_id(
+    client: WorkflowClient, search_response: WorkflowSearchResponse, mock_api_caller
+):
+    raw_json = search_response.dict()
+    mock_api_caller._call_api.return_value = raw_json
+
+    assert (
+        client.find_by_id(id="atlan-snowflake-miner-1714638976")
+        == search_response.hits.hits[0]
+    )
+    mock_api_caller._call_api.called_once()
+    assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
+    assert isinstance(
+        mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
+    )
+
+
 def test_re_run_when_given_workflowpackage_with_no_prior_runs_raises_invalid_request_error(
     client: WorkflowClient, mock_api_caller
 ):
