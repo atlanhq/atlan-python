@@ -227,7 +227,6 @@ from .cognos_file import CognosFile
 from .cognos_folder import CognosFolder
 from .cognos_package import CognosPackage
 from .cognos_datasource import CognosDatasource
-from .superset_workspace import SupersetWorkspace
 from .superset_dataset import SupersetDataset
 from .superset_chart import SupersetChart
 from .superset_dashboard import SupersetDashboard
@@ -494,7 +493,6 @@ CognosFile.Attributes.update_forward_refs(**localns)
 CognosFolder.Attributes.update_forward_refs(**localns)
 CognosPackage.Attributes.update_forward_refs(**localns)
 CognosDatasource.Attributes.update_forward_refs(**localns)
-SupersetWorkspace.Attributes.update_forward_refs(**localns)
 SupersetDataset.Attributes.update_forward_refs(**localns)
 SupersetChart.Attributes.update_forward_refs(**localns)
 SupersetDashboard.Attributes.update_forward_refs(**localns)

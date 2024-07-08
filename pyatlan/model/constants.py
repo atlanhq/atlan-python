@@ -119,7 +119,6 @@ AssetTypes = Set[
         "SupersetChart",
         "SupersetDashboard",
         "SupersetDataset",
-        "SupersetWorkspace",
         "Table",
         "TablePartition",
         "TableauCalculatedField",

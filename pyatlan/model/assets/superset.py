@@ -29,20 +29,6 @@ class Superset(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SUPERSET_WORKSPACE_ID: ClassVar[NumericField] = NumericField(
-        "supersetWorkspaceId", "supersetWorkspaceId"
-    )
-    """
-    Identifier of the workspace in which this asset exists, in Superset.
-    """
-    SUPERSET_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "supersetWorkspaceQualifiedName",
-        "supersetWorkspaceQualifiedName",
-        "supersetWorkspaceQualifiedName.text",
-    )
-    """
-    Unique name of the workspace in which this asset exists.
-    """
     SUPERSET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
         "supersetDashboardId", "supersetDashboardId"
     )
@@ -59,41 +45,9 @@ class Superset(BI):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "superset_workspace_id",
-        "superset_workspace_qualified_name",
         "superset_dashboard_id",
         "superset_dashboard_qualified_name",
     ]
-
-    @property
-    def superset_workspace_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.superset_workspace_id
-        )
-
-    @superset_workspace_id.setter
-    def superset_workspace_id(self, superset_workspace_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.superset_workspace_id = superset_workspace_id
-
-    @property
-    def superset_workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.superset_workspace_qualified_name
-        )
-
-    @superset_workspace_qualified_name.setter
-    def superset_workspace_qualified_name(
-        self, superset_workspace_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.superset_workspace_qualified_name = (
-            superset_workspace_qualified_name
-        )
 
     @property
     def superset_dashboard_id(self) -> Optional[int]:
@@ -126,10 +80,6 @@ class Superset(BI):
         )
 
     class Attributes(BI.Attributes):
-        superset_workspace_id: Optional[int] = Field(default=None, description="")
-        superset_workspace_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
         superset_dashboard_id: Optional[int] = Field(default=None, description="")
         superset_dashboard_qualified_name: Optional[str] = Field(
             default=None, description=""

@@ -31,17 +31,7 @@ class SupersetDashboard(Superset):
         cls,
         *,
         name: str,
-        superset_workspace_qualified_name: str,
-    ) -> SupersetDashboard: ...
-
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        superset_workspace_qualified_name: str,
-        connection_qualified_name: str,
+        connection_qualified_name: str
     ) -> SupersetDashboard: ...
 
     @classmethod
@@ -50,24 +40,22 @@ class SupersetDashboard(Superset):
         cls,
         *,
         name: str,
-        superset_workspace_qualified_name: str,
-        connection_qualified_name: Optional[str] = None,
+        connection_qualified_name: str
     ) -> SupersetDashboard:
         validate_required_fields(
-            ["name", "superset_workspace_qualified_name"],
-            [name, superset_workspace_qualified_name],
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
         )
         attributes = SupersetDashboard.Attributes.create(
             name=name,
-            superset_workspace_qualified_name=superset_workspace_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
-
+    
     @classmethod
     @init_guid
     def create(
-        cls, *, name: str, superset_workspace_qualified_name: str
+        cls, *, name: str, connection_qualified_name: str
     ) -> SupersetDashboard:
         warn(
             (
@@ -78,9 +66,9 @@ class SupersetDashboard(Superset):
             stacklevel=2,
         )
         return cls.creator(
-            name=name, superset_workspace_qualified_name=superset_workspace_qualified_name
+            name=name, connection_qualified_name=connection_qualified_name
         )
-
+    
     type_name: str = Field(default="SupersetDashboard", allow_mutation=False)
 
     @validator("type_name")
@@ -136,10 +124,6 @@ class SupersetDashboard(Superset):
 
     """
 
-    SUPERSET_WORKSPACE: ClassVar[RelationField] = RelationField("supersetWorkspace")
-    """
-    TBC
-    """
     SUPERSET_DATASETS: ClassVar[RelationField] = RelationField("supersetDatasets")
     """
     TBC
@@ -156,7 +140,6 @@ class SupersetDashboard(Superset):
         "superset_dashboard_is_published",
         "superset_dashboard_thumbnail_url",
         "superset_dashboard_chart_count",
-        "superset_workspace",
         "superset_datasets",
         "superset_charts",
     ]
@@ -268,16 +251,6 @@ class SupersetDashboard(Superset):
         self.attributes.superset_dashboard_chart_count = superset_dashboard_chart_count
 
     @property
-    def superset_workspace(self) -> Optional[SupersetWorkspace]:
-        return None if self.attributes is None else self.attributes.superset_workspace
-
-    @superset_workspace.setter
-    def superset_workspace(self, superset_workspace: Optional[SupersetWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.superset_workspace = superset_workspace
-
-    @property
     def superset_datasets(self) -> Optional[List[SupersetDataset]]:
         return None if self.attributes is None else self.attributes.superset_datasets
 
@@ -316,9 +289,6 @@ class SupersetDashboard(Superset):
         superset_dashboard_chart_count: Optional[int] = Field(
             default=None, description=""
         )
-        superset_workspace: Optional[SupersetWorkspace] = Field(
-            default=None, description=""
-        )  # relationship
         superset_datasets: Optional[List[SupersetDataset]] = Field(
             default=None, description=""
         )  # relationship
@@ -332,32 +302,18 @@ class SupersetDashboard(Superset):
             cls,
             *,
             name: str,
-            superset_workspace_qualified_name: str,
-            connection_qualified_name: Optional[str] = None,
+            connection_qualified_name: str
         ) -> SupersetDashboard.Attributes:
             validate_required_fields(
-                ["name", "superset_workspace_qualified_name"],
-                [name, superset_workspace_qualified_name],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    superset_workspace_qualified_name,
-                    "superset_workspace_qualified_name",
-                    4,
-                )
-
             return SupersetDashboard.Attributes(
                 name=name,
-                superset_workspace_qualified_name=superset_workspace_qualified_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
-                qualified_name=f"{superset_workspace_qualified_name}/{name}",
-                connector_name=connector_name,
-                superset_workspace=SupersetWorkspace.ref_by_qualified_name(
-                    superset_workspace_qualified_name
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
                 ),
             )
 
@@ -373,4 +329,3 @@ class SupersetDashboard(Superset):
 
 from .superset_chart import SupersetChart  # noqa
 from .superset_dataset import SupersetDataset  # noqa
-from .superset_workspace import SupersetWorkspace  # noqa

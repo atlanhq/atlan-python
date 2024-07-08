@@ -243,7 +243,6 @@ You can interact with all of the following different kinds of assets:
     asset/supersetchart
     asset/supersetdashboard
     asset/supersetdataset
-    asset/supersetworkspace
     asset/table
     asset/tablepartition
     asset/tableau

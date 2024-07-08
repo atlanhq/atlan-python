@@ -130,7 +130,6 @@ _complete_type_list: AssetTypes = {
     "SupersetChart",
     "SupersetDashboard",
     "SupersetDataset",
-    "SupersetWorkspace",
     "Table",
     "TablePartition",
     "TableauCalculatedField",
