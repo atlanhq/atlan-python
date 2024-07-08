@@ -199,6 +199,7 @@ def test_find_by_id(
     raw_json = search_response.dict()
     mock_api_caller._call_api.return_value = raw_json
 
+    assert search_response.hits.hits
     assert (
         client.find_by_id(id="atlan-snowflake-miner-1714638976")
         == search_response.hits.hits[0]
