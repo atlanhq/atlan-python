@@ -1,3 +1,13 @@
+## 2.3.1 (July 9, 2024)
+
+### New features
+
+- Added `WorkflowClient.find_by_id()` method for workflow search/retrieval.
+
+### OQL improvements
+
+- Made `AtlanError` messages more descriptive.
+
 ## 2.3.0 (June 19, 2024)
 
 ### Breaking changes
