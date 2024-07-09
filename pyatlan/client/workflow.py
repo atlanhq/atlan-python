@@ -101,6 +101,32 @@ class WorkflowClient:
         return response.hits.hits or []
 
     @validate_arguments
+    def find_by_id(self, id: str) -> Optional[WorkflowSearchResult]:
+        """
+        Find workflows based on their ID (e.g: `atlan-snowflake-miner-1714638976`)
+        Note: Only workflows that have been run will be found
+
+        :param id: identifier of the specific workflow to find
+        :returns: singular result containing the searched workflow or `None` if not found
+        :raises AtlanError: on any API communication issue
+        """
+        query = Bool(
+            filter=[
+                NestedQuery(
+                    query=Bool(must=[Term(field="metadata.name.keyword", value=id)]),
+                    path="metadata",
+                )
+            ]
+        )
+        request = WorkflowSearchRequest(query=query, size=1)
+        raw_json = self._client._call_api(
+            WORKFLOW_INDEX_SEARCH,
+            request_obj=request,
+        )
+        response = WorkflowSearchResponse(**raw_json)
+        return results[0] if (results := response.hits.hits) else None
+
+    @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
         """
         Find the latest run of a given workflow

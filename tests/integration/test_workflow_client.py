@@ -73,12 +73,20 @@ def workflow(
     delete_workflow(client, workflow.metadata.name)
 
 
-def test_workflow_find_by_type(client: AtlanClient):
+def test_workflow_find_by_methods(client: AtlanClient):
     results = client.workflow.find_by_type(
         prefix=WorkflowPackage.SNOWFLAKE, max_results=10
     )
     assert results
     assert len(results) >= 1
+
+    workflow_id = results[0].id
+    workflow = client.workflow.find_by_id(id=workflow_id)
+    assert workflow
+    assert workflow.id and workflow.id == workflow_id
+
+    workflow = client.workflow.find_by_id(id="invalid-id")
+    assert workflow is None
 
 
 def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowResponse):
