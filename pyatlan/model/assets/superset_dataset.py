@@ -102,19 +102,19 @@ class SupersetDataset(Superset):
         )
     )
     """
-
+    Name of the datasource for the dataset.
     """
     SUPERSET_DATASET_ID: ClassVar[NumericField] = NumericField(
         "supersetDatasetId", "supersetDatasetId"
     )
     """
-
+    Id of the dataset in superset.
     """
     SUPERSET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
         "supersetDatasetType", "supersetDatasetType"
     )
     """
-
+    Type of the dataset in superset.
     """
 
     SUPERSET_DASHBOARD: ClassVar[RelationField] = RelationField("supersetDashboard")
