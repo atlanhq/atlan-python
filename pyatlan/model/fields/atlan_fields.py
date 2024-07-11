@@ -3,7 +3,7 @@
 from abc import ABC
 from datetime import date
 from enum import Enum
-from typing import List, Union, overload
+from typing import Any, Dict, List, Optional, Union, overload
 
 from pydantic.v1 import StrictBool, StrictFloat, StrictInt, StrictStr
 
@@ -58,6 +58,7 @@ class SearchableField(AtlanField):
     """
 
     elastic_field_name: StrictStr
+    EMBEDDED_SOURCE_VALUE = "sourceValue"
 
     def __init__(self, atlan_field_name: StrictStr, elastic_field_name: StrictStr):
         """
@@ -94,15 +95,49 @@ class SearchableField(AtlanField):
     def bucket_by(
         self,
         size: int = 10,
+        include_source_value: bool = False,
+        nested: Optional[Dict[Any, Aggregation]] = None,
+        order: Optional[List[Dict[str, SortOrder]]] = None,
     ) -> Aggregation:
-        """Return criteria to bucket results based on the provided field.
-           :param size: the number of buckets to include results across.
-           :returns: criteria to bucket results by the provided field, across a maximum number of buckets defined by
-           the provided size
-        */"""
-        return Aggregation(
-            __root__={"terms": {"field": self.elastic_field_name, "size": size}}
-        )
+        """
+        Return criteria to bucket results based on the provided field.
+
+        :param size: the number of buckets to include results across, defaults to `10`.
+        :param include_source_value: whether to include the source value (`True`) or not (`False`)
+        :param nested: (optional) nested aggregations to include.
+        :param order: (optional) the order for the buckets.
+        :returns: criteria to bucket results by the provided field,
+        across a maximum number of buckets defined by the provided size.
+        """
+        aggs = {"terms": {"field": self.elastic_field_name, "size": size}}
+
+        if include_source_value and not nested:
+            source_field = (
+                self.elastic_field_name
+                # Need to handle the hashed-string ID stuff for custom metadata fields
+                if isinstance(self, CustomMetadataField)
+                else self.atlan_field_name
+            )
+            nested = {
+                self.EMBEDDED_SOURCE_VALUE: Aggregation(
+                    __root__={
+                        "top_hits": {
+                            "size": 1,
+                            "_source": {"filter": {"includes": [source_field]}},
+                        }
+                    }
+                )
+            }
+
+        if nested:
+            aggs_nested = {
+                **aggs,
+                "aggregations": nested,
+                **({"order": order} if order else {}),
+            }
+            return Aggregation(__root__=aggs_nested)
+
+        return Aggregation(__root__=aggs)
 
 
 class BooleanField(SearchableField):

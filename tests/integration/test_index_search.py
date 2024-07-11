@@ -407,6 +407,7 @@ def test_bucket_aggregation(client: AtlanClient):
         FluentSearch.select()
         .aggregate("type", Asset.TYPE_NAME.bucket_by())
         .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
     ).to_request()
     results = client.asset.search(criteria=request)
     assert results.aggregations
@@ -417,6 +418,46 @@ def test_bucket_aggregation(client: AtlanClient):
     for bucket in result.buckets:
         assert bucket.key
         assert bucket.doc_count
+
+
+def test_nested_bucket_aggregation(client: AtlanClient):
+    nested_aggs_level_2 = Asset.TYPE_NAME.bucket_by(
+        nested={"asset_guid": Asset.GUID.bucket_by()}
+    )
+    nested_aggs = Asset.TYPE_NAME.bucket_by(nested={"asset_name": nested_aggs_level_2})
+    request = (
+        FluentSearch.select()
+        .aggregate("asset_type", nested_aggs)
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+        .to_request()
+    )
+    results = client.asset.search(criteria=request)
+
+    assert results.aggregations
+    result = results.aggregations["asset_type"]
+    assert result
+    assert result.buckets
+    assert len(result.buckets) > 0
+    for bucket in result.buckets:
+        assert bucket.key
+        assert bucket.doc_count
+        assert bucket.nested_aggregations
+        nested_results = bucket.nested_aggregations["asset_name"]
+        assert nested_results
+        # Nested results level 1
+        for bucket in nested_results.buckets:
+            assert bucket.key
+            assert bucket.doc_count
+            assert bucket.nested_aggregations
+            nested_results = bucket.nested_aggregations["asset_guid"]
+            assert nested_results
+            # Nested results level 2
+            for bucket in nested_results.buckets:
+                assert bucket.key
+                assert bucket.doc_count
+                # Make sure it's not nested further
+                assert bucket.nested_aggregations is None
 
 
 def test_metric_aggregation(client: AtlanClient):

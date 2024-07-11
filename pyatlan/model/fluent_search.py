@@ -373,7 +373,8 @@ class FluentSearch(CompoundQuery):
         :returns: an Atlan search request that encapsulates the fluent search
         """
         dsl = self._dsl()
-        if self._page_size:
+        # Page size can be "0"
+        if self._page_size is not None:
             dsl.size = self._page_size
         if self.sorts:
             dsl.sort = self.sorts
