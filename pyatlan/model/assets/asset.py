@@ -993,6 +993,18 @@ class Asset(Referenceable):
     """
     Whether this asset has contract (true) or not (false).
     """
+    ASSET_POLICY_GUI_DS: ClassVar[KeywordField] = KeywordField(
+        "assetPolicyGUIDs", "assetPolicyGUIDs"
+    )
+    """
+    Array of policy ids governing this asset
+    """
+    ASSET_POLICIES_COUNT: ClassVar[NumericField] = NumericField(
+        "assetPoliciesCount", "assetPoliciesCount"
+    )
+    """
+    Count of policies inside the asset
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1179,6 +1191,8 @@ class Asset(Referenceable):
         "asset_cover_image",
         "asset_theme_hex",
         "has_contract",
+        "asset_policy_g_u_i_ds",
+        "asset_policies_count",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "output_port_data_products",
@@ -2862,6 +2876,28 @@ class Asset(Referenceable):
         self.attributes.has_contract = has_contract
 
     @property
+    def asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.asset_policy_g_u_i_ds
+        )
+
+    @asset_policy_g_u_i_ds.setter
+    def asset_policy_g_u_i_ds(self, asset_policy_g_u_i_ds: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_policy_g_u_i_ds = asset_policy_g_u_i_ds
+
+    @property
+    def asset_policies_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.asset_policies_count
+
+    @asset_policies_count.setter
+    def asset_policies_count(self, asset_policies_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_policies_count = asset_policies_count
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -3245,6 +3281,8 @@ class Asset(Referenceable):
         asset_cover_image: Optional[str] = Field(default=None, description="")
         asset_theme_hex: Optional[str] = Field(default=None, description="")
         has_contract: Optional[bool] = Field(default=None, description="")
+        asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
+        asset_policies_count: Optional[int] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

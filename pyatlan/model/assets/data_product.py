@@ -202,6 +202,18 @@ class DataProduct(DataMesh):
     """
     list of groups for product visibility control
     """
+    DAAP_OUTPUT_PORT_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "daapOutputPortGuids", "daapOutputPortGuids"
+    )
+    """
+    Output ports guids for this data product.
+    """
+    DAAP_INPUT_PORT_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "daapInputPortGuids", "daapInputPortGuids"
+    )
+    """
+    Input ports guids for this data product.
+    """
 
     DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
@@ -231,6 +243,8 @@ class DataProduct(DataMesh):
         "data_product_score_updated_at",
         "daap_visibility_users",
         "daap_visibility_groups",
+        "daap_output_port_guids",
+        "daap_input_port_guids",
         "data_domain",
         "output_ports",
         "input_ports",
@@ -419,6 +433,30 @@ class DataProduct(DataMesh):
         self.attributes.daap_visibility_groups = daap_visibility_groups
 
     @property
+    def daap_output_port_guids(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.daap_output_port_guids
+        )
+
+    @daap_output_port_guids.setter
+    def daap_output_port_guids(self, daap_output_port_guids: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_output_port_guids = daap_output_port_guids
+
+    @property
+    def daap_input_port_guids(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.daap_input_port_guids
+        )
+
+    @daap_input_port_guids.setter
+    def daap_input_port_guids(self, daap_input_port_guids: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_input_port_guids = daap_input_port_guids
+
+    @property
     def data_domain(self) -> Optional[DataDomain]:
         return None if self.attributes is None else self.attributes.data_domain
 
@@ -481,6 +519,8 @@ class DataProduct(DataMesh):
         )
         daap_visibility_users: Optional[Set[str]] = Field(default=None, description="")
         daap_visibility_groups: Optional[Set[str]] = Field(default=None, description="")
+        daap_output_port_guids: Optional[Set[str]] = Field(default=None, description="")
+        daap_input_port_guids: Optional[Set[str]] = Field(default=None, description="")
         data_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship

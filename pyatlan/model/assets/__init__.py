@@ -8,13 +8,15 @@ from .tag_attachment import TagAttachment
 from .connection import Connection
 from .workflow import Workflow
 from .process import Process
+from .business_policy_log import BusinessPolicyLog
 from .atlas_glossary_category import AtlasGlossaryCategory
 from .stakeholder_title import StakeholderTitle
 from .badge import Badge
+from .business_policy import BusinessPolicy
 from .access_control import AccessControl
 from .namespace import Namespace
-from .workflow_run import WorkflowRun
 from .catalog import Catalog
+from .workflow_run import WorkflowRun
 from .atlas_glossary import AtlasGlossary
 from .auth_policy import AuthPolicy
 from .process_execution import ProcessExecution
@@ -22,8 +24,11 @@ from .atlas_glossary_term import AtlasGlossaryTerm
 from .auth_service import AuthService
 from .cloud import Cloud
 from .infrastructure import Infrastructure
+from .business_policy_exception import BusinessPolicyException
 from .b_i_process import BIProcess
+from .data_attribute_mapping_process import DataAttributeMappingProcess
 from .dbt_process import DbtProcess
+from .data_entity_mapping_process import DataEntityMappingProcess
 from .column_process import ColumnProcess
 from .persona import Persona
 from .purpose import Purpose
@@ -31,6 +36,7 @@ from .collection import Collection
 from .folder import Folder
 from .airflow import Airflow
 from .data_contract import DataContract
+from .data_modeling import DataModeling
 from .object_store import ObjectStore
 from .data_quality import DataQuality
 from .b_i import BI
@@ -55,6 +61,10 @@ from .dbt_column_process import DbtColumnProcess
 from .stakeholder import Stakeholder
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
+from .data_model_version import DataModelVersion
+from .data_model import DataModel
+from .data_entity import DataEntity
+from .data_attribute import DataAttribute
 from .s3 import S3
 from .a_d_l_s import ADLS
 from .g_c_s import GCS
@@ -98,10 +108,10 @@ from .materialised_view import MaterialisedView
 from .function import Function
 from .table_partition import TablePartition
 from .column import Column
-from .snowflake_stream import SnowflakeStream
 from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
-from .database import Database
+from .snowflake_stream import SnowflakeStream
 from .calculation_view import CalculationView
+from .database import Database
 from .procedure import Procedure
 from .snowflake_tag import SnowflakeTag
 from .kafka import Kafka
@@ -270,13 +280,15 @@ TagAttachment.Attributes.update_forward_refs(**localns)
 Connection.Attributes.update_forward_refs(**localns)
 Workflow.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
+BusinessPolicyLog.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
 StakeholderTitle.Attributes.update_forward_refs(**localns)
 Badge.Attributes.update_forward_refs(**localns)
+BusinessPolicy.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
 Namespace.Attributes.update_forward_refs(**localns)
-WorkflowRun.Attributes.update_forward_refs(**localns)
 Catalog.Attributes.update_forward_refs(**localns)
+WorkflowRun.Attributes.update_forward_refs(**localns)
 AtlasGlossary.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 ProcessExecution.Attributes.update_forward_refs(**localns)
@@ -284,8 +296,11 @@ AtlasGlossaryTerm.Attributes.update_forward_refs(**localns)
 AuthService.Attributes.update_forward_refs(**localns)
 Cloud.Attributes.update_forward_refs(**localns)
 Infrastructure.Attributes.update_forward_refs(**localns)
+BusinessPolicyException.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
+DataAttributeMappingProcess.Attributes.update_forward_refs(**localns)
 DbtProcess.Attributes.update_forward_refs(**localns)
+DataEntityMappingProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
 Purpose.Attributes.update_forward_refs(**localns)
@@ -293,6 +308,7 @@ Collection.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
+DataModeling.Attributes.update_forward_refs(**localns)
 ObjectStore.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
@@ -317,6 +333,10 @@ DbtColumnProcess.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
+DataModelVersion.Attributes.update_forward_refs(**localns)
+DataModel.Attributes.update_forward_refs(**localns)
+DataEntity.Attributes.update_forward_refs(**localns)
+DataAttribute.Attributes.update_forward_refs(**localns)
 S3.Attributes.update_forward_refs(**localns)
 ADLS.Attributes.update_forward_refs(**localns)
 GCS.Attributes.update_forward_refs(**localns)
@@ -360,10 +380,10 @@ MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
-SnowflakeStream.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
-Database.Attributes.update_forward_refs(**localns)
+SnowflakeStream.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
+Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 Kafka.Attributes.update_forward_refs(**localns)
