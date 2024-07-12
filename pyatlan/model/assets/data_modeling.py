@@ -41,6 +41,18 @@ class DataModeling(Catalog):
     """
 
     """
+    DATA_MODEL_ENTITY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dataModelEntityName", "dataModelEntityName.keyword", "dataModelEntityName"
+    )
+    """
+    Simple name of the entity in which this asset exists, or empty if it is itself an entity.
+    """
+    DATA_MODEL_ENTITY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dataModelEntityQualifiedName", "dataModelEntityQualifiedName"
+    )
+    """
+    Unique name of the entity in which this asset exists, or empty if it is itself an entity.
+    """
     DATA_MODEL_VERSION_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
         "dataModelVersionQualifiedNames", "dataModelVersionQualifiedNames"
     )
@@ -79,6 +91,8 @@ class DataModeling(Catalog):
     _convenience_properties: ClassVar[List[str]] = [
         "data_model_name",
         "data_model_qualified_name",
+        "data_model_entity_name",
+        "data_model_entity_qualified_name",
         "data_model_version_qualified_names",
         "data_model_environment",
         "data_model_domain",
@@ -110,6 +124,36 @@ class DataModeling(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_model_qualified_name = data_model_qualified_name
+
+    @property
+    def data_model_entity_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.data_model_entity_name
+        )
+
+    @data_model_entity_name.setter
+    def data_model_entity_name(self, data_model_entity_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_model_entity_name = data_model_entity_name
+
+    @property
+    def data_model_entity_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_model_entity_qualified_name
+        )
+
+    @data_model_entity_qualified_name.setter
+    def data_model_entity_qualified_name(
+        self, data_model_entity_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_model_entity_qualified_name = (
+            data_model_entity_qualified_name
+        )
 
     @property
     def data_model_version_qualified_names(self) -> Optional[Set[str]]:
@@ -184,6 +228,10 @@ class DataModeling(Catalog):
     class Attributes(Catalog.Attributes):
         data_model_name: Optional[str] = Field(default=None, description="")
         data_model_qualified_name: Optional[str] = Field(default=None, description="")
+        data_model_entity_name: Optional[str] = Field(default=None, description="")
+        data_model_entity_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         data_model_version_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
