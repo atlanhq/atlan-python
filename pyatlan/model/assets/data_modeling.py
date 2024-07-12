@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 
 from .catalog import Catalog
 
@@ -29,6 +29,12 @@ class DataModeling(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    DATA_MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dataModelName", "dataModelName.keyword", "dataModelName"
+    )
+    """
+    Simple name of the data model in which this asset exists, or empty if it is itself a data model.
+    """
     DATA_MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "dataModelQualifiedName", "dataModelQualifiedName"
     )
@@ -71,6 +77,7 @@ class DataModeling(Catalog):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "data_model_name",
         "data_model_qualified_name",
         "data_model_version_qualified_names",
         "data_model_environment",
@@ -79,6 +86,16 @@ class DataModeling(Catalog):
         "data_model_id",
         "data_entity_id",
     ]
+
+    @property
+    def data_model_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_model_name
+
+    @data_model_name.setter
+    def data_model_name(self, data_model_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_model_name = data_model_name
 
     @property
     def data_model_qualified_name(self) -> Optional[str]:
@@ -165,6 +182,7 @@ class DataModeling(Catalog):
         self.attributes.data_entity_id = data_entity_id
 
     class Attributes(Catalog.Attributes):
+        data_model_name: Optional[str] = Field(default=None, description="")
         data_model_qualified_name: Optional[str] = Field(default=None, description="")
         data_model_version_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""

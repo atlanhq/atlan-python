@@ -307,6 +307,7 @@ class AtlanConnectorType(str, Enum):
     SYNDIGO = ("syndigo", AtlanConnectionCategory.SAAS)
     NETEZZA = ("netezza", AtlanConnectionCategory.WAREHOUSE)
     AZURE_SERVICE_BUS = ("azureservicebus", AtlanConnectionCategory.EVENT_BUS)
+    DATA_MODELING = ("datamodeling", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
@@ -2681,3 +2682,9 @@ class WorkflowType(str, Enum):
     POLICY = "POLICY"
     CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
     PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
+
+
+class incident_severity(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
