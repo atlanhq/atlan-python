@@ -327,7 +327,7 @@ class CustomMetadataCache:
                 # If found, return straight away
                 return attr_id
             raise ErrorCode.CM_ATTR_NOT_FOUND_BY_NAME.exception_with_parameters(
-                set_name
+                attr_name, set_name
             )
         raise ErrorCode.CM_ATTR_NOT_FOUND_BY_ID.exception_with_parameters(set_id)
 
