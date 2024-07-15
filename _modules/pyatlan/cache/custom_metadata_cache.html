@@ -852,7 +852,7 @@
                 <span class="c1"># If found, return straight away</span>
                 <span class="k">return</span> <span class="n">attr_id</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">CM_ATTR_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="n">set_name</span>
+                <span class="n">attr_name</span><span class="p">,</span> <span class="n">set_name</span>
             <span class="p">)</span>
         <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">CM_ATTR_NOT_FOUND_BY_ID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span><span class="n">set_id</span><span class="p">)</span>
 
