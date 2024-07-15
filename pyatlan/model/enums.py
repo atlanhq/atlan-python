@@ -307,6 +307,7 @@ class AtlanConnectorType(str, Enum):
     SYNDIGO = ("syndigo", AtlanConnectionCategory.SAAS)
     NETEZZA = ("netezza", AtlanConnectionCategory.WAREHOUSE)
     AZURE_SERVICE_BUS = ("azureservicebus", AtlanConnectionCategory.EVENT_BUS)
+    PREFECT = ("prefect", AtlanConnectionCategory.ELT)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
