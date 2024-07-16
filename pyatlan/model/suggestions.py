@@ -1,45 +1,55 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field
 
+from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.aggregation import AggregationBucketResult
+from pyatlan.model.aggregation import AggregationBucketResult, Aggregations
 from pyatlan.model.assets import Asset, AtlasGlossaryTerm
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import Query
 from pyatlan.utils import validate_type
 
 
-class SuggestedItem(AtlanObject):
-    count: int
-    value: str
-
-
-class SuggestedTerm(AtlanObject):
-    count: int
-    value: AtlasGlossaryTerm
-
-    def __init__(self, count: int, qualified_name: str):
-        value = AtlasGlossaryTerm.ref_by_qualified_name(qualified_name)
-        super().__init__(count=count, value=value)
-
-
 class SuggestionResponse(AtlanObject):
-    system_descriptions: Optional[List[SuggestedItem]] = Field(default=None)
-    user_descriptions: Optional[List[SuggestedItem]] = Field(default=None)
-    owner_users: Optional[List[SuggestedItem]] = Field(default=None)
-    owner_groups: Optional[List[SuggestedItem]] = Field(default=None)
-    atlan_tags: Optional[List[SuggestedItem]] = Field(default=None)
-    assigned_terms: Optional[List[SuggestedTerm]] = Field(default=None)
+    system_descriptions: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
+        default_factory=list
+    )
+    user_descriptions: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
+        default_factory=list
+    )
+    owner_users: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
+        default_factory=list
+    )
+    owner_groups: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
+        default_factory=list
+    )
+    atlan_tags: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
+        default_factory=list
+    )
+    assigned_terms: Optional[List[SuggestionResponse.SuggestedTerm]] = Field(
+        default_factory=list
+    )
+
+    class SuggestedItem(AtlanObject):
+        count: int
+        value: str
+
+    class SuggestedTerm(AtlanObject):
+        count: int
+        value: AtlasGlossaryTerm
+
+        def __init__(self, count: int, qualified_name: str):
+            value = AtlasGlossaryTerm.ref_by_qualified_name(qualified_name)
+            super().__init__(count=count, value=value)  # type: ignore[call-arg]
 
 
-@dataclass
 class Suggestions(AtlanObject):
     AGG_DESCRIPTION: ClassVar[str] = "group_by_description"
     AGG_USER_DESCRIPTION: ClassVar[str] = "group_by_userDescription"
@@ -48,17 +58,19 @@ class Suggestions(AtlanObject):
     AGG_ATLAN_TAGS: ClassVar[str] = "group_by_tags"
     AGG_TERMS: ClassVar[str] = "group_by_terms"
 
-    client: Optional[AtlanClient] = None
+    client: AtlanClient = Field(
+        default_factory=lambda: AtlanClient.get_default_client()
+    )
     """Client through which to find suggestions."""
-    asset: Optional[Asset] = None
+    asset: Optional[Asset] = Field(default=None)
     """Asset for which to find suggestions."""
     include_archived: bool = False
     """Whether to include archived assets as part of suggestions (`True`) or not (`False`, default)."""
-    includes: Optional[List[Suggestions.TYPE]] = None
+    includes: List[Suggestions.TYPE] = Field(default_factory=list)
     """Which type(s) of suggestions to include in the search and results."""
-    max_suggestions: int = 5
+    max_suggestions: int = Field(default=5)
     """Maximum number of suggestions to return (default: `5`)"""
-    with_other_types: Optional[List[str]] = None
+    with_other_types: Optional[List[str]] = Field(default_factory=list)
     """
     By default, we will only look for suggestions on other
     assets with exactly the same type. You may want to expand this,
@@ -67,7 +79,7 @@ class Suggestions(AtlanObject):
     an asset with the same name as this asset is likely have similar metadata
     (and thus be valid for providing suggestions).
     """
-    wheres: Optional[List[Query]] = None
+    wheres: Optional[List[Query]] = Field(default_factory=list)
     """
     By default, we will only match on the name (exactly) of the provided asset.
     You may want to expand this, for example, to look for assets with the same name
@@ -75,7 +87,7 @@ class Suggestions(AtlanObject):
     the same name that are also in parent tables that have the same name.
     (Columns like 'ID' may otherwise be insufficiently unique to have very useful suggestions.)
     """
-    where_nots: Optional[List[Query]] = None
+    where_nots: Optional[List[Query]] = Field(default_factory=list)
     """
     By default, we will only match on the name (exactly)
     of the provided asset. You may want to expand this, for example,
@@ -99,6 +111,10 @@ class Suggestions(AtlanObject):
         TAGS = "Tags"
         # Suggestions for terms to assign to the asset
         TERMS = "Terms"
+
+        @classmethod
+        def to_list(cls):
+            return list(map(lambda c: c.value, cls))
 
     def _clone(self) -> Suggestions:
         """
@@ -194,8 +210,7 @@ class Suggestions(AtlanObject):
         clone.where_nots.append(query)
         return clone
 
-    @staticmethod
-    def finder(asset: Asset, client: Optional[AtlanClient] = None) -> Suggestions:
+    def finder(self, asset: Asset, client: Optional[AtlanClient] = None) -> Suggestions:
         """
         Build a suggestion finder against
         the provided Atlan tenant for the provided asset
@@ -206,21 +221,27 @@ class Suggestions(AtlanObject):
         for the provided asset, against the specified tenant
         """
         client = AtlanClient.get_default_client() if not client else client
-        return Suggestions(client=client, asset=asset)
+        self.client = client
+        self.asset = asset
+        return self
 
     def get(self) -> SuggestionResponse:
+        asset_name = ""
         all_types = []
-        all_types.append(self.asset.type_name)
+
+        if self.asset and self.asset.name:
+            asset_name = self.asset.name
+            all_types.append(self.asset.type_name)
 
         # When other types provided by the user
         if self.with_other_types:
-            all_types.append(self.with_other_types)
+            all_types.extend(self.with_other_types)
 
         # Build fluent search
         search = (
             FluentSearch.select(include_archived=self.include_archived)
             .where(Asset.TYPE_NAME.within(all_types))
-            .where(Asset.NAME.eq(self.asset.NAME))
+            .where(Asset.NAME.eq(asset_name))
             # We only care about the aggregations, not results
             .page_size(0)
             .min_somes(1)
@@ -228,40 +249,53 @@ class Suggestions(AtlanObject):
 
         if self.wheres:
             for condition in self.wheres:
-                search.where(condition)
+                search = search.where(condition)
 
         if self.where_nots:
             for condition in self.where_nots:
-                search.where_not(condition)
+                search = search.where_not(condition)
+
+        if not self.includes:
+            return SuggestionResponse()
 
         for include in self.includes:
             if include == Suggestions.TYPE.SYSTEM_DESCRIPTION:
-                search.where_some(Asset.DESCRIPTION.has_any_value()).aggregate(
+                search = search.where_some(Asset.DESCRIPTION.has_any_value()).aggregate(
                     Suggestions.AGG_DESCRIPTION,
-                    Asset.DESCRIPTION.bucket_by(self.max_suggestions),
+                    Asset.DESCRIPTION.bucket_by(
+                        size=self.max_suggestions, include_source_value=True
+                    ),
                 )
             elif include == Suggestions.TYPE.USER_DESCRIPTION:
-                search.where_some(Asset.USER_DESCRIPTION.has_any_value()).aggregate(
+                search = search.where_some(
+                    Asset.USER_DESCRIPTION.has_any_value()
+                ).aggregate(
                     Suggestions.AGG_USER_DESCRIPTION,
-                    Asset.USER_DESCRIPTION.bucket_by(self.max_suggestions),
+                    Asset.USER_DESCRIPTION.bucket_by(
+                        size=self.max_suggestions, include_source_value=True
+                    ),
                 )
             elif include == Suggestions.TYPE.INDIVIDUAL_OWNERS:
-                search.where_some(Asset.OWNER_USERS.has_any_value()).aggregate(
+                search = search.where_some(Asset.OWNER_USERS.has_any_value()).aggregate(
                     Suggestions.AGG_OWNER_USERS,
                     Asset.OWNER_USERS.bucket_by(self.max_suggestions),
                 )
             elif include == Suggestions.TYPE.GROUP_OWNERS:
-                search.where_some(Asset.OWNER_GROUPS.has_any_value()).aggregate(
+                search = search.where_some(
+                    Asset.OWNER_GROUPS.has_any_value()
+                ).aggregate(
                     Suggestions.AGG_OWNER_GROUPS,
                     Asset.OWNER_GROUPS.bucket_by(self.max_suggestions),
                 )
             elif include == Suggestions.TYPE.TAGS:
-                search.where_some(Asset.ATLAN_TAGS.has_any_value()).aggregate(
+                search = search.where_some(Asset.ATLAN_TAGS.has_any_value()).aggregate(
                     Suggestions.AGG_ATLAN_TAGS,
                     Asset.ATLAN_TAGS.bucket_by(self.max_suggestions),
                 )
             elif include == Suggestions.TYPE.TERMS:
-                search.where_some(Asset.ASSIGNED_TERMS.has_any_value()).aggregate(
+                search = search.where_some(
+                    Asset.ASSIGNED_TERMS.has_any_value()
+                ).aggregate(
                     Suggestions.AGG_TERMS,
                     Asset.ASSIGNED_TERMS.bucket_by(self.max_suggestions),
                 )
@@ -272,16 +306,90 @@ class Suggestions(AtlanObject):
             suggestion_response = SuggestionResponse()
 
             for include in self.includes:
-                if include == Suggestions.TYPE.SYSTEM_DESCRIPTION:
-                    suggestion_response.system_descriptions(
-                        self._get_descriptions(
-                            aggregations.get(Suggestions.AGG_DESCRIPTION),
-                            Asset.DESCRIPTION,
-                        ),
-                    )
+                self._build_response(include, suggestion_response, aggregations)
+        return suggestion_response
 
-    def _get_descriptions(self, result, field):
+    def _get_descriptions(self, result: Aggregations, field: AtlanField):
+        results = []
         if isinstance(result, AggregationBucketResult):
             for bucket in result.buckets:
-                bucket.doc_count
-                # TODO: Add support for handling nested aggregations
+                count = bucket.doc_count
+                value = bucket.get_source_value(field)
+                results.append(
+                    SuggestionResponse.SuggestedItem(count=count, value=value or "")
+                )
+        return results
+
+    def _get_terms(self, result: Aggregations):
+        results = []
+        if isinstance(result, AggregationBucketResult):
+            for bucket in result.buckets:
+                count = bucket.doc_count
+                value = bucket.key
+                results.append(
+                    SuggestionResponse.SuggestedTerm(count=count, qualified_name=value)
+                )
+        return results
+
+    def _get_tags(self, result: Aggregations):
+        results = []
+        if isinstance(result, AggregationBucketResult):
+            for bucket in result.buckets:
+                count = bucket.doc_count
+                value = bucket.key
+                name = AtlanTagCache.get_name_for_id(value)
+                results.append(
+                    SuggestionResponse.SuggestedItem(count=count, value=name or "")
+                )
+        return results
+
+    def _get_others(self, result: Aggregations):
+        results = []
+        if isinstance(result, AggregationBucketResult):
+            for bucket in result.buckets:
+                count = bucket.doc_count
+                value = bucket.key
+                results.append(
+                    SuggestionResponse.SuggestedItem(count=count, value=value)
+                )
+        return results
+
+    def _build_response(self, include, suggestion_response, aggregations):
+        if include == Suggestions.TYPE.SYSTEM_DESCRIPTION:
+            suggestion_response.system_descriptions.extend(
+                self._get_descriptions(
+                    aggregations.get(Suggestions.AGG_DESCRIPTION),
+                    Asset.DESCRIPTION,
+                )
+            )
+        elif include == Suggestions.TYPE.USER_DESCRIPTION:
+            suggestion_response.user_descriptions.extend(
+                self._get_descriptions(
+                    aggregations.get(Suggestions.AGG_USER_DESCRIPTION),
+                    Asset.USER_DESCRIPTION,
+                )
+            )
+        elif include == Suggestions.TYPE.INDIVIDUAL_OWNERS:
+            suggestion_response.owner_users.extend(
+                self._get_others(
+                    aggregations.get(Suggestions.AGG_OWNER_USERS),
+                )
+            )
+        elif include == Suggestions.TYPE.GROUP_OWNERS:
+            suggestion_response.owner_groups.extend(
+                self._get_others(
+                    aggregations.get(Suggestions.AGG_OWNER_GROUPS),
+                )
+            )
+        elif include == Suggestions.TYPE.TAGS:
+            suggestion_response.atlan_tags.extend(
+                self._get_tags(
+                    aggregations.get(Suggestions.AGG_ATLAN_TAGS),
+                )
+            )
+        elif include == Suggestions.TYPE.TERMS:
+            suggestion_response.assigned_terms.extend(
+                self._get_terms(
+                    aggregations.get(Suggestions.AGG_TERMS),
+                )
+            )
