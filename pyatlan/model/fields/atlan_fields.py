@@ -123,7 +123,7 @@ class SearchableField(AtlanField):
                     __root__={
                         "top_hits": {
                             "size": 1,
-                            "_source": {"filter": {"includes": [source_field]}},
+                            "_source": {"includes": [source_field]},
                         }
                     }
                 )
