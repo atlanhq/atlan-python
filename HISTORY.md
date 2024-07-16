@@ -1,3 +1,13 @@
+## 2.3.2 (July 16, 2024)
+
+### New features
+
+- Added a new ELT connector type: `PREFECT`.
+
+### Bug fixes
+
+- Fixed the `ErrorCode.CM_ATTR_NOT_FOUND_BY_NAME` error message in `CustomMetadataCache.get_attr_id_for_name()`, which was receiving the wrong parameters.
+
 ## 2.3.1 (July 9, 2024)
 
 ### New features
