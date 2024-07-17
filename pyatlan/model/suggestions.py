@@ -7,12 +7,14 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+from pyatlan.client.asset import Batch
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.aggregation import AggregationBucketResult, Aggregations
 from pyatlan.model.assets import Asset, AtlasGlossaryTerm
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanObject, AtlanTag, AtlanTagName
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Query
 from pyatlan.utils import validate_type
 
@@ -393,3 +395,83 @@ class Suggestions(AtlanObject):
                     aggregations.get(Suggestions.AGG_TERMS),
                 )
             )
+
+    def apply(
+        self, allow_multiple: bool = False, batch: Optional[Batch] = None
+    ) -> Optional[AssetMutationResponse]:
+        """
+        Find the requested suggestions and apply the top suggestions as changes to the asset.
+
+        Note: this will NOT validate whether there is any existing value for what
+        you are setting, so will clobber any existing value with the suggestion.
+        If you want to be certain you are only updating empty values, you should ensure
+        you are only building a finder for suggestions for values that do not already
+        exist on the asset in question.
+
+        :param allow_multiple: if `True`, allow multiple suggestions to be applied
+        to the asset (up to `max_suggestions` requested), i.e: for owners, terms and tags
+        :param batch: (optional) the batch in which you want to apply the top suggestions as changes to the asset
+        """
+        if batch:
+            return batch.add(self._apply(allow_multiple).asset)
+        result = self._apply(allow_multiple)
+        return self.client.save(result.asset, result.include_tags)
+
+    def _apply(self, allow_multiple: bool):
+        response = self.get()
+        asset = self.asset.trim_to_required()  # type: ignore[union-attr]
+
+        # Let's apply the last suggestion item for descriptions (system, user),
+        # as it has the highest `max_score` in the suggestion aggregation bucket.
+        # This follows a similar approach to the one the UI uses
+        # to decide which suggestion to show to the user.
+        if response.system_descriptions:
+            asset.description = response.system_descriptions[-1].value
+
+        if response.user_descriptions:
+            asset.user_description = response.user_descriptions[-1].value
+
+        if response.owner_groups:
+            if allow_multiple:
+                asset.owner_groups = {group.value for group in response.owner_groups}
+            else:
+                asset.owner_groups = {response.owner_groups[0].value}
+
+        if response.owner_users:
+            if allow_multiple:
+                asset.owner_users = {user.value for user in response.owner_users}
+            else:
+                asset.owner_users = {response.owner_users[0].value}
+
+        includes_tags = False
+        if response.atlan_tags:
+            includes_tags = True
+            if allow_multiple:
+                asset.atlan_tags = [
+                    AtlanTag(type_name=AtlanTagName(tag.value), propagate=False)
+                    for tag in response.atlan_tags
+                ]
+            else:
+                asset.atlan_tags = [
+                    AtlanTag(
+                        type_name=AtlanTagName(response.atlan_tags[0].value),
+                        propagate=False,
+                    )
+                ]
+
+        if response.assigned_terms:
+            if allow_multiple:
+                asset.assigned_terms = [term.value for term in response.assigned_terms]
+            else:
+                asset.assigned_terms = [response.assigned_terms[0].value]
+
+        return _Apply(asset, includes_tags)
+
+
+class _Apply:
+    asset: Asset
+    include_tags: bool
+
+    def __init__(self, asset: Asset, include_tags: bool):
+        self.asset = asset
+        self.include_tags = include_tags
