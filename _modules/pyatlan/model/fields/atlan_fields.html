@@ -493,7 +493,7 @@
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span> <span class="nn">pydantic.v1</span> <span class="kn">import</span> <span class="n">StrictBool</span><span class="p">,</span> <span class="n">StrictFloat</span><span class="p">,</span> <span class="n">StrictInt</span><span class="p">,</span> <span class="n">StrictStr</span>
 
@@ -556,6 +556,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">elastic_field_name</span><span class="p">:</span> <span class="n">StrictStr</span>
+    <span class="n">EMBEDDED_SOURCE_VALUE</span> <span class="o">=</span> <span class="s2">&quot;sourceValue&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atlan_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">elastic_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -600,15 +601,49 @@
     <span class="k">def</span> <span class="nf">bucket_by</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">include_source_value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">nested</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Aggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SortOrder</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Aggregation</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return criteria to bucket results based on the provided field.</span>
-<span class="sd">           :param size: the number of buckets to include results across.</span>
-<span class="sd">           :returns: criteria to bucket results by the provided field, across a maximum number of buckets defined by</span>
-<span class="sd">           the provided size</span>
-<span class="sd">        */&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Aggregation</span><span class="p">(</span>
-            <span class="n">__root__</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;terms&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}}</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return criteria to bucket results based on the provided field.</span>
+
+<span class="sd">        :param size: the number of buckets to include results across, defaults to `10`.</span>
+<span class="sd">        :param include_source_value: whether to include the source value (`True`) or not (`False`)</span>
+<span class="sd">        :param nested: (optional) nested aggregations to include.</span>
+<span class="sd">        :param order: (optional) the order for the buckets.</span>
+<span class="sd">        :returns: criteria to bucket results by the provided field,</span>
+<span class="sd">        across a maximum number of buckets defined by the provided size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">aggs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;terms&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}}</span>
+
+        <span class="k">if</span> <span class="n">include_source_value</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">nested</span><span class="p">:</span>
+            <span class="n">source_field</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span>
+                <span class="c1"># Need to handle the hashed-string ID stuff for custom metadata fields</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">CustomMetadataField</span><span class="p">)</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">atlan_field_name</span>
+            <span class="p">)</span>
+            <span class="n">nested</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">EMBEDDED_SOURCE_VALUE</span><span class="p">:</span> <span class="n">Aggregation</span><span class="p">(</span>
+                    <span class="n">__root__</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s2">&quot;top_hits&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="s2">&quot;_source&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;includes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">source_field</span><span class="p">]},</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
+            <span class="n">aggs_nested</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">aggs</span><span class="p">,</span>
+                <span class="s2">&quot;aggregations&quot;</span><span class="p">:</span> <span class="n">nested</span><span class="p">,</span>
+                <span class="o">**</span><span class="p">({</span><span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="n">order</span><span class="p">}</span> <span class="k">if</span> <span class="n">order</span> <span class="k">else</span> <span class="p">{}),</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">Aggregation</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">aggs_nested</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Aggregation</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">aggs</span><span class="p">)</span></div>
 </div>
 
 
