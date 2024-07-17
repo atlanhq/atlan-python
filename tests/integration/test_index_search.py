@@ -14,6 +14,7 @@ from pyatlan.model.assets import Asset, Table
 from pyatlan.model.assets.atlas_glossary_term import AtlasGlossaryTerm
 from pyatlan.model.assets.column import Column
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
+from pyatlan.model.fields.atlan_fields import SearchableField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import (
     DSL,
@@ -407,6 +408,7 @@ def test_bucket_aggregation(client: AtlanClient):
         FluentSearch.select()
         .aggregate("type", Asset.TYPE_NAME.bucket_by())
         .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
     ).to_request()
     results = client.asset.search(criteria=request)
     assert results.aggregations
@@ -417,6 +419,101 @@ def test_bucket_aggregation(client: AtlanClient):
     for bucket in result.buckets:
         assert bucket.key
         assert bucket.doc_count
+
+
+def test_nested_bucket_aggregation(client: AtlanClient):
+    nested_aggs_level_2 = Asset.TYPE_NAME.bucket_by(
+        nested={"asset_guid": Asset.GUID.bucket_by()}
+    )
+    nested_aggs = Asset.TYPE_NAME.bucket_by(nested={"asset_name": nested_aggs_level_2})
+    request = (
+        FluentSearch.select()
+        .aggregate("asset_type", nested_aggs)
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+        .to_request()
+    )
+    results = client.asset.search(criteria=request)
+
+    assert results.aggregations
+    result = results.aggregations["asset_type"]
+    assert result
+    assert result.buckets
+    assert len(result.buckets) > 0
+    for bucket in result.buckets:
+        assert bucket.key
+        assert bucket.doc_count
+        assert bucket.nested_results
+        nested_results = bucket.nested_results["asset_name"]
+        assert nested_results
+        # Nested results level 1
+        for bucket in nested_results.buckets:
+            assert bucket.key
+            assert bucket.doc_count
+            assert bucket.nested_results
+            nested_results = bucket.nested_results["asset_guid"]
+            assert nested_results
+            # Nested results level 2
+            for bucket in nested_results.buckets:
+                assert bucket.key
+                assert bucket.doc_count
+                # Make sure it's not nested further
+                assert bucket.nested_results is None
+
+
+def test_aggregation_source_value(client: AtlanClient):
+    request = (
+        FluentSearch.select()
+        .aggregate(
+            "asset_type",
+            Asset.TYPE_NAME.bucket_by(
+                nested={
+                    "asset_description": Asset.DESCRIPTION.bucket_by(
+                        include_source_value=True
+                    )
+                },
+            ),
+        )
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+        .to_request()
+    )
+    results = client.asset.search(criteria=request)
+
+    source_value_found = False
+    assert results.aggregations
+    result = results.aggregations["asset_type"]
+    assert result
+    assert result.buckets
+    assert len(result.buckets) > 0
+    for bucket in result.buckets:
+        assert bucket.key
+        assert bucket.doc_count
+        assert bucket.nested_results
+        nested_results = bucket.nested_results["asset_description"]
+        assert nested_results
+        # Nested results level 1
+        for bucket in nested_results.buckets:
+            assert bucket.key
+            assert bucket.doc_count
+            assert bucket.nested_results
+            if SearchableField.EMBEDDED_SOURCE_VALUE in bucket.nested_results:
+                nested_results = bucket.nested_results[
+                    SearchableField.EMBEDDED_SOURCE_VALUE
+                ]
+                assert (
+                    nested_results
+                    and nested_results.hits
+                    and nested_results.hits.hits
+                    and nested_results.hits.hits[0]
+                )
+                assert bucket.get_source_value(Asset.DESCRIPTION)
+                source_value_found = True
+
+    if not source_value_found:
+        pytest.fail(
+            "Failed to retrieve the source value for asset description in the aggregation"
+        )
 
 
 def test_metric_aggregation(client: AtlanClient):
