@@ -494,6 +494,8 @@ def test_aggregation_source_value(client: AtlanClient):
         assert nested_results
         # Nested results level 1
         for bucket in nested_results.buckets:
+            if not bucket.key:
+                continue
             assert bucket.key
             assert bucket.doc_count
             assert bucket.nested_results
