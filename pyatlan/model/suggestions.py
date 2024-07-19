@@ -115,7 +115,7 @@ class Suggestions(AtlanObject):
         TERMS = "Terms"
 
         @classmethod
-        def to_list(cls):
+        def all(cls):
             return list(map(lambda c: c.value, cls))
 
     def _clone(self) -> Suggestions:
@@ -468,7 +468,7 @@ class Suggestions(AtlanObject):
 
         return _Apply(asset, includes_tags)
 
-    def _get_description_to_apply(self, response: SuggestionResponse) -> str:
+    def _get_description_to_apply(self, response: SuggestionResponse) -> Optional[str]:
         max_description_count = 0
         description_to_apply = None
 
