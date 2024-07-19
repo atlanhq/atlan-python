@@ -317,9 +317,10 @@ class Suggestions(AtlanObject):
             for bucket in result.buckets:
                 count = bucket.doc_count
                 value = bucket.get_source_value(field)
-                results.append(
-                    SuggestionResponse.SuggestedItem(count=count, value=value or "")
-                )
+                if count and value:
+                    results.append(
+                        SuggestionResponse.SuggestedItem(count=count, value=value)
+                    )
         return results
 
     def _get_terms(self, result: Aggregations):
@@ -328,9 +329,12 @@ class Suggestions(AtlanObject):
             for bucket in result.buckets:
                 count = bucket.doc_count
                 value = bucket.key
-                results.append(
-                    SuggestionResponse.SuggestedTerm(count=count, qualified_name=value)
-                )
+                if count and value:
+                    results.append(
+                        SuggestionResponse.SuggestedTerm(
+                            count=count, qualified_name=value
+                        )
+                    )
         return results
 
     def _get_tags(self, result: Aggregations):
@@ -340,9 +344,10 @@ class Suggestions(AtlanObject):
                 count = bucket.doc_count
                 value = bucket.key
                 name = AtlanTagCache.get_name_for_id(value)
-                results.append(
-                    SuggestionResponse.SuggestedItem(count=count, value=name or "")
-                )
+                if count and name:
+                    results.append(
+                        SuggestionResponse.SuggestedItem(count=count, value=name)
+                    )
         return results
 
     def _get_others(self, result: Aggregations):
@@ -351,9 +356,10 @@ class Suggestions(AtlanObject):
             for bucket in result.buckets:
                 count = bucket.doc_count
                 value = bucket.key
-                results.append(
-                    SuggestionResponse.SuggestedItem(count=count, value=value)
-                )
+                if count and value:
+                    results.append(
+                        SuggestionResponse.SuggestedItem(count=count, value=value)
+                    )
         return results
 
     def _build_response(self, include, suggestion_response, aggregations):
@@ -421,15 +427,10 @@ class Suggestions(AtlanObject):
         response = self.get()
         asset = self.asset.trim_to_required()  # type: ignore[union-attr]
 
-        # Let's apply the last suggestion item for descriptions (system, user),
-        # as it has the highest `max_score` in the suggestion aggregation bucket.
-        # This follows a similar approach to the one the UI uses
-        # to decide which suggestion to show to the user.
-        if response.system_descriptions:
-            asset.description = response.system_descriptions[-1].value
-
-        if response.user_descriptions:
-            asset.user_description = response.user_descriptions[-1].value
+        description_to_apply = self._get_description_to_apply(response)
+        # NOTE: We only ever set the description over a
+        # user-provided description (never the system-source description)
+        asset.user_description = description_to_apply
 
         if response.owner_groups:
             if allow_multiple:
@@ -466,6 +467,24 @@ class Suggestions(AtlanObject):
                 asset.assigned_terms = [response.assigned_terms[0].value]
 
         return _Apply(asset, includes_tags)
+
+    def _get_description_to_apply(self, response: SuggestionResponse) -> str:
+        max_description_count = 0
+        description_to_apply = None
+
+        # Check for suggested user descriptions
+        if response.user_descriptions:
+            max_description_count = response.user_descriptions[0].count
+            description_to_apply = response.user_descriptions[0].value
+
+        # If the count (frequency) of the suggested system description
+        # is greater than the max_description_count (user description),
+        # apply the suggested system description instead
+        if response.system_descriptions:
+            if response.system_descriptions[0].count > max_description_count:
+                description_to_apply = response.system_descriptions[0].value
+
+        return description_to_apply
 
 
 class _Apply:
