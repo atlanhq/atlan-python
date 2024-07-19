@@ -25,15 +25,6 @@ from .superset import Superset
 class SupersetDashboard(Superset):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str
-    ) -> SupersetDashboard: ...
-
     @classmethod
     @init_guid
     def creator(
@@ -51,7 +42,7 @@ class SupersetDashboard(Superset):
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
-    
+
     @classmethod
     @init_guid
     def create(
@@ -68,7 +59,7 @@ class SupersetDashboard(Superset):
         return cls.creator(
             name=name, connection_qualified_name=connection_qualified_name
         )
-    
+
     type_name: str = Field(default="SupersetDashboard", allow_mutation=False)
 
     @validator("type_name")

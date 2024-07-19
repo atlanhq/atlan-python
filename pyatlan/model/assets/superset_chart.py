@@ -72,7 +72,7 @@ class SupersetChart(Superset):
         return cls.creator(
             name=name, superset_dashboard_qualified_name=superset_dashboard_qualified_name
         )
-    
+
     type_name: str = Field(default="SupersetChart", allow_mutation=False)
 
     @validator("type_name")
