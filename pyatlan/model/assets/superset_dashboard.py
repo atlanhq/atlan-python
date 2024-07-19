@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, overload
+from typing import ClassVar, List, Optional
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -27,12 +27,7 @@ class SupersetDashboard(Superset):
 
     @classmethod
     @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str
-    ) -> SupersetDashboard:
+    def creator(cls, *, name: str, connection_qualified_name: str) -> SupersetDashboard:
         validate_required_fields(
             ["name", "connection_qualified_name"],
             [name, connection_qualified_name],
@@ -45,9 +40,7 @@ class SupersetDashboard(Superset):
 
     @classmethod
     @init_guid
-    def create(
-        cls, *, name: str, connection_qualified_name: str
-    ) -> SupersetDashboard:
+    def create(cls, *, name: str, connection_qualified_name: str) -> SupersetDashboard:
         warn(
             (
                 "This method is deprecated, please use 'creator' "
@@ -290,10 +283,7 @@ class SupersetDashboard(Superset):
         @classmethod
         @init_guid
         def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str
+            cls, *, name: str, connection_qualified_name: str
         ) -> SupersetDashboard.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"],

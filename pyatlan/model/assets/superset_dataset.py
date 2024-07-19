@@ -77,7 +77,8 @@ class SupersetDataset(Superset):
             stacklevel=2,
         )
         return cls.creator(
-            name=name, superset_dashboard_qualified_name=superset_dashboard_qualified_name
+            name=name,
+            superset_dashboard_qualified_name=superset_dashboard_qualified_name,
         )
 
     type_name: str = Field(default="SupersetDataset", allow_mutation=False)

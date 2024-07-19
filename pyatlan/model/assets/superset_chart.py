@@ -60,7 +60,9 @@ class SupersetChart(Superset):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, superset_dashboard_qualified_name: str) -> SupersetChart:
+    def create(
+        cls, *, name: str, superset_dashboard_qualified_name: str
+    ) -> SupersetChart:
         warn(
             (
                 "This method is deprecated, please use 'creator' "
@@ -70,7 +72,8 @@ class SupersetChart(Superset):
             stacklevel=2,
         )
         return cls.creator(
-            name=name, superset_dashboard_qualified_name=superset_dashboard_qualified_name
+            name=name,
+            superset_dashboard_qualified_name=superset_dashboard_qualified_name,
         )
 
     type_name: str = Field(default="SupersetChart", allow_mutation=False)
