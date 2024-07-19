@@ -99,7 +99,8 @@ def test_superset_chart(
     assert superset_chart.guid
     assert superset_chart.qualified_name
     assert (
-        superset_chart.superset_dashboard_qualified_name == superset_dashboard.qualified_name
+        superset_chart.superset_dashboard_qualified_name
+        == superset_dashboard.qualified_name
     )
     assert superset_chart.name == SUPERSET_CHART_NAME
     assert superset_chart.connector_name == AtlanConnectorType.SUPERSET.value

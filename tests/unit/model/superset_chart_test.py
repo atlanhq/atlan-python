@@ -22,7 +22,8 @@ def test_create_with_missing_parameters_raise_value_error(
 ):
     with pytest.raises(ValueError, match=message):
         SupersetChart.create(
-            name=name, superset_dashboard_qualified_name=superset_dashboard_qualified_name
+            name=name,
+            superset_dashboard_qualified_name=superset_dashboard_qualified_name,
         )
 
 
@@ -36,7 +37,8 @@ def test_create():
     assert sut.superset_dashboard_qualified_name == SUPERSET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
     assert (
-        sut.qualified_name == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
+        sut.qualified_name
+        == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
     )
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
@@ -52,7 +54,8 @@ def test_overload_creator():
     assert sut.superset_dashboard_qualified_name == SUPERSET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
     assert (
-        sut.qualified_name == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
+        sut.qualified_name
+        == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
     )
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
