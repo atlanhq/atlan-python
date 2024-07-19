@@ -211,7 +211,7 @@ class SupersetDataset(Superset):
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     superset_dashboard_qualified_name,
                     "superset_dashboard_qualified_name",
-                    5,
+                    4,
                 )
 
             return SupersetDataset.Attributes(
