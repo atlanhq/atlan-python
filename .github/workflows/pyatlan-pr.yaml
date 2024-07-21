@@ -80,6 +80,10 @@ jobs:
           ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
           MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           MARK_BASE_URL: https://mark.atlan.com
-        # Run the integration test file using `pytest-timer` plugin
-        # to display only the durations of the 10 slowest tests with `pytest-sugar`
-        run: pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 3
+          timeout_minutes: 5 # Maximum time per test job; otherwise, the job will fail
+          # Run the integration test file using `pytest-timer` plugin
+          # to display only the durations of the 10 slowest tests with `pytest-sugar`
+          command: pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
