@@ -109,14 +109,14 @@ def test_superset_chart(
 @pytest.fixture(scope="module")
 def superset_chart_overload(
     client: AtlanClient,
-    superset_dashboard_overload: SupersetDashboard,
+    superset_dashboard: SupersetDashboard,
     connection: Connection,
 ) -> Generator[SupersetChart, None, None]:
-    assert superset_dashboard_overload.qualified_name
+    assert superset_dashboard.qualified_name
     assert connection.qualified_name
     to_create = SupersetChart.creator(
         name=SUPERSET_CHART_NAME_OVERLOAD,
-        superset_dashboard_qualified_name=superset_dashboard_overload.qualified_name,
+        superset_dashboard_qualified_name=superset_dashboard.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -128,14 +128,14 @@ def superset_chart_overload(
 def test_overload_superset_chart(
     client: AtlanClient,
     superset_chart_overload: SupersetChart,
-    superset_dashboard_overload: SupersetDashboard,
+    superset_dashboard: SupersetDashboard,
 ):
     assert superset_chart_overload
     assert superset_chart_overload.guid
     assert superset_chart_overload.qualified_name
     assert (
         superset_chart_overload.superset_dashboard_qualified_name
-        == superset_dashboard_overload.qualified_name
+        == superset_dashboard.qualified_name
     )
     assert superset_chart_overload.name == SUPERSET_CHART_NAME_OVERLOAD
     assert superset_chart_overload.connector_name == AtlanConnectorType.SUPERSET.value
@@ -173,13 +173,13 @@ def test_superset_dataset(
 def superset_dataset_overload(
     client: AtlanClient,
     connection: Connection,
-    superset_dashboard_overload: SupersetDashboard,
+    superset_dashboard: SupersetDashboard,
 ) -> Generator[SupersetDataset, None, None]:
-    assert superset_dashboard_overload.qualified_name
+    assert superset_dashboard.qualified_name
     assert connection.qualified_name
     to_create = SupersetDataset.creator(
         name=SUPERSET_DATASET_NAME_OVERLOAD,
-        superset_dashboard_qualified_name=superset_dashboard_overload.qualified_name,
+        superset_dashboard_qualified_name=superset_dashboard.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
