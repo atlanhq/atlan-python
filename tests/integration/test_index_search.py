@@ -173,10 +173,20 @@ def _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, bulk=Fal
 def test_search_pagination(mock_logger, client: AtlanClient):
     size = 2
 
+    # Avoid testing on integration tests objects
+    exclude_sdk_terms = [
+        Asset.NAME.wildcard("psdk_*"),
+        Asset.NAME.wildcard("jsdk_*"),
+        Asset.NAME.wildcard("gsdk_*"),
+    ]
+    query = CompoundQuery(
+        where_nots=exclude_sdk_terms, where_somes=[CompoundQuery.active_assets()]
+    ).to_query()
+
     # Test search() with DSL: using default offset-based pagination
     # when results are less than the predefined threshold (i.e: 100,000 assets)
     dsl = DSL(
-        query=Term.with_state("ACTIVE"),
+        query=query,
         post_filter=Term.with_type_name(value="AtlasGlossaryTerm"),
         size=size,
     )
@@ -190,7 +200,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
 
     # Test search() DSL: with `bulk` option using timestamp-based pagination
     dsl = DSL(
-        query=Term.with_state("ACTIVE"),
+        query=query,
         post_filter=Term.with_type_name(value="AtlasGlossaryTerm"),
         size=size,
     )
@@ -201,14 +211,14 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         Asset.GUID.order(SortOrder.ASCENDING),
     ]
     _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, True)
-    assert mock_logger.call_count < TOTAL_ASSETS
+    assert mock_logger.call_count == 1
     assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
 
     # Test search(): using default offset-based pagination
     # when results are less than the predefined threshold (i.e: 100,000 assets)
     request = (
-        FluentSearch()
+        FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
         .page_size(2)
@@ -219,7 +229,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
 
     # Test search(): with `bulk` option using timestamp-based pagination
     request = (
-        FluentSearch()
+        FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
         .page_size(2)
@@ -230,13 +240,13 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         Asset.GUID.order(SortOrder.ASCENDING),
     ]
     _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, True)
-    assert mock_logger.call_count < TOTAL_ASSETS
+    assert mock_logger.call_count == 1
     assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
 
     # Test search() execute(): with `bulk` option using timestamp-based pagination
     results = (
-        FluentSearch()
+        FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
         .page_size(2)
@@ -246,7 +256,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         Asset.GUID.order(SortOrder.ASCENDING),
     ]
     _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, True)
-    assert mock_logger.call_count < TOTAL_ASSETS
+    assert mock_logger.call_count == 1
     assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
 
@@ -254,7 +264,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
     # the SDK automatically switches to a `bulk` search option using timestamp-based pagination.
     with patch.object(IndexSearchResults, "_MASS_EXTRACT_THRESHOLD", 1):
         request = (
-            FluentSearch()
+            FluentSearch(where_nots=exclude_sdk_terms)
             .where(CompoundQuery.active_assets())
             .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
             .page_size(2)
