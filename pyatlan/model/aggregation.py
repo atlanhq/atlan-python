@@ -132,6 +132,13 @@ class Aggregations(AtlanObject):
     def __getitem__(self, item):
         return self.__root__[item]
 
+    def get(
+        self, key: str, default=None
+    ) -> Optional[
+        Union[AggregationMetricResult, AggregationBucketResult, AggregationHitsResult]
+    ]:
+        return self.__root__.get(key, default)
+
 
 AggregationBucketDetails.update_forward_refs()
 AggregationBucketResult.update_forward_refs()
