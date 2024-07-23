@@ -39,5 +39,5 @@ jobs:
         # Run the integration test suite using the `pytest-timer` plugin
         # to display only the durations of the 25 slowest tests with `pytest-sugar`
         run: |
-          pytest tests/unit --force-sugar
-          pytest tests/integration  -p name_of_plugin --timer-top-n 25 --force-sugar
+          pytest tests/unit
+          pytest tests/integration  -p name_of_plugin --timer-top-n 25
