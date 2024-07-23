@@ -1,3 +1,11 @@
+## 2.3.3 (July 23, 2024)
+
+### New features
+
+- Added support for nested aggregations.
+- Added support for trident suggestions.
+- Added `Superset` assets `creator()` methods.
+
 ## 2.3.2 (July 16, 2024)
 
 ### New features
