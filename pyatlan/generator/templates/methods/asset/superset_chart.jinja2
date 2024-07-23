@@ -1,0 +1,57 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        superset_dashboard_qualified_name: str,
+    ) -> SupersetChart: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        superset_dashboard_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> SupersetChart: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        superset_dashboard_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> SupersetChart:
+        validate_required_fields(
+            ["name", "superset_dashboard_qualified_name"],
+            [name, superset_dashboard_qualified_name],
+        )
+        attributes = SupersetChart.Attributes.create(
+            name=name,
+            superset_dashboard_qualified_name=superset_dashboard_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, superset_dashboard_qualified_name: str
+    ) -> SupersetChart:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            superset_dashboard_qualified_name=superset_dashboard_qualified_name,
+        )

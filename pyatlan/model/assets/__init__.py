@@ -76,6 +76,7 @@ from .thoughtspot import Thoughtspot
 from .power_b_i import PowerBI
 from .micro_strategy import MicroStrategy
 from .cognos import Cognos
+from .superset import Superset
 from .qlik import Qlik
 from .cognite import Cognite
 from .salesforce import Salesforce
@@ -226,6 +227,9 @@ from .cognos_file import CognosFile
 from .cognos_folder import CognosFolder
 from .cognos_package import CognosPackage
 from .cognos_datasource import CognosDatasource
+from .superset_dataset import SupersetDataset
+from .superset_chart import SupersetChart
+from .superset_dashboard import SupersetDashboard
 from .qlik_space import QlikSpace
 from .qlik_app import QlikApp
 from .qlik_chart import QlikChart
@@ -338,6 +342,7 @@ Thoughtspot.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
 MicroStrategy.Attributes.update_forward_refs(**localns)
 Cognos.Attributes.update_forward_refs(**localns)
+Superset.Attributes.update_forward_refs(**localns)
 Qlik.Attributes.update_forward_refs(**localns)
 Cognite.Attributes.update_forward_refs(**localns)
 Salesforce.Attributes.update_forward_refs(**localns)
@@ -488,6 +493,9 @@ CognosFile.Attributes.update_forward_refs(**localns)
 CognosFolder.Attributes.update_forward_refs(**localns)
 CognosPackage.Attributes.update_forward_refs(**localns)
 CognosDatasource.Attributes.update_forward_refs(**localns)
+SupersetDataset.Attributes.update_forward_refs(**localns)
+SupersetChart.Attributes.update_forward_refs(**localns)
+SupersetDashboard.Attributes.update_forward_refs(**localns)
 QlikSpace.Attributes.update_forward_refs(**localns)
 QlikApp.Attributes.update_forward_refs(**localns)
 QlikChart.Attributes.update_forward_refs(**localns)

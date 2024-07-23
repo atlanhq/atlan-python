@@ -308,6 +308,7 @@ class AtlanConnectorType(str, Enum):
     NETEZZA = ("netezza", AtlanConnectionCategory.WAREHOUSE)
     AZURE_SERVICE_BUS = ("azureservicebus", AtlanConnectionCategory.EVENT_BUS)
     PREFECT = ("prefect", AtlanConnectionCategory.ELT)
+    SUPERSET = ("superset", AtlanConnectionCategory.BI)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
