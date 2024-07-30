@@ -1497,13 +1497,31 @@ class Column(SQL):
     )
 
 
+from .airflow_task import AirflowTask  # noqa
+from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
 from .calculation_view import CalculationView  # noqa
+from .data_contract import DataContract  # noqa
+from .data_product import DataProduct  # noqa
 from .dbt_metric import DbtMetric  # noqa
+from .dbt_model import DbtModel  # noqa
 from .dbt_model_column import DbtModelColumn  # noqa
+from .dbt_source import DbtSource  # noqa
+from .dbt_test import DbtTest  # noqa
+from .file import File  # noqa
+from .link import Link  # noqa
+from .m_c_incident import MCIncident  # noqa
+from .m_c_monitor import MCMonitor  # noqa
 from .materialised_view import MaterialisedView  # noqa
 from .metric import Metric  # noqa
+from .process import Process  # noqa
 from .query import Query  # noqa
+from .readme import Readme  # noqa
+from .schema_registry_subject import SchemaRegistrySubject  # noqa
 from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa
+from .soda_check import SodaCheck  # noqa
+from .spark_job import SparkJob  # noqa
 from .table import Table  # noqa
 from .table_partition import TablePartition  # noqa
 from .view import View  # noqa
+
+Column.Attributes.update_forward_refs()

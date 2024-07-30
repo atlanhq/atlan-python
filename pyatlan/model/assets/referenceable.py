@@ -308,5 +308,6 @@ class Referenceable(AtlanObject):
 # Imports required for fixing circular dependencies:
 from .asset import Asset  # noqa # isort:skip
 
-
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
+
+Referenceable.Attributes.update_forward_refs()

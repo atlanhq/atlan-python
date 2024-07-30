@@ -3323,3 +3323,5 @@ from .metric import Metric  # noqa
 from .readme import Readme  # noqa
 from .schema_registry_subject import SchemaRegistrySubject  # noqa
 from .soda_check import SodaCheck  # noqa
+
+Asset.Attributes.update_forward_refs()
