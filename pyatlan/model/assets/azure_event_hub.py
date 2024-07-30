@@ -93,3 +93,6 @@ class AzureEventHub(KafkaTopic):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+AzureEventHub.Attributes.update_forward_refs()

@@ -219,3 +219,5 @@ class LookerTile(Looker):
 from .looker_dashboard import LookerDashboard  # noqa
 from .looker_look import LookerLook  # noqa
 from .looker_query import LookerQuery  # noqa
+
+LookerTile.Attributes.update_forward_refs()

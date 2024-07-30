@@ -138,3 +138,5 @@ class PowerBIDashboard(PowerBI):
 
 from .power_b_i_tile import PowerBITile  # noqa
 from .power_b_i_workspace import PowerBIWorkspace  # noqa
+
+PowerBIDashboard.Attributes.update_forward_refs()

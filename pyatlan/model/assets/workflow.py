@@ -12,7 +12,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import WorkflowStatus, WorkflowType
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class Workflow(Asset, type_name="Workflow"):
@@ -191,3 +191,6 @@ class Workflow(Asset, type_name="Workflow"):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Workflow.Attributes.update_forward_refs()

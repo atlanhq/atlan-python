@@ -14,7 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
 )
 
-from .catalog import Catalog
+from .core.catalog import Catalog
 
 
 class API(Catalog):
@@ -157,3 +157,6 @@ class API(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+API.Attributes.update_forward_refs()

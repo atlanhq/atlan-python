@@ -326,3 +326,5 @@ class KafkaTopic(Kafka):
 
 
 from .kafka_consumer_group import KafkaConsumerGroup  # noqa
+
+KafkaTopic.Attributes.update_forward_refs()

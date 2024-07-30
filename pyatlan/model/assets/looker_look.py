@@ -310,3 +310,5 @@ from .looker_folder import LookerFolder  # noqa
 from .looker_model import LookerModel  # noqa
 from .looker_query import LookerQuery  # noqa
 from .looker_tile import LookerTile  # noqa
+
+LookerLook.Attributes.update_forward_refs()

@@ -169,3 +169,5 @@ from .looker_explore import LookerExplore  # noqa
 from .looker_field import LookerField  # noqa
 from .looker_model import LookerModel  # noqa
 from .looker_view import LookerView  # noqa
+
+LookerProject.Attributes.update_forward_refs()

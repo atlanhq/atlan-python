@@ -18,7 +18,7 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .table import Table
+from .core.table import Table
 
 
 class DynamoDBSecondaryIndex(Table):
@@ -790,3 +790,6 @@ class DynamoDBSecondaryIndex(Table):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+DynamoDBSecondaryIndex.Attributes.update_forward_refs()

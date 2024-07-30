@@ -75,3 +75,6 @@ class Domo(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Domo.Attributes.update_forward_refs()

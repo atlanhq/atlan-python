@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordTextField
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class TagAttachment(Asset, type_name="TagAttachment"):
@@ -85,3 +85,6 @@ class TagAttachment(Asset, type_name="TagAttachment"):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+TagAttachment.Attributes.update_forward_refs()

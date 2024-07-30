@@ -104,3 +104,5 @@ class MetabaseDashboard(Metabase):
 
 from .metabase_collection import MetabaseCollection  # noqa
 from .metabase_question import MetabaseQuestion  # noqa
+
+MetabaseDashboard.Attributes.update_forward_refs()

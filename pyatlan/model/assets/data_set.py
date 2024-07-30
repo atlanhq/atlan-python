@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class DataSet(Asset, type_name="DataSet"):
@@ -28,3 +28,6 @@ class DataSet(Asset, type_name="DataSet"):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+DataSet.Attributes.update_forward_refs()

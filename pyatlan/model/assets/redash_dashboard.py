@@ -69,3 +69,6 @@ class RedashDashboard(Redash):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+RedashDashboard.Attributes.update_forward_refs()

@@ -356,3 +356,5 @@ class ADLSAccount(ADLS):
 
 
 from .a_d_l_s_container import ADLSContainer  # noqa
+
+ADLSAccount.Attributes.update_forward_refs()

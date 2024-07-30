@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .catalog import Catalog
+from .core.catalog import Catalog
 
 
 class EventStore(Catalog):
@@ -28,3 +28,6 @@ class EventStore(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+EventStore.Attributes.update_forward_refs()

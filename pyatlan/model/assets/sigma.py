@@ -181,3 +181,6 @@ class Sigma(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Sigma.Attributes.update_forward_refs()

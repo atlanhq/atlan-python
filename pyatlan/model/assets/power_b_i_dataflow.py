@@ -122,3 +122,5 @@ class PowerBIDataflow(PowerBI):
 
 from .power_b_i_dataset import PowerBIDataset  # noqa
 from .power_b_i_workspace import PowerBIWorkspace  # noqa
+
+PowerBIDataflow.Attributes.update_forward_refs()

@@ -157,3 +157,5 @@ class QuickSightDataset(QuickSight):
 
 from .quick_sight_dataset_field import QuickSightDatasetField  # noqa
 from .quick_sight_folder import QuickSightFolder  # noqa
+
+QuickSightDataset.Attributes.update_forward_refs()

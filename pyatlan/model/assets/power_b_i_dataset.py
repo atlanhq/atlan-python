@@ -198,3 +198,5 @@ from .power_b_i_report import PowerBIReport  # noqa
 from .power_b_i_table import PowerBITable  # noqa
 from .power_b_i_tile import PowerBITile  # noqa
 from .power_b_i_workspace import PowerBIWorkspace  # noqa
+
+PowerBIDataset.Attributes.update_forward_refs()

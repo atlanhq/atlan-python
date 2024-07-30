@@ -64,3 +64,5 @@ class CogniteFile(Cognite):
 
 
 from .cognite_asset import CogniteAsset  # noqa
+
+CogniteFile.Attributes.update_forward_refs()

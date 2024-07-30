@@ -162,3 +162,5 @@ class QuickSightDashboard(QuickSight):
 
 from .quick_sight_dashboard_visual import QuickSightDashboardVisual  # noqa
 from .quick_sight_folder import QuickSightFolder  # noqa
+
+QuickSightDashboard.Attributes.update_forward_refs()

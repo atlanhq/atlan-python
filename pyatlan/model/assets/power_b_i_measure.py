@@ -162,3 +162,5 @@ class PowerBIMeasure(PowerBI):
 
 
 from .power_b_i_table import PowerBITable  # noqa
+
+PowerBIMeasure.Attributes.update_forward_refs()

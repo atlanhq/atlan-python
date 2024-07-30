@@ -32,11 +32,11 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    Column,
     DataDomain,
     DataProduct,
     Table,
 )
-from pyatlan.model.assets.column import Column
 from pyatlan.model.core import Announcement, BulkRequest
 from pyatlan.model.enums import (
     AnnouncementType,

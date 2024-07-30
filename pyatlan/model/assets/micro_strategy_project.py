@@ -245,3 +245,5 @@ from .micro_strategy_fact import MicroStrategyFact  # noqa
 from .micro_strategy_metric import MicroStrategyMetric  # noqa
 from .micro_strategy_report import MicroStrategyReport  # noqa
 from .micro_strategy_visualization import MicroStrategyVisualization  # noqa
+
+MicroStrategyProject.Attributes.update_forward_refs()

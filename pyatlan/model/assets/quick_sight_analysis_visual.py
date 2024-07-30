@@ -95,3 +95,5 @@ class QuickSightAnalysisVisual(QuickSight):
 
 
 from .quick_sight_analysis import QuickSightAnalysis  # noqa
+
+QuickSightAnalysisVisual.Attributes.update_forward_refs()

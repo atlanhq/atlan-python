@@ -97,3 +97,6 @@ class Metabase(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Metabase.Attributes.update_forward_refs()

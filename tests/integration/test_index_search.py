@@ -10,9 +10,7 @@ import pytest
 
 from pyatlan.client.asset import LOGGER, IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import Asset, Table
-from pyatlan.model.assets.atlas_glossary_term import AtlasGlossaryTerm
-from pyatlan.model.assets.column import Column
+from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fields.atlan_fields import SearchableField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch

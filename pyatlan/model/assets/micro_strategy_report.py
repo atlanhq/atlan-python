@@ -145,3 +145,5 @@ class MicroStrategyReport(MicroStrategy):
 from .micro_strategy_attribute import MicroStrategyAttribute  # noqa
 from .micro_strategy_metric import MicroStrategyMetric  # noqa
 from .micro_strategy_project import MicroStrategyProject  # noqa
+
+MicroStrategyReport.Attributes.update_forward_refs()

@@ -190,3 +190,5 @@ class TableauDashboard(Tableau):
 
 from .tableau_workbook import TableauWorkbook  # noqa
 from .tableau_worksheet import TableauWorksheet  # noqa
+
+TableauDashboard.Attributes.update_forward_refs()

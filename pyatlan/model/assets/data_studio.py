@@ -324,6 +324,8 @@ class DataStudio(Google):
     )
 
 
-from .airflow_task import AirflowTask  # noqa
-from .process import Process  # noqa
-from .spark_job import SparkJob  # noqa
+from .core.airflow_task import AirflowTask  # noqa
+from .core.process import Process  # noqa
+from .core.spark_job import SparkJob  # noqa
+
+DataStudio.Attributes.update_forward_refs()

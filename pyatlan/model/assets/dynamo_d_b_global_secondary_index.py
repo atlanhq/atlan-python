@@ -64,3 +64,5 @@ class DynamoDBGlobalSecondaryIndex(DynamoDBSecondaryIndex):
 
 
 from .dynamo_dbtable import DynamoDBTable  # noqa
+
+DynamoDBGlobalSecondaryIndex.Attributes.update_forward_refs()

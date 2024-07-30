@@ -83,3 +83,5 @@ class SigmaWorkbook(Sigma):
 
 
 from .sigma_page import SigmaPage  # noqa
+
+SigmaWorkbook.Attributes.update_forward_refs()

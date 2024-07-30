@@ -100,3 +100,5 @@ class CubeDimension(MultiDimensionalDataset):
 
 from .cube import Cube  # noqa
 from .cube_hierarchy import CubeHierarchy  # noqa
+
+CubeDimension.Attributes.update_forward_refs()

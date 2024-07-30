@@ -64,3 +64,5 @@ class TableauSite(Tableau):
 
 
 from .tableau_project import TableauProject  # noqa
+
+TableauSite.Attributes.update_forward_refs()

@@ -236,3 +236,5 @@ class SupersetDataset(Superset):
 
 
 from .superset_dashboard import SupersetDashboard  # noqa
+
+SupersetDataset.Attributes.update_forward_refs()

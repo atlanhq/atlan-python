@@ -218,3 +218,5 @@ class CubeField(MultiDimensionalDataset):
 
 
 from .cube_hierarchy import CubeHierarchy  # noqa
+
+CubeField.Attributes.update_forward_refs()

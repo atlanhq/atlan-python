@@ -427,3 +427,5 @@ from .micro_strategy_cube import MicroStrategyCube  # noqa
 from .micro_strategy_fact import MicroStrategyFact  # noqa
 from .micro_strategy_project import MicroStrategyProject  # noqa
 from .micro_strategy_report import MicroStrategyReport  # noqa
+
+MicroStrategyMetric.Attributes.update_forward_refs()

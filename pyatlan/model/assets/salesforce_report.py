@@ -134,3 +134,5 @@ class SalesforceReport(Salesforce):
 
 from .salesforce_dashboard import SalesforceDashboard  # noqa
 from .salesforce_organization import SalesforceOrganization  # noqa
+
+SalesforceReport.Attributes.update_forward_refs()

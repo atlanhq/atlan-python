@@ -104,3 +104,5 @@ class QlikSheet(Qlik):
 
 from .qlik_app import QlikApp  # noqa
 from .qlik_chart import QlikChart  # noqa
+
+QlikSheet.Attributes.update_forward_refs()

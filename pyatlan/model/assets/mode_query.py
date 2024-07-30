@@ -122,3 +122,5 @@ class ModeQuery(Mode):
 
 from .mode_chart import ModeChart  # noqa
 from .mode_report import ModeReport  # noqa
+
+ModeQuery.Attributes.update_forward_refs()

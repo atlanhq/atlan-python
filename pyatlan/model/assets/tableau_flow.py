@@ -205,3 +205,5 @@ class TableauFlow(Tableau):
 
 
 from .tableau_project import TableauProject  # noqa
+
+TableauFlow.Attributes.update_forward_refs()

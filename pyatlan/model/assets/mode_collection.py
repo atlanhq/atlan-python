@@ -122,3 +122,5 @@ class ModeCollection(Mode):
 
 from .mode_report import ModeReport  # noqa
 from .mode_workspace import ModeWorkspace  # noqa
+
+ModeCollection.Attributes.update_forward_refs()

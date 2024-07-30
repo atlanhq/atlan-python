@@ -64,3 +64,5 @@ class CognosDashboard(Cognos):
 
 
 from .cognos_folder import CognosFolder  # noqa
+
+CognosDashboard.Attributes.update_forward_refs()

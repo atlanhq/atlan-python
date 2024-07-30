@@ -578,9 +578,11 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     )
 
 
+from .core.dbt_model import DbtModel  # noqa
+from .core.dbt_source import DbtSource  # noqa
+from .core.dbt_test import DbtTest  # noqa
+from .core.schema import Schema  # noqa
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa
-from .dbt_model import DbtModel  # noqa
-from .dbt_source import DbtSource  # noqa
-from .dbt_test import DbtTest  # noqa
 from .mongo_d_b_collection import MongoDBCollection  # noqa
-from .schema import Schema  # noqa
+
+CosmosMongoDBDatabase.Attributes.update_forward_refs()

@@ -28,3 +28,6 @@ class Cognite(SaaS):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+Cognite.Attributes.update_forward_refs()

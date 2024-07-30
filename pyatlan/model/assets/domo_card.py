@@ -143,3 +143,5 @@ class DomoCard(Domo):
 
 from .domo_dashboard import DomoDashboard  # noqa
 from .domo_dataset import DomoDataset  # noqa
+
+DomoCard.Attributes.update_forward_refs()

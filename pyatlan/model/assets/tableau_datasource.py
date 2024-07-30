@@ -353,3 +353,5 @@ class TableauDatasource(Tableau):
 from .tableau_datasource_field import TableauDatasourceField  # noqa
 from .tableau_project import TableauProject  # noqa
 from .tableau_workbook import TableauWorkbook  # noqa
+
+TableauDatasource.Attributes.update_forward_refs()

@@ -147,3 +147,5 @@ class QlikDataset(Qlik):
 
 
 from .qlik_space import QlikSpace  # noqa
+
+QlikDataset.Attributes.update_forward_refs()

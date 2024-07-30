@@ -20,9 +20,9 @@ from pyatlan.model.enums import (
 from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .access_control import AccessControl
-from .asset import SelfAsset
-from .auth_policy import AuthPolicy
+from .core.access_control import AccessControl
+from .core.asset import SelfAsset
+from .core.auth_policy import AuthPolicy
 
 
 class Purpose(AccessControl):
@@ -265,3 +265,6 @@ class Purpose(AccessControl):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Purpose.Attributes.update_forward_refs()

@@ -166,3 +166,5 @@ class SalesforceObject(Salesforce):
 
 from .salesforce_field import SalesforceField  # noqa
 from .salesforce_organization import SalesforceOrganization  # noqa
+
+SalesforceObject.Attributes.update_forward_refs()

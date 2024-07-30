@@ -66,3 +66,5 @@ class ThoughtspotTable(Thoughtspot):
 
 
 from .thoughtspot_column import ThoughtspotColumn  # noqa
+
+ThoughtspotTable.Attributes.update_forward_refs()

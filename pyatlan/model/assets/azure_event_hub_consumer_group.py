@@ -65,3 +65,6 @@ class AzureEventHubConsumerGroup(KafkaConsumerGroup):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+AzureEventHubConsumerGroup.Attributes.update_forward_refs()

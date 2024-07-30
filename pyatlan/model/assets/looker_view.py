@@ -140,3 +140,5 @@ class LookerView(Looker):
 
 from .looker_field import LookerField  # noqa
 from .looker_project import LookerProject  # noqa
+
+LookerView.Attributes.update_forward_refs()

@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import IconType
 from pyatlan.model.fields.atlan_fields import KeywordField
 
-from .resource import Resource
+from .core.resource import Resource
 
 
 class ReadmeTemplate(Resource):
@@ -76,3 +76,6 @@ class ReadmeTemplate(Resource):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+ReadmeTemplate.Attributes.update_forward_refs()

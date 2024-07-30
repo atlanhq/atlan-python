@@ -158,3 +158,6 @@ class DynamoDB(NoSQL):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+DynamoDB.Attributes.update_forward_refs()

@@ -416,3 +416,5 @@ class S3Object(S3):
 
 
 from .s3_bucket import S3Bucket  # noqa
+
+S3Object.Attributes.update_forward_refs()

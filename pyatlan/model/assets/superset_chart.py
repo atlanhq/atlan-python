@@ -214,3 +214,5 @@ class SupersetChart(Superset):
 
 
 from .superset_dashboard import SupersetDashboard  # noqa
+
+SupersetChart.Attributes.update_forward_refs()

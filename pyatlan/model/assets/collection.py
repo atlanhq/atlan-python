@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import IconType
 from pyatlan.model.fields.atlan_fields import KeywordField
 
-from .namespace import Namespace
+from .core.namespace import Namespace
 
 
 class Collection(Namespace):
@@ -76,3 +76,6 @@ class Collection(Namespace):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Collection.Attributes.update_forward_refs()

@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .process import Process
+from .core.process import Process
 
 
 class BIProcess(Process):
@@ -81,4 +81,6 @@ class BIProcess(Process):
     )
 
 
-from .catalog import Catalog  # noqa
+from .core.catalog import Catalog  # noqa
+
+BIProcess.Attributes.update_forward_refs()

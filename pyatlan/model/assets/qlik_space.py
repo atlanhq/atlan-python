@@ -102,3 +102,5 @@ class QlikSpace(Qlik):
 
 from .qlik_app import QlikApp  # noqa
 from .qlik_dataset import QlikDataset  # noqa
+
+QlikSpace.Attributes.update_forward_refs()

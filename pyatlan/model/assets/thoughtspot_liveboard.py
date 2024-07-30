@@ -66,3 +66,5 @@ class ThoughtspotLiveboard(Thoughtspot):
 
 
 from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa
+
+ThoughtspotLiveboard.Attributes.update_forward_refs()

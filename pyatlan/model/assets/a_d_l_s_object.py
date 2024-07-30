@@ -586,3 +586,5 @@ class ADLSObject(ADLS):
 
 
 from .a_d_l_s_container import ADLSContainer  # noqa
+
+ADLSObject.Attributes.update_forward_refs()

@@ -151,3 +151,5 @@ class TableauMetric(Tableau):
 
 
 from .tableau_project import TableauProject  # noqa
+
+TableauMetric.Attributes.update_forward_refs()

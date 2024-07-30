@@ -168,3 +168,5 @@ class DomoDataset(Domo):
 
 from .domo_card import DomoCard  # noqa
 from .domo_dataset_column import DomoDatasetColumn  # noqa
+
+DomoDataset.Attributes.update_forward_refs()

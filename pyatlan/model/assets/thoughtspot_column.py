@@ -247,3 +247,5 @@ class ThoughtspotColumn(Thoughtspot):
 from .thoughtspot_table import ThoughtspotTable  # noqa
 from .thoughtspot_view import ThoughtspotView  # noqa
 from .thoughtspot_worksheet import ThoughtspotWorksheet  # noqa
+
+ThoughtspotColumn.Attributes.update_forward_refs()

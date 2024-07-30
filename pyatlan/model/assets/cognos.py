@@ -213,3 +213,6 @@ class Cognos(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Cognos.Attributes.update_forward_refs()

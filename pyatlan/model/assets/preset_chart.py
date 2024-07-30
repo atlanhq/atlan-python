@@ -207,3 +207,5 @@ class PresetChart(Preset):
 
 
 from .preset_dashboard import PresetDashboard  # noqa
+
+PresetChart.Attributes.update_forward_refs()
