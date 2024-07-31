@@ -4,8 +4,19 @@
 {{ asset_import }}
 {% endfor %}
 
-# Update asset forward references:
+{# # Update asset forward references:
 localns = locals()
 {%- for asset_name in asset_names %}
 {{ asset_name }}.Attributes.update_forward_refs(**localns)
+{%- endfor %} #}
+
+# Update asset forward references:
+{%- for item in forward_refs %}
+{%- for class_name, attributes in item.items() %}
+{{ class_name }}.Attributes.update_forward_refs(**dict(
+    {%- for key in attributes.keys() %}
+    {{ key }}={{ key }},
+    {%- endfor %}
+))
+{%- endfor %}
 {%- endfor %}

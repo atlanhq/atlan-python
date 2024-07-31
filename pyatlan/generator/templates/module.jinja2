@@ -93,3 +93,18 @@ from .s_q_l import SQL  # noqa # isort:skip
 {% for import in asset_info.imports_for_referenced_assets %}
 {{ import }}
 {% endfor %}
+
+{%  if asset_info.module_name == 'column' %}
+# Imports for resolving forward references:
+{%- for item in forward_refs %}
+{%- for class_name, attributes in item.items() %}
+{%  if asset_info.module_name == class_name | to_snake_case %}
+{%- for key in attributes.keys() %}
+from .{{ key | to_snake_case }} import {{ key }}   # noqa # isort:skip
+{%- endfor %}
+{% endif %}
+{%- endfor %}
+{%- endfor %}
+
+{{ asset_info.name }}.Attributes.update_forward_refs()
+{% endif %}
