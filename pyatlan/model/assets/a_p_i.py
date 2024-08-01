@@ -14,7 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
 )
 
-from .catalog import Catalog
+from .core.catalog import Catalog
 
 
 class API(Catalog):

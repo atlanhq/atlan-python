@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.model.structs import AuthPolicyCondition, AuthPolicyValiditySchedule
 from pyatlan.utils import validate_required_fields
 
-from .asset import Asset, SelfAsset
+from .core.asset import Asset, SelfAsset
 
 
 class AuthPolicy(Asset, type_name="AuthPolicy"):

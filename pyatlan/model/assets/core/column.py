@@ -1497,9 +1497,9 @@ class Column(SQL):
     )
 
 
+from ..calculation_view import CalculationView  # noqa
 from .airflow_task import AirflowTask  # noqa
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
-from .calculation_view import CalculationView  # noqa
 from .data_contract import DataContract  # noqa
 from .data_product import DataProduct  # noqa
 from .dbt_metric import DbtMetric  # noqa

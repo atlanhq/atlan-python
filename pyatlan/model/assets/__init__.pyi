@@ -6,9 +6,9 @@ __all__ = [
     "AtlasGlossaryCategory",
     "Table",
 ]
-from .asset import Asset
-from .atlas_glossary import AtlasGlossary
-from .atlas_glossary_category import AtlasGlossaryCategory
-from .atlas_glossary_term import AtlasGlossaryTerm
-from .referenceable import Referenceable
-from .table import Table
+from .core.asset import Asset
+from .core.atlas_glossary import AtlasGlossary
+from .core.atlas_glossary_category import AtlasGlossaryCategory
+from .core.atlas_glossary_term import AtlasGlossaryTerm
+from .core.referenceable import Referenceable
+from .core.table import Table

@@ -21,8 +21,8 @@ from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .access_control import AccessControl
-from .asset import SelfAsset
 from .auth_policy import AuthPolicy
+from .core.asset import SelfAsset
 
 
 class Purpose(AccessControl):

@@ -14,7 +14,7 @@ from pyatlan.model.enums import AtlanConnectorType, QueryUsernameStrategy
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class Connection(Asset, type_name="Connection"):

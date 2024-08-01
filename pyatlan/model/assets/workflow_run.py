@@ -12,7 +12,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import WorkflowRunStatus, WorkflowRunType
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class WorkflowRun(Asset, type_name="WorkflowRun"):

@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class Infrastructure(Asset, type_name="Infrastructure"):

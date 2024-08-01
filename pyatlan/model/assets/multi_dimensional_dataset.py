@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 
-from .catalog import Catalog
+from .core.catalog import Catalog
 
 
 class MultiDimensionalDataset(Catalog):

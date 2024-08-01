@@ -406,7 +406,7 @@ class Schema(SQL):
     )
 
 
-from .calculation_view import CalculationView  # noqa
+from ..calculation_view import CalculationView  # noqa
 from .database import Database  # noqa
 from .function import Function  # noqa
 from .materialised_view import MaterialisedView  # noqa

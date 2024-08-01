@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 
-from .s_q_l import SQL
+from .core.s_q_l import SQL
 
 
 class CalculationView(SQL):
@@ -173,5 +173,5 @@ class CalculationView(SQL):
     )
 
 
-from .column import Column  # noqa
-from .schema import Schema  # noqa
+from .core.column import Column  # noqa
+from .core.schema import Schema  # noqa

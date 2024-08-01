@@ -481,3 +481,5 @@ class GCSObject(GCS):
 
 
 from .g_c_s_bucket import GCSBucket  # noqa
+
+GCSObject.Attributes.update_forward_refs()

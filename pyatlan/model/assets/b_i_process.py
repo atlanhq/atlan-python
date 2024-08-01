@@ -81,4 +81,4 @@ class BIProcess(Process):
     )
 
 
-from .catalog import Catalog  # noqa
+from .core.catalog import Catalog  # noqa
