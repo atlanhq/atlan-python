@@ -193,6 +193,10 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """
     TBC
     """
+    MAPPED_DATA_ENTITIES: ClassVar[RelationField] = RelationField("mappedDataEntities")
+    """
+    TBC
+    """
     VALID_VALUES: ClassVar[RelationField] = RelationField("validValues")
     """
     TBC
@@ -229,6 +233,12 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """
     TBC
     """
+    MAPPED_DATA_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "mappedDataAttributes"
+    )
+    """
+    TBC
+    """
     SYNONYMS: ClassVar[RelationField] = RelationField("synonyms")
     """
     TBC
@@ -255,6 +265,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "additional_attributes",
         "term_type",
         "valid_values_for",
+        "mapped_data_entities",
         "valid_values",
         "see_also",
         "is_a",
@@ -265,6 +276,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "preferred_to_terms",
         "preferred_terms",
         "translation_terms",
+        "mapped_data_attributes",
         "synonyms",
         "replaced_by",
         "replacement_terms",
@@ -353,6 +365,16 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.valid_values_for = valid_values_for
+
+    @property
+    def mapped_data_entities(self) -> Optional[List[DataEntity]]:
+        return None if self.attributes is None else self.attributes.mapped_data_entities
+
+    @mapped_data_entities.setter
+    def mapped_data_entities(self, mapped_data_entities: Optional[List[DataEntity]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_data_entities = mapped_data_entities
 
     @property
     def valid_values(self) -> Optional[List[AtlasGlossaryTerm]]:
@@ -455,6 +477,20 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.translation_terms = translation_terms
 
     @property
+    def mapped_data_attributes(self) -> Optional[List[DataAttribute]]:
+        return (
+            None if self.attributes is None else self.attributes.mapped_data_attributes
+        )
+
+    @mapped_data_attributes.setter
+    def mapped_data_attributes(
+        self, mapped_data_attributes: Optional[List[DataAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_data_attributes = mapped_data_attributes
+
+    @property
     def synonyms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.synonyms
 
@@ -517,6 +553,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         valid_values_for: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
+        mapped_data_entities: Optional[List[DataEntity]] = Field(
+            default=None, description=""
+        )  # relationship
         valid_values: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
@@ -545,6 +584,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             default=None, description=""
         )  # relationship
         translation_terms: Optional[List[AtlasGlossaryTerm]] = Field(
+            default=None, description=""
+        )  # relationship
+        mapped_data_attributes: Optional[List[DataAttribute]] = Field(
             default=None, description=""
         )  # relationship
         synonyms: Optional[List[AtlasGlossaryTerm]] = Field(
@@ -604,5 +646,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
 from .atlas_glossary import AtlasGlossary  # noqa
 from .atlas_glossary_category import AtlasGlossaryCategory  # noqa
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
+from .data_attribute import DataAttribute  # noqa
+from .data_entity import DataEntity  # noqa
 from .referenceable import Referenceable  # noqa

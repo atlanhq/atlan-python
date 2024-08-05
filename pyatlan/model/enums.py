@@ -2454,6 +2454,33 @@ class CertificateStatus(str, Enum):
     VERIFIED = "VERIFIED"
 
 
+class DataAttributeMappingType(str, Enum):
+    LOGICAL_TO_CONCEPTUAL = "Logical to Conceptual"
+    PHYSICAL_TO_LOGICAL = "Physical to Logical"
+
+
+class DataEntityMappingType(str, Enum):
+    LOGICAL_TO_CONCEPTUAL = "Logical to Conceptual"
+    PHYSICAL_TO_LOGICAL = "Physical to Logical"
+
+
+class DataGlossary(str, Enum):
+    DATA_CONCEPTS = "Data Concepts"
+    DATA_ELEMENTS = "Data Elements"
+    KYC_TERMS = "KYC Terms"
+
+
+class DataModelTool(str, Enum):
+    MAGIC_DRAW = "MagicDraw"
+    ERWIN = "ERWin"
+
+
+class DataModelType(str, Enum):
+    CONCEPTUAL_DATA_MODEL = "Conceptual Data Model"
+    LOGICAL_DATA_MODEL = "Logical Data Model"
+    PHYSICAL_DATA_MODEL = "Physical Data Model"
+
+
 class DataProductCriticality(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
@@ -2522,6 +2549,12 @@ class GoogleDatastudioAssetType(str, Enum):
 class IconType(str, Enum):
     IMAGE = "image"
     EMOJI = "emoji"
+
+
+class IncidentSeverity(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
 
 
 class KafkaTopicCleanupPolicy(str, Enum):
@@ -2597,6 +2630,12 @@ class QuickSightDatasetImportMode(str, Enum):
 
 class QuickSightFolderType(str, Enum):
     SHARED = "SHARED"
+
+
+class RelationshipType(str, Enum):
+    ASSOCIATION = "Association"
+    GENERALIZATION = "Generalization"
+    SUB_TYPE = "SubType"
 
 
 class SchemaRegistrySchemaCompatibility(str, Enum):

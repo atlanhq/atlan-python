@@ -1,0 +1,22 @@
+# Copyright 2024 Atlan Pte. Ltd.
+
+__all__ = [
+    {% for asset in assets -%}
+        {% if asset.is_core_asset %}
+            "{{ asset.name }}"{% if not loop.last %},{% endif %}
+        {% endif %}
+    {% endfor %}
+    {% for asset in assets -%}
+        {% if not asset.is_core_asset %}
+            "{{ asset.name }}"{% if not loop.last %},{% endif %}
+        {% endif %}
+    {% endfor %}
+]
+
+{% for asset in assets -%}
+{% if asset.is_core_asset %}
+from .core.{{ asset.module_name }} import {{ asset.name }}
+{% else %}
+from .{{ asset.module_name }} import {{ asset.name }}
+{% endif %}
+{% endfor %}

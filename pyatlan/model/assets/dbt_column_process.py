@@ -13,28 +13,34 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     NumericField,
+    RelationField,
 )
-from pyatlan.model.structs import SourceTagAttribute
 
-from .dbt import Dbt
+from .core.dbt import Dbt
 
 
-class DbtTag(Dbt):
+class DbtColumnProcess(Dbt):
     """Description"""
 
-    type_name: str = Field(default="DbtTag", allow_mutation=False)
+    type_name: str = Field(default="DbtColumnProcess", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DbtTag":
-            raise ValueError("must be DbtTag")
+        if v != "DbtColumnProcess":
+            raise ValueError("must be DbtColumnProcess")
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtTag._convenience_properties:
+        if name in DbtColumnProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    DBT_COLUMN_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus"
+    )
+    """
+
+    """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
@@ -145,30 +151,42 @@ class DbtTag(Dbt):
     """
 
     """
-    TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
+    CODE: ClassVar[KeywordField] = KeywordField("code", "code")
     """
-    Unique identifier of the tag in the source system.
+    Code that ran within the process.
     """
-    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
-        "tagAttributes", "tagAttributes"
-    )
+    SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
     """
-    Attributes associated with the tag in the source system.
+    SQL query that ran to produce the outputs.
     """
-    TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
-        "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
-    )
+    AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
     """
-    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.
+    Parsed AST of the code or SQL statements that describe the logic of this process.
     """
-    MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
-        "mappedClassificationName", "mappedClassificationName"
-    )
+
+    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
     """
-    Name of the classification in Atlan that is mapped to this tag.
+    TBC
+    """
+    MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
+    """
+    TBC
+    """
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
+    AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
+    """
+    TBC
+    """
+    COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
+    """
+    TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "dbt_column_process_job_status",
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -187,11 +205,33 @@ class DbtTag(Dbt):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
-        "tag_id",
-        "tag_attributes",
-        "tag_allowed_values",
-        "mapped_atlan_tag_name",
+        "inputs",
+        "outputs",
+        "code",
+        "sql",
+        "ast",
+        "spark_jobs",
+        "matillion_component",
+        "process",
+        "airflow_tasks",
+        "column_processes",
     ]
+
+    @property
+    def dbt_column_process_job_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_column_process_job_status
+        )
+
+    @dbt_column_process_job_status.setter
+    def dbt_column_process_job_status(
+        self, dbt_column_process_job_status: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_column_process_job_status = dbt_column_process_job_status
 
     @property
     def dbt_alias(self) -> Optional[str]:
@@ -396,48 +436,109 @@ class DbtTag(Dbt):
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
-    def tag_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tag_id
+    def inputs(self) -> Optional[List[Catalog]]:
+        return None if self.attributes is None else self.attributes.inputs
 
-    @tag_id.setter
-    def tag_id(self, tag_id: Optional[str]):
+    @inputs.setter
+    def inputs(self, inputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tag_id = tag_id
+        self.attributes.inputs = inputs
 
     @property
-    def tag_attributes(self) -> Optional[List[SourceTagAttribute]]:
-        return None if self.attributes is None else self.attributes.tag_attributes
+    def outputs(self) -> Optional[List[Catalog]]:
+        return None if self.attributes is None else self.attributes.outputs
 
-    @tag_attributes.setter
-    def tag_attributes(self, tag_attributes: Optional[List[SourceTagAttribute]]):
+    @outputs.setter
+    def outputs(self, outputs: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tag_attributes = tag_attributes
+        self.attributes.outputs = outputs
 
     @property
-    def tag_allowed_values(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.tag_allowed_values
+    def code(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.code
 
-    @tag_allowed_values.setter
-    def tag_allowed_values(self, tag_allowed_values: Optional[Set[str]]):
+    @code.setter
+    def code(self, code: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tag_allowed_values = tag_allowed_values
+        self.attributes.code = code
 
     @property
-    def mapped_atlan_tag_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
-        )
+    def sql(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sql
 
-    @mapped_atlan_tag_name.setter
-    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
+    @sql.setter
+    def sql(self, sql: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
+        self.attributes.sql = sql
+
+    @property
+    def ast(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.ast
+
+    @ast.setter
+    def ast(self, ast: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ast = ast
+
+    @property
+    def spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.spark_jobs
+
+    @spark_jobs.setter
+    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_jobs = spark_jobs
+
+    @property
+    def matillion_component(self) -> Optional[MatillionComponent]:
+        return None if self.attributes is None else self.attributes.matillion_component
+
+    @matillion_component.setter
+    def matillion_component(self, matillion_component: Optional[MatillionComponent]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component = matillion_component
+
+    @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
+    @property
+    def airflow_tasks(self) -> Optional[List[AirflowTask]]:
+        return None if self.attributes is None else self.attributes.airflow_tasks
+
+    @airflow_tasks.setter
+    def airflow_tasks(self, airflow_tasks: Optional[List[AirflowTask]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tasks = airflow_tasks
+
+    @property
+    def column_processes(self) -> Optional[List[ColumnProcess]]:
+        return None if self.attributes is None else self.attributes.column_processes
+
+    @column_processes.setter
+    def column_processes(self, column_processes: Optional[List[ColumnProcess]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_processes = column_processes
 
     class Attributes(Dbt.Attributes):
+        dbt_column_process_job_status: Optional[str] = Field(
+            default=None, description=""
+        )
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
         dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -460,18 +561,40 @@ class DbtTag(Dbt):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
-        tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
+        inputs: Optional[List[Catalog]] = Field(default=None, description="")
+        outputs: Optional[List[Catalog]] = Field(default=None, description="")
+        code: Optional[str] = Field(default=None, description="")
+        sql: Optional[str] = Field(default=None, description="")
+        ast: Optional[str] = Field(default=None, description="")
+        spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
-        )
-        tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
-        mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
+        )  # relationship
+        matillion_component: Optional[MatillionComponent] = Field(
+            default=None, description=""
+        )  # relationship
+        process: Optional[Process] = Field(default=None, description="")  # relationship
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        column_processes: Optional[List[ColumnProcess]] = Field(
+            default=None, description=""
+        )  # relationship
 
-    attributes: DbtTag.Attributes = Field(
-        default_factory=lambda: DbtTag.Attributes(),
+    attributes: DbtColumnProcess.Attributes = Field(
+        default_factory=lambda: DbtColumnProcess.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+from .core.airflow_task import AirflowTask  # noqa
+from .core.catalog import Catalog  # noqa
+from .core.column_process import ColumnProcess  # noqa
+from .core.matillion_component import MatillionComponent  # noqa
+from .core.process import Process  # noqa
+from .core.spark_job import SparkJob  # noqa
+
+DbtColumnProcess.Attributes.update_forward_refs()

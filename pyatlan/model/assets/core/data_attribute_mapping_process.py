@@ -10,22 +10,22 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .core.process import Process
+from .process import Process
 
 
-class BIProcess(Process):
+class DataAttributeMappingProcess(Process):
     """Description"""
 
-    type_name: str = Field(default="BIProcess", allow_mutation=False)
+    type_name: str = Field(default="DataAttributeMappingProcess", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "BIProcess":
-            raise ValueError("must be BIProcess")
+        if v != "DataAttributeMappingProcess":
+            raise ValueError("must be DataAttributeMappingProcess")
         return v
 
     def __setattr__(self, name, value):
-        if name in BIProcess._convenience_properties:
+        if name in DataAttributeMappingProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -71,8 +71,8 @@ class BIProcess(Process):
             default=None, description=""
         )  # relationship
 
-    attributes: BIProcess.Attributes = Field(
-        default_factory=lambda: BIProcess.Attributes(),
+    attributes: DataAttributeMappingProcess.Attributes = Field(
+        default_factory=lambda: DataAttributeMappingProcess.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -81,6 +81,4 @@ class BIProcess(Process):
     )
 
 
-from .core.catalog import Catalog  # noqa
-
-BIProcess.Attributes.update_forward_refs()
+from .catalog import Catalog  # noqa

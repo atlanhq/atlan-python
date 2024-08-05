@@ -16,27 +16,27 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
 )
 
-from .dbt import Dbt
+from .core.dbt import Dbt
 
 
-class DbtColumnProcess(Dbt):
+class DbtProcess(Dbt):
     """Description"""
 
-    type_name: str = Field(default="DbtColumnProcess", allow_mutation=False)
+    type_name: str = Field(default="DbtProcess", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DbtColumnProcess":
-            raise ValueError("must be DbtColumnProcess")
+        if v != "DbtProcess":
+            raise ValueError("must be DbtProcess")
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtColumnProcess._convenience_properties:
+        if name in DbtProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_COLUMN_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus"
+    DBT_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtProcessJobStatus", "dbtProcessJobStatus"
     )
     """
 
@@ -172,10 +172,6 @@ class DbtColumnProcess(Dbt):
     """
     TBC
     """
-    PROCESS: ClassVar[RelationField] = RelationField("process")
-    """
-    TBC
-    """
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
     """
     TBC
@@ -186,7 +182,7 @@ class DbtColumnProcess(Dbt):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "dbt_column_process_job_status",
+        "dbt_process_job_status",
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -212,26 +208,21 @@ class DbtColumnProcess(Dbt):
         "ast",
         "spark_jobs",
         "matillion_component",
-        "process",
         "airflow_tasks",
         "column_processes",
     ]
 
     @property
-    def dbt_column_process_job_status(self) -> Optional[str]:
+    def dbt_process_job_status(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_column_process_job_status
+            None if self.attributes is None else self.attributes.dbt_process_job_status
         )
 
-    @dbt_column_process_job_status.setter
-    def dbt_column_process_job_status(
-        self, dbt_column_process_job_status: Optional[str]
-    ):
+    @dbt_process_job_status.setter
+    def dbt_process_job_status(self, dbt_process_job_status: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_column_process_job_status = dbt_column_process_job_status
+        self.attributes.dbt_process_job_status = dbt_process_job_status
 
     @property
     def dbt_alias(self) -> Optional[str]:
@@ -506,16 +497,6 @@ class DbtColumnProcess(Dbt):
         self.attributes.matillion_component = matillion_component
 
     @property
-    def process(self) -> Optional[Process]:
-        return None if self.attributes is None else self.attributes.process
-
-    @process.setter
-    def process(self, process: Optional[Process]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.process = process
-
-    @property
     def airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
@@ -536,9 +517,7 @@ class DbtColumnProcess(Dbt):
         self.attributes.column_processes = column_processes
 
     class Attributes(Dbt.Attributes):
-        dbt_column_process_job_status: Optional[str] = Field(
-            default=None, description=""
-        )
+        dbt_process_job_status: Optional[str] = Field(default=None, description="")
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
         dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -572,7 +551,6 @@ class DbtColumnProcess(Dbt):
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
-        process: Optional[Process] = Field(default=None, description="")  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
@@ -580,8 +558,8 @@ class DbtColumnProcess(Dbt):
             default=None, description=""
         )  # relationship
 
-    attributes: DbtColumnProcess.Attributes = Field(
-        default_factory=lambda: DbtColumnProcess.Attributes(),
+    attributes: DbtProcess.Attributes = Field(
+        default_factory=lambda: DbtProcess.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -590,9 +568,10 @@ class DbtColumnProcess(Dbt):
     )
 
 
-from .airflow_task import AirflowTask  # noqa
-from .catalog import Catalog  # noqa
-from .column_process import ColumnProcess  # noqa
-from .matillion_component import MatillionComponent  # noqa
-from .process import Process  # noqa
-from .spark_job import SparkJob  # noqa
+from .core.airflow_task import AirflowTask  # noqa
+from .core.catalog import Catalog  # noqa
+from .core.column_process import ColumnProcess  # noqa
+from .core.matillion_component import MatillionComponent  # noqa
+from .core.spark_job import SparkJob  # noqa
+
+DbtProcess.Attributes.update_forward_refs()

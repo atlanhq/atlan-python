@@ -18,7 +18,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import SourceTagAttribute
 
-from .core.tag import Tag
+from .tag import Tag
 
 
 class DatabricksUnityCatalogTag(Tag):
@@ -520,8 +520,6 @@ class DatabricksUnityCatalogTag(Tag):
     )
 
 
-from .core.dbt_model import DbtModel  # noqa
-from .core.dbt_source import DbtSource  # noqa
-from .core.dbt_test import DbtTest  # noqa
-
-DatabricksUnityCatalogTag.Attributes.update_forward_refs()
+from .dbt_model import DbtModel  # noqa
+from .dbt_source import DbtSource  # noqa
+from .dbt_test import DbtTest  # noqa
