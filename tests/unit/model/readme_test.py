@@ -58,6 +58,7 @@ def test_create_readme_without_required_parameters_raises_exception(
     ],
 )
 def test_create_readme(asset, content, asset_name, expected_name):
+    asset.guid = "test-guid-123"
     readme = Readme.create(asset=asset, content=content, asset_name=asset_name)
     assert readme.qualified_name == f"{asset.guid}/readme"
     assert readme.name == f"{expected_name} Readme"

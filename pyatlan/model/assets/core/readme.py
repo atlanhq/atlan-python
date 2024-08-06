@@ -128,6 +128,11 @@ class Readme(Resource):
                 )
             else:
                 asset_name = asset.name
+            if not asset.guid:
+                raise ValueError(
+                    "asset guid must be present, use the client.asset.ref_by_guid() "
+                    "method to retrieve an asset by its GUID"
+                )
             return Readme.Attributes(
                 qualified_name=f"{asset.guid}/readme",
                 name=f"{asset_name} Readme",
