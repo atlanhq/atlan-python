@@ -1,3 +1,13 @@
+## 2.4.0 (August 06, 2024)
+
+### QOL improvements
+
+- **Implemented lazy imports for `pyatlan.model.assets`:** This change reduces the import time for assets by deferring the import of modules until they are actually needed. As a result, users will experience faster startup times and reduced memory usage when working with assets.
+
+### Bug fixes
+
+- Fixed missing check for `asset.guid` in the `Readme.creator()` method, which caused issues with updating `Readme` assets when the asset was passed using `Asset.ref_by_qualified_name()` instead of `Asset.ref_by_guid()`. The SDK now throws a `ValueError` if `asset.guid` is missing in the `Readme.creator()` method to prevent these issues.
+
 ## 2.3.3 (July 23, 2024)
 
 ### New features
