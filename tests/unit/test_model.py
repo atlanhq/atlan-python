@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from inspect import signature
 from pathlib import Path
+from re import escape
 from unittest.mock import create_autospec
 
 import pytest
@@ -911,3 +912,18 @@ def test_create_for_modification_on_asset_raises_exception():
         "class. Please invoke on a specific asset type",
     ):
         Asset.create_for_modification(qualified_name="", name="")
+
+
+def test_readme_creator_asset_guid_validation():
+    with pytest.raises(
+        ValueError,
+        match=escape(
+            "asset guid must be present, use the client.asset.ref_by_guid() "
+            "method to retrieve an asset by its GUID"
+        ),
+    ):
+        Readme.creator(
+            asset=Asset.ref_by_qualified_name("test-qn"),
+            content="<h1>Test Content</h1>",
+            asset_name="test-readme",
+        )
