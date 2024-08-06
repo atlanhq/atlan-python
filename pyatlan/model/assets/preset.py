@@ -139,3 +139,6 @@ class Preset(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Preset.Attributes.update_forward_refs()

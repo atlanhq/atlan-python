@@ -189,3 +189,5 @@ class QlikApp(Qlik):
 
 from .qlik_sheet import QlikSheet  # noqa
 from .qlik_space import QlikSpace  # noqa
+
+QlikApp.Attributes.update_forward_refs()

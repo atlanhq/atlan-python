@@ -64,3 +64,5 @@ class CognosModule(Cognos):
 
 
 from .cognos_folder import CognosFolder  # noqa
+
+CognosModule.Attributes.update_forward_refs()

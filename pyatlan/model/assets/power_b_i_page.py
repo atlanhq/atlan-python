@@ -107,3 +107,5 @@ class PowerBIPage(PowerBI):
 
 
 from .power_b_i_report import PowerBIReport  # noqa
+
+PowerBIPage.Attributes.update_forward_refs()

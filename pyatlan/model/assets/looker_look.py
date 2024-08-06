@@ -81,14 +81,6 @@ class LookerLook(Looker):
     Name of the model in which this Look exists.
     """
 
-    QUERY: ClassVar[RelationField] = RelationField("query")
-    """
-    TBC
-    """
-    FOLDER: ClassVar[RelationField] = RelationField("folder")
-    """
-    TBC
-    """
     TILE: ClassVar[RelationField] = RelationField("tile")
     """
     TBC
@@ -98,6 +90,18 @@ class LookerLook(Looker):
     TBC
     """
     DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
+    QUERY: ClassVar[RelationField] = RelationField("query")
+    """
+    TBC
+    """
+    FOLDER: ClassVar[RelationField] = RelationField("folder")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
     """
     TBC
     """
@@ -112,11 +116,12 @@ class LookerLook(Looker):
         "source_content_metadata_id",
         "source_query_id",
         "model_name",
-        "query",
-        "folder",
         "tile",
         "model",
         "dashboard",
+        "query",
+        "folder",
+        "fields",
     ]
 
     @property
@@ -220,26 +225,6 @@ class LookerLook(Looker):
         self.attributes.model_name = model_name
 
     @property
-    def query(self) -> Optional[LookerQuery]:
-        return None if self.attributes is None else self.attributes.query
-
-    @query.setter
-    def query(self, query: Optional[LookerQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query = query
-
-    @property
-    def folder(self) -> Optional[LookerFolder]:
-        return None if self.attributes is None else self.attributes.folder
-
-    @folder.setter
-    def folder(self, folder: Optional[LookerFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.folder = folder
-
-    @property
     def tile(self) -> Optional[LookerTile]:
         return None if self.attributes is None else self.attributes.tile
 
@@ -269,6 +254,36 @@ class LookerLook(Looker):
             self.attributes = self.Attributes()
         self.attributes.dashboard = dashboard
 
+    @property
+    def query(self) -> Optional[LookerQuery]:
+        return None if self.attributes is None else self.attributes.query
+
+    @query.setter
+    def query(self, query: Optional[LookerQuery]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query = query
+
+    @property
+    def folder(self) -> Optional[LookerFolder]:
+        return None if self.attributes is None else self.attributes.folder
+
+    @folder.setter
+    def folder(self, folder: Optional[LookerFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.folder = folder
+
+    @property
+    def fields(self) -> Optional[List[LookerField]]:
+        return None if self.attributes is None else self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[List[LookerField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
+
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(default=None, description="")
         source_user_id: Optional[int] = Field(default=None, description="")
@@ -281,17 +296,20 @@ class LookerLook(Looker):
         source_content_metadata_id: Optional[int] = Field(default=None, description="")
         source_query_id: Optional[int] = Field(default=None, description="")
         model_name: Optional[str] = Field(default=None, description="")
+        tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
+        model: Optional[LookerModel] = Field(
+            default=None, description=""
+        )  # relationship
+        dashboard: Optional[LookerDashboard] = Field(
+            default=None, description=""
+        )  # relationship
         query: Optional[LookerQuery] = Field(
             default=None, description=""
         )  # relationship
         folder: Optional[LookerFolder] = Field(
             default=None, description=""
         )  # relationship
-        tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
-        model: Optional[LookerModel] = Field(
-            default=None, description=""
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
+        fields: Optional[List[LookerField]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -306,7 +324,10 @@ class LookerLook(Looker):
 
 
 from .looker_dashboard import LookerDashboard  # noqa
+from .looker_field import LookerField  # noqa
 from .looker_folder import LookerFolder  # noqa
 from .looker_model import LookerModel  # noqa
 from .looker_query import LookerQuery  # noqa
 from .looker_tile import LookerTile  # noqa
+
+LookerLook.Attributes.update_forward_refs()

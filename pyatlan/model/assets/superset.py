@@ -93,3 +93,6 @@ class Superset(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Superset.Attributes.update_forward_refs()

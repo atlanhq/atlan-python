@@ -191,3 +191,6 @@ class Qlik(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Qlik.Attributes.update_forward_refs()

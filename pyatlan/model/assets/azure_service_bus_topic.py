@@ -72,3 +72,5 @@ class AzureServiceBusTopic(AzureServiceBus):
 
 
 from .azure_service_bus_namespace import AzureServiceBusNamespace  # noqa
+
+AzureServiceBusTopic.Attributes.update_forward_refs()

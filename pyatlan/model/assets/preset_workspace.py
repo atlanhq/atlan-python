@@ -340,3 +340,5 @@ class PresetWorkspace(Preset):
 
 
 from .preset_dashboard import PresetDashboard  # noqa
+
+PresetWorkspace.Attributes.update_forward_refs()

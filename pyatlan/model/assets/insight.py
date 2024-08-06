@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .catalog import Catalog
+from .core.catalog import Catalog
 
 
 class Insight(Catalog):
@@ -28,3 +28,6 @@ class Insight(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+Insight.Attributes.update_forward_refs()

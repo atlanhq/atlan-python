@@ -28,3 +28,6 @@ class QlikStream(QlikSpace):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+QlikStream.Attributes.update_forward_refs()

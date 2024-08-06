@@ -296,3 +296,5 @@ class SisenseDatamodel(Sisense):
 
 from .sisense_dashboard import SisenseDashboard  # noqa
 from .sisense_datamodel_table import SisenseDatamodelTable  # noqa
+
+SisenseDatamodel.Attributes.update_forward_refs()

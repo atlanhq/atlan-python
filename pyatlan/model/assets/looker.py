@@ -28,3 +28,6 @@ class Looker(BI):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+Looker.Attributes.update_forward_refs()

@@ -368,3 +368,5 @@ class SalesforceField(Salesforce):
 
 
 from .salesforce_object import SalesforceObject  # noqa
+
+SalesforceField.Attributes.update_forward_refs()

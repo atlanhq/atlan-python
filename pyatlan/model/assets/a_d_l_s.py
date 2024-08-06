@@ -148,3 +148,6 @@ class ADLS(ObjectStore):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+ADLS.Attributes.update_forward_refs()

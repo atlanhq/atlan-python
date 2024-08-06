@@ -14,7 +14,7 @@ from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan.model.structs import BadgeCondition
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class Badge(Asset, type_name="Badge"):
@@ -161,3 +161,6 @@ class Badge(Asset, type_name="Badge"):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Badge.Attributes.update_forward_refs()

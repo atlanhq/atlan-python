@@ -12,7 +12,7 @@ from pyatlan.model.enums import (
 {% endfor %}
 )
 
-{% if asset_info.name != 'Referenceable' and asset_info.name != 'Asset' %}
+{% if asset_info.name != 'Referenceable' and asset_info.name != 'Asset' and asset_info.name != 'Purpose' %}
 from .asset import SelfAsset
 {% endif %}
 
@@ -93,3 +93,7 @@ from .s_q_l import SQL  # noqa # isort:skip
 {% for import in asset_info.imports_for_referenced_assets %}
 {{ import }}
 {% endfor %}
+
+{%  if not asset_info.is_core_asset %}
+{{ asset_info.name }}.Attributes.update_forward_refs()
+{% endif %}

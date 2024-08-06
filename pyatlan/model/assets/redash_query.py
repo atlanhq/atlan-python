@@ -221,3 +221,5 @@ class RedashQuery(Redash):
 
 
 from .redash_visualization import RedashVisualization  # noqa
+
+RedashQuery.Attributes.update_forward_refs()

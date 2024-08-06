@@ -133,3 +133,5 @@ class DomoDashboard(Domo):
 
 
 from .domo_card import DomoCard  # noqa
+
+DomoDashboard.Attributes.update_forward_refs()

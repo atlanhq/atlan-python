@@ -124,3 +124,6 @@ class Azure(Cloud):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Azure.Attributes.update_forward_refs()

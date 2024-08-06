@@ -16,7 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import SourceTagAttribute
 
-from .dbt import Dbt
+from .core.dbt import Dbt
 
 
 class DbtTag(Dbt):
@@ -475,3 +475,6 @@ class DbtTag(Dbt):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+DbtTag.Attributes.update_forward_refs()

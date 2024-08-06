@@ -28,3 +28,6 @@ class Sisense(BI):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+Sisense.Attributes.update_forward_refs()

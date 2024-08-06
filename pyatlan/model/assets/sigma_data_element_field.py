@@ -121,3 +121,5 @@ class SigmaDataElementField(Sigma):
 
 
 from .sigma_data_element import SigmaDataElement  # noqa
+
+SigmaDataElementField.Attributes.update_forward_refs()

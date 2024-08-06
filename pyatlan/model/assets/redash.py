@@ -61,3 +61,6 @@ class Redash(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Redash.Attributes.update_forward_refs()

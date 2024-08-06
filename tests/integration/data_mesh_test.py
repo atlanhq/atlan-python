@@ -328,7 +328,7 @@ def updated_contract(
         contract_json=dumps(contract_json),
     )
     response = client.asset.save(contract)
-    result = response.assets_created(asset_type=DataContract)[0]
+    result = response.assets_updated(asset_type=DataContract)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=DataContract)
 
@@ -367,7 +367,7 @@ def test_update_contract(
     assert updated_contract.guid == table_data_contract.guid
     assert updated_contract.data_contract_asset_guid == table.guid
     assert updated_contract.data_contract_json
-    assert updated_contract.data_contract_version == 2
+    assert updated_contract.data_contract_version == 1
     assert "(UPDATED)" in updated_contract.data_contract_json
 
 
@@ -428,7 +428,7 @@ def test_retrieve_contract(
     assert test_contract.qualified_name == updated_contract.qualified_name
     assert test_contract.data_contract_asset_guid == table.guid
     assert test_contract.data_contract_json
-    assert test_contract.data_contract_version == 2
+    assert test_contract.data_contract_version == 1
     assert "(UPDATED)" in test_contract.data_contract_json
 
 

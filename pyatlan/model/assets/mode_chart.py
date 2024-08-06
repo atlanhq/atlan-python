@@ -83,3 +83,5 @@ class ModeChart(Mode):
 
 
 from .mode_query import ModeQuery  # noqa
+
+ModeChart.Attributes.update_forward_refs()

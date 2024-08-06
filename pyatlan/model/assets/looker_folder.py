@@ -196,3 +196,5 @@ class LookerFolder(Looker):
 
 from .looker_dashboard import LookerDashboard  # noqa
 from .looker_look import LookerLook  # noqa
+
+LookerFolder.Attributes.update_forward_refs()

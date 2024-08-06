@@ -83,3 +83,6 @@ class Salesforce(SaaS):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Salesforce.Attributes.update_forward_refs()

@@ -230,3 +230,6 @@ class S3(ObjectStore):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+S3.Attributes.update_forward_refs()

@@ -1,11 +1,21 @@
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2024 Atlan Pte. Ltd.
 # isort: skip_file
-{% for asset_import in asset_imports -%}
-{{ asset_import }}
-{% endfor %}
+import lazy_loader as lazy
 
-# Update asset forward references:
-localns = locals()
-{%- for asset_name in asset_names %}
-{{ asset_name }}.Attributes.update_forward_refs(**localns)
-{%- endfor %}
+__PYATLAN_ASSETS__ = {
+    "core": [
+        {% for asset in assets -%}
+            {% if asset.is_core_asset %}
+                "{{ asset.name }}"{% if not loop.last %},{% endif %}
+            {% endif %}
+        {% endfor %}
+    ],
+    {% for asset in assets -%}
+        {% if not asset.is_core_asset %}
+        "{{ asset.module_name}}": ["{{ asset.name }}"{% if not loop.last %}{% endif %}],
+        {% endif %}
+    {% endfor %}
+}
+
+lazy_loader = lazy.attach(__name__, submod_attrs=__PYATLAN_ASSETS__)
+__getattr__, __dir__, __all__ = lazy_loader

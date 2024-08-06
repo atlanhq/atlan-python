@@ -53,6 +53,7 @@ TYPE_REPLACEMENTS = [
     ("file_type", "FileType"),
     ("atlas_operation", "AtlasOperation"),
     ("matillion_job_type", "MatillionJobType"),
+    ("incident_severity", "IncidentSeverity"),
 ]
 PRIMITIVE_MAPPINGS = {
     "string": "str",
@@ -77,6 +78,7 @@ ADDITIONAL_IMPORTS = {
 # across Python versions (e.g: 3.8 and 3.9).
 PARENT = Path(__file__).resolve().parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
+CORE_ASSETS_DIR = PARENT.parent / "model" / "assets" / "core"
 MODEL_DIR = PARENT.parent / "model"
 DOCS_DIR = PARENT.parent / "documentation"
 SPHINX_DIR = PARENT.parent.parent / "docs"
@@ -208,6 +210,17 @@ class AssetInfo:
     super_type_names_to_ignore: Set[str] = set()
     entity_defs_by_name: Dict[str, EntityDef] = {}
     sub_type_names_to_ignore: Set[str] = set()
+    is_core_asset: bool = False
+    _CORE_ASSETS = {
+        "Referenceable",
+        "Asset",
+        "AuthPolicy",
+        "DataModel",
+        "DataModeling",
+        "MatillionGroup",
+        "Stakeholder",
+        "StakeholderTitle",
+    }
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
@@ -242,14 +255,24 @@ class AssetInfo:
         if self._name == REFERENCEABLE:
             return ""
         super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
-        return f"from .{super_type.module_name} import {super_type.name}"
+        if not self.is_core_asset and super_type.is_core_asset:
+            return f"from .core.{super_type.module_name} import {super_type.name}"
+        else:
+            return f"from .{super_type.module_name} import {super_type.name}"
 
     @property
     def imports_for_referenced_assets(self):
-        return [
-            f"from .{required_asset.module_name} import {required_asset.name} # noqa"
-            for required_asset in self.required_asset_infos
-        ]
+        imports = []
+
+        for required_asset in self.required_asset_infos:
+            if not self.is_core_asset and required_asset.is_core_asset:
+                import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa"
+            else:
+                import_statement = f"from .{required_asset.module_name} import {required_asset.name} # noqa"
+
+            imports.append(import_statement)
+
+        return imports
 
     def update_attribute_defs(self):
         def get_ancestor_relationship_defs(
@@ -381,6 +404,29 @@ class AssetInfo:
                 order += 1
 
                 ModuleInfo.assets[asset_name] = asset_info
+                if asset_info.name in cls._CORE_ASSETS:
+                    if asset_info.super_class != "AtlanObject":
+                        super_asset = cls.asset_info_by_name[asset_info.super_class]
+                        super_asset.is_core_asset = True
+                        cls._CORE_ASSETS.add(asset_info.super_class)
+                    for related_asset in asset_info.required_asset_infos:
+                        if related_asset.is_core_asset:
+                            continue
+                        related_asset.is_core_asset = True
+                        cls._CORE_ASSETS.add(related_asset.name)
+
+                if asset_info.super_class in cls._CORE_ASSETS:
+                    if asset_info.required_asset_infos:
+                        for related_asset in asset_info.required_asset_infos:
+                            if related_asset.is_core_asset:
+                                asset_info.is_core_asset = True
+                                cls._CORE_ASSETS.add(asset_info.name)
+                                continue
+                            super_asset = cls.asset_info_by_name[
+                                related_asset.super_class
+                            ]
+                            super_asset.is_core_asset = True
+                            cls._CORE_ASSETS.add(related_asset.super_class)
 
 
 class AttributeType(Enum):
@@ -649,18 +695,49 @@ class Generator:
         with (ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
             script.write(content)
 
+    def render_core_module(self, asset_info: AssetInfo, enum_defs: List["EnumDefInfo"]):
+        template = self.environment.get_template("module.jinja2")
+        content = template.render(
+            {
+                "asset_info": asset_info,
+                "existz": os.path.exists,
+                "enum_defs": enum_defs,
+                "templates_path": TEMPLATES_DIR.absolute().as_posix(),
+            }
+        )
+        with (CORE_ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
+            script.write(content)
+
     def render_init(self, assets: List[AssetInfo]):
-        asset_names = [asset.name for asset in assets]
+        template = self.environment.get_template("init.jinja2")
+        content = template.render({"assets": assets})
+
+        init_path = ASSETS_DIR / "__init__.py"
+        with init_path.open("w") as script:
+            script.write(content)
+
+    def render_core_init(self, assets: List[AssetInfo]):
+        asset_names = [asset.name for asset in assets if asset.is_core_asset]
         asset_imports = [
-            f"from .{asset.module_name} import {asset.name}" for asset in assets
+            f"from .{asset.module_name} import {asset.name}"
+            for asset in assets
+            if asset.is_core_asset
         ]
 
-        template = self.environment.get_template("init.jinja2")
+        template = self.environment.get_template("core/init.jinja2")
         content = template.render(
             {"asset_imports": asset_imports, "asset_names": asset_names}
         )
 
-        init_path = ASSETS_DIR / "__init__.py"
+        init_path = CORE_ASSETS_DIR / "__init__.py"
+        with init_path.open("w") as script:
+            script.write(content)
+
+    def render_mypy_init(self, assets: List[AssetInfo]):
+        template = self.environment.get_template("mypy_init.jinja2")
+        content = template.render({"assets": assets})
+
+        init_path = ASSETS_DIR / "__init__.pyi"
         with init_path.open("w") as script:
             script.write(content)
 
@@ -832,11 +909,18 @@ if __name__ == "__main__":
     AssetInfo.create_modules()
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
+    for file in (CORE_ASSETS_DIR).glob("*.py"):
+        file.unlink()
     generator = Generator()
     EnumDefInfo.create(type_defs.enum_defs)
     for asset_info in ModuleInfo.assets.values():
-        generator.render_module(asset_info, EnumDefInfo.enum_def_info)
+        if asset_info.is_core_asset:
+            generator.render_core_module(asset_info, EnumDefInfo.enum_def_info)
+        else:
+            generator.render_module(asset_info, EnumDefInfo.enum_def_info)
     generator.render_init(ModuleInfo.assets.values())  # type: ignore
+    generator.render_core_init(ModuleInfo.assets.values())  # type: ignore
+    generator.render_mypy_init(ModuleInfo.assets.values())  # type: ignore
     generator.render_structs(type_defs.struct_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)
     generator.render_docs_struct_snippets(type_defs.struct_defs)

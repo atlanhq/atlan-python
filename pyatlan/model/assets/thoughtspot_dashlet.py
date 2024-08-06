@@ -125,3 +125,5 @@ class ThoughtspotDashlet(Thoughtspot):
 
 
 from .thoughtspot_liveboard import ThoughtspotLiveboard  # noqa
+
+ThoughtspotDashlet.Attributes.update_forward_refs()

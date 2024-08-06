@@ -109,3 +109,5 @@ class DomoDatasetColumn(Domo):
 
 
 from .domo_dataset import DomoDataset  # noqa
+
+DomoDatasetColumn.Attributes.update_forward_refs()

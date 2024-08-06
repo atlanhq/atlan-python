@@ -70,3 +70,5 @@ class MicroStrategyDocument(MicroStrategy):
 
 
 from .micro_strategy_project import MicroStrategyProject  # noqa
+
+MicroStrategyDocument.Attributes.update_forward_refs()

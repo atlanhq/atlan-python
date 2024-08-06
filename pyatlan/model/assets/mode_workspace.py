@@ -85,3 +85,5 @@ class ModeWorkspace(Mode):
 
 
 from .mode_collection import ModeCollection  # noqa
+
+ModeWorkspace.Attributes.update_forward_refs()

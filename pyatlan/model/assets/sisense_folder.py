@@ -162,3 +162,5 @@ class SisenseFolder(Sisense):
 
 from .sisense_dashboard import SisenseDashboard  # noqa
 from .sisense_widget import SisenseWidget  # noqa
+
+SisenseFolder.Attributes.update_forward_refs()

@@ -252,3 +252,5 @@ from .cognos_file import CognosFile  # noqa
 from .cognos_module import CognosModule  # noqa
 from .cognos_package import CognosPackage  # noqa
 from .cognos_report import CognosReport  # noqa
+
+CognosFolder.Attributes.update_forward_refs()

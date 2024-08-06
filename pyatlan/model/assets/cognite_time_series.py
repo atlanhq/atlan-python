@@ -64,3 +64,5 @@ class CogniteTimeSeries(Cognite):
 
 
 from .cognite_asset import CogniteAsset  # noqa
+
+CogniteTimeSeries.Attributes.update_forward_refs()

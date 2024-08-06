@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class Infrastructure(Asset, type_name="Infrastructure"):
@@ -28,3 +28,6 @@ class Infrastructure(Asset, type_name="Infrastructure"):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+Infrastructure.Attributes.update_forward_refs()

@@ -196,3 +196,6 @@ class AWS(Cloud):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+AWS.Attributes.update_forward_refs()

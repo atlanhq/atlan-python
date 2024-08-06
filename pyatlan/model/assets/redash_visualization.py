@@ -133,3 +133,5 @@ class RedashVisualization(Redash):
 
 
 from .redash_query import RedashQuery  # noqa
+
+RedashVisualization.Attributes.update_forward_refs()

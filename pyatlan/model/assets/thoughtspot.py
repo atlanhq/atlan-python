@@ -127,3 +127,6 @@ class Thoughtspot(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Thoughtspot.Attributes.update_forward_refs()

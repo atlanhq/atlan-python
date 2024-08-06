@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
@@ -28,3 +28,6 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+ProcessExecution.Attributes.update_forward_refs()

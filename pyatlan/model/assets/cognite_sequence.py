@@ -64,3 +64,5 @@ class CogniteSequence(Cognite):
 
 
 from .cognite_asset import CogniteAsset  # noqa
+
+CogniteSequence.Attributes.update_forward_refs()

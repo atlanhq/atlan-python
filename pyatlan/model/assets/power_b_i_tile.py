@@ -147,3 +147,5 @@ class PowerBITile(PowerBI):
 from .power_b_i_dashboard import PowerBIDashboard  # noqa
 from .power_b_i_dataset import PowerBIDataset  # noqa
 from .power_b_i_report import PowerBIReport  # noqa
+
+PowerBITile.Attributes.update_forward_refs()

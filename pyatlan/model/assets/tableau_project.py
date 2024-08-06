@@ -242,3 +242,5 @@ from .tableau_datasource import TableauDatasource  # noqa
 from .tableau_flow import TableauFlow  # noqa
 from .tableau_site import TableauSite  # noqa
 from .tableau_workbook import TableauWorkbook  # noqa
+
+TableauProject.Attributes.update_forward_refs()

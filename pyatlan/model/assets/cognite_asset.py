@@ -140,3 +140,5 @@ from .cognite_event import CogniteEvent  # noqa
 from .cognite_file import CogniteFile  # noqa
 from .cognite_sequence import CogniteSequence  # noqa
 from .cognite_time_series import CogniteTimeSeries  # noqa
+
+CogniteAsset.Attributes.update_forward_refs()

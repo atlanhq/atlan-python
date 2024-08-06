@@ -54,6 +54,30 @@ class LookerField(Looker):
     """
     Unique name of the view in which this field exists.
     """
+    LOOKER_TILE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "lookerTileQualifiedName",
+        "lookerTileQualifiedName",
+        "lookerTileQualifiedName.text",
+    )
+    """
+    Unique name of the tile in which this field is used.
+    """
+    LOOKER_LOOK_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "lookerLookQualifiedName",
+        "lookerLookQualifiedName",
+        "lookerLookQualifiedName.text",
+    )
+    """
+    Unique name of the look in which this field is used.
+    """
+    LOOKER_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "lookerDashboardQualifiedName",
+        "lookerDashboardQualifiedName",
+        "lookerDashboardQualifiedName.text",
+    )
+    """
+    Unique name of the dashboard in which this field is used.
+    """
     MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
     """
     Name of the model in which this field exists.
@@ -77,10 +101,6 @@ class LookerField(Looker):
     Deprecated.
     """
 
-    EXPLORE: ClassVar[RelationField] = RelationField("explore")
-    """
-    TBC
-    """
     PROJECT: ClassVar[RelationField] = RelationField("project")
     """
     TBC
@@ -89,7 +109,23 @@ class LookerField(Looker):
     """
     TBC
     """
+    TILE: ClassVar[RelationField] = RelationField("tile")
+    """
+    TBC
+    """
     MODEL: ClassVar[RelationField] = RelationField("model")
+    """
+    TBC
+    """
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
+    EXPLORE: ClassVar[RelationField] = RelationField("explore")
+    """
+    TBC
+    """
+    LOOK: ClassVar[RelationField] = RelationField("look")
     """
     TBC
     """
@@ -98,14 +134,20 @@ class LookerField(Looker):
         "project_name",
         "looker_explore_qualified_name",
         "looker_view_qualified_name",
+        "looker_tile_qualified_name",
+        "looker_look_qualified_name",
+        "looker_dashboard_qualified_name",
         "model_name",
         "source_definition",
         "looker_field_data_type",
         "looker_times_used",
-        "explore",
         "project",
         "view",
+        "tile",
         "model",
+        "dashboard",
+        "explore",
+        "look",
     ]
 
     @property
@@ -147,6 +189,52 @@ class LookerField(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.looker_view_qualified_name = looker_view_qualified_name
+
+    @property
+    def looker_tile_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_tile_qualified_name
+        )
+
+    @looker_tile_qualified_name.setter
+    def looker_tile_qualified_name(self, looker_tile_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_tile_qualified_name = looker_tile_qualified_name
+
+    @property
+    def looker_look_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_look_qualified_name
+        )
+
+    @looker_look_qualified_name.setter
+    def looker_look_qualified_name(self, looker_look_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_look_qualified_name = looker_look_qualified_name
+
+    @property
+    def looker_dashboard_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_dashboard_qualified_name
+        )
+
+    @looker_dashboard_qualified_name.setter
+    def looker_dashboard_qualified_name(
+        self, looker_dashboard_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_dashboard_qualified_name = (
+            looker_dashboard_qualified_name
+        )
 
     @property
     def model_name(self) -> Optional[str]:
@@ -191,16 +279,6 @@ class LookerField(Looker):
         self.attributes.looker_times_used = looker_times_used
 
     @property
-    def explore(self) -> Optional[LookerExplore]:
-        return None if self.attributes is None else self.attributes.explore
-
-    @explore.setter
-    def explore(self, explore: Optional[LookerExplore]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.explore = explore
-
-    @property
     def project(self) -> Optional[LookerProject]:
         return None if self.attributes is None else self.attributes.project
 
@@ -221,6 +299,16 @@ class LookerField(Looker):
         self.attributes.view = view
 
     @property
+    def tile(self) -> Optional[LookerTile]:
+        return None if self.attributes is None else self.attributes.tile
+
+    @tile.setter
+    def tile(self, tile: Optional[LookerTile]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tile = tile
+
+    @property
     def model(self) -> Optional[LookerModel]:
         return None if self.attributes is None else self.attributes.model
 
@@ -230,26 +318,66 @@ class LookerField(Looker):
             self.attributes = self.Attributes()
         self.attributes.model = model
 
+    @property
+    def dashboard(self) -> Optional[LookerDashboard]:
+        return None if self.attributes is None else self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[LookerDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    @property
+    def explore(self) -> Optional[LookerExplore]:
+        return None if self.attributes is None else self.attributes.explore
+
+    @explore.setter
+    def explore(self, explore: Optional[LookerExplore]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.explore = explore
+
+    @property
+    def look(self) -> Optional[LookerLook]:
+        return None if self.attributes is None else self.attributes.look
+
+    @look.setter
+    def look(self, look: Optional[LookerLook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.look = look
+
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(default=None, description="")
         looker_explore_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         looker_view_qualified_name: Optional[str] = Field(default=None, description="")
+        looker_tile_qualified_name: Optional[str] = Field(default=None, description="")
+        looker_look_qualified_name: Optional[str] = Field(default=None, description="")
+        looker_dashboard_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         model_name: Optional[str] = Field(default=None, description="")
         source_definition: Optional[str] = Field(default=None, description="")
         looker_field_data_type: Optional[str] = Field(default=None, description="")
         looker_times_used: Optional[int] = Field(default=None, description="")
-        explore: Optional[LookerExplore] = Field(
-            default=None, description=""
-        )  # relationship
         project: Optional[LookerProject] = Field(
             default=None, description=""
         )  # relationship
         view: Optional[LookerView] = Field(default=None, description="")  # relationship
+        tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
         model: Optional[LookerModel] = Field(
             default=None, description=""
         )  # relationship
+        dashboard: Optional[LookerDashboard] = Field(
+            default=None, description=""
+        )  # relationship
+        explore: Optional[LookerExplore] = Field(
+            default=None, description=""
+        )  # relationship
+        look: Optional[LookerLook] = Field(default=None, description="")  # relationship
 
     attributes: LookerField.Attributes = Field(
         default_factory=lambda: LookerField.Attributes(),
@@ -261,7 +389,12 @@ class LookerField(Looker):
     )
 
 
+from .looker_dashboard import LookerDashboard  # noqa
 from .looker_explore import LookerExplore  # noqa
+from .looker_look import LookerLook  # noqa
 from .looker_model import LookerModel  # noqa
 from .looker_project import LookerProject  # noqa
+from .looker_tile import LookerTile  # noqa
 from .looker_view import LookerView  # noqa
+
+LookerField.Attributes.update_forward_refs()

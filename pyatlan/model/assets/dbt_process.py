@@ -16,7 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
 )
 
-from .dbt import Dbt
+from .core.dbt import Dbt
 
 
 class DbtProcess(Dbt):
@@ -568,8 +568,10 @@ class DbtProcess(Dbt):
     )
 
 
-from .airflow_task import AirflowTask  # noqa
-from .catalog import Catalog  # noqa
-from .column_process import ColumnProcess  # noqa
-from .matillion_component import MatillionComponent  # noqa
-from .spark_job import SparkJob  # noqa
+from .core.airflow_task import AirflowTask  # noqa
+from .core.catalog import Catalog  # noqa
+from .core.column_process import ColumnProcess  # noqa
+from .core.matillion_component import MatillionComponent  # noqa
+from .core.spark_job import SparkJob  # noqa
+
+DbtProcess.Attributes.update_forward_refs()

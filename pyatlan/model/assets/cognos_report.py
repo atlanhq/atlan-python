@@ -64,3 +64,5 @@ class CognosReport(Cognos):
 
 
 from .cognos_folder import CognosFolder  # noqa
+
+CognosReport.Attributes.update_forward_refs()

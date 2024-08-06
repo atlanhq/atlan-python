@@ -64,3 +64,5 @@ class CogniteEvent(Cognite):
 
 
 from .cognite_asset import CogniteAsset  # noqa
+
+CogniteEvent.Attributes.update_forward_refs()

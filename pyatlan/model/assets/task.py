@@ -12,7 +12,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
 from pyatlan.model.structs import Action
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class Task(Asset, type_name="Task"):
@@ -281,3 +281,6 @@ class Task(Asset, type_name="Task"):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Task.Attributes.update_forward_refs()

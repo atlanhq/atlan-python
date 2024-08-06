@@ -1,0 +1,14 @@
+# Copyright 2024 Atlan Pte. Ltd.
+{% for asset_import in asset_imports -%}
+{%- if 'Referenceable' in asset_import %}
+{{ asset_import }} # isort: skip
+{%- else  %}
+{{ asset_import }}
+{% endif %}
+{% endfor %}
+
+# Update asset forward references:
+localns = locals()
+{%- for asset_name in asset_names %}
+{{ asset_name }}.Attributes.update_forward_refs(**localns)
+{%- endfor %}

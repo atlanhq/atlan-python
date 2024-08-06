@@ -181,3 +181,5 @@ class LookerQuery(Looker):
 from .looker_look import LookerLook  # noqa
 from .looker_model import LookerModel  # noqa
 from .looker_tile import LookerTile  # noqa
+
+LookerQuery.Attributes.update_forward_refs()

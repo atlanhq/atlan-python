@@ -281,3 +281,5 @@ class APISpec(API):
 
 
 from .a_p_i_path import APIPath  # noqa
+
+APISpec.Attributes.update_forward_refs()

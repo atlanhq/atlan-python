@@ -238,3 +238,5 @@ class SisenseWidget(Sisense):
 from .sisense_dashboard import SisenseDashboard  # noqa
 from .sisense_datamodel_table import SisenseDatamodelTable  # noqa
 from .sisense_folder import SisenseFolder  # noqa
+
+SisenseWidget.Attributes.update_forward_refs()

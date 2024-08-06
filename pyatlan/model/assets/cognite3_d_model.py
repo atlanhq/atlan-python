@@ -64,3 +64,5 @@ class Cognite3DModel(Cognite):
 
 
 from .cognite_asset import CogniteAsset  # noqa
+
+Cognite3DModel.Attributes.update_forward_refs()

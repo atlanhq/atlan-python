@@ -83,6 +83,10 @@ class LookerDashboard(Looker):
     """
     TBC
     """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "folder_name",
@@ -95,6 +99,7 @@ class LookerDashboard(Looker):
         "tiles",
         "looks",
         "folder",
+        "fields",
     ]
 
     @property
@@ -203,6 +208,16 @@ class LookerDashboard(Looker):
             self.attributes = self.Attributes()
         self.attributes.folder = folder
 
+    @property
+    def fields(self) -> Optional[List[LookerField]]:
+        return None if self.attributes is None else self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[List[LookerField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
+
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(default=None, description="")
         source_user_id: Optional[int] = Field(default=None, description="")
@@ -222,6 +237,9 @@ class LookerDashboard(Looker):
         folder: Optional[LookerFolder] = Field(
             default=None, description=""
         )  # relationship
+        fields: Optional[List[LookerField]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: LookerDashboard.Attributes = Field(
         default_factory=lambda: LookerDashboard.Attributes(),
@@ -233,6 +251,9 @@ class LookerDashboard(Looker):
     )
 
 
+from .looker_field import LookerField  # noqa
 from .looker_folder import LookerFolder  # noqa
 from .looker_look import LookerLook  # noqa
 from .looker_tile import LookerTile  # noqa
+
+LookerDashboard.Attributes.update_forward_refs()

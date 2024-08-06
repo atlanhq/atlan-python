@@ -28,3 +28,6 @@ class Tableau(BI):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+Tableau.Attributes.update_forward_refs()

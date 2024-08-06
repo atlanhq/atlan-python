@@ -368,3 +368,5 @@ class PresetDashboard(Preset):
 from .preset_chart import PresetChart  # noqa
 from .preset_dataset import PresetDataset  # noqa
 from .preset_workspace import PresetWorkspace  # noqa
+
+PresetDashboard.Attributes.update_forward_refs()

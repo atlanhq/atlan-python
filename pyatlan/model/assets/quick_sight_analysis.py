@@ -212,3 +212,5 @@ class QuickSightAnalysis(QuickSight):
 
 from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa
 from .quick_sight_folder import QuickSightFolder  # noqa
+
+QuickSightAnalysis.Attributes.update_forward_refs()

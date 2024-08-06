@@ -1218,13 +1218,15 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     )
 
 
-from .column import Column  # noqa
+from .core.column import Column  # noqa
+from .core.dbt_model import DbtModel  # noqa
+from .core.dbt_source import DbtSource  # noqa
+from .core.dbt_test import DbtTest  # noqa
+from .core.query import Query  # noqa
+from .core.schema import Schema  # noqa
+from .core.table import Table  # noqa
+from .core.table_partition import TablePartition  # noqa
 from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
-from .dbt_model import DbtModel  # noqa
-from .dbt_source import DbtSource  # noqa
-from .dbt_test import DbtTest  # noqa
 from .mongo_d_b_database import MongoDBDatabase  # noqa
-from .query import Query  # noqa
-from .schema import Schema  # noqa
-from .table import Table  # noqa
-from .table_partition import TablePartition  # noqa
+
+CosmosMongoDBCollection.Attributes.update_forward_refs()

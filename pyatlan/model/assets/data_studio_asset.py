@@ -364,3 +364,6 @@ class DataStudioAsset(DataStudio):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+DataStudioAsset.Attributes.update_forward_refs()

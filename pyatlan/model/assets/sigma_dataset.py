@@ -93,3 +93,5 @@ class SigmaDataset(Sigma):
 
 
 from .sigma_dataset_column import SigmaDatasetColumn  # noqa
+
+SigmaDataset.Attributes.update_forward_refs()

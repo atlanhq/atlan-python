@@ -227,3 +227,6 @@ class Mode(BI):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Mode.Attributes.update_forward_refs()

@@ -128,3 +128,5 @@ class MicroStrategyDossier(MicroStrategy):
 
 from .micro_strategy_project import MicroStrategyProject  # noqa
 from .micro_strategy_visualization import MicroStrategyVisualization  # noqa
+
+MicroStrategyDossier.Attributes.update_forward_refs()

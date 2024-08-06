@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
 
-from .asset import Asset
+from .core.asset import Asset
 
 
 class AuthService(Asset, type_name="AuthService"):
@@ -143,3 +143,6 @@ class AuthService(Asset, type_name="AuthService"):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+AuthService.Attributes.update_forward_refs()

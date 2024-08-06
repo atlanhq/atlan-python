@@ -139,3 +139,5 @@ class QlikChart(Qlik):
 
 
 from .qlik_sheet import QlikSheet  # noqa
+
+QlikChart.Attributes.update_forward_refs()

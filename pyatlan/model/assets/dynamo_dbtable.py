@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .table import Table
+from .core.table import Table
 
 
 class DynamoDBTable(Table):
@@ -875,3 +875,5 @@ class DynamoDBTable(Table):
 
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex  # noqa
 from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex  # noqa
+
+DynamoDBTable.Attributes.update_forward_refs()

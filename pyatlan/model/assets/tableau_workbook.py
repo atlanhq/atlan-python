@@ -228,3 +228,5 @@ from .tableau_dashboard import TableauDashboard  # noqa
 from .tableau_datasource import TableauDatasource  # noqa
 from .tableau_project import TableauProject  # noqa
 from .tableau_worksheet import TableauWorksheet  # noqa
+
+TableauWorkbook.Attributes.update_forward_refs()

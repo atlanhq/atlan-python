@@ -28,3 +28,6 @@ class ThoughtspotAnswer(Thoughtspot):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
+
+
+ThoughtspotAnswer.Attributes.update_forward_refs()

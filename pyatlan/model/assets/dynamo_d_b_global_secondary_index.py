@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
+from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 
 
 class DynamoDBGlobalSecondaryIndex(DynamoDBSecondaryIndex):
@@ -64,3 +64,5 @@ class DynamoDBGlobalSecondaryIndex(DynamoDBSecondaryIndex):
 
 
 from .dynamo_dbtable import DynamoDBTable  # noqa
+
+DynamoDBGlobalSecondaryIndex.Attributes.update_forward_refs()

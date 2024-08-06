@@ -71,3 +71,6 @@ class CognosDatasource(Cognos):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+CognosDatasource.Attributes.update_forward_refs()

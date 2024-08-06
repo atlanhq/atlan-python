@@ -83,3 +83,5 @@ class Cube(MultiDimensionalDataset):
 
 
 from .cube_dimension import CubeDimension  # noqa
+
+Cube.Attributes.update_forward_refs()
