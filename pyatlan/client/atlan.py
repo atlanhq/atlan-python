@@ -10,6 +10,7 @@ import logging
 import shutil
 import uuid
 from contextvars import ContextVar
+from http import HTTPStatus
 from importlib.resources import read_text
 from types import SimpleNamespace
 from typing import (
@@ -85,7 +86,6 @@ from pyatlan.utils import (
     API,
     APPLICATION_ENCODED_FORM,
     AuthorizationFilter,
-    HTTPStatus,
     RequestIdAdapter,
 )
 

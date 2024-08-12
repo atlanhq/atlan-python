@@ -3,7 +3,6 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
-import enum
 import json
 import logging
 import random
@@ -154,11 +153,20 @@ class EndPoint(EndpointMixin, Enum):
     HERACLES = "api/service/", "http://heracles-service.heracles.svc.cluster.local/"
 
 
+class HTTPMethod(Enum):
+    # TODO: When the SDK fully supports Python 3.11, switch to using `http.HTTPMethod`.
+    # https://github.com/python/cpython/blob/main/Lib/http/__init__.py#L177
+    GET = "GET"
+    PUT = "PUT"
+    POST = "POST"
+    DELETE = "DELETE"
+
+
 class API:
     def __init__(
         self,
         path: str,
-        method: "HTTPMethod",
+        method: HTTPMethod,
         expected_status: int,
         endpoint: EndPoint,
         consumes: str = APPLICATION_JSON,
@@ -209,20 +217,6 @@ class API:
             consumes=self.consumes,
             produces=self.produces,
         )
-
-
-class HTTPMethod(enum.Enum):
-    GET = "GET"
-    PUT = "PUT"
-    POST = "POST"
-    DELETE = "DELETE"
-
-
-class HTTPStatus:
-    OK = 200
-    NO_CONTENT = 204
-    NOT_FOUND = 404
-    SERVICE_UNAVAILABLE = 503
 
 
 def unflatten_custom_metadata(
