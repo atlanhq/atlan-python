@@ -10,6 +10,7 @@ import logging
 import shutil
 import uuid
 from contextvars import ContextVar
+from http import HTTPStatus
 from importlib.resources import read_text
 from types import SimpleNamespace
 from typing import (
@@ -85,7 +86,6 @@ from pyatlan.utils import (
     API,
     APPLICATION_ENCODED_FORM,
     AuthorizationFilter,
-    HTTPStatus,
     RequestIdAdapter,
 )
 
@@ -442,6 +442,15 @@ class AtlanClient(BaseSettings):
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
         return self._call_api_internal(api, path, params, download_file_path=file_path)
+
+    def _azure_blob_presigned_url_file_upload(self, api: API, upload_file: Any):
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        # Add mandatory headers for azure blob storage
+        params["headers"]["x-ms-blob-type"] = "BlockBlob"
+        return self._call_api_internal(api, path, params, binary_data=upload_file)
 
     def _create_params(
         self, api: API, query_params, request_obj, exclude_unset: bool = True

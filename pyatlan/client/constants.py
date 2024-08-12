@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+from http import HTTPStatus
+
 from pyatlan.utils import (
     API,
     APPLICATION_ENCODED_FORM,
@@ -9,7 +11,6 @@ from pyatlan.utils import (
     MULTIPART_FORM_DATA,
     EndPoint,
     HTTPMethod,
-    HTTPStatus,
 )
 
 ROLE_API = "roles"
@@ -568,10 +569,16 @@ PRESIGNED_URL = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
-PRESIGNED_URL_UPLOAD = API(
+PRESIGNED_URL_UPLOAD_S3 = API(
     "{presigned_url_put}",
     HTTPMethod.PUT,
     HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PRESIGNED_URL_UPLOAD_AZURE_BLOB = API(
+    "{presigned_url_put}",
+    HTTPMethod.PUT,
+    HTTPStatus.CREATED,
     endpoint=EndPoint.HERACLES,
 )
 PRESIGNED_URL_DOWNLOAD = API(

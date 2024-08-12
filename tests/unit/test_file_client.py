@@ -53,6 +53,15 @@ def s3_presigned_url():
     )
 
 
+@pytest.fixture(scope="module")
+def blob_presigned_url():
+    return (
+        "https://test.blob.core.windows.net/objectstore/test.png"
+        "?se=2024-08-12T09%3A45%3A13Z&sig=esqARNUwHUETQOqSCaSCTqD"
+        "Wjg7vTmcK1PLzQ1buMCQ%3D&sp=aw&spr=https&sr=b&sv=2020-04-08"
+    )
+
+
 @pytest.fixture()
 def mock_session():
     with patch.object(AtlanClient, "_session") as mock_session:
@@ -105,7 +114,7 @@ def test_file_client_methods_validation_error(client, method, params):
     ],
 )
 def test_file_client_upload_file_raises_invalid_request_error(
-    mock_api_caller, s3_presigned_url, file_path, expected_error
+    mock_api_caller, file_path, expected_error
 ):
     client = FileClient(client=mock_api_caller)
 
@@ -167,9 +176,20 @@ def test_file_client_get_presigned_url(mock_api_caller, s3_presigned_url):
 
 
 @patch.object(AtlanClient, "_call_api_internal", return_value=None)
-def test_file_client_upload_file(mock_call_api_internal, client, s3_presigned_url):
+def test_file_client_s3_upload_file(mock_call_api_internal, client, s3_presigned_url):
     client = FileClient(client=client)
     client.upload_file(presigned_url=s3_presigned_url, file_path=UPLOAD_FILE_PATH)
+
+    assert mock_call_api_internal.call_count == 1
+    mock_call_api_internal.reset_mock()
+
+
+@patch.object(AtlanClient, "_call_api_internal", return_value=None)
+def test_file_client_azure_blob_upload_file(
+    mock_call_api_internal, client, blob_presigned_url
+):
+    client = FileClient(client=client)
+    client.upload_file(presigned_url=blob_presigned_url, file_path=UPLOAD_FILE_PATH)
 
     assert mock_call_api_internal.call_count == 1
     mock_call_api_internal.reset_mock()
