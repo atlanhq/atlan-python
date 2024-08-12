@@ -1,3 +1,13 @@
+## 2.4.1 (August 12, 2024)
+
+### New features
+
+- Added support for `Azure Blob` presigned URL file uploads.
+
+### QOL improvements
+
+- Replaced `pyatlan.utils.HTTPStatus` with the standard library `http.HTTPStatus` (introduced in **Python 3.4**).
+
 ## 2.4.0 (August 06, 2024)
 
 ### QOL improvements
