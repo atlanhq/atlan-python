@@ -568,10 +568,16 @@ PRESIGNED_URL = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
-PRESIGNED_URL_UPLOAD = API(
+PRESIGNED_URL_UPLOAD_S3 = API(
     "{presigned_url_put}",
     HTTPMethod.PUT,
     HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PRESIGNED_URL_UPLOAD_AZURE_BLOB = API(
+    "{presigned_url_put}",
+    HTTPMethod.PUT,
+    201,
     endpoint=EndPoint.HERACLES,
 )
 PRESIGNED_URL_DOWNLOAD = API(

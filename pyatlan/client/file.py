@@ -4,7 +4,8 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     PRESIGNED_URL,
     PRESIGNED_URL_DOWNLOAD,
-    PRESIGNED_URL_UPLOAD,
+    PRESIGNED_URL_UPLOAD_AZURE_BLOB,
+    PRESIGNED_URL_UPLOAD_S3,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.file import CloudStorageIdentifier, PresignedURLRequest
@@ -55,7 +56,14 @@ class FileClient:
         if CloudStorageIdentifier.S3 in presigned_url:
             return self._client._s3_presigned_url_file_upload(
                 upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD.format_path(
+                api=PRESIGNED_URL_UPLOAD_S3.format_path(
+                    {"presigned_url_put": presigned_url}
+                ),
+            )
+        elif CloudStorageIdentifier.AZURE_BLOB in presigned_url:
+            return self._client._azure_blob_presigned_url_file_upload(
+                upload_file=upload_file,
+                api=PRESIGNED_URL_UPLOAD_AZURE_BLOB.format_path(
                     {"presigned_url_put": presigned_url}
                 ),
             )
