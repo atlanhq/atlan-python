@@ -34,5 +34,8 @@ class ApiCaller(Protocol):
     def _azure_blob_presigned_url_file_upload(self, api, upload_file: Any):
         pass
 
+    def _gcs_presigned_url_file_upload(self, api, upload_file: Any):
+        pass
+
     def _presigned_url_file_download(self, api, file_path: str):
         pass

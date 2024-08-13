@@ -62,6 +62,17 @@ def blob_presigned_url():
     )
 
 
+@pytest.fixture(scope="module")
+def gcs_presigned_url():
+    return (
+        "https://test.storage.googleapis.com/test-vcluster/test.png"
+        "?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=prod"
+        "iam.gserviceaccount.com%2F20240813%2Fauto%2Fstorage%2Fgoog"
+        "4_request&X-Goog-Date=20240893T093902Z&X-Goog-Expires=29&X-"
+        "Goog-Signature=5620d93a7916b150ce87a324d969741112f764b6d9f6"
+    )
+
+
 @pytest.fixture()
 def mock_session():
     with patch.object(AtlanClient, "_session") as mock_session:
@@ -190,6 +201,15 @@ def test_file_client_azure_blob_upload_file(
 ):
     client = FileClient(client=client)
     client.upload_file(presigned_url=blob_presigned_url, file_path=UPLOAD_FILE_PATH)
+
+    assert mock_call_api_internal.call_count == 1
+    mock_call_api_internal.reset_mock()
+
+
+@patch.object(AtlanClient, "_call_api_internal", return_value=None)
+def test_file_client_gcs_upload_file(mock_call_api_internal, client, gcs_presigned_url):
+    client = FileClient(client=client)
+    client.upload_file(presigned_url=gcs_presigned_url, file_path=UPLOAD_FILE_PATH)
 
     assert mock_call_api_internal.call_count == 1
     mock_call_api_internal.reset_mock()

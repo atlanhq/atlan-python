@@ -581,6 +581,12 @@ PRESIGNED_URL_UPLOAD_AZURE_BLOB = API(
     HTTPStatus.CREATED,
     endpoint=EndPoint.HERACLES,
 )
+PRESIGNED_URL_UPLOAD_GCS = API(
+    "{presigned_url_put}",
+    HTTPMethod.PUT,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
 PRESIGNED_URL_DOWNLOAD = API(
     "{presigned_url_get}",
     HTTPMethod.GET,
