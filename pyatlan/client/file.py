@@ -5,6 +5,7 @@ from pyatlan.client.constants import (
     PRESIGNED_URL,
     PRESIGNED_URL_DOWNLOAD,
     PRESIGNED_URL_UPLOAD_AZURE_BLOB,
+    PRESIGNED_URL_UPLOAD_GCS,
     PRESIGNED_URL_UPLOAD_S3,
 )
 from pyatlan.errors import ErrorCode
@@ -64,6 +65,13 @@ class FileClient:
             return self._client._azure_blob_presigned_url_file_upload(
                 upload_file=upload_file,
                 api=PRESIGNED_URL_UPLOAD_AZURE_BLOB.format_path(
+                    {"presigned_url_put": presigned_url}
+                ),
+            )
+        elif CloudStorageIdentifier.GCS in presigned_url:
+            return self._client._gcs_presigned_url_file_upload(
+                upload_file=upload_file,
+                api=PRESIGNED_URL_UPLOAD_GCS.format_path(
                     {"presigned_url_put": presigned_url}
                 ),
             )
