@@ -436,13 +436,6 @@ class AtlanClient(BaseSettings):
         params["headers"].pop("authorization", None)
         return self._call_api_internal(api, path, params, binary_data=upload_file)
 
-    def _presigned_url_file_download(self, api: API, file_path: str):
-        path = self._create_path(api)
-        params = copy.deepcopy(self._request_params)
-        # No need of Atlan's API token here
-        params["headers"].pop("authorization", None)
-        return self._call_api_internal(api, path, params, download_file_path=file_path)
-
     def _azure_blob_presigned_url_file_upload(self, api: API, upload_file: Any):
         path = self._create_path(api)
         params = copy.deepcopy(self._request_params)
@@ -451,6 +444,20 @@ class AtlanClient(BaseSettings):
         # Add mandatory headers for azure blob storage
         params["headers"]["x-ms-blob-type"] = "BlockBlob"
         return self._call_api_internal(api, path, params, binary_data=upload_file)
+
+    def _gcs_presigned_url_file_upload(self, api: API, upload_file: Any):
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        return self._call_api_internal(api, path, params, binary_data=upload_file)
+
+    def _presigned_url_file_download(self, api: API, file_path: str):
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        return self._call_api_internal(api, path, params, download_file_path=file_path)
 
     def _create_params(
         self, api: API, query_params, request_obj, exclude_unset: bool = True
