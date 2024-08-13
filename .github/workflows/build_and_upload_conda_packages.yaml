@@ -2,8 +2,6 @@
 name: Build and upload conda packages
 
 on:
-  release:
-    types: [ published ]
   workflow_dispatch:
 
 jobs:
