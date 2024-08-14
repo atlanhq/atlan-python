@@ -31,6 +31,6 @@ jobs:
           platform_linux-64: true
           platform_osx-64: true
           platform_win-64: true
-          user: uibcdf
-          label: auto
+          user: atlanhq
+          label: main
           token: ${{ secrets.ANACONDA_API_TOKEN }} # Replace with the right name of your secret
