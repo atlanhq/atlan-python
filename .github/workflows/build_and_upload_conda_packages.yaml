@@ -2,6 +2,8 @@
 name: Build and upload conda packages
 
 on:
+  release:
+    types: [ published ]
   workflow_dispatch:
 
 jobs:
@@ -20,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           environment-file: .conda-envs/build-env.yaml    # Path to the build conda environment
-          auto-update-conda: false
+          auto-update-conda: true
           auto-activate-base: false
           show-channel-urls: true
       - name: Build and upload the conda packages
