@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           environment-file: .conda-envs/build-env.yaml    # Path to the build conda environment
-          auto-update-conda: true
+          auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
       - name: Build and upload the conda packages
@@ -35,4 +35,5 @@ jobs:
           platform_win-64: true
           user: atlanhq
           label: main
-          token: ${{ secrets.ANACONDA_API_TOKEN }} # Replace with the right name of your secret
+          token: ${{ secrets.ANACONDA_API_TOKEN }}
+          upload: true
