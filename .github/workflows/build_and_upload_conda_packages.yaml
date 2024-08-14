@@ -34,4 +34,4 @@ jobs:
           user: atlanhq
           label: main
           token: ${{ secrets.ANACONDA_API_TOKEN }}
-          upload: false
+          upload: true
