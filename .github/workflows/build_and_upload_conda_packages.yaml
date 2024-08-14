@@ -35,3 +35,4 @@ jobs:
           label: main
           token: ${{ secrets.ANACONDA_API_TOKEN }}
           upload: true
+          overwrite: true
