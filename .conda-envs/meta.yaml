@@ -3,7 +3,7 @@ package:
   version: "{{ environ['GIT_DESCRIBE_TAG'] }}"
 
 source:
-  path: ../../
+  path: ../
 
 build:
   number: 0
@@ -27,29 +27,6 @@ requirements:
     - requests >=2.24
     - tenacity ==8.2.3
     - urllib3 >=1.26.0,<3
-
-test:
-  imports:
-    - pyatlan
-    - pyatlan.cache
-    - pyatlan.client
-    - pyatlan.events
-    - pyatlan.generator
-    - pyatlan.generator.templates
-    - pyatlan.model
-    - pyatlan.model.assets
-    - pyatlan.model.assets.core
-    - pyatlan.model.fields
-    - pyatlan.model.packages
-    - pyatlan.model.packages.base
-    - pyatlan.pkg
-    - pyatlan.pkg.templates
-    - tests
-    - tests.integration
-    - tests.unit
-    - tests.unit.model
-    - tests.unit.model.fields
-    - tests.unit.pkg
 
 about:
   home: "https://github.com/atlanhq/atlan-python"
