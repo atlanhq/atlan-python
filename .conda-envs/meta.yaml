@@ -28,12 +28,6 @@ requirements:
     - tenacity ==8.2.3
     - urllib3 >=1.26.0,<3
 
-test:
-  requires:
-    - pytest
-  imports:
-    - pyatlan
-
 
 about:
   home: "https://github.com/atlanhq/atlan-python"
