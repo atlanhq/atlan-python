@@ -1,0 +1,69 @@
+package:
+  name: "pyatlan"
+  version: "{{ environ['GIT_DESCRIBE_TAG'] }}"
+
+source:
+  path: ../../
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+
+requirements:
+  host:
+    - jinja2 ==3.1.4
+    - lazy_loader~=0.4
+    - pip
+    - pydantic >=2.0.0,<3.0.0
+    - python
+    - requests >=2.24
+    - tenacity ==8.2.3
+    - urllib3 >=1.26.0,<3
+  run:
+    - jinja2 ==3.1.4
+    - lazy_loader~=0.4
+    - pydantic >=2.0.0,<3.0.0
+    - python
+    - requests >=2.24
+    - tenacity ==8.2.3
+    - urllib3 >=1.26.0,<3
+
+test:
+  imports:
+    - pyatlan
+    - pyatlan.cache
+    - pyatlan.client
+    - pyatlan.events
+    - pyatlan.generator
+    - pyatlan.generator.templates
+    - pyatlan.model
+    - pyatlan.model.assets
+    - pyatlan.model.assets.core
+    - pyatlan.model.fields
+    - pyatlan.model.packages
+    - pyatlan.model.packages.base
+    - pyatlan.pkg
+    - pyatlan.pkg.templates
+    - tests
+    - tests.integration
+    - tests.unit
+    - tests.unit.model
+    - tests.unit.model.fields
+    - tests.unit.pkg
+
+about:
+  home: "https://github.com/atlanhq/atlan-python"
+  license: Apache Software
+  license_family: APACHE
+  license_file: LICENSE
+  license_url: https://github.com/atlanhq/atlan-python/blob/main/LICENSE
+  summary: "Atlan Python Client"
+  doc_url: https://developer.atlan.com/sdks/python
+  dev_url:
+
+extra:
+  recipe-maintainers:
+    - https://github.com/ErnestoLoma
+    - https://github.com/cmgrote
+    - https://github.com/Aryamanz29
+    - https://github.com/0xquark
