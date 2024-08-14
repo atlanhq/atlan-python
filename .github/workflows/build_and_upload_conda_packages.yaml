@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        os: [macOS-latest, unbuntu-latest, windows-latest]
         python-version: ["3.9"]
     steps:
       - uses: actions/checkout@v3
@@ -30,7 +31,6 @@ jobs:
         with:
           meta_yaml_dir: .conda-envs
           python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
-          platform_all: true
           user: atlanhq
           label: main
           token: ${{ secrets.ANACONDA_API_TOKEN }}
