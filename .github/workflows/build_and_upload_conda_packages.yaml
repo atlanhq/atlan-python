@@ -30,9 +30,8 @@ jobs:
         with:
           meta_yaml_dir: .conda-envs
           python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
-          all: true
+          platform_all: true
           user: atlanhq
           label: main
           token: ${{ secrets.ANACONDA_API_TOKEN }}
           upload: true
-          overwrite: true
