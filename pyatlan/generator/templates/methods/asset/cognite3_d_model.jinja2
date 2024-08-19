@@ -1,0 +1,87 @@
+
+    @overload
+    @classmethod
+    def creator(
+            cls,
+            *,
+            name: str,
+            cognite_asset_qualified_name: str,
+    ) -> Cognite3DModel:
+        ...
+
+    @overload
+    @classmethod
+    def creator(
+            cls,
+            *,
+            name: str,
+            cognite_asset_qualified_name: str,
+            connection_qualified_name: str,
+    ) -> Cognite3DModel:
+        ...
+
+    @classmethod
+    @init_guid
+    def creator(
+            cls,
+            *,
+            name: str,
+            cognite_asset_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+    ) -> Cognite3DModel:
+        validate_required_fields(
+            ["name", "cognite_asset_qualified_name"],
+            [name, cognite_asset_qualified_name],
+        )
+        attributes = Cognite3DModel.Attributes.create(
+            name=name,
+            cognite_asset_qualified_name=cognite_asset_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+            cls, *, name: str, cognite_asset_qualified_name: str
+    ) -> Cognite3DModel:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            cognite_asset_qualified_name=cognite_asset_qualified_name,
+        )
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str, connection_qualified_name: str) -> Cognite3DModel:
+        validate_required_fields(
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
+        )
+        attributes = Cognite3DModel.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str) -> Cognite3DModel:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
