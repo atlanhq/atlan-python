@@ -4,223 +4,25 @@
 
 from __future__ import annotations
 
-import hashlib
-import sys
-import uuid
-from json import loads
-from json.decoder import JSONDecodeError
-from datetime import datetime
-from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar, TYPE_CHECKING, cast, overload
+from typing import  ClassVar, List, Optional, overload
 from warnings import warn
 
-from urllib.parse import quote, unquote
 
-from pydantic.v1 import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic.v1 import Field, validator
 
-from pyatlan.errors import ErrorCode
-from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, AtlanTagName, Meaning
-from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
+
 from pyatlan.model.enums import (
-    ADLSAccessTier,
-    ADLSAccountStatus,
-    ADLSEncryptionTypes,
-    ADLSLeaseState,
-    ADLSLeaseStatus,
-    ADLSObjectArchiveStatus,
-    ADLSObjectType,
-    ADLSPerformance,
-    ADLSProvisionState,
-    ADLSReplicationType,
-    ADLSStorageKind,
-    AnnouncementType,
     AtlanConnectorType,
-    AtlanIcon,
-    AtlasGlossaryCategoryType,
-    AtlasGlossaryTermType,
-    AtlasGlossaryType,
-    AuthPolicyCategory,
-    AuthPolicyResourceCategory,
-    AuthPolicyType,
-    CertificateStatus,
-    DataProductCriticality,
-    DataProductSensitivity,
-    DataProductStatus,
-    DataProductVisibility,
-    DataAction,
-    DynamoDBStatus,
-    DynamoDBSecondaryIndexProjectionType,
-    EntityStatus,
-    FileType,
-    GoogleDatastudioAssetType,
-    IconType,
-    KafkaTopicCleanupPolicy,
-    KafkaTopicCompressionType,
-    MatillionJobType,
-    OpenLineageRunState,
-    SaveSemantic,
-    PersonaDomainAction,
-    PersonaGlossaryAction,
-    PersonaMetadataAction,
-    PowerbiEndorsement,
-    PurposeMetadataAction,
-    QueryUsernameStrategy,
-    QuickSightAnalysisStatus,
-    QuickSightDatasetFieldType,
-    QuickSightDatasetImportMode,
-    QuickSightFolderType,
-    SchemaRegistrySchemaCompatibility,
-    SchemaRegistrySchemaType,
-    SourceCostUnitType,
 )
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
-    InternalKeywordField,
-    InternalKeywordTextField,
-    InternalNumericField,
     KeywordField,
-    KeywordTextField,
-    KeywordTextStemmedField,
-    NumericField,
-    NumericRankField,
     RelationField,
-    TextField,
 )
-from pyatlan.model.internal import AtlasServer, Internal
-from pyatlan.model.search import IndexSearchRequest
-from pyatlan.model.structs import (
-    Action,
-    AuthPolicyCondition,
-    AuthPolicyValiditySchedule,
-    AwsTag,
-    AzureTag,
-    BadgeCondition,
-    ColumnValueFrequencyMap,
-    DbtMetricFilter,
-    GoogleLabel,
-    GoogleTag,
-    Histogram,
-    KafkaTopicConsumption,
-    MCRuleComparison,
-    MCRuleSchedule,
-    PopularityInsights,
-    SourceTagAttribute,
-    StarredDetails,
-)
+
 from pyatlan.utils import (
     init_guid,
-    next_id,
     validate_required_fields,
-    validate_single_required_field,
-    get_parent_qualified_name,
 )
-from pyatlan.model.data_mesh import DataProductsAssetsDSL
-
-from pyatlan.model.enums import (
-
-    ADLSAccessTier,
-
-    ADLSAccountStatus,
-
-    ADLSEncryptionTypes,
-
-    ADLSLeaseState,
-
-    ADLSLeaseStatus,
-
-    ADLSObjectArchiveStatus,
-
-    ADLSObjectType,
-
-    ADLSPerformance,
-
-    ADLSProvisionState,
-
-    ADLSReplicationType,
-
-    ADLSStorageKind,
-
-    AtlasGlossaryCategoryType,
-
-    AtlasGlossaryTermAssignmentStatus,
-
-    AtlasGlossaryTermRelationshipStatus,
-
-    AtlasGlossaryTermType,
-
-    AtlasGlossaryType,
-
-    AtlasOperation,
-
-    AuthPolicyCategory,
-
-    AuthPolicyResourceCategory,
-
-    AuthPolicyType,
-
-    CertificateStatus,
-
-    DataProductCriticality,
-
-    DataProductSensitivity,
-
-    DataProductStatus,
-
-    DataProductVisibility,
-
-    DomoCardType,
-
-    DynamoDBSecondaryIndexProjectionType,
-
-    DynamoDBStatus,
-
-    FileType,
-
-    GoogleDatastudioAssetType,
-
-    IconType,
-
-    KafkaTopicCleanupPolicy,
-
-    KafkaTopicCompressionType,
-
-    MatillionJobType,
-
-    MongoDBCollectionValidationAction,
-
-    MongoDBCollectionValidationLevel,
-
-    OpenLineageRunState,
-
-    PowerbiEndorsement,
-
-    QueryUsernameStrategy,
-
-    QuickSightAnalysisStatus,
-
-    QuickSightDatasetFieldType,
-
-    QuickSightDatasetImportMode,
-
-    QuickSightFolderType,
-
-    SchemaRegistrySchemaCompatibility,
-
-    SchemaRegistrySchemaType,
-
-    SourceCostUnitType,
-
-    WorkflowRunStatus,
-
-    WorkflowRunType,
-
-    WorkflowStatus,
-
-    WorkflowType,
-
-)
-
-from .asset import SelfAsset
 
 from .cognite import Cognite
 
