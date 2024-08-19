@@ -2,6 +2,8 @@
 name: Build and upload conda packages
 
 on:
+  release:
+    types: [ published ]
   workflow_dispatch:
 
 jobs:
@@ -10,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -19,18 +21,17 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
-          environment-file: pyatlan/.conda-envs/meta.yaml    # Path to the build conda environment
+          environment-file: .conda-envs/build-env.yaml    # Path to the build conda environment
           auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
       - name: Build and upload the conda packages
         uses: uibcdf/action-build-and-upload-conda-packages@v1.3.0
         with:
-          meta_yaml_dir: devtools/conda-build
+          meta_yaml_dir: .conda-envs
           python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
-          platform_linux-64: true
-          platform_osx-64: true
-          platform_win-64: true
-          user: uibcdf
-          label: auto
-          token: ${{ secrets.ANACONDA_API_TOKEN }} # Replace with the right name of your secret
+          platform_all: true
+          user: atlanhq
+          label: main
+          token: ${{ secrets.ANACONDA_API_TOKEN }}
+          upload: true
