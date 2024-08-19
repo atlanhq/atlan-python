@@ -90,16 +90,6 @@ class DataStudio(Google):
     """
     TBC
     """
-    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
-    """
-    TBC
-    """
-    OUTPUT_FROM_SPARK_JOBS: ClassVar[RelationField] = RelationField(
-        "outputFromSparkJobs"
-    )
-    """
-    TBC
-    """
     INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "inputToAirflowTasks"
     )
@@ -124,8 +114,6 @@ class DataStudio(Google):
         "google_tags",
         "input_to_processes",
         "output_from_airflow_tasks",
-        "input_to_spark_jobs",
-        "output_from_spark_jobs",
         "input_to_airflow_tasks",
         "output_from_processes",
     ]
@@ -239,28 +227,6 @@ class DataStudio(Google):
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
-    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.input_to_spark_jobs
-
-    @input_to_spark_jobs.setter
-    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_spark_jobs = input_to_spark_jobs
-
-    @property
-    def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
-        return (
-            None if self.attributes is None else self.attributes.output_from_spark_jobs
-        )
-
-    @output_from_spark_jobs.setter
-    def output_from_spark_jobs(self, output_from_spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_spark_jobs = output_from_spark_jobs
-
-    @property
     def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None if self.attributes is None else self.attributes.input_to_airflow_tasks
@@ -301,12 +267,6 @@ class DataStudio(Google):
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        output_from_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
         input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
@@ -326,6 +286,5 @@ class DataStudio(Google):
 
 from .core.airflow_task import AirflowTask  # noqa
 from .core.process import Process  # noqa
-from .core.spark_job import SparkJob  # noqa
 
 DataStudio.Attributes.update_forward_refs()

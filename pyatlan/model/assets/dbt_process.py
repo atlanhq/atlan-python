@@ -164,10 +164,6 @@ class DbtProcess(Dbt):
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
 
-    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
-    """
-    TBC
-    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -206,7 +202,6 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
-        "spark_jobs",
         "matillion_component",
         "airflow_tasks",
         "column_processes",
@@ -477,16 +472,6 @@ class DbtProcess(Dbt):
         self.attributes.ast = ast
 
     @property
-    def spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.spark_jobs
-
-    @spark_jobs.setter
-    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.spark_jobs = spark_jobs
-
-    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -545,9 +530,6 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
-        spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
@@ -572,6 +554,5 @@ from .core.airflow_task import AirflowTask  # noqa
 from .core.catalog import Catalog  # noqa
 from .core.column_process import ColumnProcess  # noqa
 from .core.matillion_component import MatillionComponent  # noqa
-from .core.spark_job import SparkJob  # noqa
 
 DbtProcess.Attributes.update_forward_refs()

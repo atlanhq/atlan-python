@@ -93,13 +93,13 @@ class SupersetChart(Superset):
         "supersetChartDescriptionMarkdown", "supersetChartDescriptionMarkdown"
     )
     """
-    Description markdown of the chart.
+
     """
     SUPERSET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
         "supersetChartFormData", "supersetChartFormData"
     )
     """
-    Data stored for the chart in key value pairs.
+
     """
 
     SUPERSET_DASHBOARD: ClassVar[RelationField] = RelationField("supersetDashboard")

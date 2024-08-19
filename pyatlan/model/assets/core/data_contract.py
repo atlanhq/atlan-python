@@ -50,13 +50,7 @@ class DataContract(Catalog):
         "dataContractJson", "dataContractJson"
     )
     """
-    (Deprecated) Replaced by dataContractSpec attribute.
-    """
-    DATA_CONTRACT_SPEC: ClassVar[KeywordField] = KeywordField(
-        "dataContractSpec", "dataContractSpec"
-    )
-    """
-    Actual content of the contract in YAML string format. Any changes to this string should create a new instance (with new sequential version number).
+    Actual content of the contract in JSON string format. Any changes to this string should create a new instance (with new sequential version number).
     """  # noqa: E501
     DATA_CONTRACT_VERSION: ClassVar[NumericField] = NumericField(
         "dataContractVersion", "dataContractVersion"
@@ -98,7 +92,6 @@ class DataContract(Catalog):
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_contract_json",
-        "data_contract_spec",
         "data_contract_version",
         "data_contract_asset_guid",
         "data_contract_asset_latest",
@@ -116,16 +109,6 @@ class DataContract(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_contract_json = data_contract_json
-
-    @property
-    def data_contract_spec(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_contract_spec
-
-    @data_contract_spec.setter
-    def data_contract_spec(self, data_contract_spec: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_contract_spec = data_contract_spec
 
     @property
     def data_contract_version(self) -> Optional[int]:
@@ -217,7 +200,6 @@ class DataContract(Catalog):
 
     class Attributes(Catalog.Attributes):
         data_contract_json: Optional[str] = Field(default=None, description="")
-        data_contract_spec: Optional[str] = Field(default=None, description="")
         data_contract_version: Optional[int] = Field(default=None, description="")
         data_contract_asset_guid: Optional[str] = Field(default=None, description="")
         data_contract_asset_latest: Optional[Asset] = Field(

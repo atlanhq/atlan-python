@@ -52,6 +52,12 @@ class CubeField(MultiDimensionalDataset):
     """
     Level of the field in the cube hierarchy.
     """
+    CUBE_FIELD_GENERATION: ClassVar[NumericField] = NumericField(
+        "cubeFieldGeneration", "cubeFieldGeneration"
+    )
+    """
+    Generation of the field in the cube hierarchy.
+    """
     CUBE_FIELD_MEASURE_EXPRESSION: ClassVar[KeywordTextField] = KeywordTextField(
         "cubeFieldMeasureExpression",
         "cubeFieldMeasureExpression.keyword",
@@ -84,6 +90,7 @@ class CubeField(MultiDimensionalDataset):
         "cube_parent_field_name",
         "cube_parent_field_qualified_name",
         "cube_field_level",
+        "cube_field_generation",
         "cube_field_measure_expression",
         "cube_sub_field_count",
         "cube_parent_field",
@@ -130,6 +137,18 @@ class CubeField(MultiDimensionalDataset):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cube_field_level = cube_field_level
+
+    @property
+    def cube_field_generation(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.cube_field_generation
+        )
+
+    @cube_field_generation.setter
+    def cube_field_generation(self, cube_field_generation: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cube_field_generation = cube_field_generation
 
     @property
     def cube_field_measure_expression(self) -> Optional[str]:
@@ -193,6 +212,7 @@ class CubeField(MultiDimensionalDataset):
             default=None, description=""
         )
         cube_field_level: Optional[int] = Field(default=None, description="")
+        cube_field_generation: Optional[int] = Field(default=None, description="")
         cube_field_measure_expression: Optional[str] = Field(
             default=None, description=""
         )

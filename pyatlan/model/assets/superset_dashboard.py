@@ -75,37 +75,37 @@ class SupersetDashboard(Superset):
         )
     )
     """
-    Name of the user who changed the dashboard.
+
     """
     SUPERSET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
         "supersetDashboardChangedByURL", "supersetDashboardChangedByURL"
     )
     """
-    URL of the user profile that changed the dashboard
+
     """
     SUPERSET_DASHBOARD_IS_MANAGED_EXTERNALLY: ClassVar[BooleanField] = BooleanField(
         "supersetDashboardIsManagedExternally", "supersetDashboardIsManagedExternally"
     )
     """
-    Whether the dashboard is manager externally (true) or not (false).
+
     """
     SUPERSET_DASHBOARD_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
         "supersetDashboardIsPublished", "supersetDashboardIsPublished"
     )
     """
-    Whether the dashboard is published (true) or not (false).
+
     """
     SUPERSET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
         "supersetDashboardThumbnailURL", "supersetDashboardThumbnailURL"
     )
     """
-    URL for the dashboard thumbnail image in superset.
+
     """
     SUPERSET_DASHBOARD_CHART_COUNT: ClassVar[NumericField] = NumericField(
         "supersetDashboardChartCount", "supersetDashboardChartCount"
     )
     """
-    Count of charts present in the dashboard.
+
     """
 
     SUPERSET_DATASETS: ClassVar[RelationField] = RelationField("supersetDatasets")

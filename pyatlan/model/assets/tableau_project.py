@@ -54,19 +54,11 @@ class TableauProject(Tableau):
     List of top-level projects with their nested child projects.
     """
 
-    WORKBOOKS: ClassVar[RelationField] = RelationField("workbooks")
-    """
-    TBC
-    """
-    FLOWS: ClassVar[RelationField] = RelationField("flows")
-    """
-    TBC
-    """
-    CHILD_PROJECTS: ClassVar[RelationField] = RelationField("childProjects")
-    """
-    TBC
-    """
     PARENT_PROJECT: ClassVar[RelationField] = RelationField("parentProject")
+    """
+    TBC
+    """
+    WORKBOOKS: ClassVar[RelationField] = RelationField("workbooks")
     """
     TBC
     """
@@ -78,18 +70,26 @@ class TableauProject(Tableau):
     """
     TBC
     """
+    FLOWS: ClassVar[RelationField] = RelationField("flows")
+    """
+    TBC
+    """
+    CHILD_PROJECTS: ClassVar[RelationField] = RelationField("childProjects")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "site_qualified_name",
         "top_level_project_qualified_name",
         "is_top_level_project",
         "project_hierarchy",
-        "workbooks",
-        "flows",
-        "child_projects",
         "parent_project",
+        "workbooks",
         "site",
         "datasources",
+        "flows",
+        "child_projects",
     ]
 
     @property
@@ -141,36 +141,6 @@ class TableauProject(Tableau):
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def workbooks(self) -> Optional[List[TableauWorkbook]]:
-        return None if self.attributes is None else self.attributes.workbooks
-
-    @workbooks.setter
-    def workbooks(self, workbooks: Optional[List[TableauWorkbook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workbooks = workbooks
-
-    @property
-    def flows(self) -> Optional[List[TableauFlow]]:
-        return None if self.attributes is None else self.attributes.flows
-
-    @flows.setter
-    def flows(self, flows: Optional[List[TableauFlow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.flows = flows
-
-    @property
-    def child_projects(self) -> Optional[List[TableauProject]]:
-        return None if self.attributes is None else self.attributes.child_projects
-
-    @child_projects.setter
-    def child_projects(self, child_projects: Optional[List[TableauProject]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.child_projects = child_projects
-
-    @property
     def parent_project(self) -> Optional[TableauProject]:
         return None if self.attributes is None else self.attributes.parent_project
 
@@ -179,6 +149,16 @@ class TableauProject(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent_project = parent_project
+
+    @property
+    def workbooks(self) -> Optional[List[TableauWorkbook]]:
+        return None if self.attributes is None else self.attributes.workbooks
+
+    @workbooks.setter
+    def workbooks(self, workbooks: Optional[List[TableauWorkbook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbooks = workbooks
 
     @property
     def site(self) -> Optional[TableauSite]:
@@ -200,6 +180,26 @@ class TableauProject(Tableau):
             self.attributes = self.Attributes()
         self.attributes.datasources = datasources
 
+    @property
+    def flows(self) -> Optional[List[TableauFlow]]:
+        return None if self.attributes is None else self.attributes.flows
+
+    @flows.setter
+    def flows(self, flows: Optional[List[TableauFlow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flows = flows
+
+    @property
+    def child_projects(self) -> Optional[List[TableauProject]]:
+        return None if self.attributes is None else self.attributes.child_projects
+
+    @child_projects.setter
+    def child_projects(self, child_projects: Optional[List[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.child_projects = child_projects
+
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         top_level_project_qualified_name: Optional[str] = Field(
@@ -209,22 +209,22 @@ class TableauProject(Tableau):
         project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        workbooks: Optional[List[TableauWorkbook]] = Field(
-            default=None, description=""
-        )  # relationship
-        flows: Optional[List[TableauFlow]] = Field(
-            default=None, description=""
-        )  # relationship
-        child_projects: Optional[List[TableauProject]] = Field(
-            default=None, description=""
-        )  # relationship
         parent_project: Optional[TableauProject] = Field(
+            default=None, description=""
+        )  # relationship
+        workbooks: Optional[List[TableauWorkbook]] = Field(
             default=None, description=""
         )  # relationship
         site: Optional[TableauSite] = Field(
             default=None, description=""
         )  # relationship
         datasources: Optional[List[TableauDatasource]] = Field(
+            default=None, description=""
+        )  # relationship
+        flows: Optional[List[TableauFlow]] = Field(
+            default=None, description=""
+        )  # relationship
+        child_projects: Optional[List[TableauProject]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -16,20 +16,12 @@ from .calculation_view import CalculationView
 from .catalog import Catalog
 from .column import Column
 from .column_process import ColumnProcess
-from .data_attribute import DataAttribute
-from .data_attribute_mapping_process import DataAttributeMappingProcess
 from .data_contract import DataContract
 from .data_domain import DataDomain
-from .data_entity import DataEntity
-from .data_entity_mapping_process import DataEntityMappingProcess
 from .data_mesh import DataMesh
-from .data_model import DataModel
-from .data_model_version import DataModelVersion
-from .data_modeling import DataModeling
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .database import Database
-from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt import Dbt
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
@@ -68,8 +60,6 @@ from .snowflake_stream import SnowflakeStream
 from .snowflake_tag import SnowflakeTag
 from .soda import Soda
 from .soda_check import SodaCheck
-from .spark import Spark
-from .spark_job import SparkJob
 from .stakeholder import Stakeholder
 from .stakeholder_title import StakeholderTitle
 from .table import Table
@@ -91,30 +81,22 @@ AtlasGlossary.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 AtlasGlossaryTerm.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
-DataAttributeMappingProcess.Attributes.update_forward_refs(**localns)
-DataEntityMappingProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
-DataModeling.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
 Matillion.Attributes.update_forward_refs(**localns)
 Dbt.Attributes.update_forward_refs(**localns)
-Spark.Attributes.update_forward_refs(**localns)
 Tag.Attributes.update_forward_refs(**localns)
 SchemaRegistry.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
-DataModelVersion.Attributes.update_forward_refs(**localns)
-DataModel.Attributes.update_forward_refs(**localns)
-DataEntity.Attributes.update_forward_refs(**localns)
-DataAttribute.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
@@ -132,7 +114,6 @@ MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
-DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
@@ -147,7 +128,6 @@ DbtTest.Attributes.update_forward_refs(**localns)
 DbtModel.Attributes.update_forward_refs(**localns)
 DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
-SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)
 MCMonitor.Attributes.update_forward_refs(**localns)

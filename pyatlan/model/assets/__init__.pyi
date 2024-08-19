@@ -13,30 +13,22 @@ __all__ = [
     "AuthPolicy",
     "AtlasGlossaryTerm",
     "BIProcess",
-    "DataAttributeMappingProcess",
-    "DataEntityMappingProcess",
     "ColumnProcess",
     "Persona",
     "Folder",
     "Airflow",
     "DataContract",
-    "DataModeling",
     "DataQuality",
     "Resource",
     "DataMesh",
     "SQL",
     "Matillion",
     "Dbt",
-    "Spark",
     "Tag",
     "SchemaRegistry",
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
-    "DataModelVersion",
-    "DataModel",
-    "DataEntity",
-    "DataAttribute",
     "MonteCarlo",
     "Metric",
     "Soda",
@@ -54,7 +46,6 @@ __all__ = [
     "Function",
     "TablePartition",
     "Column",
-    "DatabricksUnityCatalogTag",
     "SnowflakeStream",
     "CalculationView",
     "Database",
@@ -69,7 +60,6 @@ __all__ = [
     "DbtModel",
     "DbtMetric",
     "DbtSource",
-    "SparkJob",
     "SchemaRegistrySubject",
     "MCIncident",
     "MCMonitor",
@@ -81,16 +71,12 @@ __all__ = [
     "TagAttachment",
     "Connection",
     "Workflow",
-    "BusinessPolicyLog",
     "Badge",
-    "BusinessPolicy",
     "WorkflowRun",
     "ProcessExecution",
     "AuthService",
     "Cloud",
     "Infrastructure",
-    "Incident",
-    "BusinessPolicyException",
     "DbtProcess",
     "Purpose",
     "Collection",
@@ -102,10 +88,10 @@ __all__ = [
     "NoSQL",
     "Insight",
     "API",
+    "BusinessProcessModel",
     "Google",
     "Azure",
     "AWS",
-    "BusinessPolicyIncident",
     "DbtColumnProcess",
     "S3",
     "ADLS",
@@ -294,10 +280,7 @@ from .azure_service_bus_namespace import AzureServiceBusNamespace
 from .azure_service_bus_topic import AzureServiceBusTopic
 from .b_i import BI
 from .badge import Badge
-from .business_policy import BusinessPolicy
-from .business_policy_exception import BusinessPolicyException
-from .business_policy_incident import BusinessPolicyIncident
-from .business_policy_log import BusinessPolicyLog
+from .business_process_model import BusinessProcessModel
 from .cloud import Cloud
 from .cognite import Cognite
 from .cognite3_d_model import Cognite3DModel
@@ -331,20 +314,12 @@ from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
 from .core.column import Column
 from .core.column_process import ColumnProcess
-from .core.data_attribute import DataAttribute
-from .core.data_attribute_mapping_process import DataAttributeMappingProcess
 from .core.data_contract import DataContract
 from .core.data_domain import DataDomain
-from .core.data_entity import DataEntity
-from .core.data_entity_mapping_process import DataEntityMappingProcess
 from .core.data_mesh import DataMesh
-from .core.data_model import DataModel
-from .core.data_model_version import DataModelVersion
-from .core.data_modeling import DataModeling
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.database import Database
-from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .core.dbt import Dbt
 from .core.dbt_metric import DbtMetric
 from .core.dbt_model import DbtModel
@@ -384,8 +359,6 @@ from .core.snowflake_stream import SnowflakeStream
 from .core.snowflake_tag import SnowflakeTag
 from .core.soda import Soda
 from .core.soda_check import SodaCheck
-from .core.spark import Spark
-from .core.spark_job import SparkJob
 from .core.stakeholder import Stakeholder
 from .core.stakeholder_title import StakeholderTitle
 from .core.table import Table
@@ -419,7 +392,6 @@ from .g_c_s import GCS
 from .g_c_s_bucket import GCSBucket
 from .g_c_s_object import GCSObject
 from .google import Google
-from .incident import Incident
 from .infrastructure import Infrastructure
 from .insight import Insight
 from .kafka import Kafka

@@ -1,0 +1,59 @@
+
+    @overload
+    @classmethod
+    def creator(
+            cls,
+            *,
+            name: str,
+            cognite_asset_qualified_name: str,
+    ) -> CogniteEvent:
+        ...
+
+    @overload
+    @classmethod
+    def creator(
+            cls,
+            *,
+            name: str,
+            cognite_asset_qualified_name: str,
+            connection_qualified_name: str,
+    ) -> CogniteEvent:
+        ...
+
+    @classmethod
+    @init_guid
+    def creator(
+            cls,
+            *,
+            name: str,
+            cognite_asset_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+    ) -> CogniteEvent:
+        validate_required_fields(
+            ["name", "cognite_asset_qualified_name"],
+            [name, cognite_asset_qualified_name],
+        )
+        attributes = CogniteEvent.Attributes.create(
+            name=name,
+            cognite_asset_qualified_name=cognite_asset_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+            cls, *, name: str, cognite_asset_qualified_name: str
+    ) -> CogniteEvent:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            cognite_asset_qualified_name=cognite_asset_qualified_name,
+        )

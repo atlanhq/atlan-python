@@ -72,10 +72,6 @@ class LookerTile(Looker):
     """
     TBC
     """
-    FIELDS: ClassVar[RelationField] = RelationField("fields")
-    """
-    TBC
-    """
     DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
     """
     TBC
@@ -91,7 +87,6 @@ class LookerTile(Looker):
         "look_id",
         "query",
         "look",
-        "fields",
         "dashboard",
     ]
 
@@ -186,16 +181,6 @@ class LookerTile(Looker):
         self.attributes.look = look
 
     @property
-    def fields(self) -> Optional[List[LookerField]]:
-        return None if self.attributes is None else self.attributes.fields
-
-    @fields.setter
-    def fields(self, fields: Optional[List[LookerField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fields = fields
-
-    @property
     def dashboard(self) -> Optional[LookerDashboard]:
         return None if self.attributes is None else self.attributes.dashboard
 
@@ -217,9 +202,6 @@ class LookerTile(Looker):
             default=None, description=""
         )  # relationship
         look: Optional[LookerLook] = Field(default=None, description="")  # relationship
-        fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
             default=None, description=""
         )  # relationship
@@ -235,7 +217,6 @@ class LookerTile(Looker):
 
 
 from .looker_dashboard import LookerDashboard  # noqa
-from .looker_field import LookerField  # noqa
 from .looker_look import LookerLook  # noqa
 from .looker_query import LookerQuery  # noqa
 
