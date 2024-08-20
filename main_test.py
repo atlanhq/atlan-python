@@ -25,20 +25,39 @@ client = AtlanClient(
     base_url=tenant_name,
     api_key=bearer_token,
 )
-
-connector = AtlanConnectorType.COGNITE
-admin_role_guid = RoleCache.get_id_for_name("$admin")
-cognite_connection = Connection.create(connector_type=connector, name='CogniteTestConnection',
-                                       admin_roles=[admin_role_guid])
-cognite_create_response = client.asset.save(entity=cognite_connection)
-cognite_connection_qualified_name = cognite_create_response.assets_created(asset_type=Connection)[0].qualified_name
 #
+# client.asset.delete_by_guid('fccd9fda-d388-46c0-a57b-1f3a2c45b362')
+# client.asset.delete_by_guid('3000b214-7af7-47fc-b813-308e06e89cc1')
+# client.asset.delete_by_guid('e74fbf59-6f1f-4a54-8a82-85ad4214a34f')
+#
+#
+# connector = AtlanConnectorType.COGNITE
+# admin_role_guid = RoleCache.get_id_for_name("$admin")
+# cognite_connection = Connection.create(connector_type=connector, name='CogniteTestConnection',
+#                                        admin_roles=[admin_role_guid])
+# cognite_create_response = client.asset.save(entity=cognite_connection)
+# cognite_connection_qualified_name = cognite_create_response.assets_created(asset_type=Connection)[0].qualified_name
 #
 CogniteAsset_type = CogniteAsset.creator(
-    name='Asset_test1',
-    qualified_name=cognite_connection_qualified_name+'/Asset_test1'
+    name='Asset_test4',
+    connection_qualified_name='default/cognite/1724125659'
 )
+#
 response = client.asset.save(CogniteAsset_type)
+# asset_guid = response.assets_created(asset_type=CogniteAsset)[0].qualified_name
+# print(response)
+
+# CogniteAssetfile = CogniteFile.creator(
+#     name='file1',
+#     cognite_asset_qualified_name='default/cognite/1724125659/Asset_test1',
+#     connection_qualified_name='default/cognite/1724125659',
+# )
+# CogniteAssetfile.cognite_asset = [client.asset.get_by_guid('ad20e09f-c28b-45b0-b44c-930f24216397')]
+# response = client.asset.save(CogniteAssetfile)
+
+
+
+
 
 
 # CogniteAsset.connection_qualified_name = cognite_connection_qualified_name

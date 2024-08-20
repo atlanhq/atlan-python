@@ -32,65 +32,6 @@ from .cognite import Cognite
 class Cognite3DModel(Cognite):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-    ) -> Cognite3DModel:
-        ...
-
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: str,
-    ) -> Cognite3DModel:
-        ...
-
-    @classmethod
-    @init_guid
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: Optional[str] = None,
-    ) -> Cognite3DModel:
-        validate_required_fields(
-            ["name", "cognite_asset_qualified_name"],
-            [name, cognite_asset_qualified_name],
-        )
-        attributes = Cognite3DModel.Attributes.create(
-            name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
-            connection_qualified_name=connection_qualified_name,
-        )
-        return cls(attributes=attributes)
-
-    @classmethod
-    @init_guid
-    def create(
-            cls, *, name: str, cognite_asset_qualified_name: str
-    ) -> Cognite3DModel:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.creator(
-            name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
-        )
-
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> Cognite3DModel:
@@ -118,6 +59,7 @@ class Cognite3DModel(Cognite):
         return cls.creator(
             name=name, connection_qualified_name=connection_qualified_name
         )
+
 
     type_name: str = Field(default="Cognite3DModel", allow_mutation=False)
 
@@ -173,39 +115,23 @@ class Cognite3DModel(Cognite):
         @classmethod
         @init_guid
         def create(
-                cls,
-                *,
-                name: str,
-                cognite_asset_qualified_name: str,
-                connection_qualified_name: Optional[str] = None,
+                cls, *, name: str, connection_qualified_name: str
         ) -> Cognite3DModel.Attributes:
             validate_required_fields(
-                ["name", "cognite_asset_qualified_name"],
-                [name, cognite_asset_qualified_name],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    cognite_asset_qualified_name,
-                    "cognite_asset_qualified_name",
-                    4,
-                )
-
             return Cognite3DModel.Attributes(
                 name=name,
-                cognite_asset_qualified_name=cognite_asset_qualified_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
-                qualified_name=f"{cognite_asset_qualified_name}/{name}",
-                connector_name=connector_name,
-                cognite_asset=CogniteAsset.ref_by_qualified_name(
-                    cognite_asset_qualified_name
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
                 ),
             )
 
-    attributes: Cognite3DModel.Attributes = Field(
+
+attributes: Cognite3DModel.Attributes = Field(
         default_factory=lambda: Cognite3DModel.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "

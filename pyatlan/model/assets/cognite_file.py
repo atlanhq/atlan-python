@@ -30,52 +30,22 @@ from .cognite import Cognite
 class CogniteFile(Cognite):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-    ) -> CogniteFile:
-        ...
-
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: str,
-    ) -> CogniteFile:
-        ...
-
     @classmethod
     @init_guid
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: Optional[str] = None,
-    ) -> CogniteFile:
+    def creator(cls, *, name: str, connection_qualified_name: str) -> CogniteFile:
         validate_required_fields(
-            ["name", "cognite_asset_qualified_name"],
-            [name, cognite_asset_qualified_name],
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
         )
         attributes = CogniteFile.Attributes.create(
             name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
-    def create(
-            cls, *, name: str, cognite_asset_qualified_name: str
-    ) -> CogniteFile:
+    def create(cls, *, name: str, connection_qualified_name: str) -> CogniteFile:
         warn(
             (
                 "This method is deprecated, please use 'creator' "
@@ -85,8 +55,7 @@ class CogniteFile(Cognite):
             stacklevel=2,
         )
         return cls.creator(
-            name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
+            name=name, connection_qualified_name=connection_qualified_name
         )
 
     type_name: str = Field(default="CogniteFile", allow_mutation=False)
@@ -143,35 +112,18 @@ class CogniteFile(Cognite):
         @classmethod
         @init_guid
         def create(
-                cls,
-                *,
-                name: str,
-                cognite_asset_qualified_name: str,
-                connection_qualified_name: Optional[str] = None,
+                cls, *, name: str, connection_qualified_name: str
         ) -> CogniteFile.Attributes:
             validate_required_fields(
-                ["name", "cognite_asset_qualified_name"],
-                [name, cognite_asset_qualified_name],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    cognite_asset_qualified_name,
-                    "cognite_asset_qualified_name",
-                    4,
-                )
-
             return CogniteFile.Attributes(
                 name=name,
-                cognite_asset_qualified_name=cognite_asset_qualified_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
-                qualified_name=f"{cognite_asset_qualified_name}/{name}",
-                connector_name=connector_name,
-                cognite_asset=CogniteAsset.ref_by_qualified_name(
-                    cognite_asset_qualified_name
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
                 ),
             )
 

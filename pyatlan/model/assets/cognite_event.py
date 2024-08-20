@@ -32,52 +32,22 @@ from .cognite import Cognite
 class CogniteEvent(Cognite):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-    ) -> CogniteEvent:
-        ...
-
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: str,
-    ) -> CogniteEvent:
-        ...
-
     @classmethod
     @init_guid
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: Optional[str] = None,
-    ) -> CogniteEvent:
+    def creator(cls, *, name: str, connection_qualified_name: str) -> CogniteEvent:
         validate_required_fields(
-            ["name", "cognite_asset_qualified_name"],
-            [name, cognite_asset_qualified_name],
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
         )
         attributes = CogniteEvent.Attributes.create(
             name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
-    def create(
-            cls, *, name: str, cognite_asset_qualified_name: str
-    ) -> CogniteEvent:
+    def create(cls, *, name: str, connection_qualified_name: str) -> CogniteEvent:
         warn(
             (
                 "This method is deprecated, please use 'creator' "
@@ -87,9 +57,9 @@ class CogniteEvent(Cognite):
             stacklevel=2,
         )
         return cls.creator(
-            name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
+            name=name, connection_qualified_name=connection_qualified_name
         )
+
 
     type_name: str = Field(default="CogniteEvent", allow_mutation=False)
 
@@ -145,39 +115,23 @@ class CogniteEvent(Cognite):
         @classmethod
         @init_guid
         def create(
-                cls,
-                *,
-                name: str,
-                cognite_asset_qualified_name: str,
-                connection_qualified_name: Optional[str] = None,
+                cls, *, name: str, connection_qualified_name: str
         ) -> CogniteEvent.Attributes:
             validate_required_fields(
-                ["name", "cognite_asset_qualified_name"],
-                [name, cognite_asset_qualified_name],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    cognite_asset_qualified_name,
-                    "cognite_asset_qualified_name",
-                    4,
-                )
-
             return CogniteEvent.Attributes(
                 name=name,
-                cognite_asset_qualified_name=cognite_asset_qualified_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
-                qualified_name=f"{cognite_asset_qualified_name}/{name}",
-                connector_name=connector_name,
-                cognite_asset=CogniteAsset.ref_by_qualified_name(
-                    cognite_asset_qualified_name
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
                 ),
             )
 
-    attributes: CogniteEvent.Attributes = Field(
+
+attributes: CogniteEvent.Attributes = Field(
         default_factory=lambda: CogniteEvent.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "

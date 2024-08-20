@@ -29,52 +29,22 @@ from .cognite import Cognite
 class CogniteTimeSeries(Cognite):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-    ) -> CogniteTimeSeries:
-        ...
-
-    @overload
-    @classmethod
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: str,
-    ) -> CogniteTimeSeries:
-        ...
-
     @classmethod
     @init_guid
-    def creator(
-            cls,
-            *,
-            name: str,
-            cognite_asset_qualified_name: str,
-            connection_qualified_name: Optional[str] = None,
-    ) -> CogniteTimeSeries:
+    def creator(cls, *, name: str, connection_qualified_name: str) -> CogniteTimeSeries:
         validate_required_fields(
-            ["name", "cognite_asset_qualified_name"],
-            [name, cognite_asset_qualified_name],
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
         )
         attributes = CogniteTimeSeries.Attributes.create(
             name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
-    def create(
-            cls, *, name: str, cognite_asset_qualified_name: str
-    ) -> CogniteTimeSeries:
+    def create(cls, *, name: str, connection_qualified_name: str) -> CogniteTimeSeries:
         warn(
             (
                 "This method is deprecated, please use 'creator' "
@@ -84,8 +54,7 @@ class CogniteTimeSeries(Cognite):
             stacklevel=2,
         )
         return cls.creator(
-            name=name,
-            cognite_asset_qualified_name=cognite_asset_qualified_name,
+            name=name, connection_qualified_name=connection_qualified_name
         )
 
     type_name: str = Field(default="CogniteTimeSeries", allow_mutation=False)
@@ -142,35 +111,18 @@ class CogniteTimeSeries(Cognite):
         @classmethod
         @init_guid
         def create(
-                cls,
-                *,
-                name: str,
-                cognite_asset_qualified_name: str,
-                connection_qualified_name: Optional[str] = None,
+                cls, *, name: str, connection_qualified_name: str
         ) -> CogniteTimeSeries.Attributes:
             validate_required_fields(
-                ["name", "cognite_asset_qualified_name"],
-                [name, cognite_asset_qualified_name],
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
             )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    cognite_asset_qualified_name,
-                    "cognite_asset_qualified_name",
-                    4,
-                )
-
             return CogniteTimeSeries.Attributes(
                 name=name,
-                cognite_asset_qualified_name=cognite_asset_qualified_name,
-                connection_qualified_name=connection_qualified_name or connection_qn,
-                qualified_name=f"{cognite_asset_qualified_name}/{name}",
-                connector_name=connector_name,
-                cognite_asset=CogniteAsset.ref_by_qualified_name(
-                    cognite_asset_qualified_name
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
                 ),
             )
 

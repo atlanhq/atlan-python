@@ -231,6 +231,7 @@ class CogniteAsset(Cognite):
                 ["name", "connection_qualified_name"],
                 [name, connection_qualified_name],
             )
+
             return CogniteAsset.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
