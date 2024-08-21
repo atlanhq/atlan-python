@@ -40,13 +40,13 @@ class SisenseFolder(Sisense):
     Unique name of the parent folder in which this folder exists.
     """
 
-    SISENSE_CHILD_FOLDERS: ClassVar[RelationField] = RelationField(
-        "sisenseChildFolders"
-    )
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
     """
     TBC
     """
-    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
+    SISENSE_CHILD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "sisenseChildFolders"
+    )
     """
     TBC
     """
@@ -63,8 +63,8 @@ class SisenseFolder(Sisense):
 
     _convenience_properties: ClassVar[List[str]] = [
         "sisense_folder_parent_folder_qualified_name",
-        "sisense_child_folders",
         "sisense_widgets",
+        "sisense_child_folders",
         "sisense_dashboards",
         "sisense_parent_folder",
     ]
@@ -88,6 +88,16 @@ class SisenseFolder(Sisense):
         )
 
     @property
+    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
+
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widgets = sisense_widgets
+
+    @property
     def sisense_child_folders(self) -> Optional[List[SisenseFolder]]:
         return (
             None if self.attributes is None else self.attributes.sisense_child_folders
@@ -100,16 +110,6 @@ class SisenseFolder(Sisense):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_child_folders = sisense_child_folders
-
-    @property
-    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
-        return None if self.attributes is None else self.attributes.sisense_widgets
-
-    @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_widgets = sisense_widgets
 
     @property
     def sisense_dashboards(self) -> Optional[List[SisenseDashboard]]:
@@ -137,10 +137,10 @@ class SisenseFolder(Sisense):
         sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        sisense_child_folders: Optional[List[SisenseFolder]] = Field(
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_widgets: Optional[List[SisenseWidget]] = Field(
+        sisense_child_folders: Optional[List[SisenseFolder]] = Field(
             default=None, description=""
         )  # relationship
         sisense_dashboards: Optional[List[SisenseDashboard]] = Field(

@@ -851,6 +851,14 @@ class Asset(Referenceable):
     """
     List of unique Monte Carlo incident names attached to this asset.
     """
+    ASSET_MC_ALERT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetMcAlertQualifiedNames",
+        "assetMcAlertQualifiedNames",
+        "assetMcAlertQualifiedNames.text",
+    )
+    """
+    List of unique Monte Carlo alert names attached to this asset.
+    """
     ASSET_MC_MONITOR_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "assetMcMonitorNames", "assetMcMonitorNames.keyword", "assetMcMonitorNames"
     )
@@ -900,6 +908,12 @@ class Asset(Referenceable):
     )
     """
     List of Monte Carlo incident severities associated with this asset.
+    """
+    ASSET_MC_INCIDENT_PRIORITIES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentPriorities", "assetMcIncidentPriorities"
+    )
+    """
+    List of Monte Carlo incident priorities associated with this asset.
     """
     ASSET_MC_INCIDENT_STATES: ClassVar[KeywordField] = KeywordField(
         "assetMcIncidentStates", "assetMcIncidentStates"
@@ -1166,6 +1180,7 @@ class Asset(Referenceable):
         "asset_tags",
         "asset_mc_incident_names",
         "asset_mc_incident_qualified_names",
+        "asset_mc_alert_qualified_names",
         "asset_mc_monitor_names",
         "asset_mc_monitor_qualified_names",
         "asset_mc_monitor_statuses",
@@ -1174,6 +1189,7 @@ class Asset(Referenceable):
         "asset_mc_incident_types",
         "asset_mc_incident_sub_types",
         "asset_mc_incident_severities",
+        "asset_mc_incident_priorities",
         "asset_mc_incident_states",
         "asset_mc_last_sync_run_at",
         "starred_by",
@@ -2560,6 +2576,22 @@ class Asset(Referenceable):
         )
 
     @property
+    def asset_mc_alert_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_alert_qualified_names
+        )
+
+    @asset_mc_alert_qualified_names.setter
+    def asset_mc_alert_qualified_names(
+        self, asset_mc_alert_qualified_names: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_alert_qualified_names = asset_mc_alert_qualified_names
+
+    @property
     def asset_mc_monitor_names(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_mc_monitor_names
@@ -2676,6 +2708,22 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
+
+    @property
+    def asset_mc_incident_priorities(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_priorities
+        )
+
+    @asset_mc_incident_priorities.setter
+    def asset_mc_incident_priorities(
+        self, asset_mc_incident_priorities: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_priorities = asset_mc_incident_priorities
 
     @property
     def asset_mc_incident_states(self) -> Optional[Set[str]]:
@@ -3234,6 +3282,9 @@ class Asset(Referenceable):
         asset_mc_incident_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        asset_mc_alert_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_mc_monitor_names: Optional[Set[str]] = Field(default=None, description="")
         asset_mc_monitor_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
@@ -3252,6 +3303,9 @@ class Asset(Referenceable):
             default=None, description=""
         )
         asset_mc_incident_severities: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_priorities: Optional[Set[str]] = Field(
             default=None, description=""
         )
         asset_mc_incident_states: Optional[Set[str]] = Field(

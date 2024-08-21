@@ -60,19 +60,19 @@ class TableauWorksheet(Tableau):
     Unique name of the workbook in which this worksheet exists.
     """
 
-    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
-    """
-    TBC
-    """
     DATASOURCE_FIELDS: ClassVar[RelationField] = RelationField("datasourceFields")
     """
     TBC
     """
-    CALCULATED_FIELDS: ClassVar[RelationField] = RelationField("calculatedFields")
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
     """
     TBC
     """
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    CALCULATED_FIELDS: ClassVar[RelationField] = RelationField("calculatedFields")
     """
     TBC
     """
@@ -83,10 +83,10 @@ class TableauWorksheet(Tableau):
         "top_level_project_qualified_name",
         "project_hierarchy",
         "workbook_qualified_name",
-        "workbook",
         "datasource_fields",
-        "calculated_fields",
         "dashboards",
+        "workbook",
+        "calculated_fields",
     ]
 
     @property
@@ -152,16 +152,6 @@ class TableauWorksheet(Tableau):
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
-    def workbook(self) -> Optional[TableauWorkbook]:
-        return None if self.attributes is None else self.attributes.workbook
-
-    @workbook.setter
-    def workbook(self, workbook: Optional[TableauWorkbook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workbook = workbook
-
-    @property
     def datasource_fields(self) -> Optional[List[TableauDatasourceField]]:
         return None if self.attributes is None else self.attributes.datasource_fields
 
@@ -172,6 +162,26 @@ class TableauWorksheet(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasource_fields = datasource_fields
+
+    @property
+    def dashboards(self) -> Optional[List[TableauDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[List[TableauDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
 
     @property
     def calculated_fields(self) -> Optional[List[TableauCalculatedField]]:
@@ -185,16 +195,6 @@ class TableauWorksheet(Tableau):
             self.attributes = self.Attributes()
         self.attributes.calculated_fields = calculated_fields
 
-    @property
-    def dashboards(self) -> Optional[List[TableauDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
-
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[List[TableauDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         project_qualified_name: Optional[str] = Field(default=None, description="")
@@ -205,16 +205,16 @@ class TableauWorksheet(Tableau):
             default=None, description=""
         )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
-        workbook: Optional[TableauWorkbook] = Field(
-            default=None, description=""
-        )  # relationship
         datasource_fields: Optional[List[TableauDatasourceField]] = Field(
             default=None, description=""
         )  # relationship
-        calculated_fields: Optional[List[TableauCalculatedField]] = Field(
+        dashboards: Optional[List[TableauDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        dashboards: Optional[List[TableauDashboard]] = Field(
+        workbook: Optional[TableauWorkbook] = Field(
+            default=None, description=""
+        )  # relationship
+        calculated_fields: Optional[List[TableauCalculatedField]] = Field(
             default=None, description=""
         )  # relationship
 

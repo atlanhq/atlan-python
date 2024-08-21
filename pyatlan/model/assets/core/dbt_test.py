@@ -90,11 +90,11 @@ class DbtTest(Dbt):
     """
     TBC
     """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumns")
     """
     TBC
     """
-    DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumns")
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
     """
     TBC
     """
@@ -110,8 +110,8 @@ class DbtTest(Dbt):
         "dbt_test_language",
         "dbt_sources",
         "sql_assets",
-        "dbt_models",
         "dbt_model_columns",
+        "dbt_models",
     ]
 
     @property
@@ -219,16 +219,6 @@ class DbtTest(Dbt):
         self.attributes.sql_assets = sql_assets
 
     @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
     def dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
         return None if self.attributes is None else self.attributes.dbt_model_columns
 
@@ -237,6 +227,16 @@ class DbtTest(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_columns = dbt_model_columns
+
+    @property
+    def dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
 
     class Attributes(Dbt.Attributes):
         dbt_test_status: Optional[str] = Field(default=None, description="")
@@ -253,10 +253,10 @@ class DbtTest(Dbt):
         sql_assets: Optional[List[SQL]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
+        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
+        dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
 

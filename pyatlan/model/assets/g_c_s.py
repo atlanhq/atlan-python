@@ -119,6 +119,12 @@ class GCS(Google):
     """
     TBC
     """
+    APP_APPLICATION_IMPLEMENTED: ClassVar[RelationField] = RelationField(
+        "appApplicationImplemented"
+    )
+    """
+    TBC
+    """
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "outputFromAirflowTasks"
     )
@@ -147,6 +153,12 @@ class GCS(Google):
     """
     TBC
     """
+    APP_COMPONENT_IMPLEMENTED: ClassVar[RelationField] = RelationField(
+        "appComponentImplemented"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "gcs_storage_class",
@@ -164,11 +176,13 @@ class GCS(Google):
         "google_labels",
         "google_tags",
         "input_to_processes",
+        "app_application_implemented",
         "output_from_airflow_tasks",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
         "input_to_airflow_tasks",
         "output_from_processes",
+        "app_component_implemented",
     ]
 
     @property
@@ -326,6 +340,22 @@ class GCS(Google):
         self.attributes.input_to_processes = input_to_processes
 
     @property
+    def app_application_implemented(self) -> Optional[AppApplication]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_application_implemented
+        )
+
+    @app_application_implemented.setter
+    def app_application_implemented(
+        self, app_application_implemented: Optional[AppApplication]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_application_implemented = app_application_implemented
+
+    @property
     def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None
@@ -389,6 +419,22 @@ class GCS(Google):
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
+    @property
+    def app_component_implemented(self) -> Optional[AppComponent]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_component_implemented
+        )
+
+    @app_component_implemented.setter
+    def app_component_implemented(
+        self, app_component_implemented: Optional[AppComponent]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_component_implemented = app_component_implemented
+
     class Attributes(Google.Attributes):
         gcs_storage_class: Optional[str] = Field(default=None, description="")
         gcs_encryption_type: Optional[str] = Field(default=None, description="")
@@ -407,6 +453,9 @@ class GCS(Google):
         input_to_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
+        app_application_implemented: Optional[AppApplication] = Field(
+            default=None, description=""
+        )  # relationship
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
@@ -422,6 +471,9 @@ class GCS(Google):
         output_from_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
+        app_component_implemented: Optional[AppComponent] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: GCS.Attributes = Field(
         default_factory=lambda: GCS.Attributes(),
@@ -434,6 +486,8 @@ class GCS(Google):
 
 
 from .core.airflow_task import AirflowTask  # noqa
+from .core.app_application import AppApplication  # noqa
+from .core.app_component import AppComponent  # noqa
 from .core.process import Process  # noqa
 from .core.spark_job import SparkJob  # noqa
 

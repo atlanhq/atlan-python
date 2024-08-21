@@ -138,6 +138,18 @@ class MCMonitor(MonteCarlo):
     """
     Number of incidents associated with this monitor.
     """
+    MC_MONITOR_ALERT_COUNT: ClassVar[NumericField] = NumericField(
+        "mcMonitorAlertCount", "mcMonitorAlertCount"
+    )
+    """
+    Number of alerts associated with this monitor.
+    """
+    MC_MONITOR_PRIORITY: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorPriority", "mcMonitorPriority"
+    )
+    """
+    Priority of this monitor.
+    """
 
     MC_MONITOR_ASSETS: ClassVar[RelationField] = RelationField("mcMonitorAssets")
     """
@@ -162,6 +174,8 @@ class MCMonitor(MonteCarlo):
         "mc_monitor_rule_is_snoozed",
         "mc_monitor_breach_rate",
         "mc_monitor_incident_count",
+        "mc_monitor_alert_count",
+        "mc_monitor_priority",
         "mc_monitor_assets",
     ]
 
@@ -396,6 +410,28 @@ class MCMonitor(MonteCarlo):
         self.attributes.mc_monitor_incident_count = mc_monitor_incident_count
 
     @property
+    def mc_monitor_alert_count(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.mc_monitor_alert_count
+        )
+
+    @mc_monitor_alert_count.setter
+    def mc_monitor_alert_count(self, mc_monitor_alert_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_alert_count = mc_monitor_alert_count
+
+    @property
+    def mc_monitor_priority(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mc_monitor_priority
+
+    @mc_monitor_priority.setter
+    def mc_monitor_priority(self, mc_monitor_priority: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_priority = mc_monitor_priority
+
+    @property
     def mc_monitor_assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.mc_monitor_assets
 
@@ -433,6 +469,8 @@ class MCMonitor(MonteCarlo):
         mc_monitor_rule_is_snoozed: Optional[bool] = Field(default=None, description="")
         mc_monitor_breach_rate: Optional[float] = Field(default=None, description="")
         mc_monitor_incident_count: Optional[int] = Field(default=None, description="")
+        mc_monitor_alert_count: Optional[int] = Field(default=None, description="")
+        mc_monitor_priority: Optional[str] = Field(default=None, description="")
         mc_monitor_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship

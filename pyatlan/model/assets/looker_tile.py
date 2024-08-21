@@ -64,6 +64,10 @@ class LookerTile(Looker):
     Identifier of the Look used to create this tile, from Looker.
     """
 
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
     QUERY: ClassVar[RelationField] = RelationField("query")
     """
     TBC
@@ -76,10 +80,6 @@ class LookerTile(Looker):
     """
     TBC
     """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "lookml_link_id",
@@ -89,10 +89,10 @@ class LookerTile(Looker):
         "result_maker_i_d",
         "subtitle_text",
         "look_id",
+        "dashboard",
         "query",
         "look",
         "fields",
-        "dashboard",
     ]
 
     @property
@@ -166,6 +166,16 @@ class LookerTile(Looker):
         self.attributes.look_id = look_id
 
     @property
+    def dashboard(self) -> Optional[LookerDashboard]:
+        return None if self.attributes is None else self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[LookerDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    @property
     def query(self) -> Optional[LookerQuery]:
         return None if self.attributes is None else self.attributes.query
 
@@ -195,16 +205,6 @@ class LookerTile(Looker):
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    @property
-    def dashboard(self) -> Optional[LookerDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[LookerDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(default=None, description="")
         merge_result_id: Optional[str] = Field(default=None, description="")
@@ -213,14 +213,14 @@ class LookerTile(Looker):
         result_maker_i_d: Optional[int] = Field(default=None, description="")
         subtitle_text: Optional[str] = Field(default=None, description="")
         look_id: Optional[int] = Field(default=None, description="")
+        dashboard: Optional[LookerDashboard] = Field(
+            default=None, description=""
+        )  # relationship
         query: Optional[LookerQuery] = Field(
             default=None, description=""
         )  # relationship
         look: Optional[LookerLook] = Field(default=None, description="")  # relationship
         fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
             default=None, description=""
         )  # relationship
 

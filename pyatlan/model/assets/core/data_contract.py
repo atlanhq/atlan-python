@@ -71,20 +71,8 @@ class DataContract(Catalog):
     Unique identifier of the asset associated with this data contract.
     """
 
-    DATA_CONTRACT_ASSET_LATEST: ClassVar[RelationField] = RelationField(
-        "dataContractAssetLatest"
-    )
-    """
-    TBC
-    """
     DATA_CONTRACT_ASSET_CERTIFIED: ClassVar[RelationField] = RelationField(
         "dataContractAssetCertified"
-    )
-    """
-    TBC
-    """
-    DATA_CONTRACT_PREVIOUS_VERSION: ClassVar[RelationField] = RelationField(
-        "dataContractPreviousVersion"
     )
     """
     TBC
@@ -95,16 +83,28 @@ class DataContract(Catalog):
     """
     TBC
     """
+    DATA_CONTRACT_ASSET_LATEST: ClassVar[RelationField] = RelationField(
+        "dataContractAssetLatest"
+    )
+    """
+    TBC
+    """
+    DATA_CONTRACT_PREVIOUS_VERSION: ClassVar[RelationField] = RelationField(
+        "dataContractPreviousVersion"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_contract_json",
         "data_contract_spec",
         "data_contract_version",
         "data_contract_asset_guid",
-        "data_contract_asset_latest",
         "data_contract_asset_certified",
-        "data_contract_previous_version",
         "data_contract_next_version",
+        "data_contract_asset_latest",
+        "data_contract_previous_version",
     ]
 
     @property
@@ -154,20 +154,6 @@ class DataContract(Catalog):
         self.attributes.data_contract_asset_guid = data_contract_asset_guid
 
     @property
-    def data_contract_asset_latest(self) -> Optional[Asset]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.data_contract_asset_latest
-        )
-
-    @data_contract_asset_latest.setter
-    def data_contract_asset_latest(self, data_contract_asset_latest: Optional[Asset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_contract_asset_latest = data_contract_asset_latest
-
-    @property
     def data_contract_asset_certified(self) -> Optional[Asset]:
         return (
             None
@@ -182,22 +168,6 @@ class DataContract(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_contract_asset_certified = data_contract_asset_certified
-
-    @property
-    def data_contract_previous_version(self) -> Optional[DataContract]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.data_contract_previous_version
-        )
-
-    @data_contract_previous_version.setter
-    def data_contract_previous_version(
-        self, data_contract_previous_version: Optional[DataContract]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_contract_previous_version = data_contract_previous_version
 
     @property
     def data_contract_next_version(self) -> Optional[DataContract]:
@@ -215,21 +185,51 @@ class DataContract(Catalog):
             self.attributes = self.Attributes()
         self.attributes.data_contract_next_version = data_contract_next_version
 
+    @property
+    def data_contract_asset_latest(self) -> Optional[Asset]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_latest
+        )
+
+    @data_contract_asset_latest.setter
+    def data_contract_asset_latest(self, data_contract_asset_latest: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_asset_latest = data_contract_asset_latest
+
+    @property
+    def data_contract_previous_version(self) -> Optional[DataContract]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_previous_version
+        )
+
+    @data_contract_previous_version.setter
+    def data_contract_previous_version(
+        self, data_contract_previous_version: Optional[DataContract]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_contract_previous_version = data_contract_previous_version
+
     class Attributes(Catalog.Attributes):
         data_contract_json: Optional[str] = Field(default=None, description="")
         data_contract_spec: Optional[str] = Field(default=None, description="")
         data_contract_version: Optional[int] = Field(default=None, description="")
         data_contract_asset_guid: Optional[str] = Field(default=None, description="")
-        data_contract_asset_latest: Optional[Asset] = Field(
-            default=None, description=""
-        )  # relationship
         data_contract_asset_certified: Optional[Asset] = Field(
             default=None, description=""
         )  # relationship
-        data_contract_previous_version: Optional[DataContract] = Field(
+        data_contract_next_version: Optional[DataContract] = Field(
             default=None, description=""
         )  # relationship
-        data_contract_next_version: Optional[DataContract] = Field(
+        data_contract_asset_latest: Optional[Asset] = Field(
+            default=None, description=""
+        )  # relationship
+        data_contract_previous_version: Optional[DataContract] = Field(
             default=None, description=""
         )  # relationship
 

@@ -104,15 +104,15 @@ class DataDomain(DataMesh):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_PRODUCTS: ClassVar[RelationField] = RelationField("dataProducts")
-    """
-    TBC
-    """
     STAKEHOLDERS: ClassVar[RelationField] = RelationField("stakeholders")
     """
     TBC
     """
     PARENT_DOMAIN: ClassVar[RelationField] = RelationField("parentDomain")
+    """
+    TBC
+    """
+    DATA_PRODUCTS: ClassVar[RelationField] = RelationField("dataProducts")
     """
     TBC
     """
@@ -122,21 +122,11 @@ class DataDomain(DataMesh):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "data_products",
         "stakeholders",
         "parent_domain",
+        "data_products",
         "sub_domains",
     ]
-
-    @property
-    def data_products(self) -> Optional[List[DataProduct]]:
-        return None if self.attributes is None else self.attributes.data_products
-
-    @data_products.setter
-    def data_products(self, data_products: Optional[List[DataProduct]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_products = data_products
 
     @property
     def stakeholders(self) -> Optional[List[Stakeholder]]:
@@ -159,6 +149,16 @@ class DataDomain(DataMesh):
         self.attributes.parent_domain = parent_domain
 
     @property
+    def data_products(self) -> Optional[List[DataProduct]]:
+        return None if self.attributes is None else self.attributes.data_products
+
+    @data_products.setter
+    def data_products(self, data_products: Optional[List[DataProduct]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_products = data_products
+
+    @property
     def sub_domains(self) -> Optional[List[DataDomain]]:
         return None if self.attributes is None else self.attributes.sub_domains
 
@@ -169,13 +169,13 @@ class DataDomain(DataMesh):
         self.attributes.sub_domains = sub_domains
 
     class Attributes(DataMesh.Attributes):
-        data_products: Optional[List[DataProduct]] = Field(
-            default=None, description=""
-        )  # relationship
         stakeholders: Optional[List[Stakeholder]] = Field(
             default=None, description=""
         )  # relationship
         parent_domain: Optional[DataDomain] = Field(
+            default=None, description=""
+        )  # relationship
+        data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
         sub_domains: Optional[List[DataDomain]] = Field(

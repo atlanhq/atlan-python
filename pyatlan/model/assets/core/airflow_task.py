@@ -145,16 +145,22 @@ class AirflowTask(Airflow):
     """
     Trigger for the run.
     """
+    AIRFLOW_TASK_GROUP_NAME: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskGroupName", "airflowTaskGroupName"
+    )
+    """
+    Group name for the task.
+    """
 
     OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
     """
     TBC
     """
-    PROCESS: ClassVar[RelationField] = RelationField("process")
+    INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
     TBC
     """
-    INPUTS: ClassVar[RelationField] = RelationField("inputs")
+    PROCESS: ClassVar[RelationField] = RelationField("process")
     """
     TBC
     """
@@ -175,9 +181,10 @@ class AirflowTask(Airflow):
         "airflow_task_queue",
         "airflow_task_priority_weight",
         "airflow_task_trigger_rule",
+        "airflow_task_group_name",
         "outputs",
-        "process",
         "inputs",
+        "process",
         "airflow_dag",
     ]
 
@@ -318,6 +325,18 @@ class AirflowTask(Airflow):
         self.attributes.airflow_task_trigger_rule = airflow_task_trigger_rule
 
     @property
+    def airflow_task_group_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.airflow_task_group_name
+        )
+
+    @airflow_task_group_name.setter
+    def airflow_task_group_name(self, airflow_task_group_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_group_name = airflow_task_group_name
+
+    @property
     def outputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.outputs
 
@@ -328,16 +347,6 @@ class AirflowTask(Airflow):
         self.attributes.outputs = outputs
 
     @property
-    def process(self) -> Optional[Process]:
-        return None if self.attributes is None else self.attributes.process
-
-    @process.setter
-    def process(self, process: Optional[Process]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.process = process
-
-    @property
     def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
@@ -346,6 +355,16 @@ class AirflowTask(Airflow):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
+
+    @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
 
     @property
     def airflow_dag(self) -> Optional[AirflowDag]:
@@ -371,13 +390,14 @@ class AirflowTask(Airflow):
             default=None, description=""
         )
         airflow_task_trigger_rule: Optional[str] = Field(default=None, description="")
+        airflow_task_group_name: Optional[str] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
-        process: Optional[Process] = Field(default=None, description="")  # relationship
         inputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
+        process: Optional[Process] = Field(default=None, description="")  # relationship
         airflow_dag: Optional[AirflowDag] = Field(
             default=None, description=""
         )  # relationship
