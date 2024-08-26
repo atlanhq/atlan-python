@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fields.atlan_fields import TextField
 
 from .catalog import Catalog
 
@@ -29,7 +29,7 @@ class Matillion(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MATILLION_VERSION: ClassVar[KeywordField] = KeywordField(
+    MATILLION_VERSION: ClassVar[TextField] = TextField(
         "matillionVersion", "matillionVersion"
     )
     """

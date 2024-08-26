@@ -82,13 +82,13 @@ class DynamoDBTable(Table):
     """
     Configuration for preview queries.
     """
-    EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
+    EXTERNAL_LOCATION: ClassVar[TextField] = TextField(
         "externalLocation", "externalLocation"
     )
     """
     External location of this table, for example: an S3 object location.
     """
-    EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
+    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField(
         "externalLocationRegion", "externalLocationRegion"
     )
     """
@@ -118,9 +118,7 @@ class DynamoDBTable(Table):
     """
     Number of partitions in this table.
     """
-    PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
-        "partitionList", "partitionList"
-    )
+    PARTITION_LIST: ClassVar[TextField] = TextField("partitionList", "partitionList")
     """
     List of partitions in this table.
     """

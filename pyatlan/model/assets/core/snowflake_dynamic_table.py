@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fields.atlan_fields import TextField
 
 from .table import Table
 
@@ -29,7 +29,7 @@ class SnowflakeDynamicTable(Table):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    DEFINITION: ClassVar[TextField] = TextField("definition", "definition")
     """
     SQL statements used to define the dynamic table.
     """

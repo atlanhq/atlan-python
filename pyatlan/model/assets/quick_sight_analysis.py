@@ -9,7 +9,7 @@ from typing import ClassVar, List, Optional, Set
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import QuickSightAnalysisStatus
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 
 from .quick_sight import QuickSight
 
@@ -36,20 +36,20 @@ class QuickSightAnalysis(QuickSight):
     """
     Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc.
     """
-    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
+    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[TextField] = TextField(
         "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
     )
     """
     List of field names calculated by this analysis.
     """
-    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
+    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[TextField] = TextField(
         "quickSightAnalysisParameterDeclarations",
         "quickSightAnalysisParameterDeclarations",
     )
     """
     List of parameters used for this analysis.
     """
-    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
+    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[TextField] = TextField(
         "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
     )
     """

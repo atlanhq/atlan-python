@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 
 from .micro_strategy import MicroStrategy
 
@@ -35,7 +35,7 @@ class MicroStrategyCube(MicroStrategy):
     """
     Type of cube, for example: OLAP or MTDI.
     """
-    MICRO_STRATEGY_CUBE_QUERY: ClassVar[KeywordField] = KeywordField(
+    MICRO_STRATEGY_CUBE_QUERY: ClassVar[TextField] = TextField(
         "microStrategyCubeQuery", "microStrategyCubeQuery"
     )
     """

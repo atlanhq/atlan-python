@@ -13,6 +13,7 @@ from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
+    TextField,
 )
 
 from .b_i import BI
@@ -48,7 +49,7 @@ class PowerBI(BI):
     """
     Unique name of the Power BI table in which this asset exists.
     """
-    POWER_BI_FORMAT_STRING: ClassVar[KeywordField] = KeywordField(
+    POWER_BI_FORMAT_STRING: ClassVar[TextField] = TextField(
         "powerBIFormatString", "powerBIFormatString"
     )
     """

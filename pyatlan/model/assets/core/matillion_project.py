@@ -9,10 +9,10 @@ from typing import ClassVar, List, Optional, Set
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
-    KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 from .matillion import Matillion
@@ -34,13 +34,13 @@ class MatillionProject(Matillion):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MATILLION_VERSIONS: ClassVar[KeywordField] = KeywordField(
+    MATILLION_VERSIONS: ClassVar[TextField] = TextField(
         "matillionVersions", "matillionVersions"
     )
     """
     List of versions in the project.
     """
-    MATILLION_ENVIRONMENTS: ClassVar[KeywordField] = KeywordField(
+    MATILLION_ENVIRONMENTS: ClassVar[TextField] = TextField(
         "matillionEnvironments", "matillionEnvironments"
     )
     """

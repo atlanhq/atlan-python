@@ -17,7 +17,12 @@ from pyatlan.model.enums import (
     DataProductStatus,
     DataProductVisibility,
 )
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 from pyatlan.model.search import IndexSearchRequest
 from pyatlan.utils import init_guid, validate_required_fields
 
@@ -166,13 +171,13 @@ class DataProduct(DataMesh):
     """
     Visibility of a data product.
     """
-    DATA_PRODUCT_ASSETS_DSL: ClassVar[KeywordField] = KeywordField(
+    DATA_PRODUCT_ASSETS_DSL: ClassVar[TextField] = TextField(
         "dataProductAssetsDSL", "dataProductAssetsDSL"
     )
     """
     Search DSL used to define which assets are part of this data product.
     """
-    DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[KeywordField] = KeywordField(
+    DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[TextField] = TextField(
         "dataProductAssetsPlaybookFilter", "dataProductAssetsPlaybookFilter"
     )
     """

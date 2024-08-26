@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField, TextField
 
 from .salesforce import Salesforce
 
@@ -29,7 +29,7 @@ class SalesforceOrganization(Salesforce):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    SOURCE_ID: ClassVar[TextField] = TextField("sourceId", "sourceId")
     """
     Identifier of the organization in Salesforce.
     """

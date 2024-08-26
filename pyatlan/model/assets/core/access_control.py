@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    RelationField,
+    TextField,
+)
 
 from .asset import Asset
 
@@ -47,29 +52,29 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
-    DENY_ASSET_FILTERS: ClassVar[KeywordField] = KeywordField(
+    DENY_ASSET_FILTERS: ClassVar[TextField] = TextField(
         "denyAssetFilters", "denyAssetFilters"
     )
     """
     TBC
     """
-    CHANNEL_LINK: ClassVar[KeywordField] = KeywordField("channelLink", "channelLink")
+    CHANNEL_LINK: ClassVar[TextField] = TextField("channelLink", "channelLink")
     """
     TBC
     """
-    DENY_ASSET_TYPES: ClassVar[KeywordField] = KeywordField(
+    DENY_ASSET_TYPES: ClassVar[TextField] = TextField(
         "denyAssetTypes", "denyAssetTypes"
     )
     """
     TBC
     """
-    DENY_NAVIGATION_PAGES: ClassVar[KeywordField] = KeywordField(
+    DENY_NAVIGATION_PAGES: ClassVar[TextField] = TextField(
         "denyNavigationPages", "denyNavigationPages"
     )
     """
     TBC
     """
-    DEFAULT_NAVIGATION: ClassVar[KeywordField] = KeywordField(
+    DEFAULT_NAVIGATION: ClassVar[TextField] = TextField(
         "defaultNavigation", "defaultNavigation"
     )
     """

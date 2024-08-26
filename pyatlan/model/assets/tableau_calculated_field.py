@@ -12,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 from .tableau import Tableau
@@ -33,31 +34,31 @@ class TableauCalculatedField(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "siteQualifiedName", "siteQualifiedName"
     )
     """
     Unique name of the site in which this calculated field exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
     Unique name of the project in which this calculated field exists.
     """
-    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
     Unique name of the top-level project in which this calculated field exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
     Unique name of the workbook in which this calculated field exists.
     """
-    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    DATASOURCE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "datasourceQualifiedName", "datasourceQualifiedName"
     )
     """
@@ -69,11 +70,11 @@ class TableauCalculatedField(Tableau):
     """
     List of top-level projects and their nested projects.
     """
-    DATA_CATEGORY: ClassVar[KeywordField] = KeywordField("dataCategory", "dataCategory")
+    DATA_CATEGORY: ClassVar[TextField] = TextField("dataCategory", "dataCategory")
     """
     Data category of this field.
     """
-    ROLE: ClassVar[KeywordField] = KeywordField("role", "role")
+    ROLE: ClassVar[TextField] = TextField("role", "role")
     """
     Role of this field, for example: 'dimension', 'measure', or 'unknown'.
     """
@@ -83,7 +84,7 @@ class TableauCalculatedField(Tableau):
     """
     Data type of the field, from Tableau.
     """
-    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    FORMULA: ClassVar[TextField] = TextField("formula", "formula")
     """
     Formula for this calculated field.
     """

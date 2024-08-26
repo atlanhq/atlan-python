@@ -12,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 from .matillion import Matillion
@@ -63,7 +64,7 @@ class MatillionComponent(Matillion):
     """
     Last five run statuses of the component within a job.
     """
-    MATILLION_COMPONENT_SQLS: ClassVar[KeywordField] = KeywordField(
+    MATILLION_COMPONENT_SQLS: ClassVar[TextField] = TextField(
         "matillionComponentSqls", "matillionComponentSqls"
     )
     """

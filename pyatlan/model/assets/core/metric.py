@@ -33,7 +33,7 @@ class Metric(DataQuality):
     """
     Type of the metric.
     """
-    METRIC_SQL: ClassVar[KeywordField] = KeywordField("metricSQL", "metricSQL")
+    METRIC_SQL: ClassVar[TextField] = TextField("metricSQL", "metricSQL")
     """
     SQL query used to compute the metric.
     """

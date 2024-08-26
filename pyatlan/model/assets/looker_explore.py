@@ -8,11 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import (
-    KeywordField,
-    KeywordTextField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordTextField, RelationField, TextField
 
 from .looker import Looker
 
@@ -33,15 +29,15 @@ class LookerExplore(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    PROJECT_NAME: ClassVar[TextField] = TextField("projectName", "projectName")
     """
     Name of the parent project of this Explore.
     """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    MODEL_NAME: ClassVar[TextField] = TextField("modelName", "modelName")
     """
     Name of the parent model of this Explore.
     """
-    SOURCE_CONNECTION_NAME: ClassVar[KeywordField] = KeywordField(
+    SOURCE_CONNECTION_NAME: ClassVar[TextField] = TextField(
         "sourceConnectionName", "sourceConnectionName"
     )
     """
@@ -53,9 +49,7 @@ class LookerExplore(Looker):
     """
     Name of the view for the Explore.
     """
-    SQL_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
-        "sqlTableName", "sqlTableName"
-    )
+    SQL_TABLE_NAME: ClassVar[TextField] = TextField("sqlTableName", "sqlTableName")
     """
     Name of the SQL table used to declare the Explore.
     """

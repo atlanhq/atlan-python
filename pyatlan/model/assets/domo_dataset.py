@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
 
 from .domo import Domo
 
@@ -47,7 +47,7 @@ class DomoDataset(Domo):
     """
     Number of cards linked to the Domo dataset.
     """
-    DOMO_DATASET_LAST_RUN: ClassVar[KeywordField] = KeywordField(
+    DOMO_DATASET_LAST_RUN: ClassVar[TextField] = TextField(
         "domoDatasetLastRun", "domoDatasetLastRun"
     )
     """

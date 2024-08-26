@@ -12,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 from .tableau import Tableau
@@ -33,31 +34,31 @@ class TableauDatasourceField(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "siteQualifiedName", "siteQualifiedName"
     )
     """
     Unique name of the site in which this datasource field exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
     Unique name of the project in which this datasource field exists.
     """
-    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
     Unique name of the top-level project in which this datasource field exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
     Unique name of the workbook in which this datasource field exists.
     """
-    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    DATASOURCE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "datasourceQualifiedName", "datasourceQualifiedName"
     )
     """
@@ -69,19 +70,19 @@ class TableauDatasourceField(Tableau):
     """
     List of top-level projects and their nested child projects.
     """
-    FULLY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    FULLY_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "fullyQualifiedName", "fullyQualifiedName"
     )
     """
     Name used internally in Tableau to uniquely identify this field.
     """
-    TABLEAU_DATASOURCE_FIELD_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+    TABLEAU_DATASOURCE_FIELD_DATA_CATEGORY: ClassVar[TextField] = TextField(
         "tableauDatasourceFieldDataCategory", "tableauDatasourceFieldDataCategory"
     )
     """
     Data category of this field.
     """
-    TABLEAU_DATASOURCE_FIELD_ROLE: ClassVar[KeywordField] = KeywordField(
+    TABLEAU_DATASOURCE_FIELD_ROLE: ClassVar[TextField] = TextField(
         "tableauDatasourceFieldRole", "tableauDatasourceFieldRole"
     )
     """
@@ -101,13 +102,13 @@ class TableauDatasourceField(Tableau):
     """
     Tables upstream to this datasource field.
     """
-    TABLEAU_DATASOURCE_FIELD_FORMULA: ClassVar[KeywordField] = KeywordField(
+    TABLEAU_DATASOURCE_FIELD_FORMULA: ClassVar[TextField] = TextField(
         "tableauDatasourceFieldFormula", "tableauDatasourceFieldFormula"
     )
     """
     Formula for this field.
     """
-    TABLEAU_DATASOURCE_FIELD_BIN_SIZE: ClassVar[KeywordField] = KeywordField(
+    TABLEAU_DATASOURCE_FIELD_BIN_SIZE: ClassVar[TextField] = TextField(
         "tableauDatasourceFieldBinSize", "tableauDatasourceFieldBinSize"
     )
     """
@@ -125,7 +126,7 @@ class TableauDatasourceField(Tableau):
     """
     Fields upstream to this field.
     """
-    DATASOURCE_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+    DATASOURCE_FIELD_TYPE: ClassVar[TextField] = TextField(
         "datasourceFieldType", "datasourceFieldType"
     )
     """

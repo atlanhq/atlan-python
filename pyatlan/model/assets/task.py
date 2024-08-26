@@ -9,7 +9,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    TextField,
+)
 from pyatlan.model.structs import Action
 
 from .core.asset import Asset
@@ -51,7 +56,7 @@ class Task(Asset, type_name="Task"):
     """
     flag to make task read/unread
     """
-    TASK_REQUESTOR_COMMENT: ClassVar[KeywordField] = KeywordField(
+    TASK_REQUESTOR_COMMENT: ClassVar[TextField] = TextField(
         "taskRequestorComment", "taskRequestorComment"
     )
     """
@@ -63,9 +68,7 @@ class Task(Asset, type_name="Task"):
     """
     assetId to preview
     """
-    TASK_PROPOSALS: ClassVar[KeywordField] = KeywordField(
-        "taskProposals", "taskProposals"
-    )
+    TASK_PROPOSALS: ClassVar[TextField] = TextField("taskProposals", "taskProposals")
     """
     contains the payload that is proposed to the task
     """
@@ -79,7 +82,7 @@ class Task(Asset, type_name="Task"):
     """
     List of actions associated with this task.
     """
-    TASK_EXECUTION_COMMENT: ClassVar[KeywordField] = KeywordField(
+    TASK_EXECUTION_COMMENT: ClassVar[TextField] = TextField(
         "taskExecutionComment", "taskExecutionComment"
     )
     """

@@ -268,7 +268,7 @@ class Asset(Referenceable):
     """
     Description of this asset, as provided by a user. If present, this will be used for the description in user interface.
     """  # noqa: E501
-    TENANT_ID: ClassVar[KeywordField] = KeywordField("tenantId", "tenantId")
+    TENANT_ID: ClassVar[TextField] = TextField("tenantId", "tenantId")
     """
     Name of the Atlan workspace in which this asset exists.
     """
@@ -278,7 +278,7 @@ class Asset(Referenceable):
     """
     Status of this asset's certification.
     """
-    CERTIFICATE_STATUS_MESSAGE: ClassVar[KeywordField] = KeywordField(
+    CERTIFICATE_STATUS_MESSAGE: ClassVar[TextField] = TextField(
         "certificateStatusMessage", "certificateStatusMessage"
     )
     """
@@ -296,13 +296,13 @@ class Asset(Referenceable):
     """
     Time (epoch) at which the certification was last updated, in milliseconds.
     """
-    ANNOUNCEMENT_TITLE: ClassVar[KeywordField] = KeywordField(
+    ANNOUNCEMENT_TITLE: ClassVar[TextField] = TextField(
         "announcementTitle", "announcementTitle"
     )
     """
     Brief title for the announcement on this asset. Required when announcementType is specified.
     """
-    ANNOUNCEMENT_MESSAGE: ClassVar[KeywordField] = KeywordField(
+    ANNOUNCEMENT_MESSAGE: ClassVar[TextField] = TextField(
         "announcementMessage", "announcementMessage"
     )
     """
@@ -400,7 +400,7 @@ class Asset(Referenceable):
     """
     Popularity score for this asset.
     """
-    SOURCE_OWNERS: ClassVar[KeywordField] = KeywordField("sourceOwners", "sourceOwners")
+    SOURCE_OWNERS: ClassVar[TextField] = TextField("sourceOwners", "sourceOwners")
     """
     List of owners of this asset, in the source system.
     """
@@ -572,9 +572,7 @@ class Asset(Referenceable):
     """
     Alias of this asset in dbt.
     """
-    ASSET_DBT_META: ClassVar[KeywordField] = KeywordField(
-        "assetDbtMeta", "assetDbtMeta"
-    )
+    ASSET_DBT_META: ClassVar[TextField] = TextField("assetDbtMeta", "assetDbtMeta")
     """
     Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object.
     """
@@ -674,11 +672,9 @@ class Asset(Referenceable):
     """
     Total duration of the last run of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED: ClassVar[KeywordField] = (
-        KeywordField(
-            "assetDbtJobLastRunTotalDurationHumanized",
-            "assetDbtJobLastRunTotalDurationHumanized",
-        )
+    ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED: ClassVar[TextField] = TextField(
+        "assetDbtJobLastRunTotalDurationHumanized",
+        "assetDbtJobLastRunTotalDurationHumanized",
     )
     """
     Human-readable total duration of the last run of the job that materialized this asset in dbt.
@@ -819,7 +815,7 @@ class Asset(Referenceable):
     """
     URL of the semantic layer proxy for this asset in dbt.
     """
-    ASSET_DBT_SOURCE_FRESHNESS_CRITERIA: ClassVar[KeywordField] = KeywordField(
+    ASSET_DBT_SOURCE_FRESHNESS_CRITERIA: ClassVar[TextField] = TextField(
         "assetDbtSourceFreshnessCriteria", "assetDbtSourceFreshnessCriteria"
     )
     """
@@ -850,6 +846,14 @@ class Asset(Referenceable):
     )
     """
     List of unique Monte Carlo incident names attached to this asset.
+    """
+    ASSET_MC_ALERT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetMcAlertQualifiedNames",
+        "assetMcAlertQualifiedNames",
+        "assetMcAlertQualifiedNames.text",
+    )
+    """
+    List of unique Monte Carlo alert names attached to this asset.
     """
     ASSET_MC_MONITOR_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
         "assetMcMonitorNames", "assetMcMonitorNames.keyword", "assetMcMonitorNames"
@@ -901,6 +905,12 @@ class Asset(Referenceable):
     """
     List of Monte Carlo incident severities associated with this asset.
     """
+    ASSET_MC_INCIDENT_PRIORITIES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentPriorities", "assetMcIncidentPriorities"
+    )
+    """
+    List of Monte Carlo incident priorities associated with this asset.
+    """
     ASSET_MC_INCIDENT_STATES: ClassVar[KeywordField] = KeywordField(
         "assetMcIncidentStates", "assetMcIncidentStates"
     )
@@ -951,7 +961,7 @@ class Asset(Referenceable):
     """
 
     """
-    ASSET_SODA_CHECK_STATUSES: ClassVar[KeywordField] = KeywordField(
+    ASSET_SODA_CHECK_STATUSES: ClassVar[TextField] = TextField(
         "assetSodaCheckStatuses", "assetSodaCheckStatuses"
     )
     """
@@ -963,7 +973,7 @@ class Asset(Referenceable):
     """
 
     """
-    ASSET_ICON: ClassVar[KeywordField] = KeywordField("assetIcon", "assetIcon")
+    ASSET_ICON: ClassVar[TextField] = TextField("assetIcon", "assetIcon")
     """
     Name of the icon to use for this asset. (Only applies to glossaries, currently.)
     """
@@ -977,15 +987,13 @@ class Asset(Referenceable):
     """
 
     """
-    ASSET_COVER_IMAGE: ClassVar[KeywordField] = KeywordField(
+    ASSET_COVER_IMAGE: ClassVar[TextField] = TextField(
         "assetCoverImage", "assetCoverImage"
     )
     """
     TBC
     """
-    ASSET_THEME_HEX: ClassVar[KeywordField] = KeywordField(
-        "assetThemeHex", "assetThemeHex"
-    )
+    ASSET_THEME_HEX: ClassVar[TextField] = TextField("assetThemeHex", "assetThemeHex")
     """
     Color (in hexadecimal RGB) to use to represent this asset.
     """
@@ -1166,6 +1174,7 @@ class Asset(Referenceable):
         "asset_tags",
         "asset_mc_incident_names",
         "asset_mc_incident_qualified_names",
+        "asset_mc_alert_qualified_names",
         "asset_mc_monitor_names",
         "asset_mc_monitor_qualified_names",
         "asset_mc_monitor_statuses",
@@ -1174,6 +1183,7 @@ class Asset(Referenceable):
         "asset_mc_incident_types",
         "asset_mc_incident_sub_types",
         "asset_mc_incident_severities",
+        "asset_mc_incident_priorities",
         "asset_mc_incident_states",
         "asset_mc_last_sync_run_at",
         "starred_by",
@@ -2560,6 +2570,22 @@ class Asset(Referenceable):
         )
 
     @property
+    def asset_mc_alert_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_alert_qualified_names
+        )
+
+    @asset_mc_alert_qualified_names.setter
+    def asset_mc_alert_qualified_names(
+        self, asset_mc_alert_qualified_names: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_alert_qualified_names = asset_mc_alert_qualified_names
+
+    @property
     def asset_mc_monitor_names(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_mc_monitor_names
@@ -2676,6 +2702,22 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
+
+    @property
+    def asset_mc_incident_priorities(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_priorities
+        )
+
+    @asset_mc_incident_priorities.setter
+    def asset_mc_incident_priorities(
+        self, asset_mc_incident_priorities: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_priorities = asset_mc_incident_priorities
 
     @property
     def asset_mc_incident_states(self) -> Optional[Set[str]]:
@@ -3234,6 +3276,9 @@ class Asset(Referenceable):
         asset_mc_incident_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        asset_mc_alert_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_mc_monitor_names: Optional[Set[str]] = Field(default=None, description="")
         asset_mc_monitor_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
@@ -3252,6 +3297,9 @@ class Asset(Referenceable):
             default=None, description=""
         )
         asset_mc_incident_severities: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_priorities: Optional[Set[str]] = Field(
             default=None, description=""
         )
         asset_mc_incident_states: Optional[Set[str]] = Field(

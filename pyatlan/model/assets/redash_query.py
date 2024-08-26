@@ -14,6 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 from .redash import Redash
@@ -35,13 +36,13 @@ class RedashQuery(Redash):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    REDASH_QUERY_SQL: ClassVar[KeywordField] = KeywordField(
+    REDASH_QUERY_SQL: ClassVar[TextField] = TextField(
         "redashQuerySQL", "redashQuerySQL"
     )
     """
     SQL code of this query.
     """
-    REDASH_QUERY_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+    REDASH_QUERY_PARAMETERS: ClassVar[TextField] = TextField(
         "redashQueryParameters", "redashQueryParameters"
     )
     """

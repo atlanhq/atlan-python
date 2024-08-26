@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField, TextField
 
 from .looker import Looker
 
@@ -29,25 +29,25 @@ class LookerQuery(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
+    SOURCE_DEFINITION: ClassVar[TextField] = TextField(
         "sourceDefinition", "sourceDefinition"
     )
     """
     Deprecated.
     """
-    SOURCE_DEFINITION_DATABASE: ClassVar[KeywordField] = KeywordField(
+    SOURCE_DEFINITION_DATABASE: ClassVar[TextField] = TextField(
         "sourceDefinitionDatabase", "sourceDefinitionDatabase"
     )
     """
     Deprecated.
     """
-    SOURCE_DEFINITION_SCHEMA: ClassVar[KeywordField] = KeywordField(
+    SOURCE_DEFINITION_SCHEMA: ClassVar[TextField] = TextField(
         "sourceDefinitionSchema", "sourceDefinitionSchema"
     )
     """
     Deprecated.
     """
-    FIELDS: ClassVar[KeywordField] = KeywordField("fields", "fields")
+    FIELDS: ClassVar[TextField] = TextField("fields", "fields")
     """
     Deprecated.
     """

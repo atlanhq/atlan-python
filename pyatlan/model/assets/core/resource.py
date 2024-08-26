@@ -8,7 +8,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField
+from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, TextField
 
 from .catalog import Catalog
 
@@ -29,7 +29,7 @@ class Resource(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    LINK: ClassVar[KeywordField] = KeywordField("link", "link")
+    LINK: ClassVar[TextField] = TextField("link", "link")
     """
     URL to the resource.
     """
@@ -37,7 +37,7 @@ class Resource(Catalog):
     """
     Whether the resource is global (true) or not (false).
     """
-    REFERENCE: ClassVar[KeywordField] = KeywordField("reference", "reference")
+    REFERENCE: ClassVar[TextField] = TextField("reference", "reference")
     """
     Reference to the resource.
     """

@@ -14,6 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 from .core.dbt import Dbt
@@ -47,7 +48,7 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    DBT_META: ClassVar[TextField] = TextField("dbtMeta", "dbtMeta")
     """
 
     """
@@ -81,7 +82,7 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
@@ -135,11 +136,11 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    DBT_TAGS: ClassVar[TextField] = TextField("dbtTags", "dbtTags")
     """
 
     """
-    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
@@ -151,15 +152,15 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    CODE: ClassVar[KeywordField] = KeywordField("code", "code")
+    CODE: ClassVar[TextField] = TextField("code", "code")
     """
     Code that ran within the process.
     """
-    SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
+    SQL: ClassVar[TextField] = TextField("sql", "sql")
     """
     SQL query that ran to produce the outputs.
     """
-    AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
+    AST: ClassVar[TextField] = TextField("ast", "ast")
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """

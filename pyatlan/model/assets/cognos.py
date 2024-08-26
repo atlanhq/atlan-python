@@ -12,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
+    TextField,
 )
 
 from .b_i import BI
@@ -75,7 +76,7 @@ class Cognos(BI):
     """
     Whether the Cognos asset is diabled
     """
-    COGNOS_DEFAULT_SCREEN_TIP: ClassVar[KeywordField] = KeywordField(
+    COGNOS_DEFAULT_SCREEN_TIP: ClassVar[TextField] = TextField(
         "cognosDefaultScreenTip", "cognosDefaultScreenTip"
     )
     """

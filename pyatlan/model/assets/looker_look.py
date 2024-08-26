@@ -9,7 +9,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
 
 from .looker import Looker
 
@@ -30,7 +30,7 @@ class LookerLook(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
+    FOLDER_NAME: ClassVar[TextField] = TextField("folderName", "folderName")
     """
     Name of the folder in which the Look is organized.
     """
@@ -76,7 +76,7 @@ class LookerLook(Looker):
     """
     Identifier of the query for the Look, from Looker.
     """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    MODEL_NAME: ClassVar[TextField] = TextField("modelName", "modelName")
     """
     Name of the model in which this Look exists.
     """

@@ -12,10 +12,10 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
-    KeywordField,
     KeywordTextStemmedField,
     NumericField,
     RelationField,
+    TextField,
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
@@ -77,7 +77,7 @@ class SupersetDashboard(Superset):
     """
     Name of the user who changed the dashboard.
     """
-    SUPERSET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
+    SUPERSET_DASHBOARD_CHANGED_BY_URL: ClassVar[TextField] = TextField(
         "supersetDashboardChangedByURL", "supersetDashboardChangedByURL"
     )
     """
@@ -95,7 +95,7 @@ class SupersetDashboard(Superset):
     """
     Whether the dashboard is published (true) or not (false).
     """
-    SUPERSET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
+    SUPERSET_DASHBOARD_THUMBNAIL_URL: ClassVar[TextField] = TextField(
         "supersetDashboardThumbnailURL", "supersetDashboardThumbnailURL"
     )
     """

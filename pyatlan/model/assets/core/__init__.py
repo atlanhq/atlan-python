@@ -6,6 +6,9 @@ from .access_control import AccessControl
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
+from .app import App
+from .app_application import AppApplication
+from .app_component import AppComponent
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -16,16 +19,9 @@ from .calculation_view import CalculationView
 from .catalog import Catalog
 from .column import Column
 from .column_process import ColumnProcess
-from .data_attribute import DataAttribute
-from .data_attribute_mapping_process import DataAttributeMappingProcess
 from .data_contract import DataContract
 from .data_domain import DataDomain
-from .data_entity import DataEntity
-from .data_entity_mapping_process import DataEntityMappingProcess
 from .data_mesh import DataMesh
-from .data_model import DataModel
-from .data_model_version import DataModelVersion
-from .data_modeling import DataModeling
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .database import Database
@@ -91,14 +87,12 @@ AtlasGlossary.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 AtlasGlossaryTerm.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
-DataAttributeMappingProcess.Attributes.update_forward_refs(**localns)
-DataEntityMappingProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
-DataModeling.Attributes.update_forward_refs(**localns)
+App.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
@@ -111,10 +105,8 @@ SchemaRegistry.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
-DataModelVersion.Attributes.update_forward_refs(**localns)
-DataModel.Attributes.update_forward_refs(**localns)
-DataEntity.Attributes.update_forward_refs(**localns)
-DataAttribute.Attributes.update_forward_refs(**localns)
+AppApplication.Attributes.update_forward_refs(**localns)
+AppComponent.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
@@ -134,8 +126,8 @@ TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)

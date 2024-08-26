@@ -13,6 +13,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     NumericField,
+    TextField,
 )
 from pyatlan.model.structs import SourceTagAttribute
 
@@ -41,7 +42,7 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    DBT_META: ClassVar[TextField] = TextField("dbtMeta", "dbtMeta")
     """
 
     """
@@ -75,7 +76,7 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
@@ -129,11 +130,11 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    DBT_TAGS: ClassVar[TextField] = TextField("dbtTags", "dbtTags")
     """
 
     """
-    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """

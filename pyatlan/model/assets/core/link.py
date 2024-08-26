@@ -11,7 +11,7 @@ from warnings import warn
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import IconType
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .resource import Resource
@@ -59,7 +59,7 @@ class Link(Resource):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
+    ICON: ClassVar[TextField] = TextField("icon", "icon")
     """
     Icon for the link.
     """

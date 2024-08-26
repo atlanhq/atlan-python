@@ -10,7 +10,7 @@ from warnings import warn
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType, FileType
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .resource import Resource
@@ -68,7 +68,7 @@ class File(Resource):
     """
     Type (extension) of the file.
     """
-    FILE_PATH: ClassVar[KeywordField] = KeywordField("filePath", "filePath")
+    FILE_PATH: ClassVar[TextField] = TextField("filePath", "filePath")
     """
     URL giving the online location where the file can be accessed.
     """

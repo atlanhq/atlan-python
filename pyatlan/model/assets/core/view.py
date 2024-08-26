@@ -15,6 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
@@ -124,7 +125,7 @@ class View(SQL):
     """
     Configuration for preview queries on this view.
     """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this view.
     """
@@ -132,7 +133,7 @@ class View(SQL):
     """
     Whether this view is temporary (true) or not (false).
     """
-    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    DEFINITION: ClassVar[TextField] = TextField("definition", "definition")
     """
     SQL definition of this view.
     """

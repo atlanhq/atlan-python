@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 
 from .looker import Looker
 
@@ -29,11 +29,11 @@ class LookerView(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    PROJECT_NAME: ClassVar[TextField] = TextField("projectName", "projectName")
     """
     Name of the project in which this view exists.
     """
-    LOOKER_VIEW_FILE_PATH: ClassVar[KeywordField] = KeywordField(
+    LOOKER_VIEW_FILE_PATH: ClassVar[TextField] = TextField(
         "lookerViewFilePath", "lookerViewFilePath"
     )
     """

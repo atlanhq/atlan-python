@@ -9,7 +9,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import IconType
-from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fields.atlan_fields import KeywordField, TextField
 
 from .core.namespace import Namespace
 
@@ -30,7 +30,7 @@ class Collection(Namespace):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
+    ICON: ClassVar[TextField] = TextField("icon", "icon")
     """
     Image used to represent this collection.
     """

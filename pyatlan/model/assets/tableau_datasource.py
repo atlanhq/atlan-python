@@ -8,7 +8,12 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    RelationField,
+    TextField,
+)
 
 from .tableau import Tableau
 
@@ -29,25 +34,25 @@ class TableauDatasource(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "siteQualifiedName", "siteQualifiedName"
     )
     """
     Unique name of the site in which this datasource exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
     Unique name of the project in which this datasource exists.
     """
-    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """
     Unique name of the top-level project in which this datasource exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
@@ -75,13 +80,13 @@ class TableauDatasource(Tableau):
     """
     Users that have marked this datasource as cerified, in Tableau.
     """
-    CERTIFICATION_NOTE: ClassVar[KeywordField] = KeywordField(
+    CERTIFICATION_NOTE: ClassVar[TextField] = TextField(
         "certificationNote", "certificationNote"
     )
     """
     Notes related to this datasource being cerfified, in Tableau.
     """
-    CERTIFIER_DISPLAY_NAME: ClassVar[KeywordField] = KeywordField(
+    CERTIFIER_DISPLAY_NAME: ClassVar[TextField] = TextField(
         "certifierDisplayName", "certifierDisplayName"
     )
     """

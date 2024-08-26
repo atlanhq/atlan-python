@@ -10,7 +10,7 @@ from warnings import warn
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
 from pyatlan.model.enums import AtlanIcon, AtlasGlossaryType
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 from pyatlan.utils import init_guid, next_id, validate_required_fields
 
 from .asset import Asset
@@ -72,23 +72,23 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SHORT_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+    SHORT_DESCRIPTION: ClassVar[TextField] = TextField(
         "shortDescription", "shortDescription"
     )
     """
     Unused. A short definition of the glossary. See 'description' and 'userDescription' instead.
     """
-    LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+    LONG_DESCRIPTION: ClassVar[TextField] = TextField(
         "longDescription", "longDescription"
     )
     """
     Unused. A longer description of the glossary. See 'readme' instead.
     """
-    LANGUAGE: ClassVar[KeywordField] = KeywordField("language", "language")
+    LANGUAGE: ClassVar[TextField] = TextField("language", "language")
     """
     Unused. Language of the glossary's contents.
     """
-    USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
+    USAGE: ClassVar[TextField] = TextField("usage", "usage")
     """
     Unused. Inteded usage for the glossary.
     """

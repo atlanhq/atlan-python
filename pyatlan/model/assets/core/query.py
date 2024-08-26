@@ -10,9 +10,9 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
-    KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 from .s_q_l import SQL
@@ -34,13 +34,11 @@ class Query(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    RAW_QUERY: ClassVar[KeywordField] = KeywordField("rawQuery", "rawQuery")
+    RAW_QUERY: ClassVar[TextField] = TextField("rawQuery", "rawQuery")
     """
     Deprecated. See 'longRawQuery' instead.
     """
-    LONG_RAW_QUERY: ClassVar[KeywordField] = KeywordField(
-        "longRawQuery", "longRawQuery"
-    )
+    LONG_RAW_QUERY: ClassVar[TextField] = TextField("longRawQuery", "longRawQuery")
     """
     Raw SQL query string.
     """
@@ -64,7 +62,7 @@ class Query(SQL):
     """
     Unique name of the default database to use for this query.
     """
-    VARIABLES_SCHEMA_BASE64: ClassVar[KeywordField] = KeywordField(
+    VARIABLES_SCHEMA_BASE64: ClassVar[TextField] = TextField(
         "variablesSchemaBase64", "variablesSchemaBase64"
     )
     """
@@ -100,7 +98,7 @@ class Query(SQL):
     """
     Whether this query is a visual query (true) or not (false).
     """
-    VISUAL_BUILDER_SCHEMA_BASE64: ClassVar[KeywordField] = KeywordField(
+    VISUAL_BUILDER_SCHEMA_BASE64: ClassVar[TextField] = TextField(
         "visualBuilderSchemaBase64", "visualBuilderSchemaBase64"
     )
     """

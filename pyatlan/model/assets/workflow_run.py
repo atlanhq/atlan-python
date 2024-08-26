@@ -10,7 +10,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import WorkflowRunStatus, WorkflowRunType
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
 
 from .core.asset import Asset
 
@@ -49,13 +49,13 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
     """
     The asset for which this run was created.
     """
-    WORKFLOW_RUN_COMMENT: ClassVar[KeywordField] = KeywordField(
+    WORKFLOW_RUN_COMMENT: ClassVar[TextField] = TextField(
         "workflowRunComment", "workflowRunComment"
     )
     """
     The comment added by the requester
     """
-    WORKFLOW_RUN_CONFIG: ClassVar[KeywordField] = KeywordField(
+    WORKFLOW_RUN_CONFIG: ClassVar[TextField] = TextField(
         "workflowRunConfig", "workflowRunConfig"
     )
     """
