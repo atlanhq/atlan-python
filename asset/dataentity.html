@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="DataEntityMappingProcess" href="dataentitymappingprocess.html" /><link rel="prev" title="DataDomain" href="datadomain.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>DataEntity - pyatlan documentation</title>
@@ -154,9 +154,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="../client.html">Atlan Client Interface</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../assets.html">Assets</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets.html">Assets</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="adls.html">ADLS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adlsaccount.html">ADLSAccount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adlscontainer.html">ADLSContainer</a></li>
@@ -169,6 +169,9 @@
 <li class="toctree-l2"><a class="reference internal" href="airflow.html">Airflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="airflowdag.html">AirflowDag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="airflowtask.html">AirflowTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html">App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appapplication.html">AppApplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appcomponent.html">AppComponent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset.html">Asset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlasglossary.html">AtlasGlossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
@@ -218,16 +221,16 @@
 <li class="toctree-l2"><a class="reference internal" href="cubedimension.html">CubeDimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cubefield.html">CubeField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cubehierarchy.html">CubeHierarchy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataattribute.html">DataAttribute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataattributemappingprocess.html">DataAttributeMappingProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dm.html">DM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dmattribute.html">DMAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dmattributeassociation.html">DMAttributeAssociation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dmdatamodel.html">DMDataModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dmentity.html">DMEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dmentityassociation.html">DMEntityAssociation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dmversion.html">DMVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">DataEntity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataentitymappingprocess.html">DataEntityMappingProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datamodel.html">DataModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datamodelversion.html">DataModelVersion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="datamodeling.html">DataModeling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataquality.html">DataQuality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataset.html">DataSet</a></li>
@@ -514,26 +517,8 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dataentitymappingprocess.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">DataEntityMappingProcess</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="datadomain.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">DataDomain</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">

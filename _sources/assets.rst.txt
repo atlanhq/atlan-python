@@ -20,6 +20,9 @@ You can interact with all of the following different kinds of assets:
     asset/airflow
     asset/airflowdag
     asset/airflowtask
+    asset/app
+    asset/appapplication
+    asset/appcomponent
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
@@ -69,16 +72,16 @@ You can interact with all of the following different kinds of assets:
     asset/cubedimension
     asset/cubefield
     asset/cubehierarchy
-    asset/dataattribute
-    asset/dataattributemappingprocess
+    asset/dm
+    asset/dmattribute
+    asset/dmattributeassociation
+    asset/dmdatamodel
+    asset/dmentity
+    asset/dmentityassociation
+    asset/dmversion
     asset/datacontract
     asset/datadomain
-    asset/dataentity
-    asset/dataentitymappingprocess
     asset/datamesh
-    asset/datamodel
-    asset/datamodelversion
-    asset/datamodeling
     asset/dataproduct
     asset/dataquality
     asset/dataset
