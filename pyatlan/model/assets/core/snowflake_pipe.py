@@ -10,9 +10,9 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
-    KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 from .s_q_l import SQL
@@ -34,7 +34,7 @@ class SnowflakePipe(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    DEFINITION: ClassVar[TextField] = TextField("definition", "definition")
     """
     SQL definition of this pipe.
     """

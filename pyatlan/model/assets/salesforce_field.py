@@ -62,7 +62,7 @@ class SalesforceField(Salesforce):
     """
     Whether this field is calculated (true) or not (false).
     """
-    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    FORMULA: ClassVar[TextField] = TextField("formula", "formula")
     """
     Formula for this field, if it is a calculated field.
     """
@@ -96,9 +96,7 @@ class SalesforceField(Salesforce):
     """
     Whether this field must have unique values (true) or not (false).
     """
-    PICKLIST_VALUES: ClassVar[KeywordField] = KeywordField(
-        "picklistValues", "picklistValues"
-    )
+    PICKLIST_VALUES: ClassVar[TextField] = TextField("picklistValues", "picklistValues")
     """
     List of values from which a user can pick while adding a record.
     """
@@ -108,7 +106,7 @@ class SalesforceField(Salesforce):
     """
     Whether this field references a record of multiple objects (true) or not (false).
     """
-    DEFAULT_VALUE_FORMULA: ClassVar[KeywordField] = KeywordField(
+    DEFAULT_VALUE_FORMULA: ClassVar[TextField] = TextField(
         "defaultValueFormula", "defaultValueFormula"
     )
     """

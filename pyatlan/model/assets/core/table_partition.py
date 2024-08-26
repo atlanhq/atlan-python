@@ -13,6 +13,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 from .s_q_l import SQL
@@ -34,7 +35,7 @@ class TablePartition(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CONSTRAINT: ClassVar[KeywordField] = KeywordField("constraint", "constraint")
+    CONSTRAINT: ClassVar[TextField] = TextField("constraint", "constraint")
     """
     Constraint that defines this table partition.
     """
@@ -70,13 +71,13 @@ class TablePartition(SQL):
     """
     Configuration for the preview queries.
     """
-    EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
+    EXTERNAL_LOCATION: ClassVar[TextField] = TextField(
         "externalLocation", "externalLocation"
     )
     """
     External location of this partition, for example: an S3 object location.
     """
-    EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
+    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField(
         "externalLocationRegion", "externalLocationRegion"
     )
     """
@@ -106,9 +107,7 @@ class TablePartition(SQL):
     """
     Number of sub-partitions of this partition.
     """
-    PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
-        "partitionList", "partitionList"
-    )
+    PARTITION_LIST: ClassVar[TextField] = TextField("partitionList", "partitionList")
     """
     List of sub-partitions in this partition.
     """

@@ -11,7 +11,12 @@ from warnings import warn
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType, QueryUsernameStrategy
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    TextField,
+)
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .core.asset import Asset
@@ -87,15 +92,15 @@ class Connection(Asset, type_name="Connection"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CATEGORY: ClassVar[KeywordField] = KeywordField("category", "category")
+    CATEGORY: ClassVar[TextField] = TextField("category", "category")
     """
     Type of connection, for example WAREHOUSE, RDBMS, etc.
     """
-    SUB_CATEGORY: ClassVar[KeywordField] = KeywordField("subCategory", "subCategory")
+    SUB_CATEGORY: ClassVar[TextField] = TextField("subCategory", "subCategory")
     """
     Subcategory of this connection.
     """
-    HOST: ClassVar[KeywordField] = KeywordField("host", "host")
+    HOST: ClassVar[TextField] = TextField("host", "host")
     """
     Host name of this connection's source.
     """
@@ -119,11 +124,11 @@ class Connection(Asset, type_name="Connection"):
     """
     Configuration for preview queries.
     """
-    QUERY_CONFIG: ClassVar[KeywordField] = KeywordField("queryConfig", "queryConfig")
+    QUERY_CONFIG: ClassVar[TextField] = TextField("queryConfig", "queryConfig")
     """
     Query config for this connection.
     """
-    CREDENTIAL_STRATEGY: ClassVar[KeywordField] = KeywordField(
+    CREDENTIAL_STRATEGY: ClassVar[TextField] = TextField(
         "credentialStrategy", "credentialStrategy"
     )
     """
@@ -161,25 +166,21 @@ class Connection(Asset, type_name="Connection"):
     """
     Maximum time a query should be allowed to run before timing out.
     """
-    DEFAULT_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
+    DEFAULT_CREDENTIAL_GUID: ClassVar[TextField] = TextField(
         "defaultCredentialGuid", "defaultCredentialGuid"
     )
     """
     Unique identifier (GUID) for the default credentials to use for this connection.
     """
-    CONNECTOR_ICON: ClassVar[KeywordField] = KeywordField(
-        "connectorIcon", "connectorIcon"
-    )
+    CONNECTOR_ICON: ClassVar[TextField] = TextField("connectorIcon", "connectorIcon")
     """
     Unused. Only the value of connectorType impacts icons.
     """
-    CONNECTOR_IMAGE: ClassVar[KeywordField] = KeywordField(
-        "connectorImage", "connectorImage"
-    )
+    CONNECTOR_IMAGE: ClassVar[TextField] = TextField("connectorImage", "connectorImage")
     """
     Unused. Only the value of connectorType impacts icons.
     """
-    SOURCE_LOGO: ClassVar[KeywordField] = KeywordField("sourceLogo", "sourceLogo")
+    SOURCE_LOGO: ClassVar[TextField] = TextField("sourceLogo", "sourceLogo")
     """
     Unused. Only the value of connectorType impacts icons.
     """

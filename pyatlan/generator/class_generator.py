@@ -536,6 +536,8 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
             to_use = IndexType.NUMERIC
         elif base_type == "boolean":
             to_use = IndexType.BOOLEAN
+        elif base_type == "string":
+            to_use = IndexType.TEXT
         else:
             to_use = IndexType.KEYWORD
         return to_use
@@ -573,6 +575,8 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
                         searchable[IndexType.STEMMED] = attr_name
                     else:
                         searchable[IndexType.TEXT] = attr_name
+            elif attr_def.get("indexType") == "STRING":
+                searchable[IndexType.KEYWORD] = attr_name
             else:
                 def_index = get_default_index_for_type(base_type)
                 searchable[def_index] = attr_name

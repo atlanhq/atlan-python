@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
 
 from .incident import Incident
 
@@ -45,7 +45,7 @@ class BusinessPolicyIncident(Incident):
     """
     policy ids related to this incident
     """
-    BUSINESS_POLICY_INCIDENT_FILTER_DSL: ClassVar[KeywordField] = KeywordField(
+    BUSINESS_POLICY_INCIDENT_FILTER_DSL: ClassVar[TextField] = TextField(
         "businessPolicyIncidentFilterDSL", "businessPolicyIncidentFilterDSL"
     )
     """

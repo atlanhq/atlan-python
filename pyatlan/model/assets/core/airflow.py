@@ -10,7 +10,7 @@ from typing import ClassVar, List, Optional, Set
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import OpenLineageRunState
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
 
 from .catalog import Catalog
 
@@ -31,7 +31,7 @@ class Airflow(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AIRFLOW_TAGS: ClassVar[KeywordField] = KeywordField("airflowTags", "airflowTags")
+    AIRFLOW_TAGS: ClassVar[TextField] = TextField("airflowTags", "airflowTags")
     """
     Tags assigned to the asset in Airflow.
     """

@@ -12,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 from .core.asset import Asset
@@ -53,7 +54,7 @@ class BusinessPolicyException(Asset, type_name="BusinessPolicyException"):
     """
     Unique name of the business policy through which this asset is accessible.
     """
-    BUSINESS_POLICY_EXCEPTION_FILTER_DSL: ClassVar[KeywordField] = KeywordField(
+    BUSINESS_POLICY_EXCEPTION_FILTER_DSL: ClassVar[TextField] = TextField(
         "businessPolicyExceptionFilterDSL", "businessPolicyExceptionFilterDSL"
     )
     """

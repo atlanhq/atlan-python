@@ -33,15 +33,7 @@ class CogniteAsset(Cognite):
     """
     TBC
     """
-    COGNITE_FILES: ClassVar[RelationField] = RelationField("cogniteFiles")
-    """
-    TBC
-    """
     COGNITE_TIMESERIES: ClassVar[RelationField] = RelationField("cogniteTimeseries")
-    """
-    TBC
-    """
-    COGNITE_SEQUENCES: ClassVar[RelationField] = RelationField("cogniteSequences")
     """
     TBC
     """
@@ -49,13 +41,21 @@ class CogniteAsset(Cognite):
     """
     TBC
     """
+    COGNITE_FILES: ClassVar[RelationField] = RelationField("cogniteFiles")
+    """
+    TBC
+    """
+    COGNITE_SEQUENCES: ClassVar[RelationField] = RelationField("cogniteSequences")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "cognite_events",
-        "cognite_files",
         "cognite_timeseries",
-        "cognite_sequences",
         "cognite3dmodels",
+        "cognite_files",
+        "cognite_sequences",
     ]
 
     @property
@@ -69,16 +69,6 @@ class CogniteAsset(Cognite):
         self.attributes.cognite_events = cognite_events
 
     @property
-    def cognite_files(self) -> Optional[List[CogniteFile]]:
-        return None if self.attributes is None else self.attributes.cognite_files
-
-    @cognite_files.setter
-    def cognite_files(self, cognite_files: Optional[List[CogniteFile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.cognite_files = cognite_files
-
-    @property
     def cognite_timeseries(self) -> Optional[List[CogniteTimeSeries]]:
         return None if self.attributes is None else self.attributes.cognite_timeseries
 
@@ -87,16 +77,6 @@ class CogniteAsset(Cognite):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cognite_timeseries = cognite_timeseries
-
-    @property
-    def cognite_sequences(self) -> Optional[List[CogniteSequence]]:
-        return None if self.attributes is None else self.attributes.cognite_sequences
-
-    @cognite_sequences.setter
-    def cognite_sequences(self, cognite_sequences: Optional[List[CogniteSequence]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.cognite_sequences = cognite_sequences
 
     @property
     def cognite3dmodels(self) -> Optional[List[Cognite3DModel]]:
@@ -108,20 +88,40 @@ class CogniteAsset(Cognite):
             self.attributes = self.Attributes()
         self.attributes.cognite3dmodels = cognite3dmodels
 
+    @property
+    def cognite_files(self) -> Optional[List[CogniteFile]]:
+        return None if self.attributes is None else self.attributes.cognite_files
+
+    @cognite_files.setter
+    def cognite_files(self, cognite_files: Optional[List[CogniteFile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cognite_files = cognite_files
+
+    @property
+    def cognite_sequences(self) -> Optional[List[CogniteSequence]]:
+        return None if self.attributes is None else self.attributes.cognite_sequences
+
+    @cognite_sequences.setter
+    def cognite_sequences(self, cognite_sequences: Optional[List[CogniteSequence]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cognite_sequences = cognite_sequences
+
     class Attributes(Cognite.Attributes):
         cognite_events: Optional[List[CogniteEvent]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognite_files: Optional[List[CogniteFile]] = Field(
             default=None, description=""
         )  # relationship
         cognite_timeseries: Optional[List[CogniteTimeSeries]] = Field(
             default=None, description=""
         )  # relationship
-        cognite_sequences: Optional[List[CogniteSequence]] = Field(
+        cognite3dmodels: Optional[List[Cognite3DModel]] = Field(
             default=None, description=""
         )  # relationship
-        cognite3dmodels: Optional[List[Cognite3DModel]] = Field(
+        cognite_files: Optional[List[CogniteFile]] = Field(
+            default=None, description=""
+        )  # relationship
+        cognite_sequences: Optional[List[CogniteSequence]] = Field(
             default=None, description=""
         )  # relationship
 

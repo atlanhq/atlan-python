@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import KeywordTextField, TextField
 
 from .saa_s import SaaS
 
@@ -29,7 +29,7 @@ class Salesforce(SaaS):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ORGANIZATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    ORGANIZATION_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "organizationQualifiedName", "organizationQualifiedName"
     )
     """

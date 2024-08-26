@@ -53,6 +53,12 @@ class MCIncident(MonteCarlo):
     """
     Severity of this incident.
     """
+    MC_INCIDENT_PRIORITY: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentPriority", "mcIncidentPriority"
+    )
+    """
+    Priority of this incident inherited from monitor.
+    """
     MC_INCIDENT_STATE: ClassVar[KeywordField] = KeywordField(
         "mcIncidentState", "mcIncidentState"
     )
@@ -80,6 +86,7 @@ class MCIncident(MonteCarlo):
         "mc_incident_type",
         "mc_incident_sub_types",
         "mc_incident_severity",
+        "mc_incident_priority",
         "mc_incident_state",
         "mc_incident_warehouse",
         "mc_monitor",
@@ -129,6 +136,16 @@ class MCIncident(MonteCarlo):
         self.attributes.mc_incident_severity = mc_incident_severity
 
     @property
+    def mc_incident_priority(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mc_incident_priority
+
+    @mc_incident_priority.setter
+    def mc_incident_priority(self, mc_incident_priority: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_priority = mc_incident_priority
+
+    @property
     def mc_incident_state(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.mc_incident_state
 
@@ -175,6 +192,7 @@ class MCIncident(MonteCarlo):
         mc_incident_type: Optional[str] = Field(default=None, description="")
         mc_incident_sub_types: Optional[Set[str]] = Field(default=None, description="")
         mc_incident_severity: Optional[str] = Field(default=None, description="")
+        mc_incident_priority: Optional[str] = Field(default=None, description="")
         mc_incident_state: Optional[str] = Field(default=None, description="")
         mc_incident_warehouse: Optional[str] = Field(default=None, description="")
         mc_monitor: Optional[MCMonitor] = Field(

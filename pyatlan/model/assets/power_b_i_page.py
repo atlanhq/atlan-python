@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField, TextField
 
 from .power_b_i import PowerBI
 
@@ -29,13 +29,13 @@ class PowerBIPage(PowerBI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    WORKSPACE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
     Unique name of the workspace in which this page exists.
     """
-    REPORT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    REPORT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "reportQualifiedName", "reportQualifiedName"
     )
     """

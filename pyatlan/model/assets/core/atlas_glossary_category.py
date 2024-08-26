@@ -10,7 +10,7 @@ from warnings import warn
 from pydantic.v1 import Field, StrictStr, root_validator, validator
 
 from pyatlan.model.enums import AtlasGlossaryCategoryType
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 from pyatlan.utils import init_guid, next_id, validate_required_fields
 
 from .asset import Asset, SelfAsset
@@ -146,13 +146,13 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SHORT_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+    SHORT_DESCRIPTION: ClassVar[TextField] = TextField(
         "shortDescription", "shortDescription"
     )
     """
     Unused. Brief summary of the category. See 'description' and 'userDescription' instead.
     """
-    LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+    LONG_DESCRIPTION: ClassVar[TextField] = TextField(
         "longDescription", "longDescription"
     )
     """

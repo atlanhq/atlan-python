@@ -33,6 +33,12 @@ class Catalog(Asset, type_name="Catalog"):
     """
     TBC
     """
+    APP_APPLICATION_IMPLEMENTED: ClassVar[RelationField] = RelationField(
+        "appApplicationImplemented"
+    )
+    """
+    TBC
+    """
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "outputFromAirflowTasks"
     )
@@ -61,14 +67,22 @@ class Catalog(Asset, type_name="Catalog"):
     """
     TBC
     """
+    APP_COMPONENT_IMPLEMENTED: ClassVar[RelationField] = RelationField(
+        "appComponentImplemented"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "input_to_processes",
+        "app_application_implemented",
         "output_from_airflow_tasks",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
         "input_to_airflow_tasks",
         "output_from_processes",
+        "app_component_implemented",
     ]
 
     @property
@@ -80,6 +94,22 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def app_application_implemented(self) -> Optional[AppApplication]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_application_implemented
+        )
+
+    @app_application_implemented.setter
+    def app_application_implemented(
+        self, app_application_implemented: Optional[AppApplication]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_application_implemented = app_application_implemented
 
     @property
     def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
@@ -145,8 +175,27 @@ class Catalog(Asset, type_name="Catalog"):
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
+    @property
+    def app_component_implemented(self) -> Optional[AppComponent]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_component_implemented
+        )
+
+    @app_component_implemented.setter
+    def app_component_implemented(
+        self, app_component_implemented: Optional[AppComponent]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_component_implemented = app_component_implemented
+
     class Attributes(Asset.Attributes):
         input_to_processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
+        app_application_implemented: Optional[AppApplication] = Field(
             default=None, description=""
         )  # relationship
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
@@ -164,6 +213,9 @@ class Catalog(Asset, type_name="Catalog"):
         output_from_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
+        app_component_implemented: Optional[AppComponent] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Catalog.Attributes = Field(
         default_factory=lambda: Catalog.Attributes(),
@@ -176,5 +228,7 @@ class Catalog(Asset, type_name="Catalog"):
 
 
 from .airflow_task import AirflowTask  # noqa
+from .app_application import AppApplication  # noqa
+from .app_component import AppComponent  # noqa
 from .process import Process  # noqa
 from .spark_job import SparkJob  # noqa

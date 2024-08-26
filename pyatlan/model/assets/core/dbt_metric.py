@@ -49,7 +49,7 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    DBT_META: ClassVar[TextField] = TextField("dbtMeta", "dbtMeta")
     """
 
     """
@@ -83,7 +83,7 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
@@ -137,11 +137,11 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    DBT_TAGS: ClassVar[TextField] = TextField("dbtTags", "dbtTags")
     """
 
     """
-    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
@@ -157,7 +157,7 @@ class DbtMetric(Dbt):
     """
     Type of the metric.
     """
-    METRIC_SQL: ClassVar[KeywordField] = KeywordField("metricSQL", "metricSQL")
+    METRIC_SQL: ClassVar[TextField] = TextField("metricSQL", "metricSQL")
     """
     SQL query used to compute the metric.
     """
@@ -178,11 +178,11 @@ class DbtMetric(Dbt):
     """
     TBC
     """
-    DBT_MODEL: ClassVar[RelationField] = RelationField("dbtModel")
+    ASSETS: ClassVar[RelationField] = RelationField("assets")
     """
     TBC
     """
-    ASSETS: ClassVar[RelationField] = RelationField("assets")
+    DBT_MODEL: ClassVar[RelationField] = RelationField("dbtModel")
     """
     TBC
     """
@@ -224,8 +224,8 @@ class DbtMetric(Dbt):
         "metric_filters",
         "metric_time_grains",
         "metric_timestamp_column",
-        "dbt_model",
         "assets",
+        "dbt_model",
         "metric_dimension_columns",
         "dbt_metric_filter_columns",
     ]
@@ -495,16 +495,6 @@ class DbtMetric(Dbt):
         self.attributes.metric_timestamp_column = metric_timestamp_column
 
     @property
-    def dbt_model(self) -> Optional[DbtModel]:
-        return None if self.attributes is None else self.attributes.dbt_model
-
-    @dbt_model.setter
-    def dbt_model(self, dbt_model: Optional[DbtModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_model = dbt_model
-
-    @property
     def assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.assets
 
@@ -513,6 +503,16 @@ class DbtMetric(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.assets = assets
+
+    @property
+    def dbt_model(self) -> Optional[DbtModel]:
+        return None if self.attributes is None else self.attributes.dbt_model
+
+    @dbt_model.setter
+    def dbt_model(self, dbt_model: Optional[DbtModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model = dbt_model
 
     @property
     def metric_dimension_columns(self) -> Optional[List[Column]]:
@@ -579,10 +579,10 @@ class DbtMetric(Dbt):
         metric_timestamp_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model: Optional[DbtModel] = Field(
+        assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
-        assets: Optional[List[Asset]] = Field(
+        dbt_model: Optional[DbtModel] = Field(
             default=None, description=""
         )  # relationship
         metric_dimension_columns: Optional[List[Column]] = Field(

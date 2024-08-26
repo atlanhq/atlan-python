@@ -8,7 +8,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 
 from .tableau import Tableau
 
@@ -29,25 +29,25 @@ class TableauDashboard(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "siteQualifiedName", "siteQualifiedName"
     )
     """
     Unique name of the site in which this dashboard exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "projectQualifiedName", "projectQualifiedName"
     )
     """
     Unique name of the project in which this dashboard exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "workbookQualifiedName", "workbookQualifiedName"
     )
     """
     Unique name of the workbook in which this dashboard exists.
     """
-    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """

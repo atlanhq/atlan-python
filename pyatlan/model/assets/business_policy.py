@@ -9,7 +9,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 
 from .core.asset import Asset
 
@@ -66,7 +71,7 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
     """
     Duration for the business policy to complete review.
     """
-    BUSINESS_POLICY_FILTER_DSL: ClassVar[KeywordField] = KeywordField(
+    BUSINESS_POLICY_FILTER_DSL: ClassVar[TextField] = TextField(
         "businessPolicyFilterDSL", "businessPolicyFilterDSL"
     )
     """
@@ -78,7 +83,7 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
     """
     Base parent Guid for policy used in version
     """
-    BUSINESS_POLICY_SELECTED_APPROVAL_WF: ClassVar[KeywordField] = KeywordField(
+    BUSINESS_POLICY_SELECTED_APPROVAL_WF: ClassVar[TextField] = TextField(
         "businessPolicySelectedApprovalWF", "businessPolicySelectedApprovalWF"
     )
     """

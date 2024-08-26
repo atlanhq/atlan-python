@@ -13,6 +13,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 from .looker import Looker
@@ -34,7 +35,7 @@ class LookerField(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    PROJECT_NAME: ClassVar[TextField] = TextField("projectName", "projectName")
     """
     Name of the project in which this field exists.
     """
@@ -78,11 +79,11 @@ class LookerField(Looker):
     """
     Unique name of the dashboard in which this field is used.
     """
-    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    MODEL_NAME: ClassVar[TextField] = TextField("modelName", "modelName")
     """
     Name of the model in which this field exists.
     """
-    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
+    SOURCE_DEFINITION: ClassVar[TextField] = TextField(
         "sourceDefinition", "sourceDefinition"
     )
     """

@@ -9,7 +9,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 
 from .soda import Soda
 
@@ -40,7 +45,7 @@ class SodaCheck(Soda):
     """
     Status of the check in Soda.
     """
-    SODA_CHECK_DEFINITION: ClassVar[KeywordField] = KeywordField(
+    SODA_CHECK_DEFINITION: ClassVar[TextField] = TextField(
         "sodaCheckDefinition", "sodaCheckDefinition"
     )
     """

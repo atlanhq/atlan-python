@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    RelationField,
+    TextField,
+)
 
 from .s_q_l import SQL
 
@@ -29,7 +34,7 @@ class Function(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    FUNCTION_DEFINITION: ClassVar[KeywordField] = KeywordField(
+    FUNCTION_DEFINITION: ClassVar[TextField] = TextField(
         "functionDefinition", "functionDefinition"
     )
     """

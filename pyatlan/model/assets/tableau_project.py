@@ -8,7 +8,12 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    RelationField,
+    TextField,
+)
 
 from .tableau import Tableau
 
@@ -29,13 +34,13 @@ class TableauProject(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "siteQualifiedName", "siteQualifiedName"
     )
     """
     Unique name of the site in which this project exists.
     """
-    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
         "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
     )
     """

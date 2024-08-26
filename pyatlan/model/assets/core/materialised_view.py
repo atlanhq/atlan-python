@@ -16,6 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
@@ -108,7 +109,7 @@ class MaterialisedView(SQL):
     """
     Refresh method for this materialized view.
     """
-    STALENESS: ClassVar[KeywordField] = KeywordField("staleness", "staleness")
+    STALENESS: ClassVar[TextField] = TextField("staleness", "staleness")
     """
     Staleness of this materialized view.
     """
@@ -142,7 +143,7 @@ class MaterialisedView(SQL):
     """
     Configuration for the query preview of this materialized view.
     """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this materialized view.
     """
@@ -150,7 +151,7 @@ class MaterialisedView(SQL):
     """
     Whether this materialized view is temporary (true) or not (false).
     """
-    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    DEFINITION: ClassVar[TextField] = TextField("definition", "definition")
     """
     SQL definition of this materialized view.
     """

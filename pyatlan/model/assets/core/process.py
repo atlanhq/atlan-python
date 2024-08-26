@@ -11,7 +11,7 @@ from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField, TextField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import Asset
@@ -83,15 +83,15 @@ class Process(Asset, type_name="Process"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CODE: ClassVar[KeywordField] = KeywordField("code", "code")
+    CODE: ClassVar[TextField] = TextField("code", "code")
     """
     Code that ran within the process.
     """
-    SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
+    SQL: ClassVar[TextField] = TextField("sql", "sql")
     """
     SQL query that ran to produce the outputs.
     """
-    AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
+    AST: ClassVar[TextField] = TextField("ast", "ast")
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """

@@ -10,7 +10,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import WorkflowStatus, WorkflowType
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
 
 from .core.asset import Asset
 
@@ -41,9 +41,7 @@ class Workflow(Asset, type_name="Workflow"):
     """
     Type of the workflow.
     """
-    WORKFLOW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "workflowConfig", "workflowConfig"
-    )
+    WORKFLOW_CONFIG: ClassVar[TextField] = TextField("workflowConfig", "workflowConfig")
     """
     Details of the workflow.
     """
@@ -53,7 +51,7 @@ class Workflow(Asset, type_name="Workflow"):
     """
     Status of the workflow.
     """
-    WORKFLOW_RUN_EXPIRES_IN: ClassVar[KeywordField] = KeywordField(
+    WORKFLOW_RUN_EXPIRES_IN: ClassVar[TextField] = TextField(
         "workflowRunExpiresIn", "workflowRunExpiresIn"
     )
     """

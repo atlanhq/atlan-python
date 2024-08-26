@@ -17,6 +17,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 from pyatlan.model.structs import ColumnValueFrequencyMap, Histogram
 from pyatlan.utils import init_guid, validate_required_fields
@@ -135,7 +136,7 @@ class Column(SQL):
     """
     Sub-data type of this column.
     """
-    RAW_DATA_TYPE_DEFINITION: ClassVar[KeywordField] = KeywordField(
+    RAW_DATA_TYPE_DEFINITION: ClassVar[TextField] = TextField(
         "rawDataTypeDefinition", "rawDataTypeDefinition"
     )
     """
@@ -201,7 +202,7 @@ class Column(SQL):
     """
     Total number of digits allowed, when the dataType is numeric.
     """
-    DEFAULT_VALUE: ClassVar[KeywordField] = KeywordField("defaultValue", "defaultValue")
+    DEFAULT_VALUE: ClassVar[TextField] = TextField("defaultValue", "defaultValue")
     """
     Default value for this column.
     """
@@ -321,7 +322,7 @@ class Column(SQL):
     """
     Length of the longest value in a string column.
     """
-    COLUMN_MAXS: ClassVar[KeywordField] = KeywordField("columnMaxs", "columnMaxs")
+    COLUMN_MAXS: ClassVar[TextField] = TextField("columnMaxs", "columnMaxs")
     """
     List of the greatest values in a column.
     """
@@ -331,7 +332,7 @@ class Column(SQL):
     """
     Length of the shortest value in a string column.
     """
-    COLUMN_MINS: ClassVar[KeywordField] = KeywordField("columnMins", "columnMins")
+    COLUMN_MINS: ClassVar[TextField] = TextField("columnMins", "columnMins")
     """
     List of the least values in a column.
     """

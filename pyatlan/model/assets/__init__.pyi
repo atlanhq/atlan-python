@@ -13,14 +13,12 @@ __all__ = [
     "AuthPolicy",
     "AtlasGlossaryTerm",
     "BIProcess",
-    "DataAttributeMappingProcess",
-    "DataEntityMappingProcess",
     "ColumnProcess",
     "Persona",
     "Folder",
     "Airflow",
     "DataContract",
-    "DataModeling",
+    "App",
     "DataQuality",
     "Resource",
     "DataMesh",
@@ -33,10 +31,8 @@ __all__ = [
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
-    "DataModelVersion",
-    "DataModel",
-    "DataEntity",
-    "DataAttribute",
+    "AppApplication",
+    "AppComponent",
     "MonteCarlo",
     "Metric",
     "Soda",
@@ -56,8 +52,8 @@ __all__ = [
     "Column",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "CalculationView",
     "Database",
+    "CalculationView",
     "Procedure",
     "SnowflakeTag",
     "MatillionGroup",
@@ -97,6 +93,7 @@ __all__ = [
     "ObjectStore",
     "BI",
     "SaaS",
+    "DM",
     "MultiDimensionalDataset",
     "EventStore",
     "NoSQL",
@@ -130,6 +127,12 @@ __all__ = [
     "Cognite",
     "Salesforce",
     "ReadmeTemplate",
+    "DMEntityAssociation",
+    "DMAttribute",
+    "DMAttributeAssociation",
+    "DMDataModel",
+    "DMVersion",
+    "DMEntity",
     "Cube",
     "CubeHierarchy",
     "CubeField",
@@ -321,6 +324,9 @@ from .core.access_control import AccessControl
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
+from .core.app import App
+from .core.app_application import AppApplication
+from .core.app_component import AppComponent
 from .core.asset import Asset
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory
@@ -331,16 +337,9 @@ from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
 from .core.column import Column
 from .core.column_process import ColumnProcess
-from .core.data_attribute import DataAttribute
-from .core.data_attribute_mapping_process import DataAttributeMappingProcess
 from .core.data_contract import DataContract
 from .core.data_domain import DataDomain
-from .core.data_entity import DataEntity
-from .core.data_entity_mapping_process import DataEntityMappingProcess
 from .core.data_mesh import DataMesh
-from .core.data_model import DataModel
-from .core.data_model_version import DataModelVersion
-from .core.data_modeling import DataModeling
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.database import Database
@@ -399,6 +398,13 @@ from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
+from .d_m import DM
+from .d_m_attribute import DMAttribute
+from .d_m_attribute_association import DMAttributeAssociation
+from .d_m_data_model import DMDataModel
+from .d_m_entity import DMEntity
+from .d_m_entity_association import DMEntityAssociation
+from .d_m_version import DMVersion
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset

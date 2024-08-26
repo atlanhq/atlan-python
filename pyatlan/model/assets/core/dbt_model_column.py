@@ -53,6 +53,10 @@ class DbtModelColumn(Dbt):
 
     """
 
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
     SQL_COLUMN: ClassVar[RelationField] = RelationField("sqlColumn")
     """
     TBC
@@ -67,19 +71,15 @@ class DbtModelColumn(Dbt):
     """
     TBC
     """
-    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
+        "dbt_tests",
         "sql_column",
         "dbt_model",
         "dbt_model_column_sql_columns",
-        "dbt_tests",
     ]
 
     @property
@@ -123,6 +123,16 @@ class DbtModelColumn(Dbt):
         self.attributes.dbt_model_column_order = dbt_model_column_order
 
     @property
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
     def sql_column(self) -> Optional[Column]:
         return None if self.attributes is None else self.attributes.sql_column
 
@@ -158,20 +168,13 @@ class DbtModelColumn(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
 
-    @property
-    def dbt_tests(self) -> Optional[List[DbtTest]]:
-        return None if self.attributes is None else self.attributes.dbt_tests
-
-    @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_tests = dbt_tests
-
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(default=None, description="")
         dbt_model_column_data_type: Optional[str] = Field(default=None, description="")
         dbt_model_column_order: Optional[int] = Field(default=None, description="")
+        dbt_tests: Optional[List[DbtTest]] = Field(
+            default=None, description=""
+        )  # relationship
         sql_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship
@@ -179,9 +182,6 @@ class DbtModelColumn(Dbt):
             default=None, description=""
         )  # relationship
         dbt_model_column_sql_columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
 

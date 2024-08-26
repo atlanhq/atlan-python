@@ -14,6 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 from .sisense import Sisense
@@ -55,7 +56,7 @@ class SisenseDatamodelTable(Sisense):
     """
     Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables.
     """
-    SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+    SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[TextField] = TextField(
         "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
     )
     """

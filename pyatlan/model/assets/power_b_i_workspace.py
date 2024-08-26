@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
 
 from .power_b_i import PowerBI
 
@@ -29,7 +29,7 @@ class PowerBIWorkspace(PowerBI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    WEB_URL: ClassVar[TextField] = TextField("webUrl", "webUrl")
     """
     Deprecated.
     """

@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField, TextField
 
 from .micro_strategy import MicroStrategy
 
@@ -29,7 +29,7 @@ class MicroStrategyAttribute(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_ATTRIBUTE_FORMS: ClassVar[KeywordField] = KeywordField(
+    MICRO_STRATEGY_ATTRIBUTE_FORMS: ClassVar[TextField] = TextField(
         "microStrategyAttributeForms", "microStrategyAttributeForms"
     )
     """
