@@ -119,6 +119,15 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
     workflow_status = client.workflow.monitor(workflow_response=workflow)
     assert workflow_status == AtlanWorkflowPhase.FAILED
 
+    # Test find run by id
+    workflow_run = client.workflow.find_run_by_id(id=run.id)
+    assert (
+        workflow_run
+        and workflow_run.source
+        and workflow_run.source.status
+        and workflow_run.source.status.phase == AtlanWorkflowPhase.FAILED
+    )
+
 
 def test_workflow_get_all_scheduled_runs(
     client: AtlanClient, workflow: WorkflowResponse
