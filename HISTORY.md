@@ -1,3 +1,19 @@
+## 2.4.2 (August 28, 2024)
+
+### New features
+
+- Added support for `GCS` presigned URL file uploads.
+- Added the `find_run_by_id` method to the `WorkflowClient`.
+
+### QOL improvements
+
+- Generated the latest typedef models.
+- Added `pyatlan` to the Conda packages.
+
+### Bug Fixes
+
+- Fixed the interpretation of `text-only` indexed fields for assets.
+
 ## 2.4.1 (August 12, 2024)
 
 ### New features
