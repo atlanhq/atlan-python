@@ -1,3 +1,9 @@
+## 2.4.3 (September 04, 2024)
+
+### New features
+
+- Added a new connector type `DM` for data modeling assets.
+
 ## 2.4.2 (August 28, 2024)
 
 ### New features
