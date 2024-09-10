@@ -1,3 +1,18 @@
+## 2.4.4 (September 10, 2024)
+
+### New features
+
+- Added a new function (`pkg.utils.set_package_headers`) to configure the `AtlanClient` with the required custom package headers using environment variables.
+
+### Bug fixes
+
+- Fixed `pkg.utils.validate_connection()` to include other types (`Connection`, `Dict`).
+
+### QOL improvements
+
+- Moved `nanoid` from the `requirements-dev.txt`.
+- Moved common test functions to a separate `test_utils` package.
+
 ## 2.4.3 (September 04, 2024)
 
 ### New features
@@ -16,7 +31,7 @@
 - Generated the latest typedef models.
 - Added `pyatlan` to the Conda packages.
 
-### Bug Fixes
+### Bug fixes
 
 - Fixed the interpretation of `text-only` indexed fields for assets.
 
