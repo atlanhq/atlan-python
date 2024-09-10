@@ -50,15 +50,31 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
     """
     client = get_client(run_time_config.user_id or "")
     if run_time_config.agent == "workflow":
-        headers: Dict[str, str] = {}
-        if run_time_config.agent:
-            headers["x-atlan-agent"] = run_time_config.agent
-        if run_time_config.agent_pkg:
-            headers["x-atlan-agent-package-name"] = run_time_config.agent_pkg
-        if run_time_config.agent_wfl:
-            headers["x-atlan-agent-workflow-id"] = run_time_config.agent_wfl
-        if run_time_config.agent_id:
-            headers["x-atlan-agent-id"] = run_time_config.agent_id
+        client = set_package_headers(client)
+    return client
+
+
+def set_package_headers(client: AtlanClient) -> AtlanClient:
+    """
+    Configure the AtlanClient with package headers from environment variables.
+
+    :param client: AtlanClient instance to configure
+    :returns: updated AtlanClient instance.
+    """
+
+    if (agent := os.environ.get("X_ATLAN_AGENT")) and (
+        agent_id := os.environ.get("X_ATLAN_AGENT_ID")
+    ):
+        headers: Dict[str, str] = {
+            "x-atlan-agent": agent,
+            "x-atlan-agent-id": agent_id,
+            "x-atlan-agent-package-name": os.environ.get(
+                "X_ATLAN_AGENT_PACKAGE_NAME", ""
+            ),
+            "x-atlan-agent-workflow-id": os.environ.get(
+                "X_ATLAN_AGENT_WORKFLOW_ID", ""
+            ),
+        }
         client.update_headers(headers)
     return client
 
@@ -82,7 +98,13 @@ def validate_connection(v):
     """
     from pyatlan.model.assets import Connection
 
-    return parse_raw_as(Connection, v)
+    if isinstance(v, Connection):
+        return v
+    if isinstance(v, dict):
+        return Connection.parse_obj(v)
+    if isinstance(v, str):
+        return Connection.parse_raw(v)
+    raise ValueError("Invalid type for connection field")
 
 
 def validate_connector_and_connection(v):
