@@ -63,6 +63,26 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
     return client
 
 
+def set_package_client(client: AtlanClient) -> AtlanClient:
+    """
+    Configure the AtlanClient with package headers from environment variables.
+
+    :param client: AtlanClient instance to configure
+    :returns: updated AtlanClient instance.
+    """
+    user_id = os.environ.get("ATLAN_USER_ID")
+    client = get_client(user_id)
+
+    headers: Dict[str, str] = {
+        "x-atlan-agent": os.environ.get("X_ATLAN_AGENT"),
+        "x-atlan-agent-package-name": os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME"),
+        "x-atlan-agent-workflow-id": os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID"),
+        "x-atlan-agent-id": os.environ.get("X_ATLAN_AGENT_ID"),
+    }
+    client.update_headers(headers)
+    return client
+
+
 def validate_multiselect(v):
     """
     This method is used to marshal a multi-select value passed from the custom package ui
@@ -82,7 +102,13 @@ def validate_connection(v):
     """
     from pyatlan.model.assets import Connection
 
-    return parse_raw_as(Connection, v)
+    if isinstance(v, Connection):
+        return v
+    if isinstance(v, dict):
+        return Connection.parse_obj(v)
+    if isinstance(v, str):
+        return Connection.parse_raw(v)
+    raise ValueError("Invalid type for connection field")
 
 
 def validate_connector_and_connection(v):
