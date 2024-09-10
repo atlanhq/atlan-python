@@ -50,36 +50,32 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
     """
     client = get_client(run_time_config.user_id or "")
     if run_time_config.agent == "workflow":
-        headers: Dict[str, str] = {}
-        if run_time_config.agent:
-            headers["x-atlan-agent"] = run_time_config.agent
-        if run_time_config.agent_pkg:
-            headers["x-atlan-agent-package-name"] = run_time_config.agent_pkg
-        if run_time_config.agent_wfl:
-            headers["x-atlan-agent-workflow-id"] = run_time_config.agent_wfl
-        if run_time_config.agent_id:
-            headers["x-atlan-agent-id"] = run_time_config.agent_id
-        client.update_headers(headers)
+        client = set_package_headers(client)
     return client
 
 
-def set_package_client(client: AtlanClient) -> AtlanClient:
+def set_package_headers(client: AtlanClient) -> AtlanClient:
     """
     Configure the AtlanClient with package headers from environment variables.
 
     :param client: AtlanClient instance to configure
     :returns: updated AtlanClient instance.
     """
-    user_id = os.environ.get("ATLAN_USER_ID")
-    client = get_client(user_id)
 
-    headers: Dict[str, str] = {
-        "x-atlan-agent": os.environ.get("X_ATLAN_AGENT"),
-        "x-atlan-agent-package-name": os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME"),
-        "x-atlan-agent-workflow-id": os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID"),
-        "x-atlan-agent-id": os.environ.get("X_ATLAN_AGENT_ID"),
-    }
-    client.update_headers(headers)
+    if (agent := os.environ.get("X_ATLAN_AGENT")) and (
+        agent_id := os.environ.get("X_ATLAN_AGENT_ID")
+    ):
+        headers: Dict[str, str] = {
+            "x-atlan-agent": agent,
+            "x-atlan-agent-id": agent_id,
+            "x-atlan-agent-package-name": os.environ.get(
+                "X_ATLAN_AGENT_PACKAGE_NAME", ""
+            ),
+            "x-atlan-agent-workflow-id": os.environ.get(
+                "X_ATLAN_AGENT_WORKFLOW_ID", ""
+            ),
+        }
+        client.update_headers(headers)
     return client
 
 
