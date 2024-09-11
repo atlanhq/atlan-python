@@ -2,6 +2,7 @@
 # Copyright 2024 Atlan Pte. Ltd.
 import logging
 import random
+from os import path
 from typing import List, Optional, Type
 
 from nanoid import generate as generate_nanoid  # type: ignore
@@ -229,3 +230,26 @@ def create_custom_metadata(
         )
     r = client.typedef.create(cm_def)
     return r.custom_metadata_defs[0]
+
+
+def validate_error_free_logs(files: List[str]):
+    """
+    Asserts that the specified log files do not contain any error messages.
+
+    :param files: a list of file paths to the log files to be validated
+    """
+    for file in files:
+        with open(file, "r") as log:
+            log_contents = log.read()
+            assert "ERROR" not in log_contents  # noqa: S101
+
+
+def validate_files_exist(files: List[str]):
+    """
+    Asserts that the specified files exist and are non-empty.
+
+    :param files: a list of file paths to be validated
+    """
+    for file in files:
+        assert path.isfile(file)  # noqa: S101
+        assert path.getsize(file) > 0  # noqa: S101
