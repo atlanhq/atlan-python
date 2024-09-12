@@ -8,6 +8,20 @@ import uuid
 
 
 class MultipartDataGenerator(object):
+    _CONTENT_TYPES = {
+        ".png": "image/png",
+        ".gif": "image/gif",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".jfif": "image/jpeg",
+        ".pjpeg": "image/jpeg",
+        ".pjp": "image/jpeg",
+        ".svg": "image/svg+xml",
+        ".apng": "image/apng",
+        ".avif": "image/avif",
+        ".webp": "image/webp",
+    }
+
     def __init__(self, chunk_size=1028):
         self.data = io.BytesIO()
         self.line_break = "\r\n"
@@ -15,36 +29,32 @@ class MultipartDataGenerator(object):
         self.chunk_size = chunk_size
 
     def add_file(self, file, filename):
+        # Write the 'name' part (name="image")
         self._write(self.param_header())
         self._write(self.line_break)
-        self._write('Content-Disposition: form-data; name="file"; filename="')
-        self._write(filename)
-        self._write('"')
-        self._write(self.line_break)
-        if filename.endswith(".png"):
-            self._write("Content-Type: image/png")
-        elif filename.endswith(".gif"):
-            self._write("Content-Type: image/gif")
-        elif (
-            filename.endswith(".jpg")
-            or filename.endswith(".jpeg")
-            or filename.endswith(".jfif")
-            or filename.endswith(".pjpeg")
-            or filename.endswith(".pjp")
-        ):
-            self._write("Content-Type: image/jpeg")
-        elif filename.endswith(".svg"):
-            self._write("Content-Type: image/svg+xml")
-        elif filename.endswith(".apng"):
-            self._write("Content-Type: image/apng")
-        elif filename.endswith(".avif"):
-            self._write("Content-Type: image/avif")
-        elif filename.endswith(".webp"):
-            self._write("Content-Type: image/webp")
-        else:
-            self._write("Content-Type: application/octet-stream")
+        self._write('Content-Disposition: form-data; name="name"')
         self._write(self.line_break)
         self._write(self.line_break)
+        self._write("image")
+        self._write(self.line_break)
+
+        # Write the file part with the correct 'name="file"'
+        self._write(self.param_header())
+        self._write(self.line_break)
+        self._write(
+            f'Content-Disposition: form-data; name="file"; filename="{filename}"'
+        )
+        self._write(self.line_break)
+
+        # Get content type from dictionary, default to 'application/octet-stream'
+        content_type = self._CONTENT_TYPES.get(
+            filename[filename.rfind(".") :], "application/octet-stream"  # noqa: E203
+        )
+        self._write(f"Content-Type: {content_type}")
+        self._write(self.line_break)
+        self._write(self.line_break)
+
+        # Write the file content
         self._write_file(file)
         self._write(self.line_break)
 

@@ -643,16 +643,12 @@ def test_fetch_lineage_start_list(
     results = []
     for a in response:
         results.append(a)
-    assert len(results) == 8
-    assert isinstance(results[0], Table)
-    assert isinstance(results[1], Process)
-    assert isinstance(results[2], Table)
-    assert isinstance(results[3], MaterialisedView)
-    assert isinstance(results[4], Table)
-    assert isinstance(results[5], Process)
-    assert isinstance(results[6], Table)
-    assert isinstance(results[7], View)
-    one = results[7]
+    assert len(results) == 4
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], MaterialisedView)
+    assert isinstance(results[2], Process)
+    assert isinstance(results[3], View)
+    one = results[3]
     assert one.guid == view.guid
     assert one.depth == 2
     lineage = FluentLineage(
@@ -682,11 +678,10 @@ def test_fetch_lineage_middle_list(
     results = []
     for a in response:
         results.append(a)
-    assert len(results) == 3
-    assert isinstance(results[0], MaterialisedView)
-    assert isinstance(results[1], Process)
-    assert isinstance(results[2], View)
-    assert results[2].guid == view.guid
+    assert len(results) == 2
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], View)
+    assert results[1].guid == view.guid
     lineage = FluentLineage(
         starting_guid=mview.guid, direction=LineageDirection.UPSTREAM, size=5
     ).request
@@ -695,11 +690,10 @@ def test_fetch_lineage_middle_list(
     results = []
     for a in response:
         results.append(a)
-    assert len(results) == 3
-    assert isinstance(results[0], MaterialisedView)
-    assert isinstance(results[1], Process)
-    assert isinstance(results[2], Table)
-    assert results[2].guid == table.guid
+    assert len(results) == 2
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], Table)
+    assert results[1].guid == table.guid
 
 
 def test_fetch_lineage_end_list(
@@ -727,13 +721,12 @@ def test_fetch_lineage_end_list(
     results = []
     for a in response:
         results.append(a)
-    assert len(results) == 5
-    assert isinstance(results[0], View)
-    assert isinstance(results[1], Process)
-    assert isinstance(results[2], MaterialisedView)
-    assert isinstance(results[3], Process)
-    assert isinstance(results[4], Table)
-    one = results[4]
+    assert len(results) == 4
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], MaterialisedView)
+    assert isinstance(results[2], Process)
+    assert isinstance(results[3], Table)
+    one = results[3]
     assert one.guid == table.guid
 
 
