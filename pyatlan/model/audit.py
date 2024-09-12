@@ -278,7 +278,9 @@ class AuditSearchResults(Iterable):
             self._entity_audits = []
             return None
         try:
-            self._assets = parse_obj_as(List[EntityAudit], raw_json[ENTITY_AUDITS])
+            self._entity_audits = parse_obj_as(
+                List[EntityAudit], raw_json[ENTITY_AUDITS]
+            )
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
