@@ -6,9 +6,9 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.token import SERVICE_ACCOUNT_
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import AuthPolicy, Column, Purpose
+from pyatlan.model.constants import SERVICE_ACCOUNT_
 from pyatlan.model.core import AtlanTagName
 from pyatlan.model.enums import (
     AssetSidebarTab,

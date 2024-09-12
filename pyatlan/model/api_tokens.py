@@ -5,6 +5,7 @@ from typing import Any, List, Optional, Set
 
 from pydantic.v1 import Field, root_validator
 
+from pyatlan.model.constants import SERVICE_ACCOUNT_
 from pyatlan.model.core import AtlanObject
 
 
@@ -107,6 +108,14 @@ class ApiToken(AtlanObject):
     attributes: Optional[ApiTokenAttributes] = Field(
         default=None, description="Detailed characteristics of the API token."
     )
+
+    @property
+    def username(self):
+        return (
+            SERVICE_ACCOUNT_ + self.client_id
+            if self.client_id
+            else self.attributes.client_id
+        )
 
     @root_validator(pre=True)
     def copy_values(cls, values):
