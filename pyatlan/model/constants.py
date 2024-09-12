@@ -4,6 +4,7 @@ from typing import Literal, Set
 
 DELETED_ = "(DELETED)"
 DELETED_SENTINEL = "DeLeTeD_SeNtIn3l"
+SERVICE_ACCOUNT_ = "service-account-"
 DomainTypes = Set[Literal["DataDomain", "DataProduct"]]
 EntityTypes = Set[Literal["Asset"]]
 GlossaryTypes = Set[

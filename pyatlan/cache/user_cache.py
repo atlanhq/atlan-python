@@ -3,9 +3,10 @@
 from threading import Lock
 from typing import Dict, Iterable, Optional
 
-from pyatlan.client.token import SERVICE_ACCOUNT_, TokenClient
+from pyatlan.client.token import TokenClient
 from pyatlan.client.user import UserClient
 from pyatlan.errors import ErrorCode
+from pyatlan.model.constants import SERVICE_ACCOUNT_
 
 lock = Lock()
 
@@ -139,8 +140,7 @@ class UserCache:
         # If the username isn't found, check if it is an API token
         token = self.token_client.get_by_guid(guid=idstr)
         if token and token.client_id:
-            username = f"{SERVICE_ACCOUNT_}{token.client_id}"
-            return username
+            return token.username
         else:
             self._refresh_cache()
             return self.map_id_to_name.get(idstr)

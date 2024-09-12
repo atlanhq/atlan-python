@@ -10,8 +10,7 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import DELETE_API_TOKEN, GET_API_TOKENS, UPSERT_API_TOKEN
 from pyatlan.errors import ErrorCode
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
-
-SERVICE_ACCOUNT_ = "service-account-"
+from pyatlan.model.constants import SERVICE_ACCOUNT_
 
 
 class TokenClient:
