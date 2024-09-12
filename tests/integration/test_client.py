@@ -591,6 +591,11 @@ def test_audit_find_by_user(
     audit_info.guid = audit_entity.entity_id
     audit_info.type_name = audit_entity.type_name
 
+    # Fetch next page and make sure pagination works
+    results.next_page()
+    audit_entity_next_page = results._entity_audits[0]
+    assert audit_entity != audit_entity_next_page
+
 
 @pytest.mark.order(after="test_audit_find_by_user")
 def test_audit_find_by_qualified_name(client: AtlanClient, audit_info: AuditInfo):
