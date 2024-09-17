@@ -74,10 +74,11 @@ class DataProduct(DataMesh):
 
     @classmethod
     def updater(
-        cls: type[SelfAsset],
+        cls,
         qualified_name: str = "",
         name: str = "",
-    ) -> SelfAsset:
+        asset_selection: Optional[IndexSearchRequest] = None,
+    ) -> DataProduct:
         validate_required_fields(
             ["name", "qualified_name"],
             [name, qualified_name],
@@ -86,12 +87,17 @@ class DataProduct(DataMesh):
         fields = qualified_name.split("/")
         if len(fields) < 5:
             raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
-        return cls(
+        product = cls(
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
             )
         )
+        if asset_selection:
+            product.data_product_assets_d_s_l = (
+                DataProductsAssetsDSL.get_asset_selection(asset_selection)
+            )
+        return product
 
     @classmethod
     def create_for_modification(
@@ -554,9 +560,9 @@ class DataProduct(DataMesh):
             )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=DataProductsAssetsDSL(
-                    query=asset_selection
-                ).to_string(),
+                data_product_assets_d_s_l=DataProductsAssetsDSL.get_asset_selection(
+                    asset_selection
+                ),
                 data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
                 qualified_name=f"{domain_qualified_name}/product/{name}",
                 data_product_assets_playbook_filter=ASSETS_PLAYBOOK_FILTER,

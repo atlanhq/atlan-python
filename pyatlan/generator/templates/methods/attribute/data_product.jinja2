@@ -17,9 +17,9 @@
             )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=DataProductsAssetsDSL(
-                    query=asset_selection
-                ).to_string(),
+                data_product_assets_d_s_l=DataProductsAssetsDSL.get_asset_selection(
+                    asset_selection
+                ),
                 data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
                 qualified_name=f"{domain_qualified_name}/product/{name}",
                 data_product_assets_playbook_filter=ASSETS_PLAYBOOK_FILTER,

@@ -7,6 +7,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
+    AtlasGlossary,
     Connection,
     DataContract,
     DataDomain,
@@ -14,6 +15,7 @@ from pyatlan.model.assets import (
     Table,
 )
 from pyatlan.model.core import Announcement
+from pyatlan.model.data_mesh import DataProductsAssetsDSL
 from pyatlan.model.enums import (
     AnnouncementType,
     AtlanCustomAttributePrimitiveType,
@@ -371,7 +373,9 @@ def test_update_contract(
     assert "(UPDATED)" in updated_contract.data_contract_json
 
 
-def test_update_product(client: AtlanClient, product: DataProduct):
+def test_update_product(
+    client: AtlanClient, product: DataProduct, glossary: AtlasGlossary
+):
     assert product.qualified_name
     assert product.name
     updated = client.asset.update_certificate(
@@ -401,6 +405,33 @@ def test_update_product(client: AtlanClient, product: DataProduct):
     assert updated.certificate_status == CERTIFICATE_STATUS
     assert product.qualified_name
     assert product.name
+
+    # Test the product.updater() method with assets
+    assert glossary.qualified_name
+    assets = (
+        FluentSearch()
+        .where(Asset.QUALIFIED_NAME.eq(glossary.qualified_name))
+        .to_request()
+    )
+    to_update = DataProduct.updater(
+        name=DATA_PRODUCT_NAME,
+        qualified_name=product.qualified_name,
+        asset_selection=assets,
+    )
+    response = client.asset.save(to_update)
+    assert (products := response.assets_updated(asset_type=DataProduct))
+    assert len(products) == 1
+    assert products[
+        0
+    ].data_product_assets_d_s_l == DataProductsAssetsDSL.get_asset_selection(assets)
+
+    # Test the product.updater() method without assets
+    # (ensure asset selection remains unchanged)
+    product = DataProduct.updater(
+        name=DATA_PRODUCT_NAME, qualified_name=product.qualified_name
+    )
+    response = client.asset.save(product)
+    assert response.assets_updated(asset_type=DataProduct) == []
 
 
 @pytest.mark.order(after="test_update_product")

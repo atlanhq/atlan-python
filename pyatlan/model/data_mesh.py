@@ -120,5 +120,18 @@ class DataProductsAssetsDSL(AtlanObject):
         asset_selection_dsl = dict(loads(dsl_json_str, object_hook=self._exclude_nulls))
         return self._contruct_dsl_str(asset_selection_dsl)
 
+    @staticmethod
+    def get_asset_selection(search_request: IndexSearchRequest) -> str:
+        """
+        Returns the selection of assets for the data product,
+        based on the specified Atlan index search request
+
+        :param search_request: index search request that
+        defines the assets to include in the data product
+        :returns: search DSL used to define
+        which assets are part of this data product.
+        """
+        return DataProductsAssetsDSL(query=search_request).to_string()
+
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
