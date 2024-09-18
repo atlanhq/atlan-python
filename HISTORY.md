@@ -1,3 +1,17 @@
+## 2.4.5 (September 18, 2024)
+
+### New Features
+
+- Added `username` property to the `ApiToken` model.
+- Added functions for validating custom package files to `pyatlan.test_utils`.
+- Added an optional parameter `asset_selection` to `DataProduct.updater()`, allowing users to update assets within the data product.
+- Added the `DataProductsAssetsDSL.get_asset_selection()` method, which returns the asset selection DSL string for a data product based on the specified `IndexSearchRequest`.
+
+### Bug Fixes
+
+- Fixed pagination issues in `AuditSearchResults`.
+- Fixed multipart form handling for `AtlanTag` image uploads.
+
 ## 2.4.4 (September 10, 2024)
 
 ### New features
