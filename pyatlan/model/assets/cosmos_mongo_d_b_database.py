@@ -37,6 +37,16 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    COSMOS_MONGO_DB_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "cosmosMongoDBAccountQualifiedName",
+            "cosmosMongoDBAccountQualifiedName",
+            "cosmosMongoDBAccountQualifiedName.text",
+        )
+    )
+    """
+    Unique name of the account in which this database exists.
+    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -150,6 +160,12 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     TBC
     """
+    COSMOS_MONGO_DB_ACCOUNT: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBAccount"
+    )
+    """
+    TBC
+    """
     SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
     """
     TBC
@@ -182,6 +198,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "cosmos_mongo_d_b_account_qualified_name",
         "no_s_q_l_schema_definition",
         "mongo_d_b_database_collection_count",
         "schema_count",
@@ -202,6 +219,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         "is_profiled",
         "last_profiled_at",
         "dbt_sources",
+        "cosmos_mongo_d_b_account",
         "sql_dbt_models",
         "dbt_tests",
         "mongo_d_b_collections",
@@ -210,6 +228,24 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         "schemas",
         "cosmos_mongo_d_b_collections",
     ]
+
+    @property
+    def cosmos_mongo_d_b_account_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_qualified_name
+        )
+
+    @cosmos_mongo_d_b_account_qualified_name.setter
+    def cosmos_mongo_d_b_account_qualified_name(
+        self, cosmos_mongo_d_b_account_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_account_qualified_name = (
+            cosmos_mongo_d_b_account_qualified_name
+        )
 
     @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
@@ -440,6 +476,22 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         self.attributes.dbt_sources = dbt_sources
 
     @property
+    def cosmos_mongo_d_b_account(self) -> Optional[CosmosMongoDBAccount]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account
+        )
+
+    @cosmos_mongo_d_b_account.setter
+    def cosmos_mongo_d_b_account(
+        self, cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_account = cosmos_mongo_d_b_account
+
+    @property
     def sql_dbt_models(self) -> Optional[List[DbtModel]]:
         return None if self.attributes is None else self.attributes.sql_dbt_models
 
@@ -520,6 +572,9 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         self.attributes.cosmos_mongo_d_b_collections = cosmos_mongo_d_b_collections
 
     class Attributes(CosmosMongoDB.Attributes):
+        cosmos_mongo_d_b_account_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         mongo_d_b_database_collection_count: Optional[int] = Field(
             default=None, description=""
@@ -544,6 +599,9 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
         dbt_sources: Optional[List[DbtSource]] = Field(
+            default=None, description=""
+        )  # relationship
+        cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount] = Field(
             default=None, description=""
         )  # relationship
         sql_dbt_models: Optional[List[DbtModel]] = Field(
@@ -582,6 +640,7 @@ from .core.dbt_model import DbtModel  # noqa
 from .core.dbt_source import DbtSource  # noqa
 from .core.dbt_test import DbtTest  # noqa
 from .core.schema import Schema  # noqa
+from .cosmos_mongo_d_b_account import CosmosMongoDBAccount  # noqa
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa
 from .mongo_d_b_collection import MongoDBCollection  # noqa
 

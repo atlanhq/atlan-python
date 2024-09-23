@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .b_i import BI
+from .core.b_i import BI
 
 
 class Tableau(BI):

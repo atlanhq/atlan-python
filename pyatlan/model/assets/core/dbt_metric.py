@@ -16,7 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import DbtMetricFilter
+from pyatlan.model.structs import DbtJobRun, DbtMetricFilter
 
 from .dbt import Dbt
 
@@ -153,6 +153,10 @@ class DbtMetric(Dbt):
     """
 
     """
+    DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
+    """
+    List of latest DBT job runs across all environments
+    """
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """
     Type of the metric.
@@ -219,6 +223,7 @@ class DbtMetric(Dbt):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
+        "dbt_job_runs",
         "metric_type",
         "metric_s_q_l",
         "metric_filters",
@@ -443,6 +448,16 @@ class DbtMetric(Dbt):
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
+    def dbt_job_runs(self) -> Optional[List[DbtJobRun]]:
+        return None if self.attributes is None else self.attributes.dbt_job_runs
+
+    @dbt_job_runs.setter
+    def dbt_job_runs(self, dbt_job_runs: Optional[List[DbtJobRun]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_runs = dbt_job_runs
+
+    @property
     def metric_type(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.metric_type
 
@@ -572,6 +587,7 @@ class DbtMetric(Dbt):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
+        dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")

@@ -48,11 +48,11 @@ class SparkJob(Spark):
     """
     TBC
     """
-    PROCESS: ClassVar[RelationField] = RelationField("process")
+    INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
     TBC
     """
-    INPUTS: ClassVar[RelationField] = RelationField("inputs")
+    PROCESS: ClassVar[RelationField] = RelationField("process")
     """
     TBC
     """
@@ -61,8 +61,8 @@ class SparkJob(Spark):
         "spark_app_name",
         "spark_master",
         "outputs",
-        "process",
         "inputs",
+        "process",
     ]
 
     @property
@@ -96,16 +96,6 @@ class SparkJob(Spark):
         self.attributes.outputs = outputs
 
     @property
-    def process(self) -> Optional[Process]:
-        return None if self.attributes is None else self.attributes.process
-
-    @process.setter
-    def process(self, process: Optional[Process]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.process = process
-
-    @property
     def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
@@ -115,16 +105,26 @@ class SparkJob(Spark):
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
+    @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
     class Attributes(Spark.Attributes):
         spark_app_name: Optional[str] = Field(default=None, description="")
         spark_master: Optional[str] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
-        process: Optional[Process] = Field(default=None, description="")  # relationship
         inputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
+        process: Optional[Process] = Field(default=None, description="")  # relationship
 
     attributes: SparkJob.Attributes = Field(
         default_factory=lambda: SparkJob.Attributes(),

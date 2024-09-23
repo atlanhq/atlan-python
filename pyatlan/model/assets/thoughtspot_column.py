@@ -70,10 +70,6 @@ class ThoughtspotColumn(Thoughtspot):
     Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute.
     """
 
-    THOUGHTSPOT_TABLE: ClassVar[RelationField] = RelationField("thoughtspotTable")
-    """
-    TBC
-    """
     THOUGHTSPOT_VIEW: ClassVar[RelationField] = RelationField("thoughtspotView")
     """
     TBC
@@ -84,6 +80,10 @@ class ThoughtspotColumn(Thoughtspot):
     """
     TBC
     """
+    THOUGHTSPOT_TABLE: ClassVar[RelationField] = RelationField("thoughtspotTable")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "thoughtspot_table_qualified_name",
@@ -91,9 +91,9 @@ class ThoughtspotColumn(Thoughtspot):
         "thoughtspot_worksheet_qualified_name",
         "thoughtspot_column_data_type",
         "thoughtspot_column_type",
-        "thoughtspot_table",
         "thoughtspot_view",
         "thoughtspot_worksheet",
+        "thoughtspot_table",
     ]
 
     @property
@@ -177,16 +177,6 @@ class ThoughtspotColumn(Thoughtspot):
         self.attributes.thoughtspot_column_type = thoughtspot_column_type
 
     @property
-    def thoughtspot_table(self) -> Optional[ThoughtspotTable]:
-        return None if self.attributes is None else self.attributes.thoughtspot_table
-
-    @thoughtspot_table.setter
-    def thoughtspot_table(self, thoughtspot_table: Optional[ThoughtspotTable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_table = thoughtspot_table
-
-    @property
     def thoughtspot_view(self) -> Optional[ThoughtspotView]:
         return None if self.attributes is None else self.attributes.thoughtspot_view
 
@@ -210,6 +200,16 @@ class ThoughtspotColumn(Thoughtspot):
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_worksheet = thoughtspot_worksheet
 
+    @property
+    def thoughtspot_table(self) -> Optional[ThoughtspotTable]:
+        return None if self.attributes is None else self.attributes.thoughtspot_table
+
+    @thoughtspot_table.setter
+    def thoughtspot_table(self, thoughtspot_table: Optional[ThoughtspotTable]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_table = thoughtspot_table
+
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_table_qualified_name: Optional[str] = Field(
             default=None, description=""
@@ -224,13 +224,13 @@ class ThoughtspotColumn(Thoughtspot):
             default=None, description=""
         )
         thoughtspot_column_type: Optional[str] = Field(default=None, description="")
-        thoughtspot_table: Optional[ThoughtspotTable] = Field(
-            default=None, description=""
-        )  # relationship
         thoughtspot_view: Optional[ThoughtspotView] = Field(
             default=None, description=""
         )  # relationship
         thoughtspot_worksheet: Optional[ThoughtspotWorksheet] = Field(
+            default=None, description=""
+        )  # relationship
+        thoughtspot_table: Optional[ThoughtspotTable] = Field(
             default=None, description=""
         )  # relationship
 

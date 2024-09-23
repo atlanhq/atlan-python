@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
+)
 
 from .d_m import DM
 
@@ -29,246 +34,244 @@ class DMAttribute(DM):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_IS_NULLABLE: ClassVar[BooleanField] = BooleanField(
-        "dMIsNullable", "dMIsNullable"
+    DM_IS_NULLABLE: ClassVar[BooleanField] = BooleanField(
+        "dmIsNullable", "dmIsNullable"
     )
     """
-    Whether this attribute is nullable or not.
+    When true, the values in this attribute can be null.
     """
-    D_M_PRIMARY_KEY_INDICATOR: ClassVar[BooleanField] = BooleanField(
-        "dMPrimaryKeyIndicator", "dMPrimaryKeyIndicator"
-    )
+    DM_IS_PRIMARY: ClassVar[BooleanField] = BooleanField("dmIsPrimary", "dmIsPrimary")
     """
-    Whether this attribute is primary key indicator or not.
+    When true, this attribute forms the primary key for the entity.
     """
-    D_M_FOREIGN_KEY_INDICATOR: ClassVar[BooleanField] = BooleanField(
-        "dMForeignKeyIndicator", "dMForeignKeyIndicator"
-    )
+    DM_IS_FOREIGN: ClassVar[BooleanField] = BooleanField("dmIsForeign", "dmIsForeign")
     """
-    Whether this attribute is foreign key indicator or not.
+    When true, this attribute is a foreign key to another entity.
     """
-    D_M_DERIVED_INDICATOR: ClassVar[BooleanField] = BooleanField(
-        "dMDerivedIndicator", "dMDerivedIndicator"
-    )
+    DM_IS_DERIVED: ClassVar[BooleanField] = BooleanField("dmIsDerived", "dmIsDerived")
     """
-    Whether this attribute is derived indicator or not.
+    When true, the values in this attribute are derived data.
     """
-    D_M_PRECISION: ClassVar[NumericField] = NumericField("dMPrecision", "dMPrecision")
+    DM_PRECISION: ClassVar[NumericField] = NumericField("dmPrecision", "dmPrecision")
     """
     Precision of the attribute.
     """
-    D_M_SCALE: ClassVar[NumericField] = NumericField("dMScale", "dMScale")
+    DM_SCALE: ClassVar[NumericField] = NumericField("dmScale", "dmScale")
     """
     Scale of the attribute.
     """
+    DM_DATA_TYPE: ClassVar[KeywordField] = KeywordField("dmDataType", "dmDataType")
+    """
+    Type of the attribute.
+    """
 
-    D_M_ENTITY: ClassVar[RelationField] = RelationField("dMEntity")
+    DM_ENTITIES: ClassVar[RelationField] = RelationField("dmEntities")
     """
     TBC
     """
-    D_M_RELATED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "dMRelatedToAttributes"
+    DM_RELATED_FROM_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "dmRelatedFromAttributes"
     )
     """
     TBC
     """
-    D_M_MAPPED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "dMMappedToAttributes"
+    DM_MAPPED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "dmMappedToAttributes"
     )
     """
     TBC
     """
-    D_M_MAPPED_FROM_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "dMMappedFromAttributes"
+    DM_RELATED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "dmRelatedToAttributes"
     )
     """
     TBC
     """
-    D_M_RELATED_FROM_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "dMRelatedFromAttributes"
+    DM_MAPPED_FROM_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "dmMappedFromAttributes"
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_is_nullable",
-        "d_m_primary_key_indicator",
-        "d_m_foreign_key_indicator",
-        "d_m_derived_indicator",
-        "d_m_precision",
-        "d_m_scale",
-        "d_m_entity",
-        "d_m_related_to_attributes",
-        "d_m_mapped_to_attributes",
-        "d_m_mapped_from_attributes",
-        "d_m_related_from_attributes",
+        "dm_is_nullable",
+        "dm_is_primary",
+        "dm_is_foreign",
+        "dm_is_derived",
+        "dm_precision",
+        "dm_scale",
+        "dm_data_type",
+        "dm_entities",
+        "dm_related_from_attributes",
+        "dm_mapped_to_attributes",
+        "dm_related_to_attributes",
+        "dm_mapped_from_attributes",
     ]
 
     @property
-    def d_m_is_nullable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.d_m_is_nullable
+    def dm_is_nullable(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.dm_is_nullable
 
-    @d_m_is_nullable.setter
-    def d_m_is_nullable(self, d_m_is_nullable: Optional[bool]):
+    @dm_is_nullable.setter
+    def dm_is_nullable(self, dm_is_nullable: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_is_nullable = d_m_is_nullable
+        self.attributes.dm_is_nullable = dm_is_nullable
 
     @property
-    def d_m_primary_key_indicator(self) -> Optional[bool]:
+    def dm_is_primary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.dm_is_primary
+
+    @dm_is_primary.setter
+    def dm_is_primary(self, dm_is_primary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_is_primary = dm_is_primary
+
+    @property
+    def dm_is_foreign(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.dm_is_foreign
+
+    @dm_is_foreign.setter
+    def dm_is_foreign(self, dm_is_foreign: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_is_foreign = dm_is_foreign
+
+    @property
+    def dm_is_derived(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.dm_is_derived
+
+    @dm_is_derived.setter
+    def dm_is_derived(self, dm_is_derived: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_is_derived = dm_is_derived
+
+    @property
+    def dm_precision(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dm_precision
+
+    @dm_precision.setter
+    def dm_precision(self, dm_precision: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_precision = dm_precision
+
+    @property
+    def dm_scale(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dm_scale
+
+    @dm_scale.setter
+    def dm_scale(self, dm_scale: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_scale = dm_scale
+
+    @property
+    def dm_data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_data_type
+
+    @dm_data_type.setter
+    def dm_data_type(self, dm_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_data_type = dm_data_type
+
+    @property
+    def dm_entities(self) -> Optional[List[DMEntity]]:
+        return None if self.attributes is None else self.attributes.dm_entities
+
+    @dm_entities.setter
+    def dm_entities(self, dm_entities: Optional[List[DMEntity]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_entities = dm_entities
+
+    @property
+    def dm_related_from_attributes(self) -> Optional[List[DMAttributeAssociation]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.d_m_primary_key_indicator
+            else self.attributes.dm_related_from_attributes
         )
 
-    @d_m_primary_key_indicator.setter
-    def d_m_primary_key_indicator(self, d_m_primary_key_indicator: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_primary_key_indicator = d_m_primary_key_indicator
-
-    @property
-    def d_m_foreign_key_indicator(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_foreign_key_indicator
-        )
-
-    @d_m_foreign_key_indicator.setter
-    def d_m_foreign_key_indicator(self, d_m_foreign_key_indicator: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_foreign_key_indicator = d_m_foreign_key_indicator
-
-    @property
-    def d_m_derived_indicator(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.d_m_derived_indicator
-        )
-
-    @d_m_derived_indicator.setter
-    def d_m_derived_indicator(self, d_m_derived_indicator: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_derived_indicator = d_m_derived_indicator
-
-    @property
-    def d_m_precision(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.d_m_precision
-
-    @d_m_precision.setter
-    def d_m_precision(self, d_m_precision: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_precision = d_m_precision
-
-    @property
-    def d_m_scale(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.d_m_scale
-
-    @d_m_scale.setter
-    def d_m_scale(self, d_m_scale: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_scale = d_m_scale
-
-    @property
-    def d_m_entity(self) -> Optional[DMEntity]:
-        return None if self.attributes is None else self.attributes.d_m_entity
-
-    @d_m_entity.setter
-    def d_m_entity(self, d_m_entity: Optional[DMEntity]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_entity = d_m_entity
-
-    @property
-    def d_m_related_to_attributes(self) -> Optional[List[DMAttributeAssociation]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_related_to_attributes
-        )
-
-    @d_m_related_to_attributes.setter
-    def d_m_related_to_attributes(
-        self, d_m_related_to_attributes: Optional[List[DMAttributeAssociation]]
+    @dm_related_from_attributes.setter
+    def dm_related_from_attributes(
+        self, dm_related_from_attributes: Optional[List[DMAttributeAssociation]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_related_to_attributes = d_m_related_to_attributes
+        self.attributes.dm_related_from_attributes = dm_related_from_attributes
 
     @property
-    def d_m_mapped_to_attributes(self) -> Optional[List[DMAttribute]]:
+    def dm_mapped_to_attributes(self) -> Optional[List[DMAttribute]]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_mapped_to_attributes
+            None if self.attributes is None else self.attributes.dm_mapped_to_attributes
         )
 
-    @d_m_mapped_to_attributes.setter
-    def d_m_mapped_to_attributes(
-        self, d_m_mapped_to_attributes: Optional[List[DMAttribute]]
+    @dm_mapped_to_attributes.setter
+    def dm_mapped_to_attributes(
+        self, dm_mapped_to_attributes: Optional[List[DMAttribute]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_mapped_to_attributes = d_m_mapped_to_attributes
+        self.attributes.dm_mapped_to_attributes = dm_mapped_to_attributes
 
     @property
-    def d_m_mapped_from_attributes(self) -> Optional[List[DMAttribute]]:
+    def dm_related_to_attributes(self) -> Optional[List[DMAttributeAssociation]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.d_m_mapped_from_attributes
+            else self.attributes.dm_related_to_attributes
         )
 
-    @d_m_mapped_from_attributes.setter
-    def d_m_mapped_from_attributes(
-        self, d_m_mapped_from_attributes: Optional[List[DMAttribute]]
+    @dm_related_to_attributes.setter
+    def dm_related_to_attributes(
+        self, dm_related_to_attributes: Optional[List[DMAttributeAssociation]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_mapped_from_attributes = d_m_mapped_from_attributes
+        self.attributes.dm_related_to_attributes = dm_related_to_attributes
 
     @property
-    def d_m_related_from_attributes(self) -> Optional[List[DMAttributeAssociation]]:
+    def dm_mapped_from_attributes(self) -> Optional[List[DMAttribute]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.d_m_related_from_attributes
+            else self.attributes.dm_mapped_from_attributes
         )
 
-    @d_m_related_from_attributes.setter
-    def d_m_related_from_attributes(
-        self, d_m_related_from_attributes: Optional[List[DMAttributeAssociation]]
+    @dm_mapped_from_attributes.setter
+    def dm_mapped_from_attributes(
+        self, dm_mapped_from_attributes: Optional[List[DMAttribute]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_related_from_attributes = d_m_related_from_attributes
+        self.attributes.dm_mapped_from_attributes = dm_mapped_from_attributes
 
     class Attributes(DM.Attributes):
-        d_m_is_nullable: Optional[bool] = Field(default=None, description="")
-        d_m_primary_key_indicator: Optional[bool] = Field(default=None, description="")
-        d_m_foreign_key_indicator: Optional[bool] = Field(default=None, description="")
-        d_m_derived_indicator: Optional[bool] = Field(default=None, description="")
-        d_m_precision: Optional[int] = Field(default=None, description="")
-        d_m_scale: Optional[int] = Field(default=None, description="")
-        d_m_entity: Optional[DMEntity] = Field(
+        dm_is_nullable: Optional[bool] = Field(default=None, description="")
+        dm_is_primary: Optional[bool] = Field(default=None, description="")
+        dm_is_foreign: Optional[bool] = Field(default=None, description="")
+        dm_is_derived: Optional[bool] = Field(default=None, description="")
+        dm_precision: Optional[int] = Field(default=None, description="")
+        dm_scale: Optional[int] = Field(default=None, description="")
+        dm_data_type: Optional[str] = Field(default=None, description="")
+        dm_entities: Optional[List[DMEntity]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_related_to_attributes: Optional[List[DMAttributeAssociation]] = Field(
+        dm_related_from_attributes: Optional[List[DMAttributeAssociation]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_mapped_to_attributes: Optional[List[DMAttribute]] = Field(
+        dm_mapped_to_attributes: Optional[List[DMAttribute]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_mapped_from_attributes: Optional[List[DMAttribute]] = Field(
+        dm_related_to_attributes: Optional[List[DMAttributeAssociation]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_related_from_attributes: Optional[List[DMAttributeAssociation]] = Field(
+        dm_mapped_from_attributes: Optional[List[DMAttribute]] = Field(
             default=None, description=""
         )  # relationship
 

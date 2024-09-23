@@ -15,7 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
     TextField,
 )
-from pyatlan.model.structs import SourceTagAttribute
+from pyatlan.model.structs import DbtJobRun, SourceTagAttribute
 
 from .core.dbt import Dbt
 
@@ -146,6 +146,10 @@ class DbtTag(Dbt):
     """
 
     """
+    DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
+    """
+    List of latest DBT job runs across all environments
+    """
     TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
     """
     Unique identifier of the tag in the source system.
@@ -188,6 +192,7 @@ class DbtTag(Dbt):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
+        "dbt_job_runs",
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -397,6 +402,16 @@ class DbtTag(Dbt):
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
+    def dbt_job_runs(self) -> Optional[List[DbtJobRun]]:
+        return None if self.attributes is None else self.attributes.dbt_job_runs
+
+    @dbt_job_runs.setter
+    def dbt_job_runs(self, dbt_job_runs: Optional[List[DbtJobRun]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_runs = dbt_job_runs
+
+    @property
     def tag_id(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.tag_id
 
@@ -461,6 +476,7 @@ class DbtTag(Dbt):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
+        dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
         tag_id: Optional[str] = Field(default=None, description="")
         tag_attributes: Optional[List[SourceTagAttribute]] = Field(
             default=None, description=""

@@ -83,6 +83,8 @@ class Referenceable(AtlanObject):
 
     _convenience_properties: ClassVar[List[str]] = [
         "qualified_name",
+        "user_def_relationship_to",
+        "user_def_relationship_from",
         "assigned_terms",
     ]
 
@@ -97,6 +99,38 @@ class Referenceable(AtlanObject):
         self.attributes.qualified_name = qualified_name
 
     @property
+    def user_def_relationship_to(self) -> Optional[List[Referenceable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.user_def_relationship_to
+        )
+
+    @user_def_relationship_to.setter
+    def user_def_relationship_to(
+        self, user_def_relationship_to: Optional[List[Referenceable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.user_def_relationship_to = user_def_relationship_to
+
+    @property
+    def user_def_relationship_from(self) -> Optional[List[Referenceable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.user_def_relationship_from
+        )
+
+    @user_def_relationship_from.setter
+    def user_def_relationship_from(
+        self, user_def_relationship_from: Optional[List[Referenceable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.user_def_relationship_from = user_def_relationship_from
+
+    @property
     def assigned_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.meanings
 
@@ -108,6 +142,12 @@ class Referenceable(AtlanObject):
 
     class Attributes(AtlanObject):
         qualified_name: Optional[str] = Field(default="", description="")
+        user_def_relationship_to: Optional[List[Referenceable]] = Field(
+            default=None, description=""
+        )  # relationship
+        user_def_relationship_from: Optional[List[Referenceable]] = Field(
+            default=None, description=""
+        )  # relationship
         meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship

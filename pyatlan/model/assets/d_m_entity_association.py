@@ -30,82 +30,130 @@ class DMEntityAssociation(DM):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_CARDINALITY: ClassVar[KeywordField] = KeywordField(
-        "dMCardinality", "dMCardinality"
+    DM_CARDINALITY: ClassVar[KeywordField] = KeywordField(
+        "dmCardinality", "dmCardinality"
     )
     """
     Cardinality of the data entity association.
     """
-    D_M_LABEL: ClassVar[KeywordField] = KeywordField("dMLabel", "dMLabel")
+    DM_LABEL: ClassVar[KeywordField] = KeywordField("dmLabel", "dmLabel")
     """
     Label of the data entity association.
     """
+    DM_ENTITY_TO_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmEntityToQualifiedName", "dmEntityToQualifiedName"
+    )
+    """
+    Unique name of the association to which this entity is related.
+    """
+    DM_ENTITY_FROM_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmEntityFromQualifiedName", "dmEntityFromQualifiedName"
+    )
+    """
+    Unique name of the association from this entity is related.
+    """
 
-    D_M_ENTITY_FROM: ClassVar[RelationField] = RelationField("dMEntityFrom")
+    DM_ENTITY_TO: ClassVar[RelationField] = RelationField("dmEntityTo")
     """
     TBC
     """
-    D_M_ENTITY_TO: ClassVar[RelationField] = RelationField("dMEntityTo")
+    DM_ENTITY_FROM: ClassVar[RelationField] = RelationField("dmEntityFrom")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_cardinality",
-        "d_m_label",
-        "d_m_entity_from",
-        "d_m_entity_to",
+        "dm_cardinality",
+        "dm_label",
+        "dm_entity_to_qualified_name",
+        "dm_entity_from_qualified_name",
+        "dm_entity_to",
+        "dm_entity_from",
     ]
 
     @property
-    def d_m_cardinality(self) -> Optional[DMCardinalityType]:
-        return None if self.attributes is None else self.attributes.d_m_cardinality
+    def dm_cardinality(self) -> Optional[DMCardinalityType]:
+        return None if self.attributes is None else self.attributes.dm_cardinality
 
-    @d_m_cardinality.setter
-    def d_m_cardinality(self, d_m_cardinality: Optional[DMCardinalityType]):
+    @dm_cardinality.setter
+    def dm_cardinality(self, dm_cardinality: Optional[DMCardinalityType]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_cardinality = d_m_cardinality
+        self.attributes.dm_cardinality = dm_cardinality
 
     @property
-    def d_m_label(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_label
+    def dm_label(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_label
 
-    @d_m_label.setter
-    def d_m_label(self, d_m_label: Optional[str]):
+    @dm_label.setter
+    def dm_label(self, dm_label: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_label = d_m_label
+        self.attributes.dm_label = dm_label
 
     @property
-    def d_m_entity_from(self) -> Optional[DMEntity]:
-        return None if self.attributes is None else self.attributes.d_m_entity_from
+    def dm_entity_to_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_entity_to_qualified_name
+        )
 
-    @d_m_entity_from.setter
-    def d_m_entity_from(self, d_m_entity_from: Optional[DMEntity]):
+    @dm_entity_to_qualified_name.setter
+    def dm_entity_to_qualified_name(self, dm_entity_to_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_entity_from = d_m_entity_from
+        self.attributes.dm_entity_to_qualified_name = dm_entity_to_qualified_name
 
     @property
-    def d_m_entity_to(self) -> Optional[DMEntity]:
-        return None if self.attributes is None else self.attributes.d_m_entity_to
+    def dm_entity_from_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_entity_from_qualified_name
+        )
 
-    @d_m_entity_to.setter
-    def d_m_entity_to(self, d_m_entity_to: Optional[DMEntity]):
+    @dm_entity_from_qualified_name.setter
+    def dm_entity_from_qualified_name(
+        self, dm_entity_from_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_entity_to = d_m_entity_to
+        self.attributes.dm_entity_from_qualified_name = dm_entity_from_qualified_name
+
+    @property
+    def dm_entity_to(self) -> Optional[DMEntity]:
+        return None if self.attributes is None else self.attributes.dm_entity_to
+
+    @dm_entity_to.setter
+    def dm_entity_to(self, dm_entity_to: Optional[DMEntity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_entity_to = dm_entity_to
+
+    @property
+    def dm_entity_from(self) -> Optional[DMEntity]:
+        return None if self.attributes is None else self.attributes.dm_entity_from
+
+    @dm_entity_from.setter
+    def dm_entity_from(self, dm_entity_from: Optional[DMEntity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_entity_from = dm_entity_from
 
     class Attributes(DM.Attributes):
-        d_m_cardinality: Optional[DMCardinalityType] = Field(
+        dm_cardinality: Optional[DMCardinalityType] = Field(
             default=None, description=""
         )
-        d_m_label: Optional[str] = Field(default=None, description="")
-        d_m_entity_from: Optional[DMEntity] = Field(
+        dm_label: Optional[str] = Field(default=None, description="")
+        dm_entity_to_qualified_name: Optional[str] = Field(default=None, description="")
+        dm_entity_from_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        dm_entity_to: Optional[DMEntity] = Field(
             default=None, description=""
         )  # relationship
-        d_m_entity_to: Optional[DMEntity] = Field(
+        dm_entity_from: Optional[DMEntity] = Field(
             default=None, description=""
         )  # relationship
 

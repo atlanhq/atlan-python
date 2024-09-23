@@ -29,64 +29,64 @@ class DMVersion(DM):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_ENTITY_COUNT: ClassVar[NumericField] = NumericField(
-        "dMEntityCount", "dMEntityCount"
+    DM_ENTITY_COUNT: ClassVar[NumericField] = NumericField(
+        "dmEntityCount", "dmEntityCount"
     )
     """
     Number of entities in the version.
     """
 
-    D_M_DATA_MODEL: ClassVar[RelationField] = RelationField("dMDataModel")
+    DM_ENTITIES: ClassVar[RelationField] = RelationField("dmEntities")
     """
     TBC
     """
-    D_M_ENTITIES: ClassVar[RelationField] = RelationField("dMEntities")
+    DM_DATA_MODEL: ClassVar[RelationField] = RelationField("dmDataModel")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_entity_count",
-        "d_m_data_model",
-        "d_m_entities",
+        "dm_entity_count",
+        "dm_entities",
+        "dm_data_model",
     ]
 
     @property
-    def d_m_entity_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.d_m_entity_count
+    def dm_entity_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dm_entity_count
 
-    @d_m_entity_count.setter
-    def d_m_entity_count(self, d_m_entity_count: Optional[int]):
+    @dm_entity_count.setter
+    def dm_entity_count(self, dm_entity_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_entity_count = d_m_entity_count
+        self.attributes.dm_entity_count = dm_entity_count
 
     @property
-    def d_m_data_model(self) -> Optional[DMDataModel]:
-        return None if self.attributes is None else self.attributes.d_m_data_model
+    def dm_entities(self) -> Optional[List[DMEntity]]:
+        return None if self.attributes is None else self.attributes.dm_entities
 
-    @d_m_data_model.setter
-    def d_m_data_model(self, d_m_data_model: Optional[DMDataModel]):
+    @dm_entities.setter
+    def dm_entities(self, dm_entities: Optional[List[DMEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_data_model = d_m_data_model
+        self.attributes.dm_entities = dm_entities
 
     @property
-    def d_m_entities(self) -> Optional[List[DMEntity]]:
-        return None if self.attributes is None else self.attributes.d_m_entities
+    def dm_data_model(self) -> Optional[DMDataModel]:
+        return None if self.attributes is None else self.attributes.dm_data_model
 
-    @d_m_entities.setter
-    def d_m_entities(self, d_m_entities: Optional[List[DMEntity]]):
+    @dm_data_model.setter
+    def dm_data_model(self, dm_data_model: Optional[DMDataModel]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_entities = d_m_entities
+        self.attributes.dm_data_model = dm_data_model
 
     class Attributes(DM.Attributes):
-        d_m_entity_count: Optional[int] = Field(default=None, description="")
-        d_m_data_model: Optional[DMDataModel] = Field(
+        dm_entity_count: Optional[int] = Field(default=None, description="")
+        dm_entities: Optional[List[DMEntity]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_entities: Optional[List[DMEntity]] = Field(
+        dm_data_model: Optional[DMDataModel] = Field(
             default=None, description=""
         )  # relationship
 

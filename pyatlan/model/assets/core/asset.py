@@ -937,6 +937,54 @@ class Asset(Referenceable):
     """
     Number of users who have starred this asset.
     """
+    ASSET_ANOMALO_DQ_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetAnomaloDQStatus", "assetAnomaloDQStatus"
+    )
+    """
+    Status of data quality from Anomalo.
+    """
+    ASSET_ANOMALO_CHECK_COUNT: ClassVar[NumericField] = NumericField(
+        "assetAnomaloCheckCount", "assetAnomaloCheckCount"
+    )
+    """
+    Total number of checks present in Anomalo for this asset.
+    """
+    ASSET_ANOMALO_FAILED_CHECK_COUNT: ClassVar[NumericField] = NumericField(
+        "assetAnomaloFailedCheckCount", "assetAnomaloFailedCheckCount"
+    )
+    """
+    Total number of checks failed in Anomalo for this asset.
+    """
+    ASSET_ANOMALO_CHECK_STATUSES: ClassVar[TextField] = TextField(
+        "assetAnomaloCheckStatuses", "assetAnomaloCheckStatuses"
+    )
+    """
+    Stringified JSON object containing status of all Anomalo checks associated to this asset.
+    """
+    ASSET_ANOMALO_LAST_CHECK_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetAnomaloLastCheckRunAt", "assetAnomaloLastCheckRunAt"
+    )
+    """
+    Time (epoch) at which the last check was run via Anomalo.
+    """
+    ASSET_ANOMALO_APPLIED_CHECK_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetAnomaloAppliedCheckTypes", "assetAnomaloAppliedCheckTypes"
+    )
+    """
+    All associated Anomalo check types.
+    """
+    ASSET_ANOMALO_FAILED_CHECK_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetAnomaloFailedCheckTypes", "assetAnomaloFailedCheckTypes"
+    )
+    """
+    All associated Anomalo failed check types.
+    """
+    ASSET_ANOMALO_SOURCE_URL: ClassVar[TextField] = TextField(
+        "assetAnomaloSourceUrl", "assetAnomaloSourceUrl"
+    )
+    """
+    URL of the source in Anomalo.
+    """
     ASSET_SODA_DQ_STATUS: ClassVar[KeywordField] = KeywordField(
         "assetSodaDQStatus", "assetSodaDQStatus"
     )
@@ -1013,6 +1061,10 @@ class Asset(Referenceable):
     """
     Count of policies inside the asset
     """
+    DOMAIN_GUI_DS: ClassVar[KeywordField] = KeywordField("domainGUIDs", "domainGUIDs")
+    """
+    Array of domain guids linked to this asset
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1026,8 +1078,24 @@ class Asset(Referenceable):
     """
     TBC
     """
+    ANOMALO_CHECKS: ClassVar[RelationField] = RelationField("anomaloChecks")
+    """
+    TBC
+    """
+    USER_DEF_RELATIONSHIP_TO: ClassVar[RelationField] = RelationField(
+        "userDefRelationshipTo"
+    )
+    """
+    TBC
+    """
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
         "outputPortDataProducts"
+    )
+    """
+    TBC
+    """
+    USER_DEF_RELATIONSHIP_FROM: ClassVar[RelationField] = RelationField(
+        "userDefRelationshipFrom"
     )
     """
     TBC
@@ -1189,6 +1257,14 @@ class Asset(Referenceable):
         "starred_by",
         "starred_details_list",
         "starred_count",
+        "asset_anomalo_d_q_status",
+        "asset_anomalo_check_count",
+        "asset_anomalo_failed_check_count",
+        "asset_anomalo_check_statuses",
+        "asset_anomalo_last_check_run_at",
+        "asset_anomalo_applied_check_types",
+        "asset_anomalo_failed_check_types",
+        "asset_anomalo_source_url",
         "asset_soda_d_q_status",
         "asset_soda_check_count",
         "asset_soda_last_sync_run_at",
@@ -1203,9 +1279,13 @@ class Asset(Referenceable):
         "has_contract",
         "asset_policy_g_u_i_ds",
         "asset_policies_count",
+        "domain_g_u_i_ds",
         "schema_registry_subjects",
         "data_contract_latest_certified",
+        "anomalo_checks",
+        "user_def_relationship_to",
         "output_port_data_products",
+        "user_def_relationship_from",
         "readme",
         "data_contract_latest",
         "assigned_terms",
@@ -2780,6 +2860,134 @@ class Asset(Referenceable):
         self.attributes.starred_count = starred_count
 
     @property
+    def asset_anomalo_d_q_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_d_q_status
+        )
+
+    @asset_anomalo_d_q_status.setter
+    def asset_anomalo_d_q_status(self, asset_anomalo_d_q_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_d_q_status = asset_anomalo_d_q_status
+
+    @property
+    def asset_anomalo_check_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_check_count
+        )
+
+    @asset_anomalo_check_count.setter
+    def asset_anomalo_check_count(self, asset_anomalo_check_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_check_count = asset_anomalo_check_count
+
+    @property
+    def asset_anomalo_failed_check_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_failed_check_count
+        )
+
+    @asset_anomalo_failed_check_count.setter
+    def asset_anomalo_failed_check_count(
+        self, asset_anomalo_failed_check_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_failed_check_count = (
+            asset_anomalo_failed_check_count
+        )
+
+    @property
+    def asset_anomalo_check_statuses(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_check_statuses
+        )
+
+    @asset_anomalo_check_statuses.setter
+    def asset_anomalo_check_statuses(self, asset_anomalo_check_statuses: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_check_statuses = asset_anomalo_check_statuses
+
+    @property
+    def asset_anomalo_last_check_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_last_check_run_at
+        )
+
+    @asset_anomalo_last_check_run_at.setter
+    def asset_anomalo_last_check_run_at(
+        self, asset_anomalo_last_check_run_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_last_check_run_at = (
+            asset_anomalo_last_check_run_at
+        )
+
+    @property
+    def asset_anomalo_applied_check_types(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_applied_check_types
+        )
+
+    @asset_anomalo_applied_check_types.setter
+    def asset_anomalo_applied_check_types(
+        self, asset_anomalo_applied_check_types: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_applied_check_types = (
+            asset_anomalo_applied_check_types
+        )
+
+    @property
+    def asset_anomalo_failed_check_types(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_failed_check_types
+        )
+
+    @asset_anomalo_failed_check_types.setter
+    def asset_anomalo_failed_check_types(
+        self, asset_anomalo_failed_check_types: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_failed_check_types = (
+            asset_anomalo_failed_check_types
+        )
+
+    @property
+    def asset_anomalo_source_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_source_url
+        )
+
+    @asset_anomalo_source_url.setter
+    def asset_anomalo_source_url(self, asset_anomalo_source_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_anomalo_source_url = asset_anomalo_source_url
+
+    @property
     def asset_soda_d_q_status(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.asset_soda_d_q_status
@@ -2940,6 +3148,16 @@ class Asset(Referenceable):
         self.attributes.asset_policies_count = asset_policies_count
 
     @property
+    def domain_g_u_i_ds(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.domain_g_u_i_ds
+
+    @domain_g_u_i_ds.setter
+    def domain_g_u_i_ds(self, domain_g_u_i_ds: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domain_g_u_i_ds = domain_g_u_i_ds
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -2972,6 +3190,32 @@ class Asset(Referenceable):
         self.attributes.data_contract_latest_certified = data_contract_latest_certified
 
     @property
+    def anomalo_checks(self) -> Optional[List[AnomaloCheck]]:
+        return None if self.attributes is None else self.attributes.anomalo_checks
+
+    @anomalo_checks.setter
+    def anomalo_checks(self, anomalo_checks: Optional[List[AnomaloCheck]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.anomalo_checks = anomalo_checks
+
+    @property
+    def user_def_relationship_to(self) -> Optional[List[Referenceable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.user_def_relationship_to
+        )
+
+    @user_def_relationship_to.setter
+    def user_def_relationship_to(
+        self, user_def_relationship_to: Optional[List[Referenceable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.user_def_relationship_to = user_def_relationship_to
+
+    @property
     def output_port_data_products(self) -> Optional[List[DataProduct]]:
         return (
             None
@@ -2986,6 +3230,22 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_port_data_products = output_port_data_products
+
+    @property
+    def user_def_relationship_from(self) -> Optional[List[Referenceable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.user_def_relationship_from
+        )
+
+    @user_def_relationship_from.setter
+    def user_def_relationship_from(
+        self, user_def_relationship_from: Optional[List[Referenceable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.user_def_relationship_from = user_def_relationship_from
 
     @property
     def readme(self) -> Optional[Readme]:
@@ -3313,6 +3573,24 @@ class Asset(Referenceable):
             default=None, description=""
         )
         starred_count: Optional[int] = Field(default=None, description="")
+        asset_anomalo_d_q_status: Optional[str] = Field(default=None, description="")
+        asset_anomalo_check_count: Optional[int] = Field(default=None, description="")
+        asset_anomalo_failed_check_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_check_statuses: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_last_check_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_applied_check_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_failed_check_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_source_url: Optional[str] = Field(default=None, description="")
         asset_soda_d_q_status: Optional[str] = Field(default=None, description="")
         asset_soda_check_count: Optional[int] = Field(default=None, description="")
         asset_soda_last_sync_run_at: Optional[datetime] = Field(
@@ -3331,13 +3609,23 @@ class Asset(Referenceable):
         has_contract: Optional[bool] = Field(default=None, description="")
         asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
         asset_policies_count: Optional[int] = Field(default=None, description="")
+        domain_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
         data_contract_latest_certified: Optional[DataContract] = Field(
             default=None, description=""
         )  # relationship
+        anomalo_checks: Optional[List[AnomaloCheck]] = Field(
+            default=None, description=""
+        )  # relationship
+        user_def_relationship_to: Optional[List[Referenceable]] = Field(
+            default=None, description=""
+        )  # relationship
         output_port_data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
+        user_def_relationship_from: Optional[List[Referenceable]] = Field(
             default=None, description=""
         )  # relationship
         readme: Optional[Readme] = Field(default=None, description="")  # relationship
@@ -3398,6 +3686,7 @@ class Asset(Referenceable):
     )
 
 
+from .anomalo_check import AnomaloCheck  # noqa
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
 from .data_contract import DataContract  # noqa
 from .data_product import DataProduct  # noqa
@@ -3407,5 +3696,6 @@ from .m_c_incident import MCIncident  # noqa
 from .m_c_monitor import MCMonitor  # noqa
 from .metric import Metric  # noqa
 from .readme import Readme  # noqa
+from .referenceable import Referenceable  # noqa
 from .schema_registry_subject import SchemaRegistrySubject  # noqa
 from .soda_check import SodaCheck  # noqa
