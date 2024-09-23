@@ -19,7 +19,12 @@ CONNECTION_RETRY = Retry(
 @runtime_checkable
 class ApiCaller(Protocol):
     def _call_api(
-        self, api, query_params=None, request_obj=None, exclude_unset: bool = True
+        self,
+        api,
+        query_params=None,
+        request_obj=None,
+        exclude_unset: bool = True,
+        text_response: bool = False,
     ):
         pass
 

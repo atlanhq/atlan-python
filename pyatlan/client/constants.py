@@ -602,3 +602,10 @@ CONTRACT_INIT_API = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+OPEN_LINEAGE_API = "/api/v1/lineage"
+OPEN_LINEAGE_SEND_EVENT_API = API(
+    "{connector_type}" + OPEN_LINEAGE_API,
+    HTTPMethod.POST,
+    HTTPStatus.ACCEPTED,
+    endpoint=EndPoint.CHRONOS,
+)

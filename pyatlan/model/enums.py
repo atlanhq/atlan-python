@@ -2317,6 +2317,19 @@ class AtlanMeshColor(str, Enum):
 class DataContractStatus(Enum):
     DRAFT = "draft"
     VERIFIED = "verified"
+class OpenLineageEventType(Enum):
+    """
+    Current transition of the run state.
+    It is required to issue 1 START event
+    and 1 of [COMPLETE, ABORT, FAIL ] event per run.
+    """
+
+    START = "START"
+    RUNNING = "RUNNING"
+    COMPLETE = "COMPLETE"
+    ABORT = "ABORT"
+    FAIL = "FAIL"
+    OTHER = "OTHER"
 
 
 # **************************************
