@@ -13,7 +13,7 @@ from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventReques
 from pyatlan.model.user import UserRequest
 from tests.integration.client import TestId
 
-FIXED_USER = "aryaman.bhushan"
+FIXED_USER = "aryaman"
 TODAY = datetime.now().strftime("%Y-%m-%d")
 YESTERDAY = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 MODULE_NAME = TestId.make_unique("Admin")

@@ -139,6 +139,3 @@ class PowerBI(BI):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-PowerBI.Attributes.update_forward_refs()

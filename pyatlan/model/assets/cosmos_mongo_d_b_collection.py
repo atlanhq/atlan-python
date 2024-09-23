@@ -9,6 +9,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import TableType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -37,6 +38,16 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "cosmosMongoDBDatabaseQualifiedName",
+            "cosmosMongoDBDatabaseQualifiedName",
+            "cosmosMongoDBDatabaseQualifiedName.text",
+        )
+    )
+    """
+    Unique name of the database in which this collection exists.
+    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -193,6 +204,58 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Whether this table is a sharded table (true) or not (false).
     """
+    TABLE_TYPE: ClassVar[KeywordField] = KeywordField("tableType", "tableType")
+    """
+    Type of the table.
+    """
+    ICEBERG_CATALOG_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogName", "icebergCatalogName"
+    )
+    """
+    iceberg table catalog name (can be any user defined name)
+    """
+    ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "icebergTableType", "icebergTableType"
+    )
+    """
+    iceberg table type (managed vs unmanaged)
+    """
+    ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogSource", "icebergCatalogSource"
+    )
+    """
+    iceberg table catalog type (glue, polaris, snowflake)
+    """
+    ICEBERG_CATALOG_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogTableName", "icebergCatalogTableName"
+    )
+    """
+    catalog table name (actual table name on the catalog side).
+    """
+    ICEBERG_CATALOG_TABLE_NAMESPACE: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+    )
+    """
+    catalog table namespace (actual database name on the catalog side).
+    """
+    TABLE_EXTERNAL_VOLUME_NAME: ClassVar[KeywordField] = KeywordField(
+        "tableExternalVolumeName", "tableExternalVolumeName"
+    )
+    """
+    external volume name for the table.
+    """
+    ICEBERG_TABLE_BASE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "icebergTableBaseLocation", "icebergTableBaseLocation"
+    )
+    """
+    iceberg table base location inside the external volume.
+    """
+    TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField(
+        "tableRetentionTime", "tableRetentionTime"
+    )
+    """
+    Data retention time in days.
+    """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -342,6 +405,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "cosmos_mongo_d_b_database_qualified_name",
         "no_s_q_l_schema_definition",
         "mongo_d_b_collection_subtype",
         "mongo_d_b_collection_is_capped",
@@ -370,6 +434,15 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "partition_count",
         "partition_list",
         "is_sharded",
+        "table_type",
+        "iceberg_catalog_name",
+        "iceberg_table_type",
+        "iceberg_catalog_source",
+        "iceberg_catalog_table_name",
+        "iceberg_catalog_table_namespace",
+        "table_external_volume_name",
+        "iceberg_table_base_location",
+        "table_retention_time",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -400,6 +473,24 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "mongo_d_b_database",
         "dimensions",
     ]
+
+    @property
+    def cosmos_mongo_d_b_database_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_database_qualified_name
+        )
+
+    @cosmos_mongo_d_b_database_qualified_name.setter
+    def cosmos_mongo_d_b_database_qualified_name(
+        self, cosmos_mongo_d_b_database_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_database_qualified_name = (
+            cosmos_mongo_d_b_database_qualified_name
+        )
 
     @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
@@ -782,6 +873,118 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.is_sharded = is_sharded
 
     @property
+    def table_type(self) -> Optional[TableType]:
+        return None if self.attributes is None else self.attributes.table_type
+
+    @table_type.setter
+    def table_type(self, table_type: Optional[TableType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_type = table_type
+
+    @property
+    def iceberg_catalog_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_catalog_name
+
+    @iceberg_catalog_name.setter
+    def iceberg_catalog_name(self, iceberg_catalog_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_name = iceberg_catalog_name
+
+    @property
+    def iceberg_table_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_table_type
+
+    @iceberg_table_type.setter
+    def iceberg_table_type(self, iceberg_table_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_table_type = iceberg_table_type
+
+    @property
+    def iceberg_catalog_source(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.iceberg_catalog_source
+        )
+
+    @iceberg_catalog_source.setter
+    def iceberg_catalog_source(self, iceberg_catalog_source: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_source = iceberg_catalog_source
+
+    @property
+    def iceberg_catalog_table_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_catalog_table_name
+        )
+
+    @iceberg_catalog_table_name.setter
+    def iceberg_catalog_table_name(self, iceberg_catalog_table_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_table_name = iceberg_catalog_table_name
+
+    @property
+    def iceberg_catalog_table_namespace(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_catalog_table_namespace
+        )
+
+    @iceberg_catalog_table_namespace.setter
+    def iceberg_catalog_table_namespace(
+        self, iceberg_catalog_table_namespace: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_table_namespace = (
+            iceberg_catalog_table_namespace
+        )
+
+    @property
+    def table_external_volume_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.table_external_volume_name
+        )
+
+    @table_external_volume_name.setter
+    def table_external_volume_name(self, table_external_volume_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_external_volume_name = table_external_volume_name
+
+    @property
+    def iceberg_table_base_location(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_table_base_location
+        )
+
+    @iceberg_table_base_location.setter
+    def iceberg_table_base_location(self, iceberg_table_base_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_table_base_location = iceberg_table_base_location
+
+    @property
+    def table_retention_time(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.table_retention_time
+
+    @table_retention_time.setter
+    def table_retention_time(self, table_retention_time: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_retention_time = table_retention_time
+
+    @property
     def query_count(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.query_count
 
@@ -1094,6 +1297,9 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.dimensions = dimensions
 
     class Attributes(CosmosMongoDB.Attributes):
+        cosmos_mongo_d_b_database_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         mongo_d_b_collection_subtype: Optional[str] = Field(
             default=None, description=""
@@ -1148,6 +1354,17 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
         is_sharded: Optional[bool] = Field(default=None, description="")
+        table_type: Optional[TableType] = Field(default=None, description="")
+        iceberg_catalog_name: Optional[str] = Field(default=None, description="")
+        iceberg_table_type: Optional[str] = Field(default=None, description="")
+        iceberg_catalog_source: Optional[str] = Field(default=None, description="")
+        iceberg_catalog_table_name: Optional[str] = Field(default=None, description="")
+        iceberg_catalog_table_namespace: Optional[str] = Field(
+            default=None, description=""
+        )
+        table_external_volume_name: Optional[str] = Field(default=None, description="")
+        iceberg_table_base_location: Optional[str] = Field(default=None, description="")
+        table_retention_time: Optional[int] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")

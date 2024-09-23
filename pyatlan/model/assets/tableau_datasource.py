@@ -105,11 +105,11 @@ class TableauDatasource(Tableau):
     List of datasources that are upstream of this datasource.
     """
 
-    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    PROJECT: ClassVar[RelationField] = RelationField("project")
     """
     TBC
     """
-    PROJECT: ClassVar[RelationField] = RelationField("project")
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
     """
     TBC
     """
@@ -132,8 +132,8 @@ class TableauDatasource(Tableau):
         "certifier_display_name",
         "upstream_tables",
         "upstream_datasources",
-        "workbook",
         "project",
+        "workbook",
         "fields",
     ]
 
@@ -284,16 +284,6 @@ class TableauDatasource(Tableau):
         self.attributes.upstream_datasources = upstream_datasources
 
     @property
-    def workbook(self) -> Optional[TableauWorkbook]:
-        return None if self.attributes is None else self.attributes.workbook
-
-    @workbook.setter
-    def workbook(self, workbook: Optional[TableauWorkbook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workbook = workbook
-
-    @property
     def project(self) -> Optional[TableauProject]:
         return None if self.attributes is None else self.attributes.project
 
@@ -302,6 +292,16 @@ class TableauDatasource(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project = project
+
+    @property
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return None if self.attributes is None else self.attributes.workbook
+
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbook = workbook
 
     @property
     def fields(self) -> Optional[List[TableauDatasourceField]]:
@@ -335,10 +335,10 @@ class TableauDatasource(Tableau):
         upstream_datasources: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        workbook: Optional[TableauWorkbook] = Field(
+        project: Optional[TableauProject] = Field(
             default=None, description=""
         )  # relationship
-        project: Optional[TableauProject] = Field(
+        workbook: Optional[TableauWorkbook] = Field(
             default=None, description=""
         )  # relationship
         fields: Optional[List[TableauDatasourceField]] = Field(

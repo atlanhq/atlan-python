@@ -20,9 +20,8 @@ You can interact with all of the following different kinds of assets:
     asset/airflow
     asset/airflowdag
     asset/airflowtask
-    asset/app
-    asset/appapplication
-    asset/appcomponent
+    asset/anomalo
+    asset/anomalocheck
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
@@ -66,6 +65,7 @@ You can interact with all of the following different kinds of assets:
     asset/columnprocess
     asset/connection
     asset/cosmosmongodb
+    asset/cosmosmongodbaccount
     asset/cosmosmongodbcollection
     asset/cosmosmongodbdatabase
     asset/cube
@@ -163,6 +163,13 @@ You can interact with all of the following different kinds of assets:
     asset/modequery
     asset/modereport
     asset/modeworkspace
+    asset/model
+    asset/modelattribute
+    asset/modelattributeassociation
+    asset/modeldatamodel
+    asset/modelentity
+    asset/modelentityassociation
+    asset/modelversion
     asset/mongodb
     asset/mongodbcollection
     asset/mongodbdatabase

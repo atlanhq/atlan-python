@@ -15,6 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
     TextField,
 )
+from pyatlan.model.structs import DbtJobRun
 
 from .catalog import Catalog
 
@@ -145,6 +146,10 @@ class Dbt(Catalog):
     """
 
     """
+    DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
+    """
+    List of latest DBT job runs across all environments
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "dbt_alias",
@@ -165,6 +170,7 @@ class Dbt(Catalog):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
+        "dbt_job_runs",
     ]
 
     @property
@@ -369,6 +375,16 @@ class Dbt(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
+    @property
+    def dbt_job_runs(self) -> Optional[List[DbtJobRun]]:
+        return None if self.attributes is None else self.attributes.dbt_job_runs
+
+    @dbt_job_runs.setter
+    def dbt_job_runs(self, dbt_job_runs: Optional[List[DbtJobRun]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_runs = dbt_job_runs
+
     class Attributes(Catalog.Attributes):
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
@@ -392,6 +408,7 @@ class Dbt(Catalog):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
+        dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
 
     attributes: Dbt.Attributes = Field(
         default_factory=lambda: Dbt.Attributes(),

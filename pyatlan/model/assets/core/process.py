@@ -104,6 +104,10 @@ class Process(Asset, type_name="Process"):
     """
     TBC
     """
+    POWER_BI_DATAFLOW: ClassVar[RelationField] = RelationField("powerBIDataflow")
+    """
+    TBC
+    """
     COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
     """
     TBC
@@ -121,6 +125,7 @@ class Process(Asset, type_name="Process"):
         "ast",
         "matillion_component",
         "airflow_tasks",
+        "power_b_i_dataflow",
         "column_processes",
         "spark_jobs",
     ]
@@ -196,6 +201,16 @@ class Process(Asset, type_name="Process"):
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
+    def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow
+
+    @power_b_i_dataflow.setter
+    def power_b_i_dataflow(self, power_b_i_dataflow: Optional[PowerBIDataflow]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_dataflow = power_b_i_dataflow
+
+    @property
     def column_processes(self) -> Optional[List[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
@@ -225,6 +240,9 @@ class Process(Asset, type_name="Process"):
             default=None, description=""
         )  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
             default=None, description=""
         )  # relationship
         column_processes: Optional[List[ColumnProcess]] = Field(
@@ -313,4 +331,5 @@ from .airflow_task import AirflowTask  # noqa
 from .catalog import Catalog  # noqa
 from .column_process import ColumnProcess  # noqa
 from .matillion_component import MatillionComponent  # noqa
+from .power_b_i_dataflow import PowerBIDataflow  # noqa
 from .spark_job import SparkJob  # noqa

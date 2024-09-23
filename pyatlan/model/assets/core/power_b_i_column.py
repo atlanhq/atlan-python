@@ -203,5 +203,3 @@ class PowerBIColumn(PowerBI):
 
 
 from .power_b_i_table import PowerBITable  # noqa
-
-PowerBIColumn.Attributes.update_forward_refs()

@@ -2557,6 +2557,13 @@ class MatillionJobType(str, Enum):
     TRANSFORMATION = "TRANSFORMATION"
 
 
+class ModelCardinalityType(str, Enum):
+    ONE_TO_ONE = "ONE-TO-ONE"
+    ONE_TO_MANY = "ONE-TO-MANY"
+    MANY_TO_ONE = "MANY-TO-ONE"
+    MANY_TO_MANY = "MANY-TO-MANY"
+
+
 class MongoDBCollectionValidationAction(str, Enum):
     ERROR = "ERROR"
     WARN = "WARN"
@@ -2635,6 +2642,11 @@ class SourceCostUnitType(str, Enum):
     SLOT_MS = "slot-ms"
 
 
+class TableType(str, Enum):
+    TEMPORARY = "TEMPORARY"
+    ICEBERG = "ICEBERG"
+
+
 class WorkflowRunStatus(str, Enum):
     PENDING = "PENDING"
     APPROVED = "APPROVED"
@@ -2651,6 +2663,7 @@ class WorkflowRunType(str, Enum):
     POLICY = "POLICY"
     CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
     PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
+    IMPACT_ANALYSIS = "IMPACT_ANALYSIS"
 
 
 class WorkflowStatus(str, Enum):
@@ -2664,3 +2677,4 @@ class WorkflowType(str, Enum):
     POLICY = "POLICY"
     CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
     PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
+    IMPACT_ANALYSIS = "IMPACT_ANALYSIS"

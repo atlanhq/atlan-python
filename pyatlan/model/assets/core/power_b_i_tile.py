@@ -42,6 +42,10 @@ class PowerBITile(PowerBI):
     Unique name of the dashboard in which this tile is pinned.
     """
 
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
     REPORT: ClassVar[RelationField] = RelationField("report")
     """
     TBC
@@ -50,17 +54,13 @@ class PowerBITile(PowerBI):
     """
     TBC
     """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "dashboard_qualified_name",
+        "dashboard",
         "report",
         "dataset",
-        "dashboard",
     ]
 
     @property
@@ -92,6 +92,16 @@ class PowerBITile(PowerBI):
         self.attributes.dashboard_qualified_name = dashboard_qualified_name
 
     @property
+    def dashboard(self) -> Optional[PowerBIDashboard]:
+        return None if self.attributes is None else self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    @property
     def report(self) -> Optional[PowerBIReport]:
         return None if self.attributes is None else self.attributes.report
 
@@ -111,26 +121,16 @@ class PowerBITile(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.dataset = dataset
 
-    @property
-    def dashboard(self) -> Optional[PowerBIDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dashboard_qualified_name: Optional[str] = Field(default=None, description="")
+        dashboard: Optional[PowerBIDashboard] = Field(
+            default=None, description=""
+        )  # relationship
         report: Optional[PowerBIReport] = Field(
             default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            default=None, description=""
-        )  # relationship
-        dashboard: Optional[PowerBIDashboard] = Field(
             default=None, description=""
         )  # relationship
 
@@ -147,5 +147,3 @@ class PowerBITile(PowerBI):
 from .power_b_i_dashboard import PowerBIDashboard  # noqa
 from .power_b_i_dataset import PowerBIDataset  # noqa
 from .power_b_i_report import PowerBIReport  # noqa
-
-PowerBITile.Attributes.update_forward_refs()

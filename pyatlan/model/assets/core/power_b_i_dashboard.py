@@ -8,24 +8,24 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import RelationField, TextField
+from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
 
 from .power_b_i import PowerBI
 
 
-class PowerBIDataset(PowerBI):
+class PowerBIDashboard(PowerBI):
     """Description"""
 
-    type_name: str = Field(default="PowerBIDataset", allow_mutation=False)
+    type_name: str = Field(default="PowerBIDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBIDataset":
-            raise ValueError("must be PowerBIDataset")
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDataset._convenience_properties:
+        if name in PowerBIDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -33,17 +33,17 @@ class PowerBIDataset(PowerBI):
         "workspaceQualifiedName", "workspaceQualifiedName"
     )
     """
-    Unique name of the workspace in which this dataset exists.
+    Unique name of the workspace in which this dashboard exists.
     """
     WEB_URL: ClassVar[TextField] = TextField("webUrl", "webUrl")
     """
     Deprecated. See 'sourceUrl' instead.
     """
+    TILE_COUNT: ClassVar[NumericField] = NumericField("tileCount", "tileCount")
+    """
+    Number of tiles in this table.
+    """
 
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
-    """
-    TBC
-    """
     WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
     """
     TBC
@@ -52,28 +52,13 @@ class PowerBIDataset(PowerBI):
     """
     TBC
     """
-    TABLES: ClassVar[RelationField] = RelationField("tables")
-    """
-    TBC
-    """
-    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
-    """
-    TBC
-    """
-    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "web_url",
-        "reports",
+        "tile_count",
         "workspace",
         "tiles",
-        "tables",
-        "dataflows",
-        "datasources",
     ]
 
     @property
@@ -101,14 +86,14 @@ class PowerBIDataset(PowerBI):
         self.attributes.web_url = web_url
 
     @property
-    def reports(self) -> Optional[List[PowerBIReport]]:
-        return None if self.attributes is None else self.attributes.reports
+    def tile_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.tile_count
 
-    @reports.setter
-    def reports(self, reports: Optional[List[PowerBIReport]]):
+    @tile_count.setter
+    def tile_count(self, tile_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.reports = reports
+        self.attributes.tile_count = tile_count
 
     @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
@@ -130,60 +115,19 @@ class PowerBIDataset(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.tiles = tiles
 
-    @property
-    def tables(self) -> Optional[List[PowerBITable]]:
-        return None if self.attributes is None else self.attributes.tables
-
-    @tables.setter
-    def tables(self, tables: Optional[List[PowerBITable]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tables = tables
-
-    @property
-    def dataflows(self) -> Optional[List[PowerBIDataflow]]:
-        return None if self.attributes is None else self.attributes.dataflows
-
-    @dataflows.setter
-    def dataflows(self, dataflows: Optional[List[PowerBIDataflow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflows = dataflows
-
-    @property
-    def datasources(self) -> Optional[List[PowerBIDatasource]]:
-        return None if self.attributes is None else self.attributes.datasources
-
-    @datasources.setter
-    def datasources(self, datasources: Optional[List[PowerBIDatasource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasources = datasources
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         web_url: Optional[str] = Field(default=None, description="")
-        reports: Optional[List[PowerBIReport]] = Field(
-            default=None, description=""
-        )  # relationship
+        tile_count: Optional[int] = Field(default=None, description="")
         workspace: Optional[PowerBIWorkspace] = Field(
             default=None, description=""
         )  # relationship
         tiles: Optional[List[PowerBITile]] = Field(
             default=None, description=""
         )  # relationship
-        tables: Optional[List[PowerBITable]] = Field(
-            default=None, description=""
-        )  # relationship
-        dataflows: Optional[List[PowerBIDataflow]] = Field(
-            default=None, description=""
-        )  # relationship
-        datasources: Optional[List[PowerBIDatasource]] = Field(
-            default=None, description=""
-        )  # relationship
 
-    attributes: PowerBIDataset.Attributes = Field(
-        default_factory=lambda: PowerBIDataset.Attributes(),
+    attributes: PowerBIDashboard.Attributes = Field(
+        default_factory=lambda: PowerBIDashboard.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -192,11 +136,5 @@ class PowerBIDataset(PowerBI):
     )
 
 
-from .power_b_i_dataflow import PowerBIDataflow  # noqa
-from .power_b_i_datasource import PowerBIDatasource  # noqa
-from .power_b_i_report import PowerBIReport  # noqa
-from .power_b_i_table import PowerBITable  # noqa
 from .power_b_i_tile import PowerBITile  # noqa
 from .power_b_i_workspace import PowerBIWorkspace  # noqa
-
-PowerBIDataset.Attributes.update_forward_refs()

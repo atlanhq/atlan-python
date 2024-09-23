@@ -8,26 +8,23 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .core.catalog import Catalog
+from .data_quality import DataQuality
 
 
-class BI(Catalog):
+class Anomalo(DataQuality):
     """Description"""
 
-    type_name: str = Field(default="BI", allow_mutation=False)
+    type_name: str = Field(default="Anomalo", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "BI":
-            raise ValueError("must be BI")
+        if v != "Anomalo":
+            raise ValueError("must be Anomalo")
         return v
 
     def __setattr__(self, name, value):
-        if name in BI._convenience_properties:
+        if name in Anomalo._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
-
-
-BI.Attributes.update_forward_refs()

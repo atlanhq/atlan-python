@@ -54,6 +54,7 @@ TYPE_REPLACEMENTS = [
     ("atlas_operation", "AtlasOperation"),
     ("matillion_job_type", "MatillionJobType"),
     ("incident_severity", "IncidentSeverity"),
+    ("table_type", "TableType"),
 ]
 PRIMITIVE_MAPPINGS = {
     "string": "str",
@@ -215,8 +216,11 @@ class AssetInfo:
         "Referenceable",
         "Asset",
         "AuthPolicy",
-        "DataModel",
-        "DataModeling",
+        "PowerBIDatasource",
+        "PowerBIReport",
+        "PowerBITile",
+        "PowerBIColumn",
+        "PowerBIMeasure",
         "MatillionGroup",
         "Stakeholder",
         "StakeholderTitle",

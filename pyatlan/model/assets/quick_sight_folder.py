@@ -43,6 +43,10 @@ class QuickSightFolder(QuickSight):
     Detailed path of this folder.
     """
 
+    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
+    """
+    TBC
+    """
     QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
         "quickSightDashboards"
     )
@@ -53,17 +57,13 @@ class QuickSightFolder(QuickSight):
     """
     TBC
     """
-    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "quick_sight_folder_type",
         "quick_sight_folder_hierarchy",
+        "quick_sight_analyses",
         "quick_sight_dashboards",
         "quick_sight_datasets",
-        "quick_sight_analyses",
     ]
 
     @property
@@ -97,6 +97,18 @@ class QuickSightFolder(QuickSight):
         self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
 
     @property
+    def quick_sight_analyses(self) -> Optional[List[QuickSightAnalysis]]:
+        return None if self.attributes is None else self.attributes.quick_sight_analyses
+
+    @quick_sight_analyses.setter
+    def quick_sight_analyses(
+        self, quick_sight_analyses: Optional[List[QuickSightAnalysis]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analyses = quick_sight_analyses
+
+    @property
     def quick_sight_dashboards(self) -> Optional[List[QuickSightDashboard]]:
         return (
             None if self.attributes is None else self.attributes.quick_sight_dashboards
@@ -122,18 +134,6 @@ class QuickSightFolder(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_datasets = quick_sight_datasets
 
-    @property
-    def quick_sight_analyses(self) -> Optional[List[QuickSightAnalysis]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analyses
-
-    @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[List[QuickSightAnalysis]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analyses = quick_sight_analyses
-
     class Attributes(QuickSight.Attributes):
         quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
             default=None, description=""
@@ -141,13 +141,13 @@ class QuickSightFolder(QuickSight):
         quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
+        quick_sight_analyses: Optional[List[QuickSightAnalysis]] = Field(
+            default=None, description=""
+        )  # relationship
         quick_sight_dashboards: Optional[List[QuickSightDashboard]] = Field(
             default=None, description=""
         )  # relationship
         quick_sight_datasets: Optional[List[QuickSightDataset]] = Field(
-            default=None, description=""
-        )  # relationship
-        quick_sight_analyses: Optional[List[QuickSightAnalysis]] = Field(
             default=None, description=""
         )  # relationship
 

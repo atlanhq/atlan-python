@@ -30,82 +30,136 @@ class DMAttributeAssociation(DM):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_CARDINALITY: ClassVar[KeywordField] = KeywordField(
-        "dMCardinality", "dMCardinality"
+    DM_CARDINALITY: ClassVar[KeywordField] = KeywordField(
+        "dmCardinality", "dmCardinality"
     )
     """
     Cardinality of the data attribute association.
     """
-    D_M_LABEL: ClassVar[KeywordField] = KeywordField("dMLabel", "dMLabel")
+    DM_LABEL: ClassVar[KeywordField] = KeywordField("dmLabel", "dmLabel")
     """
     Label of the data attribute association.
     """
+    DM_ATTRIBUTE_TO_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmAttributeToQualifiedName", "dmAttributeToQualifiedName"
+    )
+    """
+    Unique name of the association to which this attribute is related.
+    """
+    DM_ATTRIBUTE_FROM_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmAttributeFromQualifiedName", "dmAttributeFromQualifiedName"
+    )
+    """
+    Unique name of the association from this attribute is related.
+    """
 
-    D_M_ATTRIBUTE_TO: ClassVar[RelationField] = RelationField("dMAttributeTo")
+    DM_ATTRIBUTE_FROM: ClassVar[RelationField] = RelationField("dmAttributeFrom")
     """
     TBC
     """
-    D_M_ATTRIBUTE_FROM: ClassVar[RelationField] = RelationField("dMAttributeFrom")
+    DM_ATTRIBUTE_TO: ClassVar[RelationField] = RelationField("dmAttributeTo")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_cardinality",
-        "d_m_label",
-        "d_m_attribute_to",
-        "d_m_attribute_from",
+        "dm_cardinality",
+        "dm_label",
+        "dm_attribute_to_qualified_name",
+        "dm_attribute_from_qualified_name",
+        "dm_attribute_from",
+        "dm_attribute_to",
     ]
 
     @property
-    def d_m_cardinality(self) -> Optional[DMCardinalityType]:
-        return None if self.attributes is None else self.attributes.d_m_cardinality
+    def dm_cardinality(self) -> Optional[DMCardinalityType]:
+        return None if self.attributes is None else self.attributes.dm_cardinality
 
-    @d_m_cardinality.setter
-    def d_m_cardinality(self, d_m_cardinality: Optional[DMCardinalityType]):
+    @dm_cardinality.setter
+    def dm_cardinality(self, dm_cardinality: Optional[DMCardinalityType]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_cardinality = d_m_cardinality
+        self.attributes.dm_cardinality = dm_cardinality
 
     @property
-    def d_m_label(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_label
+    def dm_label(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_label
 
-    @d_m_label.setter
-    def d_m_label(self, d_m_label: Optional[str]):
+    @dm_label.setter
+    def dm_label(self, dm_label: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_label = d_m_label
+        self.attributes.dm_label = dm_label
 
     @property
-    def d_m_attribute_to(self) -> Optional[DMAttribute]:
-        return None if self.attributes is None else self.attributes.d_m_attribute_to
+    def dm_attribute_to_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_attribute_to_qualified_name
+        )
 
-    @d_m_attribute_to.setter
-    def d_m_attribute_to(self, d_m_attribute_to: Optional[DMAttribute]):
+    @dm_attribute_to_qualified_name.setter
+    def dm_attribute_to_qualified_name(
+        self, dm_attribute_to_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_attribute_to = d_m_attribute_to
+        self.attributes.dm_attribute_to_qualified_name = dm_attribute_to_qualified_name
 
     @property
-    def d_m_attribute_from(self) -> Optional[DMAttribute]:
-        return None if self.attributes is None else self.attributes.d_m_attribute_from
+    def dm_attribute_from_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_attribute_from_qualified_name
+        )
 
-    @d_m_attribute_from.setter
-    def d_m_attribute_from(self, d_m_attribute_from: Optional[DMAttribute]):
+    @dm_attribute_from_qualified_name.setter
+    def dm_attribute_from_qualified_name(
+        self, dm_attribute_from_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_attribute_from = d_m_attribute_from
+        self.attributes.dm_attribute_from_qualified_name = (
+            dm_attribute_from_qualified_name
+        )
+
+    @property
+    def dm_attribute_from(self) -> Optional[DMAttribute]:
+        return None if self.attributes is None else self.attributes.dm_attribute_from
+
+    @dm_attribute_from.setter
+    def dm_attribute_from(self, dm_attribute_from: Optional[DMAttribute]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_attribute_from = dm_attribute_from
+
+    @property
+    def dm_attribute_to(self) -> Optional[DMAttribute]:
+        return None if self.attributes is None else self.attributes.dm_attribute_to
+
+    @dm_attribute_to.setter
+    def dm_attribute_to(self, dm_attribute_to: Optional[DMAttribute]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_attribute_to = dm_attribute_to
 
     class Attributes(DM.Attributes):
-        d_m_cardinality: Optional[DMCardinalityType] = Field(
+        dm_cardinality: Optional[DMCardinalityType] = Field(
             default=None, description=""
         )
-        d_m_label: Optional[str] = Field(default=None, description="")
-        d_m_attribute_to: Optional[DMAttribute] = Field(
+        dm_label: Optional[str] = Field(default=None, description="")
+        dm_attribute_to_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        dm_attribute_from_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        dm_attribute_from: Optional[DMAttribute] = Field(
             default=None, description=""
         )  # relationship
-        d_m_attribute_from: Optional[DMAttribute] = Field(
+        dm_attribute_to: Optional[DMAttribute] = Field(
             default=None, description=""
         )  # relationship
 

@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 
 from .power_b_i import PowerBI
 
@@ -41,6 +46,14 @@ class PowerBITable(PowerBI):
     """
     Unique name of the dataset in which this table exists.
     """
+    DATAFLOW_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "dataflowQualifiedNames",
+        "dataflowQualifiedNames",
+        "dataflowQualifiedNames.text",
+    )
+    """
+    List of qualified names of associated Power BI Dataflows.
+    """
     POWER_BI_TABLE_SOURCE_EXPRESSIONS: ClassVar[TextField] = TextField(
         "powerBITableSourceExpressions", "powerBITableSourceExpressions"
     )
@@ -68,6 +81,10 @@ class PowerBITable(PowerBI):
     """
     TBC
     """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
+    """
+    TBC
+    """
     DATASET: ClassVar[RelationField] = RelationField("dataset")
     """
     TBC
@@ -76,11 +93,13 @@ class PowerBITable(PowerBI):
     _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
+        "dataflow_qualified_names",
         "power_b_i_table_source_expressions",
         "power_b_i_table_column_count",
         "power_b_i_table_measure_count",
         "columns",
         "measures",
+        "dataflows",
         "dataset",
     ]
 
@@ -109,6 +128,20 @@ class PowerBITable(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def dataflow_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dataflow_qualified_names
+        )
+
+    @dataflow_qualified_names.setter
+    def dataflow_qualified_names(self, dataflow_qualified_names: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflow_qualified_names = dataflow_qualified_names
 
     @property
     def power_b_i_table_source_expressions(self) -> Optional[Set[str]]:
@@ -179,6 +212,16 @@ class PowerBITable(PowerBI):
         self.attributes.measures = measures
 
     @property
+    def dataflows(self) -> Optional[List[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[List[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    @property
     def dataset(self) -> Optional[PowerBIDataset]:
         return None if self.attributes is None else self.attributes.dataset
 
@@ -191,6 +234,9 @@ class PowerBITable(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
+        dataflow_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         power_b_i_table_source_expressions: Optional[Set[str]] = Field(
             default=None, description=""
         )
@@ -204,6 +250,9 @@ class PowerBITable(PowerBI):
             default=None, description=""
         )  # relationship
         measures: Optional[List[PowerBIMeasure]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
             default=None, description=""
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
@@ -221,7 +270,6 @@ class PowerBITable(PowerBI):
 
 
 from .power_b_i_column import PowerBIColumn  # noqa
+from .power_b_i_dataflow import PowerBIDataflow  # noqa
 from .power_b_i_dataset import PowerBIDataset  # noqa
 from .power_b_i_measure import PowerBIMeasure  # noqa
-
-PowerBITable.Attributes.update_forward_refs()

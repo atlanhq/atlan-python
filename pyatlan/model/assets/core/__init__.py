@@ -6,14 +6,14 @@ from .access_control import AccessControl
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
-from .app import App
-from .app_application import AppApplication
-from .app_component import AppComponent
+from .anomalo import Anomalo
+from .anomalo_check import AnomaloCheck
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
 from .atlas_glossary_term import AtlasGlossaryTerm
 from .auth_policy import AuthPolicy
+from .b_i import BI
 from .b_i_process import BIProcess
 from .calculation_view import CalculationView
 from .catalog import Catalog
@@ -49,6 +49,18 @@ from .metric import Metric
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
 from .persona import Persona
+from .power_b_i import PowerBI
+from .power_b_i_column import PowerBIColumn
+from .power_b_i_dashboard import PowerBIDashboard
+from .power_b_i_dataflow import PowerBIDataflow
+from .power_b_i_dataset import PowerBIDataset
+from .power_b_i_datasource import PowerBIDatasource
+from .power_b_i_measure import PowerBIMeasure
+from .power_b_i_page import PowerBIPage
+from .power_b_i_report import PowerBIReport
+from .power_b_i_table import PowerBITable
+from .power_b_i_tile import PowerBITile
+from .power_b_i_workspace import PowerBIWorkspace
 from .procedure import Procedure
 from .process import Process
 from .query import Query
@@ -92,8 +104,8 @@ Persona.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
-App.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
+BI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
@@ -105,11 +117,11 @@ SchemaRegistry.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
-AppApplication.Attributes.update_forward_refs(**localns)
-AppComponent.Attributes.update_forward_refs(**localns)
+Anomalo.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
+PowerBI.Attributes.update_forward_refs(**localns)
 Readme.Attributes.update_forward_refs(**localns)
 File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
@@ -141,8 +153,20 @@ DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
+AnomaloCheck.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)
 MCMonitor.Attributes.update_forward_refs(**localns)
 SodaCheck.Attributes.update_forward_refs(**localns)
+PowerBIReport.Attributes.update_forward_refs(**localns)
+PowerBIMeasure.Attributes.update_forward_refs(**localns)
+PowerBIColumn.Attributes.update_forward_refs(**localns)
+PowerBITable.Attributes.update_forward_refs(**localns)
+PowerBITile.Attributes.update_forward_refs(**localns)
+PowerBIDatasource.Attributes.update_forward_refs(**localns)
+PowerBIWorkspace.Attributes.update_forward_refs(**localns)
+PowerBIDataset.Attributes.update_forward_refs(**localns)
+PowerBIDashboard.Attributes.update_forward_refs(**localns)
+PowerBIDataflow.Attributes.update_forward_refs(**localns)
+PowerBIPage.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
 DynamoDBSecondaryIndex.Attributes.update_forward_refs(**localns)

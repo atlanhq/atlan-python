@@ -18,8 +18,8 @@ __all__ = [
     "Folder",
     "Airflow",
     "DataContract",
-    "App",
     "DataQuality",
+    "BI",
     "Resource",
     "DataMesh",
     "SQL",
@@ -31,11 +31,11 @@ __all__ = [
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
-    "AppApplication",
-    "AppComponent",
+    "Anomalo",
     "MonteCarlo",
     "Metric",
     "Soda",
+    "PowerBI",
     "Readme",
     "File",
     "Link",
@@ -67,9 +67,21 @@ __all__ = [
     "DbtSource",
     "SparkJob",
     "SchemaRegistrySubject",
+    "AnomaloCheck",
     "MCIncident",
     "MCMonitor",
     "SodaCheck",
+    "PowerBIReport",
+    "PowerBIMeasure",
+    "PowerBIColumn",
+    "PowerBITable",
+    "PowerBITile",
+    "PowerBIDatasource",
+    "PowerBIWorkspace",
+    "PowerBIDataset",
+    "PowerBIDashboard",
+    "PowerBIDataflow",
+    "PowerBIPage",
     "SnowflakeDynamicTable",
     "DynamoDBSecondaryIndex",
     "Task",
@@ -91,12 +103,12 @@ __all__ = [
     "Purpose",
     "Collection",
     "ObjectStore",
-    "BI",
     "SaaS",
     "DM",
     "MultiDimensionalDataset",
     "EventStore",
     "NoSQL",
+    "Model",
     "Insight",
     "API",
     "Google",
@@ -119,7 +131,6 @@ __all__ = [
     "Metabase",
     "QuickSight",
     "Thoughtspot",
-    "PowerBI",
     "MicroStrategy",
     "Cognos",
     "Superset",
@@ -143,6 +154,12 @@ __all__ = [
     "DynamoDB",
     "MongoDB",
     "DbtTag",
+    "ModelAttribute",
+    "ModelEntity",
+    "ModelVersion",
+    "ModelEntityAssociation",
+    "ModelAttributeAssociation",
+    "ModelDataModel",
     "APISpec",
     "APIPath",
     "DataStudioAsset",
@@ -217,17 +234,6 @@ __all__ = [
     "ThoughtspotView",
     "ThoughtspotDashlet",
     "ThoughtspotAnswer",
-    "PowerBIReport",
-    "PowerBIMeasure",
-    "PowerBIColumn",
-    "PowerBITable",
-    "PowerBITile",
-    "PowerBIDatasource",
-    "PowerBIWorkspace",
-    "PowerBIDataset",
-    "PowerBIDashboard",
-    "PowerBIDataflow",
-    "PowerBIPage",
     "MicroStrategyReport",
     "MicroStrategyProject",
     "MicroStrategyMetric",
@@ -271,6 +277,7 @@ __all__ = [
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
     "AzureServiceBusTopic",
+    "CosmosMongoDBAccount",
     "CosmosMongoDBCollection",
     "CosmosMongoDBDatabase",
     "QlikStream",
@@ -295,7 +302,6 @@ from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
 from .azure_service_bus import AzureServiceBus
 from .azure_service_bus_namespace import AzureServiceBusNamespace
 from .azure_service_bus_topic import AzureServiceBusTopic
-from .b_i import BI
 from .badge import Badge
 from .business_policy import BusinessPolicy
 from .business_policy_exception import BusinessPolicyException
@@ -324,14 +330,14 @@ from .core.access_control import AccessControl
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
-from .core.app import App
-from .core.app_application import AppApplication
-from .core.app_component import AppComponent
+from .core.anomalo import Anomalo
+from .core.anomalo_check import AnomaloCheck
 from .core.asset import Asset
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory
 from .core.atlas_glossary_term import AtlasGlossaryTerm
 from .core.auth_policy import AuthPolicy
+from .core.b_i import BI
 from .core.b_i_process import BIProcess
 from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
@@ -367,6 +373,18 @@ from .core.metric import Metric
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
 from .core.persona import Persona
+from .core.power_b_i import PowerBI
+from .core.power_b_i_column import PowerBIColumn
+from .core.power_b_i_dashboard import PowerBIDashboard
+from .core.power_b_i_dataflow import PowerBIDataflow
+from .core.power_b_i_dataset import PowerBIDataset
+from .core.power_b_i_datasource import PowerBIDatasource
+from .core.power_b_i_measure import PowerBIMeasure
+from .core.power_b_i_page import PowerBIPage
+from .core.power_b_i_report import PowerBIReport
+from .core.power_b_i_table import PowerBITable
+from .core.power_b_i_tile import PowerBITile
+from .core.power_b_i_workspace import PowerBIWorkspace
 from .core.procedure import Procedure
 from .core.process import Process
 from .core.query import Query
@@ -392,6 +410,7 @@ from .core.table_partition import TablePartition
 from .core.tag import Tag
 from .core.view import View
 from .cosmos_mongo_d_b import CosmosMongoDB
+from .cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
 from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
 from .cube import Cube
@@ -462,24 +481,19 @@ from .mode_collection import ModeCollection
 from .mode_query import ModeQuery
 from .mode_report import ModeReport
 from .mode_workspace import ModeWorkspace
+from .model import Model
+from .model_attribute import ModelAttribute
+from .model_attribute_association import ModelAttributeAssociation
+from .model_data_model import ModelDataModel
+from .model_entity import ModelEntity
+from .model_entity_association import ModelEntityAssociation
+from .model_version import ModelVersion
 from .mongo_d_b import MongoDB
 from .mongo_d_b_collection import MongoDBCollection
 from .mongo_d_b_database import MongoDBDatabase
 from .multi_dimensional_dataset import MultiDimensionalDataset
 from .no_s_q_l import NoSQL
 from .object_store import ObjectStore
-from .power_b_i import PowerBI
-from .power_b_i_column import PowerBIColumn
-from .power_b_i_dashboard import PowerBIDashboard
-from .power_b_i_dataflow import PowerBIDataflow
-from .power_b_i_dataset import PowerBIDataset
-from .power_b_i_datasource import PowerBIDatasource
-from .power_b_i_measure import PowerBIMeasure
-from .power_b_i_page import PowerBIPage
-from .power_b_i_report import PowerBIReport
-from .power_b_i_table import PowerBITable
-from .power_b_i_tile import PowerBITile
-from .power_b_i_workspace import PowerBIWorkspace
 from .preset import Preset
 from .preset_chart import PresetChart
 from .preset_dashboard import PresetDashboard

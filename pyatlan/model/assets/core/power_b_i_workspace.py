@@ -206,5 +206,3 @@ from .power_b_i_dashboard import PowerBIDashboard  # noqa
 from .power_b_i_dataflow import PowerBIDataflow  # noqa
 from .power_b_i_dataset import PowerBIDataset  # noqa
 from .power_b_i_report import PowerBIReport  # noqa
-
-PowerBIWorkspace.Attributes.update_forward_refs()

@@ -4,11 +4,16 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+)
 
 from .core.catalog import Catalog
 
@@ -29,177 +34,257 @@ class DM(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_DATA_MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dMDataModelName", "dMDataModelName.keyword", "dMDataModelName"
+    DM_DATA_MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dmDataModelName", "dmDataModelName.keyword", "dmDataModelName"
     )
     """
     Simple name of the model in which this asset exists, or empty if it is itself a data model.
     """
-    D_M_DATA_MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dMDataModelQualifiedName", "dMDataModelQualifiedName"
+    DM_DATA_MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmDataModelQualifiedName", "dmDataModelQualifiedName"
     )
     """
     Unique name of the model in which this asset exists, or empty if it is itself a data model.
     """
-    D_M_DATA_MODEL_DOMAIN: ClassVar[KeywordTextField] = KeywordTextField(
-        "dMDataModelDomain", "dMDataModelDomain.keyword", "dMDataModelDomain"
+    DM_DATA_MODEL_DOMAIN: ClassVar[KeywordTextField] = KeywordTextField(
+        "dmDataModelDomain", "dmDataModelDomain.keyword", "dmDataModelDomain"
     )
     """
-    A domain of the datam model in which this asset exists.
+    A domain of the data model in which this asset exists.
     """
-    D_M_DATA_MODEL_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
-        "dMDataModelNamespace", "dMDataModelNamespace.keyword", "dMDataModelNamespace"
+    DM_DATA_MODEL_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
+        "dmDataModelNamespace", "dmDataModelNamespace.keyword", "dmDataModelNamespace"
     )
     """
     A namespace of the data model in which this asset exists.
     """
-    D_M_VERSION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dMVersionName", "dMVersionName.keyword", "dMVersionName"
+    DM_VERSION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dmVersionName", "dmVersionName.keyword", "dmVersionName"
     )
     """
     Simple name of the version in which this asset exists, or empty if it is itself a data model version.
     """
-    D_M_VERSION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dMVersionQualifiedName", "dMVersionQualifiedName"
+    DM_VERSION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmVersionQualifiedName", "dmVersionQualifiedName"
     )
     """
     Unique name of the version in which this asset exists, or empty if it is itself a data model version.
     """
-    D_M_ENTITY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dMEntityName", "dMEntityName.keyword", "dMEntityName"
+    DM_ENTITY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dmEntityName", "dmEntityName.keyword", "dmEntityName"
     )
     """
     Simple name of the entity in which this asset exists, or empty if it is itself a data model entity.
     """
-    D_M_ENTITY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dMEntityQualifiedName", "dMEntityQualifiedName"
+    DM_ENTITY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dmEntityQualifiedName", "dmEntityQualifiedName"
     )
     """
     Unique name of the entity in which this asset exists, or empty if it is itself a data model entity.
     """
+    DM_SYSTEM_DATE: ClassVar[NumericField] = NumericField(
+        "dmSystemDate", "dmSystemDate"
+    )
+    """
+    System date for the asset.
+    """
+    DM_BUSINESS_DATE: ClassVar[NumericField] = NumericField(
+        "dmBusinessDate", "dmBusinessDate"
+    )
+    """
+    Business date for the asset.
+    """
+    DM_EXPIRED_AT_SYSTEM_DATE: ClassVar[NumericField] = NumericField(
+        "dmExpiredAtSystemDate", "dmExpiredAtSystemDate"
+    )
+    """
+    System expiration date for the asset.
+    """
+    DM_EXPIRED_AT_BUSINESS_DATE: ClassVar[NumericField] = NumericField(
+        "dmExpiredAtBusinessDate", "dmExpiredAtBusinessDate"
+    )
+    """
+    Business expiration date for the asset.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_data_model_name",
-        "d_m_data_model_qualified_name",
-        "d_m_data_model_domain",
-        "d_m_data_model_namespace",
-        "d_m_version_name",
-        "d_m_version_qualified_name",
-        "d_m_entity_name",
-        "d_m_entity_qualified_name",
+        "dm_data_model_name",
+        "dm_data_model_qualified_name",
+        "dm_data_model_domain",
+        "dm_data_model_namespace",
+        "dm_version_name",
+        "dm_version_qualified_name",
+        "dm_entity_name",
+        "dm_entity_qualified_name",
+        "dm_system_date",
+        "dm_business_date",
+        "dm_expired_at_system_date",
+        "dm_expired_at_business_date",
     ]
 
     @property
-    def d_m_data_model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_data_model_name
+    def dm_data_model_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_data_model_name
 
-    @d_m_data_model_name.setter
-    def d_m_data_model_name(self, d_m_data_model_name: Optional[str]):
+    @dm_data_model_name.setter
+    def dm_data_model_name(self, dm_data_model_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_data_model_name = d_m_data_model_name
+        self.attributes.dm_data_model_name = dm_data_model_name
 
     @property
-    def d_m_data_model_qualified_name(self) -> Optional[str]:
+    def dm_data_model_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.d_m_data_model_qualified_name
+            else self.attributes.dm_data_model_qualified_name
         )
 
-    @d_m_data_model_qualified_name.setter
-    def d_m_data_model_qualified_name(
-        self, d_m_data_model_qualified_name: Optional[str]
+    @dm_data_model_qualified_name.setter
+    def dm_data_model_qualified_name(self, dm_data_model_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_data_model_qualified_name = dm_data_model_qualified_name
+
+    @property
+    def dm_data_model_domain(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_data_model_domain
+
+    @dm_data_model_domain.setter
+    def dm_data_model_domain(self, dm_data_model_domain: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_data_model_domain = dm_data_model_domain
+
+    @property
+    def dm_data_model_namespace(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dm_data_model_namespace
+        )
+
+    @dm_data_model_namespace.setter
+    def dm_data_model_namespace(self, dm_data_model_namespace: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_data_model_namespace = dm_data_model_namespace
+
+    @property
+    def dm_version_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_version_name
+
+    @dm_version_name.setter
+    def dm_version_name(self, dm_version_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_version_name = dm_version_name
+
+    @property
+    def dm_version_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_version_qualified_name
+        )
+
+    @dm_version_qualified_name.setter
+    def dm_version_qualified_name(self, dm_version_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_version_qualified_name = dm_version_qualified_name
+
+    @property
+    def dm_entity_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_entity_name
+
+    @dm_entity_name.setter
+    def dm_entity_name(self, dm_entity_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_entity_name = dm_entity_name
+
+    @property
+    def dm_entity_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_entity_qualified_name
+        )
+
+    @dm_entity_qualified_name.setter
+    def dm_entity_qualified_name(self, dm_entity_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_entity_qualified_name = dm_entity_qualified_name
+
+    @property
+    def dm_system_date(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.dm_system_date
+
+    @dm_system_date.setter
+    def dm_system_date(self, dm_system_date: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_system_date = dm_system_date
+
+    @property
+    def dm_business_date(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.dm_business_date
+
+    @dm_business_date.setter
+    def dm_business_date(self, dm_business_date: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_business_date = dm_business_date
+
+    @property
+    def dm_expired_at_system_date(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_expired_at_system_date
+        )
+
+    @dm_expired_at_system_date.setter
+    def dm_expired_at_system_date(self, dm_expired_at_system_date: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_expired_at_system_date = dm_expired_at_system_date
+
+    @property
+    def dm_expired_at_business_date(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dm_expired_at_business_date
+        )
+
+    @dm_expired_at_business_date.setter
+    def dm_expired_at_business_date(
+        self, dm_expired_at_business_date: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_data_model_qualified_name = d_m_data_model_qualified_name
-
-    @property
-    def d_m_data_model_domain(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.d_m_data_model_domain
-        )
-
-    @d_m_data_model_domain.setter
-    def d_m_data_model_domain(self, d_m_data_model_domain: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_data_model_domain = d_m_data_model_domain
-
-    @property
-    def d_m_data_model_namespace(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_data_model_namespace
-        )
-
-    @d_m_data_model_namespace.setter
-    def d_m_data_model_namespace(self, d_m_data_model_namespace: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_data_model_namespace = d_m_data_model_namespace
-
-    @property
-    def d_m_version_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_version_name
-
-    @d_m_version_name.setter
-    def d_m_version_name(self, d_m_version_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_version_name = d_m_version_name
-
-    @property
-    def d_m_version_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_version_qualified_name
-        )
-
-    @d_m_version_qualified_name.setter
-    def d_m_version_qualified_name(self, d_m_version_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_version_qualified_name = d_m_version_qualified_name
-
-    @property
-    def d_m_entity_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_entity_name
-
-    @d_m_entity_name.setter
-    def d_m_entity_name(self, d_m_entity_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_entity_name = d_m_entity_name
-
-    @property
-    def d_m_entity_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_entity_qualified_name
-        )
-
-    @d_m_entity_qualified_name.setter
-    def d_m_entity_qualified_name(self, d_m_entity_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_entity_qualified_name = d_m_entity_qualified_name
+        self.attributes.dm_expired_at_business_date = dm_expired_at_business_date
 
     class Attributes(Catalog.Attributes):
-        d_m_data_model_name: Optional[str] = Field(default=None, description="")
-        d_m_data_model_qualified_name: Optional[str] = Field(
+        dm_data_model_name: Optional[str] = Field(default=None, description="")
+        dm_data_model_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        d_m_data_model_domain: Optional[str] = Field(default=None, description="")
-        d_m_data_model_namespace: Optional[str] = Field(default=None, description="")
-        d_m_version_name: Optional[str] = Field(default=None, description="")
-        d_m_version_qualified_name: Optional[str] = Field(default=None, description="")
-        d_m_entity_name: Optional[str] = Field(default=None, description="")
-        d_m_entity_qualified_name: Optional[str] = Field(default=None, description="")
+        dm_data_model_domain: Optional[str] = Field(default=None, description="")
+        dm_data_model_namespace: Optional[str] = Field(default=None, description="")
+        dm_version_name: Optional[str] = Field(default=None, description="")
+        dm_version_qualified_name: Optional[str] = Field(default=None, description="")
+        dm_entity_name: Optional[str] = Field(default=None, description="")
+        dm_entity_qualified_name: Optional[str] = Field(default=None, description="")
+        dm_system_date: Optional[datetime] = Field(default=None, description="")
+        dm_business_date: Optional[datetime] = Field(default=None, description="")
+        dm_expired_at_system_date: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        dm_expired_at_business_date: Optional[datetime] = Field(
+            default=None, description=""
+        )
 
     attributes: DM.Attributes = Field(
         default_factory=lambda: DM.Attributes(),

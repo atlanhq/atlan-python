@@ -85,5 +85,3 @@ class PowerBIDatasource(PowerBI):
 
 
 from .power_b_i_dataset import PowerBIDataset  # noqa
-
-PowerBIDatasource.Attributes.update_forward_refs()

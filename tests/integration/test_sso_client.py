@@ -13,7 +13,7 @@ from pyatlan.model.group import AtlanGroup
 from pyatlan.model.sso import SSOMapper
 from tests.integration.client import TestId
 
-FIXED_USER = "aryaman.bhushan"
+FIXED_USER = "aryaman"
 MODULE_NAME = TestId.make_unique("SSOClient")
 
 GROUP_NAME = MODULE_NAME

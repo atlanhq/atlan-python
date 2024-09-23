@@ -8,12 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
-    KeywordField,
-    NumericField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 
 from .d_m import DM
 
@@ -34,214 +29,194 @@ class DMEntity(DM):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_ATTRIBUTE_COUNT: ClassVar[NumericField] = NumericField(
-        "dMAttributeCount", "dMAttributeCount"
+    DM_ATTRIBUTE_COUNT: ClassVar[NumericField] = NumericField(
+        "dmAttributeCount", "dmAttributeCount"
     )
     """
     Number of attributes in the entity.
     """
-    D_M_SUBJECT_AREA: ClassVar[KeywordField] = KeywordField(
-        "dMSubjectArea", "dMSubjectArea"
+    DM_SUBJECT_AREA: ClassVar[KeywordField] = KeywordField(
+        "dmSubjectArea", "dmSubjectArea"
     )
     """
     Subject area of the entity.
     """
-    D_M_IS_ROOT: ClassVar[BooleanField] = BooleanField("dMIsRoot", "dMIsRoot")
-    """
-    Whether this is a root entity or not.
-    """
-    D_M_ENTITY_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dMEntityType", "dMEntityType"
+    DM_ENTITY_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dmEntityType", "dmEntityType"
     )
     """
     Type of the data entity.
     """
 
-    D_M_MAPPED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
-        "dMMappedToEntities"
+    DM_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
+        "dmRelatedToEntities"
     )
     """
     TBC
     """
-    D_M_VERSION: ClassVar[RelationField] = RelationField("dMVersion")
+    DM_ATTRIBUTES: ClassVar[RelationField] = RelationField("dmAttributes")
     """
     TBC
     """
-    D_M_ATTRIBUTES: ClassVar[RelationField] = RelationField("dMAttributes")
-    """
-    TBC
-    """
-    D_M_MAPPED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
-        "dMMappedFromEntities"
+    DM_RELATED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
+        "dmRelatedFromEntities"
     )
     """
     TBC
     """
-    D_M_RELATED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
-        "dMRelatedFromEntities"
+    DM_VERSIONS: ClassVar[RelationField] = RelationField("dmVersions")
+    """
+    TBC
+    """
+    DM_MAPPED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
+        "dmMappedFromEntities"
     )
     """
     TBC
     """
-    D_M_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
-        "dMRelatedToEntities"
-    )
+    DM_MAPPED_TO_ENTITIES: ClassVar[RelationField] = RelationField("dmMappedToEntities")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_attribute_count",
-        "d_m_subject_area",
-        "d_m_is_root",
-        "d_m_entity_type",
-        "d_m_mapped_to_entities",
-        "d_m_version",
-        "d_m_attributes",
-        "d_m_mapped_from_entities",
-        "d_m_related_from_entities",
-        "d_m_related_to_entities",
+        "dm_attribute_count",
+        "dm_subject_area",
+        "dm_entity_type",
+        "dm_related_to_entities",
+        "dm_attributes",
+        "dm_related_from_entities",
+        "dm_versions",
+        "dm_mapped_from_entities",
+        "dm_mapped_to_entities",
     ]
 
     @property
-    def d_m_attribute_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.d_m_attribute_count
+    def dm_attribute_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dm_attribute_count
 
-    @d_m_attribute_count.setter
-    def d_m_attribute_count(self, d_m_attribute_count: Optional[int]):
+    @dm_attribute_count.setter
+    def dm_attribute_count(self, dm_attribute_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_attribute_count = d_m_attribute_count
+        self.attributes.dm_attribute_count = dm_attribute_count
 
     @property
-    def d_m_subject_area(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_subject_area
+    def dm_subject_area(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_subject_area
 
-    @d_m_subject_area.setter
-    def d_m_subject_area(self, d_m_subject_area: Optional[str]):
+    @dm_subject_area.setter
+    def dm_subject_area(self, dm_subject_area: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_subject_area = d_m_subject_area
+        self.attributes.dm_subject_area = dm_subject_area
 
     @property
-    def d_m_is_root(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.d_m_is_root
+    def dm_entity_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_entity_type
 
-    @d_m_is_root.setter
-    def d_m_is_root(self, d_m_is_root: Optional[bool]):
+    @dm_entity_type.setter
+    def dm_entity_type(self, dm_entity_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_is_root = d_m_is_root
+        self.attributes.dm_entity_type = dm_entity_type
 
     @property
-    def d_m_entity_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_entity_type
-
-    @d_m_entity_type.setter
-    def d_m_entity_type(self, d_m_entity_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_entity_type = d_m_entity_type
-
-    @property
-    def d_m_mapped_to_entities(self) -> Optional[List[DMEntity]]:
+    def dm_related_to_entities(self) -> Optional[List[DMEntityAssociation]]:
         return (
-            None if self.attributes is None else self.attributes.d_m_mapped_to_entities
+            None if self.attributes is None else self.attributes.dm_related_to_entities
         )
 
-    @d_m_mapped_to_entities.setter
-    def d_m_mapped_to_entities(self, d_m_mapped_to_entities: Optional[List[DMEntity]]):
+    @dm_related_to_entities.setter
+    def dm_related_to_entities(
+        self, dm_related_to_entities: Optional[List[DMEntityAssociation]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_mapped_to_entities = d_m_mapped_to_entities
+        self.attributes.dm_related_to_entities = dm_related_to_entities
 
     @property
-    def d_m_version(self) -> Optional[DMVersion]:
-        return None if self.attributes is None else self.attributes.d_m_version
+    def dm_attributes(self) -> Optional[List[DMAttribute]]:
+        return None if self.attributes is None else self.attributes.dm_attributes
 
-    @d_m_version.setter
-    def d_m_version(self, d_m_version: Optional[DMVersion]):
+    @dm_attributes.setter
+    def dm_attributes(self, dm_attributes: Optional[List[DMAttribute]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_version = d_m_version
+        self.attributes.dm_attributes = dm_attributes
 
     @property
-    def d_m_attributes(self) -> Optional[List[DMAttribute]]:
-        return None if self.attributes is None else self.attributes.d_m_attributes
-
-    @d_m_attributes.setter
-    def d_m_attributes(self, d_m_attributes: Optional[List[DMAttribute]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.d_m_attributes = d_m_attributes
-
-    @property
-    def d_m_mapped_from_entities(self) -> Optional[List[DMEntity]]:
+    def dm_related_from_entities(self) -> Optional[List[DMEntityAssociation]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.d_m_mapped_from_entities
+            else self.attributes.dm_related_from_entities
         )
 
-    @d_m_mapped_from_entities.setter
-    def d_m_mapped_from_entities(
-        self, d_m_mapped_from_entities: Optional[List[DMEntity]]
+    @dm_related_from_entities.setter
+    def dm_related_from_entities(
+        self, dm_related_from_entities: Optional[List[DMEntityAssociation]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_mapped_from_entities = d_m_mapped_from_entities
+        self.attributes.dm_related_from_entities = dm_related_from_entities
 
     @property
-    def d_m_related_from_entities(self) -> Optional[List[DMEntityAssociation]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.d_m_related_from_entities
-        )
+    def dm_versions(self) -> Optional[List[DMVersion]]:
+        return None if self.attributes is None else self.attributes.dm_versions
 
-    @d_m_related_from_entities.setter
-    def d_m_related_from_entities(
-        self, d_m_related_from_entities: Optional[List[DMEntityAssociation]]
-    ):
+    @dm_versions.setter
+    def dm_versions(self, dm_versions: Optional[List[DMVersion]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_related_from_entities = d_m_related_from_entities
+        self.attributes.dm_versions = dm_versions
 
     @property
-    def d_m_related_to_entities(self) -> Optional[List[DMEntityAssociation]]:
+    def dm_mapped_from_entities(self) -> Optional[List[DMEntity]]:
         return (
-            None if self.attributes is None else self.attributes.d_m_related_to_entities
+            None if self.attributes is None else self.attributes.dm_mapped_from_entities
         )
 
-    @d_m_related_to_entities.setter
-    def d_m_related_to_entities(
-        self, d_m_related_to_entities: Optional[List[DMEntityAssociation]]
+    @dm_mapped_from_entities.setter
+    def dm_mapped_from_entities(
+        self, dm_mapped_from_entities: Optional[List[DMEntity]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_related_to_entities = d_m_related_to_entities
+        self.attributes.dm_mapped_from_entities = dm_mapped_from_entities
+
+    @property
+    def dm_mapped_to_entities(self) -> Optional[List[DMEntity]]:
+        return (
+            None if self.attributes is None else self.attributes.dm_mapped_to_entities
+        )
+
+    @dm_mapped_to_entities.setter
+    def dm_mapped_to_entities(self, dm_mapped_to_entities: Optional[List[DMEntity]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dm_mapped_to_entities = dm_mapped_to_entities
 
     class Attributes(DM.Attributes):
-        d_m_attribute_count: Optional[int] = Field(default=None, description="")
-        d_m_subject_area: Optional[str] = Field(default=None, description="")
-        d_m_is_root: Optional[bool] = Field(default=None, description="")
-        d_m_entity_type: Optional[str] = Field(default=None, description="")
-        d_m_mapped_to_entities: Optional[List[DMEntity]] = Field(
+        dm_attribute_count: Optional[int] = Field(default=None, description="")
+        dm_subject_area: Optional[str] = Field(default=None, description="")
+        dm_entity_type: Optional[str] = Field(default=None, description="")
+        dm_related_to_entities: Optional[List[DMEntityAssociation]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_version: Optional[DMVersion] = Field(
+        dm_attributes: Optional[List[DMAttribute]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_attributes: Optional[List[DMAttribute]] = Field(
+        dm_related_from_entities: Optional[List[DMEntityAssociation]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_mapped_from_entities: Optional[List[DMEntity]] = Field(
+        dm_versions: Optional[List[DMVersion]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_related_from_entities: Optional[List[DMEntityAssociation]] = Field(
+        dm_mapped_from_entities: Optional[List[DMEntity]] = Field(
             default=None, description=""
         )  # relationship
-        d_m_related_to_entities: Optional[List[DMEntityAssociation]] = Field(
+        dm_mapped_to_entities: Optional[List[DMEntity]] = Field(
             default=None, description=""
         )  # relationship
 

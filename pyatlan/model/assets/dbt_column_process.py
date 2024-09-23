@@ -16,6 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.model.structs import DbtJobRun
 
 from .core.dbt import Dbt
 
@@ -152,6 +153,10 @@ class DbtColumnProcess(Dbt):
     """
 
     """
+    DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
+    """
+    List of latest DBT job runs across all environments
+    """
     CODE: ClassVar[TextField] = TextField("code", "code")
     """
     Code that ran within the process.
@@ -181,6 +186,10 @@ class DbtColumnProcess(Dbt):
     """
     TBC
     """
+    POWER_BI_DATAFLOW: ClassVar[RelationField] = RelationField("powerBIDataflow")
+    """
+    TBC
+    """
     COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
     """
     TBC
@@ -206,6 +215,7 @@ class DbtColumnProcess(Dbt):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
+        "dbt_job_runs",
         "inputs",
         "outputs",
         "code",
@@ -215,6 +225,7 @@ class DbtColumnProcess(Dbt):
         "matillion_component",
         "process",
         "airflow_tasks",
+        "power_b_i_dataflow",
         "column_processes",
     ]
 
@@ -437,6 +448,16 @@ class DbtColumnProcess(Dbt):
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
+    def dbt_job_runs(self) -> Optional[List[DbtJobRun]]:
+        return None if self.attributes is None else self.attributes.dbt_job_runs
+
+    @dbt_job_runs.setter
+    def dbt_job_runs(self, dbt_job_runs: Optional[List[DbtJobRun]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_runs = dbt_job_runs
+
+    @property
     def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
@@ -527,6 +548,16 @@ class DbtColumnProcess(Dbt):
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
+    def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow
+
+    @power_b_i_dataflow.setter
+    def power_b_i_dataflow(self, power_b_i_dataflow: Optional[PowerBIDataflow]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_dataflow = power_b_i_dataflow
+
+    @property
     def column_processes(self) -> Optional[List[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
@@ -562,6 +593,7 @@ class DbtColumnProcess(Dbt):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             default=None, description=""
         )
+        dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
         inputs: Optional[List[Catalog]] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")
@@ -575,6 +607,9 @@ class DbtColumnProcess(Dbt):
         )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
             default=None, description=""
         )  # relationship
         column_processes: Optional[List[ColumnProcess]] = Field(
@@ -595,6 +630,7 @@ from .core.airflow_task import AirflowTask  # noqa
 from .core.catalog import Catalog  # noqa
 from .core.column_process import ColumnProcess  # noqa
 from .core.matillion_component import MatillionComponent  # noqa
+from .core.power_b_i_dataflow import PowerBIDataflow  # noqa
 from .core.process import Process  # noqa
 from .core.spark_job import SparkJob  # noqa
 

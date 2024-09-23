@@ -226,11 +226,11 @@ class DataProduct(DataMesh):
     Input ports guids for this data product.
     """
 
-    DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
+    OUTPUT_PORTS: ClassVar[RelationField] = RelationField("outputPorts")
     """
     TBC
     """
-    OUTPUT_PORTS: ClassVar[RelationField] = RelationField("outputPorts")
+    DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
     TBC
     """
@@ -256,8 +256,8 @@ class DataProduct(DataMesh):
         "daap_visibility_groups",
         "daap_output_port_guids",
         "daap_input_port_guids",
-        "data_domain",
         "output_ports",
+        "data_domain",
         "input_ports",
     ]
 
@@ -468,16 +468,6 @@ class DataProduct(DataMesh):
         self.attributes.daap_input_port_guids = daap_input_port_guids
 
     @property
-    def data_domain(self) -> Optional[DataDomain]:
-        return None if self.attributes is None else self.attributes.data_domain
-
-    @data_domain.setter
-    def data_domain(self, data_domain: Optional[DataDomain]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_domain = data_domain
-
-    @property
     def output_ports(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.output_ports
 
@@ -486,6 +476,16 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_ports = output_ports
+
+    @property
+    def data_domain(self) -> Optional[DataDomain]:
+        return None if self.attributes is None else self.attributes.data_domain
+
+    @data_domain.setter
+    def data_domain(self, data_domain: Optional[DataDomain]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_domain = data_domain
 
     @property
     def input_ports(self) -> Optional[List[Asset]]:
@@ -532,10 +532,10 @@ class DataProduct(DataMesh):
         daap_visibility_groups: Optional[Set[str]] = Field(default=None, description="")
         daap_output_port_guids: Optional[Set[str]] = Field(default=None, description="")
         daap_input_port_guids: Optional[Set[str]] = Field(default=None, description="")
-        data_domain: Optional[DataDomain] = Field(
+        output_ports: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
-        output_ports: Optional[List[Asset]] = Field(
+        data_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship
         input_ports: Optional[List[Asset]] = Field(

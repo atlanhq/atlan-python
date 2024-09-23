@@ -36,12 +36,6 @@ class DomoDashboard(Domo):
     Number of cards linked to this dashboard.
     """
 
-    DOMO_DASHBOARD_PARENT: ClassVar[RelationField] = RelationField(
-        "domoDashboardParent"
-    )
-    """
-    TBC
-    """
     DOMO_DASHBOARD_CHILDREN: ClassVar[RelationField] = RelationField(
         "domoDashboardChildren"
     )
@@ -52,12 +46,18 @@ class DomoDashboard(Domo):
     """
     TBC
     """
+    DOMO_DASHBOARD_PARENT: ClassVar[RelationField] = RelationField(
+        "domoDashboardParent"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "domo_dashboard_card_count",
-        "domo_dashboard_parent",
         "domo_dashboard_children",
         "domo_cards",
+        "domo_dashboard_parent",
     ]
 
     @property
@@ -73,18 +73,6 @@ class DomoDashboard(Domo):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.domo_dashboard_card_count = domo_dashboard_card_count
-
-    @property
-    def domo_dashboard_parent(self) -> Optional[DomoDashboard]:
-        return (
-            None if self.attributes is None else self.attributes.domo_dashboard_parent
-        )
-
-    @domo_dashboard_parent.setter
-    def domo_dashboard_parent(self, domo_dashboard_parent: Optional[DomoDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.domo_dashboard_parent = domo_dashboard_parent
 
     @property
     def domo_dashboard_children(self) -> Optional[List[DomoDashboard]]:
@@ -110,15 +98,27 @@ class DomoDashboard(Domo):
             self.attributes = self.Attributes()
         self.attributes.domo_cards = domo_cards
 
+    @property
+    def domo_dashboard_parent(self) -> Optional[DomoDashboard]:
+        return (
+            None if self.attributes is None else self.attributes.domo_dashboard_parent
+        )
+
+    @domo_dashboard_parent.setter
+    def domo_dashboard_parent(self, domo_dashboard_parent: Optional[DomoDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domo_dashboard_parent = domo_dashboard_parent
+
     class Attributes(Domo.Attributes):
         domo_dashboard_card_count: Optional[int] = Field(default=None, description="")
-        domo_dashboard_parent: Optional[DomoDashboard] = Field(
-            default=None, description=""
-        )  # relationship
         domo_dashboard_children: Optional[List[DomoDashboard]] = Field(
             default=None, description=""
         )  # relationship
         domo_cards: Optional[List[DomoCard]] = Field(
+            default=None, description=""
+        )  # relationship
+        domo_dashboard_parent: Optional[DomoDashboard] = Field(
             default=None, description=""
         )  # relationship
 

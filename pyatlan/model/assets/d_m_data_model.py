@@ -29,78 +29,80 @@ class DMDataModel(DM):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    D_M_VERSION_COUNT: ClassVar[NumericField] = NumericField(
-        "dMVersionCount", "dMVersionCount"
+    DM_VERSION_COUNT: ClassVar[NumericField] = NumericField(
+        "dmVersionCount", "dmVersionCount"
     )
     """
     Number of versions of the data model.
     """
-    D_M_TYPE: ClassVar[KeywordField] = KeywordField("dMType", "dMType")
+    DM_DATA_MODEL_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dmDataModelType", "dmDataModelType"
+    )
     """
     Type of the data model.
     """
-    D_M_TOOL: ClassVar[KeywordField] = KeywordField("dMTool", "dMTool")
+    DM_TOOL: ClassVar[KeywordField] = KeywordField("dmTool", "dmTool")
     """
     Tool used to create this data model.
     """
 
-    D_M_VERSIONS: ClassVar[RelationField] = RelationField("dMVersions")
+    DM_VERSIONS: ClassVar[RelationField] = RelationField("dmVersions")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "d_m_version_count",
-        "d_m_type",
-        "d_m_tool",
-        "d_m_versions",
+        "dm_version_count",
+        "dm_data_model_type",
+        "dm_tool",
+        "dm_versions",
     ]
 
     @property
-    def d_m_version_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.d_m_version_count
+    def dm_version_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.dm_version_count
 
-    @d_m_version_count.setter
-    def d_m_version_count(self, d_m_version_count: Optional[int]):
+    @dm_version_count.setter
+    def dm_version_count(self, dm_version_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_version_count = d_m_version_count
+        self.attributes.dm_version_count = dm_version_count
 
     @property
-    def d_m_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_type
+    def dm_data_model_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_data_model_type
 
-    @d_m_type.setter
-    def d_m_type(self, d_m_type: Optional[str]):
+    @dm_data_model_type.setter
+    def dm_data_model_type(self, dm_data_model_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_type = d_m_type
+        self.attributes.dm_data_model_type = dm_data_model_type
 
     @property
-    def d_m_tool(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.d_m_tool
+    def dm_tool(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dm_tool
 
-    @d_m_tool.setter
-    def d_m_tool(self, d_m_tool: Optional[str]):
+    @dm_tool.setter
+    def dm_tool(self, dm_tool: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_tool = d_m_tool
+        self.attributes.dm_tool = dm_tool
 
     @property
-    def d_m_versions(self) -> Optional[List[DMVersion]]:
-        return None if self.attributes is None else self.attributes.d_m_versions
+    def dm_versions(self) -> Optional[List[DMVersion]]:
+        return None if self.attributes is None else self.attributes.dm_versions
 
-    @d_m_versions.setter
-    def d_m_versions(self, d_m_versions: Optional[List[DMVersion]]):
+    @dm_versions.setter
+    def dm_versions(self, dm_versions: Optional[List[DMVersion]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.d_m_versions = d_m_versions
+        self.attributes.dm_versions = dm_versions
 
     class Attributes(DM.Attributes):
-        d_m_version_count: Optional[int] = Field(default=None, description="")
-        d_m_type: Optional[str] = Field(default=None, description="")
-        d_m_tool: Optional[str] = Field(default=None, description="")
-        d_m_versions: Optional[List[DMVersion]] = Field(
+        dm_version_count: Optional[int] = Field(default=None, description="")
+        dm_data_model_type: Optional[str] = Field(default=None, description="")
+        dm_tool: Optional[str] = Field(default=None, description="")
+        dm_versions: Optional[List[DMVersion]] = Field(
             default=None, description=""
         )  # relationship
 

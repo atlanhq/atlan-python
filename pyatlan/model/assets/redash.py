@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import BooleanField
 
-from .b_i import BI
+from .core.b_i import BI
 
 
 class Redash(BI):
