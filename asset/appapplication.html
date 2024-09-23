@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="AppComponent" href="appcomponent.html" /><link rel="prev" title="App" href="app.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>AppApplication - pyatlan documentation</title>
@@ -154,9 +154,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="../client.html">Atlan Client Interface</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../assets.html">Assets</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../assets.html">Assets</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="adls.html">ADLS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adlsaccount.html">ADLSAccount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adlscontainer.html">ADLSContainer</a></li>
@@ -169,9 +169,8 @@
 <li class="toctree-l2"><a class="reference internal" href="airflow.html">Airflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="airflowdag.html">AirflowDag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="airflowtask.html">AirflowTask</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.html">App</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">AppApplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="appcomponent.html">AppComponent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalo.html">Anomalo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalocheck.html">AnomaloCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset.html">Asset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlasglossary.html">AtlasGlossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
@@ -215,6 +214,7 @@
 <li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosmosmongodb.html">CosmosMongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodbaccount.html">CosmosMongoDBAccount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosmosmongodbcollection.html">CosmosMongoDBCollection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosmosmongodbdatabase.html">CosmosMongoDBDatabase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cube.html">Cube</a></li>
@@ -312,6 +312,13 @@
 <li class="toctree-l2"><a class="reference internal" href="modequery.html">ModeQuery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modereport.html">ModeReport</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeworkspace.html">ModeWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelattribute.html">ModelAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelattributeassociation.html">ModelAttributeAssociation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeldatamodel.html">ModelDataModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelentity.html">ModelEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelentityassociation.html">ModelEntityAssociation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelversion.html">ModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mongodb.html">MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mongodbcollection.html">MongoDBCollection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mongodbdatabase.html">MongoDBDatabase</a></li>
@@ -517,26 +524,8 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="appcomponent.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">AppComponent</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="app.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">App</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
