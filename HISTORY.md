@@ -1,3 +1,13 @@
+## 2.4.6 (September 24, 2024)
+
+### New features
+
+- Added a new connector type `MODEL` for data modeling assets.
+
+### QOL improvements
+
+- Generated latest typedefs models (`model`, `anomalo`, `powerbi`).
+
 ## 2.4.5 (September 18, 2024)
 
 ### New Features

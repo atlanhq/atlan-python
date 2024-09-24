@@ -310,6 +310,7 @@ class AtlanConnectorType(str, Enum):
     PREFECT = ("prefect", AtlanConnectionCategory.ELT)
     SUPERSET = ("superset", AtlanConnectionCategory.BI)
     DM = ("dm", AtlanConnectionCategory.DATABASE)
+    MODEL = ("model", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
