@@ -1,3 +1,9 @@
+## 2.4.6 (September 24, 2024)
+
+### QOL improvements
+
+- Generated latest typedefs models(`model`, `anomalo`, `powerbi`).
+
 ## 2.4.5 (September 18, 2024)
 
 ### New Features
