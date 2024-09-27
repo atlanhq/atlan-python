@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Sequence, Union
 
 from pydantic.v1 import (
     ConfigDict,
@@ -507,6 +507,71 @@ class Terms(Query):
         if self.boost is not None:
             terms["boost"] = self.boost
         return {self.type_name: terms}
+
+
+@dataclass
+class SpanWithin(Query):
+    little: Optional[Query] = None
+    big: Optional[Query] = None
+    boost: Optional[float] = None
+    type_name: Literal["span_within"] = "span_within"
+
+    def to_dict(self):
+        span_within = {}
+        if self.little is not None:
+            span_within["little"] = self.little
+        if self.big is not None:
+            span_within["big"] = self.big
+        if self.boost is not None:
+            span_within["boost"] = self.boost
+        return {self.type_name: span_within}
+
+
+@dataclass
+class SpanTerm(Query):
+    field: str
+    value: SearchFieldType
+    boost: Optional[float] = None
+    type_name: Literal["span_term"] = "span_term"
+
+    def to_dict(self):
+        span_term = {self.field: self.value}
+        if self.boost is not None:
+            span_term["boost"] = self.boost
+        return {self.type_name: span_term}
+
+
+@dataclass
+class SpanNear(Query):
+    clauses: Optional[Sequence[Query]] = None
+    in_order: Optional[bool] = None
+    slop: Optional[int] = None
+    type_name: Literal["span_near"] = "span_near"
+
+    def to_dict(self):
+        span_near = {}
+        if self.clauses is not None:
+            span_near["clauses"] = self.clauses
+        if self.in_order is not None:
+            span_near["in_order"] = self.in_order
+        if self.slop is not None:
+            span_near["slop"] = self.slop
+        return {self.type_name: span_near}
+
+
+@dataclass
+class Span(Query):
+    span_within: Optional[Query] = None
+    span_near: Optional[Query] = None
+    type_name: Literal["span"] = "span"
+
+    def to_dict(self):
+        span = {}
+        if self.span_within is not None:
+            span["span_within"] = self.span_within
+        if self.span_near is not None:
+            span["span_near"] = self.span_near
+        return {self.type_name: span}
 
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
