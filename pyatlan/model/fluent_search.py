@@ -2,15 +2,29 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import logging
 from typing import Dict, List, Optional, TypeVar, Union
 
+from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
-from pyatlan.model.assets import Referenceable
+from pyatlan.model.assets import Referenceable, Tag
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem, Term
+from pyatlan.model.search import (
+    DSL,
+    Bool,
+    IndexSearchRequest,
+    Query,
+    SortItem,
+    SpanNear,
+    SpanTerm,
+    SpanWithin,
+    Term,
+)
+
+LOGGER = logging.getLogger(__name__)
 
 SelfQuery = TypeVar("SelfQuery", bound="CompoundQuery")
 
@@ -127,6 +141,94 @@ class CompoundQuery:
             ],
             _min_somes=1,
         ).to_query()
+
+    @staticmethod
+    def tagged_with_value(
+        atlan_tag_name: str, value: str, directly: bool = False
+    ) -> Query:
+        """
+        Returns a query that will match assets that have a
+        specific value for the specified tag (for source-synced tags).
+
+        :param atlan_tag_name: human-readable name of the Atlan tag
+        :param value: tag should have to match the query
+        :param directly: when `True`, the asset must have the tag and
+        value directly assigned (otherwise even propagated tags with the value will suffice)
+
+        :raises: AtlanError on any error communicating
+        with the API to refresh the Atlan tag cache
+        :returns: a query that will only match assets that have
+        a particular value assigned for the given Atlan tag
+        """
+        big_spans = []
+        little_spans = []
+        tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name) or ""
+        client = AtlanClient.get_default_client()
+        synced_tags = [
+            tag
+            for tag in (
+                FluentSearch()
+                .select()
+                .where(Tag.MAPPED_CLASSIFICATION_NAME.eq(tag_id))
+                .execute(client=client)
+            )
+        ]
+        if len(synced_tags) > 1:
+            synced_tag_qn = synced_tags[0].qualified_name or ""
+            LOGGER.warning(
+                (
+                    "Multiple mapped source-synced tags "
+                    "found for tag %s -- using only the first: %s",
+                ),
+                atlan_tag_name,
+                synced_tag_qn,
+            )
+        elif synced_tags:
+            synced_tag_qn = synced_tags[0].qualified_name or ""
+        else:
+            synced_tag_qn = "NON_EXISTENT"
+
+        # Contruct little spans
+        little_spans.append(
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentValue")
+        )
+        for token in value.split(" "):
+            little_spans.append(
+                SpanTerm(field="__classificationsText.text", value=token)
+            )
+        little_spans.append(
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey")
+        )
+
+        # Contruct big spans
+        big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
+        big_spans.append(
+            SpanTerm(field="__classificationsText.text", value=synced_tag_qn)
+        )
+
+        # Contruct final span query
+        span = SpanWithin(
+            little=SpanNear(clauses=little_spans, slop=0, in_order=True),
+            big=SpanNear(clauses=big_spans, slop=10000000, in_order=True),
+        )
+
+        # Without atlan tag propagation
+        if directly:
+            return (
+                FluentSearch()
+                .where(Referenceable.ATLAN_TAGS.eq(tag_id))
+                .where(span)
+                .to_query()
+            )
+        # With atlan tag propagation
+        return (
+            FluentSearch()
+            .where_some(Referenceable.ATLAN_TAGS.eq(tag_id))
+            .where_some(Referenceable.PROPAGATED_ATLAN_TAGS.eq(tag_id))
+            .min_somes(1)
+            .where(span)
+            .to_query()
+        )
 
     @staticmethod
     def assigned_term(qualified_names: Optional[List[str]] = None) -> Query:
