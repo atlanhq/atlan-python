@@ -311,6 +311,8 @@ class AtlanConnectorType(str, Enum):
     SUPERSET = ("superset", AtlanConnectionCategory.BI)
     DM = ("dm", AtlanConnectionCategory.DATABASE)
     MODEL = ("model", AtlanConnectionCategory.DATABASE)
+    IICS = ("iics", AtlanConnectionCategory.ELT)
+    AB_INITIO = ("abinitio", AtlanConnectionCategory.ELT)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
