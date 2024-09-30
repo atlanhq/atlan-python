@@ -1,3 +1,16 @@
+## 2.4.7 (September 30, 2024)
+
+### New features
+
+- Added `CompoundQuery.tagged_with_value()` method to search
+for source-synced tags by assigned value eg: Snowflake tags.
+- Added `ContractClient.generate_initial_spec()` method to generate
+the initial contract specification for the provided asset `typeName` and `qualifiedName`.
+
+### Experimental
+
+- Added initial support for `Span`, `SpanNear`, `SpanWithin`, and `SpanTerm` queries for textual fields.
+
 ## 2.4.6 (September 24, 2024)
 
 ### New features
