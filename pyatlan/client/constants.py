@@ -595,3 +595,10 @@ PRESIGNED_URL_DOWNLOAD = API(
     consumes=EVENT_STREAM,
     produces=EVENT_STREAM,
 )
+CONTRACTS_API = "contracts"
+CONTRACT_INIT_API = API(
+    CONTRACTS_API + "/init",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)

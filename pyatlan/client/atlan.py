@@ -45,6 +45,7 @@ from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageList
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
 from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
+from pyatlan.client.contract import ContractClient
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.file import FileClient
 from pyatlan.client.group import GroupClient
@@ -159,6 +160,7 @@ class AtlanClient(BaseSettings):
     _task_client: Optional[TaskClient] = PrivateAttr(default=None)
     _sso_client: Optional[SSOClient] = PrivateAttr(default=None)
     _file_client: Optional[FileClient] = PrivateAttr(default=None)
+    _contract_client: Optional[ContractClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -291,6 +293,12 @@ class AtlanClient(BaseSettings):
         if self._file_client is None:
             self._file_client = FileClient(client=self)
         return self._file_client
+
+    @property
+    def contracts(self) -> ContractClient:
+        if self._contract_client is None:
+            self._contract_client = ContractClient(client=self)
+        return self._contract_client
 
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
