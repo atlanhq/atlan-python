@@ -30,6 +30,7 @@ QUALIFIED_NAME = "qualifiedName"
 ASSET_GUID = Asset.GUID.keyword_field_name
 NOW_AS_TIMESTAMP = int(time() * 1000)
 NOW_AS_YYYY_MM_DD = datetime.today().strftime("%Y-%m-%d")
+EXISTING_SOURCE_SYNCED_TAG = "Confidential"
 
 VALUES_FOR_TERM_QUERIES = {
     "with_categories": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
@@ -131,6 +132,41 @@ def test_search(client: AtlanClient, asset_tracker, cls):
                 break
     else:
         asset_tracker.missing_types.add(name)
+
+
+def test_search_source_synced_assets(client: AtlanClient):
+    tables = [
+        table
+        for table in (
+            FluentSearch()
+            .select()
+            .where(Asset.TYPE_NAME.eq("Table"))
+            .where(
+                CompoundQuery.tagged_with_value(
+                    EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted"
+                )
+            )
+            .execute(client=client)
+        )
+    ]
+    assert tables and len(tables) > 0
+    for table in tables:
+        assert isinstance(table, Table)
+        tags = table.atlan_tags
+        assert tags and len(tags) > 0
+        synced_tags = [
+            tag for tag in tags if str(tag.type_name) == EXISTING_SOURCE_SYNCED_TAG
+        ]
+        assert synced_tags and len(synced_tags) > 0
+        for st in synced_tags:
+            attachments = st.source_tag_attachements
+            assert attachments and len(attachments) > 0
+            for sta in attachments:
+                values = sta.source_tag_value
+                assert values and len(values) > 0
+                for value in values:
+                    attached_value = value.tag_attachment_value
+                    assert attached_value and attached_value == "Highly Restricted"
 
 
 def test_search_next_page(client: AtlanClient):
