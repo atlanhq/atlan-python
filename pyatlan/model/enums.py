@@ -313,6 +313,7 @@ class AtlanConnectorType(str, Enum):
     MODEL = ("model", AtlanConnectionCategory.DATABASE)
     IICS = ("iics", AtlanConnectionCategory.ELT)
     AB_INITIO = ("abinitio", AtlanConnectionCategory.ELT)
+    SAPS4HANA = ("sap-s4-hana", AtlanConnectionCategory.WAREHOUSE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
