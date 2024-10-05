@@ -1,3 +1,9 @@
+## 2.4.8 (October 5, 2024)
+
+### New features
+
+- Adds new connector types (`IICS`, `ABINITIO`, SAP_S4_HANA`).
+
 ## 2.4.7 (September 30, 2024)
 
 ### New features
