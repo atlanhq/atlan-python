@@ -47,11 +47,30 @@ class OpenLineageJob(AtlanObject):
     def creator(
         cls, connection_name: str, job_name: str, producer: str
     ) -> OpenLineageJob:
+        """
+        Builds the minimal object necessary to create an OpenLineage job.
+
+        :param connection_name: name of the Spark connection in which the OpenLineage job should be created
+        :param job_name: unique name of the job - if it already exists the existing job will be updated
+        :param producer: URI indicating the code or software that implements this job
+        :returns: the minimal request necessary to create the job
+        """
         return OpenLineageJob(
             namespace=connection_name, name=job_name, producer=producer, facets={}
         )
 
+    # TODO: provide some intuitive way to manage the facets of the job
+
     def create_input(self, namespace: str, asset_name: str) -> OpenLineageInputDataset:
+        """
+        Builds the minimal object necessary to create an OpenLineage dataset,
+        wired to use as an input (source) for lineage.
+
+        :param namespace: name of the source of the asset
+        (see: https://github.com/OpenLineage/OpenLineage/blob/main/spec/Naming.md)
+        :param asset_name: name of the asset, by OpenLineage standard (for eg: `DB.SCHEMA.TABLE`)
+        :returns: the minimal request necessary to create the input dataset
+        """
         return OpenLineageInputDataset.creator(
             namespace=namespace,
             asset_name=asset_name,
@@ -62,6 +81,15 @@ class OpenLineageJob(AtlanObject):
         namespace: str,
         asset_name: str,
     ) -> OpenLineageOutputDataset:
+        """
+        Builds the minimal object necessary to create an OpenLineage dataset,
+        wired to use as an output (target) for lineage.
+
+        :param namespace: name of the source of the asset
+        (see: https://github.com/OpenLineage/OpenLineage/blob/main/spec/Naming.md)
+        :param asset_name: name of the asset, by OpenLineage standard (for eg: `DB.SCHEMA.TABLE`)
+        :returns: the minimal request necessary to create the output dataset
+        """
         return OpenLineageOutputDataset.creator(
             namespace=namespace,
             asset_name=asset_name,

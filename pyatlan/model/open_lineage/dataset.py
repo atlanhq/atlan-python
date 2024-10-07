@@ -9,6 +9,10 @@ from pyatlan.model.open_lineage.facet import OpenLineageDatasetFacet
 
 
 class OpenLineageDataset(AtlanObject):
+    """
+    Model for handling OpenLineage datasets.
+    """
+
     name: Optional[str] = Field(
         default=None, description="Unique name for that dataset within that namespace."
     )

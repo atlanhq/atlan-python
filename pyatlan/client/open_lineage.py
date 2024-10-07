@@ -24,16 +24,23 @@ class OpenLineageClient:
     @validate_arguments
     def send(
         self, request: OpenLineageEvent, connector_type: AtlanConnectorType
-    ) -> str:
+    ) -> None:
+        """
+        Sends the OpenLineage event to Atlan to be consumed.
+
+        :param request: OpenLineage event to send
+        :param connector_type: of the connection that should receive the OpenLineage event
+        :raises AtlanError: on any issues with API communication
+        """
+
         try:
-            response = self._client._call_api(
+            self._client._call_api(
                 request_obj=request,
                 api=OPEN_LINEAGE_SEND_EVENT_API.format_path(
                     {"connector_type": connector_type}
                 ),
                 text_response=True,
             )
-            return response
         except AtlanError as e:
             if (
                 e.error_code.http_error_code == HTTPStatus.UNAUTHORIZED

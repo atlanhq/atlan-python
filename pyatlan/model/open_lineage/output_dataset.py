@@ -14,6 +14,11 @@ from pyatlan.model.open_lineage.facet import (
 
 
 class OpenLineageOutputDataset(OpenLineageDataset):
+    """
+    Model for handling OpenLineage datasets
+    to be used as lineage targets (outputs).
+    """
+
     output_facets: Optional[Dict[str, Any]] = Field(default_factory=dict)
     to_fields: Optional[
         List[
@@ -35,6 +40,17 @@ class OpenLineageOutputDataset(OpenLineageDataset):
     def creator(
         cls, namespace: str, asset_name: str, producer: str
     ) -> OpenLineageOutputDataset:
+        """
+        Builds the minimal object necessary to create
+        an OpenLineage dataset use-able as a lineage target.
+
+        :param namespace: name of the source of the asset
+        (see: https://github.com/OpenLineage/OpenLineage/blob/main/spec/Naming.md)
+        :param asset_name: name of the asset, by OpenLineage standard (for eg: `DB.SCHEMA.TABLE`)
+        :param producer: a pre-configured OpenLineage producer
+        :returns: the minimal request necessary to create the output dataset
+        """
+
         return OpenLineageOutputDataset(
             namespace=namespace, name=asset_name, producer=producer
         )

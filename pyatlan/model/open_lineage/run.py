@@ -44,4 +44,10 @@ class OpenLineageRun(AtlanObject):
 
     @classmethod
     def creator(cls, job: OpenLineageJob) -> OpenLineageRun:
+        """
+        Builds the minimal object necessary to create an OpenLineage run.
+
+        :param job: OpenLineage job for which to create a new run
+        :returns: the minimal request necessary to create the run
+        """
         return OpenLineageRun(job=job, run_id=str(generate_new_uuid()), facets={})

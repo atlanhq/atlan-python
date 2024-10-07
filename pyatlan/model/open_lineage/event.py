@@ -19,10 +19,23 @@ if TYPE_CHECKING:
 
 class OpenLineageEvent(OpenLineageBaseEvent):
     """
-    Base class for handling OpenLineage events,
-    passing through to the OpenLineage Python SDK
-    but wrapping events such that they are handled
-    appropriately in the Atlan Python SDK.
+    Atlan wrapper for abstracting OpenLineage events.
+
+    An event represents a point-in-time state of a run.
+    To process lineage in Atlan, you **must** have at least two states for any run:
+    - `START`: Indicates that a run has started.
+    - One of the following to mark that the run has finished:
+        - `COMPLETE`: Run execution has successfully concluded.
+        - `ABORT`: Run has been stopped abnormally.
+        - `FAIL`: Run has failed.
+
+    Additionally, for lineage to show inputs and outputs
+    to a process in Atlan, at least one event must define `inputs` and `outputs`.
+    These do not need to be included in every event, as they are merged across
+    events for the same run (matching by `runId`).
+
+    For more details, see the
+    [OpenLineage documentation](https://openlineage.io/docs/spec/run-cycle).
     """
 
     run: Optional[OpenLineageRun] = Field(default=None)
@@ -44,6 +57,12 @@ class OpenLineageEvent(OpenLineageBaseEvent):
     def creator(
         self, run: OpenLineageRun, event_type: OpenLineageEventType
     ) -> OpenLineageEvent:
+        """
+        Builds the minimal object necessary to create an OpenLineage event.
+
+        :param run: OpenLineage run for which to create a new event
+        :returns: the minimal request necessary to create the event
+        """
         return OpenLineageEvent(
             run=run,
             job=run.job,
@@ -52,7 +71,12 @@ class OpenLineageEvent(OpenLineageBaseEvent):
             event_time=datetime.now(tz=utc).isoformat(),  # type:ignore[call-arg]
         )
 
-    def emit(self, client: Optional[AtlanClient] = None) -> str:
+    def emit(self, client: Optional[AtlanClient] = None) -> None:
+        """
+        Send the OpenLineage event to Atlan to be processed.
+
+        :raises AtlanError: on any API communication issues
+        """
         from pyatlan.client.atlan import AtlanClient
 
         client = client or AtlanClient.get_default_client()

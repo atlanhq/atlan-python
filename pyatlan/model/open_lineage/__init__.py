@@ -1,6 +1,5 @@
-# # flake8: noqa
-# from .event import OpenLineageEvent
-# from .job import OpenLineageJob
-# from .run import OpenLineageRun
+from .event import OpenLineageEvent
+from .job import OpenLineageJob
+from .run import OpenLineageRun
 
-# __all__ = ["OpenLineageEvent", "OpenLineageJob", "OpenLineageRun"]
+__all__ = ["OpenLineageEvent", "OpenLineageJob", "OpenLineageRun"]

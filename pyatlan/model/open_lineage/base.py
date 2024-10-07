@@ -8,6 +8,10 @@ from pyatlan.model.core import AtlanObject
 
 
 class OpenLineageBaseEvent(AtlanObject):
+    """
+    Base model for OpenLineage events.
+    """
+
     event_time: Optional[str] = Field(
         default=None, description="time the event occurred at", alias="eventTime"
     )
@@ -47,7 +51,9 @@ class OpenLineageBaseEvent(AtlanObject):
 
 
 class OpenLineageBaseFacet(AtlanObject):
-    """All fields of the base facet are prefixed with _ to avoid name conflicts in facets"""
+    """
+    Base model for OpenLineage facets.
+    """
 
     producer: Optional[str] = Field(default=None, alias="_producer")
     schema_url: Optional[str] = Field(default=None, alias="_schemaURL")
