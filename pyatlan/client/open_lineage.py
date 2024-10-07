@@ -30,7 +30,7 @@ class OpenLineageClient:
 
         :param request: OpenLineage event to send
         :param connector_type: of the connection that should receive the OpenLineage event
-        :raises AtlanError: on any issues with API communication
+        :raises AtlanError: when OpenLineage is not configured OR on any issues with API communication
         """
 
         try:

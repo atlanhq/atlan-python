@@ -66,7 +66,7 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         return OpenLineageEvent(
             run=run,
             job=run.job,
-            producer=run.job.producer or "",
+            producer=run.job and run.job.producer or "",
             event_type=event_type,
             event_time=datetime.now(tz=utc).isoformat(),  # type:ignore[call-arg]
         )

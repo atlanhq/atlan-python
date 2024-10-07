@@ -2317,6 +2317,8 @@ class AtlanMeshColor(str, Enum):
 class DataContractStatus(Enum):
     DRAFT = "draft"
     VERIFIED = "verified"
+
+
 class OpenLineageEventType(Enum):
     """
     Current transition of the run state.
