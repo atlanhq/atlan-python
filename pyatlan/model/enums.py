@@ -2314,6 +2314,11 @@ class AtlanMeshColor(str, Enum):
     GRAY = "#525C73"
 
 
+class DataContractStatus(Enum):
+    DRAFT = "draft"
+    VERIFIED = "verified"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************

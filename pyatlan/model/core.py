@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import json
 from abc import ABC
 from typing import TYPE_CHECKING
 
+import yaml  # type: ignore[import-untyped]
 from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, root_validator, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
@@ -124,6 +126,39 @@ class AtlanObject(BaseModel):
         extra = cls._populate_extra_fields(values)
         cls.__atlan_extra__ = extra
         return values
+
+
+class AtlanYamlModel(BaseModel):
+    """
+    A model class for working with YAML data.
+    """
+
+    class Config:
+        extra = Extra.ignore
+        validate_assignment = True
+        allow_population_by_field_name = True
+
+    def to_yaml(self) -> str:
+        """
+        Serialize the Pydantic model instance to a YAML string.
+        """
+
+        return yaml.dump(
+            json.loads(self.json(by_alias=True, exclude_unset=True)), sort_keys=False
+        )
+
+    @classmethod
+    def from_yaml(cls, yaml_str: str):
+        """
+        Create an instance of the class from a YAML string.
+
+        :param yaml_str: YAML string to parse.
+
+        :returns: an instance of the class
+        with attributes populated from the YAML data.
+        """
+        data = yaml.safe_load(yaml_str)
+        return cls(**data)
 
 
 class SearchRequest(AtlanObject, ABC):

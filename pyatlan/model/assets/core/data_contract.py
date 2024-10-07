@@ -6,11 +6,12 @@ from __future__ import annotations
 
 from json import loads
 from json.decoder import JSONDecodeError
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Union, overload
 
 from pydantic.v1 import Field, validator
 
 from pyatlan.errors import ErrorCode
+from pyatlan.model.contract import DataContractSpec
 from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     NumericField,
@@ -25,16 +26,33 @@ from .catalog import Catalog
 class DataContract(Catalog):
     """Description"""
 
+    @overload
+    @classmethod
+    def creator(cls, asset_qualified_name: str, contract_json: str) -> DataContract: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls, asset_qualified_name: str, contract_spec: Union[DataContractSpec, str]
+    ) -> DataContract: ...
+
     @classmethod
     @init_guid
-    def creator(cls, *, asset_qualified_name: str, contract_json: str) -> DataContract:
+    def creator(
+        cls,
+        *,
+        asset_qualified_name: str,
+        contract_json: Optional[str] = None,
+        contract_spec: Optional[Union[DataContractSpec, str]] = None,
+    ) -> DataContract:
         validate_required_fields(
-            ["asset_qualified_name", "contract_json"],
-            [asset_qualified_name, contract_json],
+            ["asset_qualified_name"],
+            [asset_qualified_name],
         )
         attributes = DataContract.Attributes.creator(
             asset_qualified_name=asset_qualified_name,
             contract_json=contract_json,
+            contract_spec=contract_spec,
         )
         return cls(attributes=attributes)
 
@@ -241,21 +259,57 @@ class DataContract(Catalog):
         @classmethod
         @init_guid
         def creator(
-            cls, *, asset_qualified_name: str, contract_json: str
+            cls,
+            *,
+            asset_qualified_name: str,
+            contract_json: Optional[str] = None,
+            contract_spec: Optional[Union[DataContractSpec, str]] = None,
         ) -> DataContract.Attributes:
+            from re import search
+
             validate_required_fields(
-                ["asset_qualified_name", "contract_json"],
-                [asset_qualified_name, contract_json],
+                ["asset_qualified_name"],
+                [asset_qualified_name],
             )
-            try:
-                contract_name = f"Data contract for {loads(contract_json)['dataset']}"
-            except (JSONDecodeError, KeyError):
-                raise ErrorCode.INVALID_CONTRACT_JSON.exception_with_parameters()
+            if not (contract_json or contract_spec):
+                raise ValueError(
+                    "At least one of `contract_json` or `contract_spec` "
+                    "must be provided to create a contract."
+                )
+            if contract_json and contract_spec:
+                raise ValueError(
+                    "Both `contract_json` and `contract_spec` cannot be "
+                    "provided simultaneously to create a contract."
+                )
+            last_slash_index = asset_qualified_name.rfind("/")
+            default_dataset = asset_qualified_name[last_slash_index + 1 :]  # noqa
+
+            if contract_json:
+                try:
+                    contract_name = f"Data contract for {loads(contract_json)['dataset'] or default_dataset}"
+                except (JSONDecodeError, KeyError):
+                    raise ErrorCode.INVALID_CONTRACT_JSON.exception_with_parameters()
+            else:
+                if isinstance(contract_spec, DataContractSpec):
+                    contract_name = (
+                        "Data contract for "
+                        f"{contract_spec.dataset or default_dataset}"  # type: ignore[union-attr, attr-defined]
+                    )
+                    contract_spec = contract_spec.to_yaml()
+                else:
+                    is_dataset_found = search(
+                        r"dataset:\s*([^\s#]+)", contract_spec or default_dataset
+                    )
+                    dataset = None
+                    if is_dataset_found:
+                        dataset = is_dataset_found.group(1)
+                    contract_name = f"Data contract for {dataset or default_dataset}"
 
             return DataContract.Attributes(
                 name=contract_name,
                 qualified_name=f"{asset_qualified_name}/contract",
                 data_contract_json=contract_json,
+                data_contract_spec=contract_spec,  # type: ignore[arg-type]
             )
 
     attributes: DataContract.Attributes = Field(

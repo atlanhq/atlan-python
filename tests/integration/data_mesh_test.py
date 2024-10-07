@@ -291,7 +291,7 @@ def contract(
     table: Table,
     connection: Connection,
 ) -> Generator[DataContract, None, None]:
-    assert table and table.guid
+    assert table and table.guid and table.qualified_name
     contract_json = {
         "type": table.type_name,
         "status": CertificateStatus.DRAFT,
@@ -316,7 +316,7 @@ def updated_contract(
     table: Table,
     connection: Connection,
 ) -> Generator[DataContract, None, None]:
-    assert table and table.guid
+    assert table and table.guid and table.qualified_name
     contract_json = {
         "type": table.type_name,
         "status": CertificateStatus.DRAFT,

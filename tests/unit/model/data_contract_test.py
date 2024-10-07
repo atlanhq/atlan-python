@@ -23,19 +23,21 @@ def _assert_contract(
 
 
 @pytest.mark.parametrize(
-    "asset_qualified_name, contract_json, message",
+    "asset_qualified_name, contract_json, contract_spec, message",
     [
-        (None, "json", "asset_qualified_name is required"),
-        ("qn", None, "contract_json is required"),
+        (None, "json", "spec", "asset_qualified_name is required"),
+        ("qn", "json", "spec", "Both `contract_json` and `contract_spec` cannot be"),
+        ("qn", None, None, "At least one of `contract_json` or `contract_spec`"),
     ],
 )
 def test_creator_with_missing_parameters_raise_value_error(
-    asset_qualified_name: str, contract_json: str, message: str
+    asset_qualified_name: str, contract_json: str, contract_spec: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        DataContract.creator(
+        DataContract.creator(  # type: ignore
             asset_qualified_name=asset_qualified_name,
             contract_json=contract_json,
+            contract_spec=contract_spec,
         )
 
 
