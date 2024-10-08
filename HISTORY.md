@@ -1,8 +1,20 @@
+## 2.5.0 (October 8, 2024)
+
+### New features (experimental)
+
+- Added support for sending `OpenLineage` events.
+- Added support for serialization/deserialization (serde) of the `DataContract` spec.
+
+### Breaking changes
+
+- Updated the `ContractClient.generate_initial_spec()` method to directly accept the `asset` for which the initial contract spec is generated, similar to the Java SDK. Previously, you needed to pass the keyword arguments `asset_type` and `asset_qualified_name`.
+
+
 ## 2.4.8 (October 5, 2024)
 
 ### New features
 
-- Adds new connector types (`IICS`, `ABINITIO`, SAP_S4_HANA`).
+- Added new connector types (`IICS`, `ABINITIO`, `SAP_S4_HANA`).
 
 ## 2.4.7 (September 30, 2024)
 
