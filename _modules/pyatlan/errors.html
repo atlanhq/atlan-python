@@ -1093,6 +1093,14 @@
         <span class="s2">&quot;Please ensure that no sorting options are included in your search request when performing a bulk search.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">OPENLINEAGE_NOT_CONFIGURED</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-064&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Requested OpenLineage connector type &#39;</span><span class="si">{0}</span><span class="s2">&#39; is not configured.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;You must first run the appropriate marketplace package to &quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;configure OpenLineage for this connector before you can send events for it.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
