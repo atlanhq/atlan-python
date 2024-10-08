@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -509,7 +509,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -517,207 +517,6 @@
         <article role="main">
           <section id="custommetadatacache">
 <span id="custom-metadata-cache"></span><h1>CustomMetadataCache<a class="headerlink" href="#custommetadatacache" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.cache.custom_metadata_cache.</span></span><span class="sig-name descname"><span class="pre">CustomMetadataCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typedef_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TypeDefClient</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache" title="Link to this definition">#</a></dt>
-<dd><p>Lazily-loaded cache for translating between Atlan-internal ID strings and human-readable names
-for custom metadata (including attributes).</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_all_custom_attributes">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all_custom_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_deleted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_refresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../other_model/typedef.html#pyatlan.model.typedef.AttributeDef" title="pyatlan.model.typedef.AttributeDef"><span class="pre">AttributeDef</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_all_custom_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_all_custom_attributes" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve all the custom metadata attributes. The dict will be keyed by custom metadata set
-name, and the value will be a listing of all the attributes within that set (with all the details
-of each of those attributes).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>include_deleted</strong> – if True, include the archived (deleted) custom attributes; otherwise only
-include active custom attributes</p></li>
-<li><p><strong>force_refresh</strong> – if True, will refresh the custom metadata cache; if False, will only refresh the
-cache if it is empty</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a dict from custom metadata set name to all details about its attributes</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata cannot be found</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attr_id_for_name">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attr_id_for_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_attr_id_for_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attr_id_for_name" title="Link to this definition">#</a></dt>
-<dd><p>Translate the provided human-readable custom metadata set and attribute names to the Atlan-internal ID string
-for the attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>set_name</strong> – human-readable name of the custom metadata set</p></li>
-<li><p><strong>attr_name</strong> – human-readable name of the attribute</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Atlan-internal ID string for the attribute</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata attribute cannot be found</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attr_name_for_id">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attr_name_for_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_attr_name_for_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attr_name_for_id" title="Link to this definition">#</a></dt>
-<dd><p>Given the Atlan-internal ID string for the set and the Atlan-internal ID for the attribute return the
-human-readable custom metadata name for the attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>set_id</strong> – Atlan-internal ID string for the custom metadata set</p></li>
-<li><p><strong>attr_id</strong> – Atlan-internal ID string for the attribute</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>human-readable name of the attribute</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata attribute cannot be found</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attribute_def">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attribute_def</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../other_model/typedef.html#pyatlan.model.typedef.AttributeDef" title="pyatlan.model.typedef.AttributeDef"><span class="pre">AttributeDef</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_attribute_def"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attribute_def" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve a specific custom metadata attribute definition by its unique Atlan-internal ID string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>attr_id</strong> – Atlan-internal ID string for the custom metadata attribute</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>attribute definition for the custom metadata attribute</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if no attribute ID was provided</p></li>
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata attribute cannot be found</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attribute_for_search_results">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attribute_for_search_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_attribute_for_search_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attribute_for_search_results" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve a single custom attribute name to include on search results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>set_name</strong> – human-readable name of the custom metadata set for which to retrieve the custom metadata
-attribute name</p></li>
-<li><p><strong>attr_name</strong> – human-readable name of the attribute</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the attribute name, strictly useful for inclusion in search results</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attributes_for_search_results">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attributes_for_search_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_attributes_for_search_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attributes_for_search_results" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the full set of custom attributes to include on search results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>set_name</strong> – human-readable name of the custom metadata set for which to retrieve attribute names</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of the attribute names, strictly useful for inclusion in search results</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_custom_metadata_def">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_custom_metadata_def</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../other_model/typedef.html#pyatlan.model.typedef.CustomMetadataDef" title="pyatlan.model.typedef.CustomMetadataDef"><span class="pre">CustomMetadataDef</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_custom_metadata_def"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_custom_metadata_def" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the full custom metadata structure definition.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> – human-readable name of the custom metadata set</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the full custom metadata structure definition for that set</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if no name was provided</p></li>
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata cannot be found</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_id_for_name">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id_for_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_id_for_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_id_for_name" title="Link to this definition">#</a></dt>
-<dd><p>Translate the provided human-readable custom metadata set name to its Atlan-internal ID string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> – human-readable name of the custom metadata set</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Atlan-internal ID string of the custom metadata set</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if no name was provided</p></li>
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata cannot be found</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_name_for_id">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_name_for_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idstr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.get_name_for_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_name_for_id" title="Link to this definition">#</a></dt>
-<dd><p>Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>idstr</strong> – Atlan-internal ID string of the custom metadata set</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>human-readable name of the custom metadata set</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if no ID was provided</p></li>
-<li><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the custom metadata cannot be found</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.is_attr_archived">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_attr_archived</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.is_attr_archived"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.is_attr_archived" title="Link to this definition">#</a></dt>
-<dd><p>Determine if an attribute is archived
-:param attr_id: Atlan-internal ID string for the attribute
-:returns: True if the attribute has been archived</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.cache.custom_metadata_cache.CustomMetadataCache.refresh_cache">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">refresh_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/custom_metadata_cache.html#CustomMetadataCache.refresh_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.refresh_cache" title="Link to this definition">#</a></dt>
-<dd><p>Refreshes the cache of custom metadata structures by requesting the full set of custom metadata
-structures from Atlan.
-:raises LogicError: if duplicate custom attributes are detected</p>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 
         </article>
@@ -763,40 +562,8 @@ structures from Atlan.
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">CustomMetadataCache</a><ul>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache</span></code></a><ul>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_all_custom_attributes"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_all_custom_attributes()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attr_id_for_name"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_attr_id_for_name()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attr_name_for_id"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_attr_name_for_id()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attribute_def"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_attribute_def()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attribute_for_search_results"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_attribute_for_search_results()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_attributes_for_search_results"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_attributes_for_search_results()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_custom_metadata_def"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_custom_metadata_def()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_id_for_name"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_id_for_name()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.get_name_for_id"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.get_name_for_id()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.is_attr_archived"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.is_attr_archived()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.cache.custom_metadata_cache.CustomMetadataCache.refresh_cache"><code class="docutils literal notranslate"><span class="pre">CustomMetadataCache.refresh_cache()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
