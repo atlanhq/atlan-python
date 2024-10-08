@@ -547,6 +547,14 @@ class ErrorCode(Enum):
         "Please ensure that no sorting options are included in your search request when performing a bulk search.",
         InvalidRequestError,
     )
+    OPENLINEAGE_NOT_CONFIGURED = (
+        400,
+        "ATLAN-PYTHON-400-064",
+        "Requested OpenLineage connector type '{0}' is not configured.",
+        "You must first run the appropriate marketplace package to "
+        + "configure OpenLineage for this connector before you can send events for it.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

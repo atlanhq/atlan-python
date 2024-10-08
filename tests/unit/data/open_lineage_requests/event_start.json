@@ -1,0 +1,79 @@
+{
+    "eventTime": "2024-10-07T10:23:52.239783+00:00",
+    "producer": "https://your.orchestrator/unique/id/123",
+    "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",
+    "eventType": "START",
+    "job": {
+      "namespace": "ol-spark",
+      "name": "dag_123",
+      "facets": {}
+    },
+    "run": {
+      "runId": "01826681-bfaf-7b1a-a5ce-f69f645660d9",
+      "facets": {}
+    },
+    "inputs": [
+      {
+        "namespace": "snowflake://abc123.snowflakecomputing.com",
+        "name": "OPS.DEFAULT.RUN_STATS",
+        "facets": {}
+      },
+      {
+        "namespace": "snowflake://abc123.snowflakecomputing.com",
+        "name": "SOME.OTHER.TBL",
+        "facets": {}
+      },
+      {
+        "namespace": "snowflake://abc123.snowflakecomputing.com",
+        "name": "AN.OTHER.TBL",
+        "facets": {}
+      }
+    ],
+    "outputs": [
+      {
+        "namespace": "snowflake://abc123.snowflakecomputing.com",
+        "name": "OPS.DEFAULT.FULL_STATS",
+        "facets": {
+          "columnLineage": {
+            "_producer": "https://your.orchestrator/unique/id/123",
+            "_schemaURL": "https://openlineage.io/spec/facets/1-1-0/ColumnLineageDatasetFacet.json#/$defs/ColumnLineageDatasetFacet",
+            "fields": {
+              "COLUMN": {
+                "inputFields": [
+                  {
+                    "namespace": "snowflake://abc123.snowflakecomputing.com",
+                    "name": "OPS.DEFAULT.RUN_STATS",
+                    "field": "COLUMN"
+                  },
+                  {
+                    "namespace": "snowflake://abc123.snowflakecomputing.com",
+                    "name": "OPS.DEFAULT.RUN_STATS",
+                    "field": "ONE"
+                  },
+                  {
+                    "namespace": "snowflake://abc123.snowflakecomputing.com",
+                    "name": "OPS.DEFAULT.RUN_STATS",
+                    "field": "TWO"
+                  }
+                ]
+              },
+              "ANOTHER": {
+                "inputFields": [
+                  {
+                    "namespace": "snowflake://abc123.snowflakecomputing.com",
+                    "name": "OPS.DEFAULT.RUN_STATS",
+                    "field": "THREE"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "namespace": "snowflake://abc123.snowflakecomputing.com",
+        "name": "AN.OTHER.VIEW",
+        "facets": {}
+      }
+    ]
+}

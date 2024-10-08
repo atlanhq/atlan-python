@@ -50,6 +50,7 @@ from pyatlan.client.credential import CredentialClient
 from pyatlan.client.file import FileClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
+from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
@@ -161,6 +162,7 @@ class AtlanClient(BaseSettings):
     _sso_client: Optional[SSOClient] = PrivateAttr(default=None)
     _file_client: Optional[FileClient] = PrivateAttr(default=None)
     _contract_client: Optional[ContractClient] = PrivateAttr(default=None)
+    _open_lineage_client: Optional[OpenLineageClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -289,6 +291,12 @@ class AtlanClient(BaseSettings):
         return self._sso_client
 
     @property
+    def open_lineage(self) -> OpenLineageClient:
+        if self._open_lineage_client is None:
+            self._open_lineage_client = OpenLineageClient(client=self)
+        return self._open_lineage_client
+
+    @property
     def files(self) -> FileClient:
         if self._file_client is None:
             self._file_client = FileClient(client=self)
@@ -314,7 +322,13 @@ class AtlanClient(BaseSettings):
         return file_path
 
     def _call_api_internal(
-        self, api, path, params, binary_data=None, download_file_path=None
+        self,
+        api,
+        path,
+        params,
+        binary_data=None,
+        download_file_path=None,
+        text_response=False,
     ):
         token = request_id_var.set(str(uuid.uuid4()))
         try:
@@ -361,9 +375,12 @@ class AtlanClient(BaseSettings):
                                     line
                                 )
                             events.append(json.loads(line.split("data: ")[1]))
-                    response_json = events if events else response.json()
-                    LOGGER.debug(response_json)
-                    return response_json
+                    if text_response:
+                        response_ = response.text
+                    else:
+                        response_ = events if events else response.json()
+                    LOGGER.debug(response_)
+                    return response_
                 except (
                     requests.exceptions.JSONDecodeError,
                     json.decoder.JSONDecodeError,
@@ -410,13 +427,18 @@ class AtlanClient(BaseSettings):
         LOGGER.debug("Accept       : %s", api.produces)
 
     def _call_api(
-        self, api, query_params=None, request_obj=None, exclude_unset: bool = True
+        self,
+        api,
+        query_params=None,
+        request_obj=None,
+        exclude_unset: bool = True,
+        text_response=False,
     ):
         path = self._create_path(api)
         params = self._create_params(api, query_params, request_obj, exclude_unset)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
-        return self._call_api_internal(api, path, params)
+        return self._call_api_internal(api, path, params, text_response=text_response)
 
     def _create_path(self, api: API):
         if self.base_url == "INTERNAL":

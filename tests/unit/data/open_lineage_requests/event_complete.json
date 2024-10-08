@@ -1,0 +1,15 @@
+{
+    "eventTime": "2024-10-07T10:23:52.239783+00:00",
+    "producer": "https://your.orchestrator/unique/id/123",
+    "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",
+    "eventType": "COMPLETE",
+    "run": {
+      "runId": "01826681-bfaf-7b1a-a5ce-f69f645660d9",
+      "facets": {}
+    },
+    "job": {
+      "namespace": "ol-spark",
+      "name": "dag_123",
+      "facets": {}
+    }
+}
