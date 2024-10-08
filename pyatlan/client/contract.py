@@ -1,11 +1,12 @@
-from typing import Optional, Union
+from typing import Optional
 
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import CONTRACT_INIT_API
 from pyatlan.errors import ErrorCode
-from pyatlan.model.contract import DataContractSpec, InitRequest
+from pyatlan.model.assets import Asset
+from pyatlan.model.contract import InitRequest
 
 
 class ContractClient:
@@ -23,28 +24,21 @@ class ContractClient:
     @validate_arguments
     def generate_initial_spec(
         self,
-        asset_type: str,
-        asset_qualified_name: str,
-        return_raw: bool = False,
-    ) -> Union[DataContractSpec, Optional[str]]:
+        asset: Asset,
+    ) -> Optional[str]:
         """
-        Generate an initial contract spec for the given asset type and qualified name.
+        Generate an initial contract spec for the provided asset.
+        The asset must have at least its `qualifiedName` (and `typeName`) populated.
 
-        :param asset_type: type of the asset, e.g: `Table`, `Column`, etc
-        :param asset_qualified_name: `qualifiedName` of the asset.
-        :param return_raw: if `True`, returns the raw data contract spec (with comments)
-        without any Pydantic model deserialization of response. Defaults to `False`
+        :param asset: for which to generate the initial contract spec
 
         :raises AtlanError: if there is an issue interacting with the API
-        :returns: DataContractSpec object for the asset's initial contract,
-        or the raw contract spec string if `return_raw` is `True`
+        :returns: YAML for the initial contract spec for the provided asset
         """
         response = self._client._call_api(
             CONTRACT_INIT_API,
             request_obj=InitRequest(
-                asset_type=asset_type, asset_qualified_name=asset_qualified_name
+                asset_type=asset.type_name, asset_qualified_name=asset.qualified_name
             ),
         )
-        if return_raw:
-            return response.get("contract")
-        return DataContractSpec.from_yaml(response.get("contract"))
+        return response.get("contract")

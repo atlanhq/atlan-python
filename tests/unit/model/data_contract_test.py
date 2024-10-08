@@ -5,20 +5,26 @@ import pytest
 
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import DataContract
+from pyatlan.model.contract import DataContractSpec
 from tests.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
     DATA_CONTRACT_JSON,
     DATA_CONTRACT_NAME,
+    DATA_CONTRACT_NAME_DEFAULT,
     DATA_CONTRACT_QUALIFIED_NAME,
+    DATA_CONTRACT_SPEC_STR,
+    DATA_CONTRACT_SPEC_STR_WITHOUT_DATASET,
 )
 
 
 def _assert_contract(
-    contract: Union[DataContract, DataContract.Attributes], assert_json: bool = True
+    contract: Union[DataContract, DataContract.Attributes],
+    is_json: bool = False,
+    contract_name=DATA_CONTRACT_NAME,
 ) -> None:
-    assert contract.name == DATA_CONTRACT_NAME
+    assert contract.name == contract_name
     assert contract.qualified_name == DATA_CONTRACT_QUALIFIED_NAME
-    if assert_json:
+    if is_json:
         assert contract.data_contract_json == dumps(DATA_CONTRACT_JSON)
 
 
@@ -71,13 +77,39 @@ def test_creator_atttributes_with_required_parameters():
         asset_qualified_name=ASSET_QUALIFIED_NAME,
         contract_json=dumps(DATA_CONTRACT_JSON),
     )
-    _assert_contract(attributes)
+    _assert_contract(attributes, is_json=True)
 
 
-def test_creator_with_required_parameters():
+def test_creator_with_required_parameters_json():
     test_contract = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
         contract_json=dumps(DATA_CONTRACT_JSON),
+    )
+    _assert_contract(test_contract)
+
+
+def test_creator_with_required_parameters_spec_str():
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        contract_spec=DATA_CONTRACT_SPEC_STR,
+    )
+    _assert_contract(test_contract)
+
+
+def test_creator_with_required_parameters_spec_str_without_dataset():
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        contract_spec=DATA_CONTRACT_SPEC_STR_WITHOUT_DATASET,
+    )
+    # Ensure the default contract name is extracted from the table's qualified name (QN).
+    _assert_contract(test_contract, contract_name=DATA_CONTRACT_NAME_DEFAULT)
+
+
+def test_creator_with_required_parameters_spec_model():
+    spec = DataContractSpec.from_yaml(DATA_CONTRACT_SPEC_STR)
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        contract_spec=spec,
     )
     _assert_contract(test_contract)
 

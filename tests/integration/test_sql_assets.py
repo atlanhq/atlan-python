@@ -16,6 +16,7 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
+from pyatlan.model.contract import DataContractSpec
 from pyatlan.model.enums import AtlanConnectorType, SourceCostUnitType
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.response import A, AssetMutationResponse
@@ -570,12 +571,9 @@ class TestColumn:
         assert TestColumn.column.name
         assert TestTable.table.type_name
         assert TestTable.table.qualified_name
-        table_contract = client.contracts.generate_initial_spec(
-            asset_type=TestTable.table.type_name,
-            asset_qualified_name=TestTable.table.qualified_name,
-            return_raw=True,
-        )
-        self._assert_table_contract(table_contract, TestColumn)
+        contact_spec_str = client.contracts.generate_initial_spec(asset=TestTable.table)
+        assert contact_spec_str
+        self._assert_table_contract(contact_spec_str, TestColumn)
 
     def test_contact_init_spec_model(self, client: AtlanClient):
         assert TestTable.table
@@ -584,16 +582,15 @@ class TestColumn:
         assert TestColumn.column.name
         assert TestTable.table.type_name
         assert TestTable.table.qualified_name
-        table_contract = client.contracts.generate_initial_spec(
-            asset_type=TestTable.table.type_name,
-            asset_qualified_name=TestTable.table.qualified_name,
-        )
+        contact_spec_str = client.contracts.generate_initial_spec(asset=TestTable.table)
+        assert contact_spec_str
+        contract_spec = DataContractSpec.from_yaml(contact_spec_str)
         assert (
-            table_contract
-            and table_contract.dataset  # type: ignore[union-attr]
-            and table_contract.dataset == TestTable.table.name  # type: ignore[union-attr]
+            contract_spec
+            and contract_spec.dataset  # type: ignore[union-attr]
+            and contract_spec.dataset == TestTable.table.name  # type: ignore[union-attr]
         )
-        self._assert_table_contract(table_contract.to_yaml(), TestColumn, is_raw=False)  # type: ignore[union-attr]
+        self._assert_table_contract(contract_spec.to_yaml(), TestColumn, is_raw=False)  # type: ignore[union-attr]
 
     def test_overload_creator(
         self,

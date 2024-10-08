@@ -138,13 +138,16 @@ class AtlanYamlModel(BaseModel):
         validate_assignment = True
         allow_population_by_field_name = True
 
-    def to_yaml(self) -> str:
+    def to_yaml(
+        self, by_alias: bool = True, exclude_unset: bool = True, sort_keys: bool = False
+    ) -> str:
         """
         Serialize the Pydantic model instance to a YAML string.
         """
 
         return yaml.dump(
-            json.loads(self.json(by_alias=True, exclude_unset=True)), sort_keys=False
+            json.loads(self.json(by_alias=by_alias, exclude_unset=exclude_unset)),
+            sort_keys=sort_keys,
         )
 
     @classmethod

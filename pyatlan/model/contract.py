@@ -11,8 +11,8 @@ from pyatlan.model.enums import CertificateStatus, DataContractStatus
 
 
 class InitRequest(AtlanObject):
-    asset_type: str
-    asset_qualified_name: str
+    asset_type: Optional[str]
+    asset_qualified_name: Optional[str]
 
 
 class DataContractSpec(AtlanYamlModel):
@@ -24,7 +24,7 @@ class DataContractSpec(AtlanYamlModel):
         default="DataContract",
         description="Controls the specification as one for a data contract.",
     )
-    status: DataContractStatus = Field(description="State of the contract.")
+    status: Union[DataContractStatus, str] = Field(description="State of the contract.")
     template_version: str = Field(
         default="0.0.2", description="Version of the template for the data contract."
     )

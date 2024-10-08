@@ -94,7 +94,8 @@ DATA_PRODUCT_QUALIFIED_NAME = (
 DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME = (
     f"{DATA_SUB_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_NAME}"
 )
-ASSET_QUALIFIED_NAME = "some-asset-qualified-name"
+ASSET_QUALIFIED_NAME = "default/snowflake/1234567890/db/schema/test-table"
+DATA_CONTRACT_NAME_DEFAULT = "Data contract for test-table"
 DATA_CONTRACT_QUALIFIED_NAME = f"{ASSET_QUALIFIED_NAME}/contract"
 DATA_CONTRACT_JSON = {
     "type": "Table",
@@ -103,6 +104,35 @@ DATA_CONTRACT_JSON = {
     "data_source": "some-asset-connection-name",
     "dataset": "some-asset-name",
 }
+DATA_CONTRACT_SPEC_STR = """
+kind: DataContract
+status: draft
+template_version: 0.0.2
+type: Table
+dataset: some-asset-name
+description: ''
+columns:
+- name: OWNER_ID
+  description: ''
+  data_type: VARCHAR
+- name: CREATED_BY_ID
+  description: ''
+  data_type: VARCHAR
+"""
+DATA_CONTRACT_SPEC_STR_WITHOUT_DATASET = """
+kind: DataContract
+status: draft
+template_version: 0.0.2
+type: Table
+description: ''
+columns:
+- name: OWNER_ID
+  description: ''
+  data_type: VARCHAR
+- name: CREATED_BY_ID
+  description: ''
+  data_type: VARCHAR
+"""
 DATA_CONTRACT_NAME = f"Data contract for {DATA_CONTRACT_JSON['dataset']}"
 CP_NAME = "column-process"
 CP_PROCESS_ID = "cp-process-id"
