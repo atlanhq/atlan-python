@@ -5,6 +5,7 @@ from pydantic.v1 import validate_arguments
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import CONTRACT_INIT_API
 from pyatlan.errors import ErrorCode
+from pyatlan.model.assets import Asset
 from pyatlan.model.contract import InitRequest
 
 
@@ -22,20 +23,22 @@ class ContractClient:
 
     @validate_arguments
     def generate_initial_spec(
-        self, asset_type: str, asset_qualified_name: str
+        self,
+        asset: Asset,
     ) -> Optional[str]:
         """
-        Generate an initial contract spec for the provided asset type and qualified name.
+        Generate an initial contract spec for the provided asset.
+        The asset must have at least its `qualifiedName` (and `typeName`) populated.
 
-        :param asset_type: `typeName` of the asset, eg: `Table`, `Column` etc
-        :param asset_qualified_name: `qualifiedName` of the asset
-        :raises AtlanError: on any issue interacting with the API
-        :returns: `YAML` for the initial contract spec for the provided asset
+        :param asset: for which to generate the initial contract spec
+
+        :raises AtlanError: if there is an issue interacting with the API
+        :returns: YAML for the initial contract spec for the provided asset
         """
         response = self._client._call_api(
             CONTRACT_INIT_API,
             request_obj=InitRequest(
-                asset_type=asset_type, asset_qualified_name=asset_qualified_name
+                asset_type=asset.type_name, asset_qualified_name=asset.qualified_name
             ),
         )
         return response.get("contract")

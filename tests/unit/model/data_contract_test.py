@@ -5,37 +5,45 @@ import pytest
 
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import DataContract
+from pyatlan.model.contract import DataContractSpec
 from tests.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
     DATA_CONTRACT_JSON,
     DATA_CONTRACT_NAME,
+    DATA_CONTRACT_NAME_DEFAULT,
     DATA_CONTRACT_QUALIFIED_NAME,
+    DATA_CONTRACT_SPEC_STR,
+    DATA_CONTRACT_SPEC_STR_WITHOUT_DATASET,
 )
 
 
 def _assert_contract(
-    contract: Union[DataContract, DataContract.Attributes], assert_json: bool = True
+    contract: Union[DataContract, DataContract.Attributes],
+    is_json: bool = False,
+    contract_name=DATA_CONTRACT_NAME,
 ) -> None:
-    assert contract.name == DATA_CONTRACT_NAME
+    assert contract.name == contract_name
     assert contract.qualified_name == DATA_CONTRACT_QUALIFIED_NAME
-    if assert_json:
+    if is_json:
         assert contract.data_contract_json == dumps(DATA_CONTRACT_JSON)
 
 
 @pytest.mark.parametrize(
-    "asset_qualified_name, contract_json, message",
+    "asset_qualified_name, contract_json, contract_spec, message",
     [
-        (None, "json", "asset_qualified_name is required"),
-        ("qn", None, "contract_json is required"),
+        (None, "json", "spec", "asset_qualified_name is required"),
+        ("qn", "json", "spec", "Both `contract_json` and `contract_spec` cannot be"),
+        ("qn", None, None, "At least one of `contract_json` or `contract_spec`"),
     ],
 )
 def test_creator_with_missing_parameters_raise_value_error(
-    asset_qualified_name: str, contract_json: str, message: str
+    asset_qualified_name: str, contract_json: str, contract_spec: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        DataContract.creator(
+        DataContract.creator(  # type: ignore
             asset_qualified_name=asset_qualified_name,
             contract_json=contract_json,
+            contract_spec=contract_spec,
         )
 
 
@@ -69,13 +77,39 @@ def test_creator_atttributes_with_required_parameters():
         asset_qualified_name=ASSET_QUALIFIED_NAME,
         contract_json=dumps(DATA_CONTRACT_JSON),
     )
-    _assert_contract(attributes)
+    _assert_contract(attributes, is_json=True)
 
 
-def test_creator_with_required_parameters():
+def test_creator_with_required_parameters_json():
     test_contract = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
         contract_json=dumps(DATA_CONTRACT_JSON),
+    )
+    _assert_contract(test_contract)
+
+
+def test_creator_with_required_parameters_spec_str():
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        contract_spec=DATA_CONTRACT_SPEC_STR,
+    )
+    _assert_contract(test_contract)
+
+
+def test_creator_with_required_parameters_spec_str_without_dataset():
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        contract_spec=DATA_CONTRACT_SPEC_STR_WITHOUT_DATASET,
+    )
+    # Ensure the default contract name is extracted from the table's qualified name (QN).
+    _assert_contract(test_contract, contract_name=DATA_CONTRACT_NAME_DEFAULT)
+
+
+def test_creator_with_required_parameters_spec_model():
+    spec = DataContractSpec.from_yaml(DATA_CONTRACT_SPEC_STR)
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        contract_spec=spec,
     )
     _assert_contract(test_contract)
 
