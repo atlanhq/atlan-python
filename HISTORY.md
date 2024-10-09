@@ -1,3 +1,9 @@
+## 2.5.1 (October 9, 2024)
+
+### Bug fixes
+
+- Fixed `ModuleNotFoundError` caused by the missing `PyYAML` dependency in the project’s `requirements.txt`.
+
 ## 2.5.0 (October 8, 2024)
 
 ### New features (experimental)
