@@ -94,6 +94,12 @@ class Task(Asset, type_name="Task"):
     """
     action executed by the recipient
     """
+    TASK_INTEGRATION_CONFIG: ClassVar[TextField] = TextField(
+        "taskIntegrationConfig", "taskIntegrationConfig"
+    )
+    """
+    contains external integration config for the task
+    """
     TASK_CREATED_BY: ClassVar[KeywordField] = KeywordField(
         "taskCreatedBy", "taskCreatedBy"
     )
@@ -119,6 +125,7 @@ class Task(Asset, type_name="Task"):
         "task_actions",
         "task_execution_comment",
         "task_execution_action",
+        "task_integration_config",
         "task_created_by",
         "task_updated_by",
     ]
@@ -242,6 +249,18 @@ class Task(Asset, type_name="Task"):
         self.attributes.task_execution_action = task_execution_action
 
     @property
+    def task_integration_config(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.task_integration_config
+        )
+
+    @task_integration_config.setter
+    def task_integration_config(self, task_integration_config: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.task_integration_config = task_integration_config
+
+    @property
     def task_created_by(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.task_created_by
 
@@ -273,6 +292,7 @@ class Task(Asset, type_name="Task"):
         task_actions: Optional[List[Action]] = Field(default=None, description="")
         task_execution_comment: Optional[str] = Field(default=None, description="")
         task_execution_action: Optional[str] = Field(default=None, description="")
+        task_integration_config: Optional[str] = Field(default=None, description="")
         task_created_by: Optional[str] = Field(default=None, description="")
         task_updated_by: Optional[str] = Field(default=None, description="")
 

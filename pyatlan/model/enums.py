@@ -2406,6 +2406,11 @@ class ADLSStorageKind(str, Enum):
     STORAGE_V2 = "StorageV2"
 
 
+class AdfActivityState(str, Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
 class AtlasGlossaryCategoryType(str, Enum):
     DOCUMENT_FOLDER = "DOCUMENT_FOLDER"
 
@@ -2477,13 +2482,6 @@ class CertificateStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     DRAFT = "DRAFT"
     VERIFIED = "VERIFIED"
-
-
-class DMCardinalityType(str, Enum):
-    ONE_TO_ONE = "ONE-TO-ONE"
-    ONE_TO_MANY = "ONE-TO-MANY"
-    MANY_TO_ONE = "MANY-TO-ONE"
-    MANY_TO_MANY = "MANY-TO-MANY"
 
 
 class DataProductCriticality(str, Enum):

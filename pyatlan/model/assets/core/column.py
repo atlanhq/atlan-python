@@ -146,11 +146,23 @@ class Column(SQL):
     """
     Order (position) in which this column appears in the table (starting at 1).
     """
+    NESTED_COLUMN_ORDER: ClassVar[KeywordField] = KeywordField(
+        "nestedColumnOrder", "nestedColumnOrder"
+    )
+    """
+    Order (position) in which this column appears in the nested Column (nest level starts at 1).
+    """
     NESTED_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
         "nestedColumnCount", "nestedColumnCount"
     )
     """
     Number of columns nested within this (STRUCT or NESTED) column.
+    """
+    COLUMN_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "columnHierarchy", "columnHierarchy"
+    )
+    """
+    List of top-level upstream nested columns.
     """
     IS_PARTITION: ClassVar[BooleanField] = BooleanField("isPartition", "isPartition")
     """
@@ -455,7 +467,9 @@ class Column(SQL):
         "sub_data_type",
         "raw_data_type_definition",
         "order",
+        "nested_column_order",
         "nested_column_count",
+        "column_hierarchy",
         "is_partition",
         "partition_order",
         "is_clustered",
@@ -564,6 +578,16 @@ class Column(SQL):
         self.attributes.order = order
 
     @property
+    def nested_column_order(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.nested_column_order
+
+    @nested_column_order.setter
+    def nested_column_order(self, nested_column_order: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_column_order = nested_column_order
+
+    @property
     def nested_column_count(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.nested_column_count
 
@@ -572,6 +596,16 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.nested_column_count = nested_column_count
+
+    @property
+    def column_hierarchy(self) -> Optional[List[Dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.column_hierarchy
+
+    @column_hierarchy.setter
+    def column_hierarchy(self, column_hierarchy: Optional[List[Dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_hierarchy = column_hierarchy
 
     @property
     def is_partition(self) -> Optional[bool]:
@@ -1288,7 +1322,11 @@ class Column(SQL):
         sub_data_type: Optional[str] = Field(default=None, description="")
         raw_data_type_definition: Optional[str] = Field(default=None, description="")
         order: Optional[int] = Field(default=None, description="")
+        nested_column_order: Optional[str] = Field(default=None, description="")
         nested_column_count: Optional[int] = Field(default=None, description="")
+        column_hierarchy: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         is_partition: Optional[bool] = Field(default=None, description="")
         partition_order: Optional[int] = Field(default=None, description="")
         is_clustered: Optional[bool] = Field(default=None, description="")

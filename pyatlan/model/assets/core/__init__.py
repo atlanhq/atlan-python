@@ -2,7 +2,13 @@
 
 from .referenceable import Referenceable  # isort: skip
 
+from .a_d_f import ADF
 from .access_control import AccessControl
+from .adf_activity import AdfActivity
+from .adf_dataflow import AdfDataflow
+from .adf_dataset import AdfDataset
+from .adf_linkedservice import AdfLinkedservice
+from .adf_pipeline import AdfPipeline
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
@@ -104,6 +110,7 @@ Persona.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
+ADF.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
@@ -117,6 +124,11 @@ SchemaRegistry.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
+AdfDataflow.Attributes.update_forward_refs(**localns)
+AdfDataset.Attributes.update_forward_refs(**localns)
+AdfPipeline.Attributes.update_forward_refs(**localns)
+AdfLinkedservice.Attributes.update_forward_refs(**localns)
+AdfActivity.Attributes.update_forward_refs(**localns)
 Anomalo.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
@@ -136,10 +148,10 @@ MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
-DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-Database.Attributes.update_forward_refs(**localns)
+DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
+Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)
