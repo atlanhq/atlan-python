@@ -95,12 +95,22 @@ class Process(Asset, type_name="Process"):
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
+    ADDITIONAL_ETL_CONTEXT: ClassVar[TextField] = TextField(
+        "additionalEtlContext", "additionalEtlContext"
+    )
+    """
+    Additional Context of the ETL pipeline/notebook which creates the process.
+    """
 
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
     """
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
+    """
+    TBC
+    """
+    ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
     """
     TBC
     """
@@ -123,8 +133,10 @@ class Process(Asset, type_name="Process"):
         "code",
         "sql",
         "ast",
+        "additional_etl_context",
         "matillion_component",
         "airflow_tasks",
+        "adf_activity",
         "power_b_i_dataflow",
         "column_processes",
         "spark_jobs",
@@ -181,6 +193,18 @@ class Process(Asset, type_name="Process"):
         self.attributes.ast = ast
 
     @property
+    def additional_etl_context(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.additional_etl_context
+        )
+
+    @additional_etl_context.setter
+    def additional_etl_context(self, additional_etl_context: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.additional_etl_context = additional_etl_context
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -199,6 +223,16 @@ class Process(Asset, type_name="Process"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
+
+    @property
+    def adf_activity(self) -> Optional[AdfActivity]:
+        return None if self.attributes is None else self.attributes.adf_activity
+
+    @adf_activity.setter
+    def adf_activity(self, adf_activity: Optional[AdfActivity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adf_activity = adf_activity
 
     @property
     def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
@@ -236,10 +270,14 @@ class Process(Asset, type_name="Process"):
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
+        additional_etl_context: Optional[str] = Field(default=None, description="")
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_activity: Optional[AdfActivity] = Field(
             default=None, description=""
         )  # relationship
         power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
@@ -327,6 +365,7 @@ class Process(Asset, type_name="Process"):
     )
 
 
+from .adf_activity import AdfActivity  # noqa
 from .airflow_task import AirflowTask  # noqa
 from .catalog import Catalog  # noqa
 from .column_process import ColumnProcess  # noqa

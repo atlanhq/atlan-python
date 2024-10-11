@@ -8,6 +8,7 @@ You can interact with all of the following different kinds of assets:
 .. toctree::
     :maxdepth: 1
 
+    asset/adf
     asset/adls
     asset/adlsaccount
     asset/adlscontainer
@@ -17,6 +18,11 @@ You can interact with all of the following different kinds of assets:
     asset/apispec
     asset/aws
     asset/accesscontrol
+    asset/adfactivity
+    asset/adfdataflow
+    asset/adfdataset
+    asset/adflinkedservice
+    asset/adfpipeline
     asset/airflow
     asset/airflowdag
     asset/airflowtask
@@ -72,13 +78,6 @@ You can interact with all of the following different kinds of assets:
     asset/cubedimension
     asset/cubefield
     asset/cubehierarchy
-    asset/dm
-    asset/dmattribute
-    asset/dmattributeassociation
-    asset/dmdatamodel
-    asset/dmentity
-    asset/dmentityassociation
-    asset/dmversion
     asset/datacontract
     asset/datadomain
     asset/datamesh

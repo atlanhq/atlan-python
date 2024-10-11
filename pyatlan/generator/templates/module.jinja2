@@ -57,7 +57,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: Optional[{{type}}] = Field(default=None, description='')
+        {%- set property_name = attribute_def.name | to_snake_case %}
+        {% if property_name in ("upstream_tables", "upstream_datasources") -%}
+        {{ property_name }}: Optional[List[Dict[str, Optional[str]]]] = Field(default=None, description=''){%- else -%}
+        {{ property_name }}: Optional[{{type}}] = Field(default=None, description=''){% endif -%}
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}

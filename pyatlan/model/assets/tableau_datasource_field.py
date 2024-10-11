@@ -302,11 +302,13 @@ class TableauDatasourceField(Tableau):
         )
 
     @property
-    def upstream_tables(self) -> Optional[List[Dict[str, str]]]:
+    def upstream_tables(self) -> Optional[List[Dict[str, Optional[str]]]]:
         return None if self.attributes is None else self.attributes.upstream_tables
 
     @upstream_tables.setter
-    def upstream_tables(self, upstream_tables: Optional[List[Dict[str, str]]]):
+    def upstream_tables(
+        self, upstream_tables: Optional[List[Dict[str, Optional[str]]]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_tables = upstream_tables
@@ -420,7 +422,7 @@ class TableauDatasourceField(Tableau):
         tableau_datasource_field_data_type: Optional[str] = Field(
             default=None, description=""
         )
-        upstream_tables: Optional[List[Dict[str, str]]] = Field(
+        upstream_tables: Optional[List[Dict[str, Optional[str]]]] = Field(
             default=None, description=""
         )
         tableau_datasource_field_formula: Optional[str] = Field(

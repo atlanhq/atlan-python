@@ -275,7 +275,7 @@ class PackageWriter(BaseModel):
     def create_config_class(self):
         template = self._env.get_template("package_config.jinja2")
         content = template.render({"pkg": self.pkg})
-        file_name = f'{self.pkg.package_id[5:].replace("-","_")}_cfg.py'
+        file_name = f'{self.pkg.package_id[5:].replace("-", "_")}_cfg.py'
 
         with (self.path / file_name).open("w") as script:
             script.write(content)

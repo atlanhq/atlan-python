@@ -927,3 +927,32 @@ def test_readme_creator_asset_guid_validation():
             content="<h1>Test Content</h1>",
             asset_name="test-readme",
         )
+
+
+@pytest.mark.parametrize(
+    "test_data",
+    [
+        {
+            "upstreamTables": [
+                {"schema": "s1", "database": "d1"},
+                {"schema": "", "database": ""},
+                {"schema": "", "database": None},
+            ],
+            "upstreamDatasources": [
+                {"schema": "s1", "database": "d1"},
+                {"schema": "", "database": ""},
+                {"schema": "", "database": None},
+            ],
+        }
+    ],
+)
+def test_tableau_upstream_fields_deserialization(test_data):
+
+    td = TableauDatasource(**{"typeName": "TableauDatasource", "attributes": test_data})
+    assert td.upstream_tables == test_data["upstreamTables"]
+    assert td.upstream_datasources == test_data["upstreamDatasources"]
+
+    tdf = TableauDatasourceField(
+        **{"typeName": "TableauDatasourceField", "attributes": test_data}
+    )
+    assert tdf.upstream_tables == test_data["upstreamTables"]

@@ -18,6 +18,7 @@ __all__ = [
     "Folder",
     "Airflow",
     "DataContract",
+    "ADF",
     "DataQuality",
     "BI",
     "Resource",
@@ -31,6 +32,11 @@ __all__ = [
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
+    "AdfDataflow",
+    "AdfDataset",
+    "AdfPipeline",
+    "AdfLinkedservice",
+    "AdfActivity",
     "Anomalo",
     "MonteCarlo",
     "Metric",
@@ -50,10 +56,10 @@ __all__ = [
     "Function",
     "TablePartition",
     "Column",
-    "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "Database",
+    "DatabricksUnityCatalogTag",
     "CalculationView",
+    "Database",
     "Procedure",
     "SnowflakeTag",
     "MatillionGroup",
@@ -104,7 +110,6 @@ __all__ = [
     "Collection",
     "ObjectStore",
     "SaaS",
-    "DM",
     "MultiDimensionalDataset",
     "EventStore",
     "NoSQL",
@@ -138,12 +143,6 @@ __all__ = [
     "Cognite",
     "Salesforce",
     "ReadmeTemplate",
-    "DMEntityAssociation",
-    "DMAttribute",
-    "DMAttributeAssociation",
-    "DMDataModel",
-    "DMVersion",
-    "DMEntity",
     "Cube",
     "CubeHierarchy",
     "CubeField",
@@ -326,7 +325,13 @@ from .cognos_package import CognosPackage
 from .cognos_report import CognosReport
 from .collection import Collection
 from .connection import Connection
+from .core.a_d_f import ADF
 from .core.access_control import AccessControl
+from .core.adf_activity import AdfActivity
+from .core.adf_dataflow import AdfDataflow
+from .core.adf_dataset import AdfDataset
+from .core.adf_linkedservice import AdfLinkedservice
+from .core.adf_pipeline import AdfPipeline
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
@@ -417,13 +422,6 @@ from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
-from .d_m import DM
-from .d_m_attribute import DMAttribute
-from .d_m_attribute_association import DMAttributeAssociation
-from .d_m_data_model import DMDataModel
-from .d_m_entity import DMEntity
-from .d_m_entity_association import DMEntityAssociation
-from .d_m_version import DMVersion
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset

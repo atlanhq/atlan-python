@@ -1045,6 +1045,12 @@ class Asset(Referenceable):
     """
     Color (in hexadecimal RGB) to use to represent this asset.
     """
+    LEXICOGRAPHICAL_SORT_ORDER: ClassVar[KeywordField] = KeywordField(
+        "lexicographicalSortOrder", "lexicographicalSortOrder"
+    )
+    """
+    Custom order for sorting purpose, managed by client
+    """
     HAS_CONTRACT: ClassVar[BooleanField] = BooleanField("hasContract", "hasContract")
     """
     Whether this asset has contract (true) or not (false).
@@ -1064,6 +1070,12 @@ class Asset(Referenceable):
     DOMAIN_GUI_DS: ClassVar[KeywordField] = KeywordField("domainGUIDs", "domainGUIDs")
     """
     Array of domain guids linked to this asset
+    """
+    NON_COMPLIANT_ASSET_POLICY_GUI_DS: ClassVar[KeywordField] = KeywordField(
+        "nonCompliantAssetPolicyGUIDs", "nonCompliantAssetPolicyGUIDs"
+    )
+    """
+    Array of policy ids non-compliant to this asset
     """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
@@ -1276,10 +1288,12 @@ class Asset(Referenceable):
         "is_a_i_generated",
         "asset_cover_image",
         "asset_theme_hex",
+        "lexicographical_sort_order",
         "has_contract",
         "asset_policy_g_u_i_ds",
         "asset_policies_count",
         "domain_g_u_i_ds",
+        "non_compliant_asset_policy_g_u_i_ds",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -3116,6 +3130,20 @@ class Asset(Referenceable):
         self.attributes.asset_theme_hex = asset_theme_hex
 
     @property
+    def lexicographical_sort_order(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.lexicographical_sort_order
+        )
+
+    @lexicographical_sort_order.setter
+    def lexicographical_sort_order(self, lexicographical_sort_order: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.lexicographical_sort_order = lexicographical_sort_order
+
+    @property
     def has_contract(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.has_contract
 
@@ -3156,6 +3184,24 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.domain_g_u_i_ds = domain_g_u_i_ds
+
+    @property
+    def non_compliant_asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.non_compliant_asset_policy_g_u_i_ds
+        )
+
+    @non_compliant_asset_policy_g_u_i_ds.setter
+    def non_compliant_asset_policy_g_u_i_ds(
+        self, non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.non_compliant_asset_policy_g_u_i_ds = (
+            non_compliant_asset_policy_g_u_i_ds
+        )
 
     @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
@@ -3606,10 +3652,14 @@ class Asset(Referenceable):
         is_a_i_generated: Optional[bool] = Field(default=None, description="")
         asset_cover_image: Optional[str] = Field(default=None, description="")
         asset_theme_hex: Optional[str] = Field(default=None, description="")
+        lexicographical_sort_order: Optional[str] = Field(default=None, description="")
         has_contract: Optional[bool] = Field(default=None, description="")
         asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
         asset_policies_count: Optional[int] = Field(default=None, description="")
         domain_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
+        non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

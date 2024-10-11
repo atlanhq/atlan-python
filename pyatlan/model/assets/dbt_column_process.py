@@ -169,7 +169,17 @@ class DbtColumnProcess(Dbt):
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
+    ADDITIONAL_ETL_CONTEXT: ClassVar[TextField] = TextField(
+        "additionalEtlContext", "additionalEtlContext"
+    )
+    """
+    Additional Context of the ETL pipeline/notebook which creates the process.
+    """
 
+    ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
+    """
+    TBC
+    """
     SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
     """
     TBC
@@ -221,6 +231,8 @@ class DbtColumnProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "additional_etl_context",
+        "adf_activity",
         "spark_jobs",
         "matillion_component",
         "process",
@@ -508,6 +520,28 @@ class DbtColumnProcess(Dbt):
         self.attributes.ast = ast
 
     @property
+    def additional_etl_context(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.additional_etl_context
+        )
+
+    @additional_etl_context.setter
+    def additional_etl_context(self, additional_etl_context: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.additional_etl_context = additional_etl_context
+
+    @property
+    def adf_activity(self) -> Optional[AdfActivity]:
+        return None if self.attributes is None else self.attributes.adf_activity
+
+    @adf_activity.setter
+    def adf_activity(self, adf_activity: Optional[AdfActivity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adf_activity = adf_activity
+
+    @property
     def spark_jobs(self) -> Optional[List[SparkJob]]:
         return None if self.attributes is None else self.attributes.spark_jobs
 
@@ -599,6 +633,10 @@ class DbtColumnProcess(Dbt):
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
+        additional_etl_context: Optional[str] = Field(default=None, description="")
+        adf_activity: Optional[AdfActivity] = Field(
+            default=None, description=""
+        )  # relationship
         spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
@@ -626,6 +664,7 @@ class DbtColumnProcess(Dbt):
     )
 
 
+from .core.adf_activity import AdfActivity  # noqa
 from .core.airflow_task import AirflowTask  # noqa
 from .core.catalog import Catalog  # noqa
 from .core.column_process import ColumnProcess  # noqa

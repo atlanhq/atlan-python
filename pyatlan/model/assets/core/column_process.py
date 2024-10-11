@@ -85,19 +85,19 @@ class ColumnProcess(Process):
     """
     Assets that are outputs from this process.
     """
-    PROCESS: ClassVar[RelationField] = RelationField("process")
-    """
-    TBC
-    """
     INPUTS: ClassVar[RelationField] = RelationField("inputs")
     """
     Assets that are inputs to this process.
     """
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "outputs",
-        "process",
         "inputs",
+        "process",
     ]
 
     @property
@@ -111,16 +111,6 @@ class ColumnProcess(Process):
         self.attributes.outputs = outputs
 
     @property
-    def process(self) -> Optional[Process]:
-        return None if self.attributes is None else self.attributes.process
-
-    @process.setter
-    def process(self, process: Optional[Process]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.process = process
-
-    @property
     def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
@@ -130,14 +120,24 @@ class ColumnProcess(Process):
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
+    @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
     class Attributes(Process.Attributes):
         outputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
-        process: Optional[Process] = Field(default=None, description="")  # relationship
         inputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
+        process: Optional[Process] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid

@@ -64,6 +64,12 @@ class Model(Catalog):
     """
     Simple name of the version in which this asset exists, or empty if it is itself a data model version.
     """
+    MODEL_VERSION_AGNOSTIC_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "modelVersionAgnosticQualifiedName", "modelVersionAgnosticQualifiedName"
+    )
+    """
+    Unique name of the parent in which this asset exists, irrespective of the version (always implies the latest version).
+    """  # noqa: E501
     MODEL_VERSION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "modelVersionQualifiedName", "modelVersionQualifiedName"
     )
@@ -117,6 +123,7 @@ class Model(Catalog):
         "model_domain",
         "model_namespace",
         "model_version_name",
+        "model_version_agnostic_qualified_name",
         "model_version_qualified_name",
         "model_entity_name",
         "model_entity_qualified_name",
@@ -176,6 +183,24 @@ class Model(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_version_name = model_version_name
+
+    @property
+    def model_version_agnostic_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_version_agnostic_qualified_name
+        )
+
+    @model_version_agnostic_qualified_name.setter
+    def model_version_agnostic_qualified_name(
+        self, model_version_agnostic_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_version_agnostic_qualified_name = (
+            model_version_agnostic_qualified_name
+        )
 
     @property
     def model_version_qualified_name(self) -> Optional[str]:
@@ -283,6 +308,9 @@ class Model(Catalog):
         model_domain: Optional[str] = Field(default=None, description="")
         model_namespace: Optional[str] = Field(default=None, description="")
         model_version_name: Optional[str] = Field(default=None, description="")
+        model_version_agnostic_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         model_version_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
