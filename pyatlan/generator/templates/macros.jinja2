@@ -9,10 +9,19 @@
     {%- set property_type %}Optional[{{type}}]{% endset %}
     {%- set attribute_name =  attribute_def.name | to_snake_case %}
     {%- set property_name =  'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case %}
+    {% if property_name in ("upstream_tables", "upstream_datasources") %}
+    @property
+    def {{ property_name }}(self)->Optional[List[Dict[str, Optional[str]]]]:
+        return None if self.attributes is None else self.attributes.{{ attribute_name }}
+    @{{ property_name }}.setter
+    def {{ property_name }}(self, {{ property_name }}: Optional[List[Dict[str, Optional[str]]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.{{ attribute_name }} = {{ property_name }}
+    {% else %}
     @property
     def {{ property_name }}(self)->{{ property_type }}:
         return None if self.attributes is None else self.attributes.{{ attribute_name }}
-
     @{{ property_name }}.setter
     def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
         if self.attributes is None:
@@ -22,7 +31,7 @@
             self.relationship_attributes = {"parentCategory": None}
         {% endif -%}
         self.attributes.{{ attribute_name }} = {{ property_name }}
-
+    {% endif %}
     {%- endfor %}
 {% endmacro %}
 

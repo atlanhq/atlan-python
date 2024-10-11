@@ -262,22 +262,24 @@ class TableauDatasource(Tableau):
         self.attributes.certifier_display_name = certifier_display_name
 
     @property
-    def upstream_tables(self) -> Optional[List[Dict[str, str]]]:
+    def upstream_tables(self) -> Optional[List[Dict[str, Optional[str]]]]:
         return None if self.attributes is None else self.attributes.upstream_tables
 
     @upstream_tables.setter
-    def upstream_tables(self, upstream_tables: Optional[List[Dict[str, str]]]):
+    def upstream_tables(
+        self, upstream_tables: Optional[List[Dict[str, Optional[str]]]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_tables = upstream_tables
 
     @property
-    def upstream_datasources(self) -> Optional[List[Dict[str, str]]]:
+    def upstream_datasources(self) -> Optional[List[Dict[str, Optional[str]]]]:
         return None if self.attributes is None else self.attributes.upstream_datasources
 
     @upstream_datasources.setter
     def upstream_datasources(
-        self, upstream_datasources: Optional[List[Dict[str, str]]]
+        self, upstream_datasources: Optional[List[Dict[str, Optional[str]]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -329,10 +331,10 @@ class TableauDatasource(Tableau):
         certifier: Optional[Dict[str, str]] = Field(default=None, description="")
         certification_note: Optional[str] = Field(default=None, description="")
         certifier_display_name: Optional[str] = Field(default=None, description="")
-        upstream_tables: Optional[List[Dict[str, str]]] = Field(
+        upstream_tables: Optional[List[Dict[str, Optional[str]]]] = Field(
             default=None, description=""
         )
-        upstream_datasources: Optional[List[Dict[str, str]]] = Field(
+        upstream_datasources: Optional[List[Dict[str, Optional[str]]]] = Field(
             default=None, description=""
         )
         project: Optional[TableauProject] = Field(
