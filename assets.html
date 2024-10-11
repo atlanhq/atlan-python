@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="ADLS" href="asset/adls.html" /><link rel="prev" title="Atlan Client Interface" href="client.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="ADF" href="asset/adf.html" /><link rel="prev" title="Atlan Client Interface" href="client.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>Assets - pyatlan documentation</title>
@@ -157,6 +157,7 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="client.html">Atlan Client Interface</a></li>
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Assets</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="asset/adf.html">ADF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/adls.html">ADLS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/adlsaccount.html">ADLSAccount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/adlscontainer.html">ADLSContainer</a></li>
@@ -166,6 +167,11 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/apispec.html">APISpec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/aws.html">AWS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/accesscontrol.html">AccessControl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/adfactivity.html">AdfActivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/adfdataflow.html">AdfDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/adfdataset.html">AdfDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/adflinkedservice.html">AdfLinkedservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset/adfpipeline.html">AdfPipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/airflow.html">Airflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/airflowdag.html">AirflowDag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/airflowtask.html">AirflowTask</a></li>
@@ -221,13 +227,6 @@
 <li class="toctree-l2"><a class="reference internal" href="asset/cubedimension.html">CubeDimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/cubefield.html">CubeField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/cubehierarchy.html">CubeHierarchy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dm.html">DM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dmattribute.html">DMAttribute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dmattributeassociation.html">DMAttributeAssociation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dmdatamodel.html">DMDataModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dmentity.html">DMEntity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dmentityassociation.html">DMEntityAssociation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asset/dmversion.html">DMVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset/datamesh.html">DataMesh</a></li>
@@ -520,6 +519,7 @@
 <p>You can interact with all of the following different kinds of assets:</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="asset/adf.html">ADF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/adls.html">ADLS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/adlsaccount.html">ADLSAccount</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/adlscontainer.html">ADLSContainer</a></li>
@@ -529,6 +529,11 @@
 <li class="toctree-l1"><a class="reference internal" href="asset/apispec.html">APISpec</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/aws.html">AWS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/accesscontrol.html">AccessControl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asset/adfactivity.html">AdfActivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asset/adfdataflow.html">AdfDataflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asset/adfdataset.html">AdfDataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asset/adflinkedservice.html">AdfLinkedservice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asset/adfpipeline.html">AdfPipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/airflow.html">Airflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/airflowdag.html">AirflowDag</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/airflowtask.html">AirflowTask</a></li>
@@ -584,13 +589,6 @@
 <li class="toctree-l1"><a class="reference internal" href="asset/cubedimension.html">CubeDimension</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/cubefield.html">CubeField</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/cubehierarchy.html">CubeHierarchy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dm.html">DM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dmattribute.html">DMAttribute</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dmattributeassociation.html">DMAttributeAssociation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dmdatamodel.html">DMDataModel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dmentity.html">DMEntity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dmentityassociation.html">DMEntityAssociation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="asset/dmversion.html">DMVersion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/datacontract.html">DataContract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/datadomain.html">DataDomain</a></li>
 <li class="toctree-l1"><a class="reference internal" href="asset/datamesh.html">DataMesh</a></li>
@@ -813,12 +811,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="asset/adls.html">
+          <a class="next-page" href="asset/adf.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">ADLS</div>
+                <div class="title">ADF</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
