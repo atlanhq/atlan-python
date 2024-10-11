@@ -1,3 +1,13 @@
+## 2.5.2 (October 11, 2024)
+
+### Bug fixes
+
+- Updated the type of `TableauDatasource.upstream_tables` and `upstream_datasources` to `Optional[List[Dict[str, Optional[str]]]]` to prevent Pydantic validation errors when a dict `value` in this field is mapped to `None`.
+
+### QOL improvements
+
+- Generated the latest typedef models.
+
 ## 2.5.1 (October 9, 2024)
 
 ### Bug fixes
