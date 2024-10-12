@@ -19,6 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
 )
+from pyatlan.model.lineage_ref import LineageRef
 
 
 class Referenceable(AtlanObject):
@@ -256,7 +257,9 @@ class Referenceable(AtlanObject):
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
     is_incomplete: Optional[bool] = Field(default=True, description="", example=True)
-    labels: Optional[List[str]] = Field(default=None, description="Internal use only.")
+    labels: Optional[List[str]] = Field(
+        default=None, description="Arbitrary textual labels for the asset."
+    )
     relationship_attributes: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
@@ -337,10 +340,32 @@ class Referenceable(AtlanObject):
         default=None,
         description=(
             "Depth of this asset within lineage. "
-            "Note: this will only available in assets "
+            "Note: this will only be available in assets "
             "retrieved via lineage, and will vary even for "
             "the same asset depending on the starting point "
             "of the lineage requested."
+        ),
+    )
+    immediate_upstream: Optional[List[LineageRef]] = Field(
+        default=None,
+        description=(
+            "Reference details about the asset(s) that are "
+            "immediately upstream of this asset within lineage. "
+            "Note: this will only be available in assets retrieved "
+            "via lineage when `immediate_upstream` is `True` "
+            "and could vary even for the same asset depending "
+            "on the starting point and depth of the lineage requested."
+        ),
+    )
+    immediate_downstream: Optional[List[LineageRef]] = Field(
+        default=None,
+        description=(
+            "Reference details about the asset(s) that are "
+            "immediately downstream of this asset within lineage. "
+            "Note: this will only be available in assets retrieved via "
+            "lineage when `immediate_downstream` is `True` "
+            "and could vary even for the same asset depending "
+            "on the starting point and depth of the lineage requested."
         ),
     )
 
