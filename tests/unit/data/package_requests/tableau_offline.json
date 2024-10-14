@@ -49,18 +49,26 @@
                   "parameters": [
                     {
                       "name": "extraction-method",
-                      "value": "direct"
+                      "value": "s3"
                     },
                     {
-                      "name": "credential-guid",
-                      "value": "{{credentialGuid}}"
+                      "name": "metadata-s3-bucket",
+                      "value": "test-bucket"
                     },
                     {
-                      "name": "include-filter",
-                      "value": "{\"test-project-guid-1\": {}, \"test-project-guid-2\": {}}"
+                      "name": "metadata-s3-prefix",
+                      "value": "test-prefix"
+                    },
+                    {
+                      "name": "metadata-s3-region",
+                      "value": "test-region"
                     },
                     {
                       "name": "exclude-filter",
+                      "value": "{}"
+                    },
+                    {
+                      "name": "include-filter",
                       "value": "{}"
                     },
                     {
@@ -69,11 +77,11 @@
                     },
                     {
                       "name": "crawl-hidden-datasource-fields",
-                      "value": "false"
+                      "value": "true"
                     },
                     {
                       "name": "connection",
-                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/tableau/123456\", \"name\": \"test-tableau-access-token-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"tableau\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://img.icons8.com/color/480/000000/tableau-software.png\"}, \"guid\": \"-1234567890000000000000000\"}"
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/tableau/123456\", \"name\": \"test-tableau-offline-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"tableau\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"bi\", \"allowQuery\": false, \"allowQueryPreview\": false, \"rowLimit\": 0, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://img.icons8.com/color/480/000000/tableau-software.png\"}, \"guid\": \"-1234567890000000000000000\"}"
                     },
                     {
                       "name": "atlas-auth-type",
@@ -101,23 +109,5 @@
         }
       }
     },
-    "payload": [
-      {
-        "parameter": "credentialGuid",
-        "type": "credential",
-        "body": {
-          "name": "default-tableau-123456-0",
-          "host": "test.tableau.com",
-          "port": 443,
-          "extra": {
-            "protocol": "http",
-            "defaultSite": "test-site"
-          },
-          "connectorConfigName": "atlan-connectors-tableau",
-          "authType": "personal_access_token",
-          "username": "test-username",
-          "password": "test-access-token"
-        }
-      }
-    ]
-  }
+    "payload": []
+}
