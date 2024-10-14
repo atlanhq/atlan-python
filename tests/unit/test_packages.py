@@ -30,6 +30,7 @@ SNOWFLAKE_MINER_S3_OFFLINE = "snowflake_miner_s3_offline.json"
 GLUE_IAM_USER = "glue_iam_user.json"
 TABLEAU_BASIC = "tableau_basic.json"
 TABLEAU_ACCESS_TOKEN = "tableau_access_token.json"
+TABLEAU_OFFLINE = "tableau_offline.json"
 POWERBI_DELEGATED_USER = "powerbi_delegated_user.json"
 POWEBI_SERVICE_PRINCIPAL = "powerbi_service_principal.json"
 CONFLUENT_KAFKA_DIRECT = "confluent_kafka_direct.json"
@@ -231,6 +232,23 @@ def test_tableau_package(mock_package_env):
         tableau_access_token_auth.json(by_alias=True, exclude_none=True)
     )
     assert request_json == load_json(TABLEAU_ACCESS_TOKEN)
+
+    tableau_offline = (
+        TableauCrawler(
+            connection_name="test-tableau-offline-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .offline(
+            s3_bucket="test-bucket",
+            s3_prefix="test-prefix",
+            s3_region="test-region",
+        )
+        .to_workflow()
+    )
+    request_json = loads(tableau_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(TABLEAU_OFFLINE)
 
 
 def test_powerbi_package(mock_package_env):
