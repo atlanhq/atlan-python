@@ -645,18 +645,85 @@ def test_fetch_lineage_start_list(
         results.append(a)
     assert len(results) == 4
     assert isinstance(results[0], Process)
+    assert results[0].depth == 1
     assert isinstance(results[1], MaterialisedView)
+    assert results[1].depth == 1
+    assert results[1].guid == mview.guid
     assert isinstance(results[2], Process)
+    assert results[2].depth == 2
     assert isinstance(results[3], View)
-    one = results[3]
-    assert one.guid == view.guid
-    assert one.depth == 2
+    assert results[3].depth == 2
+    assert results[3].guid == view.guid
     lineage = FluentLineage(
         starting_guid=table.guid, direction=LineageDirection.UPSTREAM
     ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     assert not response.has_more
+
+
+def test_fetch_lineage_start_list_detailed(
+    client: AtlanClient,
+    connection: Connection,
+    database: Database,
+    schema: Schema,
+    table: Table,
+    mview: MaterialisedView,
+    view: View,
+    lineage_start: Process,
+    lineage_end: Process,
+):
+    lineage = FluentLineage(
+        starting_guid=table.guid,
+        includes_on_results=Asset.NAME,
+        immediate_neighbors=True,
+    ).request
+    response = client.asset.get_lineage_list(lineage)
+    assert response
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 5
+    assert isinstance(results[0], Table)
+    assert results[0].depth == 0
+    assert results[0].guid == table.guid
+    assert results[0].immediate_upstream is None
+    assert results[0].immediate_downstream and len(results[0].immediate_downstream) == 1
+    assert results[0].immediate_downstream[0].guid == mview.guid
+    assert isinstance(results[1], Process)
+    assert results[1].depth == 1
+    assert results[1].immediate_upstream == []
+    assert results[1].immediate_downstream and len(results[1].immediate_downstream) == 1
+    assert results[1].immediate_downstream[0].guid == lineage_end.guid
+    assert isinstance(results[2], MaterialisedView)
+    assert results[2].depth == 1
+    assert results[2].guid == mview.guid
+    assert results[2].immediate_upstream and len(results[2].immediate_upstream) == 1
+    assert results[2].immediate_upstream[0].guid == table.guid
+    assert results[2].immediate_downstream and len(results[2].immediate_downstream) == 1
+    assert results[2].immediate_downstream[0].guid == view.guid
+    assert isinstance(results[3], Process)
+    assert results[3].depth == 2
+    assert results[3].immediate_upstream and len(results[3].immediate_upstream) == 1
+    assert results[3].immediate_upstream[0].guid == lineage_start.guid
+    assert results[3].immediate_downstream == []
+    assert isinstance(results[4], View)
+    assert results[4].depth == 2
+    assert results[4].guid == view.guid
+    assert results[4].immediate_upstream and len(results[4].immediate_upstream) == 1
+    assert results[4].immediate_upstream[0].guid == mview.guid
+    assert results[4].immediate_downstream is None
+    lineage = FluentLineage(
+        starting_guid=table.guid,
+        direction=LineageDirection.UPSTREAM,
+        immediate_neighbors=True,
+    ).request
+    response = client.asset.get_lineage_list(lineage)
+    assert response
+    assert not response.has_more
+    assets = response.current_page()
+    assert assets[0].immediate_upstream is None
+    assert assets[0].immediate_downstream is None
 
 
 def test_fetch_lineage_middle_list(
