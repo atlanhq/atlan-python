@@ -13,19 +13,19 @@ from tests.unit.model.constants import (
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, message",
+    "name, parent_api_object_qualified_name, parent_api_query_qualified_name, message",
     [
         (None, "connection/name", "connection/name", "name is required"),
         (
             API_FIELD_NAME,
             None,
             None,
-            "Either parent_api_object_qualified_name or parent_api_query_qualified_name require a valid value",
+            "Either parent_api_object_qualified_name or parent_api_query_qualified_name requires a valid value",
         ),
         (
             API_FIELD_NAME,
-            "connection/name",
-            "connection/name",
+            API_FIELD_PARENT_OBJECT_QUALIFIED_NAME,
+            API_FIELD_PARENT_QUERY_QUALIFIED_NAME,
             "Both parent_api_object_qualified_name and parent_api_query_qualified_name cannot be valid",
         ),
     ],
@@ -115,7 +115,7 @@ def test_overload_creator_parent_query():
         api_field_type_secondary="Object",
         is_api_object_reference=True,
         reference_api_object_qualified_name=API_FIELD_REFERENCE_OBJECT_QN,
-        api_query_param_type=APIQueryParamTypeEnum,
+        api_query_param_type=APIQueryParamTypeEnum.INPUT,
     )
 
     assert sut.name == API_FIELD_NAME
