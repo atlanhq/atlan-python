@@ -276,7 +276,7 @@ def api_object(
     client: AtlanClient, connection: Connection
 ) -> Generator[APIObject, None, None]:
     assert connection.qualified_name
-    to_create = APIObject.create(
+    to_create = APIObject.creator(
         name=API_OBJECT_NAME, connection_qualified_name=connection.qualified_name
     )
     response = client.asset.save(to_create)
@@ -327,7 +327,7 @@ def api_query(
     client: AtlanClient, connection: Connection
 ) -> Generator[APIQuery, None, None]:
     assert connection.qualified_name
-    to_create = APIQuery.create(
+    to_create = APIQuery.creator(
         name=API_QUERY_NAME, connection_qualified_name=connection.qualified_name
     )
     response = client.asset.save(to_create)
@@ -455,7 +455,7 @@ def api_field_parent_object(
     client: AtlanClient, connection: Connection
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
-    to_create = APIField.create(
+    to_create = APIField.creator(
         name=API_FIELD_NAME,
         parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME,
         parent_api_query_qualified_name=None,

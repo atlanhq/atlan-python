@@ -20,11 +20,11 @@ def test_create_with_missing_parameters_raise_value_error(
     name: str, connection_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        APIObject.create(name=name, connection_qualified_name=connection_qualified_name)
+        APIObject.creator(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
-    sut = APIObject.create(
+    sut = APIObject.creator(
         name=API_OBJECT_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME
     )
 
@@ -59,11 +59,11 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        APIObject.create_for_modification(qualified_name=qualified_name, name=name)
+        APIObject.updater(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-    sut = APIObject.create_for_modification(
+    sut = APIObject.updater(
         qualified_name=API_OBJECT_QUALIFIED_NAME, name=API_OBJECT_NAME
     )
 
@@ -72,7 +72,7 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-    sut = APIObject.create_for_modification(
+    sut = APIObject.updater(
         name=API_OBJECT_NAME, qualified_name=API_OBJECT_QUALIFIED_NAME
     ).trim_to_required()
 

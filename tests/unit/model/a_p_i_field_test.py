@@ -37,7 +37,7 @@ def test_create_with_missing_parameters_raise_value_error(
     message: str,
 ):
     with pytest.raises(ValueError, match=message):
-        APIField.create(
+        APIField.creator(
             name=name,
             parent_api_object_qualified_name=parent_api_object_qualified_name,
             parent_api_query_qualified_name=parent_api_query_qualified_name,
@@ -45,7 +45,7 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 def test_create_parent_object():
-    sut = APIField.create(
+    sut = APIField.creator(
         name=API_FIELD_NAME,
         parent_api_object_qualified_name=API_FIELD_PARENT_OBJECT_QUALIFIED_NAME,
         parent_api_query_qualified_name=None,
@@ -62,7 +62,7 @@ def test_create_parent_object():
 
 
 def test_create_parent_query():
-    sut = APIField.create(
+    sut = APIField.creator(
         name=API_FIELD_NAME,
         parent_api_object_qualified_name=None,
         parent_api_query_qualified_name=API_FIELD_PARENT_QUERY_QUALIFIED_NAME,
@@ -147,11 +147,11 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        APIField.create_for_modification(qualified_name=qualified_name, name=name)
+        APIField.updater(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-    sut = APIField.create_for_modification(
+    sut = APIField.updater(
         qualified_name=f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}",
         name=API_FIELD_NAME,
     )
@@ -164,7 +164,7 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-    sut = APIField.create_for_modification(
+    sut = APIField.updater(
         name=API_FIELD_NAME,
         qualified_name=f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}",
     ).trim_to_required()
