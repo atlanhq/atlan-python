@@ -134,7 +134,10 @@ class APIField(API):
                 and not parent_api_query_qualified_name.strip()
             ):
                 raise ValueError(
-                    "Either parent_api_object_qualified_name or parent_api_query_qualified_name require valid value"
+                    (
+                        "Either parent_api_object_qualified_name or "
+                        "parent_api_query_qualified_name requires a valid value"
+                    )
                 )
         elif (
             isinstance(parent_api_query_qualified_name, str)
@@ -319,7 +322,10 @@ class APIField(API):
                     and not parent_api_query_qualified_name.strip()
                 ):
                     raise ValueError(
-                        "Either parent_api_object_qualified_name or parent_api_query_qualified_name require valid value"
+                        (
+                            "Either parent_api_object_qualified_name or "
+                            "parent_api_query_qualified_name requires a valid value"
+                        )
                     )
             elif (
                 isinstance(parent_api_query_qualified_name, str)
@@ -383,6 +389,7 @@ class APIField(API):
                     api_object=APIObject.ref_by_qualified_name(
                         str(parent_api_object_qualified_name)
                     ),
+                    api_query_param_type=api_query_param_type,
                 )
             else:
                 return APIField.Attributes(

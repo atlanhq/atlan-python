@@ -115,7 +115,10 @@
                 and not parent_api_query_qualified_name.strip()
             ):
                 raise ValueError(
-                    "Either parent_api_object_qualified_name or parent_api_query_qualified_name require valid value"
+                    (
+                        "Either parent_api_object_qualified_name or "
+                        "parent_api_query_qualified_name requires a valid value"
+                    )
                 )
         elif (
             isinstance(parent_api_query_qualified_name, str)
