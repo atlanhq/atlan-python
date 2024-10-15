@@ -33,9 +33,12 @@ def test_create():
     assert sut.qualified_name == API_OBJECT_QUALIFIED_NAME
     assert sut.connector_name == API_CONNECTOR_TYPE
 
+
 def test_overload_creator():
     sut = APIObject.creator(
-        name=API_OBJECT_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME, api_field_count=2
+        name=API_OBJECT_NAME,
+        connection_qualified_name=API_CONNECTION_QUALIFIED_NAME,
+        api_field_count=2,
     )
 
     assert sut.name == API_OBJECT_NAME

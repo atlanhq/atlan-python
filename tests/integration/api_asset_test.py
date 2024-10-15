@@ -3,7 +3,14 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import APIPath, APISpec, APIObject, APIQuery, APIField, Connection
+from pyatlan.model.assets import (
+    APIPath,
+    APISpec,
+    APIObject,
+    APIQuery,
+    APIField,
+    Connection,
+)
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
@@ -46,7 +53,9 @@ API_FIELD_NAME = "api-field"
 API_FIELD_TYPE = "Int"
 API_FIELD_TYPE_SECONDARY = "Int"
 API_FIELD_IS_OBJECT_REFERENCE = True
-API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME = f"{API_CONNECTION_QUALIFIED_NAME}/api-object-reference"
+API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME = (
+    f"{API_CONNECTION_QUALIFIED_NAME}/api-object-reference"
+)
 
 response = block(AtlanClient(), AssetMutationResponse())
 
@@ -275,6 +284,7 @@ def api_object(
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIObject)
 
+
 def test_api_object(client: AtlanClient, connection: Connection, api_object: APIObject):
     assert api_object
     assert api_object.guid
@@ -283,20 +293,26 @@ def test_api_object(client: AtlanClient, connection: Connection, api_object: API
     assert api_object.connection_qualified_name == connection.qualified_name
     assert api_object.connector_name == AtlanConnectorType.API.value
 
+
 @pytest.fixture(scope="module")
 def api_object_overload(
     client: AtlanClient, connection: Connection
 ) -> Generator[APIObject, None, None]:
     assert connection.qualified_name
     to_create = APIObject.creator(
-        name=API_OBJECT_NAME, connection_qualified_name=connection.qualified_name, api_field_count=API_OBJECT_FIELD_COUNT
+        name=API_OBJECT_NAME,
+        connection_qualified_name=connection.qualified_name,
+        api_field_count=API_OBJECT_FIELD_COUNT,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIObject)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIObject)
 
-def test_api_object_overload(client: AtlanClient, connection: Connection, api_object_overload: APIObject):
+
+def test_api_object_overload(
+    client: AtlanClient, connection: Connection, api_object_overload: APIObject
+):
     assert api_object_overload
     assert api_object_overload.guid
     assert api_object_overload.qualified_name == API_OBJECT_QUALIFIED_NAME
@@ -304,6 +320,7 @@ def test_api_object_overload(client: AtlanClient, connection: Connection, api_ob
     assert api_object_overload.connection_qualified_name == connection.qualified_name
     assert api_object_overload.api_field_count == API_OBJECT_FIELD_COUNT
     assert api_object_overload.connector_name == AtlanConnectorType.API.value
+
 
 @pytest.fixture(scope="module")
 def api_query(
@@ -318,6 +335,7 @@ def api_query(
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIQuery)
 
+
 def test_api_query(client: AtlanClient, connection: Connection, api_query: APIQuery):
     assert api_query
     assert api_query.guid
@@ -326,20 +344,26 @@ def test_api_query(client: AtlanClient, connection: Connection, api_query: APIQu
     assert api_query.connection_qualified_name == connection.qualified_name
     assert api_query.connector_name == AtlanConnectorType.API.value
 
+
 @pytest.fixture(scope="module")
 def api_query_overload_1(
     client: AtlanClient, connection: Connection
 ) -> Generator[APIQuery, None, None]:
     assert connection.qualified_name
     to_create = APIQuery.creator(
-        name=API_QUERY_NAME, connection_qualified_name=connection.qualified_name, api_input_field_count=API_QUERY_INPUT_FIELD_COUNT
+        name=API_QUERY_NAME,
+        connection_qualified_name=connection.qualified_name,
+        api_input_field_count=API_QUERY_INPUT_FIELD_COUNT,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIQuery)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIQuery)
 
-def test_api_query_overload_1(client: AtlanClient, connection: Connection, api_query_overload_1: APIQuery):
+
+def test_api_query_overload_1(
+    client: AtlanClient, connection: Connection, api_query_overload_1: APIQuery
+):
     assert api_query_overload_1
     assert api_query_overload_1.guid
     assert api_query_overload_1.qualified_name == API_QUERY_QUALIFIED_NAME
@@ -348,20 +372,28 @@ def test_api_query_overload_1(client: AtlanClient, connection: Connection, api_q
     assert api_query_overload_1.api_input_field_count == API_QUERY_INPUT_FIELD_COUNT
     assert api_query_overload_1.connector_name == AtlanConnectorType.API.value
 
+
 @pytest.fixture(scope="module")
 def api_query_overload_2(
     client: AtlanClient, connection: Connection
 ) -> Generator[APIQuery, None, None]:
     assert connection.qualified_name
     to_create = APIQuery.creator(
-        name=API_QUERY_NAME, connection_qualified_name=connection.qualified_name, api_input_field_count=API_QUERY_INPUT_FIELD_COUNT, api_query_output_type=API_QUERY_OUTPUT_TYPE, api_query_output_type_secondary=API_QUERY_OUTPUT_TYPE_SECONDARY
+        name=API_QUERY_NAME,
+        connection_qualified_name=connection.qualified_name,
+        api_input_field_count=API_QUERY_INPUT_FIELD_COUNT,
+        api_query_output_type=API_QUERY_OUTPUT_TYPE,
+        api_query_output_type_secondary=API_QUERY_OUTPUT_TYPE_SECONDARY,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIQuery)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIQuery)
 
-def test_api_query_overload_2(client: AtlanClient, connection: Connection, api_query_overload_2: APIQuery):
+
+def test_api_query_overload_2(
+    client: AtlanClient, connection: Connection, api_query_overload_2: APIQuery
+):
     assert api_query_overload_2
     assert api_query_overload_2.guid
     assert api_query_overload_2.qualified_name == API_QUERY_QUALIFIED_NAME
@@ -369,8 +401,12 @@ def test_api_query_overload_2(client: AtlanClient, connection: Connection, api_q
     assert api_query_overload_2.connection_qualified_name == connection.qualified_name
     assert api_query_overload_2.api_input_field_count == API_QUERY_INPUT_FIELD_COUNT
     assert api_query_overload_2.api_query_output_type == API_QUERY_OUTPUT_TYPE
-    assert api_query_overload_2.api_query_output_type_secondary == API_QUERY_OUTPUT_TYPE_SECONDARY
+    assert (
+        api_query_overload_2.api_query_output_type_secondary
+        == API_QUERY_OUTPUT_TYPE_SECONDARY
+    )
     assert api_query_overload_2.connector_name == AtlanConnectorType.API.value
+
 
 @pytest.fixture(scope="module")
 def api_query_overload_3(
@@ -378,14 +414,23 @@ def api_query_overload_3(
 ) -> Generator[APIQuery, None, None]:
     assert connection.qualified_name
     to_create = APIQuery.creator(
-        name=API_QUERY_NAME, connection_qualified_name=connection.qualified_name, api_input_field_count=API_QUERY_INPUT_FIELD_COUNT, api_query_output_type=API_QUERY_OUTPUT_TYPE, api_query_output_type_secondary=API_QUERY_OUTPUT_TYPE_SECONDARY, is_object_reference=API_QUERY_IS_OBJECT_REFERENCE, reference_api_object_qualified_name=API_QUERY_REFERENCE_OBJECT_QUALIFIED_NAME
+        name=API_QUERY_NAME,
+        connection_qualified_name=connection.qualified_name,
+        api_input_field_count=API_QUERY_INPUT_FIELD_COUNT,
+        api_query_output_type=API_QUERY_OUTPUT_TYPE,
+        api_query_output_type_secondary=API_QUERY_OUTPUT_TYPE_SECONDARY,
+        is_object_reference=API_QUERY_IS_OBJECT_REFERENCE,
+        reference_api_object_qualified_name=API_QUERY_REFERENCE_OBJECT_QUALIFIED_NAME,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIQuery)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIQuery)
 
-def test_api_query_overload_3(client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery):
+
+def test_api_query_overload_3(
+    client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
+):
     assert api_query_overload_3
     assert api_query_overload_3.guid
     assert api_query_overload_3.qualified_name == API_QUERY_QUALIFIED_NAME
@@ -393,10 +438,17 @@ def test_api_query_overload_3(client: AtlanClient, connection: Connection, api_q
     assert api_query_overload_3.connection_qualified_name == connection.qualified_name
     assert api_query_overload_3.api_input_field_count == API_QUERY_INPUT_FIELD_COUNT
     assert api_query_overload_3.api_query_output_type == API_QUERY_OUTPUT_TYPE
-    assert api_query_overload_3.api_query_output_type_secondary == API_QUERY_OUTPUT_TYPE_SECONDARY
+    assert (
+        api_query_overload_3.api_query_output_type_secondary
+        == API_QUERY_OUTPUT_TYPE_SECONDARY
+    )
     assert api_query_overload_3.api_is_object_reference == API_QUERY_IS_OBJECT_REFERENCE
-    assert api_query_overload_3.api_object_qualified_name == API_QUERY_REFERENCE_OBJECT_QUALIFIED_NAME
+    assert (
+        api_query_overload_3.api_object_qualified_name
+        == API_QUERY_REFERENCE_OBJECT_QUALIFIED_NAME
+    )
     assert api_query_overload_3.connector_name == AtlanConnectorType.API.value
+
 
 @pytest.fixture(scope="module")
 def api_field_parent_object(
@@ -404,20 +456,31 @@ def api_field_parent_object(
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
     to_create = APIField.create(
-        name=API_FIELD_NAME, parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME, parent_api_query_qualified_name=None
+        name=API_FIELD_NAME,
+        parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME,
+        parent_api_query_qualified_name=None,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIField)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIField)
 
-def test_api_field_parent_object(client: AtlanClient, connection: Connection, api_field_parent_object: APIField):
+
+def test_api_field_parent_object(
+    client: AtlanClient, connection: Connection, api_field_parent_object: APIField
+):
     assert api_field_parent_object
     assert api_field_parent_object.guid
-    assert api_field_parent_object.qualified_name == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        api_field_parent_object.qualified_name
+        == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert api_field_parent_object.name == API_FIELD_NAME
-    assert api_field_parent_object.connection_qualified_name == connection.qualified_name
+    assert (
+        api_field_parent_object.connection_qualified_name == connection.qualified_name
+    )
     assert api_field_parent_object.connector_name == AtlanConnectorType.API.value
+
 
 @pytest.fixture(scope="module")
 def api_field_parent_object_overload_1(
@@ -425,20 +488,38 @@ def api_field_parent_object_overload_1(
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
     to_create = APIField.creator(
-        name=API_FIELD_NAME, parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME, parent_api_query_qualified_name=None, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME
+        name=API_FIELD_NAME,
+        parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME,
+        parent_api_query_qualified_name=None,
+        connection_qualified_name=API_CONNECTION_QUALIFIED_NAME,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIField)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIField)
 
-def test_api_field_parent_object_overload_1(client: AtlanClient, connection: Connection, api_field_parent_object_overload_1: APIField):
+
+def test_api_field_parent_object_overload_1(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_object_overload_1: APIField,
+):
     assert api_field_parent_object_overload_1
     assert api_field_parent_object_overload_1.guid
-    assert api_field_parent_object_overload_1.qualified_name == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        api_field_parent_object_overload_1.qualified_name
+        == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert api_field_parent_object_overload_1.name == API_FIELD_NAME
-    assert api_field_parent_object_overload_1.connection_qualified_name == connection.qualified_name
-    assert api_field_parent_object_overload_1.connector_name == AtlanConnectorType.API.value
+    assert (
+        api_field_parent_object_overload_1.connection_qualified_name
+        == connection.qualified_name
+    )
+    assert (
+        api_field_parent_object_overload_1.connector_name
+        == AtlanConnectorType.API.value
+    )
+
 
 @pytest.fixture(scope="module")
 def api_field_parent_object_overload_2(
@@ -446,21 +527,42 @@ def api_field_parent_object_overload_2(
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
     to_create = APIField.creator(
-        name=API_FIELD_NAME, parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME, parent_api_query_qualified_name=None, api_query_param_type=APIQueryParamTypeEnum.INPUT
+        name=API_FIELD_NAME,
+        parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME,
+        parent_api_query_qualified_name=None,
+        api_query_param_type=APIQueryParamTypeEnum.INPUT,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIField)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIField)
 
-def test_api_field_parent_object_overload_2(client: AtlanClient, connection: Connection, api_field_parent_object_overload_2: APIField):
+
+def test_api_field_parent_object_overload_2(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_object_overload_2: APIField,
+):
     assert api_field_parent_object_overload_2
     assert api_field_parent_object_overload_2.guid
-    assert api_field_parent_object_overload_2.qualified_name == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        api_field_parent_object_overload_2.qualified_name
+        == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert api_field_parent_object_overload_2.name == API_FIELD_NAME
-    assert api_field_parent_object_overload_2.connection_qualified_name == connection.qualified_name
-    assert api_field_parent_object_overload_2.api_query_param_type == APIQueryParamTypeEnum.INPUT
-    assert api_field_parent_object_overload_2.connector_name == AtlanConnectorType.API.value
+    assert (
+        api_field_parent_object_overload_2.connection_qualified_name
+        == connection.qualified_name
+    )
+    assert (
+        api_field_parent_object_overload_2.api_query_param_type
+        == APIQueryParamTypeEnum.INPUT
+    )
+    assert (
+        api_field_parent_object_overload_2.connector_name
+        == AtlanConnectorType.API.value
+    )
+
 
 @pytest.fixture(scope="module")
 def api_field_parent_object_overload_3(
@@ -468,23 +570,49 @@ def api_field_parent_object_overload_3(
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
     to_create = APIField.creator(
-        name=API_FIELD_NAME, parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME, parent_api_query_qualified_name=None, api_field_type=API_FIELD_TYPE, api_field_type_secondary=API_FIELD_TYPE_SECONDARY, api_query_param_type=APIQueryParamTypeEnum.INPUT
+        name=API_FIELD_NAME,
+        parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME,
+        parent_api_query_qualified_name=None,
+        api_field_type=API_FIELD_TYPE,
+        api_field_type_secondary=API_FIELD_TYPE_SECONDARY,
+        api_query_param_type=APIQueryParamTypeEnum.INPUT,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIField)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIField)
 
-def test_api_field_parent_object_overload_3(client: AtlanClient, connection: Connection, api_field_parent_object_overload_3: APIField):
+
+def test_api_field_parent_object_overload_3(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_object_overload_3: APIField,
+):
     assert api_field_parent_object_overload_3
     assert api_field_parent_object_overload_3.guid
-    assert api_field_parent_object_overload_3.qualified_name == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        api_field_parent_object_overload_3.qualified_name
+        == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert api_field_parent_object_overload_3.name == API_FIELD_NAME
-    assert api_field_parent_object_overload_3.connection_qualified_name == connection.qualified_name
+    assert (
+        api_field_parent_object_overload_3.connection_qualified_name
+        == connection.qualified_name
+    )
     assert api_field_parent_object_overload_3.api_field_type == API_FIELD_TYPE
-    assert api_field_parent_object_overload_3.api_field_type_secondary == API_FIELD_TYPE_SECONDARY
-    assert api_field_parent_object_overload_3.api_query_param_type == APIQueryParamTypeEnum.INPUT
-    assert api_field_parent_object_overload_3.connector_name == AtlanConnectorType.API.value
+    assert (
+        api_field_parent_object_overload_3.api_field_type_secondary
+        == API_FIELD_TYPE_SECONDARY
+    )
+    assert (
+        api_field_parent_object_overload_3.api_query_param_type
+        == APIQueryParamTypeEnum.INPUT
+    )
+    assert (
+        api_field_parent_object_overload_3.connector_name
+        == AtlanConnectorType.API.value
+    )
+
 
 @pytest.fixture(scope="module")
 def api_field_parent_object_overload_4(
@@ -492,25 +620,60 @@ def api_field_parent_object_overload_4(
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
     to_create = APIField.creator(
-        name=API_FIELD_NAME, parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME, parent_api_query_qualified_name=None, api_field_type=API_FIELD_TYPE, api_field_type_secondary=API_FIELD_TYPE_SECONDARY, is_api_object_reference=API_FIELD_IS_OBJECT_REFERENCE, reference_api_object_qualified_name=API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME, api_query_param_type=None
+        name=API_FIELD_NAME,
+        parent_api_object_qualified_name=API_OBJECT_QUALIFIED_NAME,
+        parent_api_query_qualified_name=None,
+        connection_qualified_name=connection.qualified_name,
+        api_field_type=API_FIELD_TYPE,
+        api_field_type_secondary=API_FIELD_TYPE_SECONDARY,
+        is_api_object_reference=API_FIELD_IS_OBJECT_REFERENCE,
+        reference_api_object_qualified_name=API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME,
+        api_query_param_type=APIQueryParamTypeEnum.INPUT,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIField)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIField)
 
-def test_api_field_parent_object_overload_4(client: AtlanClient, connection: Connection, api_field_parent_object_overload_4: APIField):
+
+def test_api_field_parent_object_overload_4(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_object_overload_4: APIField,
+):
     assert api_field_parent_object_overload_4
     assert api_field_parent_object_overload_4.guid
-    assert api_field_parent_object_overload_4.qualified_name == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        api_field_parent_object_overload_4.qualified_name
+        == f"{API_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert api_field_parent_object_overload_4.name == API_FIELD_NAME
-    assert api_field_parent_object_overload_4.connection_qualified_name == connection.qualified_name
+    assert (
+        api_field_parent_object_overload_4.connection_qualified_name
+        == connection.qualified_name
+    )
     assert api_field_parent_object_overload_4.api_field_type == API_FIELD_TYPE
-    assert api_field_parent_object_overload_4.api_field_type_secondary == API_FIELD_TYPE_SECONDARY
-    assert api_field_parent_object_overload_4.api_is_object_reference == API_FIELD_IS_OBJECT_REFERENCE
-    assert api_field_parent_object_overload_4.api_object_qualified_name == API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME
-    assert api_field_parent_object_overload_4.api_query_param_type == None
-    assert api_field_parent_object_overload_4.connector_name == AtlanConnectorType.API.value
+    assert (
+        api_field_parent_object_overload_4.api_field_type_secondary
+        == API_FIELD_TYPE_SECONDARY
+    )
+    assert (
+        api_field_parent_object_overload_4.api_is_object_reference
+        == API_FIELD_IS_OBJECT_REFERENCE
+    )
+    assert (
+        api_field_parent_object_overload_4.api_object_qualified_name
+        == API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME
+    )
+    assert (
+        api_field_parent_object_overload_4.api_query_param_type
+        == APIQueryParamTypeEnum.INPUT
+    )
+    assert (
+        api_field_parent_object_overload_4.connector_name
+        == AtlanConnectorType.API.value
+    )
+
 
 @pytest.fixture(scope="module")
 def api_field_parent_query_overload(
@@ -518,22 +681,55 @@ def api_field_parent_query_overload(
 ) -> Generator[APIField, None, None]:
     assert connection.qualified_name
     to_create = APIField.creator(
-        name=API_FIELD_NAME, parent_api_object_qualified_name=None, parent_api_query_qualified_name=API_QUERY_QUALIFIED_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME, api_field_type=API_FIELD_TYPE, api_field_type_secondary=API_FIELD_TYPE_SECONDARY, is_api_object_reference=API_FIELD_IS_OBJECT_REFERENCE, reference_api_object_qualified_name=API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME, api_query_param_type=APIQueryParamTypeEnum.INPUT
+        name=API_FIELD_NAME,
+        parent_api_object_qualified_name=None,
+        parent_api_query_qualified_name=API_QUERY_QUALIFIED_NAME,
+        connection_qualified_name=API_CONNECTION_QUALIFIED_NAME,
+        api_field_type=API_FIELD_TYPE,
+        api_field_type_secondary=API_FIELD_TYPE_SECONDARY,
+        is_api_object_reference=API_FIELD_IS_OBJECT_REFERENCE,
+        reference_api_object_qualified_name=API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME,
+        api_query_param_type=APIQueryParamTypeEnum.INPUT,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIField)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIField)
 
-def test_api_field_parent_query_overload(client: AtlanClient, connection: Connection, api_field_parent_query_overload: APIField):
-    assert api_field_parent_object_overload_4
-    assert api_field_parent_object_overload_4.guid
-    assert api_field_parent_object_overload_4.qualified_name == f"{API_QUERY_QUALIFIED_NAME}/{API_FIELD_NAME}"
-    assert api_field_parent_object_overload_4.name == API_FIELD_NAME
-    assert api_field_parent_object_overload_4.connection_qualified_name == connection.qualified_name
-    assert api_field_parent_object_overload_4.api_field_type == API_FIELD_TYPE
-    assert api_field_parent_object_overload_4.api_field_type_secondary == API_FIELD_TYPE_SECONDARY
-    assert api_field_parent_object_overload_4.api_is_object_reference == API_FIELD_IS_OBJECT_REFERENCE
-    assert api_field_parent_object_overload_4.api_object_qualified_name == API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME
-    assert api_field_parent_object_overload_4.api_query_param_type == APIQueryParamTypeEnum.INPUT
-    assert api_field_parent_object_overload_4.connector_name == AtlanConnectorType.API.value
+
+def test_api_field_parent_query_overload(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_query_overload: APIField,
+):
+    assert api_field_parent_query_overload
+    assert api_field_parent_query_overload.guid
+    assert (
+        api_field_parent_query_overload.qualified_name
+        == f"{API_QUERY_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
+    assert api_field_parent_query_overload.name == API_FIELD_NAME
+    assert (
+        api_field_parent_query_overload.connection_qualified_name
+        == connection.qualified_name
+    )
+    assert api_field_parent_query_overload.api_field_type == API_FIELD_TYPE
+    assert (
+        api_field_parent_query_overload.api_field_type_secondary
+        == API_FIELD_TYPE_SECONDARY
+    )
+    assert (
+        api_field_parent_query_overload.api_is_object_reference
+        == API_FIELD_IS_OBJECT_REFERENCE
+    )
+    assert (
+        api_field_parent_query_overload.api_object_qualified_name
+        == API_FIELD_REFERENCE_OBJECT_QUALIFIED_NAME
+    )
+    assert (
+        api_field_parent_query_overload.api_query_param_type
+        == APIQueryParamTypeEnum.INPUT
+    )
+    assert (
+        api_field_parent_query_overload.connector_name == AtlanConnectorType.API.value
+    )

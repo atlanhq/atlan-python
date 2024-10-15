@@ -34,9 +34,16 @@ def test_create():
     assert sut.qualified_name == API_QUERY_QUALIFIED_NAME
     assert sut.connector_name == API_CONNECTOR_TYPE
 
+
 def test_overload_creator():
     sut = APIQuery.creator(
-        name=API_QUERY_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME, api_input_field_count=1, api_query_output_type="api-object-ref", api_query_output_type_secondary="Object", is_object_reference=True, reference_api_object_qualified_name=API_QUERY_REFERENCE_OBJECT_QN,
+        name=API_QUERY_NAME,
+        connection_qualified_name=API_CONNECTION_QUALIFIED_NAME,
+        api_input_field_count=1,
+        api_query_output_type="api-object-ref",
+        api_query_output_type_secondary="Object",
+        is_object_reference=True,
+        reference_api_object_qualified_name=API_QUERY_REFERENCE_OBJECT_QN,
     )
 
     assert sut.name == API_QUERY_NAME
@@ -46,7 +53,7 @@ def test_overload_creator():
     assert sut.api_input_field_count == 1
     assert sut.api_query_output_type == "api-object-ref"
     assert sut.api_query_output_type_secondary == "Object"
-    assert sut.api_is_object_reference == True
+    assert sut.api_is_object_reference
     assert sut.api_object_qualified_name == API_QUERY_REFERENCE_OBJECT_QN
 
 

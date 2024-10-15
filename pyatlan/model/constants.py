@@ -23,8 +23,7 @@ AssetTypes = Set[
         "APIField",
         "APIObject",
         "APIPath",
-        "APIQuery"
-        "APISpec",
+        "APIQuery" "APISpec",
         "Collection",
         "Query",
         "BIProcess",

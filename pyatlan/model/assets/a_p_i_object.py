@@ -11,11 +11,6 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import NumericField, RelationField
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.fields.atlan_fields import (
-    KeywordField,
-    KeywordTextField,
-    RelationField,
-)
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .a_p_i import API
@@ -45,12 +40,20 @@ class APIObject(API):
 
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, connection_qualified_name: str, api_field_count: Optional[int] = None) -> APIObject:
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        api_field_count: Optional[int] = None,
+    ) -> APIObject:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
         attributes = APIObject.Attributes.create(
-            name=name, connection_qualified_name=connection_qualified_name, api_field_count=api_field_count
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            api_field_count=api_field_count,
         )
         return cls(attributes=attributes)
 
@@ -128,7 +131,11 @@ class APIObject(API):
         @classmethod
         @init_guid
         def create(
-            cls, *, name: str, connection_qualified_name: str, api_field_count: Optional[int] = None,
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            api_field_count: Optional[int] = None,
         ) -> APIObject.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"], [name, connection_qualified_name]

@@ -9,7 +9,6 @@ from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
@@ -73,35 +72,46 @@ class APIQuery(API):
     @classmethod
     @init_guid
     def creator(
-        cls, 
-        *, 
-        name: str, 
-        connection_qualified_name: str, 
-        api_input_field_count: Optional[int] = None, 
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        api_input_field_count: Optional[int] = None,
         api_query_output_type: Optional[str] = None,
         api_query_output_type_secondary: Optional[str] = None,
         is_object_reference: Optional[bool] = False,
         reference_api_object_qualified_name: Optional[str] = None,
-        ) -> APIQuery:
+    ) -> APIQuery:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
         # is api object reference - checker
         if is_object_reference:
-            if not reference_api_object_qualified_name or (isinstance(reference_api_object_qualified_name, str) and not reference_api_object_qualified_name.strip()):
-                raise ValueError("Set valid qualified name for reference_api_object_qualified_name when is_object_reference is true")
+            if not reference_api_object_qualified_name or (
+                isinstance(reference_api_object_qualified_name, str)
+                and not reference_api_object_qualified_name.strip()
+            ):
+                raise ValueError(
+                    "Set valid qualified name for reference_api_object_qualified_name when is_object_reference is true"
+                )
         else:
-            if reference_api_object_qualified_name and isinstance(reference_api_object_qualified_name, str) and reference_api_object_qualified_name.strip():
-                raise ValueError("Set is_object_reference to true to set reference_api_object_qualified_name")
+            if (
+                reference_api_object_qualified_name
+                and isinstance(reference_api_object_qualified_name, str)
+                and reference_api_object_qualified_name.strip()
+            ):
+                raise ValueError(
+                    "Set is_object_reference to true to set reference_api_object_qualified_name"
+                )
 
         attributes = APIQuery.Attributes.create(
-            name=name, 
-            connection_qualified_name=connection_qualified_name, 
+            name=name,
+            connection_qualified_name=connection_qualified_name,
             api_input_field_count=api_input_field_count,
             api_query_output_type=api_query_output_type,
             api_query_output_type_secondary=api_query_output_type_secondary,
             is_object_reference=is_object_reference,
-            reference_api_object_qualified_name=reference_api_object_qualified_name
+            reference_api_object_qualified_name=reference_api_object_qualified_name,
         )
         return cls(attributes=attributes)
 
@@ -271,10 +281,10 @@ class APIQuery(API):
         @classmethod
         @init_guid
         def create(
-            cls, 
-            *, 
-            name: str, 
-            connection_qualified_name: str, 
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
             api_input_field_count: Optional[int] = None,
             api_query_output_type: Optional[str] = None,
             api_query_output_type_secondary: Optional[str] = None,
@@ -286,11 +296,22 @@ class APIQuery(API):
             )
             # is api object reference - checker
             if is_object_reference:
-                if not reference_api_object_qualified_name or (isinstance(reference_api_object_qualified_name, str) and not reference_api_object_qualified_name.strip()):
-                    raise ValueError("Set valid qualified name for reference_api_object_qualified_name when is_object_reference is true")
+                if not reference_api_object_qualified_name or (
+                    isinstance(reference_api_object_qualified_name, str)
+                    and not reference_api_object_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        "Set valid qualified name for reference_api_object_qualified_name"
+                    )
             else:
-                if reference_api_object_qualified_name and isinstance(reference_api_object_qualified_name, str) and reference_api_object_qualified_name.strip():
-                    raise ValueError("Set is_object_reference to true to set reference_api_object_qualified_name")
+                if (
+                    reference_api_object_qualified_name
+                    and isinstance(reference_api_object_qualified_name, str)
+                    and reference_api_object_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        "Set is_object_reference to true to set reference_api_object_qualified_name"
+                    )
 
             return APIQuery.Attributes(
                 name=name,
@@ -303,7 +324,9 @@ class APIQuery(API):
                 api_query_output_type=api_query_output_type,
                 api_query_output_type_secondary=api_query_output_type_secondary,
                 api_is_object_reference=is_object_reference,
-                api_object_qualified_name=reference_api_object_qualified_name if is_object_reference else None,
+                api_object_qualified_name=(
+                    reference_api_object_qualified_name if is_object_reference else None
+                ),
             )
 
     attributes: APIQuery.Attributes = Field(
