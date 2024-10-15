@@ -5,13 +5,11 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, overload
-from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import APIQueryParamTypeEnum
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import APIQueryParamTypeEnum, AtlanConnectorType
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .a_p_i import API
@@ -178,49 +176,6 @@ class APIField(API):
         )
         return cls(attributes=attributes)
 
-    @classmethod
-    @init_guid
-    def create(
-        cls,
-        *,
-        name: str,
-        parent_api_object_qualified_name: Optional[str] = None,
-        parent_api_query_qualified_name: Optional[str] = None,
-    ) -> APIField:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        if parent_api_object_qualified_name is None or (
-            isinstance(parent_api_object_qualified_name, str)
-            and not parent_api_object_qualified_name.strip()
-        ):
-            if parent_api_query_qualified_name is None or (
-                isinstance(parent_api_query_qualified_name, str)
-                and not parent_api_query_qualified_name.strip()
-            ):
-                raise ValueError(
-                    "Either parent_api_object_qualified_name or parent_api_query_qualified_name require a valid value"
-                )
-        elif (
-            isinstance(parent_api_query_qualified_name, str)
-            and parent_api_query_qualified_name.strip()
-        ):
-            raise ValueError(
-                "Both parent_api_object_qualified_name and parent_api_query_qualified_name cannot be valid"
-            )
-
-        return cls.creator(
-            name=name,
-            parent_api_object_qualified_name=parent_api_object_qualified_name,
-            parent_api_query_qualified_name=parent_api_query_qualified_name,
-        )
-
     type_name: str = Field(default="APIField", allow_mutation=False)
 
     @validator("type_name")
@@ -246,18 +201,6 @@ class APIField(API):
     """
     Secondary Type of APIField. E.g. LIST/STRING, then LIST would be the secondary type.
     """
-    API_IS_OBJECT_REFERENCE: ClassVar[BooleanField] = BooleanField(
-        "apiIsObjectReference", "apiIsObjectReference"
-    )
-    """
-    If this APIField refer to an APIObject
-    """
-    API_OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "apiObjectQualifiedName", "apiObjectQualifiedName"
-    )
-    """
-    Qualified name of the APIObject that is referred to by this Field. When apiIsObjectReference is true.
-    """
     API_QUERY_PARAM_TYPE: ClassVar[KeywordField] = KeywordField(
         "apiQueryParamType", "apiQueryParamType"
     )
@@ -277,8 +220,6 @@ class APIField(API):
     _convenience_properties: ClassVar[List[str]] = [
         "api_field_type",
         "api_field_type_secondary",
-        "api_is_object_reference",
-        "api_object_qualified_name",
         "api_query_param_type",
         "api_query",
         "api_object",
@@ -307,32 +248,6 @@ class APIField(API):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_field_type_secondary = api_field_type_secondary
-
-    @property
-    def api_is_object_reference(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.api_is_object_reference
-        )
-
-    @api_is_object_reference.setter
-    def api_is_object_reference(self, api_is_object_reference: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.api_is_object_reference = api_is_object_reference
-
-    @property
-    def api_object_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.api_object_qualified_name
-        )
-
-    @api_object_qualified_name.setter
-    def api_object_qualified_name(self, api_object_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.api_object_qualified_name = api_object_qualified_name
 
     @property
     def api_query_param_type(self) -> Optional[APIQueryParamTypeEnum]:
@@ -369,8 +284,6 @@ class APIField(API):
     class Attributes(API.Attributes):
         api_field_type: Optional[str] = Field(default=None, description="")
         api_field_type_secondary: Optional[str] = Field(default=None, description="")
-        api_is_object_reference: Optional[bool] = Field(default=None, description="")
-        api_object_qualified_name: Optional[str] = Field(default=None, description="")
         api_query_param_type: Optional[APIQueryParamTypeEnum] = Field(
             default=None, description=""
         )

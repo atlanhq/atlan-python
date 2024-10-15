@@ -67,6 +67,18 @@ class API(Catalog):
     """
     Whether authentication is optional (true) or required (false).
     """
+    API_IS_OBJECT_REFERENCE: ClassVar[BooleanField] = BooleanField(
+        "apiIsObjectReference", "apiIsObjectReference"
+    )
+    """
+    If this asset refers to an APIObject
+    """
+    API_OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "apiObjectQualifiedName", "apiObjectQualifiedName"
+    )
+    """
+    Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "api_spec_type",
@@ -75,6 +87,8 @@ class API(Catalog):
         "api_spec_qualified_name",
         "api_external_docs",
         "api_is_auth_optional",
+        "api_is_object_reference",
+        "api_object_qualified_name",
     ]
 
     @property
@@ -139,6 +153,32 @@ class API(Catalog):
             self.attributes = self.Attributes()
         self.attributes.api_is_auth_optional = api_is_auth_optional
 
+    @property
+    def api_is_object_reference(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.api_is_object_reference
+        )
+
+    @api_is_object_reference.setter
+    def api_is_object_reference(self, api_is_object_reference: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_is_object_reference = api_is_object_reference
+
+    @property
+    def api_object_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_object_qualified_name
+        )
+
+    @api_object_qualified_name.setter
+    def api_object_qualified_name(self, api_object_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.api_object_qualified_name = api_object_qualified_name
+
     class Attributes(Catalog.Attributes):
         api_spec_type: Optional[str] = Field(default=None, description="")
         api_spec_version: Optional[str] = Field(default=None, description="")
@@ -148,6 +188,8 @@ class API(Catalog):
             default=None, description=""
         )
         api_is_auth_optional: Optional[bool] = Field(default=None, description="")
+        api_is_object_reference: Optional[bool] = Field(default=None, description="")
+        api_object_qualified_name: Optional[str] = Field(default=None, description="")
 
     attributes: API.Attributes = Field(
         default_factory=lambda: API.Attributes(),

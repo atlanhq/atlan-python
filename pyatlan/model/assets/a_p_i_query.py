@@ -5,17 +5,11 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, overload
-from warnings import warn
 
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
-    KeywordField,
-    NumericField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .a_p_i import API
@@ -115,21 +109,6 @@ class APIQuery(API):
         )
         return cls(attributes=attributes)
 
-    @classmethod
-    @init_guid
-    def create(cls, *, name: str, connection_qualified_name: str) -> APIQuery:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
-
     type_name: str = Field(default="APIQuery", allow_mutation=False)
 
     @validator("type_name")
@@ -161,18 +140,6 @@ class APIQuery(API):
     """
     Secondary Type of APIQueryOutput. E.g. LIST/STRING then LIST would be the secondary type.
     """
-    API_IS_OBJECT_REFERENCE: ClassVar[BooleanField] = BooleanField(
-        "apiIsObjectReference", "apiIsObjectReference"
-    )
-    """
-    If this APIQuery refer to APIObject in its output
-    """
-    API_OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "apiObjectQualifiedName", "apiObjectQualifiedName"
-    )
-    """
-    Qualified name of the APIObject that is referred to by this Query in Output. When apiIsObjectReference is true.
-    """
 
     API_FIELDS: ClassVar[RelationField] = RelationField("apiFields")
     """
@@ -183,8 +150,6 @@ class APIQuery(API):
         "api_input_field_count",
         "api_query_output_type",
         "api_query_output_type_secondary",
-        "api_is_object_reference",
-        "api_object_qualified_name",
         "api_fields",
     ]
 
@@ -231,32 +196,6 @@ class APIQuery(API):
         )
 
     @property
-    def api_is_object_reference(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.api_is_object_reference
-        )
-
-    @api_is_object_reference.setter
-    def api_is_object_reference(self, api_is_object_reference: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.api_is_object_reference = api_is_object_reference
-
-    @property
-    def api_object_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.api_object_qualified_name
-        )
-
-    @api_object_qualified_name.setter
-    def api_object_qualified_name(self, api_object_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.api_object_qualified_name = api_object_qualified_name
-
-    @property
     def api_fields(self) -> Optional[List[APIField]]:
         return None if self.attributes is None else self.attributes.api_fields
 
@@ -272,8 +211,6 @@ class APIQuery(API):
         api_query_output_type_secondary: Optional[str] = Field(
             default=None, description=""
         )
-        api_is_object_reference: Optional[bool] = Field(default=None, description="")
-        api_object_qualified_name: Optional[str] = Field(default=None, description="")
         api_fields: Optional[List[APIField]] = Field(
             default=None, description=""
         )  # relationship

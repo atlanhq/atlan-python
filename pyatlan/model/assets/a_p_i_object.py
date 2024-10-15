@@ -5,12 +5,11 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, overload
-from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField
 from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.fields.atlan_fields import NumericField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .a_p_i import API
@@ -56,21 +55,6 @@ class APIObject(API):
             api_field_count=api_field_count,
         )
         return cls(attributes=attributes)
-
-    @classmethod
-    @init_guid
-    def create(cls, *, name: str, connection_qualified_name: str) -> APIObject:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
 
     type_name: str = Field(default="APIObject", allow_mutation=False)
 
