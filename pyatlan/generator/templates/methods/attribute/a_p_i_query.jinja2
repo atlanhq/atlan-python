@@ -1,11 +1,11 @@
 
         @classmethod
         @init_guid
-        def create(
-            cls, 
-            *, 
-            name: str, 
-            connection_qualified_name: str, 
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
             api_input_field_count: Optional[int] = None,
             api_query_output_type: Optional[str] = None,
             api_query_output_type_secondary: Optional[str] = None,
@@ -17,11 +17,22 @@
             )
             # is api object reference - checker
             if is_object_reference:
-                if not reference_api_object_qualified_name or (isinstance(reference_api_object_qualified_name, str) and not reference_api_object_qualified_name.strip()):
-                    raise ValueError("Set valid qualified name for reference_api_object_qualified_name when is_object_reference is true")
+                if not reference_api_object_qualified_name or (
+                    isinstance(reference_api_object_qualified_name, str)
+                    and not reference_api_object_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        "Set valid qualified name for reference_api_object_qualified_name"
+                    )
             else:
-                if reference_api_object_qualified_name and isinstance(reference_api_object_qualified_name, str) and reference_api_object_qualified_name.strip():
-                    raise ValueError("Set is_object_reference to true to set reference_api_object_qualified_name")
+                if (
+                    reference_api_object_qualified_name
+                    and isinstance(reference_api_object_qualified_name, str)
+                    and reference_api_object_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        "Set is_object_reference to true to set reference_api_object_qualified_name"
+                    )
 
             return APIQuery.Attributes(
                 name=name,
@@ -34,5 +45,7 @@
                 api_query_output_type=api_query_output_type,
                 api_query_output_type_secondary=api_query_output_type_secondary,
                 api_is_object_reference=is_object_reference,
-                api_object_qualified_name=reference_api_object_qualified_name if is_object_reference else None,
+                api_object_qualified_name=(
+                    reference_api_object_qualified_name if is_object_reference else None
+                ),
             )

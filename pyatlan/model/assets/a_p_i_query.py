@@ -104,7 +104,7 @@ class APIQuery(API):
                     "Set is_object_reference to true to set reference_api_object_qualified_name"
                 )
 
-        attributes = APIQuery.Attributes.create(
+        attributes = APIQuery.Attributes.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
             api_input_field_count=api_input_field_count,
@@ -280,7 +280,7 @@ class APIQuery(API):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls,
             *,
             name: str,

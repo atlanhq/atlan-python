@@ -50,7 +50,7 @@ class APIObject(API):
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = APIObject.Attributes.create(
+        attributes = APIObject.Attributes.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
             api_field_count=api_field_count,
@@ -130,7 +130,7 @@ class APIObject(API):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls,
             *,
             name: str,

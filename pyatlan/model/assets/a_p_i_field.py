@@ -165,7 +165,7 @@ class APIField(API):
                     "Set is_api_object_reference to true to set reference_api_object_qualified_name"
                 )
 
-        attributes = APIField.Attributes.create(
+        attributes = APIField.Attributes.creator(
             name=name,
             parent_api_object_qualified_name=parent_api_object_qualified_name,
             parent_api_query_qualified_name=parent_api_query_qualified_name,
@@ -383,7 +383,7 @@ class APIField(API):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls,
             *,
             name: str,
