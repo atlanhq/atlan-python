@@ -147,6 +147,7 @@ def test_overload_api_path(
     assert api_path_overload.connector_name == AtlanConnectorType.API.value
 
 
+# here
 def test_update_api_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
@@ -322,6 +323,100 @@ def test_api_object_overload(
     assert api_object_overload.connector_name == AtlanConnectorType.API.value
 
 
+def test_update_api_object(
+    client: AtlanClient, connection: Connection, api_object_overload: APIObject
+):
+    assert api_object_overload.qualified_name
+    assert api_object_overload.name
+    updated = client.asset.update_certificate(
+        asset_type=APIObject,
+        qualified_name=api_object_overload.qualified_name,
+        name=api_object_overload.name,
+        certificate_status=CERTIFICATE_STATUS,
+        message=CERTIFICATE_MESSAGE,
+    )
+    assert updated
+    assert updated.certificate_status_message == CERTIFICATE_MESSAGE
+    assert api_object_overload.qualified_name
+    assert api_object_overload.name
+    updated = client.asset.update_announcement(
+        asset_type=APIObject,
+        qualified_name=api_object_overload.qualified_name,
+        name=api_object_overload.name,
+        announcement=Announcement(
+            announcement_type=ANNOUNCEMENT_TYPE,
+            announcement_title=ANNOUNCEMENT_TITLE,
+            announcement_message=ANNOUNCEMENT_MESSAGE,
+        ),
+    )
+    assert updated
+    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+    assert updated.announcement_title == ANNOUNCEMENT_TITLE
+    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+
+
+@pytest.mark.order(after="test_update_api_object")
+def test_retrieve_api_object(
+    client: AtlanClient, connection: Connection, api_object_overload: APIObject
+):
+    b = client.asset.get_by_guid(api_object_overload.guid, asset_type=APIObject)
+    assert b
+    assert not b.is_incomplete
+    assert b.guid == api_object_overload.guid
+    assert b.qualified_name == api_object_overload.qualified_name
+    assert b.name == api_object_overload.name
+    assert b.connector_name == api_object_overload.connector_name
+    assert b.connection_qualified_name == api_object_overload.connection_qualified_name
+    assert b.certificate_status == CERTIFICATE_STATUS
+    assert b.certificate_status_message == CERTIFICATE_MESSAGE
+
+
+@pytest.mark.order(after="test_retrieve_api_object")
+def test_delete_api_object(
+    client: AtlanClient, connection: Connection, api_object_overload: APIObject
+):
+    response = client.asset.delete_by_guid(api_object_overload.guid)
+    assert response
+    assert not response.assets_created(asset_type=APIObject)
+    assert not response.assets_updated(asset_type=APIObject)
+    deleted = response.assets_deleted(asset_type=APIObject)
+    assert deleted
+    assert len(deleted) == 1
+    assert deleted[0].guid == api_object_overload.guid
+    assert deleted[0].qualified_name == api_object_overload.qualified_name
+    assert deleted[0].delete_handler == "SOFT"
+    assert deleted[0].status == EntityStatus.DELETED
+
+
+@pytest.mark.order(after="test_delete_api_object")
+def test_read_deleted_api_object(
+    client: AtlanClient, connection: Connection, api_object_overload: APIObject
+):
+    deleted = client.asset.get_by_guid(api_object_overload.guid, asset_type=APIObject)
+    assert deleted
+    assert deleted.guid == api_object_overload.guid
+    assert deleted.qualified_name == api_object_overload.qualified_name
+    assert deleted.status == EntityStatus.DELETED
+
+
+@pytest.mark.order(after="test_read_deleted_api_object")
+def test_restore_object(
+    client: AtlanClient, connection: Connection, api_object_overload: APIObject
+):
+    assert api_object_overload.qualified_name
+    assert client.asset.restore(
+        asset_type=APIObject, qualified_name=api_object_overload.qualified_name
+    )
+    assert api_object_overload.qualified_name
+    restored = client.asset.get_by_qualified_name(
+        asset_type=APIObject, qualified_name=api_object_overload.qualified_name
+    )
+    assert restored
+    assert restored.guid == api_object_overload.guid
+    assert restored.qualified_name == api_object_overload.qualified_name
+    assert restored.status == EntityStatus.ACTIVE
+
+
 @pytest.fixture(scope="module")
 def api_query(
     client: AtlanClient, connection: Connection
@@ -448,6 +543,100 @@ def test_api_query_overload_3(
         == API_QUERY_REFERENCE_OBJECT_QUALIFIED_NAME
     )
     assert api_query_overload_3.connector_name == AtlanConnectorType.API.value
+
+
+def test_update_api_query(
+    client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
+):
+    assert api_query_overload_3.qualified_name
+    assert api_query_overload_3.name
+    updated = client.asset.update_certificate(
+        asset_type=APIQuery,
+        qualified_name=api_query_overload_3.qualified_name,
+        name=api_query_overload_3.name,
+        certificate_status=CERTIFICATE_STATUS,
+        message=CERTIFICATE_MESSAGE,
+    )
+    assert updated
+    assert updated.certificate_status_message == CERTIFICATE_MESSAGE
+    assert api_query_overload_3.qualified_name
+    assert api_query_overload_3.name
+    updated = client.asset.update_announcement(
+        asset_type=APIQuery,
+        qualified_name=api_query_overload_3.qualified_name,
+        name=api_query_overload_3.name,
+        announcement=Announcement(
+            announcement_type=ANNOUNCEMENT_TYPE,
+            announcement_title=ANNOUNCEMENT_TITLE,
+            announcement_message=ANNOUNCEMENT_MESSAGE,
+        ),
+    )
+    assert updated
+    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+    assert updated.announcement_title == ANNOUNCEMENT_TITLE
+    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+
+
+@pytest.mark.order(after="test_update_api_query")
+def test_retrieve_api_query(
+    client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
+):
+    b = client.asset.get_by_guid(api_query_overload_3.guid, asset_type=APIQuery)
+    assert b
+    assert not b.is_incomplete
+    assert b.guid == api_query_overload_3.guid
+    assert b.qualified_name == api_query_overload_3.qualified_name
+    assert b.name == api_query_overload_3.name
+    assert b.connector_name == api_query_overload_3.connector_name
+    assert b.connection_qualified_name == api_query_overload_3.connection_qualified_name
+    assert b.certificate_status == CERTIFICATE_STATUS
+    assert b.certificate_status_message == CERTIFICATE_MESSAGE
+
+
+@pytest.mark.order(after="test_retrieve_api_query")
+def test_delete_api_query(
+    client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
+):
+    response = client.asset.delete_by_guid(api_query_overload_3.guid)
+    assert response
+    assert not response.assets_created(asset_type=APIQuery)
+    assert not response.assets_updated(asset_type=APIQuery)
+    deleted = response.assets_deleted(asset_type=APIQuery)
+    assert deleted
+    assert len(deleted) == 1
+    assert deleted[0].guid == api_query_overload_3.guid
+    assert deleted[0].qualified_name == api_query_overload_3.qualified_name
+    assert deleted[0].delete_handler == "SOFT"
+    assert deleted[0].status == EntityStatus.DELETED
+
+
+@pytest.mark.order(after="test_delete_api_query")
+def test_read_deleted_api_query(
+    client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
+):
+    deleted = client.asset.get_by_guid(api_query_overload_3.guid, asset_type=APIQuery)
+    assert deleted
+    assert deleted.guid == api_query_overload_3.guid
+    assert deleted.qualified_name == api_query_overload_3.qualified_name
+    assert deleted.status == EntityStatus.DELETED
+
+
+@pytest.mark.order(after="test_read_deleted_api_query")
+def test_restore_query(
+    client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
+):
+    assert api_query_overload_3.qualified_name
+    assert client.asset.restore(
+        asset_type=APIQuery, qualified_name=api_query_overload_3.qualified_name
+    )
+    assert api_query_overload_3.qualified_name
+    restored = client.asset.get_by_qualified_name(
+        asset_type=APIQuery, qualified_name=api_query_overload_3.qualified_name
+    )
+    assert restored
+    assert restored.guid == api_query_overload_3.guid
+    assert restored.qualified_name == api_query_overload_3.qualified_name
+    assert restored.status == EntityStatus.ACTIVE
 
 
 @pytest.fixture(scope="module")
@@ -733,3 +922,116 @@ def test_api_field_parent_query_overload(
     assert (
         api_field_parent_query_overload.connector_name == AtlanConnectorType.API.value
     )
+
+
+def test_update_api_field(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_query_overload: APIField,
+):
+    assert api_field_parent_query_overload.qualified_name
+    assert api_field_parent_query_overload.name
+    updated = client.asset.update_certificate(
+        asset_type=APIField,
+        qualified_name=api_field_parent_query_overload.qualified_name,
+        name=api_field_parent_query_overload.name,
+        certificate_status=CERTIFICATE_STATUS,
+        message=CERTIFICATE_MESSAGE,
+    )
+    assert updated
+    assert updated.certificate_status_message == CERTIFICATE_MESSAGE
+    assert api_field_parent_query_overload.qualified_name
+    assert api_field_parent_query_overload.name
+    updated = client.asset.update_announcement(
+        asset_type=APIField,
+        qualified_name=api_field_parent_query_overload.qualified_name,
+        name=api_field_parent_query_overload.name,
+        announcement=Announcement(
+            announcement_type=ANNOUNCEMENT_TYPE,
+            announcement_title=ANNOUNCEMENT_TITLE,
+            announcement_message=ANNOUNCEMENT_MESSAGE,
+        ),
+    )
+    assert updated
+    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+    assert updated.announcement_title == ANNOUNCEMENT_TITLE
+    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+
+
+@pytest.mark.order(after="test_update_api_field")
+def test_retrieve_api_field(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_query_overload: APIField,
+):
+    b = client.asset.get_by_guid(
+        api_field_parent_query_overload.guid, asset_type=APIField
+    )
+    assert b
+    assert not b.is_incomplete
+    assert b.guid == api_field_parent_query_overload.guid
+    assert b.qualified_name == api_field_parent_query_overload.qualified_name
+    assert b.name == api_field_parent_query_overload.name
+    assert b.connector_name == api_field_parent_query_overload.connector_name
+    assert (
+        b.connection_qualified_name
+        == api_field_parent_query_overload.connection_qualified_name
+    )
+    assert b.certificate_status == CERTIFICATE_STATUS
+    assert b.certificate_status_message == CERTIFICATE_MESSAGE
+
+
+@pytest.mark.order(after="test_retrieve_api_field")
+def test_delete_api_field(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_query_overload: APIField,
+):
+    response = client.asset.delete_by_guid(api_field_parent_query_overload.guid)
+    assert response
+    assert not response.assets_created(asset_type=APIField)
+    assert not response.assets_updated(asset_type=APIField)
+    deleted = response.assets_deleted(asset_type=APIField)
+    assert deleted
+    assert len(deleted) == 1
+    assert deleted[0].guid == api_field_parent_query_overload.guid
+    assert deleted[0].qualified_name == api_field_parent_query_overload.qualified_name
+    assert deleted[0].delete_handler == "SOFT"
+    assert deleted[0].status == EntityStatus.DELETED
+
+
+@pytest.mark.order(after="test_delete_api_field")
+def test_read_deleted_api_field(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_query_overload: APIField,
+):
+    deleted = client.asset.get_by_guid(
+        api_field_parent_query_overload.guid, asset_type=APIField
+    )
+    assert deleted
+    assert deleted.guid == api_field_parent_query_overload.guid
+    assert deleted.qualified_name == api_field_parent_query_overload.qualified_name
+    assert deleted.status == EntityStatus.DELETED
+
+
+@pytest.mark.order(after="test_read_deleted_api_field")
+def test_restore_field(
+    client: AtlanClient,
+    connection: Connection,
+    api_field_parent_query_overload: APIField,
+):
+    assert api_field_parent_query_overload.qualified_name
+    assert client.asset.restore(
+        asset_type=APIField,
+        qualified_name=api_field_parent_query_overload.qualified_name,
+    )
+    assert api_field_parent_query_overload.qualified_name
+    restored = client.asset.get_by_qualified_name(
+        asset_type=APIField,
+        qualified_name=api_field_parent_query_overload.qualified_name,
+    )
+    assert restored
+    assert restored.guid == api_field_parent_query_overload.guid
+    assert restored.qualified_name == api_field_parent_query_overload.qualified_name
+    assert restored.status == EntityStatus.ACTIVE

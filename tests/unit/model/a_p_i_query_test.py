@@ -72,9 +72,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = APIQuery.updater(
-        qualified_name=API_QUERY_QUALIFIED_NAME, name=API_QUERY_NAME
-    )
+    sut = APIQuery.updater(qualified_name=API_QUERY_QUALIFIED_NAME, name=API_QUERY_NAME)
 
     assert sut.qualified_name == API_QUERY_QUALIFIED_NAME
     assert sut.name == API_QUERY_NAME

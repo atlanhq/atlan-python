@@ -20,7 +20,9 @@ def test_create_with_missing_parameters_raise_value_error(
     name: str, connection_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        APIObject.creator(name=name, connection_qualified_name=connection_qualified_name)
+        APIObject.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
 
 
 def test_create():
