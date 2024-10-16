@@ -400,7 +400,7 @@ class FluentLineage:
         self._includes_in_results: List[LineageFilter] = self._to_list(
             includes_in_results
         )
-        self._include_on_relations: List[Union[str, AtlanField]] = self._to_list(
+        self._includes_on_relations: List[Union[str, AtlanField]] = self._to_list(
             includes_on_relations
         )
         self._includes_condition: FilterList.Condition = includes_condition
@@ -536,7 +536,7 @@ class FluentLineage:
         """
         validate_type(name="field", _type=(str, AtlanField), value=field)
         clone = self._clone()
-        clone._include_on_relations.append(field)
+        clone._includes_on_relations.append(field)
         return clone
 
     def includes_condition(
@@ -654,10 +654,10 @@ class FluentLineage:
                 field.atlan_field_name if isinstance(field, AtlanField) else field
                 for field in self._includes_on_results
             ]
-        if self._include_on_relations:
-            request.attributes = [
+        if self._includes_on_relations:
+            request.relation_attributes = [  # type: ignore
                 field.atlan_field_name if isinstance(field, AtlanField) else field
-                for field in self._include_on_relations
+                for field in self._includes_on_relations
             ]
         if self._size:
             request.size = self._size

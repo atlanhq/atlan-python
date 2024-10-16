@@ -1,3 +1,15 @@
+## 2.5.3 (October 16, 2024)
+
+### Bug fixes
+
+- Added the missing `FluentLineage.includes_on_relations` method and the `LineageListRequest.relation_attributes` field.
+
+### New features
+
+- Added a new connector type (`INRIVER`).
+- Added `APIObject`, `APIQuery`, and `APIField` assets, along with their `creator()` methods.
+- Added a boolean field `immediate_neighbors` to the `LineageListRequest`, which allows users to include immediate neighbors of the starting `asset` in the response (`True`), or exclude them (`False` - default).
+
 ## 2.5.2 (October 11, 2024)
 
 ### Bug fixes
