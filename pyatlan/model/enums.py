@@ -2198,6 +2198,16 @@ class WorkflowPackage(str, Enum):
     TRINO = "atlan-trino"
 
 
+class CustomWorkflowPackage(str, Enum):
+    ASSET_IMPORT = "csa-asset-import"
+
+
+class AssetImportInputHandling(str, Enum):
+    UPSERT = "upsert"
+    PARTIAL = "partial"
+    UPDATE = "update"
+
+
 class UTMTags(str, Enum):
     # PAGE_ entries indicate where the action was taken.
     # Search was made from the home page.
