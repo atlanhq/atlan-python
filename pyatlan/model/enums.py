@@ -2412,6 +2412,11 @@ class AdfActivityState(str, Enum):
     INACTIVE = "INACTIVE"
 
 
+class APIQueryParamTypeEnum(str, Enum):
+    INPUT = "Input"
+    OUTPUT = "Output"
+
+
 class AtlasGlossaryCategoryType(str, Enum):
     DOCUMENT_FOLDER = "DOCUMENT_FOLDER"
 

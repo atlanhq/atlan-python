@@ -1,0 +1,114 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            parent_api_object_qualified_name: Optional[str] = None,
+            parent_api_query_qualified_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+            api_field_type: Optional[str] = None,
+            api_field_type_secondary: Optional[str] = None,
+            is_api_object_reference: Optional[bool] = False,
+            reference_api_object_qualified_name: Optional[str] = None,
+            api_query_param_type: Optional[APIQueryParamTypeEnum] = None,
+        ) -> APIField.Attributes:
+            validate_required_fields(["name"], [name])
+            if parent_api_object_qualified_name is None or (
+                isinstance(parent_api_object_qualified_name, str)
+                and not parent_api_object_qualified_name.strip()
+            ):
+                if parent_api_query_qualified_name is None or (
+                    isinstance(parent_api_query_qualified_name, str)
+                    and not parent_api_query_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        (
+                            "Either parent_api_object_qualified_name or "
+                            "parent_api_query_qualified_name requires a valid value"
+                        )
+                    )
+            elif (
+                isinstance(parent_api_query_qualified_name, str)
+                and parent_api_query_qualified_name.strip()
+            ):
+                raise ValueError(
+                    "Both parent_api_object_qualified_name and parent_api_query_qualified_name cannot be valid"
+                )
+
+            if is_api_object_reference:
+                if not reference_api_object_qualified_name or (
+                    isinstance(reference_api_object_qualified_name, str)
+                    and not reference_api_object_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        "Set valid qualified name for reference_api_object_qualified_name"
+                    )
+            else:
+                if (
+                    reference_api_object_qualified_name
+                    and isinstance(reference_api_object_qualified_name, str)
+                    and reference_api_object_qualified_name.strip()
+                ):
+                    raise ValueError(
+                        "Set is_api_object_reference to true to set reference_api_object_qualified_name"
+                    )
+
+            # connector-name
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+                connection_qn = connection_qualified_name
+            elif parent_api_object_qualified_name:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    parent_api_object_qualified_name,
+                    "parent_api_object_qualified_name",
+                    4,
+                )
+            elif parent_api_query_qualified_name:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    parent_api_query_qualified_name,
+                    "parent_api_query_qualified_name",
+                    4,
+                )
+
+            if parent_api_object_qualified_name:
+                return APIField.Attributes(
+                    name=name,
+                    qualified_name=f"{parent_api_object_qualified_name}/{name}",
+                    connection_qualified_name=connection_qn,
+                    connector_name=connector_name,
+                    api_field_type=api_field_type,
+                    api_field_type_secondary=api_field_type_secondary,
+                    api_is_object_reference=is_api_object_reference,
+                    api_object_qualified_name=(
+                        reference_api_object_qualified_name
+                        if is_api_object_reference
+                        else None
+                    ),
+                    api_object=APIObject.ref_by_qualified_name(
+                        str(parent_api_object_qualified_name)
+                    ),
+                    api_query_param_type=api_query_param_type,
+                )
+            else:
+                return APIField.Attributes(
+                    name=name,
+                    qualified_name=f"{parent_api_query_qualified_name}/{name}",
+                    connection_qualified_name=connection_qn,
+                    connector_name=connector_name,
+                    api_field_type=api_field_type,
+                    api_field_type_secondary=api_field_type_secondary,
+                    api_is_object_reference=is_api_object_reference,
+                    api_object_qualified_name=(
+                        reference_api_object_qualified_name
+                        if is_api_object_reference
+                        else None
+                    ),
+                    api_query=APIQuery.ref_by_qualified_name(
+                        str(parent_api_query_qualified_name)
+                    ),
+                    api_query_param_type=api_query_param_type,
+                )

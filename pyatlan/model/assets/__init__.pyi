@@ -160,7 +160,10 @@ __all__ = [
     "ModelAttributeAssociation",
     "ModelDataModel",
     "APISpec",
+    "APIQuery",
+    "APIObject",
     "APIPath",
+    "APIField",
     "DataStudioAsset",
     "S3Bucket",
     "S3Object",
@@ -291,7 +294,10 @@ from .a_d_l_s_account import ADLSAccount
 from .a_d_l_s_container import ADLSContainer
 from .a_d_l_s_object import ADLSObject
 from .a_p_i import API
+from .a_p_i_field import APIField
+from .a_p_i_object import APIObject
 from .a_p_i_path import APIPath
+from .a_p_i_query import APIQuery
 from .a_p_i_spec import APISpec
 from .a_w_s import AWS
 from .auth_service import AuthService

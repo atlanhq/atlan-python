@@ -14,7 +14,10 @@ You can interact with all of the following different kinds of assets:
     asset/adlscontainer
     asset/adlsobject
     asset/api
+    asset/apifield
+    asset/apiobject
     asset/apipath
+    asset/apiquery
     asset/apispec
     asset/aws
     asset/accesscontrol
