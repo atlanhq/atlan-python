@@ -1,5 +1,6 @@
 import datetime
 import logging
+import time
 from typing import Callable, List, Optional, Type
 
 import pytest
@@ -565,25 +566,20 @@ class TestColumn:
         assert "columns:" in table_contract
         assert f"- name: {table_column.column.name}" in table_contract
 
-    def test_contact_init_spec_raw(self, client: AtlanClient):
+    def test_contact_init_spec(self, client: AtlanClient):
         assert TestTable.table
         assert TestColumn.column
         assert TestColumn.column.name
         assert TestTable.table.type_name
         assert TestTable.table.qualified_name
+        # Ensure the column is properly indexed; otherwise,
+        # the generated spec may return empty (columns: []).
+        time.sleep(5)
         contact_spec_str = client.contracts.generate_initial_spec(asset=TestTable.table)
         assert contact_spec_str
         self._assert_table_contract(contact_spec_str, TestColumn)
 
-    def test_contact_init_spec_model(self, client: AtlanClient):
-        assert TestTable.table
-        assert TestTable.table.name
-        assert TestColumn.column
-        assert TestColumn.column.name
-        assert TestTable.table.type_name
-        assert TestTable.table.qualified_name
-        contact_spec_str = client.contracts.generate_initial_spec(asset=TestTable.table)
-        assert contact_spec_str
+        # Test spec model yaml conversion
         contract_spec = DataContractSpec.from_yaml(contact_spec_str)
         assert (
             contract_spec
@@ -681,20 +677,27 @@ class TestColumn:
 @pytest.mark.order(after="TestColumn")
 class TestReadme:
     readme: Optional[Readme] = None
+    CONTENT = "<h1>Important</h1>"
 
     def test_create(
         self,
         client: AtlanClient,
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-        assert TestColumn.column
-        readme = Readme.create(asset=TestColumn.column, content="<h1>Important</h1>")
+
+        assert TestColumn.column and TestColumn.column.guid
+        readme = Readme.create(
+            asset=Column.ref_by_guid(guid=TestColumn.column.guid),
+            content=self.CONTENT,
+            asset_name=TestColumn.column.name,
+        )
         response = upsert(readme)
         assert (reaadmes := response.assets_created(asset_type=Readme))
         assert len(reaadmes) == 1
         assert (columns := response.assets_updated(asset_type=Column))
         assert len(columns) == 1
         readme = client.asset.get_by_guid(guid=reaadmes[0].guid, asset_type=Readme)
+        assert readme.description == self.CONTENT
         TestReadme.readme = readme
 
     @pytest.mark.order(after="test_create")
