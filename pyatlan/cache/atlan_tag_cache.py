@@ -19,6 +19,16 @@ class AtlanTagCache:
 
     caches: Dict[int, "AtlanTagCache"] = {}
 
+    def __init__(self, typedef_client: TypeDefClient):
+        self.typdef_client: TypeDefClient = typedef_client
+        self.cache_by_id: Dict[str, AtlanTagDef] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.deleted_ids: Set[str] = set()
+        self.deleted_names: Set[str] = set()
+        self.map_id_to_source_tags_attr_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
+
     @classmethod
     def get_cache(cls) -> "AtlanTagCache":
         from pyatlan.client.atlan import AtlanClient
@@ -67,16 +77,6 @@ class AtlanTagCache:
         :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details
         """
         return cls.get_cache()._get_source_tags_attr_id(id)
-
-    def __init__(self, typedef_client: TypeDefClient):
-        self.typdef_client: TypeDefClient = typedef_client
-        self.cache_by_id: Dict[str, AtlanTagDef] = {}
-        self.map_id_to_name: Dict[str, str] = {}
-        self.map_name_to_id: Dict[str, str] = {}
-        self.deleted_ids: Set[str] = set()
-        self.deleted_names: Set[str] = set()
-        self.map_id_to_source_tags_attr_id: Dict[str, str] = {}
-        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
         """
