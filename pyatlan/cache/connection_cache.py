@@ -6,11 +6,12 @@ import logging
 import threading
 from typing import Dict, Optional, Union
 
-from pyatlan.cache.abstract_asset_cache import AbstractAssetCache
+from pyatlan.cache.abstract_asset_cache import AbstractAssetCache, AbstractAssetName
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Connection
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.search import Term
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,16 +55,19 @@ class ConnectionCache(AbstractAssetCache):
         )
 
     @classmethod
-    def get_by_name(cls, name: str, allow_refresh: bool = True) -> Connection:
+    def get_by_name(
+        cls, name: ConnectionName, allow_refresh: bool = True
+    ) -> Connection:
         return cls.get_cache()._get_by_name(name=name, allow_refresh=allow_refresh)
 
-    def lookup_by_guid(self, guid: Optional[str]) -> None:
+    def lookup_by_guid(self, guid: str) -> None:
         if not guid:
             return
         with self.lock:
             response = (
                 FluentSearch(_includes_on_results=self.SEARCH_ATTRIBUTES)
-                .select()
+                .where(Term.with_state("ACTIVE"))
+                .where(Term.with_super_type_names("Asset"))
                 .where(Connection.GUID.eq(guid))
                 .execute(self.client)
             )
@@ -71,13 +75,14 @@ class ConnectionCache(AbstractAssetCache):
             if candidate and isinstance(candidate, Connection):
                 self.cache(candidate)
 
-    def lookup_by_qualified_name(self, connection_qn: Optional[str]) -> None:
+    def lookup_by_qualified_name(self, connection_qn: str) -> None:
         if not connection_qn:
             return
         with self.lock:
             response = (
                 FluentSearch(_includes_on_results=self.SEARCH_ATTRIBUTES)
-                .select()
+                .where(Term.with_state("ACTIVE"))
+                .where(Term.with_super_type_names("Asset"))
                 .where(Connection.QUALIFIED_NAME.eq(connection_qn))
                 .execute(self.client)
             )
@@ -111,7 +116,7 @@ class ConnectionCache(AbstractAssetCache):
         return str(ConnectionName(asset))
 
 
-class ConnectionName:
+class ConnectionName(AbstractAssetName):
     _TYPE_NAME = "Connection"
 
     def __init__(

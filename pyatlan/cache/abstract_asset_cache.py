@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2024 Atlan Pte. Ltd.
+from __future__ import annotations
 
 import threading
 from abc import ABC, abstractmethod
@@ -78,12 +79,14 @@ class AbstractAssetCache(ABC):
         if not guid:
             raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
                 qualified_name,
-                AtlanConnectorType.get_connector_name(qualified_name),
+                AtlanConnectorType._get_connector_type_from_qualified_name(
+                    qualified_name
+                ),
             )
         return self._get_by_guid(guid=guid, allow_refresh=False)
 
-    def _get_by_name(self, name: Any, allow_refresh: bool = True):
-        if not name:
+    def _get_by_name(self, name: AbstractAssetName, allow_refresh: bool = True):
+        if not isinstance(name, AbstractAssetName):
             raise ErrorCode.MISSING_NAME.exception_with_parameters()
         guid = self.name_to_guid.get(str(name))
         if not guid and allow_refresh:
@@ -94,3 +97,15 @@ class AbstractAssetCache(ABC):
                 name._TYPE_NAME, name
             )
         return self._get_by_guid(guid=guid, allow_refresh=False)
+
+
+class AbstractAssetName(ABC):
+    _TYPE_NAME = ""
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def __str__(self):
+        pass

@@ -564,9 +564,11 @@ class ErrorCode(Enum):
     )
     MISSING_NAME = (
         400,
-        "ATLAN-PYTHON-400-044",
-        "No name was provided when attempting to retrieve an object.",
-        "You must provide the name of the object when attempting to retrieve one.",
+        "ATLAN-PYTHON-400-065",
+        "No name instance was provided when attempting to retrieve an object.",
+        "You must provide the name of the object when attempting to retrieve one. "
+        + "eg: SourceTagName('snowflake/development@@DB/SCH/SENSITIVITY') OR "
+        + "ConnectionName('snowflake/development'). ",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (
