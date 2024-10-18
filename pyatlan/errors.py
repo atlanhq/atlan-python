@@ -555,6 +555,20 @@ class ErrorCode(Enum):
         + "configure OpenLineage for this connector before you can send events for it.",
         InvalidRequestError,
     )
+    MISSING_ID = (
+        400,
+        "ATLAN-PYTHON-400-065",
+        "No ID was provided when attempting to retrieve or update the object.",
+        "You must provide an ID when attempting to retrieve or update an object.",
+        InvalidRequestError,
+    )
+    MISSING_NAME = (
+        400,
+        "ATLAN-PYTHON-400-065",
+        "No name instance was provided when attempting to retrieve an object.",
+        "You must provide the name of the object when attempting to retrieve one.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

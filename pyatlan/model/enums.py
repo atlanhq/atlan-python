@@ -146,11 +146,18 @@ class AtlanConnectorType(str, Enum):
         cls, qualified_name: str
     ) -> "AtlanConnectorType":
         tokens = qualified_name.split("/")
-        if len(tokens) > 1:
-            return AtlanConnectorType[tokens[1].upper()]
-        raise ValueError(
-            f"Could not determine AtlanConnectorType from {qualified_name}"
-        )
+        if len(tokens) < 2:
+            raise ValueError(
+                f"Qualified name '{qualified_name}' does not contain enough segments."
+            )
+        connector_type_key = tokens[1].upper()
+        # Check if the connector_type_key exists in AtlanConnectorType
+        if connector_type_key not in AtlanConnectorType.__members__:
+            raise ValueError(
+                f"Could not determine AtlanConnectorType from '{qualified_name}'; "
+                f"'{connector_type_key}' is not a valid connector type."
+            )
+        return AtlanConnectorType[connector_type_key]
 
     def __new__(
         cls, value: str, category: AtlanConnectionCategory
