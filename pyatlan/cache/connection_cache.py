@@ -19,6 +19,17 @@ lock = threading.Lock()
 
 
 class ConnectionCache(AbstractAssetCache):
+    """
+    Lazily-loaded cache for translating between
+    a connection's simplified name its details.
+
+    - guid = UUID of the connection
+        for eg: 9c677e77-e01d-40e0-85b7-8ba4cd7d0ea9
+    - qualified_name = Atlan-internal name of the connection (with epoch)
+        for eg: default/snowflake/1234567890
+    - name = simple name of the form {{connectorType}}/{{connectorName}},
+        for eg: snowflake/development
+    """
 
     _SEARCH_FIELDS = [
         Connection.NAME,
@@ -44,12 +55,35 @@ class ConnectionCache(AbstractAssetCache):
 
     @classmethod
     def get_by_guid(cls, guid: str, allow_refresh: bool = True) -> Connection:
+        """
+        Retrieve a connection from the cache by its UUID.
+        If the asset is not found, it will be looked up and added to the cache.
+
+        :param guid: UUID of the connection in Atlan
+            for eg: 9c677e77-e01d-40e0-85b7-8ba4cd7d0ea9
+        :returns: connection (if found)
+        :raises AtlanError: on any API communication problem if the cache needs to be refreshed
+        :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
+        :raises InvalidRequestError: if no UUID was provided for the connection to retrieve
+        """
         return cls.get_cache()._get_by_guid(guid=guid, allow_refresh=allow_refresh)
 
     @classmethod
     def get_by_qualified_name(
         cls, qualified_name: str, allow_refresh: bool = True
     ) -> Connection:
+        """
+        Retrieve a connection from the cache by its unique Atlan-internal name.
+
+        :param qualified_name: unique Atlan-internal name of the connection
+            for eg: default/snowflake/1234567890
+        :param allow_refresh: whether to allow a refresh of the cache (`True`) or not (`False`)
+        :param qualified_name: unique Atlan-internal name of the connection
+        :returns: connection (if found)
+        :raises AtlanError: on any API communication problem if the cache needs to be refreshed
+        :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
+        :raises InvalidRequestError: if no qualified_name was provided for the connection to retrieve
+        """
         return cls.get_cache()._get_by_qualified_name(
             qualified_name=qualified_name, allow_refresh=allow_refresh
         )
@@ -58,6 +92,18 @@ class ConnectionCache(AbstractAssetCache):
     def get_by_name(
         cls, name: ConnectionName, allow_refresh: bool = True
     ) -> Connection:
+        """
+        Retrieve an connection from the cache by its uniquely identifiable name.
+
+        :param name: uniquely identifiable name of the connection in Atlan
+            In the form of {{connectorType}}/{{connectorName}}
+            for eg: snowflake/development
+        :param allow_refresh: whether to allow a refresh of the cache (`True`) or not (`False`)
+        :returns: connection (if found)
+        :raises AtlanError: on any API communication problem if the cache needs to be refreshed
+        :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
+        :raises InvalidRequestError: if no name was provided for the connection to retrieve
+        """
         return cls.get_cache()._get_by_name(name=name, allow_refresh=allow_refresh)
 
     def lookup_by_guid(self, guid: str) -> None:
@@ -117,6 +163,13 @@ class ConnectionCache(AbstractAssetCache):
 
 
 class ConnectionName(AbstractAssetName):
+    """
+    Unique identity for a connection,
+    in the form: {{type}}/{{name}}
+
+    - For eg: snowflake/development
+    """
+
     _TYPE_NAME = "Connection"
 
     def __init__(

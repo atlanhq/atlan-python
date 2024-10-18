@@ -20,6 +20,17 @@ lock = threading.Lock()
 
 
 class SourceTagCache(AbstractAssetCache):
+    """
+    Lazily-loaded cache for translating between
+    source-synced tags and the qualifiedName of such.
+
+    - guid = UUID of the source tag
+        for eg: 9c677e77-e01d-40e0-85b7-8ba4cd7d0ea9
+    - qualified_name = of the source tag (with epoch)
+        for eg: default/snowflake/1234567890/DB/SCHEMA/TAG_NAME
+    - name = simple name of the form {{connectorType}}/{{connectorName}}@@DB/SCHEMA/TAG_NAME
+        for eg: snowflake/development@@DB/SCHEMA/TAG_NAME
+    """
 
     _SEARCH_FIELDS = [Asset.NAME]
     SEARCH_ATTRIBUTES = [field.atlan_field_name for field in _SEARCH_FIELDS]
@@ -41,18 +52,53 @@ class SourceTagCache(AbstractAssetCache):
 
     @classmethod
     def get_by_guid(cls, guid: str, allow_refresh: bool = True) -> Tag:
+        """
+        Retrieve a source tag from the cache by its UUID.
+        If the asset is not found, it will be looked up and added to the cache.
+
+        :param guid: UUID of the source tag in Atlan
+            for eg: 9c677e77-e01d-40e0-85b7-8ba4cd7d0ea9
+        :returns: source tag (if found)
+        :raises AtlanError: on any API communication problem if the cache needs to be refreshed
+        :raises NotFoundError: if the source tag cannot be found (does not exist) in Atlan
+        :raises InvalidRequestError: if no UUID was provided for the source tag to retrieve
+        """
         return cls.get_cache()._get_by_guid(guid=guid, allow_refresh=allow_refresh)
 
     @classmethod
     def get_by_qualified_name(
         cls, qualified_name: str, allow_refresh: bool = True
     ) -> Tag:
+        """
+        Retrieve a source tag from the cache by its unique Atlan-internal name.
+
+        :param qualified_name: unique Atlan-internal name of the source tag
+            for eg: default/snowflake/1234567890/DB/SCHEMA/TAG_NAME
+        :param allow_refresh: whether to allow a refresh of the cache (`True`) or not (`False`)
+        :param qualified_name: unique Atlan-internal name of the source tag
+        :returns: source tag (if found)
+        :raises AtlanError: on any API communication problem if the cache needs to be refreshed
+        :raises NotFoundError: if the source tag cannot be found (does not exist) in Atlan
+        :raises InvalidRequestError: if no qualified_name was provided for the source tag to retrieve
+        """
         return cls.get_cache()._get_by_qualified_name(
             qualified_name=qualified_name, allow_refresh=allow_refresh
         )
 
     @classmethod
     def get_by_name(cls, name: SourceTagName, allow_refresh: bool = True) -> Tag:
+        """
+        Retrieve an connection from the cache by its uniquely identifiable name.
+
+        :param name: uniquely identifiable name of the connection in Atlan.
+            In the form of {{connectorType}}/{{connectorName}}@@DB/SCHEMA/TAG_NAME
+            for eg: snowflake/development@@DB/SCHEMA/TAG_NAME
+        :param allow_refresh: whether to allow a refresh of the cache (`True`) or not (`False`)
+        :returns: the connection (if found)
+        :raises AtlanError: on any API communication problem if the cache needs to be refreshed
+        :raises NotFoundError: if the object cannot be found (does not exist) in Atlan
+        :raises InvalidRequestError: if no name was provided for the object to retrieve
+        """
         return cls.get_cache()._get_by_name(name=name, allow_refresh=allow_refresh)
 
     def lookup_by_guid(self, guid: str) -> None:
@@ -130,6 +176,13 @@ class SourceTagCache(AbstractAssetCache):
 
 
 class SourceTagName(AbstractAssetName):
+    """
+    Unique identity for a source tag,
+    in the form: {{connectorType}}/{{connectorName}}@@DB/SCHEMA/TAG_NAME
+
+    - For eg: snowflake/development
+    """
+
     _TYPE_NAME = "SourceTagAttachment"
     _CONNECTION_DELIMITER = "@@"
 
