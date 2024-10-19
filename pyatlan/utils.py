@@ -86,6 +86,14 @@ def attributes_to_params(
     return query_params
 
 
+def select_optional_set_fields(params: Dict[str, Any]) -> Dict:
+    """
+    Filter the provided parameters to include
+    only those fields that are not set to `None`.
+    """
+    return {key: value for key, value in params.items() if value is not None}
+
+
 def non_null(obj: Optional[object], def_value: object):
     return obj if obj is not None else def_value
 

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from __future__ import annotations
+
 import json
 from abc import ABC
 from typing import TYPE_CHECKING
@@ -251,7 +253,43 @@ class AtlanTag(AtlanObject):
             self._source_tag_attachements = [
                 SourceTagAttachment(**source_tag["attributes"])
                 for source_tag in self.attributes[attr_id]
+                if isinstance(source_tag, dict) and source_tag.get("attributes")
             ]
+
+    @classmethod
+    def of(
+        cls,
+        atlan_tag_name: AtlanTagName,
+        entity_guid: Optional[str] = None,
+        source_tag_attachment: Optional[SourceTagAttachment] = None,
+    ) -> AtlanTag:
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+
+        """
+        Construct an Atlan tag assignment for a specific entity.
+
+        :param atlan_tag_name: human-readable name of the Atlan tag
+        :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
+        :param source_tag_attachment: (optional) source-specific details for the tag
+        :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
+        """
+        tag = AtlanTag(
+            type_name=atlan_tag_name,
+            propagate=True,
+            remove_propagations_on_entity_delete=True,
+            restrict_propagation_through_lineage=False,
+            restrict_propagation_through_hierarchy=False,
+        )
+        if entity_guid:
+            tag.entity_guid = entity_guid
+            tag.entity_status = EntityStatus.ACTIVE
+        if source_tag_attachment:
+            source_tag_attr_id = (
+                AtlanTagCache.get_source_tags_attr_id(atlan_tag_name.id) or ""
+            )
+            tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
+            tag._source_tag_attachements.append(source_tag_attachment)
+        return tag
 
 
 class AtlanTags(AtlanObject):
