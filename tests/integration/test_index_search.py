@@ -2,15 +2,17 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from dataclasses import dataclass, field
 from datetime import datetime
-from time import time
+from time import sleep, time
 from typing import Generator, Set
 from unittest.mock import patch
 
 import pytest
 
+from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
+from pyatlan.model.core import AtlanTag, AtlanTagName
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fields.atlan_fields import SearchableField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
@@ -25,11 +27,13 @@ from pyatlan.model.search import (
     Term,
     Wildcard,
 )
+from pyatlan.model.structs import SourceTagAttachment, SourceTagAttachmentValue
 
 QUALIFIED_NAME = "qualifiedName"
 ASSET_GUID = Asset.GUID.keyword_field_name
 NOW_AS_TIMESTAMP = int(time() * 1000)
 NOW_AS_YYYY_MM_DD = datetime.today().strftime("%Y-%m-%d")
+EXISTING_TAG = "Issue"
 EXISTING_SOURCE_SYNCED_TAG = "Confidential"
 
 VALUES_FOR_TERM_QUERIES = {
@@ -134,29 +138,12 @@ def test_search(client: AtlanClient, asset_tracker, cls):
         asset_tracker.missing_types.add(name)
 
 
-def test_search_source_synced_assets(client: AtlanClient):
-    tables = [
-        table
-        for table in (
-            FluentSearch()
-            .select()
-            .where(Asset.TYPE_NAME.eq("Table"))
-            .where(
-                CompoundQuery.tagged_with_value(
-                    EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted"
-                )
-            )
-            .execute(client=client)
-        )
-    ]
+def _assert_source_tag(tables, source_tag, source_tag_value):
     assert tables and len(tables) > 0
     for table in tables:
-        assert isinstance(table, Table)
         tags = table.atlan_tags
         assert tags and len(tags) > 0
-        synced_tags = [
-            tag for tag in tags if str(tag.type_name) == EXISTING_SOURCE_SYNCED_TAG
-        ]
+        synced_tags = [tag for tag in tags if str(tag.type_name) == source_tag]
         assert synced_tags and len(synced_tags) > 0
         for st in synced_tags:
             attachments = st.source_tag_attachements
@@ -166,7 +153,92 @@ def test_search_source_synced_assets(client: AtlanClient):
                 assert values and len(values) > 0
                 for value in values:
                     attached_value = value.tag_attachment_value
-                    assert attached_value and attached_value == "Highly Restricted"
+                    assert attached_value and attached_value == source_tag_value
+
+
+def test_search_source_synced_assets(client: AtlanClient):
+    tables = [
+        table
+        for table in (
+            FluentSearch()
+            .select()
+            .where(CompoundQuery.asset_type(Table))
+            .where(
+                CompoundQuery.tagged_with_value(
+                    EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted"
+                )
+            )
+            .execute(client=client)
+        )
+        if isinstance(table, Table)
+    ]
+    _assert_source_tag(tables, EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted")
+
+
+def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
+    # Make sure no tags are assigned initially
+    assert table.guid
+    table = client.asset.get_by_guid(guid=table.guid, asset_type=Table)
+    assert not table.atlan_tags
+    assert table.name and table.qualified_name
+
+    source_tag_name = SourceTagName(
+        "snowflake/development@@ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL"
+    )
+    to_update = table.updater(table.qualified_name, table.name)
+    to_update.atlan_tags = [
+        AtlanTag.of(atlan_tag_name=AtlanTagName(EXISTING_TAG)),
+        AtlanTag.of(
+            atlan_tag_name=AtlanTagName(EXISTING_SOURCE_SYNCED_TAG),
+            source_tag_attachment=SourceTagAttachment.by_name(
+                name=source_tag_name,
+                source_tag_values=[
+                    SourceTagAttachmentValue(tag_attachment_value="Not Restricted")
+                ],
+            ),
+        ),
+    ]
+    response = client.asset.save(to_update, replace_atlan_tags=True)
+
+    assert (tables := response.assets_updated(asset_type=Table)) and len(tables) == 1
+    assert (
+        tables
+        and len(tables) == 1
+        and tables[0].atlan_tags
+        and len(tables[0].atlan_tags) == 2
+    )
+    for tag in tables[0].atlan_tags:
+        assert str(tag.type_name) in (EXISTING_TAG, EXISTING_SOURCE_SYNCED_TAG)
+
+    # Make sure source tag is now attached
+    # to the table with the provided value
+    sleep(5)
+    tables = [
+        table
+        for table in (
+            FluentSearch()
+            .select()
+            .where(CompoundQuery.asset_type(Table))
+            .where(Table.QUALIFIED_NAME.eq(table.qualified_name))
+            .where(
+                CompoundQuery.tagged_with_value(
+                    EXISTING_SOURCE_SYNCED_TAG, "Not Restricted"
+                )
+            )
+            .execute(client=client)
+        )
+        if isinstance(table, Table)
+    ]
+
+    assert (
+        tables
+        and len(tables) == 1
+        and tables[0].atlan_tags
+        and len(tables[0].atlan_tags) == 2
+    )
+    for tag in tables[0].atlan_tags:
+        assert str(tag.type_name) in (EXISTING_TAG, EXISTING_SOURCE_SYNCED_TAG)
+    _assert_source_tag(tables, EXISTING_SOURCE_SYNCED_TAG, "Not Restricted")
 
 
 def test_search_next_page(client: AtlanClient):
