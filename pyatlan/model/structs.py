@@ -4,17 +4,21 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
 from pydantic.v1 import BaseModel, Extra, Field, root_validator
 
 from pyatlan.model.enums import (
+    AtlanConnectorType,
     BadgeComparisonOperator,
     BadgeConditionColor,
     SourceCostUnitType,
 )
 from pyatlan.model.utils import to_camel_case
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import select_optional_set_fields, validate_required_fields
+
+if TYPE_CHECKING:
+    from pyatlan.cache.source_tag_cache import SourceTagName
 
 
 class AtlanObject(BaseModel):
@@ -160,6 +164,133 @@ class SourceTagAttachment(AtlanObject):
     is_source_tag_synced: Optional[bool] = Field(default=None, description="")
     source_tag_sync_timestamp: Optional[datetime] = Field(default=None, description="")
     source_tag_sync_error: Optional[str] = Field(default=None, description="")
+
+    @classmethod
+    def by_name(
+        cls,
+        name: SourceTagName,
+        source_tag_values: List[SourceTagAttachmentValue],
+        source_tag_sync_timestamp: Optional[datetime] = None,
+        is_source_tag_synced: Optional[bool] = None,
+        source_tag_sync_error: Optional[str] = None,
+    ):
+        from pyatlan.cache.source_tag_cache import SourceTagCache
+
+        """
+        Create a source-synced tag attachment with
+        a particular value when the attachment is synced to the source.
+
+        :param client: connectivity to an Atlan tenant
+        :param name: unique name of the source tag in Atlan
+        :param source_tag_values: value of the tag attachment from the source
+        :param is_source_tag_synced: whether the tag attachment has been synced at the source (True) or not (False)
+        :param source_tag_sync_timestamp: time (epoch) when the tag attachment was synced at the source, in milliseconds
+        :param source_tag_sync_error: error message if the tag attachment sync at the source failed
+        :returns: a SourceTagAttachment with the provided information
+        :raises AtlanError: on any error communicating via the underlying APIs
+        :raises NotFoundError: if the source-synced tag cannot be resolved
+        """
+        tag = SourceTagCache.get_by_name(name)
+        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
+            tag.qualified_name or ""
+        )
+        return cls.of(
+            source_tag_name=tag.name,
+            source_tag_qualified_name=tag.qualified_name,
+            source_tag_guid=tag.guid,
+            source_tag_connector_name=tag_connector_name,
+            source_tag_values=source_tag_values,
+            **select_optional_set_fields(
+                dict(
+                    is_source_tag_synced=is_source_tag_synced,
+                    source_tag_sync_timestamp=source_tag_sync_timestamp,
+                    source_tag_sync_error=source_tag_sync_error,
+                )
+            ),
+        )
+
+    @classmethod
+    def by_qualified_name(
+        cls,
+        source_tag_qualified_name: str,
+        source_tag_values: List[SourceTagAttachmentValue],
+        source_tag_sync_timestamp: Optional[datetime] = None,
+        is_source_tag_synced: Optional[bool] = None,
+        source_tag_sync_error: Optional[str] = None,
+    ):
+        from pyatlan.cache.source_tag_cache import SourceTagCache
+
+        """
+        Create a source-synced tag attachment with a particular value when the attachment is synced to the source.
+
+        :param client: connectivity to an Atlan tenant
+        :param source_tag_qualified_name: unique name of the source tag in Atlan
+        :param source_tag_values: value of the tag attachment from the source
+        :param is_source_tag_synced: whether the tag attachment has been synced at the source (True) or not (False)
+        :param source_tag_sync_timestamp: time (epoch) when the tag attachment was synced at the source, in milliseconds
+        :param source_tag_sync_error: error message if the tag attachment sync at the source failed
+        :returns: a SourceTagAttachment with the provided information
+        :raises AtlanError: on any error communicating via the underlying APIs
+        :raises NotFoundError: if the source-synced tag cannot be resolved
+        """
+        tag = SourceTagCache.get_by_qualified_name(source_tag_qualified_name)
+        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
+            source_tag_qualified_name or ""
+        )
+        return cls.of(
+            source_tag_name=tag.name,
+            source_tag_qualified_name=source_tag_qualified_name,
+            source_tag_guid=tag.guid,
+            source_tag_connector_name=tag_connector_name,
+            source_tag_values=source_tag_values,
+            **select_optional_set_fields(
+                dict(
+                    is_source_tag_synced=is_source_tag_synced,
+                    source_tag_sync_timestamp=source_tag_sync_timestamp,
+                    source_tag_sync_error=source_tag_sync_error,
+                )
+            ),
+        )
+
+    @classmethod
+    def of(
+        cls,
+        source_tag_name: Optional[str] = None,
+        source_tag_qualified_name: Optional[str] = None,
+        source_tag_guid: Optional[str] = None,
+        source_tag_connector_name: Optional[str] = None,
+        source_tag_values: Optional[List[SourceTagAttachmentValue]] = None,
+        is_source_tag_synced: Optional[bool] = None,
+        source_tag_sync_timestamp: Optional[datetime] = None,
+        source_tag_sync_error: Optional[str] = None,
+    ):
+        """
+        Quickly create a new SourceTagAttachment.
+
+        :param source_tag_name: simple name of the source tag
+        :param source_tag_qualified_name: unique name of the source tag in Atlan
+        :param source_tag_guid: unique identifier (GUID) of the source tag in Atlan
+        :param source_tag_connector_name: connector that is the source of the tag
+        :param source_tag_values: value of the tag attachment from the source
+        :param is_source_tag_synced: whether the tag attachment has been synced at the source (True) or not (False)
+        :param source_tag_sync_timestamp: time (epoch) when the tag attachment was synced at the source, in milliseconds
+        :param source_tag_sync_error: error message if the tag attachment sync at the source failed
+        :returns: a SourceTagAttachment with the provided information
+        """
+        return SourceTagAttachment(
+            **select_optional_set_fields(
+                dict(
+                    source_tag_name=source_tag_name,
+                    source_tag_qualified_name=source_tag_qualified_name,
+                    source_tag_guid=source_tag_guid,
+                    source_tag_connector_name=source_tag_connector_name,
+                    source_tag_value=source_tag_values,
+                    is_source_tag_synced=is_source_tag_synced,
+                    source_tag_sync_timestamp=source_tag_sync_timestamp,
+                    source_tag_sync_error=source_tag_sync_error,
+                )
+            ),
+        )
 
 
 class StarredDetails(AtlanObject):
