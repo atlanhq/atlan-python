@@ -1103,6 +1103,20 @@
         <span class="o">+</span> <span class="s2">&quot;configure OpenLineage for this connector before you can send events for it.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">MISSING_ID</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-065&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;No ID was provided when attempting to retrieve or update the object.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;You must provide an ID when attempting to retrieve or update an object.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">MISSING_NAME</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-065&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;No name instance was provided when attempting to retrieve an object.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;You must provide the name of the object when attempting to retrieve one.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
