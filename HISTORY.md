@@ -1,3 +1,10 @@
+## 2.5.4 (October 22, 2024)
+
+### New features
+
+- Implemented cache management for `Connection` and `SourceTag`.
+- Added support for assigning a `SourceTag` with a `value` to an asset.
+
 ## 2.5.3 (October 16, 2024)
 
 ### Bug fixes
