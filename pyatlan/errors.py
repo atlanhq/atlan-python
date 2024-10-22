@@ -23,7 +23,7 @@ class AtlanError(Exception):
     def __init__(self, error_code: ErrorInfo, *args):
         try:
             message = error_code.error_message.format(*args)
-        except KeyError:
+        except (KeyError, ValueError):
             message = error_code.error_message
         super().__init__(message)
         self.error_code = error_code

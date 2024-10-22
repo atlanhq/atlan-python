@@ -1795,6 +1795,7 @@ def test_user_client_methods_validation_error(client, method, params):
         "{'error': 123, 'code': 465}",
         "{'error': 123} with text",
         "Some error message...",
+        "With unescape curly braces -> {'{}'}",
     ],
 )
 @patch.object(AtlanClient, "_session")
