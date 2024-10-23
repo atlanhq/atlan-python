@@ -112,6 +112,8 @@ You can interact with all of the following different kinds of assets:
     asset/dynamodbtable
     asset/eventstore
     asset/file
+    asset/fivetran
+    asset/fivetranconnector
     asset/folder
     asset/function
     asset/gcs
