@@ -52,6 +52,12 @@ class CalculationView(SQL):
     """
     Time at which this calculation view was activated at
     """
+    CALCULATION_VIEW_PACKAGE_ID: ClassVar[KeywordField] = KeywordField(
+        "calculationViewPackageId", "calculationViewPackageId"
+    )
+    """
+    The full package id path to which a calculation view belongs/resides in the repository.
+    """
 
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
     """
@@ -67,6 +73,7 @@ class CalculationView(SQL):
         "calculation_view_version_id",
         "calculation_view_activated_by",
         "calculation_view_activated_at",
+        "calculation_view_package_id",
         "columns",
         "atlan_schema",
     ]
@@ -128,6 +135,20 @@ class CalculationView(SQL):
         self.attributes.calculation_view_activated_at = calculation_view_activated_at
 
     @property
+    def calculation_view_package_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_package_id
+        )
+
+    @calculation_view_package_id.setter
+    def calculation_view_package_id(self, calculation_view_package_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_view_package_id = calculation_view_package_id
+
+    @property
     def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -156,6 +177,7 @@ class CalculationView(SQL):
         calculation_view_activated_at: Optional[datetime] = Field(
             default=None, description=""
         )
+        calculation_view_package_id: Optional[str] = Field(default=None, description="")
         columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship

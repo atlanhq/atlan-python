@@ -112,5 +112,3 @@ class ModelVersion(Model):
 
 from .model_data_model import ModelDataModel  # noqa
 from .model_entity import ModelEntity  # noqa
-
-ModelVersion.Attributes.update_forward_refs()

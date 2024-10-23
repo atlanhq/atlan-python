@@ -26,9 +26,11 @@ __all__ = [
     "SQL",
     "Matillion",
     "Dbt",
+    "Model",
     "Spark",
     "Tag",
     "SchemaRegistry",
+    "Fivetran",
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
@@ -58,8 +60,8 @@ __all__ = [
     "Column",
     "SnowflakeStream",
     "DatabricksUnityCatalogTag",
-    "Database",
     "CalculationView",
+    "Database",
     "Procedure",
     "SnowflakeTag",
     "MatillionGroup",
@@ -71,8 +73,15 @@ __all__ = [
     "DbtModel",
     "DbtMetric",
     "DbtSource",
+    "ModelAttribute",
+    "ModelEntity",
+    "ModelVersion",
+    "ModelEntityAssociation",
+    "ModelAttributeAssociation",
+    "ModelDataModel",
     "SparkJob",
     "SchemaRegistrySubject",
+    "FivetranConnector",
     "AnomaloCheck",
     "MCIncident",
     "MCMonitor",
@@ -113,7 +122,6 @@ __all__ = [
     "MultiDimensionalDataset",
     "EventStore",
     "NoSQL",
-    "Model",
     "Insight",
     "API",
     "Google",
@@ -153,12 +161,6 @@ __all__ = [
     "DynamoDB",
     "MongoDB",
     "DbtTag",
-    "ModelAttribute",
-    "ModelEntity",
-    "ModelVersion",
-    "ModelEntityAssociation",
-    "ModelAttributeAssociation",
-    "ModelDataModel",
     "APISpec",
     "APIQuery",
     "APIObject",
@@ -369,6 +371,8 @@ from .core.dbt_source import DbtSource
 from .core.dbt_test import DbtTest
 from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .core.file import File
+from .core.fivetran import Fivetran
+from .core.fivetran_connector import FivetranConnector
 from .core.folder import Folder
 from .core.function import Function
 from .core.link import Link
@@ -381,6 +385,13 @@ from .core.matillion_group import MatillionGroup
 from .core.matillion_job import MatillionJob
 from .core.matillion_project import MatillionProject
 from .core.metric import Metric
+from .core.model import Model
+from .core.model_attribute import ModelAttribute
+from .core.model_attribute_association import ModelAttributeAssociation
+from .core.model_data_model import ModelDataModel
+from .core.model_entity import ModelEntity
+from .core.model_entity_association import ModelEntityAssociation
+from .core.model_version import ModelVersion
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
 from .core.persona import Persona
@@ -485,13 +496,6 @@ from .mode_collection import ModeCollection
 from .mode_query import ModeQuery
 from .mode_report import ModeReport
 from .mode_workspace import ModeWorkspace
-from .model import Model
-from .model_attribute import ModelAttribute
-from .model_attribute_association import ModelAttributeAssociation
-from .model_data_model import ModelDataModel
-from .model_entity import ModelEntity
-from .model_entity_association import ModelEntityAssociation
-from .model_version import ModelVersion
 from .mongo_d_b import MongoDB
 from .mongo_d_b_collection import MongoDBCollection
 from .mongo_d_b_database import MongoDBDatabase

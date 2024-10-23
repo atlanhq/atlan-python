@@ -220,5 +220,3 @@ class ModelAttributeAssociation(Model):
 
 
 from .model_attribute import ModelAttribute  # noqa
-
-ModelAttributeAssociation.Attributes.update_forward_refs()

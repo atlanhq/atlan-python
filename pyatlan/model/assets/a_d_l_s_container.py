@@ -131,11 +131,11 @@ class ADLSContainer(ADLS):
     Number of objects that exist within this container.
     """
 
-    ADLS_OBJECTS: ClassVar[RelationField] = RelationField("adlsObjects")
+    ADLS_ACCOUNT: ClassVar[RelationField] = RelationField("adlsAccount")
     """
     TBC
     """
-    ADLS_ACCOUNT: ClassVar[RelationField] = RelationField("adlsAccount")
+    ADLS_OBJECTS: ClassVar[RelationField] = RelationField("adlsObjects")
     """
     TBC
     """
@@ -147,8 +147,8 @@ class ADLSContainer(ADLS):
         "adls_container_encryption_scope",
         "adls_container_version_level_immutability_support",
         "adls_object_count",
-        "adls_objects",
         "adls_account",
+        "adls_objects",
     ]
 
     @property
@@ -240,16 +240,6 @@ class ADLSContainer(ADLS):
         self.attributes.adls_object_count = adls_object_count
 
     @property
-    def adls_objects(self) -> Optional[List[ADLSObject]]:
-        return None if self.attributes is None else self.attributes.adls_objects
-
-    @adls_objects.setter
-    def adls_objects(self, adls_objects: Optional[List[ADLSObject]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_objects = adls_objects
-
-    @property
     def adls_account(self) -> Optional[ADLSAccount]:
         return None if self.attributes is None else self.attributes.adls_account
 
@@ -258,6 +248,16 @@ class ADLSContainer(ADLS):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account = adls_account
+
+    @property
+    def adls_objects(self) -> Optional[List[ADLSObject]]:
+        return None if self.attributes is None else self.attributes.adls_objects
+
+    @adls_objects.setter
+    def adls_objects(self, adls_objects: Optional[List[ADLSObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_objects = adls_objects
 
     class Attributes(ADLS.Attributes):
         adls_container_url: Optional[str] = Field(default=None, description="")
@@ -274,10 +274,10 @@ class ADLSContainer(ADLS):
             default=None, description=""
         )
         adls_object_count: Optional[int] = Field(default=None, description="")
-        adls_objects: Optional[List[ADLSObject]] = Field(
+        adls_account: Optional[ADLSAccount] = Field(
             default=None, description=""
         )  # relationship
-        adls_account: Optional[ADLSAccount] = Field(
+        adls_objects: Optional[List[ADLSObject]] = Field(
             default=None, description=""
         )  # relationship
 

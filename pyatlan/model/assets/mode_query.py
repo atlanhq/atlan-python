@@ -40,11 +40,11 @@ class ModeQuery(Mode):
 
     """
 
-    MODE_CHARTS: ClassVar[RelationField] = RelationField("modeCharts")
+    MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")
     """
     TBC
     """
-    MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")
+    MODE_CHARTS: ClassVar[RelationField] = RelationField("modeCharts")
     """
     TBC
     """
@@ -52,8 +52,8 @@ class ModeQuery(Mode):
     _convenience_properties: ClassVar[List[str]] = [
         "mode_raw_query",
         "mode_report_import_count",
-        "mode_charts",
         "mode_report",
+        "mode_charts",
     ]
 
     @property
@@ -81,16 +81,6 @@ class ModeQuery(Mode):
         self.attributes.mode_report_import_count = mode_report_import_count
 
     @property
-    def mode_charts(self) -> Optional[List[ModeChart]]:
-        return None if self.attributes is None else self.attributes.mode_charts
-
-    @mode_charts.setter
-    def mode_charts(self, mode_charts: Optional[List[ModeChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_charts = mode_charts
-
-    @property
     def mode_report(self) -> Optional[ModeReport]:
         return None if self.attributes is None else self.attributes.mode_report
 
@@ -100,13 +90,23 @@ class ModeQuery(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_report = mode_report
 
+    @property
+    def mode_charts(self) -> Optional[List[ModeChart]]:
+        return None if self.attributes is None else self.attributes.mode_charts
+
+    @mode_charts.setter
+    def mode_charts(self, mode_charts: Optional[List[ModeChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_charts = mode_charts
+
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(default=None, description="")
         mode_report_import_count: Optional[int] = Field(default=None, description="")
-        mode_charts: Optional[List[ModeChart]] = Field(
+        mode_report: Optional[ModeReport] = Field(
             default=None, description=""
         )  # relationship
-        mode_report: Optional[ModeReport] = Field(
+        mode_charts: Optional[List[ModeChart]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -15,7 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
 )
 
-from .core.catalog import Catalog
+from .catalog import Catalog
 
 
 class Model(Catalog):
@@ -334,6 +334,3 @@ class Model(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-Model.Attributes.update_forward_refs()
