@@ -1,3 +1,9 @@
+## 2.5.5 (October 23, 2024)
+
+### Bug fixes
+
+- Fixed `AtlanError` message for unescaped curly braces (`{}`) in `response.text`.
+
 ## 2.5.4 (October 22, 2024)
 
 ### New features
