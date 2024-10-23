@@ -686,11 +686,7 @@ class TestReadme:
     ):
 
         assert TestColumn.column and TestColumn.column.guid
-        readme = Readme.create(
-            asset=Column.ref_by_guid(guid=TestColumn.column.guid),
-            content=self.CONTENT,
-            asset_name=TestColumn.column.name,
-        )
+        readme = Readme.create(asset=TestColumn.column, content=self.CONTENT)
         response = upsert(readme)
         assert (reaadmes := response.assets_created(asset_type=Readme))
         assert len(reaadmes) == 1
