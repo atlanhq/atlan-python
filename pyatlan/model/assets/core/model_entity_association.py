@@ -211,5 +211,3 @@ class ModelEntityAssociation(Model):
 
 
 from .model_entity import ModelEntity  # noqa
-
-ModelEntityAssociation.Attributes.update_forward_refs()

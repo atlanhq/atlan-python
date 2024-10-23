@@ -54,11 +54,11 @@ class DomoDataset(Domo):
     An ISO-8601 representation of the time the DataSet was last run.
     """
 
-    DOMO_DATASET_COLUMNS: ClassVar[RelationField] = RelationField("domoDatasetColumns")
+    DOMO_CARDS: ClassVar[RelationField] = RelationField("domoCards")
     """
     TBC
     """
-    DOMO_CARDS: ClassVar[RelationField] = RelationField("domoCards")
+    DOMO_DATASET_COLUMNS: ClassVar[RelationField] = RelationField("domoDatasetColumns")
     """
     TBC
     """
@@ -68,8 +68,8 @@ class DomoDataset(Domo):
         "domo_dataset_column_count",
         "domo_dataset_card_count",
         "domo_dataset_last_run",
-        "domo_dataset_columns",
         "domo_cards",
+        "domo_dataset_columns",
     ]
 
     @property
@@ -123,6 +123,16 @@ class DomoDataset(Domo):
         self.attributes.domo_dataset_last_run = domo_dataset_last_run
 
     @property
+    def domo_cards(self) -> Optional[List[DomoCard]]:
+        return None if self.attributes is None else self.attributes.domo_cards
+
+    @domo_cards.setter
+    def domo_cards(self, domo_cards: Optional[List[DomoCard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domo_cards = domo_cards
+
+    @property
     def domo_dataset_columns(self) -> Optional[List[DomoDatasetColumn]]:
         return None if self.attributes is None else self.attributes.domo_dataset_columns
 
@@ -134,25 +144,15 @@ class DomoDataset(Domo):
             self.attributes = self.Attributes()
         self.attributes.domo_dataset_columns = domo_dataset_columns
 
-    @property
-    def domo_cards(self) -> Optional[List[DomoCard]]:
-        return None if self.attributes is None else self.attributes.domo_cards
-
-    @domo_cards.setter
-    def domo_cards(self, domo_cards: Optional[List[DomoCard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.domo_cards = domo_cards
-
     class Attributes(Domo.Attributes):
         domo_dataset_row_count: Optional[int] = Field(default=None, description="")
         domo_dataset_column_count: Optional[int] = Field(default=None, description="")
         domo_dataset_card_count: Optional[int] = Field(default=None, description="")
         domo_dataset_last_run: Optional[str] = Field(default=None, description="")
-        domo_dataset_columns: Optional[List[DomoDatasetColumn]] = Field(
+        domo_cards: Optional[List[DomoCard]] = Field(
             default=None, description=""
         )  # relationship
-        domo_cards: Optional[List[DomoCard]] = Field(
+        domo_dataset_columns: Optional[List[DomoDatasetColumn]] = Field(
             default=None, description=""
         )  # relationship
 

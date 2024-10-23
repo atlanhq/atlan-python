@@ -102,6 +102,14 @@ class Process(Asset, type_name="Process"):
     Additional Context of the ETL pipeline/notebook which creates the process.
     """
 
+    ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
+    """
+    TBC
+    """
+    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
+    """
+    TBC
+    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -110,7 +118,7 @@ class Process(Asset, type_name="Process"):
     """
     TBC
     """
-    ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
+    FIVETRAN_CONNECTOR: ClassVar[RelationField] = RelationField("fivetranConnector")
     """
     TBC
     """
@@ -122,10 +130,6 @@ class Process(Asset, type_name="Process"):
     """
     TBC
     """
-    SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "inputs",
@@ -134,12 +138,13 @@ class Process(Asset, type_name="Process"):
         "sql",
         "ast",
         "additional_etl_context",
+        "adf_activity",
+        "spark_jobs",
         "matillion_component",
         "airflow_tasks",
-        "adf_activity",
+        "fivetran_connector",
         "power_b_i_dataflow",
         "column_processes",
-        "spark_jobs",
     ]
 
     @property
@@ -205,6 +210,26 @@ class Process(Asset, type_name="Process"):
         self.attributes.additional_etl_context = additional_etl_context
 
     @property
+    def adf_activity(self) -> Optional[AdfActivity]:
+        return None if self.attributes is None else self.attributes.adf_activity
+
+    @adf_activity.setter
+    def adf_activity(self, adf_activity: Optional[AdfActivity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adf_activity = adf_activity
+
+    @property
+    def spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.spark_jobs
+
+    @spark_jobs.setter
+    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_jobs = spark_jobs
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -225,14 +250,14 @@ class Process(Asset, type_name="Process"):
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
-    def adf_activity(self) -> Optional[AdfActivity]:
-        return None if self.attributes is None else self.attributes.adf_activity
+    def fivetran_connector(self) -> Optional[FivetranConnector]:
+        return None if self.attributes is None else self.attributes.fivetran_connector
 
-    @adf_activity.setter
-    def adf_activity(self, adf_activity: Optional[AdfActivity]):
+    @fivetran_connector.setter
+    def fivetran_connector(self, fivetran_connector: Optional[FivetranConnector]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_activity = adf_activity
+        self.attributes.fivetran_connector = fivetran_connector
 
     @property
     def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
@@ -254,16 +279,6 @@ class Process(Asset, type_name="Process"):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
-    @property
-    def spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.spark_jobs
-
-    @spark_jobs.setter
-    def spark_jobs(self, spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.spark_jobs = spark_jobs
-
     class Attributes(Asset.Attributes):
         inputs: Optional[List[Catalog]] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
@@ -271,22 +286,25 @@ class Process(Asset, type_name="Process"):
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
+        adf_activity: Optional[AdfActivity] = Field(
+            default=None, description=""
+        )  # relationship
+        spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        adf_activity: Optional[AdfActivity] = Field(
+        fivetran_connector: Optional[FivetranConnector] = Field(
             default=None, description=""
         )  # relationship
         power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
             default=None, description=""
         )  # relationship
         column_processes: Optional[List[ColumnProcess]] = Field(
-            default=None, description=""
-        )  # relationship
-        spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -369,6 +387,7 @@ from .adf_activity import AdfActivity  # noqa
 from .airflow_task import AirflowTask  # noqa
 from .catalog import Catalog  # noqa
 from .column_process import ColumnProcess  # noqa
+from .fivetran_connector import FivetranConnector  # noqa
 from .matillion_component import MatillionComponent  # noqa
 from .power_b_i_dataflow import PowerBIDataflow  # noqa
 from .spark_job import SparkJob  # noqa

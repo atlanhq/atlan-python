@@ -2414,14 +2414,14 @@ class ADLSStorageKind(str, Enum):
     STORAGE_V2 = "StorageV2"
 
 
-class AdfActivityState(str, Enum):
-    ACTIVE = "ACTIVE"
-    INACTIVE = "INACTIVE"
-
-
 class APIQueryParamTypeEnum(str, Enum):
     INPUT = "Input"
     OUTPUT = "Output"
+
+
+class AdfActivityState(str, Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
 
 
 class AtlasGlossaryCategoryType(str, Enum):
@@ -2555,6 +2555,14 @@ class FileType(str, Enum):
     JSON = "json"
     XML = "xml"
     ZIP = "zip"
+
+
+class FivetranConnectorStatus(str, Enum):
+    SUCCESSFUL = "SUCCESSFUL"
+    FAILURE = "FAILURE"
+    FAILURE_WITH_TASK = "FAILURE_WITH_TASK"
+    RESCHEDULED = "RESCHEDULED"
+    NO_STATUS = "NO_STATUS"
 
 
 class GoogleDatastudioAssetType(str, Enum):
@@ -2699,6 +2707,7 @@ class WorkflowRunType(str, Enum):
     CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
     PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
     IMPACT_ANALYSIS = "IMPACT_ANALYSIS"
+    REVOKE_DATA_ACCESS = "REVOKE_DATA_ACCESS"
 
 
 class WorkflowStatus(str, Enum):
@@ -2713,3 +2722,4 @@ class WorkflowType(str, Enum):
     CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
     PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
     IMPACT_ANALYSIS = "IMPACT_ANALYSIS"
+    REVOKE_DATA_ACCESS = "REVOKE_DATA_ACCESS"

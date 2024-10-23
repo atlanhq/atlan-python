@@ -78,6 +78,15 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
+
+
 class Action(AtlanObject):
     """Description"""
 
@@ -94,61 +103,11 @@ class Histogram(AtlanObject):
     frequencies: Set[float] = Field(description="")
 
 
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
-
-
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional[str] = Field(default=None, description="")
     column_value_frequency: Optional[int] = Field(default=None, description="")
-
-
-class BadgeCondition(AtlanObject):
-    """Description"""
-
-    @classmethod
-    def create(
-        cls,
-        *,
-        badge_condition_operator: BadgeComparisonOperator,
-        badge_condition_value: str,
-        badge_condition_colorhex: Union[BadgeConditionColor, str],
-    ) -> "BadgeCondition":
-        validate_required_fields(
-            [
-                "badge_condition_operator",
-                "badge_condition_value",
-                "badge_condition_colorhex",
-            ],
-            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
-        )
-        return cls(
-            badge_condition_operator=badge_condition_operator.value,
-            badge_condition_value=badge_condition_value,
-            badge_condition_colorhex=(
-                badge_condition_colorhex.value
-                if isinstance(badge_condition_colorhex, BadgeConditionColor)
-                else badge_condition_colorhex
-            ),
-        )
-
-    badge_condition_operator: Optional[str] = Field(default=None, description="")
-    badge_condition_value: Optional[str] = Field(default=None, description="")
-    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class SourceTagAttachment(AtlanObject):
@@ -221,7 +180,8 @@ class SourceTagAttachment(AtlanObject):
         from pyatlan.cache.source_tag_cache import SourceTagCache
 
         """
-        Create a source-synced tag attachment with a particular value when the attachment is synced to the source.
+        Create a source-synced tag attachment with
+        a particular value when the attachment is synced to the source.
 
         :param client: connectivity to an Atlan tenant
         :param source_tag_qualified_name: unique name of the source tag in Atlan
@@ -291,6 +251,47 @@ class SourceTagAttachment(AtlanObject):
                 )
             ),
         )
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
+
+
+class BadgeCondition(AtlanObject):
+    """Description"""
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        badge_condition_operator: BadgeComparisonOperator,
+        badge_condition_value: str,
+        badge_condition_colorhex: Union[BadgeConditionColor, str],
+    ) -> "BadgeCondition":
+        validate_required_fields(
+            [
+                "badge_condition_operator",
+                "badge_condition_value",
+                "badge_condition_colorhex",
+            ],
+            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
+        )
+        return cls(
+            badge_condition_operator=badge_condition_operator.value,
+            badge_condition_value=badge_condition_value,
+            badge_condition_colorhex=(
+                badge_condition_colorhex.value
+                if isinstance(badge_condition_colorhex, BadgeConditionColor)
+                else badge_condition_colorhex
+            ),
+        )
+
+    badge_condition_operator: Optional[str] = Field(default=None, description="")
+    badge_condition_value: Optional[str] = Field(default=None, description="")
+    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
 
 
 class StarredDetails(AtlanObject):
@@ -400,19 +401,19 @@ MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
+KafkaTopicConsumption.update_forward_refs()
+
 Action.update_forward_refs()
 
 Histogram.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
-
 ColumnValueFrequencyMap.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
+SourceTagAttachment.update_forward_refs()
 
 SourceTagAttachmentValue.update_forward_refs()
 
-SourceTagAttachment.update_forward_refs()
+BadgeCondition.update_forward_refs()
 
 StarredDetails.update_forward_refs()
 

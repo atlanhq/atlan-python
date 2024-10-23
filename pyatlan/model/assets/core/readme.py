@@ -136,7 +136,7 @@ class Readme(Resource):
             return Readme.Attributes(
                 qualified_name=f"{asset.guid}/readme",
                 name=f"{asset_name} Readme",
-                asset=asset,
+                asset=asset.trim_to_reference(),
                 description=quote(content),
             )
 

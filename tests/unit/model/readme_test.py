@@ -62,7 +62,7 @@ def test_create_readme(asset, content, asset_name, expected_name):
     readme = Readme.create(asset=asset, content=content, asset_name=asset_name)
     assert readme.qualified_name == f"{asset.guid}/readme"
     assert readme.name == f"{expected_name} Readme"
-    assert readme.attributes.asset == asset
+    assert readme.attributes.asset.guid == asset.guid
     assert readme.description == content
 
 

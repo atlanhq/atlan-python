@@ -76,6 +76,12 @@ class ModelAttribute(Model):
     """
     Type of the attribute.
     """
+    MODEL_ATTRIBUTE_HAS_RELATIONSHIPS: ClassVar[BooleanField] = BooleanField(
+        "modelAttributeHasRelationships", "modelAttributeHasRelationships"
+    )
+    """
+    When true, this attribute has relationships with other attributes.
+    """
 
     MODEL_ATTRIBUTE_RELATED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
         "modelAttributeRelatedToAttributes"
@@ -116,6 +122,7 @@ class ModelAttribute(Model):
         "model_attribute_precision",
         "model_attribute_scale",
         "model_attribute_data_type",
+        "model_attribute_has_relationships",
         "model_attribute_related_to_attributes",
         "model_attribute_entities",
         "model_attribute_related_from_attributes",
@@ -218,6 +225,24 @@ class ModelAttribute(Model):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_attribute_data_type = model_attribute_data_type
+
+    @property
+    def model_attribute_has_relationships(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_has_relationships
+        )
+
+    @model_attribute_has_relationships.setter
+    def model_attribute_has_relationships(
+        self, model_attribute_has_relationships: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_attribute_has_relationships = (
+            model_attribute_has_relationships
+        )
 
     @property
     def model_attribute_related_to_attributes(
@@ -327,6 +352,9 @@ class ModelAttribute(Model):
         model_attribute_precision: Optional[int] = Field(default=None, description="")
         model_attribute_scale: Optional[int] = Field(default=None, description="")
         model_attribute_data_type: Optional[str] = Field(default=None, description="")
+        model_attribute_has_relationships: Optional[bool] = Field(
+            default=None, description=""
+        )
         model_attribute_related_to_attributes: Optional[
             List[ModelAttributeAssociation]
         ] = Field(
@@ -359,5 +387,3 @@ class ModelAttribute(Model):
 
 from .model_attribute_association import ModelAttributeAssociation  # noqa
 from .model_entity import ModelEntity  # noqa
-
-ModelAttribute.Attributes.update_forward_refs()

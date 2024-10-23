@@ -99,5 +99,3 @@ class ModelDataModel(Model):
 
 
 from .model_version import ModelVersion  # noqa
-
-ModelDataModel.Attributes.update_forward_refs()

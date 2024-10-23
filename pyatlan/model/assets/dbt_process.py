@@ -192,6 +192,10 @@ class DbtProcess(Dbt):
     """
     TBC
     """
+    FIVETRAN_CONNECTOR: ClassVar[RelationField] = RelationField("fivetranConnector")
+    """
+    TBC
+    """
     POWER_BI_DATAFLOW: ClassVar[RelationField] = RelationField("powerBIDataflow")
     """
     TBC
@@ -232,6 +236,7 @@ class DbtProcess(Dbt):
         "spark_jobs",
         "matillion_component",
         "airflow_tasks",
+        "fivetran_connector",
         "power_b_i_dataflow",
         "column_processes",
     ]
@@ -563,6 +568,16 @@ class DbtProcess(Dbt):
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
+    def fivetran_connector(self) -> Optional[FivetranConnector]:
+        return None if self.attributes is None else self.attributes.fivetran_connector
+
+    @fivetran_connector.setter
+    def fivetran_connector(self, fivetran_connector: Optional[FivetranConnector]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fivetran_connector = fivetran_connector
+
+    @property
     def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
         return None if self.attributes is None else self.attributes.power_b_i_dataflow
 
@@ -625,6 +640,9 @@ class DbtProcess(Dbt):
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
+        fivetran_connector: Optional[FivetranConnector] = Field(
+            default=None, description=""
+        )  # relationship
         power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
             default=None, description=""
         )  # relationship
@@ -646,6 +664,7 @@ from .core.adf_activity import AdfActivity  # noqa
 from .core.airflow_task import AirflowTask  # noqa
 from .core.catalog import Catalog  # noqa
 from .core.column_process import ColumnProcess  # noqa
+from .core.fivetran_connector import FivetranConnector  # noqa
 from .core.matillion_component import MatillionComponent  # noqa
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa
 from .core.spark_job import SparkJob  # noqa

@@ -48,6 +48,12 @@ class ModelEntity(Model):
     """
     TBC
     """
+    MODEL_ENTITY_IMPLEMENTED_BY_ASSETS: ClassVar[RelationField] = RelationField(
+        "modelEntityImplementedByAssets"
+    )
+    """
+    TBC
+    """
     MODEL_ENTITY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
         "modelEntityAttributes"
     )
@@ -81,6 +87,7 @@ class ModelEntity(Model):
         "model_entity_attribute_count",
         "model_entity_subject_area",
         "model_entity_related_to_entities",
+        "model_entity_implemented_by_assets",
         "model_entity_attributes",
         "model_entity_mapped_to_entities",
         "model_entity_related_from_entities",
@@ -134,6 +141,24 @@ class ModelEntity(Model):
             self.attributes = self.Attributes()
         self.attributes.model_entity_related_to_entities = (
             model_entity_related_to_entities
+        )
+
+    @property
+    def model_entity_implemented_by_assets(self) -> Optional[List[Catalog]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_implemented_by_assets
+        )
+
+    @model_entity_implemented_by_assets.setter
+    def model_entity_implemented_by_assets(
+        self, model_entity_implemented_by_assets: Optional[List[Catalog]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_entity_implemented_by_assets = (
+            model_entity_implemented_by_assets
         )
 
     @property
@@ -224,6 +249,9 @@ class ModelEntity(Model):
         model_entity_related_to_entities: Optional[List[ModelEntityAssociation]] = (
             Field(default=None, description="")
         )  # relationship
+        model_entity_implemented_by_assets: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
         model_entity_attributes: Optional[List[ModelAttribute]] = Field(
             default=None, description=""
         )  # relationship
@@ -250,8 +278,7 @@ class ModelEntity(Model):
     )
 
 
+from .catalog import Catalog  # noqa
 from .model_attribute import ModelAttribute  # noqa
 from .model_entity_association import ModelEntityAssociation  # noqa
 from .model_version import ModelVersion  # noqa
-
-ModelEntity.Attributes.update_forward_refs()

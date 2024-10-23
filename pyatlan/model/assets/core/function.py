@@ -68,6 +68,12 @@ class Function(SQL):
     """
     Whether the function is stored or executed externally (true) or internally (false).
     """
+    FUNCTION_IS_DMF: ClassVar[BooleanField] = BooleanField(
+        "functionIsDMF", "functionIsDMF"
+    )
+    """
+    Whether the function is a data metric function.
+    """
     FUNCTION_IS_SECURE: ClassVar[BooleanField] = BooleanField(
         "functionIsSecure", "functionIsSecure"
     )
@@ -93,6 +99,7 @@ class Function(SQL):
         "function_language",
         "function_type",
         "function_is_external",
+        "function_is_d_m_f",
         "function_is_secure",
         "function_is_memoizable",
         "function_schema",
@@ -159,6 +166,16 @@ class Function(SQL):
         self.attributes.function_is_external = function_is_external
 
     @property
+    def function_is_d_m_f(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.function_is_d_m_f
+
+    @function_is_d_m_f.setter
+    def function_is_d_m_f(self, function_is_d_m_f: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_is_d_m_f = function_is_d_m_f
+
+    @property
     def function_is_secure(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.function_is_secure
 
@@ -197,6 +214,7 @@ class Function(SQL):
         function_language: Optional[str] = Field(default=None, description="")
         function_type: Optional[str] = Field(default=None, description="")
         function_is_external: Optional[bool] = Field(default=None, description="")
+        function_is_d_m_f: Optional[bool] = Field(default=None, description="")
         function_is_secure: Optional[bool] = Field(default=None, description="")
         function_is_memoizable: Optional[bool] = Field(default=None, description="")
         function_schema: Optional[Schema] = Field(
