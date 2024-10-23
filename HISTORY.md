@@ -1,3 +1,13 @@
+## 2.5.6 (October 24, 2024)
+
+### Bug fixes
+
+- Fixed `Readme.creator()` to use `asset.trim_to_reference()` instead of sending the complete `asset`, which was somehow breaking backend parsing for related assets.
+
+### QOL improvements
+
+- Generated the latest typedef models.
+
 ## 2.5.5 (October 23, 2024)
 
 ### Bug fixes
