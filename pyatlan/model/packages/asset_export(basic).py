@@ -122,7 +122,7 @@ class AssetExportPackage(AbstractCustomPackage):
         """
         Set up the package to deliver the export via direct download.
         """
-        self._delivery_type = "direct"
+        self._delivery_type = "DIRECT"
         self._add_delivery_parameters()
         return self
 
@@ -131,7 +131,7 @@ class AssetExportPackage(AbstractCustomPackage):
         Set up the package to deliver the export via email.
         :param email_addresses: List of email addresses to send the export to.
         """
-        self._delivery_type = "email"
+        self._delivery_type = "EMAIL"
         self._email_addresses = email_addresses
         self._add_delivery_parameters()
 
@@ -253,7 +253,7 @@ class AssetExportPackage(AbstractCustomPackage):
             labels={
                 "orchestration.atlan.com/certified": "true",
                 "orchestration.atlan.com/preview": "true",
-                "orchestration.atlan.com/source": {self._NAME},
+                "orchestration.atlan.com/source": self._NAME,
                 "orchestration.atlan.com/sourceCategory": "utility",
                 "orchestration.atlan.com/type": "custom",
                 "orchestration.atlan.com/verified": "true",
