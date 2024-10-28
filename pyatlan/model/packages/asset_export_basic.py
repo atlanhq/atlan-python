@@ -7,7 +7,7 @@ from pyatlan.model.packages.base.custom_package import AbstractCustomPackage
 from pyatlan.model.workflow import WorkflowMetadata
 
 
-class AssetExportPackage(AbstractCustomPackage):
+class AssetExportBasic(AbstractCustomPackage):
     """
     Base configuration for the Asset Export package.
     """
@@ -29,10 +29,13 @@ class AssetExportPackage(AbstractCustomPackage):
 
     def glossaries_only(
         self, include_archived: Optional[bool] = None
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up the package to export only glossaries.
-        :param include_archived: Whether to include archived glossaries in the export.
+
+        :param include_archived: Whether to include archived assets in the export (true) or only active assets (false).
+
+        :returns: package, set up to export only glossaries
         """
         self._export_scope = "GLOSSARIES_ONLY"
         self._parameters.append({"name": "export_scope", "value": self._export_scope})
@@ -51,14 +54,21 @@ class AssetExportPackage(AbstractCustomPackage):
         include_glossaries: Optional[bool] = None,
         include_data_products: Optional[bool] = None,
         include_archived: Optional[bool] = None,
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up the package to export only enriched assets.
-        :param prefix: Qualified name prefix to filter assets.
-        :param include_description: Whether to include asset descriptions in the export.
-        :param include_glossaries: Whether to include glossaries in the export.
-        :param include_data_products: Whether to include data products in the export.
-        :param include_archived: Whether to include archived assets in the export.
+
+        :param prefix: Starting value for a qualifiedName that will determine which assets to export.
+        :param include_description: Whether to extract only user-entered description (false), or to also include
+        system-level description (true).
+        :param include_glossaries: Whether glossaries (and their terms and
+        categories) should be exported, too.
+        :param include_data_products: Whether data products (and their domains)
+        should be exported, too.
+        :param include_archived: Whether to include archived assets in the export (true) or
+        only active assets (false).
+
+        :returns: package, set up to export only enriched assets
         """
         self._export_scope = "ENRICHED_ONLY"
         self._parameters.append({"name": "export_scope", "value": self._export_scope})
@@ -74,10 +84,13 @@ class AssetExportPackage(AbstractCustomPackage):
 
     def products_only(
         self, include_archived: Optional[bool] = None
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up the package to export only data products.
-        :param include_archived: Whether to include archived data products in the export.
+
+        :param include_archived: Whether to include archived assets in the export (true) or only active assets (false).
+
+        :returns: package, set up to export only data products
         """
         self._export_scope = "PRODUCTS_ONLY"
         self._parameters.append({"name": "export_scope", "value": self._export_scope})
@@ -96,14 +109,21 @@ class AssetExportPackage(AbstractCustomPackage):
         include_glossaries: Optional[bool] = None,
         include_data_products: Optional[bool] = None,
         include_archived: Optional[bool] = None,
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up the package to export all assets.
-        :param prefix: Qualified name prefix to filter assets.
-        :param include_description: Whether to include asset descriptions in the export.
-        :param include_glossaries: Whether to include glossaries in the export.
-        :param include_data_products: Whether to include data products in the export.
-        :param include_archived: Whether to include archived assets in the export.
+
+        :param prefix: Starting value for a qualifiedName that will determine which assets to export.
+        :param include_description: Whether to extract only user-entered description (false), or to also include
+        system-level description (true).
+        :param include_glossaries: Whether glossaries (and their terms and
+        categories) should be exported, too.
+        :param include_data_products: Whether data products (and their domains)
+        should be exported, too.
+        :param include_archived: Whether to include archived assets in the export (true) or
+        only active assets (false).
+
+        :returns: package, set up to export all assets
         """
         self._export_scope = "ALL"
         self._parameters.append({"name": "export_scope", "value": self._export_scope})
@@ -118,18 +138,23 @@ class AssetExportPackage(AbstractCustomPackage):
 
         return self
 
-    def direct(self) -> AssetExportPackage:
+    def direct(self) -> AssetExportBasic:
         """
         Set up the package to deliver the export via direct download.
+
+        :returns: package, set up to deliver the export via direct download
         """
         self._delivery_type = "DIRECT"
         self._add_delivery_parameters()
         return self
 
-    def email(self, email_addresses: List[str]) -> AssetExportPackage:
+    def email(self, email_addresses: List[str]) -> AssetExportBasic:
         """
         Set up the package to deliver the export via email.
+
         :param email_addresses: List of email addresses to send the export to.
+
+        :returns: package, set up to deliver the export via email
         """
         self._delivery_type = "EMAIL"
         self._email_addresses = email_addresses
@@ -137,10 +162,13 @@ class AssetExportPackage(AbstractCustomPackage):
 
         return self
 
-    def object_store(self, prefix: Optional[str] = None) -> AssetExportPackage:
+    def object_store(self, prefix: Optional[str] = None) -> AssetExportBasic:
         """
         Set up the package to export to an object storage location.
+
         :param prefix: The directory (path) within the object store to upload the exported file.
+
+        :returns: package, set up to export metadata to an object store
         """
         self._delivery_type = "CLOUD"
         self._add_delivery_parameters()
@@ -150,13 +178,16 @@ class AssetExportPackage(AbstractCustomPackage):
 
     def s3(
         self, access_key: str, secret_key: str, region: str, bucket: str
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up package to export to S3.
+
         :param access_key: AWS access key
         :param secret_key: AWS secret key
         :param region: AWS region
         :param bucket: S3 bucket to upload the export file to
+
+        :returns: package, set up to export metadata to S3
         """
         self._credentials_body.update(
             {
@@ -175,12 +206,15 @@ class AssetExportPackage(AbstractCustomPackage):
 
     def gcs(
         self, project_id: str, service_account_json: str, bucket: str
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up package to export to Google Cloud Storage.
-        :param project_id: GCP project ID
-        :param service_account_json: GCP service account JSON credentials
-        :param bucket: GCS bucket to upload the export file to
+
+        :param project_id: ID of GCP project
+        :param service_account_json: service account credentials in JSON format
+        :param bucket: bucket to upload the export file to
+
+        :returns: package, set up to export metadata to GCS
         """
         self._credentials_body.update(
             {
@@ -203,14 +237,17 @@ class AssetExportPackage(AbstractCustomPackage):
         tenant_id: str,
         account_name: str,
         container: str,
-    ) -> AssetExportPackage:
+    ) -> AssetExportBasic:
         """
         Set up package to export to Azure Data Lake Storage.
-        :param client_id: Azure AD client ID
-        :param client_secret: Azure AD client secret
-        :param tenant_id: Azure tenant ID
-        :param account_name: ADLS storage account name
-        :param container: ADLS container to upload the export file to
+
+        :param client_id: unique application (client) ID assigned by Azure AD when the app was registered
+        :param client_secret: client secret for authentication
+        :param tenant_id: unique ID of the Azure Active Directory instance
+        :param account_name: name of the storage account
+        :param container: container to upload the export file to
+
+        :returns: package, set up to export metadata to ADLS
         """
         self._credentials_body.update(
             {
@@ -258,17 +295,15 @@ class AssetExportPackage(AbstractCustomPackage):
                 "orchestration.atlan.com/type": "custom",
                 "orchestration.atlan.com/verified": "true",
                 "package.argoproj.io/installer": "argopm",
-                "package.argoproj.io/name": "a-t-rcsas-l-a-s-h{self._NAME}",
-                "package.argoproj.io/parent": "",
-                "package.argoproj.io/registry": "local",
-                "package.argoproj.io/version": "2.3.1-SNAPSHOT",
+                "package.argoproj.io/name": f"a-t-rcsas-l-a-s-h{self._NAME}",
+                "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
                 "orchestration.atlan.com/atlan-ui": "true",
             },
             annotations={
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "kotlin,utility",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://solutions.atlan.com/{self._NAME}",
+                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}",
                 "orchestration.atlan.com/emoji": "🚀",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,  # noqa
@@ -276,7 +311,7 @@ class AssetExportPackage(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Export assets with all enrichment that could be made against them "
                 "via the Atlan UI.",
-                "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@csa/{self._PACKAGE_NAME}",
+                "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/@csa/{self._PACKAGE_NAME}",
                 "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",

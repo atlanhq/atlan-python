@@ -9,7 +9,7 @@ from pyatlan.model.packages.base.custom_package import AbstractCustomPackage
 from pyatlan.model.workflow import WorkflowMetadata
 
 
-class AssetImportPackage(AbstractCustomPackage):
+class AssetImport(AbstractCustomPackage):
     """
     Base configuration for a new Asset Import package.
     """
@@ -28,7 +28,7 @@ class AssetImportPackage(AbstractCustomPackage):
         self._data_product_advanced = False
         super().__init__()
 
-    def object_store(self) -> AssetImportPackage:
+    def object_store(self) -> AssetImport:
         """
         Set up the package to import
         metadata directly from the object store.
@@ -43,7 +43,7 @@ class AssetImportPackage(AbstractCustomPackage):
         secret_key: str,
         region: str,
         bucket: str,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import metadata from S3.
 
@@ -70,7 +70,7 @@ class AssetImportPackage(AbstractCustomPackage):
 
     def gcs(
         self, project_id: str, service_account_json: str, bucket: str
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import metadata from GCS.
 
@@ -100,7 +100,7 @@ class AssetImportPackage(AbstractCustomPackage):
         tenant_id: str,
         account_name: str,
         container: str,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import metadata from ADLS.
 
@@ -132,7 +132,7 @@ class AssetImportPackage(AbstractCustomPackage):
         prefix: str,
         object_key: str,
         input_handling: AssetImportInputHandling = AssetImportInputHandling.UPDATE,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import assets.
 
@@ -161,7 +161,7 @@ class AssetImportPackage(AbstractCustomPackage):
         is_table_view_agnostic: Optional[bool] = None,
         field_separator: Optional[str] = None,
         batch_size: Optional[int] = None,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import assets with advanced configuration.
 
@@ -205,7 +205,7 @@ class AssetImportPackage(AbstractCustomPackage):
         prefix: str,
         object_key: str,
         input_handling: AssetImportInputHandling = AssetImportInputHandling.UPDATE,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import glossaries.
 
@@ -232,7 +232,7 @@ class AssetImportPackage(AbstractCustomPackage):
         fail_on_errors: Optional[bool] = None,
         field_separator: Optional[str] = None,
         batch_size: Optional[int] = None,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import glossaries with advanced configuration.
 
@@ -268,7 +268,7 @@ class AssetImportPackage(AbstractCustomPackage):
         prefix: str,
         object_key: str,
         input_handling: AssetImportInputHandling = AssetImportInputHandling.UPDATE,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import data products.
 
@@ -295,7 +295,7 @@ class AssetImportPackage(AbstractCustomPackage):
         fail_on_errors: Optional[bool] = None,
         field_separator: Optional[str] = None,
         batch_size: Optional[int] = None,
-    ) -> AssetImportPackage:
+    ) -> AssetImport:
         """
         Set up package to import data domain
         and data products with advanced configuration.
