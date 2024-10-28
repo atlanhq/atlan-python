@@ -172,6 +172,10 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
             self._parameters.append(
                 {"name": "delta_removal_type", "value": removal_type}
             )
+        else:
+            self._parameters.append(
+                {"name": "delta_removal_type", "value": AssetRemovalType.ARCHIVE}
+            )
         return self
 
     def options(
