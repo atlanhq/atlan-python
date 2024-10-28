@@ -3,7 +3,7 @@ from __future__ import annotations
 from json import dumps
 from typing import List, Optional, Union
 
-from pyatlan.model.enums import AssetImportInputHandling, CustomWorkflowPackage
+from pyatlan.model.enums import AssetInputHandling, CustomWorkflowPackage
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.packages.base.custom_package import AbstractCustomPackage
 from pyatlan.model.workflow import WorkflowMetadata
@@ -131,7 +131,7 @@ class AssetImport(AbstractCustomPackage):
         self,
         prefix: str,
         object_key: str,
-        input_handling: AssetImportInputHandling = AssetImportInputHandling.UPDATE,
+        input_handling: AssetInputHandling = AssetInputHandling.UPDATE,
     ) -> AssetImport:
         """
         Set up package to import assets.
@@ -204,7 +204,7 @@ class AssetImport(AbstractCustomPackage):
         self,
         prefix: str,
         object_key: str,
-        input_handling: AssetImportInputHandling = AssetImportInputHandling.UPDATE,
+        input_handling: AssetInputHandling = AssetInputHandling.UPDATE,
     ) -> AssetImport:
         """
         Set up package to import glossaries.
@@ -267,7 +267,7 @@ class AssetImport(AbstractCustomPackage):
         self,
         prefix: str,
         object_key: str,
-        input_handling: AssetImportInputHandling = AssetImportInputHandling.UPDATE,
+        input_handling: AssetInputHandling = AssetInputHandling.UPDATE,
     ) -> AssetImport:
         """
         Set up package to import data products.

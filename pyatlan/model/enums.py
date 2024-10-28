@@ -2221,16 +2221,23 @@ class WorkflowPackage(str, Enum):
 class CustomWorkflowPackage(str, Enum):
     ASSET_IMPORT = "csa-asset-import"
     ASSET_EXPORT = "csa-asset-export"
+    RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
 
 
-class AssetImportInputHandling(str, Enum):
+class AssetInputHandling(str, Enum):
     UPSERT = "upsert"
     PARTIAL = "partial"
     UPDATE = "update"
 
 
-class AssetExportScope(str, Enum):
-    GLOSSARIES = "include_glossaries"
+class AssetDeltaHandling(str, Enum):
+    FULL_REPLACEMENT = "full"
+    INCREMENTAL = "delta"
+
+
+class AssetRemovalType(str, Enum):
+    ARCHIVE = "archive"
+    PURGE = "purge"
 
 
 class UTMTags(str, Enum):
