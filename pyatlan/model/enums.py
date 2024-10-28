@@ -2220,12 +2220,17 @@ class WorkflowPackage(str, Enum):
 
 class CustomWorkflowPackage(str, Enum):
     ASSET_IMPORT = "csa-asset-import"
+    ASSET_EXPORT = "csa-asset-export"
 
 
 class AssetImportInputHandling(str, Enum):
     UPSERT = "upsert"
     PARTIAL = "partial"
     UPDATE = "update"
+
+
+class AssetExportScope(str, Enum):
+    GLOSSARIES = "include_glossaries"
 
 
 class UTMTags(str, Enum):
