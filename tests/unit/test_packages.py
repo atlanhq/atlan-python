@@ -5,7 +5,9 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.errors import InvalidRequestError
+from pyatlan.model.enums import AssetInputHandling
 from pyatlan.model.packages import (
+    AssetImport,
     BigQueryCrawler,
     ConfluentKafkaCrawler,
     ConnectionDelete,
@@ -47,6 +49,11 @@ POSTGRES_DIRECT_IAM_ROLE = "postgres_direct_iam_role.json"
 POSTGRES_S3_OFFLINE = "postgres_s3_offline.json"
 CONNECTION_DELETE_HARD = "connection_delete_hard.json"
 CONNECTION_DELETE_SOFT = "connection_delete_soft.json"
+ASSET_IMPORT_S3 = "asset_import_s3.json"
+ASSET_IMPORT_GCS = "asset_import_gcs.json"
+ASSET_EXPORT_BASIC_GLOSSARIES = "asset_export_glossaries.json"
+ASSET_IMPORT_ADLS = "asset_import_adls.json"
+ASSET_IMPORT_DEFAULT = "asset_import_default.json"
 
 
 class NonSerializable:
@@ -610,6 +617,187 @@ def test_connection_delete_package(mock_package_env):
     ).to_workflow()
     request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONNECTION_DELETE_SOFT)
+
+
+def test_asset_import(mock_package_env):
+    # Case 1: Importing assets, glossaries, and data products from S3 with advanced configuration
+    asset_import_s3 = (
+        AssetImport()
+        .object_store()
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.PARTIAL,
+        )
+        .assets_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=20,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .data_product_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(asset_import_s3.json(by_alias=True, exclude_none=True))
+    assert request_json_s3 == load_json(ASSET_IMPORT_S3)
+
+    # Case 2: Importing assets, glossaries, and data products from GCS with advanced configuration
+    asset_import_gcs = (
+        AssetImport()
+        .object_store()
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+        .assets_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=20,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .data_product_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(asset_import_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json_gcs == load_json(ASSET_IMPORT_GCS)
+
+    # Case 3: Importing assets, glossaries, and data products from GCS with advanced configuration
+    asset_import_adls = (
+        AssetImport()
+        .object_store()
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+        .assets_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=20,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .data_product_advanced(
+            remove_attributes=["certificateStatus", "announcementType"],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(asset_import_adls.json(by_alias=True, exclude_none=True))
+    assert request_json_adls == load_json(ASSET_IMPORT_ADLS)
+
+    # Case 4: Importing assets, glossaries, and data products from S3 with default configuration
+    asset_import_default = (
+        AssetImport()
+        .object_store()
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+    ).to_workflow()
+
+    request_json_default = loads(
+        asset_import_default.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_default == load_json(ASSET_IMPORT_DEFAULT)
 
 
 @pytest.mark.parametrize(

@@ -189,7 +189,7 @@ class AssetImport(AbstractCustomPackage):
         ):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
-            "assets_attr_to_overwrite": dumps(remove_attributes),
+            "assets_attr_to_overwrite": dumps(remove_attributes, separators=(",", ":")),
             "assets_fail_on_errors": fail_on_errors,
             "assets_case_sensitive": case_sensitive_match,
             "assets_table_view_agnostic": is_table_view_agnostic,
@@ -254,7 +254,9 @@ class AssetImport(AbstractCustomPackage):
         ):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
-            "glossaries_attr_to_overwrite": str(remove_attributes),
+            "glossaries_attr_to_overwrite": dumps(
+                remove_attributes, separators=(",", ":")
+            ),
             "glossaries_fail_on_errors": fail_on_errors,
             "glossaries_field_separator": field_separator,
             "glossaries_batch_size": batch_size,
@@ -282,7 +284,7 @@ class AssetImport(AbstractCustomPackage):
 
         :returns: package, configured to import data domain and data products
         """
-        self._parameters.append({"name": "data_products", "value": prefix})
+        self._parameters.append({"name": "data_products_prefix", "value": prefix})
         self._parameters.append({"name": "data_products_key", "value": object_key})
         self._parameters.append(
             {"name": "data_products_upsert_semantic", "value": input_handling}
@@ -318,10 +320,12 @@ class AssetImport(AbstractCustomPackage):
         ):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
-            "data_product_attr_to_overwrite": str(remove_attributes),
-            "data_product_fail_on_errors": fail_on_errors,
-            "data_product_field_separator": field_separator,
-            "data_product_batch_size": batch_size,
+            "data_products_attr_to_overwrite": dumps(
+                remove_attributes, separators=(",", ":")
+            ),
+            "data_products_fail_on_errors": fail_on_errors,
+            "data_products_field_separator": field_separator,
+            "data_products_batch_size": batch_size,
         }
         self._add_optional_params(params)
         self._data_product_advanced = True
@@ -358,7 +362,7 @@ class AssetImport(AbstractCustomPackage):
                 "orchestration.atlan.com/preview": "true",
                 "orchestration.atlan.com/verified": "true",
                 "package.argoproj.io/installer": "argopm",
-                "package.argoproj.io/name": f"a-t-ratlans-l-a-s-h{self._NAME}",
+                "package.argoproj.io/name": f"a-t-rcsas-l-a-s-h{self._NAME}",
                 "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
                 "orchestration.atlan.com/atlan-ui": "true",
             },
@@ -366,7 +370,7 @@ class AssetImport(AbstractCustomPackage):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "kotlin,utility",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}",
+                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}/",
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,  # noqa

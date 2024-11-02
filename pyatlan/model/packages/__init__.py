@@ -9,6 +9,7 @@ from .dynamo_d_b_crawler import DynamoDBCrawler
 from .glue_crawler import GlueCrawler
 from .postgres_crawler import PostgresCrawler
 from .powerbi_crawler import PowerBICrawler
+from .relational_assets_builder import RelationalAssetsBuilder
 from .s_q_l_server_crawler import SQLServerCrawler
 from .sigma_crawler import SigmaCrawler
 from .snowflake_crawler import SnowflakeCrawler
@@ -31,4 +32,5 @@ __all__ = [
     "TableauCrawler",
     "AssetImport",
     "AssetExportBasic",
+    "RelationalAssetsBuilder",
 ]
