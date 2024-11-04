@@ -322,6 +322,14 @@ class AtlanConnectorType(str, Enum):
     ABINITIO = ("abinitio", AtlanConnectionCategory.ELT)
     SAP_S4_HANA = ("sap-s4-hana", AtlanConnectionCategory.WAREHOUSE)
     INRIVER = ("inriver", AtlanConnectionCategory.DATABASE)
+    AZURE_ACTIVE_DIRECTORY = ("azure-active-directory", AtlanConnectionCategory.SAAS)
+    ADOBE_EXPERIENCE_MANAGER = ("adobe-experience-manager", AtlanConnectionCategory.SAAS)
+    ADOBE_TARGET = ("adobe-target", AtlanConnectionCategory.SAAS)
+    APACHE_PULSAR = ("apache-pulsar", AtlanConnectionCategory.EVENT_BUS)
+    TREASURE_DATA = ("treasure-data", AtlanConnectionCategory.SAAS)
+    SAP_GIGYA = ("sap-gigya", AtlanConnectionCategory.SAAS)
+    SAP_HYBRIS = ("sap-hybris", AtlanConnectionCategory.SAAS)
+    IDM_DB2 = ("ibm-db2", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
