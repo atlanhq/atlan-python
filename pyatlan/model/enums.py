@@ -329,7 +329,7 @@ class AtlanConnectorType(str, Enum):
     TREASURE_DATA = ("treasure-data", AtlanConnectionCategory.SAAS)
     SAP_GIGYA = ("sap-gigya", AtlanConnectionCategory.SAAS)
     SAP_HYBRIS = ("sap-hybris", AtlanConnectionCategory.SAAS)
-    IDM_DB2 = ("ibm-db2", AtlanConnectionCategory.DATABASE)
+    IDM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
