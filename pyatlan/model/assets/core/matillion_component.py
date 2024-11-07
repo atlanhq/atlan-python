@@ -85,11 +85,11 @@ class MatillionComponent(Matillion):
     Unique name of the job to which the component belongs.
     """
 
-    MATILLION_JOB: ClassVar[RelationField] = RelationField("matillionJob")
+    MATILLION_PROCESS: ClassVar[RelationField] = RelationField("matillionProcess")
     """
     TBC
     """
-    MATILLION_PROCESS: ClassVar[RelationField] = RelationField("matillionProcess")
+    MATILLION_JOB: ClassVar[RelationField] = RelationField("matillionJob")
     """
     TBC
     """
@@ -103,8 +103,8 @@ class MatillionComponent(Matillion):
         "matillion_component_sqls",
         "matillion_job_name",
         "matillion_job_qualified_name",
-        "matillion_job",
         "matillion_process",
+        "matillion_job",
     ]
 
     @property
@@ -228,16 +228,6 @@ class MatillionComponent(Matillion):
         self.attributes.matillion_job_qualified_name = matillion_job_qualified_name
 
     @property
-    def matillion_job(self) -> Optional[MatillionJob]:
-        return None if self.attributes is None else self.attributes.matillion_job
-
-    @matillion_job.setter
-    def matillion_job(self, matillion_job: Optional[MatillionJob]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.matillion_job = matillion_job
-
-    @property
     def matillion_process(self) -> Optional[Process]:
         return None if self.attributes is None else self.attributes.matillion_process
 
@@ -246,6 +236,16 @@ class MatillionComponent(Matillion):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_process = matillion_process
+
+    @property
+    def matillion_job(self) -> Optional[MatillionJob]:
+        return None if self.attributes is None else self.attributes.matillion_job
+
+    @matillion_job.setter
+    def matillion_job(self, matillion_job: Optional[MatillionJob]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job = matillion_job
 
     class Attributes(Matillion.Attributes):
         matillion_component_id: Optional[str] = Field(default=None, description="")
@@ -268,10 +268,10 @@ class MatillionComponent(Matillion):
         matillion_job_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        matillion_job: Optional[MatillionJob] = Field(
+        matillion_process: Optional[Process] = Field(
             default=None, description=""
         )  # relationship
-        matillion_process: Optional[Process] = Field(
+        matillion_job: Optional[MatillionJob] = Field(
             default=None, description=""
         )  # relationship
 

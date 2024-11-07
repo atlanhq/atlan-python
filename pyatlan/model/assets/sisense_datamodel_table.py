@@ -88,11 +88,11 @@ class SisenseDatamodelTable(Sisense):
     JSON specifying the LiveQuery settings of this datamodel table.
     """
 
-    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
+    SISENSE_DATAMODEL: ClassVar[RelationField] = RelationField("sisenseDatamodel")
     """
     TBC
     """
-    SISENSE_DATAMODEL: ClassVar[RelationField] = RelationField("sisenseDatamodel")
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
     """
     TBC
     """
@@ -106,8 +106,8 @@ class SisenseDatamodelTable(Sisense):
         "sisense_datamodel_table_is_hidden",
         "sisense_datamodel_table_schedule",
         "sisense_datamodel_table_live_query_settings",
-        "sisense_widgets",
         "sisense_datamodel",
+        "sisense_widgets",
     ]
 
     @property
@@ -251,16 +251,6 @@ class SisenseDatamodelTable(Sisense):
         )
 
     @property
-    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
-        return None if self.attributes is None else self.attributes.sisense_widgets
-
-    @sisense_widgets.setter
-    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sisense_widgets = sisense_widgets
-
-    @property
     def sisense_datamodel(self) -> Optional[SisenseDatamodel]:
         return None if self.attributes is None else self.attributes.sisense_datamodel
 
@@ -269,6 +259,16 @@ class SisenseDatamodelTable(Sisense):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_datamodel = sisense_datamodel
+
+    @property
+    def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
+
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[List[SisenseWidget]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widgets = sisense_widgets
 
     class Attributes(Sisense.Attributes):
         sisense_datamodel_qualified_name: Optional[str] = Field(
@@ -295,10 +295,10 @@ class SisenseDatamodelTable(Sisense):
         sisense_datamodel_table_live_query_settings: Optional[str] = Field(
             default=None, description=""
         )
-        sisense_widgets: Optional[List[SisenseWidget]] = Field(
+        sisense_datamodel: Optional[SisenseDatamodel] = Field(
             default=None, description=""
         )  # relationship
-        sisense_datamodel: Optional[SisenseDatamodel] = Field(
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -25,13 +25,13 @@ from .calculation_view import CalculationView
 from .catalog import Catalog
 from .column import Column
 from .column_process import ColumnProcess
+from .custom import Custom
 from .data_contract import DataContract
 from .data_domain import DataDomain
 from .data_mesh import DataMesh
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .database import Database
-from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt import Dbt
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
@@ -54,13 +54,6 @@ from .matillion_group import MatillionGroup
 from .matillion_job import MatillionJob
 from .matillion_project import MatillionProject
 from .metric import Metric
-from .model import Model
-from .model_attribute import ModelAttribute
-from .model_attribute_association import ModelAttributeAssociation
-from .model_data_model import ModelDataModel
-from .model_entity import ModelEntity
-from .model_entity_association import ModelEntityAssociation
-from .model_version import ModelVersion
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
 from .persona import Persona
@@ -123,11 +116,11 @@ ADF.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
+Custom.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
 Matillion.Attributes.update_forward_refs(**localns)
 Dbt.Attributes.update_forward_refs(**localns)
-Model.Attributes.update_forward_refs(**localns)
 Spark.Attributes.update_forward_refs(**localns)
 Tag.Attributes.update_forward_refs(**localns)
 SchemaRegistry.Attributes.update_forward_refs(**localns)
@@ -160,7 +153,6 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
@@ -174,12 +166,6 @@ DbtTest.Attributes.update_forward_refs(**localns)
 DbtModel.Attributes.update_forward_refs(**localns)
 DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
-ModelAttribute.Attributes.update_forward_refs(**localns)
-ModelEntity.Attributes.update_forward_refs(**localns)
-ModelVersion.Attributes.update_forward_refs(**localns)
-ModelEntityAssociation.Attributes.update_forward_refs(**localns)
-ModelAttributeAssociation.Attributes.update_forward_refs(**localns)
-ModelDataModel.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)

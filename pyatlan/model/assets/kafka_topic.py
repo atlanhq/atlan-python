@@ -105,6 +105,12 @@ class KafkaTopic(Kafka):
     """
     Cleanup policy for this topic.
     """
+    KAFKA_TOPIC_LOG_CLEANUP_POLICY: ClassVar[KeywordField] = KeywordField(
+        "kafkaTopicLogCleanupPolicy", "kafkaTopicLogCleanupPolicy"
+    )
+    """
+    Comma seperated Cleanup policy for this topic.
+    """
 
     KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField(
         "kafkaConsumerGroups"
@@ -123,6 +129,7 @@ class KafkaTopic(Kafka):
         "kafka_topic_size_in_bytes",
         "kafka_topic_record_count",
         "kafka_topic_cleanup_policy",
+        "kafka_topic_log_cleanup_policy",
         "kafka_consumer_groups",
     ]
 
@@ -261,6 +268,22 @@ class KafkaTopic(Kafka):
         self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
 
     @property
+    def kafka_topic_log_cleanup_policy(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_log_cleanup_policy
+        )
+
+    @kafka_topic_log_cleanup_policy.setter
+    def kafka_topic_log_cleanup_policy(
+        self, kafka_topic_log_cleanup_policy: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_log_cleanup_policy = kafka_topic_log_cleanup_policy
+
+    @property
     def kafka_consumer_groups(self) -> Optional[List[KafkaConsumerGroup]]:
         return (
             None if self.attributes is None else self.attributes.kafka_consumer_groups
@@ -292,6 +315,9 @@ class KafkaTopic(Kafka):
         kafka_topic_size_in_bytes: Optional[int] = Field(default=None, description="")
         kafka_topic_record_count: Optional[int] = Field(default=None, description="")
         kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(
+            default=None, description=""
+        )
+        kafka_topic_log_cleanup_policy: Optional[str] = Field(
             default=None, description=""
         )
         kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(

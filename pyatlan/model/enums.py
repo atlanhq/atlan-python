@@ -2497,6 +2497,11 @@ class CertificateStatus(str, Enum):
     VERIFIED = "VERIFIED"
 
 
+class CustomTemperatureType(str, Enum):
+    COLD = "COLD"
+    HOT = "HOT"
+
+
 class DataProductCriticality(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
@@ -2598,13 +2603,6 @@ class KafkaTopicCompressionType(str, Enum):
 class MatillionJobType(str, Enum):
     ORCHESTRATION = "ORCHESTRATION"
     TRANSFORMATION = "TRANSFORMATION"
-
-
-class ModelCardinalityType(str, Enum):
-    ONE_TO_ONE = "ONE-TO-ONE"
-    ONE_TO_MANY = "ONE-TO-MANY"
-    MANY_TO_ONE = "MANY-TO-ONE"
-    MANY_TO_MANY = "MANY-TO-MANY"
 
 
 class MongoDBCollectionValidationAction(str, Enum):

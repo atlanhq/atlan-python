@@ -9,6 +9,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -101,6 +102,24 @@ class LookerField(Looker):
     """
     Deprecated.
     """
+    LOOKER_FIELD_IS_REFINED: ClassVar[BooleanField] = BooleanField(
+        "lookerFieldIsRefined", "lookerFieldIsRefined"
+    )
+    """
+    Whether the looker field asset is coming from a refinement
+    """
+    LOOKER_FIELD_REFINEMENT_FILE_PATH: ClassVar[TextField] = TextField(
+        "lookerFieldRefinementFilePath", "lookerFieldRefinementFilePath"
+    )
+    """
+    Absolute path of the file where the refinement of the field is declared.
+    """
+    LOOKER_FIELD_REFINEMENT_LINE_NUMBER: ClassVar[TextField] = TextField(
+        "lookerFieldRefinementLineNumber", "lookerFieldRefinementLineNumber"
+    )
+    """
+    Line number in the lookerFieldRefinementFilePath where this refinement of the field is declared.
+    """
 
     PROJECT: ClassVar[RelationField] = RelationField("project")
     """
@@ -142,6 +161,9 @@ class LookerField(Looker):
         "source_definition",
         "looker_field_data_type",
         "looker_times_used",
+        "looker_field_is_refined",
+        "looker_field_refinement_file_path",
+        "looker_field_refinement_line_number",
         "project",
         "view",
         "tile",
@@ -280,6 +302,54 @@ class LookerField(Looker):
         self.attributes.looker_times_used = looker_times_used
 
     @property
+    def looker_field_is_refined(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.looker_field_is_refined
+        )
+
+    @looker_field_is_refined.setter
+    def looker_field_is_refined(self, looker_field_is_refined: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_field_is_refined = looker_field_is_refined
+
+    @property
+    def looker_field_refinement_file_path(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_field_refinement_file_path
+        )
+
+    @looker_field_refinement_file_path.setter
+    def looker_field_refinement_file_path(
+        self, looker_field_refinement_file_path: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_field_refinement_file_path = (
+            looker_field_refinement_file_path
+        )
+
+    @property
+    def looker_field_refinement_line_number(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_field_refinement_line_number
+        )
+
+    @looker_field_refinement_line_number.setter
+    def looker_field_refinement_line_number(
+        self, looker_field_refinement_line_number: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_field_refinement_line_number = (
+            looker_field_refinement_line_number
+        )
+
+    @property
     def project(self) -> Optional[LookerProject]:
         return None if self.attributes is None else self.attributes.project
 
@@ -364,6 +434,13 @@ class LookerField(Looker):
         source_definition: Optional[str] = Field(default=None, description="")
         looker_field_data_type: Optional[str] = Field(default=None, description="")
         looker_times_used: Optional[int] = Field(default=None, description="")
+        looker_field_is_refined: Optional[bool] = Field(default=None, description="")
+        looker_field_refinement_file_path: Optional[str] = Field(
+            default=None, description=""
+        )
+        looker_field_refinement_line_number: Optional[str] = Field(
+            default=None, description=""
+        )
         project: Optional[LookerProject] = Field(
             default=None, description=""
         )  # relationship

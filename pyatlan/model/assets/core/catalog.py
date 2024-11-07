@@ -49,12 +49,6 @@ class Catalog(Asset, type_name="Catalog"):
     """
     TBC
     """
-    MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelImplementedEntities"
-    )
-    """
-    TBC
-    """
     INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "inputToAirflowTasks"
     )
@@ -73,7 +67,6 @@ class Catalog(Asset, type_name="Catalog"):
         "output_from_airflow_tasks",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
-        "model_implemented_entities",
         "input_to_airflow_tasks",
         "output_from_processes",
     ]
@@ -127,22 +120,6 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_spark_jobs = output_from_spark_jobs
 
     @property
-    def model_implemented_entities(self) -> Optional[List[ModelEntity]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_implemented_entities
-        )
-
-    @model_implemented_entities.setter
-    def model_implemented_entities(
-        self, model_implemented_entities: Optional[List[ModelEntity]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_implemented_entities = model_implemented_entities
-
-    @property
     def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
             None if self.attributes is None else self.attributes.input_to_airflow_tasks
@@ -181,9 +158,6 @@ class Catalog(Asset, type_name="Catalog"):
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
-        model_implemented_entities: Optional[List[ModelEntity]] = Field(
-            default=None, description=""
-        )  # relationship
         input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
@@ -202,6 +176,5 @@ class Catalog(Asset, type_name="Catalog"):
 
 
 from .airflow_task import AirflowTask  # noqa
-from .model_entity import ModelEntity  # noqa
 from .process import Process  # noqa
 from .spark_job import SparkJob  # noqa

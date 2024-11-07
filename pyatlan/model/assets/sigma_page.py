@@ -36,19 +36,19 @@ class SigmaPage(Sigma):
     Number of data elements on this page.
     """
 
-    SIGMA_WORKBOOK: ClassVar[RelationField] = RelationField("sigmaWorkbook")
+    SIGMA_DATA_ELEMENTS: ClassVar[RelationField] = RelationField("sigmaDataElements")
     """
     TBC
     """
-    SIGMA_DATA_ELEMENTS: ClassVar[RelationField] = RelationField("sigmaDataElements")
+    SIGMA_WORKBOOK: ClassVar[RelationField] = RelationField("sigmaWorkbook")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
         "sigma_data_element_count",
-        "sigma_workbook",
         "sigma_data_elements",
+        "sigma_workbook",
     ]
 
     @property
@@ -66,16 +66,6 @@ class SigmaPage(Sigma):
         self.attributes.sigma_data_element_count = sigma_data_element_count
 
     @property
-    def sigma_workbook(self) -> Optional[SigmaWorkbook]:
-        return None if self.attributes is None else self.attributes.sigma_workbook
-
-    @sigma_workbook.setter
-    def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_workbook = sigma_workbook
-
-    @property
     def sigma_data_elements(self) -> Optional[List[SigmaDataElement]]:
         return None if self.attributes is None else self.attributes.sigma_data_elements
 
@@ -87,12 +77,22 @@ class SigmaPage(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_data_elements = sigma_data_elements
 
+    @property
+    def sigma_workbook(self) -> Optional[SigmaWorkbook]:
+        return None if self.attributes is None else self.attributes.sigma_workbook
+
+    @sigma_workbook.setter
+    def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_workbook = sigma_workbook
+
     class Attributes(Sigma.Attributes):
         sigma_data_element_count: Optional[int] = Field(default=None, description="")
-        sigma_workbook: Optional[SigmaWorkbook] = Field(
+        sigma_data_elements: Optional[List[SigmaDataElement]] = Field(
             default=None, description=""
         )  # relationship
-        sigma_data_elements: Optional[List[SigmaDataElement]] = Field(
+        sigma_workbook: Optional[SigmaWorkbook] = Field(
             default=None, description=""
         )  # relationship
 

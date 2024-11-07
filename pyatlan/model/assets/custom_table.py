@@ -18,115 +18,32 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.model.structs import CustomRatings
 
-from .cosmos_mongo_d_b import CosmosMongoDB
+from .core.table import Table
 
 
-class CosmosMongoDBCollection(CosmosMongoDB):
+class CustomTable(Table):
     """Description"""
 
-    type_name: str = Field(default="CosmosMongoDBCollection", allow_mutation=False)
+    type_name: str = Field(default="CustomTable", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "CosmosMongoDBCollection":
-            raise ValueError("must be CosmosMongoDBCollection")
+        if v != "CustomTable":
+            raise ValueError("must be CustomTable")
         return v
 
     def __setattr__(self, name, value):
-        if name in CosmosMongoDBCollection._convenience_properties:
+        if name in CustomTable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "cosmosMongoDBDatabaseQualifiedName",
-            "cosmosMongoDBDatabaseQualifiedName",
-            "cosmosMongoDBDatabaseQualifiedName.text",
-        )
+    CUSTOM_RATINGS: ClassVar[KeywordField] = KeywordField(
+        "customRatings", "customRatings"
     )
     """
-    Unique name of the database in which this collection exists.
-    """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
-    """
-    Represents attributes for describing the key schema for the table and indexes.
-    """
-    MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "mongoDBCollectionSubtype",
-        "mongoDBCollectionSubtype",
-        "mongoDBCollectionSubtype.text",
-    )
-    """
-    Subtype of a MongoDB collection, for example: Capped, Time Series, etc.
-    """
-    MONGO_DB_COLLECTION_IS_CAPPED: ClassVar[BooleanField] = BooleanField(
-        "mongoDBCollectionIsCapped", "mongoDBCollectionIsCapped"
-    )
-    """
-    Whether the collection is capped (true) or not (false).
-    """
-    MONGO_DB_COLLECTION_TIME_FIELD: ClassVar[TextField] = TextField(
-        "mongoDBCollectionTimeField", "mongoDBCollectionTimeField"
-    )
-    """
-    Name of the field containing the date in each time series document.
-    """
-    MONGO_DB_COLLECTION_TIME_GRANULARITY: ClassVar[KeywordField] = KeywordField(
-        "mongoDBCollectionTimeGranularity", "mongoDBCollectionTimeGranularity"
-    )
-    """
-    Closest match to the time span between consecutive incoming measurements.
-    """
-    MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionExpireAfterSeconds", "mongoDBCollectionExpireAfterSeconds"
-    )
-    """
-    Seconds after which documents in a time series collection or clustered collection expire.
-    """
-    MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionMaximumDocumentCount", "mongoDBCollectionMaximumDocumentCount"
-    )
-    """
-    Maximum number of documents allowed in a capped collection.
-    """
-    MONGO_DB_COLLECTION_MAX_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionMaxSize", "mongoDBCollectionMaxSize"
-    )
-    """
-    Maximum size allowed in a capped collection.
-    """
-    MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionNumOrphanDocs", "mongoDBCollectionNumOrphanDocs"
-    )
-    """
-    Number of orphaned documents in the collection.
-    """
-    MONGO_DB_COLLECTION_NUM_INDEXES: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionNumIndexes", "mongoDBCollectionNumIndexes"
-    )
-    """
-    Number of indexes on the collection.
-    """
-    MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionTotalIndexSize", "mongoDBCollectionTotalIndexSize"
-    )
-    """
-    Total size of all indexes.
-    """
-    MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionAverageObjectSize", "mongoDBCollectionAverageObjectSize"
-    )
-    """
-    Average size of an object in the collection.
-    """
-    MONGO_DB_COLLECTION_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition"
-    )
-    """
-    Definition of the schema applicable for the collection.
+    Ratings for the CustomTable asset from the source system.
     """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
@@ -348,77 +265,36 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
-
-    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
-    """
-    TBC
-    """
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
-    FACTS: ClassVar[RelationField] = RelationField("facts")
-    """
-    TBC
-    """
-    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
-    """
-    TBC
-    """
-    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
-    """
-    TBC
-    """
-    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
-    """
-    TBC
-    """
-    PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
-    """
-    TBC
-    """
-    COSMOS_MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBDatabase"
+    CUSTOM_SOURCE_ID: ClassVar[KeywordField] = KeywordField(
+        "customSourceId", "customSourceId"
     )
     """
+    Unique identifier for the Custom asset from the source system.
+    """
+    CUSTOM_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "customDatasetName", "customDatasetName.keyword", "customDatasetName"
+    )
+    """
+    Simple name of the dataset in which this asset exists, or empty if it is itself a dataset.
+    """
+    CUSTOM_DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "customDatasetQualifiedName", "customDatasetQualifiedName"
+    )
+    """
+    Unique name of the dataset in which this asset exists, or empty if it is itself a dataset.
+    """
+
+    CUSTOM_FIELDS: ClassVar[RelationField] = RelationField("customFields")
+    """
     TBC
     """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
-    """
-    TBC
-    """
-    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
-    """
-    TBC
-    """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
-    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
-    """
-    TBC
-    """
-    DIMENSIONS: ClassVar[RelationField] = RelationField("dimensions")
+    CUSTOM_DATASET: ClassVar[RelationField] = RelationField("customDataset")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "cosmos_mongo_d_b_database_qualified_name",
-        "no_s_q_l_schema_definition",
-        "mongo_d_b_collection_subtype",
-        "mongo_d_b_collection_is_capped",
-        "mongo_d_b_collection_time_field",
-        "mongo_d_b_collection_time_granularity",
-        "mongo_d_b_collection_expire_after_seconds",
-        "mongo_d_b_collection_maximum_document_count",
-        "mongo_d_b_collection_max_size",
-        "mongo_d_b_collection_num_orphan_docs",
-        "mongo_d_b_collection_num_indexes",
-        "mongo_d_b_collection_total_index_size",
-        "mongo_d_b_collection_average_object_size",
-        "mongo_d_b_collection_schema_definition",
+        "custom_ratings",
         "column_count",
         "row_count",
         "size_bytes",
@@ -459,260 +335,22 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
-        "dbt_sources",
-        "columns",
-        "facts",
-        "sql_dbt_models",
-        "dbt_tests",
-        "atlan_schema",
-        "partitions",
-        "cosmos_mongo_d_b_database",
-        "queries",
-        "sql_dbt_sources",
-        "dbt_models",
-        "mongo_d_b_database",
-        "dimensions",
+        "custom_source_id",
+        "custom_dataset_name",
+        "custom_dataset_qualified_name",
+        "custom_fields",
+        "custom_dataset",
     ]
 
     @property
-    def cosmos_mongo_d_b_database_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_database_qualified_name
-        )
+    def custom_ratings(self) -> Optional[List[CustomRatings]]:
+        return None if self.attributes is None else self.attributes.custom_ratings
 
-    @cosmos_mongo_d_b_database_qualified_name.setter
-    def cosmos_mongo_d_b_database_qualified_name(
-        self, cosmos_mongo_d_b_database_qualified_name: Optional[str]
-    ):
+    @custom_ratings.setter
+    def custom_ratings(self, custom_ratings: Optional[List[CustomRatings]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_database_qualified_name = (
-            cosmos_mongo_d_b_database_qualified_name
-        )
-
-    @property
-    def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
-
-    @no_s_q_l_schema_definition.setter
-    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
-
-    @property
-    def mongo_d_b_collection_subtype(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_subtype
-        )
-
-    @mongo_d_b_collection_subtype.setter
-    def mongo_d_b_collection_subtype(self, mongo_d_b_collection_subtype: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_subtype = mongo_d_b_collection_subtype
-
-    @property
-    def mongo_d_b_collection_is_capped(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_is_capped
-        )
-
-    @mongo_d_b_collection_is_capped.setter
-    def mongo_d_b_collection_is_capped(
-        self, mongo_d_b_collection_is_capped: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_is_capped = mongo_d_b_collection_is_capped
-
-    @property
-    def mongo_d_b_collection_time_field(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_field
-        )
-
-    @mongo_d_b_collection_time_field.setter
-    def mongo_d_b_collection_time_field(
-        self, mongo_d_b_collection_time_field: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_field = (
-            mongo_d_b_collection_time_field
-        )
-
-    @property
-    def mongo_d_b_collection_time_granularity(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_granularity
-        )
-
-    @mongo_d_b_collection_time_granularity.setter
-    def mongo_d_b_collection_time_granularity(
-        self, mongo_d_b_collection_time_granularity: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_granularity = (
-            mongo_d_b_collection_time_granularity
-        )
-
-    @property
-    def mongo_d_b_collection_expire_after_seconds(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_expire_after_seconds
-        )
-
-    @mongo_d_b_collection_expire_after_seconds.setter
-    def mongo_d_b_collection_expire_after_seconds(
-        self, mongo_d_b_collection_expire_after_seconds: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_expire_after_seconds = (
-            mongo_d_b_collection_expire_after_seconds
-        )
-
-    @property
-    def mongo_d_b_collection_maximum_document_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_maximum_document_count
-        )
-
-    @mongo_d_b_collection_maximum_document_count.setter
-    def mongo_d_b_collection_maximum_document_count(
-        self, mongo_d_b_collection_maximum_document_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_maximum_document_count = (
-            mongo_d_b_collection_maximum_document_count
-        )
-
-    @property
-    def mongo_d_b_collection_max_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_max_size
-        )
-
-    @mongo_d_b_collection_max_size.setter
-    def mongo_d_b_collection_max_size(
-        self, mongo_d_b_collection_max_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_max_size = mongo_d_b_collection_max_size
-
-    @property
-    def mongo_d_b_collection_num_orphan_docs(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_orphan_docs
-        )
-
-    @mongo_d_b_collection_num_orphan_docs.setter
-    def mongo_d_b_collection_num_orphan_docs(
-        self, mongo_d_b_collection_num_orphan_docs: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_orphan_docs = (
-            mongo_d_b_collection_num_orphan_docs
-        )
-
-    @property
-    def mongo_d_b_collection_num_indexes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_indexes
-        )
-
-    @mongo_d_b_collection_num_indexes.setter
-    def mongo_d_b_collection_num_indexes(
-        self, mongo_d_b_collection_num_indexes: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_indexes = (
-            mongo_d_b_collection_num_indexes
-        )
-
-    @property
-    def mongo_d_b_collection_total_index_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_total_index_size
-        )
-
-    @mongo_d_b_collection_total_index_size.setter
-    def mongo_d_b_collection_total_index_size(
-        self, mongo_d_b_collection_total_index_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_total_index_size = (
-            mongo_d_b_collection_total_index_size
-        )
-
-    @property
-    def mongo_d_b_collection_average_object_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_average_object_size
-        )
-
-    @mongo_d_b_collection_average_object_size.setter
-    def mongo_d_b_collection_average_object_size(
-        self, mongo_d_b_collection_average_object_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_average_object_size = (
-            mongo_d_b_collection_average_object_size
-        )
-
-    @property
-    def mongo_d_b_collection_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_schema_definition
-        )
-
-    @mongo_d_b_collection_schema_definition.setter
-    def mongo_d_b_collection_schema_definition(
-        self, mongo_d_b_collection_schema_definition: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_schema_definition = (
-            mongo_d_b_collection_schema_definition
-        )
+        self.attributes.custom_ratings = custom_ratings
 
     @property
     def column_count(self) -> Optional[int]:
@@ -1161,180 +799,63 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.dbt_sources
+    def custom_source_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.custom_source_id
 
-    @dbt_sources.setter
-    def dbt_sources(self, dbt_sources: Optional[List[DbtSource]]):
+    @custom_source_id.setter
+    def custom_source_id(self, custom_source_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_sources = dbt_sources
+        self.attributes.custom_source_id = custom_source_id
 
     @property
-    def columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.columns
+    def custom_dataset_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.custom_dataset_name
 
-    @columns.setter
-    def columns(self, columns: Optional[List[Column]]):
+    @custom_dataset_name.setter
+    def custom_dataset_name(self, custom_dataset_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.columns = columns
+        self.attributes.custom_dataset_name = custom_dataset_name
 
     @property
-    def facts(self) -> Optional[List[Table]]:
-        return None if self.attributes is None else self.attributes.facts
-
-    @facts.setter
-    def facts(self, facts: Optional[List[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.facts = facts
-
-    @property
-    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_models
-
-    @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_models = sql_dbt_models
-
-    @property
-    def dbt_tests(self) -> Optional[List[DbtTest]]:
-        return None if self.attributes is None else self.attributes.dbt_tests
-
-    @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_tests = dbt_tests
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    @property
-    def partitions(self) -> Optional[List[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[List[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
-
-    @property
-    def cosmos_mongo_d_b_database(self) -> Optional[CosmosMongoDBDatabase]:
+    def custom_dataset_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_database
+            else self.attributes.custom_dataset_qualified_name
         )
 
-    @cosmos_mongo_d_b_database.setter
-    def cosmos_mongo_d_b_database(
-        self, cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase]
+    @custom_dataset_qualified_name.setter
+    def custom_dataset_qualified_name(
+        self, custom_dataset_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_database = cosmos_mongo_d_b_database
+        self.attributes.custom_dataset_qualified_name = custom_dataset_qualified_name
 
     @property
-    def queries(self) -> Optional[List[Query]]:
-        return None if self.attributes is None else self.attributes.queries
+    def custom_fields(self) -> Optional[List[CustomField]]:
+        return None if self.attributes is None else self.attributes.custom_fields
 
-    @queries.setter
-    def queries(self, queries: Optional[List[Query]]):
+    @custom_fields.setter
+    def custom_fields(self, custom_fields: Optional[List[CustomField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.queries = queries
+        self.attributes.custom_fields = custom_fields
 
     @property
-    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
+    def custom_dataset(self) -> Optional[CustomDataset]:
+        return None if self.attributes is None else self.attributes.custom_dataset
 
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
+    @custom_dataset.setter
+    def custom_dataset(self, custom_dataset: Optional[CustomDataset]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
+        self.attributes.custom_dataset = custom_dataset
 
-    @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
-    def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
-        return None if self.attributes is None else self.attributes.mongo_d_b_database
-
-    @mongo_d_b_database.setter
-    def mongo_d_b_database(self, mongo_d_b_database: Optional[MongoDBDatabase]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database = mongo_d_b_database
-
-    @property
-    def dimensions(self) -> Optional[List[Table]]:
-        return None if self.attributes is None else self.attributes.dimensions
-
-    @dimensions.setter
-    def dimensions(self, dimensions: Optional[List[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dimensions = dimensions
-
-    class Attributes(CosmosMongoDB.Attributes):
-        cosmos_mongo_d_b_database_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        mongo_d_b_collection_subtype: Optional[str] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_is_capped: Optional[bool] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_time_field: Optional[str] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_time_granularity: Optional[str] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_expire_after_seconds: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_maximum_document_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_max_size: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_num_orphan_docs: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_num_indexes: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_total_index_size: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_average_object_size: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_schema_definition: Optional[str] = Field(
+    class Attributes(Table.Attributes):
+        custom_ratings: Optional[List[CustomRatings]] = Field(
             default=None, description=""
         )
         column_count: Optional[int] = Field(default=None, description="")
@@ -1383,48 +904,20 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(
+        custom_source_id: Optional[str] = Field(default=None, description="")
+        custom_dataset_name: Optional[str] = Field(default=None, description="")
+        custom_dataset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        custom_fields: Optional[List[CustomField]] = Field(
             default=None, description=""
         )  # relationship
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        facts: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
-        partitions: Optional[List[TablePartition]] = Field(
-            default=None, description=""
-        )  # relationship
-        cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase] = Field(
-            default=None, description=""
-        )  # relationship
-        queries: Optional[List[Query]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
-            default=None, description=""
-        )  # relationship
-        dimensions: Optional[List[Table]] = Field(
+        custom_dataset: Optional[CustomDataset] = Field(
             default=None, description=""
         )  # relationship
 
-    attributes: CosmosMongoDBCollection.Attributes = Field(
-        default_factory=lambda: CosmosMongoDBCollection.Attributes(),
+    attributes: CustomTable.Attributes = Field(
+        default_factory=lambda: CustomTable.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -1433,15 +926,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     )
 
 
-from .core.column import Column  # noqa
-from .core.dbt_model import DbtModel  # noqa
-from .core.dbt_source import DbtSource  # noqa
-from .core.dbt_test import DbtTest  # noqa
-from .core.query import Query  # noqa
-from .core.schema import Schema  # noqa
-from .core.table import Table  # noqa
-from .core.table_partition import TablePartition  # noqa
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
-from .mongo_d_b_database import MongoDBDatabase  # noqa
+from .custom_dataset import CustomDataset  # noqa
+from .custom_field import CustomField  # noqa
 
-CosmosMongoDBCollection.Attributes.update_forward_refs()
+CustomTable.Attributes.update_forward_refs()
