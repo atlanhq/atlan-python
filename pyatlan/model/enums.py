@@ -323,7 +323,10 @@ class AtlanConnectorType(str, Enum):
     SAP_S4_HANA = ("sap-s4-hana", AtlanConnectionCategory.WAREHOUSE)
     INRIVER = ("inriver", AtlanConnectionCategory.DATABASE)
     AZURE_ACTIVE_DIRECTORY = ("azure-active-directory", AtlanConnectionCategory.SAAS)
-    ADOBE_EXPERIENCE_MANAGER = ("adobe-experience-manager", AtlanConnectionCategory.SAAS)
+    ADOBE_EXPERIENCE_MANAGER = (
+        "adobe-experience-manager",
+        AtlanConnectionCategory.SAAS,
+    )
     ADOBE_TARGET = ("adobe-target", AtlanConnectionCategory.SAAS)
     APACHE_PULSAR = ("apache-pulsar", AtlanConnectionCategory.EVENT_BUS)
     TREASURE_DATA = ("treasure-data", AtlanConnectionCategory.SAAS)
