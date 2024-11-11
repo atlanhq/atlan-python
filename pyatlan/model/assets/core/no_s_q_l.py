@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import TextField
 
-from .core.catalog import Catalog
+from .catalog import Catalog
 
 
 class NoSQL(Catalog):
@@ -65,6 +65,3 @@ class NoSQL(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-NoSQL.Attributes.update_forward_refs()

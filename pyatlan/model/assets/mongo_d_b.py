@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .no_s_q_l import NoSQL
+from .core.no_s_q_l import NoSQL
 
 
 class MongoDB(NoSQL):

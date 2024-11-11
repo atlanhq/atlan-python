@@ -18,7 +18,7 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .core.database import Database
+from .database import Database
 
 
 class MongoDBDatabase(Database):
@@ -445,5 +445,3 @@ class MongoDBDatabase(Database):
 
 
 from .mongo_d_b_collection import MongoDBCollection  # noqa
-
-MongoDBDatabase.Attributes.update_forward_refs()

@@ -224,6 +224,7 @@ class AssetInfo:
         "MatillionGroup",
         "Stakeholder",
         "StakeholderTitle",
+        "NoSQL",
     }
 
     def __init__(self, name: str, entity_def: EntityDef):
@@ -259,7 +260,13 @@ class AssetInfo:
         if self._name == REFERENCEABLE:
             return ""
         super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
-        if not self.is_core_asset and super_type.is_core_asset:
+        if self.name not in self._CORE_ASSETS and super_type.name in self._CORE_ASSETS:
+            return f"from .core.{super_type.module_name} import {super_type.name}"
+        elif (
+            not self.is_core_asset
+            and super_type.is_core_asset
+            and self.name not in self._CORE_ASSETS
+        ):
             return f"from .core.{super_type.module_name} import {super_type.name}"
         else:
             return f"from .{super_type.module_name} import {super_type.name}"
@@ -725,11 +732,15 @@ class Generator:
             script.write(content)
 
     def render_core_init(self, assets: List[AssetInfo]):
-        asset_names = [asset.name for asset in assets if asset.is_core_asset]
+        asset_names = [
+            asset.name
+            for asset in assets
+            if asset.is_core_asset or asset.name in asset._CORE_ASSETS
+        ]
         asset_imports = [
             f"from .{asset.module_name} import {asset.name}"
             for asset in assets
-            if asset.is_core_asset
+            if asset.is_core_asset or asset.name in asset._CORE_ASSETS
         ]
 
         template = self.environment.get_template("core/init.jinja2")
@@ -922,7 +933,7 @@ if __name__ == "__main__":
     generator = Generator()
     EnumDefInfo.create(type_defs.enum_defs)
     for asset_info in ModuleInfo.assets.values():
-        if asset_info.is_core_asset:
+        if asset_info.is_core_asset or asset_info.name in asset_info._CORE_ASSETS:
             generator.render_core_module(asset_info, EnumDefInfo.enum_def_info)
         else:
             generator.render_module(asset_info, EnumDefInfo.enum_def_info)

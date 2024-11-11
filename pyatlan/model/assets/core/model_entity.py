@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+)
 
 from .model import Model
 
@@ -41,9 +46,30 @@ class ModelEntity(Model):
     """
     Subject area of the entity.
     """
+    MODEL_ENTITY_GENERALIZATION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "modelEntityGeneralizationName",
+        "modelEntityGeneralizationName.keyword",
+        "modelEntityGeneralizationName",
+    )
+    """
+    Name of the general entity.
+    """
+    MODEL_ENTITY_GENERALIZATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "modelEntityGeneralizationQualifiedName",
+        "modelEntityGeneralizationQualifiedName",
+    )
+    """
+    Unique identifier for the general entity.
+    """
 
     MODEL_ENTITY_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
         "modelEntityRelatedToEntities"
+    )
+    """
+    TBC
+    """
+    MODEL_ENTITY_GENERALIZATION_ENTITY: ClassVar[RelationField] = RelationField(
+        "modelEntityGeneralizationEntity"
     )
     """
     TBC
@@ -82,17 +108,27 @@ class ModelEntity(Model):
     """
     TBC
     """
+    MODEL_ENTITY_SPECIALIZATION_ENTITIES: ClassVar[RelationField] = RelationField(
+        "modelEntitySpecializationEntities"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "model_entity_attribute_count",
         "model_entity_subject_area",
+        "model_entity_generalization_name",
+        "model_entity_generalization_qualified_name",
         "model_entity_related_to_entities",
+        "model_entity_generalization_entity",
         "model_entity_implemented_by_assets",
         "model_entity_attributes",
         "model_entity_mapped_to_entities",
         "model_entity_related_from_entities",
         "model_versions",
         "model_entity_mapped_from_entities",
+        "model_entity_specialization_entities",
     ]
 
     @property
@@ -124,6 +160,42 @@ class ModelEntity(Model):
         self.attributes.model_entity_subject_area = model_entity_subject_area
 
     @property
+    def model_entity_generalization_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_generalization_name
+        )
+
+    @model_entity_generalization_name.setter
+    def model_entity_generalization_name(
+        self, model_entity_generalization_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_entity_generalization_name = (
+            model_entity_generalization_name
+        )
+
+    @property
+    def model_entity_generalization_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_generalization_qualified_name
+        )
+
+    @model_entity_generalization_qualified_name.setter
+    def model_entity_generalization_qualified_name(
+        self, model_entity_generalization_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_entity_generalization_qualified_name = (
+            model_entity_generalization_qualified_name
+        )
+
+    @property
     def model_entity_related_to_entities(
         self,
     ) -> Optional[List[ModelEntityAssociation]]:
@@ -141,6 +213,24 @@ class ModelEntity(Model):
             self.attributes = self.Attributes()
         self.attributes.model_entity_related_to_entities = (
             model_entity_related_to_entities
+        )
+
+    @property
+    def model_entity_generalization_entity(self) -> Optional[ModelEntity]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_generalization_entity
+        )
+
+    @model_entity_generalization_entity.setter
+    def model_entity_generalization_entity(
+        self, model_entity_generalization_entity: Optional[ModelEntity]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_entity_generalization_entity = (
+            model_entity_generalization_entity
         )
 
     @property
@@ -241,13 +331,40 @@ class ModelEntity(Model):
             model_entity_mapped_from_entities
         )
 
+    @property
+    def model_entity_specialization_entities(self) -> Optional[List[ModelEntity]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_specialization_entities
+        )
+
+    @model_entity_specialization_entities.setter
+    def model_entity_specialization_entities(
+        self, model_entity_specialization_entities: Optional[List[ModelEntity]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_entity_specialization_entities = (
+            model_entity_specialization_entities
+        )
+
     class Attributes(Model.Attributes):
         model_entity_attribute_count: Optional[int] = Field(
             default=None, description=""
         )
         model_entity_subject_area: Optional[str] = Field(default=None, description="")
+        model_entity_generalization_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        model_entity_generalization_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         model_entity_related_to_entities: Optional[List[ModelEntityAssociation]] = (
             Field(default=None, description="")
+        )  # relationship
+        model_entity_generalization_entity: Optional[ModelEntity] = Field(
+            default=None, description=""
         )  # relationship
         model_entity_implemented_by_assets: Optional[List[Catalog]] = Field(
             default=None, description=""
@@ -265,6 +382,9 @@ class ModelEntity(Model):
             default=None, description=""
         )  # relationship
         model_entity_mapped_from_entities: Optional[List[ModelEntity]] = Field(
+            default=None, description=""
+        )  # relationship
+        model_entity_specialization_entities: Optional[List[ModelEntity]] = Field(
             default=None, description=""
         )  # relationship
 

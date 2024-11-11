@@ -5,12 +5,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional, Set, overload
-from warnings import warn
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import CustomTemperatureType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -20,112 +19,32 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 from pyatlan.model.structs import ColumnValueFrequencyMap, Histogram
-from pyatlan.utils import init_guid, validate_required_fields
 
-from .s_q_l import SQL
+from .core.column import Column
 
 
-class Column(SQL):
+class CustomField(Column):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        parent_qualified_name: str,
-        parent_type: type,
-        order: int,
-    ) -> Column: ...
-
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        parent_qualified_name: str,
-        parent_type: type,
-        order: int,
-        parent_name: str,
-        database_name: str,
-        database_qualified_name: str,
-        schema_name: str,
-        schema_qualified_name: str,
-        table_name: str,
-        table_qualified_name: str,
-        connection_qualified_name: str,
-    ) -> Column: ...
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        parent_qualified_name: str,
-        parent_type: type,
-        order: int,
-        parent_name: Optional[str] = None,
-        database_name: Optional[str] = None,
-        database_qualified_name: Optional[str] = None,
-        schema_name: Optional[str] = None,
-        schema_qualified_name: Optional[str] = None,
-        table_name: Optional[str] = None,
-        table_qualified_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
-    ) -> Column:
-        return Column(
-            attributes=Column.Attributes.create(
-                name=name,
-                parent_qualified_name=parent_qualified_name,
-                parent_type=parent_type,
-                order=order,
-                parent_name=parent_name,
-                database_name=database_name,
-                database_qualified_name=database_qualified_name,
-                schema_name=schema_name,
-                schema_qualified_name=schema_qualified_name,
-                table_name=table_name,
-                table_qualified_name=table_qualified_name,
-                connection_qualified_name=connection_qualified_name,
-            )
-        )
-
-    @classmethod
-    @init_guid
-    def create(
-        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
-    ) -> Column:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.creator(
-            name=name,
-            parent_qualified_name=parent_qualified_name,
-            parent_type=parent_type,
-            order=order,
-        )
-
-    type_name: str = Field(default="Column", allow_mutation=False)
+    type_name: str = Field(default="CustomField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Column":
-            raise ValueError("must be Column")
+        if v != "CustomField":
+            raise ValueError("must be CustomField")
         return v
 
     def __setattr__(self, name, value):
-        if name in Column._convenience_properties:
+        if name in CustomField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    CUSTOM_TEMPERATURE: ClassVar[KeywordField] = KeywordField(
+        "customTemperature", "customTemperature"
+    )
+    """
+    Temperature of the CustomTable asset.
+    """
     DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "dataType", "dataType", "dataType.text"
     )
@@ -402,85 +321,124 @@ class Column(SQL):
     """
     Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection.
     """  # noqa: E501
+    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
+    """
+    Number of times this asset has been queried.
+    """
+    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
+        "queryUserCount", "queryUserCount"
+    )
+    """
+    Number of unique users who have queried this asset.
+    """
+    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
+        "queryUserMap", "queryUserMap"
+    )
+    """
+    Map of unique users who have queried this asset to the number of times they have queried it.
+    """
+    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "queryCountUpdatedAt", "queryCountUpdatedAt"
+    )
+    """
+    Time (epoch) at which the query count was last updated, in milliseconds.
+    """
+    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "databaseName", "databaseName.keyword", "databaseName"
+    )
+    """
+    Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    """
+    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "databaseQualifiedName", "databaseQualifiedName"
+    )
+    """
+    Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
+    """
+    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "schemaName", "schemaName.keyword", "schemaName"
+    )
+    """
+    Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    """
+    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "schemaQualifiedName", "schemaQualifiedName"
+    )
+    """
+    Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
+    """
+    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableName", "tableName.keyword", "tableName"
+    )
+    """
+    Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    """
+    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "tableQualifiedName", "tableQualifiedName"
+    )
+    """
+    Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
+    """
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "viewName", "viewName.keyword", "viewName"
+    )
+    """
+    Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    """
+    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "viewQualifiedName", "viewQualifiedName"
+    )
+    """
+    Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
+    """
+    CALCULATION_VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "calculationViewName", "calculationViewName.keyword", "calculationViewName"
+    )
+    """
+    Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
+    CALCULATION_VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "calculationViewQualifiedName", "calculationViewQualifiedName"
+    )
+    """
+    Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view.
+    """  # noqa: E501
+    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
+    """
+    Whether this asset has been profiled (true) or not (false).
+    """
+    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
+        "lastProfiledAt", "lastProfiledAt"
+    )
+    """
+    Time (epoch) at which this asset was last profiled, in milliseconds.
+    """
+    CUSTOM_SOURCE_ID: ClassVar[KeywordField] = KeywordField(
+        "customSourceId", "customSourceId"
+    )
+    """
+    Unique identifier for the Custom asset from the source system.
+    """
+    CUSTOM_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "customDatasetName", "customDatasetName.keyword", "customDatasetName"
+    )
+    """
+    Simple name of the dataset in which this asset exists, or empty if it is itself a dataset.
+    """
+    CUSTOM_DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "customDatasetQualifiedName", "customDatasetQualifiedName"
+    )
+    """
+    Unique name of the dataset in which this asset exists, or empty if it is itself a dataset.
+    """
 
-    SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
-        "snowflakeDynamicTable"
-    )
-    """
-    TBC
-    """
-    VIEW: ClassVar[RelationField] = RelationField("view")
-    """
-    TBC
-    """
-    NESTED_COLUMNS: ClassVar[RelationField] = RelationField("nestedColumns")
-    """
-    TBC
-    """
-    DATA_QUALITY_METRIC_DIMENSIONS: ClassVar[RelationField] = RelationField(
-        "dataQualityMetricDimensions"
-    )
-    """
-    TBC
-    """
-    DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumns")
-    """
-    TBC
-    """
-    TABLE: ClassVar[RelationField] = RelationField("table")
-    """
-    TBC
-    """
-    COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField(
-        "columnDbtModelColumns"
-    )
-    """
-    TBC
-    """
-    MATERIALISED_VIEW: ClassVar[RelationField] = RelationField("materialisedView")
-    """
-    TBC
-    """
-    CALCULATION_VIEW: ClassVar[RelationField] = RelationField("calculationView")
-    """
-    TBC
-    """
-    PARENT_COLUMN: ClassVar[RelationField] = RelationField("parentColumn")
-    """
-    TBC
-    """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
-    """
-    TBC
-    """
-    METRIC_TIMESTAMPS: ClassVar[RelationField] = RelationField("metricTimestamps")
-    """
-    TBC
-    """
-    FOREIGN_KEY_TO: ClassVar[RelationField] = RelationField("foreignKeyTo")
-    """
-    TBC
-    """
-    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBCollection"
-    )
-    """
-    TBC
-    """
-    FOREIGN_KEY_FROM: ClassVar[RelationField] = RelationField("foreignKeyFrom")
-    """
-    TBC
-    """
-    DBT_METRICS: ClassVar[RelationField] = RelationField("dbtMetrics")
-    """
-    TBC
-    """
-    TABLE_PARTITION: ClassVar[RelationField] = RelationField("tablePartition")
+    CUSTOM_TABLE: ClassVar[RelationField] = RelationField("customTable")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "custom_temperature",
         "data_type",
         "sub_data_type",
         "raw_data_type_definition",
@@ -535,24 +493,37 @@ class Column(SQL):
         "column_depth_level",
         "nosql_collection_name",
         "nosql_collection_qualified_name",
-        "snowflake_dynamic_table",
-        "view",
-        "nested_columns",
-        "data_quality_metric_dimensions",
-        "dbt_model_columns",
-        "table",
-        "column_dbt_model_columns",
-        "materialised_view",
-        "calculation_view",
-        "parent_column",
-        "queries",
-        "metric_timestamps",
-        "foreign_key_to",
-        "cosmos_mongo_d_b_collection",
-        "foreign_key_from",
-        "dbt_metrics",
-        "table_partition",
+        "query_count",
+        "query_user_count",
+        "query_user_map",
+        "query_count_updated_at",
+        "database_name",
+        "database_qualified_name",
+        "schema_name",
+        "schema_qualified_name",
+        "table_name",
+        "table_qualified_name",
+        "view_name",
+        "view_qualified_name",
+        "calculation_view_name",
+        "calculation_view_qualified_name",
+        "is_profiled",
+        "last_profiled_at",
+        "custom_source_id",
+        "custom_dataset_name",
+        "custom_dataset_qualified_name",
+        "custom_table",
     ]
+
+    @property
+    def custom_temperature(self) -> Optional[CustomTemperatureType]:
+        return None if self.attributes is None else self.attributes.custom_temperature
+
+    @custom_temperature.setter
+    def custom_temperature(self, custom_temperature: Optional[CustomTemperatureType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.custom_temperature = custom_temperature
 
     @property
     def data_type(self) -> Optional[str]:
@@ -1193,198 +1164,231 @@ class Column(SQL):
         )
 
     @property
-    def snowflake_dynamic_table(self) -> Optional[SnowflakeDynamicTable]:
+    def query_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_count
+
+    @query_count.setter
+    def query_count(self, query_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count = query_count
+
+    @property
+    def query_user_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_user_count
+
+    @query_user_count.setter
+    def query_user_count(self, query_user_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_count = query_user_count
+
+    @property
+    def query_user_map(self) -> Optional[Dict[str, int]]:
+        return None if self.attributes is None else self.attributes.query_user_map
+
+    @query_user_map.setter
+    def query_user_map(self, query_user_map: Optional[Dict[str, int]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_map = query_user_map
+
+    @property
+    def query_count_updated_at(self) -> Optional[datetime]:
         return (
-            None if self.attributes is None else self.attributes.snowflake_dynamic_table
+            None if self.attributes is None else self.attributes.query_count_updated_at
         )
 
-    @snowflake_dynamic_table.setter
-    def snowflake_dynamic_table(
-        self, snowflake_dynamic_table: Optional[SnowflakeDynamicTable]
-    ):
+    @query_count_updated_at.setter
+    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_dynamic_table = snowflake_dynamic_table
+        self.attributes.query_count_updated_at = query_count_updated_at
 
     @property
-    def view(self) -> Optional[View]:
-        return None if self.attributes is None else self.attributes.view
+    def database_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.database_name
 
-    @view.setter
-    def view(self, view: Optional[View]):
+    @database_name.setter
+    def database_name(self, database_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.view = view
+        self.attributes.database_name = database_name
 
     @property
-    def nested_columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.nested_columns
-
-    @nested_columns.setter
-    def nested_columns(self, nested_columns: Optional[List[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.nested_columns = nested_columns
-
-    @property
-    def data_quality_metric_dimensions(self) -> Optional[List[Metric]]:
+    def database_qualified_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.data_quality_metric_dimensions
+            None if self.attributes is None else self.attributes.database_qualified_name
         )
 
-    @data_quality_metric_dimensions.setter
-    def data_quality_metric_dimensions(
-        self, data_quality_metric_dimensions: Optional[List[Metric]]
-    ):
+    @database_qualified_name.setter
+    def database_qualified_name(self, database_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
+        self.attributes.database_qualified_name = database_qualified_name
 
     @property
-    def dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
-        return None if self.attributes is None else self.attributes.dbt_model_columns
+    def schema_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.schema_name
 
-    @dbt_model_columns.setter
-    def dbt_model_columns(self, dbt_model_columns: Optional[List[DbtModelColumn]]):
+    @schema_name.setter
+    def schema_name(self, schema_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_model_columns = dbt_model_columns
+        self.attributes.schema_name = schema_name
 
     @property
-    def table(self) -> Optional[Table]:
-        return None if self.attributes is None else self.attributes.table
-
-    @table.setter
-    def table(self, table: Optional[Table]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table = table
-
-    @property
-    def column_dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
+    def schema_qualified_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.column_dbt_model_columns
+            None if self.attributes is None else self.attributes.schema_qualified_name
         )
 
-    @column_dbt_model_columns.setter
-    def column_dbt_model_columns(
-        self, column_dbt_model_columns: Optional[List[DbtModelColumn]]
-    ):
+    @schema_qualified_name.setter
+    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_dbt_model_columns = column_dbt_model_columns
+        self.attributes.schema_qualified_name = schema_qualified_name
 
     @property
-    def materialised_view(self) -> Optional[MaterialisedView]:
-        return None if self.attributes is None else self.attributes.materialised_view
+    def table_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_name
 
-    @materialised_view.setter
-    def materialised_view(self, materialised_view: Optional[MaterialisedView]):
+    @table_name.setter
+    def table_name(self, table_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.materialised_view = materialised_view
+        self.attributes.table_name = table_name
 
     @property
-    def calculation_view(self) -> Optional[CalculationView]:
-        return None if self.attributes is None else self.attributes.calculation_view
+    def table_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_qualified_name
 
-    @calculation_view.setter
-    def calculation_view(self, calculation_view: Optional[CalculationView]):
+    @table_qualified_name.setter
+    def table_qualified_name(self, table_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.calculation_view = calculation_view
+        self.attributes.table_qualified_name = table_qualified_name
 
     @property
-    def parent_column(self) -> Optional[Column]:
-        return None if self.attributes is None else self.attributes.parent_column
+    def view_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.view_name
 
-    @parent_column.setter
-    def parent_column(self, parent_column: Optional[Column]):
+    @view_name.setter
+    def view_name(self, view_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.parent_column = parent_column
+        self.attributes.view_name = view_name
 
     @property
-    def queries(self) -> Optional[List[Query]]:
-        return None if self.attributes is None else self.attributes.queries
+    def view_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.view_qualified_name
 
-    @queries.setter
-    def queries(self, queries: Optional[List[Query]]):
+    @view_qualified_name.setter
+    def view_qualified_name(self, view_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.queries = queries
+        self.attributes.view_qualified_name = view_qualified_name
 
     @property
-    def metric_timestamps(self) -> Optional[List[Metric]]:
-        return None if self.attributes is None else self.attributes.metric_timestamps
+    def calculation_view_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.calculation_view_name
+        )
 
-    @metric_timestamps.setter
-    def metric_timestamps(self, metric_timestamps: Optional[List[Metric]]):
+    @calculation_view_name.setter
+    def calculation_view_name(self, calculation_view_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metric_timestamps = metric_timestamps
+        self.attributes.calculation_view_name = calculation_view_name
 
     @property
-    def foreign_key_to(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.foreign_key_to
-
-    @foreign_key_to.setter
-    def foreign_key_to(self, foreign_key_to: Optional[List[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.foreign_key_to = foreign_key_to
-
-    @property
-    def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
+    def calculation_view_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_collection
+            else self.attributes.calculation_view_qualified_name
         )
 
-    @cosmos_mongo_d_b_collection.setter
-    def cosmos_mongo_d_b_collection(
-        self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]
+    @calculation_view_qualified_name.setter
+    def calculation_view_qualified_name(
+        self, calculation_view_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_collection = cosmos_mongo_d_b_collection
+        self.attributes.calculation_view_qualified_name = (
+            calculation_view_qualified_name
+        )
 
     @property
-    def foreign_key_from(self) -> Optional[Column]:
-        return None if self.attributes is None else self.attributes.foreign_key_from
+    def is_profiled(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_profiled
 
-    @foreign_key_from.setter
-    def foreign_key_from(self, foreign_key_from: Optional[Column]):
+    @is_profiled.setter
+    def is_profiled(self, is_profiled: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.foreign_key_from = foreign_key_from
+        self.attributes.is_profiled = is_profiled
 
     @property
-    def dbt_metrics(self) -> Optional[List[DbtMetric]]:
-        return None if self.attributes is None else self.attributes.dbt_metrics
+    def last_profiled_at(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.last_profiled_at
 
-    @dbt_metrics.setter
-    def dbt_metrics(self, dbt_metrics: Optional[List[DbtMetric]]):
+    @last_profiled_at.setter
+    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_metrics = dbt_metrics
+        self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def table_partition(self) -> Optional[TablePartition]:
-        return None if self.attributes is None else self.attributes.table_partition
+    def custom_source_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.custom_source_id
 
-    @table_partition.setter
-    def table_partition(self, table_partition: Optional[TablePartition]):
+    @custom_source_id.setter
+    def custom_source_id(self, custom_source_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.table_partition = table_partition
+        self.attributes.custom_source_id = custom_source_id
 
-    class Attributes(SQL.Attributes):
+    @property
+    def custom_dataset_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.custom_dataset_name
+
+    @custom_dataset_name.setter
+    def custom_dataset_name(self, custom_dataset_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.custom_dataset_name = custom_dataset_name
+
+    @property
+    def custom_dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.custom_dataset_qualified_name
+        )
+
+    @custom_dataset_qualified_name.setter
+    def custom_dataset_qualified_name(
+        self, custom_dataset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.custom_dataset_qualified_name = custom_dataset_qualified_name
+
+    @property
+    def custom_table(self) -> Optional[CustomTable]:
+        return None if self.attributes is None else self.attributes.custom_table
+
+    @custom_table.setter
+    def custom_table(self, custom_table: Optional[CustomTable]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.custom_table = custom_table
+
+    class Attributes(Column.Attributes):
+        custom_temperature: Optional[CustomTemperatureType] = Field(
+            default=None, description=""
+        )
         data_type: Optional[str] = Field(default=None, description="")
         sub_data_type: Optional[str] = Field(default=None, description="")
         raw_data_type_definition: Optional[str] = Field(default=None, description="")
@@ -1467,141 +1471,35 @@ class Column(SQL):
         nosql_collection_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        snowflake_dynamic_table: Optional[SnowflakeDynamicTable] = Field(
+        query_count: Optional[int] = Field(default=None, description="")
+        query_user_count: Optional[int] = Field(default=None, description="")
+        query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
+        query_count_updated_at: Optional[datetime] = Field(default=None, description="")
+        database_name: Optional[str] = Field(default=None, description="")
+        database_qualified_name: Optional[str] = Field(default=None, description="")
+        schema_name: Optional[str] = Field(default=None, description="")
+        schema_qualified_name: Optional[str] = Field(default=None, description="")
+        table_name: Optional[str] = Field(default=None, description="")
+        table_qualified_name: Optional[str] = Field(default=None, description="")
+        view_name: Optional[str] = Field(default=None, description="")
+        view_qualified_name: Optional[str] = Field(default=None, description="")
+        calculation_view_name: Optional[str] = Field(default=None, description="")
+        calculation_view_qualified_name: Optional[str] = Field(
             default=None, description=""
-        )  # relationship
-        view: Optional[View] = Field(default=None, description="")  # relationship
-        nested_columns: Optional[List[Column]] = Field(
+        )
+        is_profiled: Optional[bool] = Field(default=None, description="")
+        last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        custom_source_id: Optional[str] = Field(default=None, description="")
+        custom_dataset_name: Optional[str] = Field(default=None, description="")
+        custom_dataset_qualified_name: Optional[str] = Field(
             default=None, description=""
-        )  # relationship
-        data_quality_metric_dimensions: Optional[List[Metric]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
-            default=None, description=""
-        )  # relationship
-        table: Optional[Table] = Field(default=None, description="")  # relationship
-        column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
-            default=None, description=""
-        )  # relationship
-        materialised_view: Optional[MaterialisedView] = Field(
-            default=None, description=""
-        )  # relationship
-        calculation_view: Optional[CalculationView] = Field(
-            default=None, description=""
-        )  # relationship
-        parent_column: Optional[Column] = Field(
-            default=None, description=""
-        )  # relationship
-        queries: Optional[List[Query]] = Field(
-            default=None, description=""
-        )  # relationship
-        metric_timestamps: Optional[List[Metric]] = Field(
-            default=None, description=""
-        )  # relationship
-        foreign_key_to: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
-            default=None, description=""
-        )  # relationship
-        foreign_key_from: Optional[Column] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_metrics: Optional[List[DbtMetric]] = Field(
-            default=None, description=""
-        )  # relationship
-        table_partition: Optional[TablePartition] = Field(
+        )
+        custom_table: Optional[CustomTable] = Field(
             default=None, description=""
         )  # relationship
 
-        @classmethod
-        @init_guid
-        def create(
-            cls,
-            *,
-            name: str,
-            parent_qualified_name: str,
-            parent_type: type,
-            order: int,
-            parent_name: Optional[str] = None,
-            database_name: Optional[str] = None,
-            database_qualified_name: Optional[str] = None,
-            schema_name: Optional[str] = None,
-            schema_qualified_name: Optional[str] = None,
-            table_name: Optional[str] = None,
-            table_qualified_name: Optional[str] = None,
-            connection_qualified_name: Optional[str] = None,
-        ) -> Column.Attributes:
-            validate_required_fields(
-                ["name", "parent_qualified_name", "parent_type", "order"],
-                [name, parent_qualified_name, parent_type, order],
-            )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    parent_qualified_name, "parent_qualified_name", 6
-                )
-            if order < 0:
-                raise ValueError("Order must be be a positive integer")
-
-            fields = parent_qualified_name.split("/")
-            qualified_name = f"{parent_qualified_name}/{name}"
-            connection_qualified_name = connection_qualified_name or connection_qn
-            database_name = database_name or fields[3]
-            schema_name = schema_name or fields[4]
-            parent_name = parent_name or fields[5]
-            database_qualified_name = (
-                database_qualified_name
-                or f"{connection_qualified_name}/{database_name}"
-            )
-            schema_qualified_name = (
-                schema_qualified_name or f"{database_qualified_name}/{schema_name}"
-            )
-
-            column = Column.Attributes(
-                name=name,
-                order=order,
-                qualified_name=qualified_name,
-                connector_name=connector_name,
-                connection_qualified_name=connection_qualified_name,
-                schema_name=schema_name,
-                schema_qualified_name=schema_qualified_name,
-                database_name=database_name,
-                database_qualified_name=database_qualified_name,
-            )
-
-            if parent_type == Table:
-                column.table_qualified_name = parent_qualified_name
-                column.table = Table.ref_by_qualified_name(parent_qualified_name)
-                column.table_name = parent_name
-            elif parent_type == View:
-                column.view_qualified_name = parent_qualified_name
-                column.view = View.ref_by_qualified_name(parent_qualified_name)
-                column.view_name = parent_name
-            elif parent_type == MaterialisedView:
-                column.view_qualified_name = parent_qualified_name
-                column.materialised_view = MaterialisedView.ref_by_qualified_name(
-                    parent_qualified_name
-                )
-                column.view_name = parent_name
-            elif parent_type == TablePartition:
-                column.table_qualified_name = table_qualified_name
-                column.table_partition = TablePartition.ref_by_qualified_name(
-                    parent_qualified_name
-                )
-                column.table_name = table_name
-            else:
-                raise ValueError(
-                    "parent_type must be either Table, View, MaterializeView or TablePartition"
-                )
-            return column
-
-    attributes: Column.Attributes = Field(
-        default_factory=lambda: Column.Attributes(),
+    attributes: CustomField.Attributes = Field(
+        default_factory=lambda: CustomField.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -1610,14 +1508,6 @@ class Column(SQL):
     )
 
 
-from .calculation_view import CalculationView  # noqa
-from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa
-from .dbt_metric import DbtMetric  # noqa
-from .dbt_model_column import DbtModelColumn  # noqa
-from .materialised_view import MaterialisedView  # noqa
-from .metric import Metric  # noqa
-from .query import Query  # noqa
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa
-from .table import Table  # noqa
-from .table_partition import TablePartition  # noqa
-from .view import View  # noqa
+from .custom_table import CustomTable  # noqa
+
+CustomField.Attributes.update_forward_refs()

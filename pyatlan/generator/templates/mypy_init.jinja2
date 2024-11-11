@@ -2,7 +2,7 @@
 
 __all__ = [
     {% for asset in assets -%}
-        {% if asset.is_core_asset %}
+        {% if asset.is_core_asset or asset.name in asset._CORE_ASSETS %}
             "{{ asset.name }}"{% if not loop.last %},{% endif %}
         {% endif %}
     {% endfor %}
@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 {% for asset in assets -%}
-{% if asset.is_core_asset %}
+{% if asset.is_core_asset or asset.name in asset._CORE_ASSETS %}
 from .core.{{ asset.module_name }} import {{ asset.name }}
 {% else %}
 from .{{ asset.module_name }} import {{ asset.name }}
