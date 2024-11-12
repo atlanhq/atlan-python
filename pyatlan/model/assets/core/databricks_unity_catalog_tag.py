@@ -59,6 +59,12 @@ class DatabricksUnityCatalogTag(Tag):
     """
     Name of the classification in Atlan that is mapped to this tag.
     """
+    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    )
+    """
+    Qualified name of the Application Asset that contains this asset.
+    """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -178,6 +184,7 @@ class DatabricksUnityCatalogTag(Tag):
         "tag_attributes",
         "tag_allowed_values",
         "mapped_atlan_tag_name",
+        "application_asset_qualified_name",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -242,6 +249,24 @@ class DatabricksUnityCatalogTag(Tag):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
+
+    @property
+    def application_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_asset_qualified_name
+        )
+
+    @application_asset_qualified_name.setter
+    def application_asset_qualified_name(
+        self, application_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset_qualified_name = (
+            application_asset_qualified_name
+        )
 
     @property
     def query_count(self) -> Optional[int]:
@@ -476,6 +501,9 @@ class DatabricksUnityCatalogTag(Tag):
         )
         tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
+        application_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")

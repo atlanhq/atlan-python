@@ -267,6 +267,12 @@ class DynamoDBSecondaryIndex(Table):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    )
+    """
+    Qualified name of the Application Asset that contains this asset.
+    """
     DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dynamoDBStatus", "dynamoDBStatus"
     )
@@ -346,6 +352,7 @@ class DynamoDBSecondaryIndex(Table):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "application_asset_qualified_name",
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",
@@ -824,6 +831,24 @@ class DynamoDBSecondaryIndex(Table):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def application_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_asset_qualified_name
+        )
+
+    @application_asset_qualified_name.setter
+    def application_asset_qualified_name(
+        self, application_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset_qualified_name = (
+            application_asset_qualified_name
+        )
+
+    @property
     def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
         return None if self.attributes is None else self.attributes.dynamo_d_b_status
 
@@ -955,6 +980,9 @@ class DynamoDBSecondaryIndex(Table):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        application_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
             default=None, description=""
         )

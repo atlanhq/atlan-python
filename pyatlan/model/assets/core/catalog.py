@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
 from .asset import Asset
 
@@ -29,7 +29,18 @@ class Catalog(Asset, type_name="Catalog"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    )
+    """
+    Qualified name of the Application Asset that contains this asset.
+    """
+
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    APPLICATION_ASSET: ClassVar[RelationField] = RelationField("applicationAsset")
     """
     TBC
     """
@@ -69,7 +80,9 @@ class Catalog(Asset, type_name="Catalog"):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "application_asset_qualified_name",
         "input_to_processes",
+        "application_asset",
         "output_from_airflow_tasks",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
@@ -77,6 +90,24 @@ class Catalog(Asset, type_name="Catalog"):
         "input_to_airflow_tasks",
         "output_from_processes",
     ]
+
+    @property
+    def application_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_asset_qualified_name
+        )
+
+    @application_asset_qualified_name.setter
+    def application_asset_qualified_name(
+        self, application_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset_qualified_name = (
+            application_asset_qualified_name
+        )
 
     @property
     def input_to_processes(self) -> Optional[List[Process]]:
@@ -87,6 +118,16 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def application_asset(self) -> Optional[ApplicationAsset]:
+        return None if self.attributes is None else self.attributes.application_asset
+
+    @application_asset.setter
+    def application_asset(self, application_asset: Optional[ApplicationAsset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset = application_asset
 
     @property
     def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
@@ -169,7 +210,13 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
+        application_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         input_to_processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
+        application_asset: Optional[ApplicationAsset] = Field(
             default=None, description=""
         )  # relationship
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
@@ -203,5 +250,6 @@ class Catalog(Asset, type_name="Catalog"):
 
 from .airflow_task import AirflowTask  # noqa
 from .model_entity import ModelEntity  # noqa
+from .application_asset import ApplicationAsset  # noqa
 from .process import Process  # noqa
 from .spark_job import SparkJob  # noqa

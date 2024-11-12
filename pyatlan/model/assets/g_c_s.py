@@ -114,8 +114,18 @@ class GCS(Google):
     """
     List of tags that have been applied to the asset in Google.
     """
+    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    )
+    """
+    Qualified name of the Application Asset that contains this asset.
+    """
 
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    APPLICATION_ASSET: ClassVar[RelationField] = RelationField("applicationAsset")
     """
     TBC
     """
@@ -169,7 +179,9 @@ class GCS(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "application_asset_qualified_name",
         "input_to_processes",
+        "application_asset",
         "output_from_airflow_tasks",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
@@ -323,6 +335,24 @@ class GCS(Google):
         self.attributes.google_tags = google_tags
 
     @property
+    def application_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_asset_qualified_name
+        )
+
+    @application_asset_qualified_name.setter
+    def application_asset_qualified_name(
+        self, application_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset_qualified_name = (
+            application_asset_qualified_name
+        )
+
+    @property
     def input_to_processes(self) -> Optional[List[Process]]:
         return None if self.attributes is None else self.attributes.input_to_processes
 
@@ -331,6 +361,16 @@ class GCS(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def application_asset(self) -> Optional[ApplicationAsset]:
+        return None if self.attributes is None else self.attributes.application_asset
+
+    @application_asset.setter
+    def application_asset(self, application_asset: Optional[ApplicationAsset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset = application_asset
 
     @property
     def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
@@ -427,7 +467,13 @@ class GCS(Google):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
+        application_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         input_to_processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
+        application_asset: Optional[ApplicationAsset] = Field(
             default=None, description=""
         )  # relationship
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
@@ -461,6 +507,7 @@ class GCS(Google):
 
 from .core.airflow_task import AirflowTask  # noqa
 from .core.model_entity import ModelEntity  # noqa
+from .core.application_asset import ApplicationAsset  # noqa
 from .core.process import Process  # noqa
 from .core.spark_job import SparkJob  # noqa
 

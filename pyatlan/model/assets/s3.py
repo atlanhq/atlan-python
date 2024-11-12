@@ -40,6 +40,12 @@ class S3(ObjectStore):
     """
 
     """
+    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    )
+    """
+    Qualified name of the Application Asset that contains this asset.
+    """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
     )
@@ -88,6 +94,7 @@ class S3(ObjectStore):
     _convenience_properties: ClassVar[List[str]] = [
         "s3_e_tag",
         "s3_encryption",
+        "application_asset_qualified_name",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -118,6 +125,24 @@ class S3(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_encryption = s3_encryption
+
+    @property
+    def application_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_asset_qualified_name
+        )
+
+    @application_asset_qualified_name.setter
+    def application_asset_qualified_name(
+        self, application_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset_qualified_name = (
+            application_asset_qualified_name
+        )
 
     @property
     def aws_arn(self) -> Optional[str]:
@@ -212,6 +237,9 @@ class S3(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(default=None, description="")
         s3_encryption: Optional[str] = Field(default=None, description="")
+        application_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         aws_arn: Optional[str] = Field(default=None, description="")
         aws_partition: Optional[str] = Field(default=None, description="")
         aws_service: Optional[str] = Field(default=None, description="")

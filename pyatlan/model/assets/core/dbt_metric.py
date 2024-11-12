@@ -157,6 +157,12 @@ class DbtMetric(Dbt):
     """
     List of latest DBT job runs across all environments
     """
+    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    )
+    """
+    Qualified name of the Application Asset that contains this asset.
+    """
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """
     Type of the metric.
@@ -224,6 +230,7 @@ class DbtMetric(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
+        "application_asset_qualified_name",
         "metric_type",
         "metric_s_q_l",
         "metric_filters",
@@ -458,6 +465,24 @@ class DbtMetric(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
+    def application_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_asset_qualified_name
+        )
+
+    @application_asset_qualified_name.setter
+    def application_asset_qualified_name(
+        self, application_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_asset_qualified_name = (
+            application_asset_qualified_name
+        )
+
+    @property
     def metric_type(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.metric_type
 
@@ -588,6 +613,9 @@ class DbtMetric(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+        application_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")
