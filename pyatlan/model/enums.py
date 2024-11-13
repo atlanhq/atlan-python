@@ -2508,6 +2508,11 @@ class CertificateStatus(str, Enum):
     VERIFIED = "VERIFIED"
 
 
+class CustomTemperatureType(str, Enum):
+    COLD = "COLD"
+    HOT = "HOT"
+
+
 class DataProductCriticality(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"

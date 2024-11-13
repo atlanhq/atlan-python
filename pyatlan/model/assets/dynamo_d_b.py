@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import DynamoDBStatus
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
-from .no_s_q_l import NoSQL
+from .core.no_s_q_l import NoSQL
 
 
 class DynamoDB(NoSQL):

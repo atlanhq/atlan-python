@@ -19,41 +19,25 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .cosmos_mongo_d_b import CosmosMongoDB
+from .table import Table
 
 
-class CosmosMongoDBCollection(CosmosMongoDB):
+class MongoDBCollection(Table):
     """Description"""
 
-    type_name: str = Field(default="CosmosMongoDBCollection", allow_mutation=False)
+    type_name: str = Field(default="MongoDBCollection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "CosmosMongoDBCollection":
-            raise ValueError("must be CosmosMongoDBCollection")
+        if v != "MongoDBCollection":
+            raise ValueError("must be MongoDBCollection")
         return v
 
     def __setattr__(self, name, value):
-        if name in CosmosMongoDBCollection._convenience_properties:
+        if name in MongoDBCollection._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "cosmosMongoDBDatabaseQualifiedName",
-            "cosmosMongoDBDatabaseQualifiedName",
-            "cosmosMongoDBDatabaseQualifiedName.text",
-        )
-    )
-    """
-    Unique name of the database in which this collection exists.
-    """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
-    """
-    Represents attributes for describing the key schema for the table and indexes.
-    """
     MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "mongoDBCollectionSubtype",
         "mongoDBCollectionSubtype",
@@ -348,65 +332,19 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
-
-    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
-    """
-    TBC
-    """
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
-    FACTS: ClassVar[RelationField] = RelationField("facts")
-    """
-    TBC
-    """
-    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
-    """
-    TBC
-    """
-    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
-    """
-    TBC
-    """
-    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
-    """
-    TBC
-    """
-    PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
-    """
-    TBC
-    """
-    COSMOS_MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBDatabase"
+    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
+        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
     """
-    TBC
+    Represents attributes for describing the key schema for the table and indexes.
     """
-    QUERIES: ClassVar[RelationField] = RelationField("queries")
-    """
-    TBC
-    """
-    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
-    """
-    TBC
-    """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
+
     MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
-    """
-    TBC
-    """
-    DIMENSIONS: ClassVar[RelationField] = RelationField("dimensions")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "cosmos_mongo_d_b_database_qualified_name",
-        "no_s_q_l_schema_definition",
         "mongo_d_b_collection_subtype",
         "mongo_d_b_collection_is_capped",
         "mongo_d_b_collection_time_field",
@@ -459,52 +397,9 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
-        "dbt_sources",
-        "columns",
-        "facts",
-        "sql_dbt_models",
-        "dbt_tests",
-        "atlan_schema",
-        "partitions",
-        "cosmos_mongo_d_b_database",
-        "queries",
-        "sql_dbt_sources",
-        "dbt_models",
+        "no_s_q_l_schema_definition",
         "mongo_d_b_database",
-        "dimensions",
     ]
-
-    @property
-    def cosmos_mongo_d_b_database_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_database_qualified_name
-        )
-
-    @cosmos_mongo_d_b_database_qualified_name.setter
-    def cosmos_mongo_d_b_database_qualified_name(
-        self, cosmos_mongo_d_b_database_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_database_qualified_name = (
-            cosmos_mongo_d_b_database_qualified_name
-        )
-
-    @property
-    def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
-
-    @no_s_q_l_schema_definition.setter
-    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
 
     @property
     def mongo_d_b_collection_subtype(self) -> Optional[str]:
@@ -1161,120 +1056,18 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.dbt_sources
-
-    @dbt_sources.setter
-    def dbt_sources(self, dbt_sources: Optional[List[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_sources = dbt_sources
-
-    @property
-    def columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[List[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def facts(self) -> Optional[List[Table]]:
-        return None if self.attributes is None else self.attributes.facts
-
-    @facts.setter
-    def facts(self, facts: Optional[List[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.facts = facts
-
-    @property
-    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_models
-
-    @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_models = sql_dbt_models
-
-    @property
-    def dbt_tests(self) -> Optional[List[DbtTest]]:
-        return None if self.attributes is None else self.attributes.dbt_tests
-
-    @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_tests = dbt_tests
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    @property
-    def partitions(self) -> Optional[List[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[List[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
-
-    @property
-    def cosmos_mongo_d_b_database(self) -> Optional[CosmosMongoDBDatabase]:
+    def no_s_q_l_schema_definition(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_database
+            else self.attributes.no_s_q_l_schema_definition
         )
 
-    @cosmos_mongo_d_b_database.setter
-    def cosmos_mongo_d_b_database(
-        self, cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase]
-    ):
+    @no_s_q_l_schema_definition.setter
+    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_database = cosmos_mongo_d_b_database
-
-    @property
-    def queries(self) -> Optional[List[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[List[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
+        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
 
     @property
     def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
@@ -1286,21 +1079,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             self.attributes = self.Attributes()
         self.attributes.mongo_d_b_database = mongo_d_b_database
 
-    @property
-    def dimensions(self) -> Optional[List[Table]]:
-        return None if self.attributes is None else self.attributes.dimensions
-
-    @dimensions.setter
-    def dimensions(self, dimensions: Optional[List[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dimensions = dimensions
-
-    class Attributes(CosmosMongoDB.Attributes):
-        cosmos_mongo_d_b_database_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
+    class Attributes(Table.Attributes):
         mongo_d_b_collection_subtype: Optional[str] = Field(
             default=None, description=""
         )
@@ -1383,48 +1162,13 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        facts: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
-        partitions: Optional[List[TablePartition]] = Field(
-            default=None, description=""
-        )  # relationship
-        cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase] = Field(
-            default=None, description=""
-        )  # relationship
-        queries: Optional[List[Query]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
+        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""
         )  # relationship
-        dimensions: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
 
-    attributes: CosmosMongoDBCollection.Attributes = Field(
-        default_factory=lambda: CosmosMongoDBCollection.Attributes(),
+    attributes: MongoDBCollection.Attributes = Field(
+        default_factory=lambda: MongoDBCollection.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -1433,15 +1177,4 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     )
 
 
-from .core.column import Column  # noqa
-from .core.dbt_model import DbtModel  # noqa
-from .core.dbt_source import DbtSource  # noqa
-from .core.dbt_test import DbtTest  # noqa
-from .core.query import Query  # noqa
-from .core.schema import Schema  # noqa
-from .core.table import Table  # noqa
-from .core.table_partition import TablePartition  # noqa
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
 from .mongo_d_b_database import MongoDBDatabase  # noqa
-
-CosmosMongoDBCollection.Attributes.update_forward_refs()

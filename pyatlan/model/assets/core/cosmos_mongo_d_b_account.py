@@ -542,5 +542,3 @@ class CosmosMongoDBAccount(CosmosMongoDB):
 
 
 from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
-
-CosmosMongoDBAccount.Attributes.update_forward_refs()

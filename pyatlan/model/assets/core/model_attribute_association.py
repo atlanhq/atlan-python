@@ -60,6 +60,12 @@ class ModelAttributeAssociation(Model):
     """
     Unique name of the association from which this attribute is related.
     """
+    MODEL_ENTITY_ASSOCIATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "modelEntityAssociationQualifiedName", "modelEntityAssociationQualifiedName"
+    )
+    """
+    Unique name of the entity association to which this attribute is related.
+    """
 
     MODEL_ATTRIBUTE_ASSOCIATION_FROM: ClassVar[RelationField] = RelationField(
         "modelAttributeAssociationFrom"
@@ -79,6 +85,7 @@ class ModelAttributeAssociation(Model):
         "model_attribute_association_label",
         "model_attribute_association_to_qualified_name",
         "model_attribute_association_from_qualified_name",
+        "model_entity_association_qualified_name",
         "model_attribute_association_from",
         "model_attribute_association_to",
     ]
@@ -156,6 +163,24 @@ class ModelAttributeAssociation(Model):
         )
 
     @property
+    def model_entity_association_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_association_qualified_name
+        )
+
+    @model_entity_association_qualified_name.setter
+    def model_entity_association_qualified_name(
+        self, model_entity_association_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_entity_association_qualified_name = (
+            model_entity_association_qualified_name
+        )
+
+    @property
     def model_attribute_association_from(self) -> Optional[ModelAttribute]:
         return (
             None
@@ -200,6 +225,9 @@ class ModelAttributeAssociation(Model):
             default=None, description=""
         )
         model_attribute_association_from_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        model_entity_association_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         model_attribute_association_from: Optional[ModelAttribute] = Field(
