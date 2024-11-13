@@ -136,6 +136,7 @@ class AtlanConnectionCategory(str, Enum):
     EVENT_BUS = "eventbus"
     DATA_QUALITY = "data-quality"
     SCHEMA_REGISTRY = "schema-registry"
+    APPLICATION = "application"
 
 
 class AtlanConnectorType(str, Enum):
@@ -333,6 +334,7 @@ class AtlanConnectorType(str, Enum):
     SAP_GIGYA = ("sap-gigya", AtlanConnectionCategory.SAAS)
     SAP_HYBRIS = ("sap-hybris", AtlanConnectionCategory.SAAS)
     IDM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
+    APPLICATION = ("application", AtlanConnectionCategory.APPLICATION)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):

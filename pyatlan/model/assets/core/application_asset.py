@@ -4,17 +4,70 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .application import Application
 
 
 class ApplicationAsset(Application):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> ApplicationAsset: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        application_id: str,
+    ) -> ApplicationAsset: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        application_id: str,
+        application_catalog_list: List[Catalog],
+    ) -> ApplicationAsset: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        application_id: Optional[str] = None,
+        application_catalog_list: Optional[List[Catalog]] = None,
+    ) -> ApplicationAsset:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = ApplicationAsset.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            application_id=application_id,
+            application_catalog_list=application_catalog_list,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="ApplicationAsset", allow_mutation=False)
 
@@ -52,6 +105,30 @@ class ApplicationAsset(Application):
         application_catalog: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            application_id: Optional[str] = None,
+            application_catalog_list: Optional[List[Catalog]] = None,
+        ) -> ApplicationAsset.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return ApplicationAsset.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+                application_id=application_id,
+                application_catalog=application_catalog_list,
+            )
 
     attributes: ApplicationAsset.Attributes = Field(
         default_factory=lambda: ApplicationAsset.Attributes(),
