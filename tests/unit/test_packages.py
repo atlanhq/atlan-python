@@ -20,7 +20,7 @@ from pyatlan.model.packages import (
     SnowflakeCrawler,
     SnowflakeMiner,
     SQLServerCrawler,
-    TableauCrawler,
+    TableauCrawler, AssetExportBasic,
 )
 
 PACKAGE_REQUESTS_DIR = Path(__file__).parent / "data" / "package_requests"
@@ -54,6 +54,18 @@ ASSET_IMPORT_GCS = "asset_import_gcs.json"
 ASSET_EXPORT_BASIC_GLOSSARIES = "asset_export_glossaries.json"
 ASSET_IMPORT_ADLS = "asset_import_adls.json"
 ASSET_IMPORT_DEFAULT = "asset_import_default.json"
+ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_S3 = "asset_export_basic_glossaries_s3.json"
+ASSET_EXPORT_BASIC_PRODUCTS_ONLY_S3 = "asset_export_basic_products_s3.json"
+ASSET_EXPORT_BASIC_ENRICHED_ONLY_S3 = "asset_export_basic_enriched_s3.json"
+ASSET_EXPORT_BASIC_ALL_ASSETS_S3 = "asset_export_basic_all_assets_s3.json"
+ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_ADLS = "asset_export_basic_glossaries_adls.json"
+ASSET_EXPORT_BASIC_ALL_ASSETS_ADLS = "asset_export_basic_all_assets_adls.json"
+ASSET_EXPORT_BASIC_PRODUCTS_ONLY_ADLS = "asset_export_basic_products_adls.json"
+ASSET_EXPORT_BASIC_ENRICHED_ONLY_ADLS = "asset_export_basic_enriched_adls.json"
+ASSET_EXPORT_BASIC_ALL_ASSETS_GCS = "asset_export_basic_all_assets_gcs.json"
+ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_GCS = "asset_export_basic_glossaries_gcs.json"
+ASSET_EXPORT_BASIC_PRODUCTS_ONLY_GCS = "asset_export_basic_products_gcs.json"
+ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS = "asset_export_basic_enriched_gcs.json"
 
 
 class NonSerializable:
@@ -87,11 +99,11 @@ def mock_connection_guid():
 
 @pytest.fixture()
 def mock_package_env(
-    mock_role_cache,
-    mock_user_cache,
-    mock_group_cache,
-    mock_connection_guid,
-    mock_get_epoch_timestamp,
+        mock_role_cache,
+        mock_user_cache,
+        mock_group_cache,
+        mock_connection_guid,
+        mock_get_epoch_timestamp,
 ):
     mock_role_cache.validate_idstrs
     mock_user_cache.validate_names
@@ -717,7 +729,7 @@ def test_asset_import(mock_package_env):
     request_json_gcs = loads(asset_import_gcs.json(by_alias=True, exclude_none=True))
     assert request_json_gcs == load_json(ASSET_IMPORT_GCS)
 
-    # Case 3: Importing assets, glossaries, and data products from GCS with advanced configuration
+    # Case 3: Importing assets, glossaries, and data products from Adls with advanced configuration
     asset_import_adls = (
         AssetImport()
         .object_store()
@@ -800,6 +812,211 @@ def test_asset_import(mock_package_env):
     assert request_json_default == load_json(ASSET_IMPORT_DEFAULT)
 
 
+def test_asset_export_basic(mock_package_env):
+    # Case 1: Export assets with glossaries only using s3
+    asset_export_basic_glossaries_only_s3 = (
+        AssetExportBasic()
+        .glossaries_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(asset_export_basic_glossaries_only_s3.json(by_alias=True, exclude_none=True))
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_S3)
+
+    # Case 2: Export assets with Products only using s3
+    asset_export_basic_products_only_s3 = (
+        AssetExportBasic()
+        .products_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(asset_export_basic_products_only_s3.json(by_alias=True, exclude_none=True))
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_S3)
+
+    # Case 3: Export assets with Enriched only using s3
+    asset_export_basic_enriched_only_s3 = (
+        AssetExportBasic()
+        .enriched_only(prefix="/test/prefix",
+                       include_description=True,
+                       include_glossaries=True, include_data_products=True, include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(asset_export_basic_enriched_only_s3.json(by_alias=True, exclude_none=True))
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_S3)
+
+    # Case 4: Export all assets using s3
+    asset_export_basic_all_assets_s3 = (
+        AssetExportBasic()
+        .all_assets(prefix="/test/prefix",
+                    include_description=True,
+                    include_glossaries=True, include_data_products=True, include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(asset_export_basic_all_assets_s3.json(by_alias=True, exclude_none=True))
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_S3)
+
+    # Case 1: Export assets with glossaries only using adls
+    asset_export_basic_glossaries_only_adls = (
+        AssetExportBasic()
+        .glossaries_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(asset_export_basic_glossaries_only_adls.json(by_alias=True, exclude_none=True))
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_ADLS)
+
+    # Case 2: Export assets with Products only using adls
+    asset_export_basic_products_only_adls = (
+        AssetExportBasic()
+        .products_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(asset_export_basic_products_only_adls.json(by_alias=True, exclude_none=True))
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_ADLS)
+
+    # Case 3: Export assets with Enriched only using adls
+    asset_export_basic_enriched_only_adls = (
+        AssetExportBasic()
+        .enriched_only(prefix="/test/prefix",
+                       include_description=True,
+                       include_glossaries=True, include_data_products=True, include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(asset_export_basic_enriched_only_adls.json(by_alias=True, exclude_none=True))
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_ADLS)
+
+    # Case 4: Export all assets using adls
+    asset_export_basic_all_assets_adls = (
+        AssetExportBasic()
+        .all_assets(prefix="/test/prefix",
+                    include_description=True,
+                    include_glossaries=True, include_data_products=True, include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(asset_export_basic_all_assets_adls.json(by_alias=True, exclude_none=True))
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_ADLS)
+
+    # Case 1: Export assets with glossaries only using gcs
+    asset_export_basic_glossaries_only_gcs = (
+        AssetExportBasic()
+        .glossaries_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(asset_export_basic_glossaries_only_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_GCS)
+
+    # Case 2: Export assets with Products only using gcs
+    asset_export_basic_products_only_gcs = (
+        AssetExportBasic()
+        .products_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(asset_export_basic_products_only_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_GCS)
+
+    # Case 3: Export assets with Enriched only using adls
+    asset_export_basic_enriched_only_gcs = (
+        AssetExportBasic()
+        .enriched_only(prefix="/test/prefix",
+                       include_description=True,
+                       include_glossaries=True, include_data_products=True, include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(asset_export_basic_enriched_only_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS)
+
+    # Case 4: Export all assets using adls
+    asset_export_basic_all_assets_gcs = (
+        AssetExportBasic()
+        .all_assets(prefix="/test/prefix",
+                    include_description=True,
+                    include_glossaries=True, include_data_products=True, include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(asset_export_basic_all_assets_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_GCS)
+    
 @pytest.mark.parametrize(
     "test_assets",
     [
@@ -813,11 +1030,11 @@ def test_asset_import(mock_package_env):
     ],
 )
 def test_wrong_hierarchical_filter_raises_invalid_req_err(
-    test_assets, mock_package_env
+        test_assets, mock_package_env
 ):
     with pytest.raises(
-        InvalidRequestError,
-        match=INVALID_REQ_ERROR,
+            InvalidRequestError,
+            match=INVALID_REQ_ERROR,
     ):
         SnowflakeCrawler(
             connection_name="test-snowflake-conn",
@@ -833,8 +1050,8 @@ def test_wrong_hierarchical_filter_raises_invalid_req_err(
 )
 def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_env):
     with pytest.raises(
-        InvalidRequestError,
-        match=INVALID_REQ_ERROR,
+            InvalidRequestError,
+            match=INVALID_REQ_ERROR,
     ):
         TableauCrawler(
             connection_name="test-tableau-conn",
@@ -849,11 +1066,11 @@ def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_en
     [NonSerializable(), [NonSerializable()]],
 )
 def test_wrong_glue_package_filter_raises_invalid_req_err(
-    test_assets, mock_package_env
+        test_assets, mock_package_env
 ):
     with pytest.raises(
-        InvalidRequestError,
-        match=INVALID_REQ_ERROR,
+            InvalidRequestError,
+            match=INVALID_REQ_ERROR,
     ):
         GlueCrawler(
             connection_name="test-glue-conn",

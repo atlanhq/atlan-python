@@ -2220,7 +2220,7 @@ class WorkflowPackage(str, Enum):
 
 class CustomWorkflowPackage(str, Enum):
     ASSET_IMPORT = "csa-asset-import"
-    ASSET_EXPORT = "csa-asset-export"
+    ASSET_EXPORT = "csa-asset-export-basic"
     RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
 
 

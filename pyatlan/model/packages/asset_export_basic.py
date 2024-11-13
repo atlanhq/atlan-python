@@ -12,7 +12,7 @@ class AssetExportBasic(AbstractCustomPackage):
     Base configuration for the Asset Export package.
     """
 
-    _NAME = "asset-export"
+    _NAME = "asset-export-basic"
     _PACKAGE_NAME = f"@csa/{_NAME}"
     _PACKAGE_PREFIX = CustomWorkflowPackage.ASSET_EXPORT.value
     _PACKAGE_ICON = "http://assets.atlan.com/assets/ph-cloud-arrow-down-light.svg"
@@ -50,7 +50,7 @@ class AssetExportBasic(AbstractCustomPackage):
     def enriched_only(
         self,
         prefix: str,
-        include_description: Optional[str] = None,
+        include_description: Optional[bool] = None,
         include_glossaries: Optional[bool] = None,
         include_data_products: Optional[bool] = None,
         include_archived: Optional[bool] = None,
@@ -76,7 +76,7 @@ class AssetExportBasic(AbstractCustomPackage):
             "qn_prefix": prefix,
             "include_description": include_description,
             "include_glossaries": include_glossaries,
-            "include_data_products": include_data_products,
+            "include_products": include_data_products,
             "include_archived": include_archived,
         }
         self._add_optional_params(params)
@@ -105,7 +105,7 @@ class AssetExportBasic(AbstractCustomPackage):
     def all_assets(
         self,
         prefix: str,
-        include_description: Optional[str] = None,
+        include_description: Optional[bool] = None,
         include_glossaries: Optional[bool] = None,
         include_data_products: Optional[bool] = None,
         include_archived: Optional[bool] = None,
@@ -131,7 +131,7 @@ class AssetExportBasic(AbstractCustomPackage):
             "qn_prefix": prefix,
             "include_description": include_description,
             "include_glossaries": include_glossaries,
-            "include_data_products": include_data_products,
+            "include_products": include_data_products,
             "include_archived": include_archived,
         }
         self._add_optional_params(params)
@@ -303,7 +303,7 @@ class AssetExportBasic(AbstractCustomPackage):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "kotlin,utility",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}",
+                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}/",
                 "orchestration.atlan.com/emoji": "🚀",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,  # noqa
@@ -311,7 +311,7 @@ class AssetExportBasic(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Export assets with all enrichment that could be made against them "
                 "via the Atlan UI.",
-                "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/@csa/{self._PACKAGE_NAME}",
+                "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
                 "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
