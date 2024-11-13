@@ -1,9 +1,15 @@
+## 2.5.8 (November 13, 2024)
+
+### Bug fixes
+
+- Fixed a typo in the IBM_DB2 connector type.
+
 ## 2.5.7 (November 13, 2024)
 
 ### New features
 
 - Added support for new connector types:
-  - IDM_DB2
+  - IBM_DB2
   - SAP_GIGYA
   - SAP_HYBRIS
   - TREASURE_DATA
