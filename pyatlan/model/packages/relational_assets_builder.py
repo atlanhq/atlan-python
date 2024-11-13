@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from json import dumps
 from typing import List, Optional
 
 from pyatlan.model.enums import (
@@ -49,9 +50,9 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
 
         :returns: package, set up to import metadata from object store
         """
+        self._parameters.append({"name": "import_type", "value": "CLOUD"})
         self._parameters.append({"name": "assets_prefix", "value": prefix})
         self._parameters.append({"name": "assets_key", "value": object_key})
-        self._parameters.append({"name": "import_type", "value": "CLOUD"})
         self._parameters.append({"name": "cloud_source", "value": "{{credentialGuid}}"})
         return self
 
@@ -206,7 +207,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
         ):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
-            "assets_attr_to_overwrite": str(remove_attributes),
+            "assets_attr_to_overwrite": dumps(remove_attributes, separators=(",", ":")),
             "assets_fail_on_errors": fail_on_errors,
             "assets_field_separator": field_separator,
             "assets_batch_size": batch_size,
@@ -224,7 +225,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
                 "orchestration.atlan.com/preview": "true",
                 "orchestration.atlan.com/verified": "true",
                 "package.argoproj.io/installer": "argopm",
-                "package.argoproj.io/name": f"a-t-ratlans-l-a-s-h{self._NAME}",
+                "package.argoproj.io/name": f"a-t-rcsas-l-a-s-h{self._NAME}",
                 "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
                 "orchestration.atlan.com/atlan-ui": "true",
             },
@@ -232,7 +233,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "kotlin,utility",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}",
+                "orchestration.atlan.com/docsUrl": f"https://solutions.atlan.com/{self._NAME}/",
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,  # noqa
