@@ -2148,7 +2148,11 @@ class Batch:
 
     @staticmethod
     def _track(tracker: List[Asset], candidate: Asset):
-        asset = candidate.trim_to_required()
+        if isinstance(candidate, AtlasGlossaryTerm):
+            # trim_to_required for AtlasGlossaryTerm requires anchor which is not include in AssetMutationResponse
+            asset = AtlasGlossaryTerm.ref_by_qualified_name(candidate.qualified_name)
+        else:
+            asset = candidate.trim_to_required()
         asset.name = candidate.name
         tracker.append(asset)
 
