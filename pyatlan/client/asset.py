@@ -17,6 +17,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 from warnings import warn
@@ -2150,7 +2151,7 @@ class Batch:
     def _track(tracker: List[Asset], candidate: Asset):
         if isinstance(candidate, AtlasGlossaryTerm):
             # trim_to_required for AtlasGlossaryTerm requires anchor which is not include in AssetMutationResponse
-            asset = AtlasGlossaryTerm.ref_by_qualified_name(candidate.qualified_name)
+            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
         asset.name = candidate.name
