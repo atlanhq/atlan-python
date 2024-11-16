@@ -85,7 +85,7 @@ __PYATLAN_ASSETS__ = {
         "ModelDataModel",
         "SparkJob",
         "SchemaRegistrySubject",
-        "ApplicationAsset",
+        "ApplicationContainer",
         "FivetranConnector",
         "AnomaloCheck",
         "MCIncident",

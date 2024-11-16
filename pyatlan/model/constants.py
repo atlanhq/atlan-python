@@ -25,7 +25,7 @@ AssetTypes = Set[
         "APIPath",
         "APIQuery",
         "APISpec",
-        "ApplicationAsset",
+        "ApplicationContainer",
         "Collection",
         "Query",
         "BIProcess",

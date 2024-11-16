@@ -35,7 +35,7 @@ _complete_type_list: AssetTypes = {
     "APIField",
     "APIPath",
     "APISpec",
-    "ApplicationAsset",
+    "ApplicationContainer",
     "Collection",
     "Query",
     "BIProcess",

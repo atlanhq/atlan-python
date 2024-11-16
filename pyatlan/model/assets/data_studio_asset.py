@@ -162,11 +162,11 @@ class DataStudioAsset(DataStudio):
     """
     List of tags that have been applied to the asset in Google.
     """
-    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
     )
     """
-    Qualified name of the Application Asset that contains this asset.
+    Qualified name of the Application Container that contains this asset.
     """
 
     _convenience_properties: ClassVar[List[str]] = [
@@ -182,7 +182,7 @@ class DataStudioAsset(DataStudio):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "application_asset_qualified_name",
+        "asset_application_qualified_name",
     ]
 
     @property
@@ -322,21 +322,21 @@ class DataStudioAsset(DataStudio):
         self.attributes.google_tags = google_tags
 
     @property
-    def application_asset_qualified_name(self) -> Optional[str]:
+    def asset_application_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.application_asset_qualified_name
+            else self.attributes.asset_application_qualified_name
         )
 
-    @application_asset_qualified_name.setter
-    def application_asset_qualified_name(
-        self, application_asset_qualified_name: Optional[str]
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_asset_qualified_name = (
-            application_asset_qualified_name
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
         )
 
     class Attributes(DataStudio.Attributes):
@@ -356,7 +356,7 @@ class DataStudioAsset(DataStudio):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
-        application_asset_qualified_name: Optional[str] = Field(
+        asset_application_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
 

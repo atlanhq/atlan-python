@@ -15,7 +15,7 @@ from .airflow_task import AirflowTask
 from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
 from .application import Application
-from .application_asset import ApplicationAsset
+from .application_container import ApplicationContainer
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -185,7 +185,7 @@ ModelAttributeAssociation.Attributes.update_forward_refs(**localns)
 ModelDataModel.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
-ApplicationAsset.Attributes.update_forward_refs(**localns)
+ApplicationContainer.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
 AnomaloCheck.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)

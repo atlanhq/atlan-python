@@ -1,0 +1,26 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> ApplicationContainer: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> ApplicationContainer:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = ApplicationContainer.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)

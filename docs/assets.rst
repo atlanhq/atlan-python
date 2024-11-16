@@ -32,7 +32,7 @@ You can interact with all of the following different kinds of assets:
     asset/anomalo
     asset/anomalocheck
     asset/application
-    asset/applicationasset
+    asset/applicationcontainer
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory

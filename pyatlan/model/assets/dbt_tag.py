@@ -150,11 +150,11 @@ class DbtTag(Dbt):
     """
     List of latest DBT job runs across all environments
     """
-    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
     )
     """
-    Qualified name of the Application Asset that contains this asset.
+    Qualified name of the Application Container that contains this asset.
     """
     TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
     """
@@ -199,7 +199,7 @@ class DbtTag(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
-        "application_asset_qualified_name",
+        "asset_application_qualified_name",
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -419,21 +419,21 @@ class DbtTag(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
-    def application_asset_qualified_name(self) -> Optional[str]:
+    def asset_application_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.application_asset_qualified_name
+            else self.attributes.asset_application_qualified_name
         )
 
-    @application_asset_qualified_name.setter
-    def application_asset_qualified_name(
-        self, application_asset_qualified_name: Optional[str]
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_asset_qualified_name = (
-            application_asset_qualified_name
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
         )
 
     @property
@@ -502,7 +502,7 @@ class DbtTag(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
-        application_asset_qualified_name: Optional[str] = Field(
+        asset_application_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         tag_id: Optional[str] = Field(default=None, description="")

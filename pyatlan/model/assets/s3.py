@@ -40,11 +40,11 @@ class S3(ObjectStore):
     """
 
     """
-    APPLICATION_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "applicationAssetQualifiedName", "applicationAssetQualifiedName"
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
     )
     """
-    Qualified name of the Application Asset that contains this asset.
+    Qualified name of the Application Container that contains this asset.
     """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
@@ -94,7 +94,7 @@ class S3(ObjectStore):
     _convenience_properties: ClassVar[List[str]] = [
         "s3_e_tag",
         "s3_encryption",
-        "application_asset_qualified_name",
+        "asset_application_qualified_name",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -127,21 +127,21 @@ class S3(ObjectStore):
         self.attributes.s3_encryption = s3_encryption
 
     @property
-    def application_asset_qualified_name(self) -> Optional[str]:
+    def asset_application_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.application_asset_qualified_name
+            else self.attributes.asset_application_qualified_name
         )
 
-    @application_asset_qualified_name.setter
-    def application_asset_qualified_name(
-        self, application_asset_qualified_name: Optional[str]
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_asset_qualified_name = (
-            application_asset_qualified_name
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
         )
 
     @property
@@ -237,7 +237,7 @@ class S3(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(default=None, description="")
         s3_encryption: Optional[str] = Field(default=None, description="")
-        application_asset_qualified_name: Optional[str] = Field(
+        asset_application_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         aws_arn: Optional[str] = Field(default=None, description="")

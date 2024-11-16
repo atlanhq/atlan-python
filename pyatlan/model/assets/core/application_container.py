@@ -15,7 +15,7 @@ from pyatlan.utils import init_guid, validate_required_fields
 from .application import Application
 
 
-class ApplicationAsset(Application):
+class ApplicationContainer(Application):
     """Description"""
 
     @overload
@@ -25,28 +25,7 @@ class ApplicationAsset(Application):
         *,
         name: str,
         connection_qualified_name: str,
-    ) -> ApplicationAsset: ...
-
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        application_id: str,
-    ) -> ApplicationAsset: ...
-
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        application_id: str,
-        application_catalog_list: List[Catalog],
-    ) -> ApplicationAsset: ...
+    ) -> ApplicationContainer: ...
 
     @classmethod
     @init_guid
@@ -55,54 +34,58 @@ class ApplicationAsset(Application):
         *,
         name: str,
         connection_qualified_name: str,
-        application_id: Optional[str] = None,
-        application_catalog_list: Optional[List[Catalog]] = None,
-    ) -> ApplicationAsset:
+    ) -> ApplicationContainer:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = ApplicationAsset.Attributes.creator(
+        attributes = ApplicationContainer.Attributes.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
-            application_id=application_id,
-            application_catalog_list=application_catalog_list,
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field(default="ApplicationAsset", allow_mutation=False)
+    type_name: str = Field(default="ApplicationContainer", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ApplicationAsset":
-            raise ValueError("must be ApplicationAsset")
+        if v != "ApplicationContainer":
+            raise ValueError("must be ApplicationContainer")
         return v
 
     def __setattr__(self, name, value):
-        if name in ApplicationAsset._convenience_properties:
+        if name in ApplicationContainer._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    APPLICATION_CATALOG: ClassVar[RelationField] = RelationField("applicationCatalog")
+    APPLICATION_OWNED_ASSETS: ClassVar[RelationField] = RelationField(
+        "applicationOwnedAssets"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "application_catalog",
+        "application_owned_assets",
     ]
 
     @property
-    def application_catalog(self) -> Optional[List[Catalog]]:
-        return None if self.attributes is None else self.attributes.application_catalog
+    def application_owned_assets(self) -> Optional[List[Catalog]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_owned_assets
+        )
 
-    @application_catalog.setter
-    def application_catalog(self, application_catalog: Optional[List[Catalog]]):
+    @application_owned_assets.setter
+    def application_owned_assets(
+        self, application_owned_assets: Optional[List[Catalog]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_catalog = application_catalog
+        self.attributes.application_owned_assets = application_owned_assets
 
     class Attributes(Application.Attributes):
-        application_catalog: Optional[List[Catalog]] = Field(
+        application_owned_assets: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -113,25 +96,21 @@ class ApplicationAsset(Application):
             *,
             name: str,
             connection_qualified_name: str,
-            application_id: Optional[str] = None,
-            application_catalog_list: Optional[List[Catalog]] = None,
-        ) -> ApplicationAsset.Attributes:
+        ) -> ApplicationContainer.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
-            return ApplicationAsset.Attributes(
+            return ApplicationContainer.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=AtlanConnectorType.get_connector_name(
                     connection_qualified_name
                 ),
-                application_id=application_id,
-                application_catalog=application_catalog_list,
             )
 
-    attributes: ApplicationAsset.Attributes = Field(
-        default_factory=lambda: ApplicationAsset.Attributes(),
+    attributes: ApplicationContainer.Attributes = Field(
+        default_factory=lambda: ApplicationContainer.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "

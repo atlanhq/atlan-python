@@ -82,7 +82,7 @@ __all__ = [
     "ModelDataModel",
     "SparkJob",
     "SchemaRegistrySubject",
-    "ApplicationAsset",
+    "ApplicationContainer",
     "FivetranConnector",
     "AnomaloCheck",
     "MCIncident",
@@ -348,7 +348,7 @@ from .core.airflow_task import AirflowTask
 from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.application import Application
-from .core.application_asset import ApplicationAsset
+from .core.application_container import ApplicationContainer
 from .core.asset import Asset
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory
