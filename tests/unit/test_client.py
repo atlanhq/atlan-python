@@ -1877,10 +1877,10 @@ class TestBatch:
         assert len(created) == len(sut.created)
         assert len(updated) == len(sut.updated)
         for unsaved, saved in zip(created, sut.created):
-            unsaved.trim_to_required.called_once()
+            unsaved.trim_to_required.assert_called_once()
             assert unsaved.name == saved.name
         for unsaved, saved in zip(updated, sut.updated):
-            unsaved.trim_to_required.called_once()
+            unsaved.trim_to_required.assert_called_once()
             assert unsaved.name == saved.name
 
         exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
@@ -1956,6 +1956,31 @@ class TestBatch:
         assert 0 == len(sut.failures)
         assert 0 == len(sut.created)
         assert 0 == len(sut.updated)
+
+    @patch.object(AtlasGlossaryTerm, "trim_to_required")
+    @patch.object(AtlasGlossaryTerm, "ref_by_guid")
+    def test_term_add(self, mock_ref_by_guid, mock_trim_to_required, mock_asset_client):
+        mutated_entities = Mock()
+        mock_response = Mock(spec=AssetMutationResponse)
+        term_1 = AtlasGlossaryTerm(guid="test-guid1")
+        term_2 = AtlasGlossaryTerm(guid="test-guid2")
+        created = [term_1, term_2]
+        mutated_entities.UPDATE = []
+        mutated_entities.CREATE = created
+        mock_response.attach_mock(mutated_entities, "mutated_entities")
+        mock_asset_client.save.return_value = mock_response
+        batch = Batch(
+            client=mock_asset_client,
+            max_size=2,
+        )
+        batch.add(term_1)
+        # Because the batch is not yet full
+        self.assert_asset_client_not_called(mock_asset_client, batch)
+        batch.add(term_2)
+
+        assert len(created) == len(batch.created)
+        mock_ref_by_guid.assert_has_calls([call(term_1.guid), call(term_2.guid)])
+        mock_trim_to_required.assert_not_called()
 
 
 class TestBulkRequest:
