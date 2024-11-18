@@ -162,6 +162,12 @@ class DataStudioAsset(DataStudio):
     """
     List of tags that have been applied to the asset in Google.
     """
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
+    )
+    """
+    Qualified name of the Application Container that contains this asset.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_studio_asset_type",
@@ -176,6 +182,7 @@ class DataStudioAsset(DataStudio):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "asset_application_qualified_name",
     ]
 
     @property
@@ -314,6 +321,24 @@ class DataStudioAsset(DataStudio):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
+    @property
+    def asset_application_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_application_qualified_name
+        )
+
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
+        )
+
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
             default=None, description=""
@@ -331,6 +356,9 @@ class DataStudioAsset(DataStudio):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
+        asset_application_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
 
         @classmethod
         @init_guid

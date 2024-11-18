@@ -139,6 +139,12 @@ class MongoDBDatabase(Database):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
+    )
+    """
+    Qualified name of the Application Container that contains this asset.
+    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -170,6 +176,7 @@ class MongoDBDatabase(Database):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "asset_application_qualified_name",
         "no_s_q_l_schema_definition",
         "mongo_d_b_collections",
     ]
@@ -379,6 +386,24 @@ class MongoDBDatabase(Database):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def asset_application_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_application_qualified_name
+        )
+
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
+        )
+
+    @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
         return (
             None
@@ -429,6 +454,9 @@ class MongoDBDatabase(Database):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        asset_application_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         mongo_d_b_collections: Optional[List[MongoDBCollection]] = Field(
             default=None, description=""

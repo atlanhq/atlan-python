@@ -270,6 +270,12 @@ class DynamoDBTable(Table):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
+    )
+    """
+    Qualified name of the Application Container that contains this asset.
+    """
     DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dynamoDBStatus", "dynamoDBStatus"
     )
@@ -363,6 +369,7 @@ class DynamoDBTable(Table):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "asset_application_qualified_name",
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",
@@ -848,6 +855,24 @@ class DynamoDBTable(Table):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def asset_application_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_application_qualified_name
+        )
+
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
+        )
+
+    @property
     def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
         return None if self.attributes is None else self.attributes.dynamo_d_b_status
 
@@ -1022,6 +1047,9 @@ class DynamoDBTable(Table):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        asset_application_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
             default=None, description=""
         )
