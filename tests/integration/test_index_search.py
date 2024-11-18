@@ -242,10 +242,10 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
 
 
 def test_search_next_page(client: AtlanClient):
-    size = 15
+    size = 2
     dsl = DSL(
         query=Term.with_state("ACTIVE"),
-        post_filter=Term.with_type_name(value="Table"),
+        post_filter=Term.with_type_name(value="AtlasGlossaryTerm"),
         size=size,
     )
     request = IndexSearchRequest(dsl=dsl)
@@ -386,10 +386,10 @@ def test_search_pagination(mock_logger, client: AtlanClient):
 
 
 def test_search_iter(client: AtlanClient):
-    size = 15
+    size = 2
     dsl = DSL(
         query=Term.with_state("ACTIVE"),
-        post_filter=Term.with_type_name("Table"),
+        post_filter=Term.with_type_name("AtlasGlossaryTerm"),
         size=size,
     )
     request = IndexSearchRequest(dsl=dsl)
