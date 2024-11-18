@@ -45,7 +45,7 @@ def application_container(
     client: AtlanClient, connection: Connection
 ) -> Generator[ApplicationContainer, None, None]:
     assert connection.qualified_name
-    to_create = ApplicationContainer.create(
+    to_create = ApplicationContainer.creator(
         name=APPLICATION_CONTAINER_NAME,
         connection_qualified_name=connection.qualified_name,
     )

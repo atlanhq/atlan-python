@@ -2,10 +2,10 @@ import pytest
 
 from pyatlan.model.assets import ApplicationContainer
 from tests.unit.model.constants import (
-    APPLICATION_CONTAINER_NAME,
-    APPLICATION_CONTAINER_QUALIFIED_NAME,
     APPLICATION_CONNECTION_QUALIFIED_NAME,
     APPLICATION_CONNECTOR_TYPE,
+    APPLICATION_CONTAINER_NAME,
+    APPLICATION_CONTAINER_QUALIFIED_NAME,
 )
 
 
@@ -44,17 +44,15 @@ def test_create():
         (APPLICATION_CONTAINER_NAME, None, "name is required"),
     ],
 )
-def test_create_for_modification_with_invalid_parameter_raises_value_error(
+def test_updater_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        ApplicationContainer.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        ApplicationContainer.updater(qualified_name=qualified_name, name=name)
 
 
-def test_create_for_modification():
-    sut = ApplicationContainer.create_for_modification(
+def test_updater():
+    sut = ApplicationContainer.updater(
         qualified_name=APPLICATION_CONTAINER_QUALIFIED_NAME,
         name=APPLICATION_CONTAINER_NAME,
     )
@@ -64,7 +62,7 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-    sut = ApplicationContainer.create_for_modification(
+    sut = ApplicationContainer.updater(
         name=APPLICATION_CONTAINER_NAME,
         qualified_name=APPLICATION_CONTAINER_QUALIFIED_NAME,
     ).trim_to_required()
