@@ -18,15 +18,6 @@ from .application import Application
 class ApplicationContainer(Application):
     """Description"""
 
-    @overload
-    @classmethod
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-    ) -> ApplicationContainer: ...
-
     @classmethod
     @init_guid
     def creator(

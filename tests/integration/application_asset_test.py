@@ -46,7 +46,8 @@ def application_container(
 ) -> Generator[ApplicationContainer, None, None]:
     assert connection.qualified_name
     to_create = ApplicationContainer.create(
-        name=APPLICATION_CONTAINER_NAME, connection_qualified_name=connection.qualified_name
+        name=APPLICATION_CONTAINER_NAME,
+        connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ApplicationContainer)[0]
@@ -55,7 +56,9 @@ def application_container(
 
 
 def test_application_container(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
     assert application_container
     assert application_container.guid
@@ -67,7 +70,9 @@ def test_application_container(
 
 # here
 def test_update_application_container(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
     assert application_container.qualified_name
     assert application_container.name
@@ -100,23 +105,31 @@ def test_update_application_container(
 
 @pytest.mark.order(after="test_update_application_container")
 def test_retrieve_application_container(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
-    b = client.asset.get_by_guid(application_container.guid, asset_type=ApplicationContainer)
+    b = client.asset.get_by_guid(
+        application_container.guid, asset_type=ApplicationContainer
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == application_container.guid
     assert b.qualified_name == application_container.qualified_name
     assert b.name == application_container.name
     assert b.connector_name == application_container.connector_name
-    assert b.connection_qualified_name == application_container.connection_qualified_name
+    assert (
+        b.connection_qualified_name == application_container.connection_qualified_name
+    )
     assert b.certificate_status == CERTIFICATE_STATUS
     assert b.certificate_status_message == CERTIFICATE_MESSAGE
 
 
 @pytest.mark.order(after="test_retrieve_application_container")
 def test_update_application_container_again(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
     assert application_container.qualified_name
     assert application_container.name
@@ -145,7 +158,9 @@ def test_update_application_container_again(
 
 @pytest.mark.order(after="test_update_application_container_again")
 def test_delete_application_container(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
     response = client.asset.delete_by_guid(application_container.guid)
     assert response
@@ -162,7 +177,9 @@ def test_delete_application_container(
 
 @pytest.mark.order(after="test_delete_application_container")
 def test_read_deleted_application_container(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
     deleted = client.asset.get_by_guid(
         application_container.guid, asset_type=ApplicationContainer
@@ -175,15 +192,19 @@ def test_read_deleted_application_container(
 
 @pytest.mark.order(after="test_read_deleted_application_container")
 def test_restore_application_container(
-    client: AtlanClient, connection: Connection, application_container: ApplicationContainer
+    client: AtlanClient,
+    connection: Connection,
+    application_container: ApplicationContainer,
 ):
     assert application_container.qualified_name
     assert client.asset.restore(
-        asset_type=ApplicationContainer, qualified_name=application_container.qualified_name
+        asset_type=ApplicationContainer,
+        qualified_name=application_container.qualified_name,
     )
     assert application_container.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=ApplicationContainer, qualified_name=application_container.qualified_name
+        asset_type=ApplicationContainer,
+        qualified_name=application_container.qualified_name,
     )
     assert restored
     assert restored.guid == application_container.guid

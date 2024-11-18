@@ -67,7 +67,6 @@ class ADLS(ObjectStore):
     Qualified name of the Application Container that contains this asset.
     """
 
-
     _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
         "azure_resource_id",
