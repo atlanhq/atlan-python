@@ -27,13 +27,17 @@ from .calculation_view import CalculationView
 from .catalog import Catalog
 from .column import Column
 from .column_process import ColumnProcess
+from .cosmos_mongo_d_b import CosmosMongoDB
+from .cosmos_mongo_d_b_account import CosmosMongoDBAccount
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
+from .custom import Custom
 from .data_contract import DataContract
 from .data_domain import DataDomain
 from .data_mesh import DataMesh
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .database import Database
-from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt import Dbt
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
@@ -63,8 +67,11 @@ from .model_data_model import ModelDataModel
 from .model_entity import ModelEntity
 from .model_entity_association import ModelEntityAssociation
 from .model_version import ModelVersion
+from .mongo_d_b_collection import MongoDBCollection
+from .mongo_d_b_database import MongoDBDatabase
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
+from .no_s_q_l import NoSQL
 from .persona import Persona
 from .power_b_i import PowerBI
 from .power_b_i_column import PowerBIColumn
@@ -125,8 +132,10 @@ ADF.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
+Custom.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
+NoSQL.Attributes.update_forward_refs(**localns)
 Matillion.Attributes.update_forward_refs(**localns)
 Dbt.Attributes.update_forward_refs(**localns)
 Model.Attributes.update_forward_refs(**localns)
@@ -163,11 +172,11 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
+CosmosMongoDB.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)
 MatillionJob.Attributes.update_forward_refs(**localns)
 MatillionProject.Attributes.update_forward_refs(**localns)
@@ -203,4 +212,9 @@ PowerBIDashboard.Attributes.update_forward_refs(**localns)
 PowerBIDataflow.Attributes.update_forward_refs(**localns)
 PowerBIPage.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
+MongoDBCollection.Attributes.update_forward_refs(**localns)
 DynamoDBSecondaryIndex.Attributes.update_forward_refs(**localns)
+MongoDBDatabase.Attributes.update_forward_refs(**localns)
+CosmosMongoDBAccount.Attributes.update_forward_refs(**localns)
+CosmosMongoDBCollection.Attributes.update_forward_refs(**localns)
+CosmosMongoDBDatabase.Attributes.update_forward_refs(**localns)

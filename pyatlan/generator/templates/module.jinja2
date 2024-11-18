@@ -97,6 +97,6 @@ from .s_q_l import SQL  # noqa # isort:skip
 {{ import }}
 {% endfor %}
 
-{%  if not asset_info.is_core_asset %}
+{% if asset_info.name not in asset_info._CORE_ASSETS %}
 {{ asset_info.name }}.Attributes.update_forward_refs()
 {% endif %}

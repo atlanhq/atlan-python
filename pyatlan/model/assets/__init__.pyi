@@ -22,8 +22,10 @@ __all__ = [
     "DataQuality",
     "BI",
     "Resource",
+    "Custom",
     "DataMesh",
     "SQL",
+    "NoSQL",
     "Matillion",
     "Dbt",
     "Model",
@@ -60,11 +62,11 @@ __all__ = [
     "TablePartition",
     "Column",
     "SnowflakeStream",
-    "DatabricksUnityCatalogTag",
     "CalculationView",
     "Database",
     "Procedure",
     "SnowflakeTag",
+    "CosmosMongoDB",
     "MatillionGroup",
     "MatillionJob",
     "MatillionProject",
@@ -100,7 +102,12 @@ __all__ = [
     "PowerBIDataflow",
     "PowerBIPage",
     "SnowflakeDynamicTable",
+    "MongoDBCollection",
     "DynamoDBSecondaryIndex",
+    "MongoDBDatabase",
+    "CosmosMongoDBAccount",
+    "CosmosMongoDBCollection",
+    "CosmosMongoDBDatabase",
     "Task",
     "DataSet",
     "TagAttachment",
@@ -157,9 +164,12 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
+    "CustomField",
+    "CustomDataset",
+    "CustomTable",
+    "DatabricksUnityCatalogTag",
     "Kafka",
     "AzureServiceBus",
-    "CosmosMongoDB",
     "DynamoDB",
     "MongoDB",
     "DbtTag",
@@ -276,16 +286,11 @@ __all__ = [
     "SalesforceOrganization",
     "SalesforceDashboard",
     "SalesforceReport",
-    "MongoDBCollection",
     "DynamoDBTable",
-    "MongoDBDatabase",
     "KafkaTopic",
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
     "AzureServiceBusTopic",
-    "CosmosMongoDBAccount",
-    "CosmosMongoDBCollection",
-    "CosmosMongoDBDatabase",
     "QlikStream",
     "DynamoDBLocalSecondaryIndex",
     "DynamoDBGlobalSecondaryIndex",
@@ -360,13 +365,17 @@ from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
 from .core.column import Column
 from .core.column_process import ColumnProcess
+from .core.cosmos_mongo_d_b import CosmosMongoDB
+from .core.cosmos_mongo_d_b_account import CosmosMongoDBAccount
+from .core.cosmos_mongo_d_b_collection import CosmosMongoDBCollection
+from .core.cosmos_mongo_d_b_database import CosmosMongoDBDatabase
+from .core.custom import Custom
 from .core.data_contract import DataContract
 from .core.data_domain import DataDomain
 from .core.data_mesh import DataMesh
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.database import Database
-from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .core.dbt import Dbt
 from .core.dbt_metric import DbtMetric
 from .core.dbt_model import DbtModel
@@ -396,8 +405,11 @@ from .core.model_data_model import ModelDataModel
 from .core.model_entity import ModelEntity
 from .core.model_entity_association import ModelEntityAssociation
 from .core.model_version import ModelVersion
+from .core.mongo_d_b_collection import MongoDBCollection
+from .core.mongo_d_b_database import MongoDBDatabase
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
+from .core.no_s_q_l import NoSQL
 from .core.persona import Persona
 from .core.power_b_i import PowerBI
 from .core.power_b_i_column import PowerBIColumn
@@ -435,17 +447,17 @@ from .core.table import Table
 from .core.table_partition import TablePartition
 from .core.tag import Tag
 from .core.view import View
-from .cosmos_mongo_d_b import CosmosMongoDB
-from .cosmos_mongo_d_b_account import CosmosMongoDBAccount
-from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
 from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
+from .custom_dataset import CustomDataset
+from .custom_field import CustomField
+from .custom_table import CustomTable
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
+from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt_column_process import DbtColumnProcess
 from .dbt_process import DbtProcess
 from .dbt_tag import DbtTag
@@ -501,10 +513,7 @@ from .mode_query import ModeQuery
 from .mode_report import ModeReport
 from .mode_workspace import ModeWorkspace
 from .mongo_d_b import MongoDB
-from .mongo_d_b_collection import MongoDBCollection
-from .mongo_d_b_database import MongoDBDatabase
 from .multi_dimensional_dataset import MultiDimensionalDataset
-from .no_s_q_l import NoSQL
 from .object_store import ObjectStore
 from .preset import Preset
 from .preset_chart import PresetChart

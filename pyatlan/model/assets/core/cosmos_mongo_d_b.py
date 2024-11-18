@@ -28,6 +28,3 @@ class CosmosMongoDB(NoSQL):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
-
-
-CosmosMongoDB.Attributes.update_forward_refs()

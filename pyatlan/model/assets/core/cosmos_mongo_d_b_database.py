@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional, Set
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -15,55 +15,53 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
-from pyatlan.model.structs import SourceTagAttribute
 
-from .tag import Tag
+from .cosmos_mongo_d_b import CosmosMongoDB
 
 
-class DatabricksUnityCatalogTag(Tag):
+class CosmosMongoDBDatabase(CosmosMongoDB):
     """Description"""
 
-    type_name: str = Field(default="DatabricksUnityCatalogTag", allow_mutation=False)
+    type_name: str = Field(default="CosmosMongoDBDatabase", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DatabricksUnityCatalogTag":
-            raise ValueError("must be DatabricksUnityCatalogTag")
+        if v != "CosmosMongoDBDatabase":
+            raise ValueError("must be CosmosMongoDBDatabase")
         return v
 
     def __setattr__(self, name, value):
-        if name in DatabricksUnityCatalogTag._convenience_properties:
+        if name in CosmosMongoDBDatabase._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
-    """
-    Unique identifier of the tag in the source system.
-    """
-    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
-        "tagAttributes", "tagAttributes"
+    COSMOS_MONGO_DB_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "cosmosMongoDBAccountQualifiedName",
+            "cosmosMongoDBAccountQualifiedName",
+            "cosmosMongoDBAccountQualifiedName.text",
+        )
     )
     """
-    Attributes associated with the tag in the source system.
+    Unique name of the account in which this database exists.
     """
-    TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
-        "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
+        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
     """
-    Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying.
+    Represents attributes for describing the key schema for the table and indexes.
     """
-    MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
-        "mappedClassificationName", "mappedClassificationName"
+    MONGO_DB_DATABASE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
+        "mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount"
     )
     """
-    Name of the classification in Atlan that is mapped to this tag.
+    Number of collections in the database.
     """
-    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
-    )
+    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
     """
-    Qualified name of the Application Container that contains this asset.
+    Number of schemas in this database.
     """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
@@ -162,11 +160,21 @@ class DatabricksUnityCatalogTag(Tag):
     """
     TBC
     """
+    COSMOS_MONGO_DB_ACCOUNT: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBAccount"
+    )
+    """
+    TBC
+    """
     SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
     """
     TBC
     """
     DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField("mongoDBCollections")
     """
     TBC
     """
@@ -178,13 +186,22 @@ class DatabricksUnityCatalogTag(Tag):
     """
     TBC
     """
+    SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
+    """
+    TBC
+    """
+    COSMOS_MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBCollections"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "tag_id",
-        "tag_attributes",
-        "tag_allowed_values",
-        "mapped_atlan_tag_name",
-        "asset_application_qualified_name",
+        "cosmos_mongo_d_b_account_qualified_name",
+        "no_s_q_l_schema_definition",
+        "mongo_d_b_database_collection_count",
+        "schema_count",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -202,71 +219,75 @@ class DatabricksUnityCatalogTag(Tag):
         "is_profiled",
         "last_profiled_at",
         "dbt_sources",
+        "cosmos_mongo_d_b_account",
         "sql_dbt_models",
         "dbt_tests",
+        "mongo_d_b_collections",
         "sql_dbt_sources",
         "dbt_models",
+        "schemas",
+        "cosmos_mongo_d_b_collections",
     ]
 
     @property
-    def tag_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tag_id
-
-    @tag_id.setter
-    def tag_id(self, tag_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_id = tag_id
-
-    @property
-    def tag_attributes(self) -> Optional[List[SourceTagAttribute]]:
-        return None if self.attributes is None else self.attributes.tag_attributes
-
-    @tag_attributes.setter
-    def tag_attributes(self, tag_attributes: Optional[List[SourceTagAttribute]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_attributes = tag_attributes
-
-    @property
-    def tag_allowed_values(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.tag_allowed_values
-
-    @tag_allowed_values.setter
-    def tag_allowed_values(self, tag_allowed_values: Optional[Set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_allowed_values = tag_allowed_values
-
-    @property
-    def mapped_atlan_tag_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
-        )
-
-    @mapped_atlan_tag_name.setter
-    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
-
-    @property
-    def asset_application_qualified_name(self) -> Optional[str]:
+    def cosmos_mongo_d_b_account_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.asset_application_qualified_name
+            else self.attributes.cosmos_mongo_d_b_account_qualified_name
         )
 
-    @asset_application_qualified_name.setter
-    def asset_application_qualified_name(
-        self, asset_application_qualified_name: Optional[str]
+    @cosmos_mongo_d_b_account_qualified_name.setter
+    def cosmos_mongo_d_b_account_qualified_name(
+        self, cosmos_mongo_d_b_account_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_application_qualified_name = (
-            asset_application_qualified_name
+        self.attributes.cosmos_mongo_d_b_account_qualified_name = (
+            cosmos_mongo_d_b_account_qualified_name
         )
+
+    @property
+    def no_s_q_l_schema_definition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.no_s_q_l_schema_definition
+        )
+
+    @no_s_q_l_schema_definition.setter
+    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
+
+    @property
+    def mongo_d_b_database_collection_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mongo_d_b_database_collection_count
+        )
+
+    @mongo_d_b_database_collection_count.setter
+    def mongo_d_b_database_collection_count(
+        self, mongo_d_b_database_collection_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_database_collection_count = (
+            mongo_d_b_database_collection_count
+        )
+
+    @property
+    def schema_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.schema_count
+
+    @schema_count.setter
+    def schema_count(self, schema_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_count = schema_count
 
     @property
     def query_count(self) -> Optional[int]:
@@ -455,6 +476,22 @@ class DatabricksUnityCatalogTag(Tag):
         self.attributes.dbt_sources = dbt_sources
 
     @property
+    def cosmos_mongo_d_b_account(self) -> Optional[CosmosMongoDBAccount]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account
+        )
+
+    @cosmos_mongo_d_b_account.setter
+    def cosmos_mongo_d_b_account(
+        self, cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_account = cosmos_mongo_d_b_account
+
+    @property
     def sql_dbt_models(self) -> Optional[List[DbtModel]]:
         return None if self.attributes is None else self.attributes.sql_dbt_models
 
@@ -473,6 +510,20 @@ class DatabricksUnityCatalogTag(Tag):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
+
+    @property
+    def mongo_d_b_collections(self) -> Optional[List[MongoDBCollection]]:
+        return (
+            None if self.attributes is None else self.attributes.mongo_d_b_collections
+        )
+
+    @mongo_d_b_collections.setter
+    def mongo_d_b_collections(
+        self, mongo_d_b_collections: Optional[List[MongoDBCollection]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_collections = mongo_d_b_collections
 
     @property
     def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
@@ -494,16 +545,41 @@ class DatabricksUnityCatalogTag(Tag):
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
-    class Attributes(Tag.Attributes):
-        tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
+    @property
+    def schemas(self) -> Optional[List[Schema]]:
+        return None if self.attributes is None else self.attributes.schemas
+
+    @schemas.setter
+    def schemas(self, schemas: Optional[List[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schemas = schemas
+
+    @property
+    def cosmos_mongo_d_b_collections(self) -> Optional[List[CosmosMongoDBCollection]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_collections
+        )
+
+    @cosmos_mongo_d_b_collections.setter
+    def cosmos_mongo_d_b_collections(
+        self, cosmos_mongo_d_b_collections: Optional[List[CosmosMongoDBCollection]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_collections = cosmos_mongo_d_b_collections
+
+    class Attributes(CosmosMongoDB.Attributes):
+        cosmos_mongo_d_b_account_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
-        mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
-        asset_application_qualified_name: Optional[str] = Field(
+        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
+        mongo_d_b_database_collection_count: Optional[int] = Field(
             default=None, description=""
         )
+        schema_count: Optional[int] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
@@ -525,10 +601,16 @@ class DatabricksUnityCatalogTag(Tag):
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
+        cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount] = Field(
+            default=None, description=""
+        )  # relationship
         sql_dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
         dbt_tests: Optional[List[DbtTest]] = Field(
+            default=None, description=""
+        )  # relationship
+        mongo_d_b_collections: Optional[List[MongoDBCollection]] = Field(
             default=None, description=""
         )  # relationship
         sql_dbt_sources: Optional[List[DbtSource]] = Field(
@@ -537,9 +619,15 @@ class DatabricksUnityCatalogTag(Tag):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        schemas: Optional[List[Schema]] = Field(
+            default=None, description=""
+        )  # relationship
+        cosmos_mongo_d_b_collections: Optional[List[CosmosMongoDBCollection]] = Field(
+            default=None, description=""
+        )  # relationship
 
-    attributes: DatabricksUnityCatalogTag.Attributes = Field(
-        default_factory=lambda: DatabricksUnityCatalogTag.Attributes(),
+    attributes: CosmosMongoDBDatabase.Attributes = Field(
+        default_factory=lambda: CosmosMongoDBDatabase.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -548,6 +636,10 @@ class DatabricksUnityCatalogTag(Tag):
     )
 
 
+from .cosmos_mongo_d_b_account import CosmosMongoDBAccount  # noqa
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa
 from .dbt_model import DbtModel  # noqa
 from .dbt_source import DbtSource  # noqa
 from .dbt_test import DbtTest  # noqa
+from .mongo_d_b_collection import MongoDBCollection  # noqa
+from .schema import Schema  # noqa

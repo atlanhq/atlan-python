@@ -1,3 +1,31 @@
+## 2.5.8 (November 13, 2024)
+
+### Bug fixes
+
+- Fixed a typo in the IBM_DB2 connector type.
+
+## 2.5.7 (November 13, 2024)
+
+### New features
+
+- Added support for new connector types:
+  - IBM_DB2
+  - SAP_GIGYA
+  - SAP_HYBRIS
+  - TREASURE_DATA
+  - APACHE_PULSAR
+  - ADOBE_TARGET
+  - AZURE_ACTIVE_DIRECTORY
+  - ADOBE_EXPERIENCE_MANAGER
+
+### QOL improvements
+
+- Generated the latest typedef models.
+
+### Bug fixes
+
+- Fixed generator to handle new core assets in the typedefs.
+
 ## 2.5.6 (October 24, 2024)
 
 ### Bug fixes
