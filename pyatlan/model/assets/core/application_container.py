@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, overload
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
