@@ -512,8 +512,8 @@ class GCS(Google):
 
 
 from .core.airflow_task import AirflowTask  # noqa
-from .core.model_entity import ModelEntity  # noqa
 from .core.application_container import ApplicationContainer  # noqa
+from .core.model_entity import ModelEntity  # noqa
 from .core.process import Process  # noqa
 from .core.spark_job import SparkJob  # noqa
 

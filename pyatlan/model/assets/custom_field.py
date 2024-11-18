@@ -413,6 +413,12 @@ class CustomField(Column):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
+    )
+    """
+    Qualified name of the Application Container that contains this asset.
+    """
     CUSTOM_SOURCE_ID: ClassVar[KeywordField] = KeywordField(
         "customSourceId", "customSourceId"
     )
@@ -509,6 +515,7 @@ class CustomField(Column):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "asset_application_qualified_name",
         "custom_source_id",
         "custom_dataset_name",
         "custom_dataset_qualified_name",
@@ -1340,6 +1347,24 @@ class CustomField(Column):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def asset_application_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_application_qualified_name
+        )
+
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
+        )
+
+    @property
     def custom_source_id(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.custom_source_id
 
@@ -1489,6 +1514,9 @@ class CustomField(Column):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        asset_application_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         custom_source_id: Optional[str] = Field(default=None, description="")
         custom_dataset_name: Optional[str] = Field(default=None, description="")
         custom_dataset_qualified_name: Optional[str] = Field(

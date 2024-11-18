@@ -255,7 +255,7 @@ class Catalog(Asset, type_name="Catalog"):
 
 
 from .airflow_task import AirflowTask  # noqa
-from .model_entity import ModelEntity  # noqa
 from .application_container import ApplicationContainer  # noqa
+from .model_entity import ModelEntity  # noqa
 from .process import Process  # noqa
 from .spark_job import SparkJob  # noqa
