@@ -72,13 +72,14 @@ class CredentialResponse(AtlanObject):
     metadata: Optional[Dict[str, Any]]
     level: Optional[Dict[str, Any]]
     connection: Optional[Dict[str, Any]]
+    username: Optional[str]
+    extras: Optional[Dict[str, Any]] = Field(default=None, alias="extra")
 
     def to_credential(self) -> Credential:
         """
         Convert this response into a credential instance.
-        Note: the username, password, and extras fields
-        must still all be populated, as they will never be
-        returned by a credential lookup (for security reasons).
+        Note: The password field must still be populated manually,
+        as it will never be returned by a credential lookup for security reasons.
         """
         return Credential(
             id=self.id,
@@ -88,6 +89,8 @@ class CredentialResponse(AtlanObject):
             auth_type=self.auth_type,
             connector_type=self.connector_type,
             connector_config_name=self.connector_config_name,
+            username=self.username,
+            extras=self.extras,  # type: ignore[call-arg]
         )
 
 
