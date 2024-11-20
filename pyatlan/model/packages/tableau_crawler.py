@@ -52,6 +52,28 @@ class TableauCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
+    def s3(
+        self, bucket_name: str, bucket_prefix: str, bucket_region: Optional[str] = None
+    ) -> TableauCrawler:
+        """
+        Set up the crawler to fetch metadata directly from the S3 bucket.
+
+        :param bucket_name: name of the S3 bucket containing the extracted metadata files
+        :param bucket_prefix: prefix within the S3 bucket where the extracted metadata files are located
+        :param bucket_region: (Optional) region where the S3 bucket is located
+        :returns: crawler, configured to fetch metadata directly from the S3 bucket
+        """
+        self._parameters.append(dict(name="extraction-method", value="s3"))
+        self._parameters.append(dict(name="metadata-s3-bucket", value=bucket_name))
+        self._parameters.append(dict(name="metadata-s3-prefix", value=bucket_prefix))
+        self._parameters.append(dict(name="metadata-s3-region", value=bucket_region))
+        # Advanced configuration
+        self.exclude(projects=[])
+        self.include(projects=[])
+        self.crawl_unpublished(enabled=True)
+        self.crawl_hidden_fields(enabled=True)
+        return self
+
     def direct(
         self,
         hostname: str,
@@ -80,6 +102,9 @@ class TableauCrawler(AbstractCrawler):
         }
         self._credentials_body.update(local_creds)
         self._parameters.append({"name": "extraction-method", "value": "direct"})
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         return self
 
     def basic_auth(self, username: str, password: str) -> TableauCrawler:
@@ -187,9 +212,6 @@ class TableauCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
         self._parameters.append(
             {
                 "name": "connection",

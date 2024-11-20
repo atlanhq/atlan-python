@@ -52,6 +52,10 @@
                     "value": "direct"
                   },
                   {
+                    "name": "credential-guid",
+                    "value": "{{credentialGuid}}"
+                  },
+                  {
                     "name": "include-filter",
                     "value": "{\"test-project-guid-1\": {}, \"test-project-guid-2\": {}}"
                   },
@@ -66,10 +70,6 @@
                   {
                     "name": "crawl-hidden-datasource-fields",
                     "value": "false"
-                  },
-                  {
-                    "name": "credential-guid",
-                    "value": "{{credentialGuid}}"
                   },
                   {
                     "name": "connection",
