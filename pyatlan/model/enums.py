@@ -2216,6 +2216,9 @@ class WorkflowPackage(str, Enum):
     TERADATA_MINER = "atlan-teradata-miner"
     THOUGHTSPOT = "atlan-thoughtspot"
     TRINO = "atlan-trino"
+    ASSET_IMPORT = "csa-asset-import"
+    ASSET_EXPORT_BASIC = "csa-asset-export-basic"
+    RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
 
 
 class CustomWorkflowPackage(str, Enum):
