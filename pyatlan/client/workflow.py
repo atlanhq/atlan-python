@@ -38,6 +38,7 @@ from pyatlan.model.workflow import (
     WorkflowSearchResult,
     WorkflowSearchResultDetail,
 )
+from pyatlan.utils import validate_type
 
 MONITOR_SLEEP_SECONDS = 5
 
@@ -98,7 +99,7 @@ class WorkflowClient:
             request_obj=request,
         )
         response = WorkflowSearchResponse(**raw_json)
-        return response.hits.hits or []
+        return response.hits and response.hits.hits or []
 
     @validate_arguments
     def find_by_id(self, id: str) -> Optional[WorkflowSearchResult]:
@@ -124,7 +125,7 @@ class WorkflowClient:
             request_obj=request,
         )
         response = WorkflowSearchResponse(**raw_json)
-        return results[0] if (results := response.hits.hits) else None
+        return results[0] if (results := response.hits and response.hits.hits) else None
 
     @validate_arguments
     def find_run_by_id(self, id: str) -> Optional[WorkflowSearchResult]:
@@ -145,7 +146,7 @@ class WorkflowClient:
             ]
         )
         response = self._find_runs(query, size=1)
-        return results[0] if (results := response.hits.hits) else None
+        return results[0] if (results := response.hits and response.hits.hits) else None
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
@@ -167,7 +168,7 @@ class WorkflowClient:
             ]
         )
         response = self._find_runs(query, size=1)
-        return results[0] if (results := response.hits.hits) else None
+        return results[0] if (results := response.hits and response.hits.hits) else None
 
     @validate_arguments
     def _find_current_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
@@ -191,7 +192,7 @@ class WorkflowClient:
             ]
         )
         response = self._find_runs(query, size=50)
-        if results := response.hits.hits:
+        if results := response.hits and response.hits.hits:
             for result in results:
                 if result.status in {
                     AtlanWorkflowPhase.PENDING,
@@ -230,7 +231,7 @@ class WorkflowClient:
         """
         Adds required schedule parameters to the workflow object.
         """
-        workflow.metadata.annotations and workflow.metadata.annotations.update(
+        workflow.metadata and workflow.metadata.annotations and workflow.metadata.annotations.update(
             {
                 self._WORKFLOW_RUN_SCHEDULE: workflow_schedule.cron_schedule,
                 self._WORKFLOW_RUN_TIMEZONE: workflow_schedule.timezone,
@@ -266,7 +267,6 @@ class WorkflowClient:
         self, workflow: WorkflowSearchResult, idempotent: bool = False
     ) -> WorkflowRunResponse: ...
 
-    @validate_arguments
     def rerun(
         self,
         workflow: Union[
@@ -285,25 +285,37 @@ class WorkflowClient:
         :raises InvalidRequestException: If no prior runs are available for the provided workflow
         :raises AtlanError: on any API communication issue
         """
+        validate_type(
+            name="workflow",
+            _type=(WorkflowPackage, WorkflowSearchResultDetail, WorkflowSearchResult),
+            value=workflow,
+        )
+        request = None
         detail = self._handle_workflow_types(workflow)
-        if idempotent and detail.metadata.name:
+        if idempotent and detail and detail.metadata and detail.metadata.name:
             # Introducing a delay before checking the current workflow run
             # since it takes some time to start or stop
             sleep(10)
             if (
-                current_run_details := self._find_current_run(
-                    workflow_name=detail.metadata.name
+                (
+                    current_run_details := self._find_current_run(
+                        workflow_name=detail.metadata.name
+                    )
                 )
-            ) and current_run_details.source.status:
+                and current_run_details.source
+                and current_run_details.source.metadata
+                and current_run_details.source.spec
+                and current_run_details.source.status
+            ):
                 return WorkflowRunResponse(
                     metadata=current_run_details.source.metadata,
                     spec=current_run_details.source.spec,
                     status=current_run_details.source.status,
                 )
-
-        request = ReRunRequest(
-            namespace=detail.metadata.namespace, resource_name=detail.metadata.name
-        )
+        if detail and detail.metadata:
+            request = ReRunRequest(
+                namespace=detail.metadata.namespace, resource_name=detail.metadata.name
+            )
         raw_json = self._client._call_api(
             WORKFLOW_RERUN,
             request_obj=request,
@@ -350,7 +362,9 @@ class WorkflowClient:
         :raises AtlanError: on any API communication issue.
         """
         raw_json = self._client._call_api(
-            WORKFLOW_UPDATE.format_path({"workflow_name": workflow.metadata.name}),
+            WORKFLOW_UPDATE.format_path(
+                {"workflow_name": workflow.metadata and workflow.metadata.name}
+            ),
             request_obj=workflow,
         )
         return WorkflowResponse(**raw_json)
@@ -439,7 +453,7 @@ class WorkflowClient:
             filter=[Term(field="status.phase.keyword", value=workflow_phase.value)],
         )
         response = self._find_runs(query, from_=from_, size=size)
-        return results if (results := response.hits.hits) else None
+        return results if (results := response.hits and response.hits.hits) else None
 
     @validate_arguments
     def stop(
@@ -495,7 +509,6 @@ class WorkflowClient:
         self, workflow: WorkflowSearchResultDetail, workflow_schedule: WorkflowSchedule
     ) -> WorkflowResponse: ...
 
-    @validate_arguments
     def add_schedule(
         self,
         workflow: Union[
@@ -517,12 +530,24 @@ class WorkflowClient:
         :returns: a scheduled workflow.
         :raises AtlanError: on any API communication issue.
         """
-
+        validate_type(
+            name="workflow",
+            _type=(
+                WorkflowResponse,
+                WorkflowPackage,
+                WorkflowSearchResult,
+                WorkflowSearchResultDetail,
+            ),
+            value=workflow,
+        )
         workflow_to_update = self._handle_workflow_types(workflow)
         self._add_schedule(workflow_to_update, workflow_schedule)
         raw_json = self._client._call_api(
             WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_to_update.metadata.name}
+                {
+                    "workflow_name": workflow_to_update.metadata
+                    and workflow_to_update.metadata.name
+                }
             ),
             request_obj=workflow_to_update,
         )
@@ -542,7 +567,6 @@ class WorkflowClient:
         self, workflow: WorkflowSearchResultDetail
     ) -> WorkflowResponse: ...
 
-    @validate_arguments
     def remove_schedule(
         self,
         workflow: Union[
@@ -559,13 +583,27 @@ class WorkflowClient:
         :returns: a workflow.
         :raises AtlanError: on any API communication issue.
         """
-        workflow_to_update = self._handle_workflow_types(workflow)
-        workflow_to_update.metadata.annotations and workflow_to_update.metadata.annotations.pop(
-            self._WORKFLOW_RUN_SCHEDULE, None
+        validate_type(
+            name="workflow",
+            _type=(
+                WorkflowResponse,
+                WorkflowPackage,
+                WorkflowSearchResult,
+                WorkflowSearchResultDetail,
+            ),
+            value=workflow,
         )
+        workflow_to_update = self._handle_workflow_types(workflow)
+        if workflow_to_update.metadata and workflow_to_update.metadata.annotations:
+            workflow_to_update.metadata.annotations.pop(
+                self._WORKFLOW_RUN_SCHEDULE, None
+            )
         raw_json = self._client._call_api(
             WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_to_update.metadata.name}
+                {
+                    "workflow_name": workflow_to_update.metadata
+                    and workflow_to_update.metadata.name
+                }
             ),
             request_obj=workflow_to_update,
         )
@@ -632,7 +670,7 @@ class WorkflowClient:
             request_obj=request,
         )
         response = WorkflowSearchResponse(**raw_json)
-        return response.hits.hits or []
+        return response.hits and response.hits.hits or []
 
     @validate_arguments
     def re_run_schedule_query(self, schedule_query_id: str) -> WorkflowRunResponse:

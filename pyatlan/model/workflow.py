@@ -10,9 +10,9 @@ from pyatlan.model.search import Query, SortItem
 
 
 class PackageParameter(AtlanObject):
-    parameter: str
-    type: str
-    body: Dict[str, Any]
+    parameter: Optional[str] = Field(default=None)
+    type: Optional[str] = Field(default=None)
+    body: Optional[Dict[str, Any]] = Field(default=None)
 
 
 class WorkflowMetadata(AtlanObject):
@@ -29,36 +29,36 @@ class WorkflowMetadata(AtlanObject):
 
 
 class WorkflowTemplateRef(AtlanObject):
-    name: str
-    template: str
-    cluster_scope: bool
+    name: Optional[str] = Field(default=None)
+    template: Optional[str] = Field(default=None)
+    cluster_scope: Optional[bool] = Field(default=None)
 
 
 class NameValuePair(AtlanObject):
-    name: str
-    value: Any
+    name: Optional[str] = Field(default=None)
+    value: Optional[Any] = Field(default=None)
 
 
 class WorkflowParameters(AtlanObject):
-    parameters: List[NameValuePair]
+    parameters: Optional[List[NameValuePair]] = Field(default=None)
 
 
 class WorkflowTask(AtlanObject):
-    name: str
-    arguments: WorkflowParameters
-    template_ref: WorkflowTemplateRef
+    name: Optional[str] = Field(default=None)
+    arguments: Optional[WorkflowParameters] = Field(default=None)
+    template_ref: Optional[WorkflowTemplateRef] = Field(default=None)
 
 
 class WorkflowDAG(AtlanObject):
-    tasks: List[WorkflowTask]
+    tasks: Optional[List[WorkflowTask]] = Field(default=None)
 
 
 class WorkflowTemplate(AtlanObject):
-    name: str
+    name: Optional[str] = Field(default=None)
     inputs: Any = Field(default=None)
     outputs: Any = Field(default=None)
     metadata: Any = Field(default=None)
-    dag: WorkflowDAG
+    dag: Optional[WorkflowDAG] = Field(default=None)
 
 
 class WorkflowSpec(AtlanObject):
@@ -70,8 +70,8 @@ class WorkflowSpec(AtlanObject):
 
 
 class Workflow(AtlanObject):
-    metadata: WorkflowMetadata
-    spec: WorkflowSpec
+    metadata: Optional[WorkflowMetadata] = Field(default=None)
+    spec: Optional[WorkflowSpec] = Field(default=None)
     payload: List[PackageParameter] = Field(default_factory=list)
 
 
@@ -97,21 +97,21 @@ class WorkflowSearchResultStatus(AtlanObject):
 
 
 class WorkflowSearchResultDetail(AtlanObject):
-    api_version: str
-    kind: str
-    metadata: WorkflowMetadata
-    spec: WorkflowSpec
+    api_version: Optional[str] = Field(default=None)
+    kind: Optional[str] = Field(default=None)
+    metadata: Optional[WorkflowMetadata] = Field(default=None)
+    spec: Optional[WorkflowSpec] = Field(default=None)
     status: Optional[WorkflowSearchResultStatus] = Field(default=None)
 
 
 class WorkflowSearchResult(AtlanObject):
-    index: str = Field(alias="_index")
-    type: str = Field(alias="_type")
-    id: str = Field(alias="_id")
-    seq_no: Any = Field(alias="_seq_no")
-    primary_term: Any = Field(alias="_primary_term")
-    sort: List[Any]
-    source: WorkflowSearchResultDetail = Field(alias="_source")
+    index: Optional[str] = Field(default=None, alias="_index")
+    type: Optional[str] = Field(default=None, alias="_type")
+    id: Optional[str] = Field(default=None, alias="_id")
+    seq_no: Optional[Any] = Field(default=None, alias="_seq_no")
+    primary_term: Optional[Any] = Field(default=None, alias="_primary_term")
+    sort: Optional[List[Any]] = Field(default=None)
+    source: Optional[WorkflowSearchResultDetail] = Field(default=None, alias="_source")
 
     @property
     def status(self) -> Optional[AtlanWorkflowPhase]:
@@ -121,24 +121,27 @@ class WorkflowSearchResult(AtlanObject):
         return None
 
     def to_workflow(self) -> Workflow:
-        return Workflow(spec=self.source.spec, metadata=self.source.metadata)
+        return Workflow(
+            spec=self.source and self.source.spec or None,
+            metadata=self.source and self.source.metadata or None,
+        )
 
 
 class WorkflowSearchHits(AtlanObject):
-    total: Dict[str, Any]
+    total: Optional[Dict[str, Any]] = Field(default=None)
     hits: Optional[List[WorkflowSearchResult]] = Field(default=None)
 
 
 class WorkflowSearchResponse(AtlanObject):
     took: Optional[int] = Field(default=None)
-    hits: WorkflowSearchHits
-    shards: Dict[str, Any] = Field(alias="_shards")
+    hits: Optional[WorkflowSearchHits] = Field(default=None)
+    shards: Optional[Dict[str, Any]] = Field(alias="_shards", default=None)
 
 
 class ReRunRequest(AtlanObject):
-    namespace: str = "default"
-    resource_kind: str = "WorkflowTemplate"
-    resource_name: str
+    namespace: Optional[str] = Field(default="default")
+    resource_kind: Optional[str] = Field(default="WorkflowTemplate")
+    resource_name: Optional[str] = Field(default=None)
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
@@ -146,13 +149,13 @@ class ReRunRequest(AtlanObject):
 
 
 class WorkflowResponse(AtlanObject):
-    metadata: WorkflowMetadata
-    spec: WorkflowSpec
+    metadata: Optional[WorkflowMetadata] = Field(default=None)
+    spec: Optional[WorkflowSpec] = Field(default=None)
     payload: Optional[List[Any]] = Field(default_factory=list)
 
 
 class WorkflowRunResponse(WorkflowResponse):
-    status: WorkflowSearchResultStatus
+    status: Optional[WorkflowSearchResultStatus] = Field(default=None)
 
 
 class ScheduleQueriesSearchRequest(AtlanObject):

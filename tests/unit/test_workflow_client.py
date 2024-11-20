@@ -173,6 +173,57 @@ def test_workflow_client_methods_validation_error(method, params):
             client_method(*param_values)
 
 
+@pytest.mark.parametrize("workflow", ["abc", None])
+def test_workflow_rerun_invalid_request_error(client, workflow):
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-048 Invalid parameter type for workflow should "
+            "be WorkflowPackage, WorkflowSearchResultDetail or WorkflowSearchResult. "
+            "Suggestion: Check that you have used the correct type of parameter."
+        ),
+    ):
+        client.rerun(workflow)
+
+
+@pytest.mark.parametrize(
+    "workflow, schedule",
+    [
+        ("abc", WorkflowSchedule(timezone="atlan", cron_schedule="*")),
+        (None, WorkflowSchedule(timezone="atlan", cron_schedule="*")),
+    ],
+)
+def test_workflow_add_schedule_invalid_request_error(client, workflow, schedule):
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-048 Invalid parameter type for workflow should "
+            "be WorkflowResponse, WorkflowPackage, WorkflowSearchResult or WorkflowSearchResultDetail. "
+            "Suggestion: Check that you have used the correct type of parameter."
+        ),
+    ):
+        client.add_schedule(workflow, schedule)
+
+
+@pytest.mark.parametrize(
+    "workflow",
+    [
+        "abc",
+        None,
+    ],
+)
+def test_workflow_remove_schedule_invalid_request_error(client, workflow):
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-048 Invalid parameter type for workflow should "
+            "be WorkflowResponse, WorkflowPackage, WorkflowSearchResult or WorkflowSearchResultDetail. "
+            "Suggestion: Check that you have used the correct type of parameter."
+        ),
+    ):
+        client.add_schedule(workflow, schedule)
+
+
 @pytest.mark.parametrize("api_caller", ["abc", None])
 def test_init_when_wrong_class_raises_exception(api_caller):
     with pytest.raises(
@@ -200,7 +251,7 @@ def test_find_by_id(
     raw_json = search_response.dict()
     mock_api_caller._call_api.return_value = raw_json
 
-    assert search_response.hits.hits
+    assert search_response.hits and search_response.hits.hits
     assert (
         client.find_by_id(id="atlan-snowflake-miner-1714638976")
         == search_response.hits.hits[0]
@@ -218,7 +269,7 @@ def test_find_run_by_id(
     raw_json = search_response.dict()
     mock_api_caller._call_api.return_value = raw_json
 
-    assert search_response.hits.hits
+    assert search_response and search_response.hits and search_response.hits.hits
     assert (
         client.find_run_by_id(id="atlan-snowflake-miner-1714638976-mzdza")
         == search_response.hits.hits[0]
@@ -390,6 +441,7 @@ def test_update_when_given_workflow(
     update_response: WorkflowResponse,
 ):
     mock_api_caller._call_api.return_value = update_response.dict()
+    assert search_result.to_workflow()
     response = client.update(workflow=search_result.to_workflow())
     assert response == update_response
     assert mock_api_caller._call_api.call_count == 1
@@ -420,6 +472,7 @@ def test_workflow_get_runs(
         workflow_phase=AtlanWorkflowPhase.RUNNING,
     )
 
+    assert search_response.hits
     assert response == search_response.hits.hits
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()

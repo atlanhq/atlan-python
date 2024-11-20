@@ -69,7 +69,7 @@ def workflow(
     # the workflow run is indexed in ES.
     time.sleep(30)
     yield workflow
-    assert workflow.metadata.name
+    assert workflow.metadata and workflow.metadata.name
     delete_workflow(client, workflow.metadata.name)
 
 
@@ -81,6 +81,7 @@ def test_workflow_find_by_methods(client: AtlanClient):
     assert len(results) >= 1
 
     workflow_id = results[0].id
+    assert workflow_id
     workflow = client.workflow.find_by_id(id=workflow_id)
     assert workflow
     assert workflow.id and workflow.id == workflow_id
@@ -91,7 +92,7 @@ def test_workflow_find_by_methods(client: AtlanClient):
 
 def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowResponse):
     # Retrieve the lastest workflow run
-    assert workflow and workflow.metadata.name
+    assert workflow and workflow.metadata and workflow.metadata.name
     runs = client.workflow.get_runs(
         workflow_name=workflow.metadata.name, workflow_phase=AtlanWorkflowPhase.RUNNING
     )
@@ -134,7 +135,7 @@ def test_workflow_get_all_scheduled_runs(
 ):
     runs = client.workflow.get_all_scheduled_runs()
 
-    assert workflow and workflow.metadata.name
+    assert workflow and workflow.metadata and workflow.metadata.name
     scheduled_workflow_name = f"{workflow.metadata.name}-cron"
     assert runs and len(runs) >= 1
 
@@ -149,7 +150,7 @@ def test_workflow_get_all_scheduled_runs(
 
 
 def _assert_scheduled_run(client: AtlanClient, workflow: WorkflowResponse):
-    assert workflow and workflow.metadata.name
+    assert workflow and workflow.metadata and workflow.metadata.name
     scheduled_workflow = client.workflow.get_scheduled_run(
         workflow_name=workflow.metadata.name
     )
@@ -220,7 +221,12 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
     existing_workflow = client.workflow.find_by_type(
         prefix=WorkflowPackage.SNOWFLAKE_MINER
     )[0]
-    assert existing_workflow
+    assert (
+        existing_workflow
+        and existing_workflow.source
+        and existing_workflow.source.metadata
+    )
+    assert workflow and workflow.metadata
     assert existing_workflow.source.metadata.name == workflow.metadata.name
 
     schedule = WorkflowSchedule(
