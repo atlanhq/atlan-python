@@ -321,9 +321,9 @@ def validate_type(name: str, _type, value):
         return
 
     type_name = (
-        ", ".join(t.__name__ for t in _type)
-        if isinstance(_type, tuple)
-        else _type.__name__
+        ", ".join(t.__name__ for t in _type[:-1]) + f" or {_type[-1].__name__}"
+        if isinstance(_type, tuple) and len(_type) > 1
+        else _type.__name__ if isinstance(_type, tuple) else _type.__name__  # type: ignore[attr-defined]
     )
 
     raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(name, type_name)

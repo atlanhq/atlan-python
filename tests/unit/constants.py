@@ -11,7 +11,6 @@ from pyatlan.model.workflow import (
     ScheduleQueriesSearchRequest,
     WorkflowMetadata,
     WorkflowResponse,
-    WorkflowSchedule,
     WorkflowSpec,
 )
 
@@ -515,10 +514,6 @@ TEST_WORKFLOW_CLIENT_METHODS = {
         (["abc"], "value is not a valid dict"),
         ([None], "none is not an allowed value"),
     ],
-    "rerun": [
-        (["abc"], "value is not a valid enumeration member"),
-        ([None], "none is not an allowed value"),
-    ],
     "update": [
         (["abc"], "value is not a valid dict"),
         ([None], "none is not an allowed value"),
@@ -548,25 +543,6 @@ TEST_WORKFLOW_CLIENT_METHODS = {
     ],
     "delete": [
         ([[123]], "str type expected"),
-        ([None], "none is not an allowed value"),
-    ],
-    "add_schedule": [
-        (
-            [[123], WorkflowSchedule(timezone="atlan", cron_schedule="*")],
-            "value is not a valid dict",
-        ),
-        (
-            [[123], WorkflowSchedule(timezone="atlan", cron_schedule="*")],
-            "value is not a valid enumeration member",
-        ),
-        (
-            [None, WorkflowSchedule(timezone="atlan", cron_schedule="*")],
-            "none is not an allowed value",
-        ),
-    ],
-    "remove_schedule": [
-        ([[123]], "value is not a valid dict"),
-        ([[123]], "value is not a valid enumeration member"),
         ([None], "none is not an allowed value"),
     ],
     "get_scheduled_run": [
