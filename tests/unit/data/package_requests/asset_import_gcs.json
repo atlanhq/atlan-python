@@ -1,0 +1,191 @@
+{
+  "metadata": {
+    "labels": {
+      "orchestration.atlan.com/certified": "true",
+      "orchestration.atlan.com/preview": "true",
+      "orchestration.atlan.com/source": "asset-import",
+      "orchestration.atlan.com/sourceCategory": "utility",
+      "orchestration.atlan.com/type": "custom",
+      "orchestration.atlan.com/verified": "true",
+      "package.argoproj.io/installer": "argopm",
+      "package.argoproj.io/name": "a-t-rcsas-l-a-s-hasset-import",
+      "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+      "orchestration.atlan.com/atlan-ui": "true"
+    },
+    "annotations": {
+      "orchestration.atlan.com/allowSchedule": "true",
+      "orchestration.atlan.com/categories": "kotlin,utility",
+      "orchestration.atlan.com/dependentPackage": "",
+      "orchestration.atlan.com/docsUrl": "https://solutions.atlan.com/asset-import/",
+      "orchestration.atlan.com/emoji": "🚀",
+      "orchestration.atlan.com/icon": "http://assets.atlan.com/assets/ph-cloud-arrow-up-light.svg",
+      "orchestration.atlan.com/logo": "http://assets.atlan.com/assets/ph-cloud-arrow-up-light.svg",
+      "orchestration.atlan.com/name": "Asset Import",
+      "package.argoproj.io/author": "Atlan CSA",
+      "package.argoproj.io/description": "Import assets from a CSV file.",
+      "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@csa/asset-import",
+      "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",
+      "package.argoproj.io/name": "@csa/asset-import",
+      "package.argoproj.io/parent": ".",
+      "package.argoproj.io/registry": "https://packages.atlan.com",
+      "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+      "package.argoproj.io/support": "support@atlan.com",
+      "orchestration.atlan.com/atlanName": "csa-asset-import-123456"
+    },
+    "name": "csa-asset-import-123456",
+    "namespace": "default"
+  },
+  "spec": {
+    "templates": [
+      {
+        "name": "main",
+        "dag": {
+          "tasks": [
+            {
+              "name": "run",
+              "arguments": {
+                "parameters": [
+                  {
+                    "name": "import_type",
+                    "value": "CLOUD"
+                  },
+                  {
+                    "name": "cloud_source",
+                    "value": "{{credentialGuid}}"
+                  },
+                  {
+                    "name": "assets_prefix",
+                    "value": "/test/prefix"
+                  },
+                  {
+                    "name": "assets_key",
+                    "value": "assets-test.csv"
+                  },
+                  {
+                    "name": "assets_upsert_semantic",
+                    "value": "upsert"
+                  },
+                  {
+                    "name": "assets_attr_to_overwrite",
+                    "value": "[\"certificateStatus\",\"announcementType\"]"
+                  },
+                  {
+                    "name": "assets_fail_on_errors",
+                    "value": true
+                  },
+                  {
+                    "name": "assets_case_sensitive",
+                    "value": false
+                  },
+                  {
+                    "name": "assets_field_separator",
+                    "value": ","
+                  },
+                  {
+                    "name": "assets_batch_size",
+                    "value": 20
+                  },
+                  {
+                    "name": "glossaries_prefix",
+                    "value": "/test/prefix"
+                  },
+                  {
+                    "name": "glossaries_key",
+                    "value": "glossaries-test.csv"
+                  },
+                  {
+                    "name": "glossaries_upsert_semantic",
+                    "value": "update"
+                  },
+                  {
+                    "name": "glossaries_attr_to_overwrite",
+                    "value": "[\"certificateStatus\",\"announcementType\"]"
+                  },
+                  {
+                    "name": "glossaries_fail_on_errors",
+                    "value": true
+                  },
+                  {
+                    "name": "glossaries_field_separator",
+                    "value": ","
+                  },
+                  {
+                    "name": "glossaries_batch_size",
+                    "value": 20
+                  },
+                  {
+                    "name": "data_products_prefix",
+                    "value": "/test/prefix"
+                  },
+                  {
+                    "name": "data_products_key",
+                    "value": "data-products-test.csv"
+                  },
+                  {
+                    "name": "data_products_upsert_semantic",
+                    "value": "update"
+                  },
+                  {
+                    "name": "data_products_attr_to_overwrite",
+                    "value": "[\"certificateStatus\",\"announcementType\"]"
+                  },
+                  {
+                    "name": "data_products_fail_on_errors",
+                    "value": true
+                  },
+                  {
+                    "name": "data_products_field_separator",
+                    "value": ","
+                  },
+                  {
+                    "name": "data_products_batch_size",
+                    "value": 20
+                  },
+                  {
+                    "name": "assets_config",
+                    "value": "advanced"
+                  },
+                  {
+                    "name": "glossaries_config",
+                    "value": "advanced"
+                  },
+                  {
+                    "name": "data_products_config",
+                    "value": "advanced"
+                  }
+                ]
+              },
+              "templateRef": {
+                "name": "csa-asset-import",
+                "template": "main",
+                "clusterScope": true
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "entrypoint": "main",
+    "workflowMetadata": {
+      "annotations": {
+        "package.argoproj.io/name": "@csa/asset-import"
+      }
+    }
+  },
+  "payload": [
+    {
+      "parameter": "credentialGuid",
+      "type": "credential",
+      "body": {
+        "name": "csa-asset-import-123456-0",
+        "authType": "gcs",
+        "username": "test-project-id",
+        "password": "test-service-account-json",
+        "extra": {
+          "gcs_bucket": "my-bucket"
+        },
+        "connectorConfigName": "csa-connectors-objectstore"
+      }
+    }
+  ]
+}

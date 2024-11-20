@@ -5,7 +5,11 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.errors import InvalidRequestError
+from pyatlan.model.assets.core import Asset
+from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan.model.packages import (
+    AssetExportBasic,
+    AssetImport,
     BigQueryCrawler,
     ConfluentKafkaCrawler,
     ConnectionDelete,
@@ -14,6 +18,7 @@ from pyatlan.model.packages import (
     GlueCrawler,
     PostgresCrawler,
     PowerBICrawler,
+    RelationalAssetsBuilder,
     SigmaCrawler,
     SnowflakeCrawler,
     SnowflakeMiner,
@@ -30,6 +35,7 @@ SNOWFLAKE_MINER_S3_OFFLINE = "snowflake_miner_s3_offline.json"
 GLUE_IAM_USER = "glue_iam_user.json"
 TABLEAU_BASIC = "tableau_basic.json"
 TABLEAU_ACCESS_TOKEN = "tableau_access_token.json"
+TABLEAU_OFFLINE = "tableau_offline.json"
 POWERBI_DELEGATED_USER = "powerbi_delegated_user.json"
 POWEBI_SERVICE_PRINCIPAL = "powerbi_service_principal.json"
 CONFLUENT_KAFKA_DIRECT = "confluent_kafka_direct.json"
@@ -46,6 +52,26 @@ POSTGRES_DIRECT_IAM_ROLE = "postgres_direct_iam_role.json"
 POSTGRES_S3_OFFLINE = "postgres_s3_offline.json"
 CONNECTION_DELETE_HARD = "connection_delete_hard.json"
 CONNECTION_DELETE_SOFT = "connection_delete_soft.json"
+ASSET_IMPORT_S3 = "asset_import_s3.json"
+ASSET_IMPORT_GCS = "asset_import_gcs.json"
+ASSET_EXPORT_BASIC_GLOSSARIES = "asset_export_glossaries.json"
+ASSET_IMPORT_ADLS = "asset_import_adls.json"
+ASSET_IMPORT_DEFAULT = "asset_import_default.json"
+ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_S3 = "asset_export_basic_glossaries_s3.json"
+ASSET_EXPORT_BASIC_PRODUCTS_ONLY_S3 = "asset_export_basic_products_s3.json"
+ASSET_EXPORT_BASIC_ENRICHED_ONLY_S3 = "asset_export_basic_enriched_s3.json"
+ASSET_EXPORT_BASIC_ALL_ASSETS_S3 = "asset_export_basic_all_assets_s3.json"
+ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_ADLS = "asset_export_basic_glossaries_adls.json"
+ASSET_EXPORT_BASIC_ALL_ASSETS_ADLS = "asset_export_basic_all_assets_adls.json"
+ASSET_EXPORT_BASIC_PRODUCTS_ONLY_ADLS = "asset_export_basic_products_adls.json"
+ASSET_EXPORT_BASIC_ENRICHED_ONLY_ADLS = "asset_export_basic_enriched_adls.json"
+ASSET_EXPORT_BASIC_ALL_ASSETS_GCS = "asset_export_basic_all_assets_gcs.json"
+ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_GCS = "asset_export_basic_glossaries_gcs.json"
+ASSET_EXPORT_BASIC_PRODUCTS_ONLY_GCS = "asset_export_basic_products_gcs.json"
+ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS = "asset_export_basic_enriched_gcs.json"
+RELATIONAL_ASSETS_BUILDER_S3 = "relational_assets_builder_s3.json"
+RELATIONAL_ASSETS_BUILDER_ADLS = "relational_assets_builder_adls.json"
+RELATIONAL_ASSETS_BUILDER_GCS = "relational_assets_builder_gcs.json"
 
 
 class NonSerializable:
@@ -231,6 +257,23 @@ def test_tableau_package(mock_package_env):
         tableau_access_token_auth.json(by_alias=True, exclude_none=True)
     )
     assert request_json == load_json(TABLEAU_ACCESS_TOKEN)
+
+    tableau_offline = (
+        TableauCrawler(
+            connection_name="test-tableau-offline-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .s3(
+            bucket_name="test-bucket",
+            bucket_prefix="test-prefix",
+            bucket_region="test-region",
+        )
+        .to_workflow()
+    )
+    request_json = loads(tableau_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(TABLEAU_OFFLINE)
 
 
 def test_powerbi_package(mock_package_env):
@@ -592,6 +635,535 @@ def test_connection_delete_package(mock_package_env):
     ).to_workflow()
     request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONNECTION_DELETE_SOFT)
+
+
+def test_asset_import(mock_package_env):
+    # Case 1: Importing assets, glossaries, and data products from S3 with advanced configuration
+    asset_import_s3 = (
+        AssetImport()
+        .object_store()
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.PARTIAL,
+        )
+        .assets_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=20,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .data_product_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(asset_import_s3.json(by_alias=True, exclude_none=True))
+    assert request_json_s3 == load_json(ASSET_IMPORT_S3)
+
+    # Case 2: Importing assets, glossaries, and data products from GCS with advanced configuration
+    asset_import_gcs = (
+        AssetImport()
+        .object_store()
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+        .assets_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=20,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .data_product_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(asset_import_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json_gcs == load_json(ASSET_IMPORT_GCS)
+
+    # Case 3: Importing assets, glossaries, and data products from Adls with advanced configuration
+    asset_import_adls = (
+        AssetImport()
+        .object_store()
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+        .assets_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=20,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .data_product_advanced(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(asset_import_adls.json(by_alias=True, exclude_none=True))
+    assert request_json_adls == load_json(ASSET_IMPORT_ADLS)
+
+    # Case 4: Importing assets, glossaries, and data products from S3 with default configuration
+    asset_import_default = (
+        AssetImport()
+        .object_store()
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+        .assets(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+            input_handling=AssetInputHandling.UPDATE,
+        )
+        .glossaries(
+            prefix="/test/prefix",
+            object_key="glossaries-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+        .data_products(
+            prefix="/test/prefix",
+            object_key="data-products-test.csv",
+            input_handling=AssetInputHandling.UPSERT,
+        )
+    ).to_workflow()
+
+    request_json_default = loads(
+        asset_import_default.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_default == load_json(ASSET_IMPORT_DEFAULT)
+
+
+def test_asset_export_basic(mock_package_env):
+    # Case 1: Export assets with glossaries only using s3
+    asset_export_basic_glossaries_only_s3 = (
+        AssetExportBasic()
+        .glossaries_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(
+        asset_export_basic_glossaries_only_s3.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_S3)
+
+    # Case 2: Export assets with Products only using s3
+    asset_export_basic_products_only_s3 = (
+        AssetExportBasic()
+        .products_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(
+        asset_export_basic_products_only_s3.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_S3)
+
+    # Case 3: Export assets with Enriched only using s3
+    asset_export_basic_enriched_only_s3 = (
+        AssetExportBasic()
+        .enriched_only(
+            prefix="/test/prefix",
+            include_description=True,
+            include_glossaries=True,
+            include_data_products=True,
+            include_archived=True,
+        )
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(
+        asset_export_basic_enriched_only_s3.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_S3)
+
+    # Case 4: Export all assets using s3
+    asset_export_basic_all_assets_s3 = (
+        AssetExportBasic()
+        .all_assets(
+            prefix="/test/prefix",
+            include_description=True,
+            include_glossaries=True,
+            include_data_products=True,
+            include_archived=True,
+        )
+        .object_store(prefix="/test/prefix")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(
+        asset_export_basic_all_assets_s3.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_S3)
+
+    # Case 1: Export assets with glossaries only using adls
+    asset_export_basic_glossaries_only_adls = (
+        AssetExportBasic()
+        .glossaries_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(
+        asset_export_basic_glossaries_only_adls.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_ADLS)
+
+    # Case 2: Export assets with Products only using adls
+    asset_export_basic_products_only_adls = (
+        AssetExportBasic()
+        .products_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(
+        asset_export_basic_products_only_adls.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_ADLS)
+
+    # Case 3: Export assets with Enriched only using adls
+    asset_export_basic_enriched_only_adls = (
+        AssetExportBasic()
+        .enriched_only(
+            prefix="/test/prefix",
+            include_description=True,
+            include_glossaries=True,
+            include_data_products=True,
+            include_archived=True,
+        )
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(
+        asset_export_basic_enriched_only_adls.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_ADLS)
+
+    # Case 4: Export all assets using adls
+    asset_export_basic_all_assets_adls = (
+        AssetExportBasic()
+        .all_assets(
+            prefix="/test/prefix",
+            include_description=True,
+            include_glossaries=True,
+            include_data_products=True,
+            include_archived=True,
+        )
+        .object_store(prefix="/test/prefix")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(
+        asset_export_basic_all_assets_adls.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_ADLS)
+
+    # Case 1: Export assets with glossaries only using gcs
+    asset_export_basic_glossaries_only_gcs = (
+        AssetExportBasic()
+        .glossaries_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(
+        asset_export_basic_glossaries_only_gcs.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_GCS)
+
+    # Case 2: Export assets with Products only using gcs
+    asset_export_basic_products_only_gcs = (
+        AssetExportBasic()
+        .products_only(include_archived=True)
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(
+        asset_export_basic_products_only_gcs.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_GCS)
+
+    # Case 3: Export assets with Enriched only using adls
+    asset_export_basic_enriched_only_gcs = (
+        AssetExportBasic()
+        .enriched_only(
+            prefix="/test/prefix",
+            include_description=True,
+            include_glossaries=True,
+            include_data_products=True,
+            include_archived=True,
+        )
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(
+        asset_export_basic_enriched_only_gcs.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS)
+
+    # Case 4: Export all assets using adls
+    asset_export_basic_all_assets_gcs = (
+        AssetExportBasic()
+        .all_assets(
+            prefix="/test/prefix",
+            include_description=True,
+            include_glossaries=True,
+            include_data_products=True,
+            include_archived=True,
+        )
+        .object_store(prefix="/test/prefix")
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(
+        asset_export_basic_all_assets_gcs.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_GCS)
+
+
+def test_relational_assets_builder(mock_package_env):
+    # Case 1: Build/Update relational assets from S3 with advanced configuration
+    relational_assets_builder_s3 = (
+        RelationalAssetsBuilder()
+        .object_store(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+        )
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            bucket="my-bucket",
+            region="us-west-1",
+        )
+        .assets_semantics(
+            input_handling=AssetInputHandling.UPSERT,
+            delta_handling=AssetDeltaHandling.INCREMENTAL,
+        )
+        .options(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_s3 = loads(
+        relational_assets_builder_s3.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_s3 == load_json(RELATIONAL_ASSETS_BUILDER_S3)
+
+    # Case 2: Build/Update relational assets from adls with advanced configuration
+    relational_assets_builder_adls = (
+        RelationalAssetsBuilder()
+        .object_store(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+        )
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-storage-account",
+            container="test-adls-container",
+        )
+        .assets_semantics(
+            input_handling=AssetInputHandling.PARTIAL,
+            delta_handling=AssetDeltaHandling.FULL_REPLACEMENT,
+            removal_type=AssetRemovalType.ARCHIVE,
+        )
+        .options(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_adls = loads(
+        relational_assets_builder_adls.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_adls == load_json(RELATIONAL_ASSETS_BUILDER_ADLS)
+
+    # Case 3: Build/Update relational assets from gcs with advanced configuration
+    relational_assets_builder_gcs = (
+        RelationalAssetsBuilder()
+        .object_store(
+            prefix="/test/prefix",
+            object_key="assets-test.csv",
+        )
+        .gcs(
+            service_account_json="test-service-account-json",
+            project_id="test-project-id",
+            bucket="my-bucket",
+        )
+        .assets_semantics(
+            input_handling=AssetInputHandling.UPDATE,
+            delta_handling=AssetDeltaHandling.FULL_REPLACEMENT,
+            removal_type=AssetRemovalType.PURGE,
+        )
+        .options(
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
+            fail_on_errors=True,
+            field_separator=",",
+            batch_size=20,
+        )
+    ).to_workflow()
+
+    request_json_gcs = loads(
+        relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
 
 
 @pytest.mark.parametrize(

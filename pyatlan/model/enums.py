@@ -2216,6 +2216,25 @@ class WorkflowPackage(str, Enum):
     TERADATA_MINER = "atlan-teradata-miner"
     THOUGHTSPOT = "atlan-thoughtspot"
     TRINO = "atlan-trino"
+    ASSET_IMPORT = "csa-asset-import"
+    ASSET_EXPORT_BASIC = "csa-asset-export-basic"
+    RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
+
+
+class AssetInputHandling(str, Enum):
+    UPSERT = "upsert"
+    PARTIAL = "partial"
+    UPDATE = "update"
+
+
+class AssetDeltaHandling(str, Enum):
+    FULL_REPLACEMENT = "full"
+    INCREMENTAL = "delta"
+
+
+class AssetRemovalType(str, Enum):
+    ARCHIVE = "archive"
+    PURGE = "purge"
 
 
 class UTMTags(str, Enum):
