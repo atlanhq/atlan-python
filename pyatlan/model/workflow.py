@@ -46,7 +46,7 @@ class WorkflowParameters(AtlanObject):
 class WorkflowTask(AtlanObject):
     name: str
     arguments: WorkflowParameters
-    template_ref: WorkflowTemplateRef
+    template_ref: Optional[WorkflowTemplateRef] = Field(default=None)
 
 
 class WorkflowDAG(AtlanObject):
@@ -58,7 +58,7 @@ class WorkflowTemplate(AtlanObject):
     inputs: Any = Field(default=None)
     outputs: Any = Field(default=None)
     metadata: Any = Field(default=None)
-    dag: WorkflowDAG
+    dag: Optional[WorkflowDAG] = Field(default=None)
 
 
 class WorkflowSpec(AtlanObject):
