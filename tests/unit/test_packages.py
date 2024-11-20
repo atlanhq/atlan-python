@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.errors import InvalidRequestError
+from pyatlan.model.assets.core import Asset
 from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan.model.packages import (
     AssetExportBasic,
@@ -653,7 +654,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.PARTIAL,
         )
         .assets_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             case_sensitive_match=False,
             field_separator=",",
@@ -665,7 +666,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPDATE,
         )
         .glossaries_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -676,7 +677,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPDATE,
         )
         .data_product_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -701,7 +702,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPSERT,
         )
         .assets_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             case_sensitive_match=False,
             field_separator=",",
@@ -713,7 +714,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPDATE,
         )
         .glossaries_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -724,7 +725,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPDATE,
         )
         .data_product_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -751,7 +752,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPSERT,
         )
         .assets_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             case_sensitive_match=False,
             field_separator=",",
@@ -763,7 +764,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPDATE,
         )
         .glossaries_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -774,7 +775,7 @@ def test_asset_import(mock_package_env):
             input_handling=AssetInputHandling.UPDATE,
         )
         .data_product_advanced(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -1090,7 +1091,7 @@ def test_relational_assets_builder(mock_package_env):
             delta_handling=AssetDeltaHandling.INCREMENTAL,
         )
         .options(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -1122,7 +1123,7 @@ def test_relational_assets_builder(mock_package_env):
             removal_type=AssetRemovalType.ARCHIVE,
         )
         .options(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,
@@ -1152,7 +1153,7 @@ def test_relational_assets_builder(mock_package_env):
             removal_type=AssetRemovalType.PURGE,
         )
         .options(
-            remove_attributes=["certificateStatus", "announcementType"],
+            remove_attributes=[Asset.CERTIFICATE_STATUS, Asset.ANNOUNCEMENT_TYPE],
             fail_on_errors=True,
             field_separator=",",
             batch_size=20,

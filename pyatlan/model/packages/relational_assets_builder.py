@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from json import dumps
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pyatlan.model.enums import (
     AssetDeltaHandling,
@@ -181,7 +181,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
 
     def options(
         self,
-        remove_attributes: Optional[List[str]] = None,
+        remove_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
         fail_on_errors: Optional[bool] = None,
         field_separator: Optional[str] = None,
         batch_size: Optional[int] = None,

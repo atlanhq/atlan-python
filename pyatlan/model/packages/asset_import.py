@@ -228,7 +228,7 @@ class AssetImport(AbstractCustomPackage):
 
     def glossaries_advanced(
         self,
-        remove_attributes: Optional[List[str]] = None,
+        remove_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
         fail_on_errors: Optional[bool] = None,
         field_separator: Optional[str] = None,
         batch_size: Optional[int] = None,
@@ -278,9 +278,8 @@ class AssetImport(AbstractCustomPackage):
             which to retrieve the file containing data domains, and data products
         :param object_key: object key (filename),
             including its extension, within the object store and prefix
-        :param input_handling: specifies whether to allow the creation of new glossaries,
-            categories and terms from the input CSV, or ensure these are only updated
-            if they already exist in Atlan.
+        :param input_handling: specifies whether to allow the creation of new data domains, and data products
+            from the input CSV, or ensure these are only updated if they already exist in Atlan.
 
         :returns: package, configured to import data domain and data products
         """
@@ -293,7 +292,7 @@ class AssetImport(AbstractCustomPackage):
 
     def data_product_advanced(
         self,
-        remove_attributes: Optional[List[str]] = None,
+        remove_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
         fail_on_errors: Optional[bool] = None,
         field_separator: Optional[str] = None,
         batch_size: Optional[int] = None,
