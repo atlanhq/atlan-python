@@ -177,15 +177,19 @@ class AssetExportBasic(AbstractCustomPackage):
         return self
 
     def s3(
-        self, access_key: str, secret_key: str, region: str, bucket: str
+        self,
+        access_key: str,
+        secret_key: str,
+        bucket: str,
+        region: str,
     ) -> AssetExportBasic:
         """
         Set up package to export to S3.
 
         :param access_key: AWS access key
         :param secret_key: AWS secret key
-        :param region: AWS region
         :param bucket: S3 bucket to upload the export file to
+        :param region: AWS region
 
         :returns: package, set up to export metadata to S3
         """

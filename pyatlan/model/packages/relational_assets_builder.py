@@ -44,8 +44,8 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
         Set up the package to import
         metadata directly from the object store.
 
-        :param prefix: Enter the directory (path) within the bucket/container from which to retrieve the object(s).
-        :param object_key: Enter the object key (filename), including its extension, within the bucket/container and
+        :param prefix: directory (path) within the bucket/container from which to retrieve the object(s).
+        :param object_key: object key (filename), including its extension, within the bucket/container and
         prefix.
 
         :returns: package, set up to import metadata from object store
