@@ -2221,12 +2221,6 @@ class WorkflowPackage(str, Enum):
     RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
 
 
-class CustomWorkflowPackage(str, Enum):
-    ASSET_IMPORT = "csa-asset-import"
-    ASSET_EXPORT = "csa-asset-export-basic"
-    RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
-
-
 class AssetInputHandling(str, Enum):
     UPSERT = "upsert"
     PARTIAL = "partial"

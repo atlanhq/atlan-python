@@ -3,7 +3,7 @@ from __future__ import annotations
 from json import dumps
 from typing import List, Optional, Union
 
-from pyatlan.model.enums import AssetInputHandling, CustomWorkflowPackage
+from pyatlan.model.enums import AssetInputHandling, WorkflowPackage
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.packages.base.custom_package import AbstractCustomPackage
 from pyatlan.model.workflow import WorkflowMetadata
@@ -16,7 +16,7 @@ class AssetImport(AbstractCustomPackage):
 
     _NAME = "asset-import"
     _PACKAGE_NAME = f"@csa/{_NAME}"
-    _PACKAGE_PREFIX = CustomWorkflowPackage.ASSET_IMPORT.value
+    _PACKAGE_PREFIX = WorkflowPackage.ASSET_IMPORT.value
     _PACKAGE_ICON = "http://assets.atlan.com/assets/ph-cloud-arrow-up-light.svg"
     _PACKAGE_LOGO = "http://assets.atlan.com/assets/ph-cloud-arrow-up-light.svg"
 

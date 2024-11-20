@@ -7,7 +7,7 @@ from pyatlan.model.enums import (
     AssetDeltaHandling,
     AssetInputHandling,
     AssetRemovalType,
-    CustomWorkflowPackage,
+    WorkflowPackage,
 )
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.packages.base.custom_package import AbstractCustomPackage
@@ -21,7 +21,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
 
     _NAME = "relational-assets-builder"
     _PACKAGE_NAME = f"@csa/{_NAME}"
-    _PACKAGE_PREFIX = CustomWorkflowPackage.RELATIONAL_ASSETS_BUILDER.value
+    _PACKAGE_PREFIX = WorkflowPackage.RELATIONAL_ASSETS_BUILDER.value
     _PACKAGE_ICON = "http://assets.atlan.com/assets/ph-database-light.svg"
     _PACKAGE_LOGO = "http://assets.atlan.com/assets/ph-database-light.svg"
 
