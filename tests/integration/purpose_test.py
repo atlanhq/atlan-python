@@ -170,6 +170,7 @@ def test_find_purpose_by_name(
     client: AtlanClient,
     purpose: Purpose,
 ):
+    result = None
     with contextlib.suppress(NotFoundError):
         result = client.asset.find_purposes_by_name(
             MODULE_NAME, attributes=["purposeClassifications"]
