@@ -1,3 +1,26 @@
+## 2.6.0 (November 21, 2024)
+
+### New features
+
+- Added the `creator()` method for `ApplicationContainer`.
+- Added a new connector type (`APPLICATION`).
+- Added support for a new method (`s3()`) in `TableauCrawler` to fetch metadata directly from S3 bucket extractions.
+- Added support for the following CSA custom packages:
+  - Asset import
+  - Asset export (basic)
+  - Relational assets builder
+- Added `username` and `extras` fields to the `CredentialResponse` model.
+
+### Bug fixes
+
+- Fixed `Batch._track()` method to handle `AtlasGlossaryTerm` assets correctly.
+
+### QOL improvements
+
+- Fixed several issues related to tag deletion during integration test cleanups (e.g: `purpose_test`, `test_task_client`, and `suggestions_test`).
+- Updated various response models in `pyatlan.model.workflow` to use `Optional` fields, ensuring complete capture of API response results.
+- Removed `@validate_arguments` from `@overload` methods (`WorkflowClient`: `rerun()`, `add_schedule()`, `remove_schedule()`), as it unintentionally typecast arguments to different types, causing unexpected behavior when model fields were optional. Instead, replaced it with the utility function `validate_type()` to validate argument types in `@overload`ed methods.
+
 ## 2.5.8 (November 13, 2024)
 
 ### Bug fixes
