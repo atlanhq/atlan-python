@@ -5,12 +5,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Column
-from pyatlan.model.enums import (
-    AtlanConnectorType,
-    AtlanTagColor,
-    AtlanTaskType,
-    SortOrder,
-)
+from pyatlan.model.enums import AtlanConnectorType, AtlanTaskType, SortOrder
 from pyatlan.model.fluent_tasks import FluentTasks
 from pyatlan.model.search import SortItem
 from pyatlan.model.task import AtlanTask, TaskSearchRequest
@@ -51,7 +46,13 @@ def snowflake_column(client: AtlanClient, snowflake_column_qn) -> Column:
     snowflake_column = client.asset.get_by_qualified_name(
         snowflake_column_qn, asset_type=Column
     )
-    return snowflake_column
+    yield snowflake_column
+
+    client.asset.remove_atlan_tag(
+        asset_type=Column,
+        qualified_name=snowflake_column_qn,
+        atlan_tag_name=TAG_NAME,
+    )
 
 
 @pytest.fixture()
@@ -72,19 +73,8 @@ def task_search_request(snowflake_column: Column) -> TaskSearchRequest:
 
 
 @pytest.fixture(scope="module")
-def atlan_tag_def(
-    client: AtlanClient,
-    snowflake_column_qn,
-) -> Generator[AtlanTagDef, None, None]:
-    atlan_tag_def = AtlanTagDef.create(name=TAG_NAME, color=AtlanTagColor.GREEN)
-    typedef = client.typedef.create(atlan_tag_def)
-    yield typedef.atlan_tag_defs[0]
-    client.asset.remove_atlan_tag(
-        asset_type=Column,
-        qualified_name=snowflake_column_qn,
-        atlan_tag_name=TAG_NAME,
-    )
-    client.typedef.purge(TAG_NAME, typedef_type=AtlanTagDef)
+def atlan_tag_def(make_atlan_tag) -> Generator[AtlanTagDef, None, None]:
+    make_atlan_tag(TAG_NAME)
 
 
 def test_task_search(
