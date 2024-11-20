@@ -52,19 +52,21 @@ class TableauCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def offline(self, s3_bucket: str, s3_prefix: str, s3_region: str) -> TableauCrawler:
+    def s3(
+        self, bucket_name: str, bucket_prefix: str, bucket_region: Optional[str] = None
+    ) -> TableauCrawler:
         """
         Set up the crawler to fetch metadata directly from the S3 bucket.
 
-        :param s3_bucket: name of the S3 bucket containing the extracted metadata files
-        :param s3_prefix: prefix within the S3 bucket where the extracted metadata files are located
-        :param s3_region: region where the S3 bucket is located
+        :param bucket_name: name of the S3 bucket containing the extracted metadata files
+        :param bucket_prefix: prefix within the S3 bucket where the extracted metadata files are located
+        :param bucket_region: (Optional) region where the S3 bucket is located
         :returns: crawler, configured to fetch metadata directly from the S3 bucket
         """
         self._parameters.append(dict(name="extraction-method", value="s3"))
-        self._parameters.append(dict(name="metadata-s3-bucket", value=s3_bucket))
-        self._parameters.append(dict(name="metadata-s3-prefix", value=s3_prefix))
-        self._parameters.append(dict(name="metadata-s3-region", value=s3_region))
+        self._parameters.append(dict(name="metadata-s3-bucket", value=bucket_name))
+        self._parameters.append(dict(name="metadata-s3-prefix", value=bucket_prefix))
+        self._parameters.append(dict(name="metadata-s3-region", value=bucket_region))
         # Advanced configuration
         self.exclude(projects=[])
         self.include(projects=[])

@@ -264,10 +264,10 @@ def test_tableau_package(mock_package_env):
             admin_groups=None,
             admin_users=None,
         )
-        .offline(
-            s3_bucket="test-bucket",
-            s3_prefix="test-prefix",
-            s3_region="test-region",
+        .s3(
+            bucket_name="test-bucket",
+            bucket_prefix="test-prefix",
+            bucket_region="test-region",
         )
         .to_workflow()
     )
