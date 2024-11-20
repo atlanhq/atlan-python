@@ -34,7 +34,9 @@ def snowflake_column_qn(snowflake_conn):
 
 
 @pytest.fixture()
-def snowflake_column(client: AtlanClient, snowflake_column_qn) -> Column:
+def snowflake_column(
+    client: AtlanClient, snowflake_column_qn
+) -> Generator[Column, None, None]:
     client.asset.add_atlan_tags(
         asset_type=Column,
         qualified_name=snowflake_column_qn,
@@ -73,8 +75,8 @@ def task_search_request(snowflake_column: Column) -> TaskSearchRequest:
 
 
 @pytest.fixture(scope="module")
-def atlan_tag_def(make_atlan_tag) -> Generator[AtlanTagDef, None, None]:
-    make_atlan_tag(TAG_NAME)
+def atlan_tag_def(make_atlan_tag) -> AtlanTagDef:
+    return make_atlan_tag(TAG_NAME)
 
 
 def test_task_search(
