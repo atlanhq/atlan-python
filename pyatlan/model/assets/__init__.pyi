@@ -32,6 +32,7 @@ __all__ = [
     "Spark",
     "Tag",
     "SchemaRegistry",
+    "Application",
     "Fivetran",
     "Stakeholder",
     "AirflowDag",
@@ -83,6 +84,7 @@ __all__ = [
     "ModelDataModel",
     "SparkJob",
     "SchemaRegistrySubject",
+    "ApplicationContainer",
     "FivetranConnector",
     "AnomaloCheck",
     "MCIncident",
@@ -350,6 +352,8 @@ from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
 from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
+from .core.application import Application
+from .core.application_container import ApplicationContainer
 from .core.asset import Asset
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory
