@@ -1,0 +1,119 @@
+{
+  "metadata": {
+    "labels": {
+      "orchestration.atlan.com/certified": "true",
+      "orchestration.atlan.com/preview": "true",
+      "orchestration.atlan.com/source": "asset-export-basic",
+      "orchestration.atlan.com/sourceCategory": "utility",
+      "orchestration.atlan.com/type": "custom",
+      "orchestration.atlan.com/verified": "true",
+      "package.argoproj.io/installer": "argopm",
+      "package.argoproj.io/name": "a-t-rcsas-l-a-s-hasset-export-basic",
+      "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+      "orchestration.atlan.com/atlan-ui": "true"
+    },
+    "annotations": {
+      "orchestration.atlan.com/allowSchedule": "true",
+      "orchestration.atlan.com/categories": "kotlin,utility",
+      "orchestration.atlan.com/dependentPackage": "",
+      "orchestration.atlan.com/docsUrl": "https://solutions.atlan.com/asset-export-basic/",
+      "orchestration.atlan.com/emoji": "🚀",
+      "orchestration.atlan.com/icon": "http://assets.atlan.com/assets/ph-cloud-arrow-down-light.svg",
+      "orchestration.atlan.com/logo": "http://assets.atlan.com/assets/ph-cloud-arrow-down-light.svg",
+      "orchestration.atlan.com/name": "Asset Export (Basic)",
+      "package.argoproj.io/author": "Atlan CSA",
+      "package.argoproj.io/description": "Export assets with all enrichment that could be made against them via the Atlan UI.",
+      "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@csa/asset-export-basic",
+      "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",
+      "package.argoproj.io/name": "@csa/asset-export-basic",
+      "package.argoproj.io/parent": ".",
+      "package.argoproj.io/registry": "https://packages.atlan.com",
+      "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+      "package.argoproj.io/support": "support@atlan.com",
+      "orchestration.atlan.com/atlanName": "csa-asset-export-basic-123456"
+    },
+    "name": "csa-asset-export-basic-123456",
+    "namespace": "default"
+  },
+  "spec": {
+    "templates": [
+      {
+        "name": "main",
+        "dag": {
+          "tasks": [
+            {
+              "name": "run",
+              "arguments": {
+                "parameters": [
+                  {
+                    "name": "export_scope",
+                    "value": "ENRICHED_ONLY"
+                  },
+                  {
+                    "name": "qn_prefix",
+                    "value": "/test/prefix"
+                  },
+                  {
+                    "name": "include_description",
+                    "value": true
+                  },
+                  {
+                    "name": "include_glossaries",
+                    "value": true
+                  },
+                  {
+                    "name": "include_products",
+                    "value": true
+                  },
+                  {
+                    "name": "include_archived",
+                    "value": true
+                  },
+                  {
+                    "name": "delivery_type",
+                    "value": "CLOUD"
+                  },
+                  {
+                    "name": "target_prefix",
+                    "value": "/test/prefix"
+                  },
+                  {
+                    "name": "cloud_target",
+                    "value": "{{credentialGuid}}"
+                  }
+                ]
+              },
+              "templateRef": {
+                "name": "csa-asset-export-basic",
+                "template": "main",
+                "clusterScope": true
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "entrypoint": "main",
+    "workflowMetadata": {
+      "annotations": {
+        "package.argoproj.io/name": "@csa/asset-export-basic"
+      }
+    }
+  },
+  "payload": [
+    {
+      "parameter": "credentialGuid",
+      "type": "credential",
+      "body": {
+        "name": "csa-asset-export-basic-123456-0",
+        "authType": "gcs",
+        "username": "test-project-id",
+        "password": "test-service-account-json",
+        "extra": {
+          "gcs_bucket": "my-bucket"
+        },
+        "connectorConfigName": "csa-connectors-objectstore"
+      }
+    }
+  ]
+}

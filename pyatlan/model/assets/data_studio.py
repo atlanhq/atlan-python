@@ -132,6 +132,7 @@ class DataStudio(Google):
         "output_from_airflow_tasks",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
+        "model_implemented_entities",
         "input_to_airflow_tasks",
         "output_from_processes",
     ]

@@ -277,6 +277,7 @@ def v2c1(
 
 @pytest.fixture(scope="module")
 def create_atlan_tag1(
+    make_atlan_tag,
     client: AtlanClient,
     table1: Table,
     table3: Table,
@@ -285,10 +286,7 @@ def create_atlan_tag1(
 ) -> Generator[AtlanTagDef, None, None]:
     assert table1.qualified_name and table3.qualified_name
     assert t1c1.qualified_name and v2c1.qualified_name
-    cls = AtlanTagDef.create(
-        name=ATLAN_TAG_NAME1,
-    )
-    yield client.typedef.create(cls).atlan_tag_defs[0]
+    yield make_atlan_tag(ATLAN_TAG_NAME1)
     client.asset.remove_atlan_tag(
         asset_type=Table,
         qualified_name=table1.qualified_name,
@@ -309,11 +307,11 @@ def create_atlan_tag1(
         qualified_name=v2c1.qualified_name,
         atlan_tag_name=ATLAN_TAG_NAME1,
     )
-    client.typedef.purge(ATLAN_TAG_NAME1, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")
 def create_atlan_tag2(
+    make_atlan_tag,
     client: AtlanClient,
     table1: Table,
     table3: Table,
@@ -325,10 +323,7 @@ def create_atlan_tag2(
     assert table1.qualified_name and table3.qualified_name
     assert t1c1.qualified_name and t2c1.qualified_name
     assert v1c1.qualified_name and v2c1.qualified_name
-    cls = AtlanTagDef.create(
-        name=ATLAN_TAG_NAME2,
-    )
-    yield client.typedef.create(cls).atlan_tag_defs[0]
+    yield make_atlan_tag(ATLAN_TAG_NAME2)
     client.asset.remove_atlan_tag(
         asset_type=Table,
         qualified_name=table1.qualified_name,
@@ -359,7 +354,6 @@ def create_atlan_tag2(
         qualified_name=v2c1.qualified_name,
         atlan_tag_name=ATLAN_TAG_NAME2,
     )
-    client.typedef.purge(ATLAN_TAG_NAME2, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")

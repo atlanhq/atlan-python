@@ -956,7 +956,7 @@ class TestFluentLineage:
             (
                 "include_on_results",
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be str, AtlanField",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be str or AtlanField",
             ),
             (
                 "include_in_results",

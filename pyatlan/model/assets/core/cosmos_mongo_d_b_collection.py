@@ -54,6 +54,12 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
+    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
+    )
+    """
+    Qualified name of the Application Container that contains this asset.
+    """
     MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "mongoDBCollectionSubtype",
         "mongoDBCollectionSubtype",
@@ -407,6 +413,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     _convenience_properties: ClassVar[List[str]] = [
         "cosmos_mongo_d_b_database_qualified_name",
         "no_s_q_l_schema_definition",
+        "asset_application_qualified_name",
         "mongo_d_b_collection_subtype",
         "mongo_d_b_collection_is_capped",
         "mongo_d_b_collection_time_field",
@@ -505,6 +512,24 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
+
+    @property
+    def asset_application_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_application_qualified_name
+        )
+
+    @asset_application_qualified_name.setter
+    def asset_application_qualified_name(
+        self, asset_application_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_application_qualified_name = (
+            asset_application_qualified_name
+        )
 
     @property
     def mongo_d_b_collection_subtype(self) -> Optional[str]:
@@ -1301,6 +1326,9 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             default=None, description=""
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
+        asset_application_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         mongo_d_b_collection_subtype: Optional[str] = Field(
             default=None, description=""
         )

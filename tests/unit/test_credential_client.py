@@ -48,7 +48,7 @@ def client(mock_api_caller) -> CredentialClient:
 
 @pytest.fixture()
 def credential_response() -> CredentialResponse:
-    return CredentialResponse(
+    return CredentialResponse(  # type: ignore[call-arg]
         id="test-id",
         version="1.2.3",
         is_active=True,
@@ -67,6 +67,8 @@ def credential_response() -> CredentialResponse:
         metadata=None,
         level=None,
         connection=None,
+        username="test-username",
+        extras={"some": "value"},
     )
 
 
@@ -77,6 +79,8 @@ def _assert_cred_response(cred: Credential, cred_response: CredentialResponse):
     assert cred.auth_type == cred_response.auth_type
     assert cred.connector_type == cred_response.connector_type
     assert cred.connector_config_name == cred_response.connector_config_name
+    assert cred.username == cred_response.username
+    assert cred.extras == cred_response.extras
 
 
 @pytest.mark.parametrize("test_api_caller", ["abc", None])
