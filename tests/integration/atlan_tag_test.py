@@ -1,17 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import contextlib
 import logging
 import os
 import urllib.request
-from typing import Callable, Generator
+from typing import Callable, Generator, Optional
 
 import pytest
-from tenacity import (
-    retry,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_random_exponential,
-)
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
@@ -20,6 +15,7 @@ from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.enums import AtlanIcon, AtlanTagColor, TagIconType
 from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId
+from tests.integration.utils import wait_for_successful_tagdef_purge
 
 MODULE_NAME = TestId.make_unique("CLS")
 
@@ -36,16 +32,12 @@ def make_atlan_tag(
 ) -> Generator[Callable[[str], AtlanTagDef], None, None]:
     created_names = []
 
-    @retry(
-        retry=retry_if_exception_type(AtlanError),
-        wait=wait_random_exponential(multiplier=1, max=5),
-        stop=stop_after_attempt(3),
-    )
-    def _wait_for_successful_purge(name: str):
-        client.typedef.purge(name, typedef_type=AtlanTagDef)
-
-    def _make_atlan_tag(name: str) -> AtlanTagDef:
-        atlan_tag_def = AtlanTagDef.create(name=name, color=AtlanTagColor.GREEN)
+    def _make_atlan_tag(
+        name: str,
+        color: AtlanTagColor = AtlanTagColor.GREEN,
+        image: Optional[AtlanImage] = None,
+    ) -> AtlanTagDef:
+        atlan_tag_def = AtlanTagDef.create(name=name, color=color, image=image)
         r = client.typedef.create(atlan_tag_def)
         c = r.atlan_tag_defs[0]
         created_names.append(c.display_name)
@@ -55,7 +47,7 @@ def make_atlan_tag(
 
     for n in created_names:
         try:
-            _wait_for_successful_purge(n)
+            wait_for_successful_tagdef_purge(name=n, client=client)
         except AtlanError as err:
             LOGGER.error(err)
 
@@ -79,7 +71,8 @@ def atlan_tag_with_image(
 ) -> Generator[AtlanTagDef, None, None]:
     cls = AtlanTagDef.create(name=CLS_IMAGE, color=AtlanTagColor.YELLOW, image=image)
     yield client.typedef.create(cls).atlan_tag_defs[0]
-    client.typedef.purge(CLS_IMAGE, typedef_type=AtlanTagDef)
+    with contextlib.suppress(AtlanError):
+        wait_for_successful_tagdef_purge(name=CLS_IMAGE, client=client)
 
 
 @pytest.fixture(scope="module")
@@ -92,7 +85,8 @@ def atlan_tag_with_icon(
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
     yield client.typedef.create(cls).atlan_tag_defs[0]
-    client.typedef.purge(CLS_ICON, typedef_type=AtlanTagDef)
+    with contextlib.suppress(AtlanError):
+        wait_for_successful_tagdef_purge(name=CLS_ICON, client=client)
 
 
 @pytest.fixture(scope="module")
@@ -104,7 +98,8 @@ def atlan_tag_with_emoji(
         emoji="👍",
     )
     yield client.typedef.create(cls).atlan_tag_defs[0]
-    client.typedef.purge(CLS_EMOJI, typedef_type=AtlanTagDef)
+    with contextlib.suppress(AtlanError):
+        wait_for_successful_tagdef_purge(name=CLS_EMOJI, client=client)
 
 
 def test_atlan_tag_with_image(atlan_tag_with_image):
