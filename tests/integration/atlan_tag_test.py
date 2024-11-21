@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import contextlib
 import logging
 import os
 import urllib.request
@@ -70,7 +71,8 @@ def atlan_tag_with_image(
 ) -> Generator[AtlanTagDef, None, None]:
     cls = AtlanTagDef.create(name=CLS_IMAGE, color=AtlanTagColor.YELLOW, image=image)
     yield client.typedef.create(cls).atlan_tag_defs[0]
-    wait_for_successful_tagdef_purge(name=CLS_IMAGE, client=client)
+    with contextlib.suppress(AtlanError):
+        wait_for_successful_tagdef_purge(name=CLS_IMAGE, client=client)
 
 
 @pytest.fixture(scope="module")
@@ -83,7 +85,8 @@ def atlan_tag_with_icon(
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
     yield client.typedef.create(cls).atlan_tag_defs[0]
-    wait_for_successful_tagdef_purge(name=CLS_ICON, client=client)
+    with contextlib.suppress(AtlanError):
+        wait_for_successful_tagdef_purge(name=CLS_ICON, client=client)
 
 
 @pytest.fixture(scope="module")
@@ -95,7 +98,8 @@ def atlan_tag_with_emoji(
         emoji="👍",
     )
     yield client.typedef.create(cls).atlan_tag_defs[0]
-    wait_for_successful_tagdef_purge(name=CLS_EMOJI, client=client)
+    with contextlib.suppress(AtlanError):
+        wait_for_successful_tagdef_purge(name=CLS_EMOJI, client=client)
 
 
 def test_atlan_tag_with_image(atlan_tag_with_image):
