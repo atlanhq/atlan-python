@@ -48,9 +48,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        Application.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        Application.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
