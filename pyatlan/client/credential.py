@@ -4,12 +4,14 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     GET_CREDENTIAL_BY_GUID,
     TEST_CREDENTIAL,
-    UPDATE_CREDENTIAL_BY_GUID,
+    GET_ALL_CREDENTIALS,
+    UPDATE_CREDENTIAL_BY_GUID
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
     Credential,
     CredentialResponse,
+    CredentialResponseList,
     CredentialTestResponse,
 )
 
@@ -46,6 +48,32 @@ class CredentialClient:
         if not isinstance(raw_json, dict):
             return raw_json
         return CredentialResponse(**raw_json)
+    
+    @validate_arguments
+    def get_all(self, filter: dict, limit: int = None, offset: int = None) -> CredentialResponseList:
+        """
+        Retrieves all credentials based on the provided filter and optional pagination parameters.
+
+        :param filter: A dictionary specifying the filter criteria (required).
+        :param limit: Maximum number of credentials to retrieve (optional).
+        :param offset: Number of credentials to skip before starting retrieval (optional).
+        :returns: A CredentialResponseList instance.
+        :raises: AtlanError on any error during API invocation.
+         """
+        params = {"filter": filter}
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
+
+        raw_json = self._client._call_api(GET_ALL_CREDENTIALS, query_params=params)
+
+        if not isinstance(raw_json, dict) or "records" not in raw_json:
+            raise ErrorCode.INVALID_RESPONSE.exception_with_parameters(
+                "Expected a dictionary containing 'records'"
+            )
+
+        return CredentialResponseList(**raw_json)
 
     @validate_arguments
     def test(self, credential: Credential) -> CredentialTestResponse:
