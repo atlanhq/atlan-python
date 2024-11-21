@@ -64,7 +64,7 @@ def test_application(
     assert application.qualified_name
     assert application.name == APPLICATION_NAME
     assert application.connection_qualified_name == connection.qualified_name
-    assert application.connector_name == AtlanConnectorType.APPLICATION.value
+    assert application.connector_name == AtlanConnectorType.APP.value
 
 
 # here
@@ -108,18 +108,14 @@ def test_retrieve_application(
     connection: Connection,
     application: Application,
 ):
-    b = client.asset.get_by_guid(
-        application.guid, asset_type=Application
-    )
+    b = client.asset.get_by_guid(application.guid, asset_type=Application)
     assert b
     assert not b.is_incomplete
     assert b.guid == application.guid
     assert b.qualified_name == application.qualified_name
     assert b.name == application.name
     assert b.connector_name == application.connector_name
-    assert (
-        b.connection_qualified_name == application.connection_qualified_name
-    )
+    assert b.connection_qualified_name == application.connection_qualified_name
     assert b.certificate_status == CERTIFICATE_STATUS
     assert b.certificate_status_message == CERTIFICATE_MESSAGE
 
@@ -180,9 +176,7 @@ def test_read_deleted_application(
     connection: Connection,
     application: Application,
 ):
-    deleted = client.asset.get_by_guid(
-        application.guid, asset_type=Application
-    )
+    deleted = client.asset.get_by_guid(application.guid, asset_type=Application)
     assert deleted
     assert deleted.guid == application.guid
     assert deleted.qualified_name == application.qualified_name
