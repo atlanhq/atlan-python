@@ -50,7 +50,7 @@ class CredentialClient:
         return CredentialResponse(**raw_json)
     
     @validate_arguments
-    def get_all(self, filter: dict, limit: int = None, offset: int = None) -> CredentialResponseList:
+    def get_all(self, filter: Dict[str, Any], limit: int = None, offset: int = None) -> CredentialResponseList:
         """
         Retrieves all credentials based on the provided filter and optional pagination parameters.
 
