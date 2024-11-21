@@ -14,8 +14,8 @@ from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
 from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
+from .app import App
 from .application import Application
-from .application_container import ApplicationContainer
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -128,6 +128,7 @@ Persona.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
+App.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
@@ -142,11 +143,11 @@ Model.Attributes.update_forward_refs(**localns)
 Spark.Attributes.update_forward_refs(**localns)
 Tag.Attributes.update_forward_refs(**localns)
 SchemaRegistry.Attributes.update_forward_refs(**localns)
-Application.Attributes.update_forward_refs(**localns)
 Fivetran.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
+Application.Attributes.update_forward_refs(**localns)
 AdfDataflow.Attributes.update_forward_refs(**localns)
 AdfDataset.Attributes.update_forward_refs(**localns)
 AdfPipeline.Attributes.update_forward_refs(**localns)
@@ -194,7 +195,6 @@ ModelAttributeAssociation.Attributes.update_forward_refs(**localns)
 ModelDataModel.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
-ApplicationContainer.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
 AnomaloCheck.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)

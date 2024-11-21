@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField
 
 from .asset import Asset
 
@@ -29,25 +29,12 @@ class Catalog(Asset, type_name="Catalog"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
-    )
-    """
-    Qualified name of the Application Container that contains this asset.
-    """
-
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
     """
     TBC
     """
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "outputFromAirflowTasks"
-    )
-    """
-    TBC
-    """
-    APPLICATION_CONTAINER: ClassVar[RelationField] = RelationField(
-        "applicationContainer"
     )
     """
     TBC
@@ -82,34 +69,14 @@ class Catalog(Asset, type_name="Catalog"):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "asset_application_qualified_name",
         "input_to_processes",
         "output_from_airflow_tasks",
-        "application_container",
         "input_to_spark_jobs",
         "output_from_spark_jobs",
         "model_implemented_entities",
         "input_to_airflow_tasks",
         "output_from_processes",
     ]
-
-    @property
-    def asset_application_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_application_qualified_name
-        )
-
-    @asset_application_qualified_name.setter
-    def asset_application_qualified_name(
-        self, asset_application_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_application_qualified_name = (
-            asset_application_qualified_name
-        )
 
     @property
     def input_to_processes(self) -> Optional[List[Process]]:
@@ -136,20 +103,6 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
-
-    @property
-    def application_container(self) -> Optional[ApplicationContainer]:
-        return (
-            None if self.attributes is None else self.attributes.application_container
-        )
-
-    @application_container.setter
-    def application_container(
-        self, application_container: Optional[ApplicationContainer]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.application_container = application_container
 
     @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -216,16 +169,10 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
-        asset_application_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
         input_to_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
-            default=None, description=""
-        )  # relationship
-        application_container: Optional[ApplicationContainer] = Field(
             default=None, description=""
         )  # relationship
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
@@ -256,6 +203,5 @@ class Catalog(Asset, type_name="Catalog"):
 
 from .airflow_task import AirflowTask  # noqa
 from .model_entity import ModelEntity  # noqa
-from .application_container import ApplicationContainer  # noqa
 from .process import Process  # noqa
 from .spark_job import SparkJob  # noqa

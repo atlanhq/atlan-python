@@ -8,13 +8,32 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
-from .catalog import Catalog
+from .app import App
 
 
-class Application(Catalog):
+class Application(App):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> Application:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = Application.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="Application", allow_mutation=False)
 
@@ -29,29 +48,55 @@ class Application(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    APPLICATION_ID: ClassVar[KeywordField] = KeywordField(
-        "applicationId", "applicationId"
+    APPLICATION_OWNED_ASSETS: ClassVar[RelationField] = RelationField(
+        "applicationOwnedAssets"
     )
     """
-    Unique identifier for the Application asset from the source system.
+    TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "application_id",
+        "application_owned_assets",
     ]
 
     @property
-    def application_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.application_id
+    def application_owned_assets(self) -> Optional[List[Asset]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_owned_assets
+        )
 
-    @application_id.setter
-    def application_id(self, application_id: Optional[str]):
+    @application_owned_assets.setter
+    def application_owned_assets(self, application_owned_assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_id = application_id
+        self.attributes.application_owned_assets = application_owned_assets
 
-    class Attributes(Catalog.Attributes):
-        application_id: Optional[str] = Field(default=None, description="")
+    class Attributes(App.Attributes):
+        application_owned_assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+        ) -> Application.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return Application.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: Application.Attributes = Field(
         default_factory=lambda: Application.Attributes(),
@@ -61,3 +106,6 @@ class Application(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+from .asset import Asset  # noqa
