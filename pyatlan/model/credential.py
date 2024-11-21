@@ -102,7 +102,7 @@ class CredentialResponseList(AtlanObject):
         records (List[CredentialResponse]): The list of credential records returned.
     """
     
-    records: List[CredentialResponse] = Field(..., description="The list of credential records returned.")
+    records: Optional[List[CredentialResponse]] = Field(default=None, description="list of credential records returned.")
 
 class CredentialTestResponse(AtlanObject):
     code: Optional[int]
