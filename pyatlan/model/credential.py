@@ -97,9 +97,6 @@ class CredentialResponse(AtlanObject):
 class CredentialResponseList(AtlanObject):
     """
     Model representing a response containing a list of CredentialResponse objects.
-
-    Attributes:
-        records (List[CredentialResponse]): The list of credential records returned.
     """
     
     records: Optional[List[CredentialResponse]] = Field(default=None, description="list of credential records returned.")
