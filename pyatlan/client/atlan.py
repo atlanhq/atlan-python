@@ -132,6 +132,7 @@ def get_session():
         {
             "x-atlan-agent": "sdk",
             "x-atlan-agent-id": "python",
+            "x-atlan-client-origin": "product_sdk",
             "User-Agent": f"Atlan-PythonSDK/{VERSION}",
         }
     )
