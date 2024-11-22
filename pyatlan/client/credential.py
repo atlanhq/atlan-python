@@ -67,7 +67,7 @@ class CredentialClient:
         :returns: CredentialResponseList instance.
         :raises: AtlanError on any error during API invocation.
         """
-        params = {}
+        params: Dict[str, Any] = {}
         if filter is not None:
             params["filter"] = filter
         if limit is not None:

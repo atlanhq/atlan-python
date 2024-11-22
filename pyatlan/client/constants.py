@@ -489,10 +489,7 @@ GET_CREDENTIAL_BY_GUID = API(
     endpoint=EndPoint.HERACLES,
 )
 GET_ALL_CREDENTIALS = API(
-    CREDENTIALS_API, 
-    HTTPMethod.GET, 
-    HTTPStatus.OK, 
-    endpoint=EndPoint.HERACLES
+    CREDENTIALS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 UPDATE_CREDENTIAL_BY_GUID = API(
     CREDENTIALS_API + "/{credential_guid}",

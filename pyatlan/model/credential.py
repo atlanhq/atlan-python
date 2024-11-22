@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional,List
+from typing import Any, Dict, Optional, List
 
 from pydantic.v1 import Field
 
@@ -98,8 +98,11 @@ class CredentialResponseList(AtlanObject):
     """
     Model representing a response containing a list of CredentialResponse objects.
     """
-    
-    records: Optional[List[CredentialResponse]] = Field(default=None, description="list of credential records returned.")
+
+    records: Optional[List[CredentialResponse]] = Field(
+        default=None, description="list of credential records returned."
+    )
+
 
 class CredentialTestResponse(AtlanObject):
     code: Optional[int]
