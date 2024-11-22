@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
 
 from pydantic.v1 import Field
 
@@ -54,20 +54,20 @@ class Credential(AtlanObject):
 
 
 class CredentialResponse(AtlanObject):
-    id: str
-    version: str
-    is_active: bool
-    created_at: int
-    updated_at: int
-    created_by: str
-    tenant_id: str
-    name: str
+    id: Optional[str]
+    version: Optional[str]
+    is_active: Optional[bool]
+    created_at: Optional[int]
+    updated_at: Optional[int]
+    created_by: Optional[str]
+    tenant_id: Optional[str]
+    name: Optional[str]
     description: Optional[str]
-    connector_config_name: str
-    connector: str
-    connector_type: str
-    auth_type: str
-    host: str
+    connector_config_name: Optional[str]
+    connector: Optional[str]
+    connector_type: Optional[str]
+    auth_type: Optional[str]
+    host: Optional[str]
     port: Optional[int]
     metadata: Optional[Dict[str, Any]]
     level: Optional[Dict[str, Any]]

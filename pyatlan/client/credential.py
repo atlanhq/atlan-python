@@ -1,3 +1,4 @@
+from json import dumps
 from typing import Any, Dict, Optional
 
 from pydantic.v1 import validate_arguments
@@ -61,7 +62,7 @@ class CredentialClient:
         """
         Retrieves all credentials based on the provided filter and optional pagination parameters.
 
-        :param filter: dictionary specifying the filter criteria.
+        :param filter: (optional) dictionary specifying the filter criteria.
         :param limit: (optional) maximum number of credentials to retrieve.
         :param offset:  (optional) number of credentials to skip before starting retrieval.
         :returns: CredentialResponseList instance.
@@ -69,13 +70,15 @@ class CredentialClient:
         """
         params: Dict[str, Any] = {}
         if filter is not None:
-            params["filter"] = filter
+            params["filter"] = dumps(filter)
         if limit is not None:
             params["limit"] = limit
         if offset is not None:
             params["offset"] = offset
 
-        raw_json = self._client._call_api(GET_ALL_CREDENTIALS, query_params=params)
+        raw_json = self._client._call_api(
+            GET_ALL_CREDENTIALS.format_path_with_params(), query_params=params
+        )
 
         if not isinstance(raw_json, dict) or "records" not in raw_json:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
