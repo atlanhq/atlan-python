@@ -78,9 +78,7 @@ class CredentialClient:
         raw_json = self._client._call_api(GET_ALL_CREDENTIALS, query_params=params)
 
         if not isinstance(raw_json, dict) or "records" not in raw_json:
-            raise ErrorCode.INVALID_RESPONSE.exception_with_parameters(
-                "Expected a dictionary containing 'records'"
-            )
+            raise ErrorCode.JSON_ERROR.exception_with_parameters("No records found in response", 400, "API response did not contain the expected 'records' key")
 
         return CredentialResponseList(**raw_json)
 
