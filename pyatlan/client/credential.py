@@ -1,11 +1,13 @@
+from typing import Any, Dict, Optional
+
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
+    GET_ALL_CREDENTIALS,
     GET_CREDENTIAL_BY_GUID,
     TEST_CREDENTIAL,
-    GET_ALL_CREDENTIALS,
-    UPDATE_CREDENTIAL_BY_GUID
+    UPDATE_CREDENTIAL_BY_GUID,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
@@ -48,19 +50,25 @@ class CredentialClient:
         if not isinstance(raw_json, dict):
             return raw_json
         return CredentialResponse(**raw_json)
-    
+
     @validate_arguments
-    def get_all(self, filter: Dict[str, Any], limit: int = None, offset: int = None) -> CredentialResponseList:
+    def get_all(
+        self,
+        filter: Optional[Dict[str, Any]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> CredentialResponseList:
         """
         Retrieves all credentials based on the provided filter and optional pagination parameters.
 
-        :param filter: dictionary specifying the filter criteria. 
+        :param filter: dictionary specifying the filter criteria.
         :param limit: (optional) maximum number of credentials to retrieve.
         :param offset:  (optional) number of credentials to skip before starting retrieval.
         :returns: CredentialResponseList instance.
         :raises: AtlanError on any error during API invocation.
-         """
-   if filter is not None:
+        """
+        params = {}
+        if filter is not None:
             params["filter"] = filter
         if limit is not None:
             params["limit"] = limit
