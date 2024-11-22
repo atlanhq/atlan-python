@@ -133,7 +133,8 @@ def get_session():
             "x-atlan-agent": "sdk",
             "x-atlan-agent-id": "python",
             "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-            "X-Atlan-Client-Origin": "product_sdk",
+            "x-atlan-client-origin": "product_sdk",
+            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
         }
     )
     session.hooks["response"].append(log_response)
