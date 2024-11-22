@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from importlib.resources import read_text
 from json import load, loads
 from pathlib import Path
 from unittest.mock import DEFAULT, Mock, call, patch
-from importlib.resources import read_text
 
 import pytest
 from pydantic.v1 import ValidationError
@@ -2205,6 +2205,7 @@ class TestBulkRequest:
         assert request_json
         assert request_json["attributes"]["certificateStatus"] is None
         assert request_json["attributes"]["certificateStatusMessage"] is None
+
 
 def test_atlan_client_headers(client: AtlanClient):
     VERSION = read_text("pyatlan", "version.txt").strip()
