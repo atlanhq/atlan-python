@@ -3,6 +3,7 @@
 from json import load, loads
 from pathlib import Path
 from unittest.mock import DEFAULT, Mock, call, patch
+from importlib.resources import read_text
 
 import pytest
 from pydantic.v1 import ValidationError
@@ -2204,3 +2205,16 @@ class TestBulkRequest:
         assert request_json
         assert request_json["attributes"]["certificateStatus"] is None
         assert request_json["attributes"]["certificateStatusMessage"] is None
+
+def test_atlan_client_headers(client: AtlanClient):
+    VERSION = read_text("pyatlan", "version.txt").strip()
+    expected = {
+        "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "x-atlan-agent": "sdk",
+        "x-atlan-agent-id": "python",
+        "x-atlan-client-origin": "product_sdk",
+    }
+    assert expected == client._session.headers
