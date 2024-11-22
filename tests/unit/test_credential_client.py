@@ -11,6 +11,7 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.credential import (
     Credential,
     CredentialResponse,
+    CredentialResponseList,
     CredentialTestResponse,
 )
 
@@ -189,3 +190,97 @@ def test_cred_test_update_when_given_cred(
     assert isinstance(cred_response, CredentialResponse)
     cred = cred_response.to_credential()
     _assert_cred_response(cred, credential_response)
+
+
+@pytest.mark.parametrize(
+    "test_filter, test_limit, test_offset, test_response",
+    [
+        (None, None, None, {"records": [{"id": "cred1"}, {"id": "cred2"}]}),
+        ({"name": "test"}, 5, 0, {"records": [{"id": "cred3"}]}),
+        ({"invalid": "field"}, 10, 0, {"records": []}),
+    ],
+)
+def test_cred_get_all_success(
+    test_filter, test_limit, test_offset, test_response, mock_api_caller
+):
+    mock_api_caller._call_api.return_value = test_response
+    client = CredentialClient(mock_api_caller)
+
+    result = client.get_all(filter=test_filter, limit=test_limit, offset=test_offset)
+
+    assert isinstance(result, CredentialResponseList)
+    assert len(result.records) == len(test_response["records"])
+    for record, expected in zip(result.records, test_response["records"]):
+        assert record.id == expected["id"]
+
+
+def test_cred_get_all_empty_response(mock_api_caller):
+    mock_api_caller._call_api.return_value = {"records": []}
+    client = CredentialClient(mock_api_caller)
+
+    result = client.get_all()
+
+    assert isinstance(result, CredentialResponseList)
+    assert len(result.records) == 0
+
+
+def test_cred_get_all_invalid_response(mock_api_caller):
+    mock_api_caller._call_api.return_value = {}
+    client = CredentialClient(mock_api_caller)
+
+    with pytest.raises(Exception, match="No records found in response"):
+        client.get_all()
+
+
+@pytest.mark.parametrize(
+    "test_filter, test_limit, test_offset",
+    [
+        ("invalid_filter", None, None),
+        (None, "invalid_limit", None),
+        (None, None, "invalid_offset"),
+    ],
+)
+def test_cred_get_all_invalid_params_raises_validation_error(
+    test_filter, test_limit, test_offset, client: CredentialClient
+):
+    with pytest.raises(ValidationError):
+        client.get_all(filter=test_filter, limit=test_limit, offset=test_offset)
+
+
+def test_cred_get_all_timeout(mock_api_caller):
+    mock_api_caller._call_api.side_effect = TimeoutError("Request timed out")
+    client = CredentialClient(mock_api_caller)
+
+    with pytest.raises(TimeoutError, match="Request timed out"):
+        client.get_all()
+
+
+def test_cred_get_all_partial_response(mock_api_caller):
+    mock_api_caller._call_api.return_value = {
+        "records": [{"id": "cred1", "name": "Test Credential"}]
+    }
+    client = CredentialClient(mock_api_caller)
+
+    result = client.get_all()
+
+    assert isinstance(result, CredentialResponseList)
+    assert result.records[0].id == "cred1"
+    assert result.records[0].name == "Test Credential"
+    assert result.records[0].host is None
+
+
+def test_cred_get_all_invalid_filter_type(mock_api_caller):
+    client = CredentialClient(mock_api_caller)
+
+    with pytest.raises(ValidationError, match="value is not a valid dict"):
+        client.get_all(filter="invalid_filter")
+
+
+def test_cred_get_all_no_results(mock_api_caller):
+    mock_api_caller._call_api.return_value = {"records": []}
+    client = CredentialClient(mock_api_caller)
+
+    result = client.get_all(filter={"name": "nonexistent"})
+
+    assert isinstance(result, CredentialResponseList)
+    assert len(result.records) == 0
