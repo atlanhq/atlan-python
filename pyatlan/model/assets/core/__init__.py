@@ -31,13 +31,13 @@ from .cosmos_mongo_d_b import CosmosMongoDB
 from .cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
 from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
-from .custom import Custom
 from .data_contract import DataContract
 from .data_domain import DataDomain
 from .data_mesh import DataMesh
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .database import Database
+from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt import Dbt
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
@@ -133,7 +133,6 @@ ADF.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
-Custom.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
 NoSQL.Attributes.update_forward_refs(**localns)
@@ -172,9 +171,10 @@ MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
+DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 CosmosMongoDB.Attributes.update_forward_refs(**localns)

@@ -23,7 +23,6 @@ __all__ = [
     "DataQuality",
     "BI",
     "Resource",
-    "Custom",
     "DataMesh",
     "SQL",
     "NoSQL",
@@ -62,9 +61,10 @@ __all__ = [
     "Function",
     "TablePartition",
     "Column",
+    "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "CalculationView",
     "Database",
+    "CalculationView",
     "Procedure",
     "SnowflakeTag",
     "CosmosMongoDB",
@@ -133,6 +133,7 @@ __all__ = [
     "NoSQL",
     "Insight",
     "API",
+    "BusinessProcessModel",
     "Google",
     "Azure",
     "AWS",
@@ -164,10 +165,6 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
-    "CustomField",
-    "CustomDataset",
-    "CustomTable",
-    "DatabricksUnityCatalogTag",
     "Kafka",
     "AzureServiceBus",
     "DynamoDB",
@@ -178,6 +175,7 @@ __all__ = [
     "APIObject",
     "APIPath",
     "APIField",
+    "BusinessProcessModelEntity",
     "DataStudioAsset",
     "S3Bucket",
     "S3Object",
@@ -321,6 +319,8 @@ from .business_policy import BusinessPolicy
 from .business_policy_exception import BusinessPolicyException
 from .business_policy_incident import BusinessPolicyIncident
 from .business_policy_log import BusinessPolicyLog
+from .business_process_model import BusinessProcessModel
+from .business_process_model_entity import BusinessProcessModelEntity
 from .cloud import Cloud
 from .cognite import Cognite
 from .cognite3_d_model import Cognite3DModel
@@ -369,13 +369,13 @@ from .core.cosmos_mongo_d_b import CosmosMongoDB
 from .core.cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .core.cosmos_mongo_d_b_collection import CosmosMongoDBCollection
 from .core.cosmos_mongo_d_b_database import CosmosMongoDBDatabase
-from .core.custom import Custom
 from .core.data_contract import DataContract
 from .core.data_domain import DataDomain
 from .core.data_mesh import DataMesh
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.database import Database
+from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .core.dbt import Dbt
 from .core.dbt_metric import DbtMetric
 from .core.dbt_model import DbtModel
@@ -451,13 +451,9 @@ from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
-from .custom_dataset import CustomDataset
-from .custom_field import CustomField
-from .custom_table import CustomTable
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
-from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt_column_process import DbtColumnProcess
 from .dbt_process import DbtProcess
 from .dbt_tag import DbtTag

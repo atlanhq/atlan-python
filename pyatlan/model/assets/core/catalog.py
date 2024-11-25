@@ -29,17 +29,29 @@ class Catalog(Asset, type_name="Catalog"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "modelImplementedAttributes"
+    )
     """
     TBC
     """
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "outputFromAirflowTasks"
     )
-    """
-    TBC
-    """
-    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
     TBC
     """
@@ -55,12 +67,6 @@ class Catalog(Asset, type_name="Catalog"):
     """
     TBC
     """
-    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
-        "inputToAirflowTasks"
-    )
-    """
-    TBC
-    """
     OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
         "outputFromProcesses"
     )
@@ -69,14 +75,39 @@ class Catalog(Asset, type_name="Catalog"):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "input_to_processes",
-        "output_from_airflow_tasks",
         "input_to_spark_jobs",
+        "input_to_airflow_tasks",
+        "input_to_processes",
+        "model_implemented_attributes",
+        "output_from_airflow_tasks",
         "output_from_spark_jobs",
         "model_implemented_entities",
-        "input_to_airflow_tasks",
         "output_from_processes",
     ]
+
+    @property
+    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.input_to_spark_jobs
+
+    @input_to_spark_jobs.setter
+    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_spark_jobs = input_to_spark_jobs
+
+    @property
+    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
+        return (
+            None if self.attributes is None else self.attributes.input_to_airflow_tasks
+        )
+
+    @input_to_airflow_tasks.setter
+    def input_to_airflow_tasks(
+        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
     def input_to_processes(self) -> Optional[List[Process]]:
@@ -87,6 +118,22 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def model_implemented_attributes(self) -> Optional[List[ModelAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_implemented_attributes
+        )
+
+    @model_implemented_attributes.setter
+    def model_implemented_attributes(
+        self, model_implemented_attributes: Optional[List[ModelAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_implemented_attributes = model_implemented_attributes
 
     @property
     def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
@@ -103,16 +150,6 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
-
-    @property
-    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.input_to_spark_jobs
-
-    @input_to_spark_jobs.setter
-    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_spark_jobs = input_to_spark_jobs
 
     @property
     def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -143,20 +180,6 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.model_implemented_entities = model_implemented_entities
 
     @property
-    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
-        return (
-            None if self.attributes is None else self.attributes.input_to_airflow_tasks
-        )
-
-    @input_to_airflow_tasks.setter
-    def input_to_airflow_tasks(
-        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
-
-    @property
     def output_from_processes(self) -> Optional[List[Process]]:
         return (
             None if self.attributes is None else self.attributes.output_from_processes
@@ -169,22 +192,25 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
+        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
         input_to_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
-        output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
+        model_implemented_attributes: Optional[List[ModelAttribute]] = Field(
             default=None, description=""
         )  # relationship
-        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
+        output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
-            default=None, description=""
-        )  # relationship
-        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
         output_from_processes: Optional[List[Process]] = Field(
@@ -202,6 +228,7 @@ class Catalog(Asset, type_name="Catalog"):
 
 
 from .airflow_task import AirflowTask  # noqa
+from .model_attribute import ModelAttribute  # noqa
 from .model_entity import ModelEntity  # noqa
 from .process import Process  # noqa
 from .spark_job import SparkJob  # noqa

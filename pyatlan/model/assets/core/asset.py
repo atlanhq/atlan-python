@@ -917,6 +917,12 @@ class Asset(Referenceable):
     """
     List of Monte Carlo incident states associated with this asset.
     """
+    ASSET_MC_IS_MONITORED: ClassVar[BooleanField] = BooleanField(
+        "assetMcIsMonitored", "assetMcIsMonitored"
+    )
+    """
+    Tracks whether this asset is monitored by MC or not
+    """
     ASSET_MC_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
         "assetMcLastSyncRunAt", "assetMcLastSyncRunAt"
     )
@@ -1275,6 +1281,7 @@ class Asset(Referenceable):
         "asset_mc_incident_severities",
         "asset_mc_incident_priorities",
         "asset_mc_incident_states",
+        "asset_mc_is_monitored",
         "asset_mc_last_sync_run_at",
         "starred_by",
         "starred_details_list",
@@ -2840,6 +2847,18 @@ class Asset(Referenceable):
         self.attributes.asset_mc_incident_states = asset_mc_incident_states
 
     @property
+    def asset_mc_is_monitored(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_is_monitored
+        )
+
+    @asset_mc_is_monitored.setter
+    def asset_mc_is_monitored(self, asset_mc_is_monitored: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_is_monitored = asset_mc_is_monitored
+
+    @property
     def asset_mc_last_sync_run_at(self) -> Optional[datetime]:
         return (
             None
@@ -3647,6 +3666,7 @@ class Asset(Referenceable):
         asset_mc_incident_states: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        asset_mc_is_monitored: Optional[bool] = Field(default=None, description="")
         asset_mc_last_sync_run_at: Optional[datetime] = Field(
             default=None, description=""
         )
