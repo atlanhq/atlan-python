@@ -29,7 +29,7 @@ from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 from tests.integration.client import TestId, delete_asset
 from tests.integration.custom_metadata_test import create_custom_metadata
-from tests.integration.utils import block
+from tests.integration.utils import block, wait_for_successful_custometadatadef_purge
 
 DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = (
     '{"condition":"AND","isGroupLocked":false,"rules":[]}'
@@ -230,7 +230,7 @@ def data_domain_cm(
         client, name=DD_CM, attribute_defs=attribute_defs, logo="📦", locked=True
     )
     yield dd_cm
-    client.typedef.purge(DD_CM, CustomMetadataDef)
+    wait_for_successful_custometadatadef_purge(DD_CM, client=client)
 
 
 def test_data_domain_cm(data_domain_cm: CustomMetadataDef):
