@@ -13,7 +13,7 @@ from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.typedef import AtlanTagDef
+from pyatlan.model.typedef import AtlanTagDef, CustomMetadataDef
 
 
 def block(
@@ -56,3 +56,12 @@ def retrieve_and_check_assets(
 )
 def wait_for_successful_tagdef_purge(name: str, client: AtlanClient):
     client.typedef.purge(name, typedef_type=AtlanTagDef)
+
+
+@retry(
+    retry=retry_if_exception_type(AtlanError),
+    wait=wait_random_exponential(multiplier=1, max=5),
+    stop=stop_after_attempt(3),
+)
+def wait_for_successful_custometadatadef_purge(name: str, client: AtlanClient):
+    client.typedef.purge(name, typedef_type=CustomMetadataDef)

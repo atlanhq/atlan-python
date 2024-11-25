@@ -33,6 +33,7 @@ from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.admin_test import create_group, delete_group
 from tests.integration.client import TestId, delete_asset
 from tests.integration.glossary_test import create_glossary, create_term
+from tests.integration.utils import wait_for_successful_custometadatadef_purge
 
 MODULE_NAME = TestId.make_unique("CM")
 
@@ -162,7 +163,7 @@ def cm_ipr(
         client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True
     )
     yield cm
-    client.typedef.purge(CM_IPR, CustomMetadataDef)
+    wait_for_successful_custometadatadef_purge(CM_IPR, client=client)
 
 
 def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs):
@@ -254,7 +255,7 @@ def cm_raci(
         locked=False,
     )
     yield cm
-    client.typedef.purge(CM_RACI, CustomMetadataDef)
+    wait_for_successful_custometadatadef_purge(CM_RACI, client=client)
 
 
 def test_cm_raci(
@@ -309,7 +310,7 @@ def cm_enum(
 ) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
     yield enum_def
-    client.typedef.purge(DQ_ENUM, EnumDef)
+    wait_for_successful_custometadatadef_purge(DQ_ENUM, client=client)
 
 
 def test_cm_enum(
@@ -402,7 +403,7 @@ def cm_dq(
         locked=True,
     )
     yield cm
-    client.typedef.purge(CM_QUALITY, CustomMetadataDef)
+    wait_for_successful_custometadatadef_purge(CM_QUALITY, client=client)
 
 
 def test_cm_dq(
