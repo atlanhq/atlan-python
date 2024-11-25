@@ -1,3 +1,20 @@
+## 2.6.1 (November 25, 2024)
+
+### New features
+
+- Added the `"x-atlan-client-origin": "product_sdk"` header to the `AtlanClient`.
+- Added a method to retrieve all credentials: `CredentialClient.get_all()`.
+
+### QOL improvements
+
+- Generated the latest typedef models.
+  - Application typedef changes:
+    - Replaced the `Application` supertype with `App`.
+    - Renamed `ApplicationContainer` to `Application`.
+    - Changed the level of the relationship from `Catalog` to `Asset`.
+    - Updated the name of the de-normalized attribute.
+- Added a wait to the integration test fixtures (atlan_tag_test, custom_metadata_test).
+
 ## 2.6.0 (November 21, 2024)
 
 ### New features
