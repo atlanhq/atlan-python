@@ -60,11 +60,11 @@ class CredentialClient:
         offset: Optional[int] = None,
     ) -> CredentialResponseList:
         """
-        Retrieves all credentials based on the provided filter and optional pagination parameters.
+        Retrieves all credentials.
 
         :param filter: (optional) dictionary specifying the filter criteria.
         :param limit: (optional) maximum number of credentials to retrieve.
-        :param offset:  (optional) number of credentials to skip before starting retrieval.
+        :param offset: (optional) number of credentials to skip before starting retrieval.
         :returns: CredentialResponseList instance.
         :raises: AtlanError on any error during API invocation.
         """

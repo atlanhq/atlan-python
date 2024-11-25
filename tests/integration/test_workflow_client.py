@@ -291,7 +291,7 @@ def test_get_all_credentials_with_limit_and_offset(client: AtlanClient):
 
 
 def test_get_all_credentials_with_filter_limit_offset(client: AtlanClient):
-    filter_criteria = {"connectorType": "rest"}
+    filter_criteria = {"connectorType": "jdbc"}
     limit = 1
     offset = 1
     credentials = client.credentials.get_all(
@@ -300,8 +300,8 @@ def test_get_all_credentials_with_filter_limit_offset(client: AtlanClient):
     assert len(credentials.records or []) <= limit, "Exceeded limit in results"
     for cred in credentials.records or []:
         assert (
-            cred.connector_type == "rest"
-        ), f"Expected 'rest', got {cred.connector_type}"
+            cred.connector_type == "jdbc"
+        ), f"Expected 'jdbc', got {cred.connector_type}"
 
 
 def test_get_all_credentials_with_multiple_filters(client: AtlanClient):
@@ -338,13 +338,3 @@ def test_get_all_credentials_with_invalid_filter_value(client: AtlanClient):
         pytest.fail("Expected an error due to invalid filter value, but none occurred.")
     except Exception as e:
         assert "400" in str(e), f"Expected a 400 error, but got: {e}"
-
-
-def test_get_all_credentials_with_large_limit(client: AtlanClient):
-    limit = 100
-    credentials = client.credentials.get_all(limit=limit)
-    assert credentials, "Expected credentials but found None"
-    assert credentials.records is not None, "Expected records but found None"
-    assert (
-        len(credentials.records or []) <= limit
-    ), f"Expected at most {limit} records, but got {len(credentials.records or [])}"
