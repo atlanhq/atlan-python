@@ -31,8 +31,8 @@ You can interact with all of the following different kinds of assets:
     asset/airflowtask
     asset/anomalo
     asset/anomalocheck
+    asset/app
     asset/application
-    asset/applicationcontainer
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
@@ -52,6 +52,8 @@ You can interact with all of the following different kinds of assets:
     asset/businesspolicyexception
     asset/businesspolicyincident
     asset/businesspolicylog
+    asset/businessprocessmodel
+    asset/businessprocessmodelentity
     asset/calculationview
     asset/catalog
     asset/cloud
@@ -83,10 +85,6 @@ You can interact with all of the following different kinds of assets:
     asset/cubedimension
     asset/cubefield
     asset/cubehierarchy
-    asset/custom
-    asset/customdataset
-    asset/customfield
-    asset/customtable
     asset/datacontract
     asset/datadomain
     asset/datamesh

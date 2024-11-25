@@ -8,7 +8,6 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import ModelCardinalityType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
 from .model import Model
@@ -30,18 +29,6 @@ class ModelAttributeAssociation(Model):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODEL_ATTRIBUTE_ASSOCIATION_CARDINALITY: ClassVar[KeywordField] = KeywordField(
-        "modelAttributeAssociationCardinality", "modelAttributeAssociationCardinality"
-    )
-    """
-    Cardinality of the data attribute association.
-    """
-    MODEL_ATTRIBUTE_ASSOCIATION_LABEL: ClassVar[KeywordField] = KeywordField(
-        "modelAttributeAssociationLabel", "modelAttributeAssociationLabel"
-    )
-    """
-    Label of the data attribute association.
-    """
     MODEL_ATTRIBUTE_ASSOCIATION_TO_QUALIFIED_NAME: ClassVar[KeywordField] = (
         KeywordField(
             "modelAttributeAssociationToQualifiedName",
@@ -81,50 +68,12 @@ class ModelAttributeAssociation(Model):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "model_attribute_association_cardinality",
-        "model_attribute_association_label",
         "model_attribute_association_to_qualified_name",
         "model_attribute_association_from_qualified_name",
         "model_entity_association_qualified_name",
         "model_attribute_association_from",
         "model_attribute_association_to",
     ]
-
-    @property
-    def model_attribute_association_cardinality(self) -> Optional[ModelCardinalityType]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_attribute_association_cardinality
-        )
-
-    @model_attribute_association_cardinality.setter
-    def model_attribute_association_cardinality(
-        self, model_attribute_association_cardinality: Optional[ModelCardinalityType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_attribute_association_cardinality = (
-            model_attribute_association_cardinality
-        )
-
-    @property
-    def model_attribute_association_label(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_attribute_association_label
-        )
-
-    @model_attribute_association_label.setter
-    def model_attribute_association_label(
-        self, model_attribute_association_label: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.model_attribute_association_label = (
-            model_attribute_association_label
-        )
 
     @property
     def model_attribute_association_to_qualified_name(self) -> Optional[str]:
@@ -215,12 +164,6 @@ class ModelAttributeAssociation(Model):
         self.attributes.model_attribute_association_to = model_attribute_association_to
 
     class Attributes(Model.Attributes):
-        model_attribute_association_cardinality: Optional[ModelCardinalityType] = Field(
-            default=None, description=""
-        )
-        model_attribute_association_label: Optional[str] = Field(
-            default=None, description=""
-        )
         model_attribute_association_to_qualified_name: Optional[str] = Field(
             default=None, description=""
         )

@@ -150,6 +150,12 @@ class MCMonitor(MonteCarlo):
     """
     Priority of this monitor.
     """
+    MC_MONITOR_IS_OOTB: ClassVar[BooleanField] = BooleanField(
+        "mcMonitorIsOotb", "mcMonitorIsOotb"
+    )
+    """
+    Whether the monitor is OOTB or not
+    """
 
     MC_MONITOR_ASSETS: ClassVar[RelationField] = RelationField("mcMonitorAssets")
     """
@@ -176,6 +182,7 @@ class MCMonitor(MonteCarlo):
         "mc_monitor_incident_count",
         "mc_monitor_alert_count",
         "mc_monitor_priority",
+        "mc_monitor_is_ootb",
         "mc_monitor_assets",
     ]
 
@@ -432,6 +439,16 @@ class MCMonitor(MonteCarlo):
         self.attributes.mc_monitor_priority = mc_monitor_priority
 
     @property
+    def mc_monitor_is_ootb(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.mc_monitor_is_ootb
+
+    @mc_monitor_is_ootb.setter
+    def mc_monitor_is_ootb(self, mc_monitor_is_ootb: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_is_ootb = mc_monitor_is_ootb
+
+    @property
     def mc_monitor_assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.mc_monitor_assets
 
@@ -471,6 +488,7 @@ class MCMonitor(MonteCarlo):
         mc_monitor_incident_count: Optional[int] = Field(default=None, description="")
         mc_monitor_alert_count: Optional[int] = Field(default=None, description="")
         mc_monitor_priority: Optional[str] = Field(default=None, description="")
+        mc_monitor_is_ootb: Optional[bool] = Field(default=None, description="")
         mc_monitor_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship

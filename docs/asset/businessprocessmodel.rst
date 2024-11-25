@@ -1,10 +1,10 @@
-.. _applicationcontainer:
+.. _businessprocessmodel:
 
-ApplicationContainer
+BusinessProcessModel
 ====================
 
 .. module:: pyatlan.model.assets
     :no-index:
 
-.. autoclass:: ApplicationContainer
+.. autoclass:: BusinessProcessModel
     :members:

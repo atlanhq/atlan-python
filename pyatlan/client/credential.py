@@ -1,7 +1,11 @@
+from json import dumps
+from typing import Any, Dict, Optional
+
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
+    GET_ALL_CREDENTIALS,
     GET_CREDENTIAL_BY_GUID,
     TEST_CREDENTIAL,
     UPDATE_CREDENTIAL_BY_GUID,
@@ -10,6 +14,7 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
     Credential,
     CredentialResponse,
+    CredentialResponseList,
     CredentialTestResponse,
 )
 
@@ -46,6 +51,43 @@ class CredentialClient:
         if not isinstance(raw_json, dict):
             return raw_json
         return CredentialResponse(**raw_json)
+
+    @validate_arguments
+    def get_all(
+        self,
+        filter: Optional[Dict[str, Any]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> CredentialResponseList:
+        """
+        Retrieves all credentials.
+
+        :param filter: (optional) dictionary specifying the filter criteria.
+        :param limit: (optional) maximum number of credentials to retrieve.
+        :param offset: (optional) number of credentials to skip before starting retrieval.
+        :returns: CredentialResponseList instance.
+        :raises: AtlanError on any error during API invocation.
+        """
+        params: Dict[str, Any] = {}
+        if filter is not None:
+            params["filter"] = dumps(filter)
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
+
+        raw_json = self._client._call_api(
+            GET_ALL_CREDENTIALS.format_path_with_params(), query_params=params
+        )
+
+        if not isinstance(raw_json, dict) or "records" not in raw_json:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                "No records found in response",
+                400,
+                "API response did not contain the expected 'records' key",
+            )
+
+        return CredentialResponseList(**raw_json)
 
     @validate_arguments
     def test(self, credential: Credential) -> CredentialTestResponse:

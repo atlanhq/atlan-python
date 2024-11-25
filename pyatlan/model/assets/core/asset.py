@@ -917,6 +917,12 @@ class Asset(Referenceable):
     """
     List of Monte Carlo incident states associated with this asset.
     """
+    ASSET_MC_IS_MONITORED: ClassVar[BooleanField] = BooleanField(
+        "assetMcIsMonitored", "assetMcIsMonitored"
+    )
+    """
+    Tracks whether this asset is monitored by MC or not
+    """
     ASSET_MC_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
         "assetMcLastSyncRunAt", "assetMcLastSyncRunAt"
     )
@@ -1077,6 +1083,12 @@ class Asset(Referenceable):
     """
     Array of policy ids non-compliant to this asset
     """
+    APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationQualifiedName", "applicationQualifiedName"
+    )
+    """
+    Qualified name of the Application that contains this asset.
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1121,6 +1133,10 @@ class Asset(Referenceable):
     TBC
     """
     MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
+    """
+    TBC
+    """
+    APPLICATION: ClassVar[RelationField] = RelationField("application")
     """
     TBC
     """
@@ -1265,6 +1281,7 @@ class Asset(Referenceable):
         "asset_mc_incident_severities",
         "asset_mc_incident_priorities",
         "asset_mc_incident_states",
+        "asset_mc_is_monitored",
         "asset_mc_last_sync_run_at",
         "starred_by",
         "starred_details_list",
@@ -1294,6 +1311,7 @@ class Asset(Referenceable):
         "asset_policies_count",
         "domain_g_u_i_ds",
         "non_compliant_asset_policy_g_u_i_ds",
+        "application_qualified_name",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -1304,6 +1322,7 @@ class Asset(Referenceable):
         "data_contract_latest",
         "assigned_terms",
         "mc_monitors",
+        "application",
         "files",
         "mc_incidents",
         "links",
@@ -2828,6 +2847,18 @@ class Asset(Referenceable):
         self.attributes.asset_mc_incident_states = asset_mc_incident_states
 
     @property
+    def asset_mc_is_monitored(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_is_monitored
+        )
+
+    @asset_mc_is_monitored.setter
+    def asset_mc_is_monitored(self, asset_mc_is_monitored: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_is_monitored = asset_mc_is_monitored
+
+    @property
     def asset_mc_last_sync_run_at(self) -> Optional[datetime]:
         return (
             None
@@ -3204,6 +3235,20 @@ class Asset(Referenceable):
         )
 
     @property
+    def application_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_qualified_name
+        )
+
+    @application_qualified_name.setter
+    def application_qualified_name(self, application_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_qualified_name = application_qualified_name
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -3332,6 +3377,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_monitors = mc_monitors
+
+    @property
+    def application(self) -> Optional[Application]:
+        return None if self.attributes is None else self.attributes.application
+
+    @application.setter
+    def application(self, application: Optional[Application]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application = application
 
     @property
     def files(self) -> Optional[List[File]]:
@@ -3611,6 +3666,7 @@ class Asset(Referenceable):
         asset_mc_incident_states: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        asset_mc_is_monitored: Optional[bool] = Field(default=None, description="")
         asset_mc_last_sync_run_at: Optional[datetime] = Field(
             default=None, description=""
         )
@@ -3660,6 +3716,7 @@ class Asset(Referenceable):
         non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        application_qualified_name: Optional[str] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
@@ -3686,6 +3743,9 @@ class Asset(Referenceable):
             default=None, description=""
         )  # relationship
         mc_monitors: Optional[List[MCMonitor]] = Field(
+            default=None, description=""
+        )  # relationship
+        application: Optional[Application] = Field(
             default=None, description=""
         )  # relationship
         files: Optional[List[File]] = Field(
@@ -3737,6 +3797,7 @@ class Asset(Referenceable):
 
 
 from .anomalo_check import AnomaloCheck  # noqa
+from .application import Application  # noqa
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
 from .data_contract import DataContract  # noqa
 from .data_product import DataProduct  # noqa
