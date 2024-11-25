@@ -42,19 +42,6 @@ class AtlanObject(BaseModel):
         return values
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -71,18 +58,24 @@ class DbtJobRun(AtlanObject):
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
 
 
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class AwsCloudWatchMetric(AtlanObject):
     """Description"""
 
     aws_cloud_watch_metric_name: str = Field(description="")
     aws_cloud_watch_metric_scope: str = Field(description="")
-
-
-class CustomRatings(AtlanObject):
-    """Description"""
-
-    custom_rating_from: Optional[str] = Field(default=None, description="")
-    custom_rating_of: Optional[int] = Field(default=None, description="")
 
 
 class Action(AtlanObject):
@@ -117,11 +110,38 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(default=None, description="")
 
 
-class SourceTagAttachmentValue(AtlanObject):
+class BadgeCondition(AtlanObject):
     """Description"""
 
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
+    @classmethod
+    def create(
+        cls,
+        *,
+        badge_condition_operator: BadgeComparisonOperator,
+        badge_condition_value: str,
+        badge_condition_colorhex: Union[BadgeConditionColor, str],
+    ) -> "BadgeCondition":
+        validate_required_fields(
+            [
+                "badge_condition_operator",
+                "badge_condition_value",
+                "badge_condition_colorhex",
+            ],
+            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
+        )
+        return cls(
+            badge_condition_operator=badge_condition_operator.value,
+            badge_condition_value=badge_condition_value,
+            badge_condition_colorhex=(
+                badge_condition_colorhex.value
+                if isinstance(badge_condition_colorhex, BadgeConditionColor)
+                else badge_condition_colorhex
+            ),
+        )
+
+    badge_condition_operator: Optional[str] = Field(default=None, description="")
+    badge_condition_value: Optional[str] = Field(default=None, description="")
+    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
 
 
 class SourceTagAttachment(AtlanObject):
@@ -267,45 +287,11 @@ class SourceTagAttachment(AtlanObject):
         )
 
 
-class BadgeCondition(AtlanObject):
+class SourceTagAttachmentValue(AtlanObject):
     """Description"""
 
-    @classmethod
-    def create(
-        cls,
-        *,
-        badge_condition_operator: BadgeComparisonOperator,
-        badge_condition_value: str,
-        badge_condition_colorhex: Union[BadgeConditionColor, str],
-    ) -> "BadgeCondition":
-        validate_required_fields(
-            [
-                "badge_condition_operator",
-                "badge_condition_value",
-                "badge_condition_colorhex",
-            ],
-            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
-        )
-        return cls(
-            badge_condition_operator=badge_condition_operator.value,
-            badge_condition_value=badge_condition_value,
-            badge_condition_colorhex=(
-                badge_condition_colorhex.value
-                if isinstance(badge_condition_colorhex, BadgeConditionColor)
-                else badge_condition_colorhex
-            ),
-        )
-
-    badge_condition_operator: Optional[str] = Field(default=None, description="")
-    badge_condition_value: Optional[str] = Field(default=None, description="")
-    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
-
-
-class AzureTag(AtlanObject):
-    """Description"""
-
-    azure_tag_key: str = Field(description="")
-    azure_tag_value: str = Field(description="")
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class StarredDetails(AtlanObject):
@@ -313,6 +299,13 @@ class StarredDetails(AtlanObject):
 
     asset_starred_by: Optional[str] = Field(default=None, description="")
     asset_starred_at: Optional[datetime] = Field(default=None, description="")
+
+
+class AzureTag(AtlanObject):
+    """Description"""
+
+    azure_tag_key: str = Field(description="")
+    azure_tag_value: str = Field(description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -402,13 +395,11 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-MCRuleSchedule.update_forward_refs()
-
 DbtJobRun.update_forward_refs()
 
-AwsCloudWatchMetric.update_forward_refs()
+MCRuleSchedule.update_forward_refs()
 
-CustomRatings.update_forward_refs()
+AwsCloudWatchMetric.update_forward_refs()
 
 Action.update_forward_refs()
 
@@ -418,15 +409,15 @@ Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachmentValue.update_forward_refs()
+BadgeCondition.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
-
-AzureTag.update_forward_refs()
+SourceTagAttachmentValue.update_forward_refs()
 
 StarredDetails.update_forward_refs()
+
+AzureTag.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 

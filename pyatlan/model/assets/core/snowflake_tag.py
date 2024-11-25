@@ -59,12 +59,6 @@ class SnowflakeTag(Tag):
     """
     Name of the classification in Atlan that is mapped to this tag.
     """
-    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
-    )
-    """
-    Qualified name of the Application Container that contains this asset.
-    """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -188,7 +182,6 @@ class SnowflakeTag(Tag):
         "tag_attributes",
         "tag_allowed_values",
         "mapped_atlan_tag_name",
-        "asset_application_qualified_name",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -254,24 +247,6 @@ class SnowflakeTag(Tag):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
-
-    @property
-    def asset_application_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_application_qualified_name
-        )
-
-    @asset_application_qualified_name.setter
-    def asset_application_qualified_name(
-        self, asset_application_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_application_qualified_name = (
-            asset_application_qualified_name
-        )
 
     @property
     def query_count(self) -> Optional[int]:
@@ -516,9 +491,6 @@ class SnowflakeTag(Tag):
         )
         tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
-        asset_application_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")

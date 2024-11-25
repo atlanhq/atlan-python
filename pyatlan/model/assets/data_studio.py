@@ -79,30 +79,30 @@ class DataStudio(Google):
     """
     List of tags that have been applied to the asset in Google.
     """
-    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
+
+    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
     )
     """
-    Qualified name of the Application Container that contains this asset.
+    TBC
     """
-
     INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "modelImplementedAttributes"
+    )
     """
     TBC
     """
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
         "outputFromAirflowTasks"
     )
-    """
-    TBC
-    """
-    APPLICATION_CONTAINER: ClassVar[RelationField] = RelationField(
-        "applicationContainer"
-    )
-    """
-    TBC
-    """
-    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
     TBC
     """
@@ -114,12 +114,6 @@ class DataStudio(Google):
     """
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
         "modelImplementedEntities"
-    )
-    """
-    TBC
-    """
-    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
-        "inputToAirflowTasks"
     )
     """
     TBC
@@ -140,14 +134,13 @@ class DataStudio(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "asset_application_qualified_name",
-        "input_to_processes",
-        "output_from_airflow_tasks",
-        "application_container",
         "input_to_spark_jobs",
+        "input_to_airflow_tasks",
+        "input_to_processes",
+        "model_implemented_attributes",
+        "output_from_airflow_tasks",
         "output_from_spark_jobs",
         "model_implemented_entities",
-        "input_to_airflow_tasks",
         "output_from_processes",
     ]
 
@@ -234,22 +227,28 @@ class DataStudio(Google):
         self.attributes.google_tags = google_tags
 
     @property
-    def asset_application_qualified_name(self) -> Optional[str]:
+    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.input_to_spark_jobs
+
+    @input_to_spark_jobs.setter
+    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_spark_jobs = input_to_spark_jobs
+
+    @property
+    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_application_qualified_name
+            None if self.attributes is None else self.attributes.input_to_airflow_tasks
         )
 
-    @asset_application_qualified_name.setter
-    def asset_application_qualified_name(
-        self, asset_application_qualified_name: Optional[str]
+    @input_to_airflow_tasks.setter
+    def input_to_airflow_tasks(
+        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_application_qualified_name = (
-            asset_application_qualified_name
-        )
+        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
     def input_to_processes(self) -> Optional[List[Process]]:
@@ -260,6 +259,22 @@ class DataStudio(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def model_implemented_attributes(self) -> Optional[List[ModelAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_implemented_attributes
+        )
+
+    @model_implemented_attributes.setter
+    def model_implemented_attributes(
+        self, model_implemented_attributes: Optional[List[ModelAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_implemented_attributes = model_implemented_attributes
 
     @property
     def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
@@ -276,30 +291,6 @@ class DataStudio(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
-
-    @property
-    def application_container(self) -> Optional[ApplicationContainer]:
-        return (
-            None if self.attributes is None else self.attributes.application_container
-        )
-
-    @application_container.setter
-    def application_container(
-        self, application_container: Optional[ApplicationContainer]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.application_container = application_container
-
-    @property
-    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
-        return None if self.attributes is None else self.attributes.input_to_spark_jobs
-
-    @input_to_spark_jobs.setter
-    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_spark_jobs = input_to_spark_jobs
 
     @property
     def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -330,20 +321,6 @@ class DataStudio(Google):
         self.attributes.model_implemented_entities = model_implemented_entities
 
     @property
-    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
-        return (
-            None if self.attributes is None else self.attributes.input_to_airflow_tasks
-        )
-
-    @input_to_airflow_tasks.setter
-    def input_to_airflow_tasks(
-        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
-
-    @property
     def output_from_processes(self) -> Optional[List[Process]]:
         return (
             None if self.attributes is None else self.attributes.output_from_processes
@@ -364,28 +341,25 @@ class DataStudio(Google):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
-        asset_application_qualified_name: Optional[str] = Field(
+        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
-        )
+        )  # relationship
+        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
         input_to_processes: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship
+        model_implemented_attributes: Optional[List[ModelAttribute]] = Field(
+            default=None, description=""
+        )  # relationship
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
-            default=None, description=""
-        )  # relationship
-        application_container: Optional[ApplicationContainer] = Field(
-            default=None, description=""
-        )  # relationship
-        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
-            default=None, description=""
-        )  # relationship
-        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
         output_from_processes: Optional[List[Process]] = Field(
@@ -403,7 +377,7 @@ class DataStudio(Google):
 
 
 from .core.airflow_task import AirflowTask  # noqa
-from .core.application_container import ApplicationContainer  # noqa
+from .core.model_attribute import ModelAttribute  # noqa
 from .core.model_entity import ModelEntity  # noqa
 from .core.process import Process  # noqa
 from .core.spark_job import SparkJob  # noqa
