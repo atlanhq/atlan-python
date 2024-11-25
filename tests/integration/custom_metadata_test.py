@@ -33,7 +33,10 @@ from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.admin_test import create_group, delete_group
 from tests.integration.client import TestId, delete_asset
 from tests.integration.glossary_test import create_glossary, create_term
-from tests.integration.utils import wait_for_successful_custometadatadef_purge
+from tests.integration.utils import (
+    wait_for_successful_custometadatadef_purge,
+    wait_for_successful_enumadef_purge,
+)
 
 MODULE_NAME = TestId.make_unique("CM")
 
@@ -310,7 +313,7 @@ def cm_enum(
 ) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
     yield enum_def
-    wait_for_successful_custometadatadef_purge(DQ_ENUM, client=client)
+    wait_for_successful_enumadef_purge(DQ_ENUM, client=client)
 
 
 def test_cm_enum(
