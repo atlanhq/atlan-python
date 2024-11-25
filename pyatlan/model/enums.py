@@ -136,7 +136,7 @@ class AtlanConnectionCategory(str, Enum):
     EVENT_BUS = "eventbus"
     DATA_QUALITY = "data-quality"
     SCHEMA_REGISTRY = "schema-registry"
-    APPLICATION = "application"
+    APP = "app"
 
 
 class AtlanConnectorType(str, Enum):
@@ -334,7 +334,7 @@ class AtlanConnectorType(str, Enum):
     SAP_GIGYA = ("sap-gigya", AtlanConnectionCategory.SAAS)
     SAP_HYBRIS = ("sap-hybris", AtlanConnectionCategory.SAAS)
     IBM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
-    APPLICATION = ("application", AtlanConnectionCategory.APPLICATION)
+    APP = ("app", AtlanConnectionCategory.APP)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
@@ -2527,11 +2527,6 @@ class CertificateStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     DRAFT = "DRAFT"
     VERIFIED = "VERIFIED"
-
-
-class CustomTemperatureType(str, Enum):
-    COLD = "COLD"
-    HOT = "HOT"
 
 
 class DataProductCriticality(str, Enum):

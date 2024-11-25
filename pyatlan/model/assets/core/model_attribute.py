@@ -83,6 +83,12 @@ class ModelAttribute(Model):
     When true, this attribute has relationships with other attributes.
     """
 
+    MODEL_ATTRIBUTE_IMPLEMENTED_BY_ASSETS: ClassVar[RelationField] = RelationField(
+        "modelAttributeImplementedByAssets"
+    )
+    """
+    TBC
+    """
     MODEL_ATTRIBUTE_RELATED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
         "modelAttributeRelatedToAttributes"
     )
@@ -123,6 +129,7 @@ class ModelAttribute(Model):
         "model_attribute_scale",
         "model_attribute_data_type",
         "model_attribute_has_relationships",
+        "model_attribute_implemented_by_assets",
         "model_attribute_related_to_attributes",
         "model_attribute_entities",
         "model_attribute_related_from_attributes",
@@ -245,6 +252,24 @@ class ModelAttribute(Model):
         )
 
     @property
+    def model_attribute_implemented_by_assets(self) -> Optional[List[Catalog]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_implemented_by_assets
+        )
+
+    @model_attribute_implemented_by_assets.setter
+    def model_attribute_implemented_by_assets(
+        self, model_attribute_implemented_by_assets: Optional[List[Catalog]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_attribute_implemented_by_assets = (
+            model_attribute_implemented_by_assets
+        )
+
+    @property
     def model_attribute_related_to_attributes(
         self,
     ) -> Optional[List[ModelAttributeAssociation]]:
@@ -355,6 +380,9 @@ class ModelAttribute(Model):
         model_attribute_has_relationships: Optional[bool] = Field(
             default=None, description=""
         )
+        model_attribute_implemented_by_assets: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
         model_attribute_related_to_attributes: Optional[
             List[ModelAttributeAssociation]
         ] = Field(
@@ -385,5 +413,6 @@ class ModelAttribute(Model):
     )
 
 
+from .catalog import Catalog  # noqa
 from .model_attribute_association import ModelAttributeAssociation  # noqa
 from .model_entity import ModelEntity  # noqa

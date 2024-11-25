@@ -38,12 +38,6 @@ class ADLS(ObjectStore):
     """
     Unique name of the account for this ADLS asset.
     """
-    ASSET_APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "assetApplicationQualifiedName", "assetApplicationQualifiedName"
-    )
-    """
-    Qualified name of the Application Container that contains this asset.
-    """
     AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "azureResourceId", "azureResourceId", "azureResourceId.text"
     )
@@ -69,7 +63,6 @@ class ADLS(ObjectStore):
 
     _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
-        "asset_application_qualified_name",
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",
@@ -89,24 +82,6 @@ class ADLS(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_qualified_name = adls_account_qualified_name
-
-    @property
-    def asset_application_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_application_qualified_name
-        )
-
-    @asset_application_qualified_name.setter
-    def asset_application_qualified_name(
-        self, asset_application_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_application_qualified_name = (
-            asset_application_qualified_name
-        )
 
     @property
     def azure_resource_id(self) -> Optional[str]:
@@ -158,9 +133,6 @@ class ADLS(ObjectStore):
 
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(default=None, description="")
-        asset_application_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
         azure_resource_id: Optional[str] = Field(default=None, description="")
         azure_location: Optional[str] = Field(default=None, description="")
         adls_account_secondary_location: Optional[str] = Field(
