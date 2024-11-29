@@ -14,7 +14,7 @@ from pyatlan.utils import (
 )
 
 ROLE_API = "roles"
-GROUP_API = "groups"
+GROUP_API = "v2/groups"
 USER_API = "users"
 QUERY_API = "query"
 IMAGE_API = "images"
