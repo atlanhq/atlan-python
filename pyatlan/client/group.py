@@ -150,9 +150,10 @@ class GroupClient:
         :param sort: property by which to sort the results, by default : name
         :returns: a list of all the groups in Atlan
         """
-        if response := self.get(offset=offset, limit=limit, sort=sort, columns=columns):
-            return response.records  # type: ignore
-        return []  # type: ignore
+        response: GroupResponse = self.get(
+            offset=offset, limit=limit, sort=sort, columns=columns
+        )
+        return [group for group in response]
 
     @validate_arguments
     def get_by_name(
