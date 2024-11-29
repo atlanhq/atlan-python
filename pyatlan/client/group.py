@@ -111,7 +111,14 @@ class GroupClient:
         :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        request = GroupRequest(post_filter=post_filter,limit=limit,sort=sort,count=count,offset=offset,columns=columns)
+        request = GroupRequest(
+            post_filter=post_filter,
+            limit=limit,
+            sort=sort,
+            count=count,
+            offset=offset,
+            columns=columns,
+        )
         endpoint = GET_GROUPS.format_path_with_params()
         raw_json = self._client._call_api(
             api=endpoint, query_params=request.query_params
@@ -143,11 +150,9 @@ class GroupClient:
         :param sort: property by which to sort the results, by default : name
         :returns: a list of all the groups in Atlan
         """
-        if response := self.get(
-            offset=offset, limit=limit, sort=sort, columns=columns
-        ):
-            return response.records
-        return None
+        if response := self.get(offset=offset, limit=limit, sort=sort, columns=columns):
+            return response.records  # type: ignore
+        return []  # type: ignore
 
     @validate_arguments
     def get_by_name(
