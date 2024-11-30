@@ -82,7 +82,7 @@ def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
 
 
 def test_group_get_pagination(client: AtlanClient, group: CreateGroupResponse):
-    response = client.group.get(limit=1)
+    response = client.group.get(limit=1, count=True)
 
     assert response
     assert response.total_record is not None
@@ -295,3 +295,58 @@ def test_retrieve_admin_logs(
         if count >= 1000:
             break
     assert count > 0
+
+
+def test_get_all_with_limit(client: AtlanClient, group: CreateGroupResponse):
+    limit = 2
+    groups = client.group.get_all(limit=limit)
+    assert groups
+    assert len(groups) == limit
+
+    for group1 in groups:
+        assert group1.id
+        assert group1.name
+        assert group1.path is not None
+
+
+def test_get_all_with_columns(client: AtlanClient, group: CreateGroupResponse):
+    columns = ["path"]
+    groups = client.group.get_all(columns=columns)
+
+    assert groups
+    assert len(groups) >= 1
+
+    for group1 in groups:
+        assert group1.name
+        assert group1.path is not None
+        assert group1.attributes is None
+        assert group1.roles is None
+
+
+def test_get_all_with_sorting(client: AtlanClient, group: CreateGroupResponse):
+    groups = client.group.get_all(sort="name")
+
+    assert groups
+    assert len(groups) >= 1
+
+    sorted_names = [group.name for group in groups if group.name is not None]
+    assert sorted_names == sorted(sorted_names)
+
+
+def test_get_all_with_everything(client: AtlanClient, group: CreateGroupResponse):
+    limit = 2
+    columns = ["path", "attributes"]
+    sort = "name"
+
+    groups = client.group.get_all(limit=limit, columns=columns, sort=sort)
+
+    assert groups
+    assert len(groups) == limit
+    sorted_names = [group.name for group in groups if group.name is not None]
+    assert sorted_names == sorted(sorted_names)
+
+    for group1 in groups:
+        assert group1.name
+        assert group1.path is not None
+        assert group1.roles is None
+        assert group1.attributes is not None

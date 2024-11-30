@@ -96,18 +96,19 @@ class GroupClient:
         limit: Optional[int] = 20,
         post_filter: Optional[str] = None,
         sort: Optional[str] = None,
-        count: bool = True,
+        count: bool = False,
         offset: int = 0,
         columns: Optional[List[str]] = None,
     ) -> GroupResponse:
         """
-        Retrieves a GroupResponse lobject which contains a list of the groups defined in Atlan.
+        Retrieves a GroupResponse object which contains a list of the groups defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param post_filter: which groups to retrieve
         :param sort: property by which to sort the results
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
+        :param columns: provides columns projection support for groups endpoint
         :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
@@ -148,12 +149,12 @@ class GroupClient:
         :param limit: maximum number of results to be returned
         :param offset: starting point for the list of groups when paging
         :param sort: property by which to sort the results, by default : name
+        :param columns: provides columns projection support for groups endpoint
         :returns: a list of all the groups in Atlan
         """
-        response: GroupResponse = self.get(
-            offset=offset, limit=limit, sort=sort, columns=columns
-        )
-        return [group for group in response]
+        if response := self.get(offset=offset, limit=limit, sort=sort, columns=columns):
+            return response.records  # type: ignore
+        return None  # type: ignore
 
     @validate_arguments
     def get_by_name(
