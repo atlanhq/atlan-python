@@ -109,7 +109,7 @@ LOGGER = get_adapter()
 DEFAULT_RETRY = Retry(
     total=3,
     backoff_factor=1,
-    status_forcelist=[403, 500, 502, 503, 504],
+    status_forcelist=[403, 429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
     raise_on_status=False,
 )
