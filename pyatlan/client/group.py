@@ -96,7 +96,7 @@ class GroupClient:
         limit: Optional[int] = 20,
         post_filter: Optional[str] = None,
         sort: Optional[str] = None,
-        count: bool = False,
+        count: bool = True,
         offset: int = 0,
         columns: Optional[List[str]] = None,
     ) -> GroupResponse:
