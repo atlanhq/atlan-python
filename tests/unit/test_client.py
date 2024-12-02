@@ -2275,6 +2275,7 @@ def test_get_all_with_columns(group_client, mock_api_caller):
     assert query_params["columns"] == columns
     mock_api_caller.reset_mock()
 
+
 def test_get_all_sorting(group_client, mock_api_caller):
     mock_page_1 = [
         {"id": "1", "alias": "Group1"},
