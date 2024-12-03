@@ -48,6 +48,7 @@ class AtlanGroup(AtlanObject):
     attributes: Optional[AtlanGroup.Attributes] = Field(
         default=None, description="Detailed attributes of the group."
     )
+    roles: Optional[List[str]] = Field(default=None, description="TBC")
     decentralized_roles: Optional[List[Any]] = Field(default=None, description="TBC")
     id: Optional[str] = Field(
         default=None, description="Unique identifier for the group (GUID)."
@@ -192,6 +193,10 @@ class GroupRequest(AtlanObject):
         default=20,
         description="Maximum number of groups to return per page.",
     )
+    columns: Optional[List[str]] = Field(
+        default=None,
+        description="List of specific fields to include in the response.",
+    )
 
     @property
     def query_params(self) -> dict:
@@ -203,6 +208,8 @@ class GroupRequest(AtlanObject):
         qp["count"] = self.count
         qp["offset"] = self.offset
         qp["limit"] = self.limit
+        if self.columns:
+            qp["columns"] = self.columns
         return qp
 
 

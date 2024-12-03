@@ -98,6 +98,7 @@ class GroupClient:
         sort: Optional[str] = None,
         count: bool = True,
         offset: int = 0,
+        columns: Optional[List[str]] = None,
     ) -> GroupResponse:
         """
         Retrieves a GroupResponse object which contains a list of the groups defined in Atlan.
@@ -107,11 +108,17 @@ class GroupClient:
         :param sort: property by which to sort the results
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
+        :param columns: provides columns projection support for groups endpoint
         :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
         request = GroupRequest(
-            post_filter=post_filter, limit=limit, sort=sort, count=count, offset=offset
+            post_filter=post_filter,
+            limit=limit,
+            sort=sort,
+            count=count,
+            offset=offset,
+            columns=columns,
         )
         endpoint = GET_GROUPS.format_path_with_params()
         raw_json = self._client._call_api(
@@ -134,17 +141,20 @@ class GroupClient:
         limit: int = 20,
         offset: int = 0,
         sort: Optional[str] = "name",
+        columns: Optional[List[str]] = None,
     ) -> List[AtlanGroup]:
         """
         Retrieve all groups defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param offset: starting point for the list of groups when paging
-        :param sort: property by which to sort the results, by default : `name`
+        :param sort: property by which to sort the results, by default : name
+        :param columns: provides columns projection support for groups endpoint
         :returns: a list of all the groups in Atlan
         """
-        response: GroupResponse = self.get(offset=offset, limit=limit, sort=sort)
-        return [group for group in response]
+        if response := self.get(offset=offset, limit=limit, sort=sort, columns=columns):
+            return response.records  # type: ignore
+        return None  # type: ignore
 
     @validate_arguments
     def get_by_name(

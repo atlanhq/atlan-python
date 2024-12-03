@@ -15,6 +15,7 @@ from pyatlan.utils import (
 
 ROLE_API = "roles"
 GROUP_API = "groups"
+GROUP_API_V2 = "v2/groups"
 USER_API = "users"
 QUERY_API = "query"
 IMAGE_API = "images"
@@ -25,7 +26,9 @@ TOKENS_API = "apikeys"
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
 
 # Group APIs
-GET_GROUPS = API(GROUP_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+GET_GROUPS = API(
+    GROUP_API_V2, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 CREATE_GROUP = API(
     GROUP_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
