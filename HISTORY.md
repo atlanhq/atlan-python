@@ -1,3 +1,10 @@
+## 2.6.2 (December 3, 2024)
+
+### QOL improvements
+
+- Added Column projection support to `group.get_all()`.
+- Added retry on http code 429.
+
 ## 2.6.1 (November 25, 2024)
 
 ### New features
