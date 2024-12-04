@@ -1,3 +1,16 @@
+## 2.7.0 (December 4, 2024)
+
+### QOL improvements
+
+- Renamed `CredentialResponseList` to `CredentialListResponse` to ensure consistent response model naming.
+- Updated handling for (`{"records": null}`) in the response to populate the model with an empty list (`[]`) instead of `None`, which is non-iterable.
+- Updated `level` and `connection` fields to use `Optional[Union[Dict[str, Any], str]]`, as they can be strings, preventing Pydantic validation errors, eg:
+
+  ```
+  "level": "user",
+  "connection": "default/bigquery/1234567890"
+  ```
+
 ## 2.6.2 (December 3, 2024)
 
 ### QOL improvements
