@@ -13,8 +13,8 @@ from pyatlan.client.constants import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
     Credential,
+    CredentialListResponse,
     CredentialResponse,
-    CredentialResponseList,
     CredentialTestResponse,
 )
 
@@ -58,14 +58,14 @@ class CredentialClient:
         filter: Optional[Dict[str, Any]] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> CredentialResponseList:
+    ) -> CredentialListResponse:
         """
         Retrieves all credentials.
 
         :param filter: (optional) dictionary specifying the filter criteria.
         :param limit: (optional) maximum number of credentials to retrieve.
         :param offset: (optional) number of credentials to skip before starting retrieval.
-        :returns: CredentialResponseList instance.
+        :returns: CredentialListResponse instance.
         :raises: AtlanError on any error during API invocation.
         """
         params: Dict[str, Any] = {}
@@ -86,8 +86,7 @@ class CredentialClient:
                 400,
                 "API response did not contain the expected 'records' key",
             )
-
-        return CredentialResponseList(**raw_json)
+        return CredentialListResponse(records=raw_json.get("records") or [])
 
     @validate_arguments
     def test(self, credential: Credential) -> CredentialTestResponse:

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic.v1 import Field
 
@@ -70,8 +70,8 @@ class CredentialResponse(AtlanObject):
     host: Optional[str]
     port: Optional[int]
     metadata: Optional[Dict[str, Any]]
-    level: Optional[Dict[str, Any]]
-    connection: Optional[Dict[str, Any]]
+    level: Optional[Union[Dict[str, Any], str]]
+    connection: Optional[Union[Dict[str, Any], str]]
     username: Optional[str]
     extras: Optional[Dict[str, Any]] = Field(default=None, alias="extra")
 
@@ -94,13 +94,13 @@ class CredentialResponse(AtlanObject):
         )
 
 
-class CredentialResponseList(AtlanObject):
+class CredentialListResponse(AtlanObject):
     """
     Model representing a response containing a list of CredentialResponse objects.
     """
 
     records: Optional[List[CredentialResponse]] = Field(
-        default=None, description="list of credential records returned."
+        default_factory=list, description="list of credential records returned."
     )
 
 
