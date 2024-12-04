@@ -280,9 +280,11 @@ def test_get_all_credentials(client: AtlanClient):
     ), "Expected at least one record but found none"
 
 
+@pytest.mark.skip(reason="Tenant currently on has one set of credentials")
 def test_get_all_credentials_with_limit_and_offset(client: AtlanClient):
     limit = 5
     offset = 2
+    credentials = client.credentials.get_all()
     credentials = client.credentials.get_all(limit=limit, offset=offset)
     assert credentials.records is not None, "Expected records but found None"
     assert (
