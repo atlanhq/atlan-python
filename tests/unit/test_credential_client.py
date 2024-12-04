@@ -10,8 +10,8 @@ from pyatlan.client.credential import CredentialClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.credential import (
     Credential,
+    CredentialListResponse,
     CredentialResponse,
-    CredentialResponseList,
     CredentialTestResponse,
 )
 
@@ -208,7 +208,7 @@ def test_cred_get_all_success(
 
     result = client.get_all(filter=test_filter, limit=test_limit, offset=test_offset)
 
-    assert isinstance(result, CredentialResponseList)
+    assert isinstance(result, CredentialListResponse)
     assert len(result.records) == len(test_response["records"])
     for record, expected in zip(result.records, test_response["records"]):
         assert record.id == expected["id"]
@@ -220,7 +220,7 @@ def test_cred_get_all_empty_response(mock_api_caller):
 
     result = client.get_all()
 
-    assert isinstance(result, CredentialResponseList)
+    assert isinstance(result, CredentialListResponse)
     assert len(result.records) == 0
 
 
@@ -257,16 +257,25 @@ def test_cred_get_all_timeout(mock_api_caller):
 
 def test_cred_get_all_partial_response(mock_api_caller):
     mock_api_caller._call_api.return_value = {
-        "records": [{"id": "cred1", "name": "Test Credential"}]
+        "records": [
+            {
+                "id": "cred1",
+                "name": "Test Credential",
+                "level": "user",
+                "connection": "default/bigquery/1697545730",
+            }
+        ]
     }
     client = CredentialClient(mock_api_caller)
 
     result = client.get_all()
 
-    assert isinstance(result, CredentialResponseList)
+    assert isinstance(result, CredentialListResponse)
+    assert result.records[0].host is None
     assert result.records[0].id == "cred1"
     assert result.records[0].name == "Test Credential"
-    assert result.records[0].host is None
+    assert result.records[0].level == "user"
+    assert result.records[0].connection == "default/bigquery/1697545730"
 
 
 def test_cred_get_all_invalid_filter_type(mock_api_caller):
@@ -277,10 +286,11 @@ def test_cred_get_all_invalid_filter_type(mock_api_caller):
 
 
 def test_cred_get_all_no_results(mock_api_caller):
-    mock_api_caller._call_api.return_value = {"records": []}
+    mock_api_caller._call_api.return_value = {"records": None}
     client = CredentialClient(mock_api_caller)
 
     result = client.get_all(filter={"name": "nonexistent"})
 
-    assert isinstance(result, CredentialResponseList)
+    assert isinstance(result, CredentialListResponse)
+    assert result.records == []
     assert len(result.records) == 0
