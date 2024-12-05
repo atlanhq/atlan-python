@@ -28,10 +28,11 @@ from tests.integration.requests_test import delete_token
 
 MODULE_NAME = TestId.make_unique("Purpose")
 PERSONA_NAME = "Data Assets"
-DB_NAME = "RAW"
-TABLE_NAME = "PACKAGETYPES"
-COLUMN_NAME = "PACKAGETYPENAME"
-SCHEMA_NAME = "WIDEWORLDIMPORTERS_WAREHOUSE"
+DB_NAME = "ANALYTICS"
+TABLE_NAME = "STG_STATE_PROVINCES"
+COLUMN_NAME = "LATEST_RECORDED_POPULATION"
+SCHEMA_NAME = "WIDE_WORLD_IMPORTERS"
+REDACTED_NUMBER = "0000000"
 API_TOKEN_NAME = MODULE_NAME
 
 
@@ -178,7 +179,7 @@ def test_find_purpose_by_name(
         count = 0
         # TODO: replace with exponential back-off and jitter
         while not result and count < 10:
-            time.sleep(2)
+            time.sleep(5)
             result = client.asset.find_purposes_by_name(MODULE_NAME)
             count += 1
     assert result
@@ -269,11 +270,9 @@ def test_run_query_without_policy(client: AtlanClient, assign_tag_to_asset, quer
     assert response.rows
     assert len(response.rows) > 1
     row = response.rows[0]
-    assert row
-    assert len(row) == 7
-    assert row[2]
+    assert row and len(row) == 10
     # Ensure it is NOT redacted
-    assert row[2].startswith("Xx") is False
+    assert row[6] and row[6] != REDACTED_NUMBER
 
 
 def test_token_permissions(client: AtlanClient, token):
@@ -317,8 +316,6 @@ def test_run_query_with_policy(assign_tag_to_asset, token, query):
         assert response.rows
         assert len(response.rows) > 1
         row = response.rows[0]
-        assert row
-        assert len(row) == 7
-        assert row[2]
+        assert row and len(row) == 10
         # Ensure it IS redacted
-        assert row[2].startswith("Xx")
+        assert row[6] and row[6] == REDACTED_NUMBER
