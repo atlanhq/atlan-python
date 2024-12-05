@@ -102,9 +102,7 @@ def test_create(
     }
     assert test_product.parent_domain_qualified_name == DATA_DOMAIN_QUALIFIED_NAME
     assert test_product.super_domain_qualified_name == DATA_DOMAIN_QUALIFIED_NAME
-    test_asset_dsl = dumps(
-        loads(test_product.data_product_assets_d_s_l), sort_keys=True
-    )
+    test_asset_dsl = dumps(loads(test_product.data_product_assets_dsl), sort_keys=True)
     expected_asset_dsl = dumps(data_product_assets_dsl_json, sort_keys=True)
     assert test_asset_dsl == expected_asset_dsl
     assert test_product.data_product_assets_playbook_filter == ASSETS_PLAYBOOK_FILTER
@@ -124,9 +122,7 @@ def test_create_under_sub_domain(
     }
     assert test_product.parent_domain_qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
     assert test_product.super_domain_qualified_name == DATA_DOMAIN_QUALIFIED_NAME
-    test_asset_dsl = dumps(
-        loads(test_product.data_product_assets_d_s_l), sort_keys=True
-    )
+    test_asset_dsl = dumps(loads(test_product.data_product_assets_dsl), sort_keys=True)
     expected_asset_dsl = dumps(data_product_assets_dsl_json, sort_keys=True)
     assert test_asset_dsl == expected_asset_dsl
     assert test_product.data_product_assets_playbook_filter == ASSETS_PLAYBOOK_FILTER
