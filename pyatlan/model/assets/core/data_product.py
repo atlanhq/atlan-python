@@ -94,8 +94,8 @@ class DataProduct(DataMesh):
             )
         )
         if asset_selection:
-            product.data_product_assets_d_s_l = (
-                DataProductsAssetsDSL.get_asset_selection(asset_selection)
+            product.data_product_assets_dsl = DataProductsAssetsDSL.get_asset_selection(
+                asset_selection
             )
         return product
 

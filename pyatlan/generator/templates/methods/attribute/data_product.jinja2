@@ -17,7 +17,7 @@
             )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=DataProductsAssetsDSL.get_asset_selection(
+                data_product_assets_dsl=DataProductsAssetsDSL.get_asset_selection(
                     asset_selection
                 ),
                 data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
