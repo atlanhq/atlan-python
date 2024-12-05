@@ -55,7 +55,7 @@ class BusinessPolicyIncident(Incident):
     _convenience_properties: ClassVar[List[str]] = [
         "business_policy_incident_noncompliant_count",
         "business_policy_incident_related_policy_guids",
-        "business_policy_incident_filter_dsl",
+        "business_policy_incident_filter_d_s_l",
     ]
 
     @property
@@ -95,21 +95,21 @@ class BusinessPolicyIncident(Incident):
         )
 
     @property
-    def business_policy_incident_filter_dsl(self) -> Optional[str]:
+    def business_policy_incident_filter_d_s_l(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.business_policy_incident_filter_dsl
+            else self.attributes.business_policy_incident_filter_d_s_l
         )
 
-    @business_policy_incident_filter_dsl.setter
-    def business_policy_incident_filter_dsl(
-        self, business_policy_incident_filter_dsl: Optional[str]
+    @business_policy_incident_filter_d_s_l.setter
+    def business_policy_incident_filter_d_s_l(
+        self, business_policy_incident_filter_d_s_l: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_incident_filter_dsl = (
-            business_policy_incident_filter_dsl
+        self.attributes.business_policy_incident_filter_d_s_l = (
+            business_policy_incident_filter_d_s_l
         )
 
     class Attributes(Incident.Attributes):
@@ -119,7 +119,7 @@ class BusinessPolicyIncident(Incident):
         business_policy_incident_related_policy_guids: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        business_policy_incident_filter_dsl: Optional[str] = Field(
+        business_policy_incident_filter_d_s_l: Optional[str] = Field(
             default=None, description=""
         )
 

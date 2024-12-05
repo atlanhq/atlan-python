@@ -110,7 +110,7 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
         "business_policy_valid_from",
         "business_policy_version",
         "business_policy_review_period",
-        "business_policy_filter_dsl",
+        "business_policy_filter_d_s_l",
         "business_policy_base_parent_guid",
         "business_policy_selected_approval_w_f",
         "exceptions_for_business_policy",
@@ -206,18 +206,18 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
         self.attributes.business_policy_review_period = business_policy_review_period
 
     @property
-    def business_policy_filter_dsl(self) -> Optional[str]:
+    def business_policy_filter_d_s_l(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.business_policy_filter_dsl
+            else self.attributes.business_policy_filter_d_s_l
         )
 
-    @business_policy_filter_dsl.setter
-    def business_policy_filter_dsl(self, business_policy_filter_dsl: Optional[str]):
+    @business_policy_filter_d_s_l.setter
+    def business_policy_filter_d_s_l(self, business_policy_filter_d_s_l: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_filter_dsl = business_policy_filter_dsl
+        self.attributes.business_policy_filter_d_s_l = business_policy_filter_d_s_l
 
     @property
     def business_policy_base_parent_guid(self) -> Optional[str]:
@@ -302,7 +302,9 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
         business_policy_review_period: Optional[str] = Field(
             default=None, description=""
         )
-        business_policy_filter_dsl: Optional[str] = Field(default=None, description="")
+        business_policy_filter_d_s_l: Optional[str] = Field(
+            default=None, description=""
+        )
         business_policy_base_parent_guid: Optional[str] = Field(
             default=None, description=""
         )

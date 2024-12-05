@@ -49,7 +49,6 @@ def to_snake_case(value):
 
     value = value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")
     value = re.sub(r"GUIDs", "Guids", value)
-    value = re.sub(r"DSL", "Dsl", value)
 
     res = [value[0].lower()]
     for c in value[1:]:
