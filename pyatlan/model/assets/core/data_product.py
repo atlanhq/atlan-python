@@ -248,7 +248,7 @@ class DataProduct(DataMesh):
         "daap_sensitivity",
         "data_product_visibility",
         "daap_visibility",
-        "data_product_assets_d_s_l",
+        "data_product_assets_dsl",
         "data_product_assets_playbook_filter",
         "data_product_score_value",
         "data_product_score_updated_at",
@@ -358,18 +358,16 @@ class DataProduct(DataMesh):
         self.attributes.daap_visibility = daap_visibility
 
     @property
-    def data_product_assets_d_s_l(self) -> Optional[str]:
+    def data_product_assets_dsl(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.data_product_assets_d_s_l
+            None if self.attributes is None else self.attributes.data_product_assets_dsl
         )
 
-    @data_product_assets_d_s_l.setter
-    def data_product_assets_d_s_l(self, data_product_assets_d_s_l: Optional[str]):
+    @data_product_assets_dsl.setter
+    def data_product_assets_dsl(self, data_product_assets_dsl: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.data_product_assets_d_s_l = data_product_assets_d_s_l
+        self.attributes.data_product_assets_dsl = data_product_assets_dsl
 
     @property
     def data_product_assets_playbook_filter(self) -> Optional[str]:
@@ -520,7 +518,7 @@ class DataProduct(DataMesh):
         daap_visibility: Optional[DataProductVisibility] = Field(
             default=None, description=""
         )
-        data_product_assets_d_s_l: Optional[str] = Field(default=None, description="")
+        data_product_assets_dsl: Optional[str] = Field(default=None, description="")
         data_product_assets_playbook_filter: Optional[str] = Field(
             default=None, description=""
         )
@@ -560,7 +558,7 @@ class DataProduct(DataMesh):
             )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=DataProductsAssetsDSL.get_asset_selection(
+                data_product_assets_dsl=DataProductsAssetsDSL.get_asset_selection(
                     asset_selection
                 ),
                 data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),

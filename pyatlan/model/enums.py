@@ -2545,6 +2545,7 @@ class DataProductStatus(str, Enum):
     ACTIVE = "Active"
     SUNSET = "Sunset"
     ARCHIVED = "Archived"
+    DRAFT = "Draft"
 
 
 class DataProductVisibility(str, Enum):

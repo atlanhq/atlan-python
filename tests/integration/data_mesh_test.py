@@ -423,7 +423,7 @@ def test_update_product(
     assert len(products) == 1
     assert products[
         0
-    ].data_product_assets_d_s_l == DataProductsAssetsDSL.get_asset_selection(assets)
+    ].data_product_assets_dsl == DataProductsAssetsDSL.get_asset_selection(assets)
 
     # Test the product.updater() method without assets
     # (ensure asset selection remains unchanged)

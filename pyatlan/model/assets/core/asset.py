@@ -1061,7 +1061,7 @@ class Asset(Referenceable):
     """
     Whether this asset has contract (true) or not (false).
     """
-    ASSET_POLICY_GUI_DS: ClassVar[KeywordField] = KeywordField(
+    ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
         "assetPolicyGUIDs", "assetPolicyGUIDs"
     )
     """
@@ -1073,11 +1073,11 @@ class Asset(Referenceable):
     """
     Count of policies inside the asset
     """
-    DOMAIN_GUI_DS: ClassVar[KeywordField] = KeywordField("domainGUIDs", "domainGUIDs")
+    DOMAIN_GUIDS: ClassVar[KeywordField] = KeywordField("domainGUIDs", "domainGUIDs")
     """
     Array of domain guids linked to this asset
     """
-    NON_COMPLIANT_ASSET_POLICY_GUI_DS: ClassVar[KeywordField] = KeywordField(
+    NON_COMPLIANT_ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
         "nonCompliantAssetPolicyGUIDs", "nonCompliantAssetPolicyGUIDs"
     )
     """
@@ -1307,10 +1307,10 @@ class Asset(Referenceable):
         "asset_theme_hex",
         "lexicographical_sort_order",
         "has_contract",
-        "asset_policy_g_u_i_ds",
+        "asset_policy_guids",
         "asset_policies_count",
-        "domain_g_u_i_ds",
-        "non_compliant_asset_policy_g_u_i_ds",
+        "domain_guids",
+        "non_compliant_asset_policy_guids",
         "application_qualified_name",
         "schema_registry_subjects",
         "data_contract_latest_certified",
@@ -3185,16 +3185,14 @@ class Asset(Referenceable):
         self.attributes.has_contract = has_contract
 
     @property
-    def asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
-        return (
-            None if self.attributes is None else self.attributes.asset_policy_g_u_i_ds
-        )
+    def asset_policy_guids(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.asset_policy_guids
 
-    @asset_policy_g_u_i_ds.setter
-    def asset_policy_g_u_i_ds(self, asset_policy_g_u_i_ds: Optional[Set[str]]):
+    @asset_policy_guids.setter
+    def asset_policy_guids(self, asset_policy_guids: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_policy_g_u_i_ds = asset_policy_g_u_i_ds
+        self.attributes.asset_policy_guids = asset_policy_guids
 
     @property
     def asset_policies_count(self) -> Optional[int]:
@@ -3207,31 +3205,31 @@ class Asset(Referenceable):
         self.attributes.asset_policies_count = asset_policies_count
 
     @property
-    def domain_g_u_i_ds(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.domain_g_u_i_ds
+    def domain_guids(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.domain_guids
 
-    @domain_g_u_i_ds.setter
-    def domain_g_u_i_ds(self, domain_g_u_i_ds: Optional[Set[str]]):
+    @domain_guids.setter
+    def domain_guids(self, domain_guids: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.domain_g_u_i_ds = domain_g_u_i_ds
+        self.attributes.domain_guids = domain_guids
 
     @property
-    def non_compliant_asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
+    def non_compliant_asset_policy_guids(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.non_compliant_asset_policy_g_u_i_ds
+            else self.attributes.non_compliant_asset_policy_guids
         )
 
-    @non_compliant_asset_policy_g_u_i_ds.setter
-    def non_compliant_asset_policy_g_u_i_ds(
-        self, non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]]
+    @non_compliant_asset_policy_guids.setter
+    def non_compliant_asset_policy_guids(
+        self, non_compliant_asset_policy_guids: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.non_compliant_asset_policy_g_u_i_ds = (
-            non_compliant_asset_policy_g_u_i_ds
+        self.attributes.non_compliant_asset_policy_guids = (
+            non_compliant_asset_policy_guids
         )
 
     @property
@@ -3710,10 +3708,10 @@ class Asset(Referenceable):
         asset_theme_hex: Optional[str] = Field(default=None, description="")
         lexicographical_sort_order: Optional[str] = Field(default=None, description="")
         has_contract: Optional[bool] = Field(default=None, description="")
-        asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
+        asset_policy_guids: Optional[Set[str]] = Field(default=None, description="")
         asset_policies_count: Optional[int] = Field(default=None, description="")
-        domain_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
-        non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]] = Field(
+        domain_guids: Optional[Set[str]] = Field(default=None, description="")
+        non_compliant_asset_policy_guids: Optional[Set[str]] = Field(
             default=None, description=""
         )
         application_qualified_name: Optional[str] = Field(default=None, description="")

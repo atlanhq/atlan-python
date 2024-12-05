@@ -72,7 +72,7 @@ class BusinessPolicyException(Asset, type_name="BusinessPolicyException"):
         "business_policy_exception_users",
         "business_policy_exception_groups",
         "business_policy_qualified_name",
-        "business_policy_exception_filter_d_s_l",
+        "business_policy_exception_filter_dsl",
         "business_policy_for_exception",
     ]
 
@@ -129,21 +129,21 @@ class BusinessPolicyException(Asset, type_name="BusinessPolicyException"):
         self.attributes.business_policy_qualified_name = business_policy_qualified_name
 
     @property
-    def business_policy_exception_filter_d_s_l(self) -> Optional[str]:
+    def business_policy_exception_filter_dsl(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.business_policy_exception_filter_d_s_l
+            else self.attributes.business_policy_exception_filter_dsl
         )
 
-    @business_policy_exception_filter_d_s_l.setter
-    def business_policy_exception_filter_d_s_l(
-        self, business_policy_exception_filter_d_s_l: Optional[str]
+    @business_policy_exception_filter_dsl.setter
+    def business_policy_exception_filter_dsl(
+        self, business_policy_exception_filter_dsl: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_exception_filter_d_s_l = (
-            business_policy_exception_filter_d_s_l
+        self.attributes.business_policy_exception_filter_dsl = (
+            business_policy_exception_filter_dsl
         )
 
     @property
@@ -172,7 +172,7 @@ class BusinessPolicyException(Asset, type_name="BusinessPolicyException"):
         business_policy_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        business_policy_exception_filter_d_s_l: Optional[str] = Field(
+        business_policy_exception_filter_dsl: Optional[str] = Field(
             default=None, description=""
         )
         business_policy_for_exception: Optional[BusinessPolicy] = Field(
