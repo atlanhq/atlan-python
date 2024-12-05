@@ -2227,6 +2227,12 @@ class AssetInputHandling(str, Enum):
     UPDATE = "update"
 
 
+class AssetCreationHandling:
+    FULL = "upsert"
+    PARTIAL = "partial"
+    NONE = "update"
+
+
 class AssetDeltaHandling(str, Enum):
     FULL_REPLACEMENT = "full"
     INCREMENTAL = "delta"
