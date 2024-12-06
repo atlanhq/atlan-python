@@ -15,16 +15,16 @@ from tests.integration.client import TestId
 MODULE_NAME = TestId.make_unique("TaskClient")
 TAG_NAME = MODULE_NAME
 
-DB_NAME = "RAW"
+DB_NAME = "WIDE_WORLD_IMPORTERS"
 TABLE_NAME = "PACKAGETYPES"
 COLUMN_NAME = "PACKAGETYPENAME"
-SCHEMA_NAME = "WIDEWORLDIMPORTERS_WAREHOUSE"
+SCHEMA_NAME = "BRONZE_WAREHOUSE"
 
 
 @pytest.fixture(scope="module")
 def snowflake_conn(client: AtlanClient):
     return client.asset.find_connections_by_name(
-        "development", AtlanConnectorType.SNOWFLAKE
+        "production", AtlanConnectorType.SNOWFLAKE
     )[0]
 
 
