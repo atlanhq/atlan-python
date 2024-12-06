@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 
-import re
 
 CAMEL_CASE_OVERRIDES = {
     "index_type_es_fields": "IndexTypeESFields",
@@ -48,7 +47,6 @@ def to_snake_case(value):
         return "mapped_atlan_tag_name"
 
     value = value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")
-    value = re.sub(r"GUIDs", "Guids", value)
 
     res = [value[0].lower()]
     for c in value[1:]:

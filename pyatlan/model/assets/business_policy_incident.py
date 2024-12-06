@@ -54,7 +54,7 @@ class BusinessPolicyIncident(Incident):
 
     _convenience_properties: ClassVar[List[str]] = [
         "business_policy_incident_noncompliant_count",
-        "business_policy_incident_related_policy_guids",
+        "business_policy_incident_related_policy_g_u_i_ds",
         "business_policy_incident_filter_d_s_l",
     ]
 
@@ -77,21 +77,21 @@ class BusinessPolicyIncident(Incident):
         )
 
     @property
-    def business_policy_incident_related_policy_guids(self) -> Optional[Set[str]]:
+    def business_policy_incident_related_policy_g_u_i_ds(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.business_policy_incident_related_policy_guids
+            else self.attributes.business_policy_incident_related_policy_g_u_i_ds
         )
 
-    @business_policy_incident_related_policy_guids.setter
-    def business_policy_incident_related_policy_guids(
-        self, business_policy_incident_related_policy_guids: Optional[Set[str]]
+    @business_policy_incident_related_policy_g_u_i_ds.setter
+    def business_policy_incident_related_policy_g_u_i_ds(
+        self, business_policy_incident_related_policy_g_u_i_ds: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_incident_related_policy_guids = (
-            business_policy_incident_related_policy_guids
+        self.attributes.business_policy_incident_related_policy_g_u_i_ds = (
+            business_policy_incident_related_policy_g_u_i_ds
         )
 
     @property
@@ -116,7 +116,7 @@ class BusinessPolicyIncident(Incident):
         business_policy_incident_noncompliant_count: Optional[int] = Field(
             default=None, description=""
         )
-        business_policy_incident_related_policy_guids: Optional[Set[str]] = Field(
+        business_policy_incident_related_policy_g_u_i_ds: Optional[Set[str]] = Field(
             default=None, description=""
         )
         business_policy_incident_filter_d_s_l: Optional[str] = Field(
