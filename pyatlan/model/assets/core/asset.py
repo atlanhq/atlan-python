@@ -1061,7 +1061,7 @@ class Asset(Referenceable):
     """
     Whether this asset has contract (true) or not (false).
     """
-    ASSET_POLICY_GUI_DS: ClassVar[KeywordField] = KeywordField(
+    ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
         "assetPolicyGUIDs", "assetPolicyGUIDs"
     )
     """
@@ -1073,11 +1073,11 @@ class Asset(Referenceable):
     """
     Count of policies inside the asset
     """
-    DOMAIN_GUI_DS: ClassVar[KeywordField] = KeywordField("domainGUIDs", "domainGUIDs")
+    DOMAIN_GUIDS: ClassVar[KeywordField] = KeywordField("domainGUIDs", "domainGUIDs")
     """
     Array of domain guids linked to this asset
     """
-    NON_COMPLIANT_ASSET_POLICY_GUI_DS: ClassVar[KeywordField] = KeywordField(
+    NON_COMPLIANT_ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
         "nonCompliantAssetPolicyGUIDs", "nonCompliantAssetPolicyGUIDs"
     )
     """
