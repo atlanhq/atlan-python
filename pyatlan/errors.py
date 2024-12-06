@@ -95,7 +95,7 @@ class ErrorCode(Enum):
     INVALID_REQUEST_PASSTHROUGH = (
         400,
         "ATLAN-PYTHON-400-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         InvalidRequestError,
     )
@@ -572,7 +572,7 @@ class ErrorCode(Enum):
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         AuthenticationError,
     )
@@ -616,7 +616,7 @@ class ErrorCode(Enum):
     PERMISSION_PASSTHROUGH = (
         403,
         "ATLAN-PYTHON-403-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         PermissionError,
     )
@@ -637,7 +637,7 @@ class ErrorCode(Enum):
     NOT_FOUND_PASSTHROUGH = (
         404,
         "ATLAN-PYTHON-404-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         NotFoundError,
     )
@@ -848,7 +848,7 @@ class ErrorCode(Enum):
     CONFLICT_PASSTHROUGH = (
         409,
         "ATLAN-PYTHON-409-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         ConflictError,
     )
@@ -864,14 +864,14 @@ class ErrorCode(Enum):
     RATE_LIMIT_PASSTHROUGH = (
         429,
         "ATLAN-PYTHON-429-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         RateLimitError,
     )
     ERROR_PASSTHROUGH = (
         500,
         "ATLAN-PYTHON-500-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with {0}: {1} -- caused by {2}.",
         "Check the details of the server's message to correct your request.",
         ApiError,
     )

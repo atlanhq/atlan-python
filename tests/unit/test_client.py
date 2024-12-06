@@ -1890,7 +1890,7 @@ class TestBatch:
             assert unsaved.name == saved.name
 
         exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
-            "bad", "stuff"
+            "bad", "stuff", []
         )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
             mock_asset_client.save.side_effect = exception
@@ -1941,7 +1941,7 @@ class TestBatch:
         self, custom_metadata_handling, mock_asset_client
     ):
         exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
-            "bad", "stuff"
+            "bad", "stuff", []
         )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
             mock_asset_client.save.side_effect = exception
