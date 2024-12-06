@@ -421,11 +421,23 @@ class AtlanClient(BaseSettings):
                     error_message = error_info.get(
                         "errorMessage", ""
                     ) or error_info.get("message", "")
+                    causes = error_info.get("causes", [])
+
+                    # Handle the causes and format them for exception
+                    cause_details = []
+                    if causes and isinstance(causes, list):
+                        for cause in causes:
+                            cause_details.append(
+                                f"ErrorType: {cause.get('errorType', 'Unknown')}, "
+                                f"Message: {cause.get('errorMessage', 'No additional information provided')}, "
+                                f"Location: {cause.get('location', 'Unknown location')}"
+                            )
                     if error_code and error_message:
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
                             response.status_code, ErrorCode.ERROR_PASSTHROUGH
                         )
-                        raise error.exception_with_parameters(error_code, error_message)
+                        # Raise exception with error details and causes
+                        raise error.exception_with_parameters(error_code, error_message, cause_details)
                 raise AtlanError(
                     SimpleNamespace(
                         http_error_code=response.status_code,
