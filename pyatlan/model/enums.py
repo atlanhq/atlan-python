@@ -2227,7 +2227,7 @@ class AssetInputHandling(str, Enum):
     UPDATE = "update"
 
 
-class AssetCreationHandling:
+class AssetCreationHandling(str, Enum):
     FULL = "upsert"
     PARTIAL = "partial"
     NONE = "update"

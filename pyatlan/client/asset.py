@@ -2048,7 +2048,7 @@ class Batch:
         track: bool = False,
         case_insensitive: bool = False,
         table_view_agnostic: bool = False,
-        creation_handling: Optional[AssetCreationHandling] = AssetCreationHandling.FULL,
+        creation_handling: AssetCreationHandling = AssetCreationHandling.FULL,
     ):
         """
         Create a new batch of assets to be bulk-saved.
@@ -2098,7 +2098,7 @@ class Batch:
         self._updated: List[Asset] = []
         self._restored: List[Asset] = []
         self._skipped: List[Asset] = []
-        self._resolved_qualified_names: Dict[AssetIdentity, str] = {}
+        self._resolved_qualified_names: Dict[str, str] = {}
 
     @property
     def failures(self) -> List[FailedBatch]:
@@ -2213,13 +2213,13 @@ class Batch:
                 or self._creation_handling != AssetCreationHandling.FULL
                 or fuzzy_match
             ):
-                found: Dict[AssetIdentity, str] = {}
-                qualified_names = [asset.qualified_name for asset in self._batch]
+                found: Dict[str, str] = {}
+                qualified_names = [asset.qualified_name or "" for asset in self._batch]
                 if self._case_insensitive:
                     search = FluentSearch().select(include_archived=True).min_somes(1)
                     for qn in qualified_names:
                         search = search.where_some(
-                            Asset.QUALIFIED_NAME.eq(qn, self._case_insensitive)
+                            Asset.QUALIFIED_NAME.eq(qn or "", self._case_insensitive)
                         )
                 else:
                     search = (
@@ -2228,18 +2228,22 @@ class Batch:
                         .where(Asset.QUALIFIED_NAME.within(qualified_names))
                     )
                 results = search.page_size(
-                    max(self._max_size * 2, DSL.__fields__.get("size").default)
+                    max(self._max_size * 2, DSL.__fields__.get("size").default)  # type: ignore[union-attr]
                 ).execute(client=self._client)
 
                 for asset in results:
                     asset_id = AssetIdentity(
-                        asset.type_name, asset.qualified_name, self._case_insensitive
+                        asset.type_name,
+                        asset.qualified_name or "",
+                        self._case_insensitive,
                     )
-                    found[str(asset_id)] = asset.qualified_name
+                    found[str(asset_id)] = asset.qualified_name or ""
 
                 for asset in self._batch:
                     asset_id = AssetIdentity(
-                        asset.type_name, asset.qualified_name, self._case_insensitive
+                        asset.type_name,
+                        asset.qualified_name or "",
+                        self._case_insensitive,
                     )
                     # If found, with a type match, go ahead and update it
                     if str(asset_id) in found:
@@ -2247,7 +2251,10 @@ class Batch:
                         # in case it matched case-insensitively, we need the proper case-sensitive name we
                         # found to ensure it's an update, not a create)
                         self.add_fuzzy_matched(
-                            asset, asset.type_name, found.get(str(asset_id)), revised
+                            asset,
+                            asset.type_name,
+                            found.get(str(asset_id), ""),
+                            revised,
                         )
                     elif (
                         self._table_view_agnostic
@@ -2255,30 +2262,40 @@ class Batch:
                     ):
                         # If found as a different (but acceptable) type, update that instead
                         as_table = AssetIdentity(
-                            Table.__name__, asset.qualified_name, self._case_insensitive
+                            Table.__name__,
+                            asset.qualified_name or "",
+                            self._case_insensitive,
                         )
                         as_view = AssetIdentity(
-                            View.__name__, asset.qualified_name, self._case_insensitive
+                            View.__name__,
+                            asset.qualified_name or "",
+                            self._case_insensitive,
                         )
                         as_materialized_view = AssetIdentity(
                             MaterialisedView.__name__,
-                            asset.qualified_name,
+                            asset.qualified_name or "",
                             self._case_insensitive,
                         )
 
                         if as_table in found:
                             self.add_fuzzy_matched(
-                                asset, Table.__name__, found.get(as_table), revised
+                                asset,
+                                Table.__name__,
+                                found.get(str(as_table), ""),
+                                revised,
                             )
                         elif as_view in found:
                             self.add_fuzzy_matched(
-                                asset, View.__name__, found.get(as_view), revised
+                                asset,
+                                View.__name__,
+                                found.get(str(as_view), ""),
+                                revised,
                             )
                         elif as_materialized_view in found:
                             self.add_fuzzy_matched(
                                 asset,
                                 MaterialisedView.__name__,
-                                found.get(as_materialized_view),
+                                found.get(str(as_materialized_view), ""),
                                 revised,
                             )
                         elif self._creation_handling == AssetCreationHandling.PARTIAL:
@@ -2380,7 +2397,7 @@ class Batch:
                         self._num_restored += 1
                     if self._case_insensitive:
                         type_name = one.type_name
-                        qualified_name = one.qualified_name
+                        qualified_name = one.qualified_name or ""
                         id = AssetIdentity(
                             type_name=type_name,
                             qualified_name=qualified_name,
@@ -2432,7 +2449,7 @@ class AssetIdentity(AtlanObject):
         """
         if case_insensitive:
             qualified_name = qualified_name.lower()
-        super().__init__(type_name=type_name, qualified_name=qualified_name)
+        super().__init__(type_name=type_name, qualified_name=qualified_name)  # type: ignore[call-arg]
 
     @staticmethod
     def from_string(combined: str) -> "AssetIdentity":
