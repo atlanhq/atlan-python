@@ -88,12 +88,10 @@ class View(SQL):
             schema_qualified_name=schema_qualified_name,
         )
 
-    type_name: str = Field(default="View", allow_mutation=False)
+    type_name: str = Field(default="View", allow_mutation=True)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "View":
-            raise ValueError("must be View")
         return v
 
     def __setattr__(self, name, value):

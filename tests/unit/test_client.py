@@ -142,8 +142,8 @@ def group_client(mock_api_caller):
 
 
 @pytest.fixture
-def mock_asset_client():
-    return Mock(AssetClient)
+def mock_atlan_client():
+    return Mock(AtlanClient)
 
 
 @pytest.fixture(scope="module")
@@ -1828,16 +1828,16 @@ def test_atlan_call_api_server_error_messages(
 
 
 class TestBatch:
-    def test_init(self, mock_asset_client):
-        sut = Batch(client=mock_asset_client, max_size=10)
+    def test_init(self, mock_atlan_client):
+        sut = Batch(client=mock_atlan_client, max_size=10)
 
-        self.assert_asset_client_not_called(mock_asset_client, sut)
+        self.assert_asset_client_not_called(mock_atlan_client, sut)
 
-    def assert_asset_client_not_called(self, mock_asset_client, sut):
+    def assert_asset_client_not_called(self, mock_atlan_client, sut):
         assert 0 == len(sut.created)
         assert 0 == len(sut.updated)
         assert 0 == len(sut.failures)
-        mock_asset_client.assert_not_called()
+        mock_atlan_client.assert_not_called()
 
     @pytest.mark.parametrize(
         "custom_metadata_handling",
@@ -1848,40 +1848,41 @@ class TestBatch:
         ],
     )
     def test_add_when_capture_failure_true(
-        self, custom_metadata_handling, mock_asset_client
+        self, custom_metadata_handling, mock_atlan_client
     ):
-        table_1 = Mock(Table)
-        table_2 = Mock(Table)
-        table_3 = Mock(Table)
-        table_4 = Mock(Table)
+        table_1 = Mock(Table(guid="t1"))
+        table_2 = Mock(Table(guid="t2"))
+        table_3 = Mock(Table(guid="t3"))
+        table_4 = Mock(Table(guid="t4"))
         mock_response = Mock(spec=AssetMutationResponse)
         mutated_entities = Mock()
         created = [table_1]
         updated = [table_2]
         mutated_entities.CREATE = created
         mutated_entities.UPDATE = updated
+        mock_response.guid_assignments = {}
         mock_response.attach_mock(mutated_entities, "mutated_entities")
 
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
-            mock_asset_client.save.return_value = mock_response
+            mock_atlan_client.asset.save.return_value = mock_response
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
-            mock_asset_client.save_replacing_cm.return_value = mock_response
+            mock_atlan_client.asset.save_replacing_cm.return_value = mock_response
         else:
-            mock_asset_client.save_merging_cm.return_value = mock_response
+            mock_atlan_client.asset.save_merging_cm.return_value = mock_response
 
         sut = Batch(
-            client=mock_asset_client,
+            client=mock_atlan_client,
             max_size=2,
             capture_failures=True,
             custom_metadata_handling=custom_metadata_handling,
         )
         sut.add(table_1)
-        self.assert_asset_client_not_called(mock_asset_client, sut)
+        self.assert_asset_client_not_called(mock_atlan_client, sut)
 
         sut.add(table_2)
 
-        assert len(created) == len(sut.created)
-        assert len(updated) == len(sut.updated)
+        assert len(created) == sut.num_created
+        assert len(updated) == sut.num_updated
         for unsaved, saved in zip(created, sut.created):
             unsaved.trim_to_required.assert_called_once()
             assert unsaved.name == saved.name
@@ -1893,11 +1894,11 @@ class TestBatch:
             "bad", "stuff"
         )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
-            mock_asset_client.save.side_effect = exception
+            mock_atlan_client.asset.save.side_effect = exception
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
-            mock_asset_client.save_replacing_cm.side_effect = exception
+            mock_atlan_client.asset.save_replacing_cm.side_effect = exception
         else:
-            mock_asset_client.save_merging_cm.side_effect = exception
+            mock_atlan_client.asset.save_merging_cm.side_effect = exception
 
         sut.add(table_3)
 
@@ -1908,21 +1909,21 @@ class TestBatch:
         assert [table_3, table_4] == failure.failed_assets
         assert exception == failure.failure_reason
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
-            mock_asset_client.save.has_calls(
+            mock_atlan_client.asset.save.has_calls(
                 [
                     call([table_1, table_2], replace_atlan_tags=False),
                     call([table_3, table_4], replace_atlan_tags=False),
                 ]
             )
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
-            mock_asset_client.save_replacing_cm.has_calls(
+            mock_atlan_client.asset.save_replacing_cm.has_calls(
                 [
                     call([table_1, table_2], replace_atlan_tags=False),
                     call([table_3, table_4], replace_atlan_tags=False),
                 ]
             )
         else:
-            mock_asset_client.save_merging_cm.has_calls(
+            mock_atlan_client.asset.save_merging_cm.has_calls(
                 [
                     call([table_1, table_2], replace_atlan_tags=False),
                     call([table_3, table_4], replace_atlan_tags=False),
@@ -1938,20 +1939,20 @@ class TestBatch:
         ],
     )
     def test_add_when_capture_failure_false_then_exception_raised(
-        self, custom_metadata_handling, mock_asset_client
+        self, custom_metadata_handling, mock_atlan_client
     ):
         exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
             "bad", "stuff"
         )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
-            mock_asset_client.save.side_effect = exception
+            mock_atlan_client.asset.save.side_effect = exception
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
-            mock_asset_client.save_replacing_cm.side_effect = exception
+            mock_atlan_client.asset.save_replacing_cm.side_effect = exception
         else:
-            mock_asset_client.save_merging_cm.side_effect = exception
+            mock_atlan_client.asset.save_merging_cm.side_effect = exception
 
         sut = Batch(
-            client=mock_asset_client,
+            client=mock_atlan_client,
             max_size=1,
             capture_failures=False,
             custom_metadata_handling=custom_metadata_handling,
@@ -1965,7 +1966,7 @@ class TestBatch:
 
     @patch.object(AtlasGlossaryTerm, "trim_to_required")
     @patch.object(AtlasGlossaryTerm, "ref_by_guid")
-    def test_term_add(self, mock_ref_by_guid, mock_trim_to_required, mock_asset_client):
+    def test_term_add(self, mock_ref_by_guid, mock_trim_to_required, mock_atlan_client):
         mutated_entities = Mock()
         mock_response = Mock(spec=AssetMutationResponse)
         term_1 = AtlasGlossaryTerm(guid="test-guid1")
@@ -1973,18 +1974,21 @@ class TestBatch:
         created = [term_1, term_2]
         mutated_entities.UPDATE = []
         mutated_entities.CREATE = created
+        mock_response.guid_assignments = {}
         mock_response.attach_mock(mutated_entities, "mutated_entities")
-        mock_asset_client.save.return_value = mock_response
+        mock_atlan_client.asset.search.return_value = [term_1]
+        mock_atlan_client.asset.save.return_value = mock_response
         batch = Batch(
-            client=mock_asset_client,
+            client=mock_atlan_client,
             max_size=2,
+            track=True,
         )
         batch.add(term_1)
         # Because the batch is not yet full
-        self.assert_asset_client_not_called(mock_asset_client, batch)
+        self.assert_asset_client_not_called(mock_atlan_client, batch)
         batch.add(term_2)
 
-        assert len(created) == len(batch.created)
+        assert len(created) == batch.num_created
         mock_ref_by_guid.assert_has_calls([call(term_1.guid), call(term_2.guid)])
         mock_trim_to_required.assert_not_called()
 
