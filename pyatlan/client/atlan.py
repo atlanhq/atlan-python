@@ -437,7 +437,9 @@ class AtlanClient(BaseSettings):
                             response.status_code, ErrorCode.ERROR_PASSTHROUGH
                         )
                         # Raise exception with error details and causes
-                        raise error.exception_with_parameters(error_code, error_message, cause_details)
+                        raise error.exception_with_parameters(
+                            error_code, error_message, cause_details
+                        )
                 raise AtlanError(
                     SimpleNamespace(
                         http_error_code=response.status_code,
