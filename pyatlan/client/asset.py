@@ -2219,13 +2219,15 @@ class Batch:
                     search = FluentSearch().select(include_archived=True).min_somes(1)
                     for qn in qualified_names:
                         search = search.where_some(
-                            Asset.QUALIFIED_NAME.eq(qn or "", self._case_insensitive)
+                            Asset.QUALIFIED_NAME.eq(
+                                value=qn or "", case_insensitive=self._case_insensitive
+                            )
                         )
                 else:
                     search = (
                         FluentSearch()
                         .select(include_archived=True)
-                        .where(Asset.QUALIFIED_NAME.within(qualified_names))
+                        .where(Asset.QUALIFIED_NAME.within(values=qualified_names))
                     )
                 results = search.page_size(
                     max(self._max_size * 2, DSL.__fields__.get("size").default)  # type: ignore[union-attr]
@@ -2233,17 +2235,17 @@ class Batch:
 
                 for asset in results:
                     asset_id = AssetIdentity(
-                        asset.type_name,
-                        asset.qualified_name or "",
-                        self._case_insensitive,
+                        type_name=asset.type_name,
+                        qualified_name=asset.qualified_name or "",
+                        case_insensitive=self._case_insensitive,
                     )
                     found[str(asset_id)] = asset.qualified_name or ""
 
                 for asset in self._batch:
                     asset_id = AssetIdentity(
-                        asset.type_name,
-                        asset.qualified_name or "",
-                        self._case_insensitive,
+                        type_name=asset.type_name,
+                        qualified_name=asset.qualified_name or "",
+                        case_insensitive=self._case_insensitive,
                     )
                     # If found, with a type match, go ahead and update it
                     if str(asset_id) in found:
@@ -2251,10 +2253,9 @@ class Batch:
                         # in case it matched case-insensitively, we need the proper case-sensitive name we
                         # found to ensure it's an update, not a create)
                         self.add_fuzzy_matched(
-                            asset,
-                            asset.type_name,
-                            found.get(str(asset_id), ""),
-                            revised,
+                            asset=asset,
+                            actual_qn=found.get(str(asset_id), ""),
+                            revised=revised,
                         )
                     elif (
                         self._table_view_agnostic
@@ -2262,41 +2263,41 @@ class Batch:
                     ):
                         # If found as a different (but acceptable) type, update that instead
                         as_table = AssetIdentity(
-                            Table.__name__,
-                            asset.qualified_name or "",
-                            self._case_insensitive,
+                            type_name=Table.__name__,
+                            qualified_name=asset.qualified_name or "",
+                            case_insensitive=self._case_insensitive,
                         )
                         as_view = AssetIdentity(
-                            View.__name__,
-                            asset.qualified_name or "",
-                            self._case_insensitive,
+                            type_name=View.__name__,
+                            qualified_name=asset.qualified_name or "",
+                            case_insensitive=self._case_insensitive,
                         )
                         as_materialized_view = AssetIdentity(
-                            MaterialisedView.__name__,
-                            asset.qualified_name or "",
-                            self._case_insensitive,
+                            type_name=MaterialisedView.__name__,
+                            qualified_name=asset.qualified_name or "",
+                            case_insensitive=self._case_insensitive,
                         )
 
-                        if as_table in found:
+                        if str(as_table) in found:
                             self.add_fuzzy_matched(
-                                asset,
-                                Table.__name__,
-                                found.get(str(as_table), ""),
-                                revised,
+                                asset=asset,
+                                actual_qn=found.get(str(as_table), ""),
+                                revised=revised,
+                                type_name=Table.__name__,
                             )
-                        elif as_view in found:
+                        elif str(as_view) in found:
                             self.add_fuzzy_matched(
-                                asset,
-                                View.__name__,
-                                found.get(str(as_view), ""),
-                                revised,
+                                asset=asset,
+                                actual_qn=found.get(str(as_view), ""),
+                                revised=revised,
+                                type_name=View.__name__,
                             )
-                        elif as_materialized_view in found:
+                        elif str(as_materialized_view) in found:
                             self.add_fuzzy_matched(
-                                asset,
-                                MaterialisedView.__name__,
-                                found.get(str(as_materialized_view), ""),
-                                revised,
+                                asset=asset,
+                                actual_qn=found.get(str(as_materialized_view), ""),
+                                revised=revised,
+                                type_name=MaterialisedView.__name__,
                             )
                         elif self._creation_handling == AssetCreationHandling.PARTIAL:
                             # Still create it (partial), if not found
@@ -2376,13 +2377,21 @@ class Batch:
             if response.guid_assignments:
                 self._resolved_guids.update(response.guid_assignments)
             if sent:
-                created_guids = {asset.guid for asset in self._created}
-                updated_guids = {asset.guid for asset in self._updated}
+                created_guids, updated_guids = {}, {}
+                if response.mutated_entities:
+                    if response.mutated_entities.CREATE:
+                        created_guids = {
+                            asset.guid for asset in response.mutated_entities.CREATE
+                        }
+                    if response.mutated_entities.UPDATE:
+                        updated_guids = {
+                            asset.guid for asset in response.mutated_entities.UPDATE
+                        }
                 for one in sent:
                     guid = one.guid
                     if guid and (
                         not response.guid_assignments
-                        or not response.guid_assignments.get(guid)
+                        or guid not in response.guid_assignments
                     ):
                         # Ensure any assets that were sent with GUIDs
                         # that were used as-is are added to the resolved GUIDs map
@@ -2392,6 +2401,8 @@ class Batch:
                         mapped_guid not in created_guids
                         and mapped_guid not in updated_guids
                     ):
+                        # Ensure any assets that do not show as either created or updated are still tracked
+                        # as possibly restored (and inject the mapped GUID in case it had a placeholder)
                         one.guid = mapped_guid
                         self.__track(self._restored, one)
                         self._num_restored += 1
@@ -2417,11 +2428,17 @@ class Batch:
         tracker.append(asset)
 
     def add_fuzzy_matched(
-        self, asset: Asset, type_name: str, actualQN: str, revised: List[Asset]
+        self,
+        asset: Asset,
+        actual_qn: str,
+        revised: List[Asset],
+        type_name: Optional[str] = None,
     ):
-        # TODO: Change `type_name` allow mutation to `True`
-        # asset.type_name = type_name
-        asset.qualified_name = actualQN
+        # Only when asset type in (`Table`, `View` or `MaterializedView`)
+        # and `self._table_view_agnostic` is set to `True`
+        if type_name:
+            asset.type_name = type_name
+        asset.qualified_name = actual_qn
         revised.append(asset)
 
     def add_partial_asset(self, asset: Asset, revised: List[Asset]):
