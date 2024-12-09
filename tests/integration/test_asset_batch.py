@@ -88,6 +88,7 @@ def schema(
 def batch_table_create(
     client: AtlanClient, schema: Schema
 ) -> Generator[Batch, None, None]:
+    assert schema and schema.qualified_name
     batch = Batch(
         client=client,
         track=True,
@@ -121,12 +122,14 @@ def batch_table_create(
 
     assert batch and batch.created
     for asset in reversed(batch.created):
+        assert asset and asset.qualified_name
         created = client.asset.get_by_qualified_name(
             qualified_name=asset.qualified_name,
             asset_type=asset.__class__,
             min_ext_info=True,
             ignore_relationships=True,
         )
+        assert created and created.guid
         response = client.asset.purge_by_guid(created.guid)
         if (
             not response
@@ -140,6 +143,7 @@ def batch_table_create(
 def batch_table_update(
     client: AtlanClient, schema: Schema
 ) -> Generator[Batch, None, None]:
+    assert schema and schema.qualified_name
     batch = Batch(
         client=client,
         track=True,
@@ -187,11 +191,15 @@ def test_batch_update(
     create_batch = batch_table_create
     for asset in create_batch.created:
         if asset.name == f"{TABLE_NAME}1":
-            pass
+            table1 = asset
         elif asset.name == VIEW_NAME:
             view = asset
         elif asset.name == MVIEW_NAME:
             mview = asset
+
+    assert table1 and table1.qualified_name
+    assert view and view.qualified_name
+    assert mview and mview.qualified_name
 
     # An asset in the batch marked as a table will attempt
     # to match a view or mview if not found as a table, and vice versa

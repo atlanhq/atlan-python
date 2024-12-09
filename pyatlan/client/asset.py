@@ -2377,7 +2377,7 @@ class Batch:
             if response.guid_assignments:
                 self._resolved_guids.update(response.guid_assignments)
             if sent:
-                created_guids, updated_guids = {}, {}
+                created_guids, updated_guids = set(), set()
                 if response.mutated_entities:
                     if response.mutated_entities.CREATE:
                         created_guids = {
