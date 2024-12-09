@@ -87,6 +87,7 @@ class Asset(Referenceable):
         return cls.creator(*args, **kwargs)
 
     @classmethod
+    @init_guid
     def updater(
         cls: type[SelfAsset], qualified_name: str = "", name: str = ""
     ) -> SelfAsset:
