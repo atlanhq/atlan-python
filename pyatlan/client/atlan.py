@@ -436,9 +436,12 @@ class AtlanClient(BaseSettings):
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
                             response.status_code, ErrorCode.ERROR_PASSTHROUGH
                         )
+                        cause_details_str = (
+                            "\n".join(cause_details) if cause_details else ""
+                        )
                         # Raise exception with error details and causes
                         raise error.exception_with_parameters(
-                            error_code, error_message, cause_details
+                            error_code, error_message, cause_details_str
                         )
                 raise AtlanError(
                     SimpleNamespace(
