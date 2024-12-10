@@ -56,7 +56,7 @@ class AuditClient:
             entity_audits = []
 
         count = raw_json.get("totalCount", 0)
-        
+
         return AuditSearchResults(
             client=self._client,
             criteria=criteria,
