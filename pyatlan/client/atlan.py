@@ -123,11 +123,7 @@ def log_response(response, *args, **kwargs):
 
 
 def get_session():
-    retry_strategy = DEFAULT_RETRY
-    adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
-    session.mount(HTTPS_PREFIX, adapter)
-    session.mount(HTTP_PREFIX, adapter)
     session.headers.update(
         {
             "x-atlan-agent": "sdk",
@@ -146,6 +142,7 @@ class AtlanClient(BaseSettings):
     api_key: str
     connect_timeout: float = 30.0
     read_timeout: float = 120.0
+    retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
@@ -197,6 +194,10 @@ class AtlanClient(BaseSettings):
                 "authorization": f"Bearer {self.api_key}",
             }
         }
+        session = self._session
+        adapter = HTTPAdapter(max_retries=self.retry)
+        session.mount(HTTPS_PREFIX, adapter)
+        session.mount(HTTP_PREFIX, adapter)
         AtlanClient._default_client = self
 
     @property
