@@ -1625,7 +1625,11 @@ class AtlanClient(BaseSettings):
 
 @contextlib.contextmanager
 def client_connection(
-    base_url: Optional[HttpUrl] = None, api_key: Optional[str] = None
+    base_url: Optional[HttpUrl] = None,
+    api_key: Optional[str] = None,
+    connect_timeout: float = 30.0,
+    read_timeout: float = 120.0,
+    retry: Retry = DEFAULT_RETRY,
 ) -> Generator[AtlanClient, None, None]:
     """
     Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will
@@ -1638,6 +1642,9 @@ def client_connection(
     tmp_client = AtlanClient(
         base_url=base_url or current_client.base_url,
         api_key=api_key or current_client.api_key,
+        connect_timeout=connect_timeout,
+        read_timeout=read_timeout,
+        retry=retry,
     )
     try:
         yield tmp_client

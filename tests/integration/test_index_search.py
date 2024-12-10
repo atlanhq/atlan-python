@@ -11,7 +11,7 @@ import requests.exceptions
 
 from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.atlan import AtlanClient, client_connection
 from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
 from pyatlan.model.core import AtlanTag, AtlanTagName
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
@@ -716,20 +716,20 @@ def test_default_sorting(client: AtlanClient):
 
 
 def test_read_timeout(client: AtlanClient):
-    client = AtlanClient(read_timeout=0.1)
     request = (FluentSearch().select()).to_request()
-    with pytest.raises(
-        requests.exceptions.ConnectionError,
-        match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
-    ):
-        client.asset.search(criteria=request)
+    with client_connection(read_timeout=0.1) as timed_client:
+        with pytest.raises(
+            requests.exceptions.ConnectionError,
+            match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
+        ):
+            timed_client.asset.search(criteria=request)
 
 
 def test_connect_timeout(client: AtlanClient):
-    client = AtlanClient(connect_timeout=0.001)
     request = (FluentSearch().select()).to_request()
-    with pytest.raises(
-        requests.exceptions.ConnectionError,
-        match=".timed out\. \(connect timeout=0\.001\)",  # noqa W605
-    ):
-        client.asset.search(criteria=request)
+    with client_connection(connect_timeout=0.001) as timed_client:
+        with pytest.raises(
+            requests.exceptions.ConnectionError,
+            match=".timed out\. \(connect timeout=0\.001\)",  # noqa W605
+        ):
+            timed_client.asset.search(criteria=request)
