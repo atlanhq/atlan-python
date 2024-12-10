@@ -133,7 +133,6 @@ __all__ = [
     "NoSQL",
     "Insight",
     "API",
-    "BusinessProcessModel",
     "Google",
     "Azure",
     "AWS",
@@ -175,7 +174,6 @@ __all__ = [
     "APIObject",
     "APIPath",
     "APIField",
-    "BusinessProcessModelEntity",
     "DataStudioAsset",
     "S3Bucket",
     "S3Object",
@@ -319,8 +317,6 @@ from .business_policy import BusinessPolicy
 from .business_policy_exception import BusinessPolicyException
 from .business_policy_incident import BusinessPolicyIncident
 from .business_policy_log import BusinessPolicyLog
-from .business_process_model import BusinessProcessModel
-from .business_process_model_entity import BusinessProcessModelEntity
 from .cloud import Cloud
 from .cognite import Cognite
 from .cognite3_d_model import Cognite3DModel

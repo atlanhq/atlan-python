@@ -52,8 +52,6 @@ You can interact with all of the following different kinds of assets:
     asset/businesspolicyexception
     asset/businesspolicyincident
     asset/businesspolicylog
-    asset/businessprocessmodel
-    asset/businessprocessmodelentity
     asset/calculationview
     asset/catalog
     asset/cloud

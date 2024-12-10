@@ -86,12 +86,10 @@ class MaterialisedView(SQL):
         )
         return cls.creator(name=name, schema_qualified_name=schema_qualified_name)
 
-    type_name: str = Field(default="MaterialisedView", allow_mutation=False)
+    type_name: str = Field(default="MaterialisedView", allow_mutation=True)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MaterialisedView":
-            raise ValueError("must be MaterialisedView")
         return v
 
     def __setattr__(self, name, value):

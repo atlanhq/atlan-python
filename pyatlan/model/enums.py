@@ -2227,6 +2227,12 @@ class AssetInputHandling(str, Enum):
     UPDATE = "update"
 
 
+class AssetCreationHandling(str, Enum):
+    FULL = "upsert"
+    PARTIAL = "partial"
+    NONE = "update"
+
+
 class AssetDeltaHandling(str, Enum):
     FULL_REPLACEMENT = "full"
     INCREMENTAL = "delta"
@@ -2545,6 +2551,7 @@ class DataProductStatus(str, Enum):
     ACTIVE = "Active"
     SUNSET = "Sunset"
     ARCHIVED = "Archived"
+    DRAFT = "Draft"
 
 
 class DataProductVisibility(str, Enum):

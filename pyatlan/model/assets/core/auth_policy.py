@@ -17,7 +17,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
 )
 from pyatlan.model.structs import AuthPolicyCondition, AuthPolicyValiditySchedule
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import Asset, SelfAsset
 
@@ -32,6 +32,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         return cls(attributes=attributes)
 
     @classmethod
+    @init_guid
     def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",

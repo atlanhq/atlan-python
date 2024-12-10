@@ -36,7 +36,7 @@ class BusinessPolicyIncident(Incident):
     """
     count of noncompliant assets in the incident
     """
-    BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUI_DS: ClassVar[KeywordField] = (
+    BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS: ClassVar[KeywordField] = (
         KeywordField(
             "businessPolicyIncidentRelatedPolicyGUIDs",
             "businessPolicyIncidentRelatedPolicyGUIDs",

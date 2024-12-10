@@ -517,6 +517,7 @@ def get_mapped_type(type_name: str) -> MappedType:
 
 
 def get_class_var_for_attr(attr_name: str) -> str:
+    attr_name = re.sub(r"GUIDs$", "Guids", attr_name)
     replace1 = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", attr_name.replace("_", ""))
     replace2 = re.sub(r"([a-z])([A-Z])", r"\1_\2", replace1)
     return replace2.upper()

@@ -89,6 +89,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )
 
     @classmethod
+    @init_guid
     def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",

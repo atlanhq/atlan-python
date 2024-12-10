@@ -88,12 +88,10 @@ class Table(SQL):
             schema_qualified_name=schema_qualified_name,
         )
 
-    type_name: str = Field(default="Table", allow_mutation=False)
+    type_name: str = Field(default="Table", allow_mutation=True)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Table":
-            raise ValueError("must be Table")
         return v
 
     def __setattr__(self, name, value):

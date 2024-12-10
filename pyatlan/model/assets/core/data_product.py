@@ -73,6 +73,7 @@ class DataProduct(DataMesh):
         )
 
     @classmethod
+    @init_guid
     def updater(
         cls,
         qualified_name: str = "",
