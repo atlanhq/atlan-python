@@ -161,6 +161,7 @@ class Persona(AccessControl):
         return policy
 
     @classmethod
+    @init_guid
     def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",

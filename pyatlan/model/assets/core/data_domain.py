@@ -56,6 +56,7 @@ class DataDomain(DataMesh):
         )
 
     @classmethod
+    @init_guid
     def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",

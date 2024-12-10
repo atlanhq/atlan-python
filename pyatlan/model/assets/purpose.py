@@ -166,6 +166,7 @@ class Purpose(AccessControl):
             raise ValueError("No user or group specified for the policy.")
 
     @classmethod
+    @init_guid
     def updater(
         cls: type[SelfAsset],
         qualified_name: str = "",
