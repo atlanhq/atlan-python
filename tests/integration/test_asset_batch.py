@@ -15,6 +15,7 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
+from pyatlan.model.enums import AssetCreationHandling
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.test_utils import get_random_connector
@@ -218,15 +219,19 @@ def test_batch_update(
     batch1.add(table)
     batch1.flush()
 
+    # wiew got updated
     assert batch1.num_updated == 1
     assert batch1.num_created == 0
     assert batch1.num_skipped == 0
     assert batch1.num_restored == 0
 
+    # Wait for assets to be indexed
+    sleep(5)
     # Make sure user description should be updated on view
     # (since table with given qn doesn't exist)
     results = (
         FluentSearch()
+        .where(Asset.TYPE_NAME.eq(View.__name__))
         .where(Asset.QUALIFIED_NAME.eq(view.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
         .execute(client=client)
@@ -252,15 +257,19 @@ def test_batch_update(
     batch11.add(table)
     batch11.flush()
 
+    # mview got updated
     assert batch11.num_updated == 1
     assert batch11.num_created == 0
     assert batch11.num_skipped == 0
     assert batch11.num_restored == 0
 
+    # Wait for assets to be indexed
+    sleep(5)
     # Make sure user description should be updated on mview
     # (since table with given qn doesn't exist)
     results = (
         FluentSearch()
+        .where(Asset.TYPE_NAME.eq(MaterialisedView.__name__))
         .where(Asset.QUALIFIED_NAME.eq(mview.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
         .execute(client=client)
@@ -286,7 +295,7 @@ def test_batch_update(
     batch2.add(table)
     batch2.flush()
 
-    # Neither create or update
+    # Neither create or update (since table_view_agnostic = False)
     assert batch2.num_skipped == 1
     assert batch2.num_created == 0
     assert batch2.num_updated == 0
@@ -307,18 +316,18 @@ def test_batch_update(
     batch3.add(table)
     batch3.flush()
 
-    # Table with view qn is created
+    # Table with view qn got created
     assert batch3.num_created == 1
     assert batch3.num_skipped == 0
     assert batch3.num_updated == 0
     assert batch3.num_restored == 0
+
     # Wait for assets to be indexed
     sleep(5)
-
     results = (
         FluentSearch()
         .where(Asset.TYPE_NAME.eq(Table.__name__))
-        .where(Asset.QUALIFIED_NAME.eq(table.qualified_name))
+        .where(Asset.QUALIFIED_NAME.eq(view.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
         .execute(client=client)
     )
@@ -336,8 +345,166 @@ def test_batch_update(
     response = client.asset.purge_by_guid(created_table.guid)
     assert response.mutated_entities and response.mutated_entities.DELETE
 
-    # TODO: Table with table qn
+    # Table with table qn
     # 4. case_insensitive and update_only - update
     # 5. not case_insensitive and update_only - update
-    # 6. case_insensitive and not update_only - create
-    # 7. not case_insensitive and not update_only - create
+    # 6. not case_insensitive and update_only (same operation) - restore
+    # 7. case_insensitive and not update_only - create
+
+    # [sub-test-4]: Table with view qn (case_insensitive=True, update_only=True)
+    batch4 = Batch(
+        client=client,
+        track=True,
+        update_only=True,
+        case_insensitive=True,
+        max_size=BATCH_MAX_SIZE,
+    )
+    SUB_TEST4_DESCRIPTION = f"[sub-test4] {DESCRIPTION}"
+
+    table = Table.updater(
+        qualified_name=table1.qualified_name.lower(), name=table1.name
+    )
+    table.user_description = SUB_TEST4_DESCRIPTION
+    batch4.add(table)
+    batch4.flush()
+
+    # Table got updated
+    assert batch4.num_updated == 1
+    assert batch4.num_created == 0
+    assert batch4.num_skipped == 0
+    assert batch4.num_restored == 0
+
+    # Wait for assets to be indexed
+    sleep(5)
+    results = (
+        FluentSearch()
+        .where(Asset.TYPE_NAME.eq(Table.__name__))
+        .where(Asset.QUALIFIED_NAME.eq(table1.qualified_name))
+        .include_on_results(Asset.USER_DESCRIPTION)
+        .execute(client=client)
+    )
+
+    assert results and results.count == 1
+    assert results.current_page() and len(results.current_page()) == 1
+    updated_table = results.current_page()[0]
+    assert (
+        updated_table
+        and updated_table.guid
+        and updated_table.qualified_name == table1.qualified_name
+    )
+    assert updated_table.user_description == SUB_TEST4_DESCRIPTION
+
+    # [sub-test-5]: Table with view qn (case_insensitive=False, update_only=True)
+    batch5 = Batch(
+        client=client,
+        track=True,
+        update_only=True,
+        case_insensitive=False,
+        max_size=BATCH_MAX_SIZE,
+    )
+    SUB_TEST5_DESCRIPTION = f"[sub-test5] {DESCRIPTION}"
+
+    table = Table.updater(qualified_name=table1.qualified_name, name=table1.name)
+    table.user_description = SUB_TEST5_DESCRIPTION
+    batch5.add(table)
+    batch5.flush()
+
+    # Table got updated
+    assert batch5.num_updated == 1
+    assert batch5.num_created == 0
+    assert batch5.num_skipped == 0
+    assert batch5.num_restored == 0
+
+    # Wait for assets to be indexed
+    sleep(5)
+    results = (
+        FluentSearch()
+        .where(Asset.TYPE_NAME.eq(Table.__name__))
+        .where(Asset.QUALIFIED_NAME.eq(table1.qualified_name))
+        .include_on_results(Asset.USER_DESCRIPTION)
+        .execute(client=client)
+    )
+
+    assert results and results.count == 1
+    assert results.current_page() and len(results.current_page()) == 1
+    updated_table = results.current_page()[0]
+    assert (
+        updated_table
+        and updated_table.guid
+        and updated_table.qualified_name == table1.qualified_name
+    )
+    assert updated_table.user_description == SUB_TEST5_DESCRIPTION
+
+    # [sub-test-6]: (same operation) Table with view qn (case_insensitive=False, update_only=True)
+    batch6 = Batch(
+        client=client,
+        track=True,
+        update_only=True,
+        case_insensitive=False,
+        max_size=BATCH_MAX_SIZE,
+    )
+
+    table = Table.updater(qualified_name=table1.qualified_name, name=table1.name)
+    # Use the same user description as before
+    table.user_description = SUB_TEST5_DESCRIPTION
+    batch6.add(table)
+    batch6.flush()
+
+    # No operation neither update or create (because of same update)
+    assert batch6.num_restored == 1
+    assert batch6.num_created == 0
+    assert batch6.num_updated == 0
+    assert batch6.num_skipped == 0
+
+    # [sub-test-7]: (Table with table qn (case_insensitive=True, update_only=False)
+    batch7 = Batch(
+        client=client,
+        track=True,
+        update_only=False,
+        case_insensitive=False,
+        max_size=BATCH_MAX_SIZE,
+        # Also test partial creation handling
+        creation_handling=AssetCreationHandling.PARTIAL,
+    )
+    SUB_TEST7_DESCRIPTION = f"[sub-test7] {DESCRIPTION}"
+
+    table = Table.updater(
+        qualified_name=table1.qualified_name.lower(), name=table1.name
+    )
+    # Use the same user description as before
+    table.user_description = SUB_TEST7_DESCRIPTION
+    batch7.add(table)
+    batch7.flush()
+
+    # Table got created
+    assert batch7.num_created == 1
+    assert batch7.num_updated == 0
+    assert batch7.num_skipped == 0
+    assert batch7.num_restored == 0
+
+    # Wait for assets to be indexed
+    sleep(5)
+    results = (
+        FluentSearch()
+        .where(Asset.TYPE_NAME.eq(Table.__name__))
+        .where(Asset.QUALIFIED_NAME.eq(table.qualified_name))
+        .include_on_results(Asset.IS_PARTIAL)
+        .include_on_results(Asset.USER_DESCRIPTION)
+        .execute(client=client)
+    )
+
+    assert results and results.count == 1
+    assert results.current_page() and len(results.current_page()) == 1
+    created_table = results.current_page()[0]
+
+    assert (
+        created_table
+        and created_table.guid
+        and created_table.qualified_name == table.qualified_name
+    )
+    assert created_table.is_partial
+    assert created_table.user_description == SUB_TEST7_DESCRIPTION
+
+    #  Make sure we delete that table
+    response = client.asset.purge_by_guid(created_table.guid)
+    assert response.mutated_entities and response.mutated_entities.DELETE
