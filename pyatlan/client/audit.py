@@ -56,14 +56,7 @@ class AuditClient:
             entity_audits = []
 
         count = raw_json.get("totalCount", 0)
-        if (
-            count > AuditSearchResults._MASS_EXTRACT_THRESHOLD
-            and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
-        ):
-            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
-            return self.search(criteria, bulk=True)
+        
         return AuditSearchResults(
             client=self._client,
             criteria=criteria,
