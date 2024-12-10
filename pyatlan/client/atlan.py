@@ -107,7 +107,7 @@ def get_adapter() -> logging.LoggerAdapter:
 LOGGER = get_adapter()
 
 DEFAULT_RETRY = Retry(
-    total=3,
+    total=5,
     backoff_factor=1,
     status_forcelist=[403, 429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
@@ -144,6 +144,8 @@ class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
+    connect_timeout: float = 30.0
+    read_timeout: float = 120.0
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
@@ -336,16 +338,29 @@ class AtlanClient(BaseSettings):
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
             if binary_data:
                 response = self._session.request(
-                    api.method.value, path, data=binary_data, **params
+                    api.method.value,
+                    path,
+                    data=binary_data,
+                    **params,
+                    timeout=(self.connect_timeout, self.read_timeout),
                 )
             elif api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                 response = self._session.request(
-                    api.method.value, path, **params, stream=True
+                    api.method.value,
+                    path,
+                    **params,
+                    stream=True,
+                    timeout=(self.connect_timeout, self.read_timeout),
                 )
                 if download_file_path:
                     return self._handle_file_download(response.raw, download_file_path)
             else:
-                response = self._session.request(api.method.value, path, **params)
+                response = self._session.request(
+                    api.method.value,
+                    path,
+                    **params,
+                    timeout=(self.connect_timeout, self.read_timeout),
+                )
             if response is not None:
                 LOGGER.debug("HTTP Status: %s", response.status_code)
             if response is None:

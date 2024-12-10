@@ -7,6 +7,7 @@ from typing import Generator, Set
 from unittest.mock import patch
 
 import pytest
+import requests.exceptions
 
 from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults
@@ -712,3 +713,23 @@ def test_default_sorting(client: AtlanClient):
     assert len(sort_options) == 2
     assert sort_options[0].field == QUALIFIED_NAME
     assert sort_options[1].field == ASSET_GUID
+
+
+def test_read_timeout(client: AtlanClient):
+    client = AtlanClient(read_timeout=0.1)
+    request = (FluentSearch().select()).to_request()
+    with pytest.raises(
+        requests.exceptions.ConnectionError,
+        match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
+    ):
+        client.asset.search(criteria=request)
+
+
+def test_connect_timeout(client: AtlanClient):
+    client = AtlanClient(connect_timeout=0.001)
+    request = (FluentSearch().select()).to_request()
+    with pytest.raises(
+        requests.exceptions.ConnectionError,
+        match=".timed out\. \(connect timeout=0\.001\)",  # noqa W605
+    ):
+        client.asset.search(criteria=request)
