@@ -161,21 +161,22 @@ def batch_table_update(
 
 def test_batch_create(batch_table_create: Batch, schema: Schema):
     batch = batch_table_create
-    # Since `capture_failures=True`
+
+    # Ensure the batch has no failures
     assert batch and batch.failures == []
 
-    # Since `track=True`
+    # Verify no assets were skipped or restored
     assert batch.skipped == [] and batch.num_skipped == 0
     assert batch.restored == [] and batch.num_restored == 0
 
-    # Table got created
+    # Verify that 5 assets (3 tables, 1 view, 1 materialized view) were created
     assert batch.created and len(batch.created) == 5 and batch.num_created == 5
     assert all(
         asset.type_name in {Table.__name__, View.__name__, MaterialisedView.__name__}
         for asset in batch.created
     )
 
-    # Schema got updated
+    # Ensure the schema was updated
     assert batch.updated and len(batch.updated) == 1 and batch.num_updated == 1
     assert batch.updated[0].qualified_name == schema.qualified_name
 
@@ -205,6 +206,7 @@ def test_batch_update(
     # An asset in the batch marked as a table will attempt
     # to match a view or mview if not found as a table, and vice versa
     # [sub-test-1]: Table with view qn (table_view_agnostic=True, update_only=True)
+    # Expect the view to be updated since `table_view_agnostic=True` and `update_only=True`
     batch1 = Batch(
         client=client,
         track=True,
@@ -219,7 +221,7 @@ def test_batch_update(
     batch1.add(table)
     batch1.flush()
 
-    # wiew got updated
+    # Validate that the view was updated
     assert batch1.num_updated == 1
     assert batch1.num_created == 0
     assert batch1.num_skipped == 0
@@ -228,7 +230,6 @@ def test_batch_update(
     # Wait for assets to be indexed
     sleep(5)
     # Make sure user description should be updated on view
-    # (since table with given qn doesn't exist)
     results = (
         FluentSearch()
         .where(Asset.TYPE_NAME.eq(View.__name__))
@@ -243,6 +244,7 @@ def test_batch_update(
     assert updated_view.user_description == SUB_TEST1_DESCRIPTION
 
     # [sub-test-11]: Table with mview qn (table_view_agnostic=True, update_only=True)
+    # Expect the mview to be updated since `table_view_agnostic=True` and `update_only=True`
     batch11 = Batch(
         client=client,
         track=True,
@@ -257,7 +259,7 @@ def test_batch_update(
     batch11.add(table)
     batch11.flush()
 
-    # mview got updated
+    # Validate that the mview was updated
     assert batch11.num_updated == 1
     assert batch11.num_created == 0
     assert batch11.num_skipped == 0
@@ -266,7 +268,6 @@ def test_batch_update(
     # Wait for assets to be indexed
     sleep(5)
     # Make sure user description should be updated on mview
-    # (since table with given qn doesn't exist)
     results = (
         FluentSearch()
         .where(Asset.TYPE_NAME.eq(MaterialisedView.__name__))
@@ -281,6 +282,7 @@ def test_batch_update(
     assert updated_mview.user_description == SUB_TEST11_DESCRIPTION
 
     # [sub-test-2]: Table with view qn (table_view_agnostic=False, update_only=True)
+    # Expect the operation to be skipped since a table with the view's qualified name does not exist
     batch2 = Batch(
         client=client,
         track=True,
@@ -302,6 +304,7 @@ def test_batch_update(
     assert batch2.num_restored == 0
 
     # [sub-test-3]: Table with view qn (table_view_agnostic=False, update_only=False)
+    # Expect a new table to be created with the view's qualified name
     batch3 = Batch(
         client=client,
         track=True,
@@ -316,7 +319,7 @@ def test_batch_update(
     batch3.add(table)
     batch3.flush()
 
-    # Table with view qn got created
+    # Validate that a new table with view qn was created
     assert batch3.num_created == 1
     assert batch3.num_skipped == 0
     assert batch3.num_updated == 0
@@ -340,8 +343,10 @@ def test_batch_update(
         and created_table.guid
         and created_table.qualified_name == view.qualified_name
     )
+    # Verify the new table was created and has the updated user description
     assert created_table.user_description == SUB_TEST3_DESCRIPTION
-    #  Make sure we delete that table
+
+    # Cleanup: Delete the newly created table
     response = client.asset.purge_by_guid(created_table.guid)
     assert response.mutated_entities and response.mutated_entities.DELETE
 
@@ -351,7 +356,8 @@ def test_batch_update(
     # 6. not case_insensitive and update_only (same operation) - restore
     # 7. case_insensitive and not update_only - create
 
-    # [sub-test-4]: Table with view qn (case_insensitive=True, update_only=True)
+    # [sub-test-4]: Table with table qn [lowercase] (case_insensitive=True, update_only=True)
+    # Expect the table to be updated
     batch4 = Batch(
         client=client,
         track=True,
@@ -368,7 +374,7 @@ def test_batch_update(
     batch4.add(table)
     batch4.flush()
 
-    # Table got updated
+    # Validate that the table was updated
     assert batch4.num_updated == 1
     assert batch4.num_created == 0
     assert batch4.num_skipped == 0
@@ -394,7 +400,8 @@ def test_batch_update(
     )
     assert updated_table.user_description == SUB_TEST4_DESCRIPTION
 
-    # [sub-test-5]: Table with view qn (case_insensitive=False, update_only=True)
+    # [sub-test-5]: Table with table qn (case_insensitive=False, update_only=True)
+    # Expect the table to be updated
     batch5 = Batch(
         client=client,
         track=True,
@@ -409,7 +416,7 @@ def test_batch_update(
     batch5.add(table)
     batch5.flush()
 
-    # Table got updated
+    # Validate that the table was updated
     assert batch5.num_updated == 1
     assert batch5.num_created == 0
     assert batch5.num_skipped == 0
@@ -435,7 +442,9 @@ def test_batch_update(
     )
     assert updated_table.user_description == SUB_TEST5_DESCRIPTION
 
-    # [sub-test-6]: (same operation) Table with view qn (case_insensitive=False, update_only=True)
+    # [sub-test-6]: (same operation as sub-test-5)
+    # Table with table qn (case_insensitive=False, update_only=True)
+    # Expect no operation as update is identical
     batch6 = Batch(
         client=client,
         track=True,
@@ -450,13 +459,14 @@ def test_batch_update(
     batch6.add(table)
     batch6.flush()
 
-    # No operation neither update or create (because of same update)
+    # No operation as update is identical
     assert batch6.num_restored == 1
     assert batch6.num_created == 0
     assert batch6.num_updated == 0
     assert batch6.num_skipped == 0
 
     # [sub-test-7]: (Table with table qn (case_insensitive=True, update_only=False)
+    # Expect table to be created
     batch7 = Batch(
         client=client,
         track=True,
@@ -471,12 +481,11 @@ def test_batch_update(
     table = Table.updater(
         qualified_name=table1.qualified_name.lower(), name=table1.name
     )
-    # Use the same user description as before
     table.user_description = SUB_TEST7_DESCRIPTION
     batch7.add(table)
     batch7.flush()
 
-    # Table got created
+    # Validate that the table was created
     assert batch7.num_created == 1
     assert batch7.num_updated == 0
     assert batch7.num_skipped == 0
@@ -505,6 +514,6 @@ def test_batch_update(
     assert created_table.is_partial
     assert created_table.user_description == SUB_TEST7_DESCRIPTION
 
-    #  Make sure we delete that table
+    # Cleanup: Delete the created table
     response = client.asset.purge_by_guid(created_table.guid)
     assert response.mutated_entities and response.mutated_entities.DELETE
