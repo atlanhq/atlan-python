@@ -44,6 +44,14 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {% include file_name %}
     {% endif %}
 
+    {% if entity_def.name in ("Table", "View", "MaterialisedView")%}
+    type_name: str = Field(default="{{ entity_def.name }}", allow_mutation=True)
+
+    @validator('type_name')
+    def validate_type_name(cls, v):
+        return v
+    {% else %}
+
     type_name: str = Field(default="{{ entity_def.name }}", allow_mutation=False)
 
     @validator('type_name')
@@ -51,6 +59,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         if v != "{{ entity_def.name }}":
             raise ValueError('must be {{ entity_def.name }}')
         return v
+    {% endif %}
 
     {% include 'properties.jinja2' %}
     {%- if entity_def.attribute_defs or entity_def.relationship_attribute_defs %}
