@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Generator, Iterable, List, Optional, Union
+from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as, root_validator
 
@@ -15,6 +15,7 @@ from pyatlan.model.search import (
     DSL,
     Bool,
     Query,
+    Range,
     SearchRequest,
     SortItem,
     SortOrder,
@@ -208,7 +209,11 @@ class EntityAudit(AtlanObject):
 
 
 class AuditSearchResults(Iterable):
-    """Captures the response from a search against Atlan's activity log."""
+    """
+    Captures the response from a search against Atlan's activity log.
+    """
+
+    _MASS_EXTRACT_THRESHOLD = 10_000
 
     def __init__(
         self,
@@ -227,6 +232,9 @@ class AuditSearchResults(Iterable):
         self._size = size
         self._entity_audits = entity_audits
         self._count = count
+        self._processed_guids: Set[str] = set()
+        self._first_record_creation_time = -1
+        self._last_record_creation_time = -1
 
     @property
     def total_count(self) -> int:
@@ -235,40 +243,42 @@ class AuditSearchResults(Iterable):
     def current_page(self) -> List[EntityAudit]:
         """
         Retrieve the current page of results.
-
-        :returns: list of assets on the current page of results
         """
         return self._entity_audits
 
     def next_page(self, start=None, size=None) -> bool:
         """
         Indicates whether there is a next page of results.
-
-        :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
         if size:
             self._size = size
-        return self._get_next_page() if self._entity_audits else False
+
+        if not self._entity_audits and self._count > 0:
+            return False
+
+        return self._get_next_page()
 
     def _get_next_page(self):
         """
         Fetches the next page of results.
-
-        :returns: True if the next page of results was fetched, False if there was no next page
         """
-        self._criteria.dsl.from_ = self._start
+        if self._count > self._MASS_EXTRACT_THRESHOLD:
+            self._prepare_query_for_timestamp_paging()
+            self._criteria.dsl.from_ = 0
+
         self._criteria.dsl.size = self._size
-        if raw_json := self._get_next_page_json():
-            self._count = raw_json[TOTAL_COUNT] if TOTAL_COUNT in raw_json else 0
+        raw_json = self._get_next_page_json()
+
+        if raw_json:
+            self._count = raw_json.get(TOTAL_COUNT, 0)
+            self._process_entities(raw_json.get(ENTITY_AUDITS, []))
             return True
         return False
 
     def _get_next_page_json(self):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
-
-        :returns: JSON for the next page of results, as-is
         """
         raw_json = self._client._call_api(
             self._endpoint,
@@ -277,6 +287,7 @@ class AuditSearchResults(Iterable):
         if ENTITY_AUDITS not in raw_json or not raw_json[ENTITY_AUDITS]:
             self._entity_audits = []
             return None
+
         try:
             self._entity_audits = parse_obj_as(
                 List[EntityAudit], raw_json[ENTITY_AUDITS]
@@ -287,12 +298,64 @@ class AuditSearchResults(Iterable):
                 raw_json, 200, str(err)
             ) from err
 
+    def _prepare_query_for_timestamp_paging(self):
+        """
+        Adjusts the query to include timestamp filters for bulk extraction.
+        """
+        rewritten_filters = []
+        if isinstance(self._criteria.dsl.query, Bool):
+            for filter_ in self._criteria.dsl.query.filter:
+                if self._is_paging_timestamp_query(filter_):
+                    continue
+                rewritten_filters.append(filter_)
+
+        if self._first_record_creation_time != self._last_record_creation_time:
+            rewritten_filters.append(
+                self._get_paging_timestamp_query(self._last_record_creation_time)
+            )
+        self._criteria.dsl.query = Bool(filter=rewritten_filters)
+
+    @staticmethod
+    def _get_paging_timestamp_query(last_timestamp: int) -> Query:
+        return Range(field="created", gte=last_timestamp)
+
+    @staticmethod
+    def _is_paging_timestamp_query(filter_: Query) -> bool:
+        return (
+            isinstance(filter_, Range)
+            and filter_.field == "created"
+            and filter_.gte is not None
+        )
+
+    def _process_entities(self, entities):
+        if entities:
+            self._entity_audits = parse_obj_as(List[EntityAudit], entities)
+            self._update_first_last_record_creation_times()
+
+    def _update_first_last_record_creation_times(self):
+        if self._entity_audits:
+            self._first_record_creation_time = self._entity_audits[0].created
+            self._last_record_creation_time = self._entity_audits[-1].created
+
+    @staticmethod
+    def presorted_by_timestamp(sorts: Optional[List[SortItem]]) -> bool:
+        """
+        Checks if the sorting options prioritize creation time in ascending order.
+        :param sorts: List of sorting options or None.
+        :returns: True if sorting is already prioritized by creation time, False otherwise.
+        """
+        if sorts and isinstance(sorts[0], SortItem):
+            return sorts[0].field == "created" and sorts[0].order == SortOrder.ASCENDING
+        return False
+
+    @staticmethod
+    def sort_by_timestamp_first(sorts: List[SortItem]) -> List[SortItem]:
+        return [SortItem("created", order=SortOrder.ASCENDING)] + sorts
+
     def __iter__(self) -> Generator[EntityAudit, None, None]:
         """
         Iterates through the results, lazily-fetching each next page until there
         are no more results.
-
-        :returns: an iterable form of each result, across all pages
         """
         while True:
             yield from self.current_page()
