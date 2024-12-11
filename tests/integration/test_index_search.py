@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import pytest
 import requests.exceptions
+from urllib3 import Retry
 
 from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults
@@ -717,9 +718,9 @@ def test_default_sorting(client: AtlanClient):
 
 def test_read_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
-    with client_connection(read_timeout=0.1) as timed_client:
+    with client_connection(read_timeout=0.1, retry=Retry(total=0)) as timed_client:
         with pytest.raises(
-            requests.exceptions.ConnectionError,
+            requests.exceptions.ReadTimeout,
             match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
         ):
             timed_client.asset.search(criteria=request)
@@ -727,9 +728,11 @@ def test_read_timeout(client: AtlanClient):
 
 def test_connect_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
-    with client_connection(connect_timeout=0.001) as timed_client:
+    with client_connection(
+        connect_timeout=0.0001, retry=Retry(total=0)
+    ) as timed_client:
         with pytest.raises(
-            requests.exceptions.ConnectionError,
-            match=".timed out\. \(connect timeout=0\.001\)",  # noqa W605
+            requests.exceptions.ConnectTimeout,
+            match=".timed out\. \(connect timeout=0\.0001\)",  # noqa W605
         ):
             timed_client.asset.search(criteria=request)
