@@ -213,7 +213,7 @@ class AuditSearchResults(Iterable):
     Captures the response from a search against Atlan's activity log.
     """
 
-    _MASS_EXTRACT_THRESHOLD = 9700 #Note 10000 - 300 as it is an edge case
+    _MASS_EXTRACT_THRESHOLD = 9700  # Note 10000 - 300 as it is an edge case
 
     def __init__(
         self,
