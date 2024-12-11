@@ -41,7 +41,6 @@ from pyatlan.client.constants import (
     DELETE_ENTITY_BY_ATTRIBUTE,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
-    GET_LINEAGE,
     GET_LINEAGE_LIST,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
@@ -87,12 +86,7 @@ from pyatlan.model.enums import (
     SortOrder,
 )
 from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.model.lineage import (
-    LineageDirection,
-    LineageListRequest,
-    LineageRequest,
-    LineageResponse,
-)
+from pyatlan.model.lineage import LineageDirection, LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import (
     DSL,
@@ -255,28 +249,6 @@ class AssetClient:
             except ValidationError:
                 pass
         return aggregations
-
-    # TODO: Try adding @validate_arguments to this method once
-    # the issue below is fixed or when we switch to pydantic v2
-    # https://github.com/pydantic/pydantic/issues/2901
-    def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
-        """
-        Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
-        Use the get_lineage_list operation instead.
-
-        :param lineage_request: detailing the lineage query, parameters, and so on to run
-        :returns: the results of the lineage request
-        :raises AtlanError: on any API communication issue
-        """
-        warn(
-            "Lineage retrieval using this method is deprecated, please use 'get_lineage_list' instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        raw_json = self._client._call_api(
-            GET_LINEAGE, None, lineage_request, exclude_unset=False
-        )
-        return LineageResponse(**raw_json)
 
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
