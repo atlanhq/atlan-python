@@ -76,7 +76,7 @@ from pyatlan.model.core import Announcement, AtlanObject
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import AtlanConnectorType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
-from pyatlan.model.lineage import LineageListRequest, LineageRequest, LineageResponse
+from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
@@ -1308,22 +1308,6 @@ class AtlanClient(BaseSettings):
         return self.asset.find_connections_by_name(
             name=name, connector_type=connector_type, attributes=attributes
         )
-
-    def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
-        """
-        Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
-        Use the get_lineage_list operation instead.
-
-        :param lineage_request: detailing the lineage query, parameters, and so on to run
-        :returns: the results of the lineage request
-        :raises AtlanError: on any API communication issue
-        """
-        warn(
-            "Lineage retrieval using this method is deprecated, please use 'get_lineage_list' instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.asset.get_lineage(lineage_request=lineage_request)
 
     def get_lineage_list(
         self, lineage_request: LineageListRequest
