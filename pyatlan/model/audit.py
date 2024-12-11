@@ -213,7 +213,7 @@ class AuditSearchResults(Iterable):
     Captures the response from a search against Atlan's activity log.
     """
 
-    _MASS_EXTRACT_THRESHOLD = 10000
+    _MASS_EXTRACT_THRESHOLD = 9700 #Note 10000 - 300 as it is an edge case
 
     def __init__(
         self,
@@ -224,7 +224,7 @@ class AuditSearchResults(Iterable):
         entity_audits: List[EntityAudit],
         count: int,
         aggregations: Optional[Any],
-        bulk: bool = False,  # Add this line
+        bulk: bool = False,
     ):
         self._client = client
         self._endpoint = AUDIT_SEARCH
