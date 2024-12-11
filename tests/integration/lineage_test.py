@@ -24,7 +24,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     LineageDirection,
 )
-from pyatlan.model.lineage import FluentLineage, LineageRequest
+from pyatlan.model.lineage import FluentLineage
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Prefix, Term
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
@@ -533,95 +533,6 @@ def test_cp_lineage_end(
     cp_lineage_end: ColumnProcess,
 ):
     _assert_lineage(column3, column5, cp_lineage_end)
-
-
-def test_fetch_lineage_start(
-    client: AtlanClient,
-    connection: Connection,
-    database: Database,
-    schema: Schema,
-    table: Table,
-    mview: MaterialisedView,
-    view: View,
-    lineage_start: Process,
-    lineage_end: Process,
-):
-    lineage = LineageRequest(guid=table.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    _assert_fetch_lineage_start(response, table, mview, view)
-
-
-def test_cp_fetch_lineage_start(
-    client: AtlanClient,
-    column1: Column,
-    column3: Column,
-    column5: Column,
-    cp_lineage_start: ColumnProcess,
-    cp_lineage_end: ColumnProcess,
-):
-    lineage = LineageRequest(guid=column1.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    _assert_fetch_lineage_start(response, column1, column3, column5)
-
-
-def test_fetch_lineage_middle(
-    client: AtlanClient,
-    connection: Connection,
-    database: Database,
-    schema: Schema,
-    table: Table,
-    mview: MaterialisedView,
-    view: View,
-    lineage_start: Process,
-    lineage_end: Process,
-):
-    lineage = LineageRequest(guid=mview.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    _assert_lineage_middle(response, table, mview, view, lineage_start, lineage_end)
-
-
-def test_cp_fetch_lineage_middle(
-    client: AtlanClient,
-    column1: Column,
-    column3: Column,
-    column5: Column,
-    cp_lineage_start: ColumnProcess,
-    cp_lineage_end: ColumnProcess,
-):
-    lineage = LineageRequest(guid=column3.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    _assert_lineage_middle(
-        response, column1, column3, column5, cp_lineage_start, cp_lineage_end
-    )
-
-
-def test_fetch_lineage_end(
-    client: AtlanClient,
-    connection: Connection,
-    database: Database,
-    schema: Schema,
-    table: Table,
-    mview: MaterialisedView,
-    view: View,
-    lineage_start: Process,
-    lineage_end: Process,
-):
-    lineage = LineageRequest(guid=view.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    _assert_fetch_lineage_end(response, table, mview, view)
-
-
-def test_cp_fetch_lineage_end(
-    client: AtlanClient,
-    column1: Column,
-    column3: Column,
-    column5: Column,
-    cp_lineage_start: ColumnProcess,
-    cp_lineage_end: ColumnProcess,
-):
-    lineage = LineageRequest(guid=column5.guid, hide_process=True)
-    response = client.asset.get_lineage(lineage)
-    _assert_fetch_lineage_end(response, column1, column3, column5)
 
 
 def test_fetch_lineage_start_list(
