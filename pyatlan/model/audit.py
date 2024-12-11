@@ -213,7 +213,7 @@ class AuditSearchResults(Iterable):
     Captures the response from a search against Atlan's activity log.
     """
 
-    _MASS_EXTRACT_THRESHOLD = 10_000
+    _MASS_EXTRACT_THRESHOLD = 10000
 
     def __init__(
         self,
@@ -254,7 +254,7 @@ class AuditSearchResults(Iterable):
         if size:
             self._size = size
 
-        if not self._entity_audits and self._count > 0:
+        if len(self._entity_audits) + self._start >= self._count:
             return False
 
         return self._get_next_page()
