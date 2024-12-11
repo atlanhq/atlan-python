@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import logging
 from typing import List
 
 from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
@@ -9,7 +10,6 @@ from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.errors import ErrorCode
 from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults, EntityAudit
 from pyatlan.model.search import SortItem
-import logging
 
 ENTITY_AUDITS = "entityAudits"
 LOGGER = logging.getLogger(__name__)
@@ -102,4 +102,5 @@ class AuditClient:
             count=count,
             entity_audits=entity_audits,
             aggregations=None,
+            bulk=bulk,
         )

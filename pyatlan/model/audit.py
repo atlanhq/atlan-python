@@ -224,6 +224,7 @@ class AuditSearchResults(Iterable):
         entity_audits: List[EntityAudit],
         count: int,
         aggregations: Optional[Any],
+        bulk: bool = False,  # Add this line
     ):
         self._client = client
         self._endpoint = AUDIT_SEARCH
@@ -235,6 +236,7 @@ class AuditSearchResults(Iterable):
         self._processed_guids: Set[str] = set()
         self._first_record_creation_time = -1
         self._last_record_creation_time = -1
+        self._bulk = bulk
 
     @property
     def total_count(self) -> int:
