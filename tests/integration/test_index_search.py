@@ -732,7 +732,7 @@ def test_connect_timeout(client: AtlanClient):
         connect_timeout=0.0001, retry=Retry(total=0)
     ) as timed_client:
         with pytest.raises(
-            requests.exceptions.ConnectTimeout,
+            requests.exceptions.ConnectionError,
             match=".timed out\. \(connect timeout=0\.0001\)",  # noqa W605
         ):
             timed_client.asset.search(criteria=request)
