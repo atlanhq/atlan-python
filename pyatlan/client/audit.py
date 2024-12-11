@@ -80,7 +80,8 @@ class AuditClient:
         else:
             entity_audits = []
 
-        count = raw_json.get("totalCount", 0)
+        count = raw_json["totalCount"] if "totalCount" in raw_json else 0
+        
         if (
             count > AuditSearchResults._MASS_EXTRACT_THRESHOLD
             and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
