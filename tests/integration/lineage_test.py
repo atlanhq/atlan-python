@@ -389,110 +389,6 @@ def _assert_lineage(asset_1, asset_2, lineage):
     assert lineage.outputs[0].guid == asset_2.guid
 
 
-def _assert_lineage_middle(response, asset_1, asset_2, asset_3, ln_start, ln_end):
-    assert response
-    assert response.base_entity_guid == asset_2.guid
-    upstream_guids = response.get_upstream_asset_guids()
-    assert upstream_guids
-    assert len(upstream_guids) == 1
-    assert asset_1.guid in upstream_guids
-    upstream_assets = response.get_upstream_assets()
-    assert upstream_assets
-    assert len(upstream_assets) == 1
-    one = upstream_assets[0]
-    assert isinstance(one, asset_1.__class__)
-    assert one.qualified_name == asset_1.qualified_name
-    upstream_guids = response.get_upstream_process_guids()
-    assert len(upstream_guids) == 1
-    assert ln_start.guid in upstream_guids
-    downstream_guids = response.get_downstream_asset_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    assert asset_3.guid in downstream_guids
-    downstream_assets = response.get_downstream_assets()
-    assert len(downstream_assets) == 1
-    one = downstream_assets[0]
-    assert isinstance(one, asset_3.__class__)
-    assert one.qualified_name == asset_3.qualified_name
-    downstream_guids = response.get_downstream_process_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    assert ln_end.guid in downstream_guids
-    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
-    assert len(downstream_dfs) == 2
-    assert downstream_dfs[0] == asset_2.guid
-    assert downstream_dfs[1] == asset_3.guid
-    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
-    assert len(downstream_dfs_assets) == 2
-    assert downstream_dfs_assets[0].guid == asset_2.guid
-    assert downstream_dfs_assets[1].guid == asset_3.guid
-    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
-    assert len(upstream_dfs) == 2
-    assert upstream_dfs[0] == asset_2.guid
-    assert upstream_dfs[1] == asset_1.guid
-    upstream_dfs_assets = response.get_all_upstream_assets_dfs()
-    assert len(upstream_dfs_assets) == 2
-    assert upstream_dfs_assets[0].guid == asset_2.guid
-    assert upstream_dfs_assets[1].guid == asset_1.guid
-
-
-def _assert_fetch_lineage_start(response, asset_1, asset_2, asset_3):
-    assert response
-    assert response.base_entity_guid == asset_1.guid
-    assert not response.get_upstream_asset_guids()
-    downstream_guids = response.get_downstream_asset_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    assert asset_2.guid in downstream_guids
-    assert len(response.get_downstream_assets()) == 1
-    downstream_guids = response.get_downstream_process_guids()
-    assert downstream_guids
-    assert len(downstream_guids) == 1
-    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
-    assert len(downstream_dfs) == 3
-    assert downstream_dfs[0] == asset_1.guid
-    assert downstream_dfs[1] == asset_2.guid
-    assert downstream_dfs[2] == asset_3.guid
-    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
-    assert len(downstream_dfs_assets) == 3
-    assert downstream_dfs_assets[0].guid == asset_1.guid
-    assert downstream_dfs_assets[1].guid == asset_2.guid
-    assert downstream_dfs_assets[2].guid == asset_3.guid
-    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
-    assert len(upstream_dfs) == 1
-    assert upstream_dfs[0] == asset_1.guid
-
-
-def _assert_fetch_lineage_end(response, asset_1, asset_2, asset_3):
-    assert response
-    assert response.base_entity_guid == asset_3.guid
-    upstream_guids = response.get_upstream_asset_guids()
-    assert upstream_guids
-    assert len(upstream_guids) == 1
-    assert asset_2.guid in upstream_guids
-    upstream_guids = response.get_upstream_process_guids()
-    assert upstream_guids
-    assert len(upstream_guids) == 1
-    downstream_guids = response.get_downstream_asset_guids()
-    assert not downstream_guids
-    downstream_dfs = response.get_all_downstream_asset_guids_dfs()
-    assert len(downstream_dfs) == 1
-    assert downstream_dfs[0] == asset_3.guid
-    downstream_dfs_assets = response.get_all_downstream_assets_dfs()
-    assert len(downstream_dfs_assets) == 1
-    assert downstream_dfs_assets[0].guid == asset_3.guid
-    upstream_dfs = response.get_all_upstream_asset_guids_dfs()
-    assert len(upstream_dfs) == 3
-    assert upstream_dfs[0] == asset_3.guid
-    assert upstream_dfs[1] == asset_2.guid
-    assert upstream_dfs[2] == asset_1.guid
-    upstream_dfs_assets = response.get_all_upstream_assets_dfs()
-    assert len(upstream_dfs_assets) == 3
-    assert upstream_dfs_assets[0].guid == asset_3.guid
-    assert upstream_dfs_assets[1].guid == asset_2.guid
-    assert upstream_dfs_assets[2].guid == asset_1.guid
-
-
 def test_lineage_start(
     client: AtlanClient,
     connection: Connection,
@@ -757,11 +653,8 @@ def test_search_by_lineage(
     after=[
         "test_lineage_start",
         "test_lineage_end",
-        "test_fetch_lineage_start",
         "test_fetch_lineage_start_list",
-        "test_fetch_lineage_middle",
         "test_fetch_lineage_middle_list",
-        "test_fetch_lineage_end",
         "test_fetch_lineage_end_list",
         "test_search_by_lineage",
     ]
