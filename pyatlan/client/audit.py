@@ -10,6 +10,7 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults, EntityAudit
 from pyatlan.model.search import SortItem
 import logging
+
 ENTITY_AUDITS = "entityAudits"
 LOGGER = logging.getLogger(__name__)
 
@@ -19,12 +20,14 @@ class AuditClient:
     This class can be used to configure and run a search against Atlan's activity log. This class does not need to be
     instantiated directly but can be obtained through the audit property of AtlanClient.
     """
+
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "client", "ApiCaller"
             )
         self._client = client
+
     @staticmethod
     def _prepare_sorts_for_bulk_search(sorts: List[SortItem]) -> List[SortItem]:
         """
@@ -34,7 +37,8 @@ class AuditClient:
         """
         if not AuditSearchResults.presorted_by_timestamp(sorts):
             return AuditSearchResults.sort_by_timestamp_first(sorts)
-        return sorts  
+        return sorts
+
     def _get_bulk_search_log_message(self, bulk):
         return (
             (
@@ -44,6 +48,7 @@ class AuditClient:
             )
             + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
         )
+
     @validate_arguments
     def search(self, criteria: AuditSearchRequest, bulk=False) -> AuditSearchResults:
         """
@@ -98,5 +103,3 @@ class AuditClient:
             entity_audits=entity_audits,
             aggregations=None,
         )
-
-    
