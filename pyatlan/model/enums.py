@@ -335,6 +335,7 @@ class AtlanConnectorType(str, Enum):
     SAP_HYBRIS = ("sap-hybris", AtlanConnectionCategory.SAAS)
     IBM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
     APP = ("app", AtlanConnectionCategory.APP)
+    BIGID = ("bigid", AtlanConnectionCategory.SAAS)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
