@@ -1793,7 +1793,8 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
-    _MASS_EXTRACT_THRESHOLD = 99700 #Note 100000(_MASS_EXTRACT_THRESHOLD) - 300(default page size)
+    DEFAULT_PAGE_SIZE = 300
+    _MASS_EXTRACT_THRESHOLD = 100000 - DEFAULT_PAGE_SIZE
 
     def __init__(
         self,
