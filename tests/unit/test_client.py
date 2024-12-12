@@ -3,6 +3,7 @@
 from importlib.resources import read_text
 from json import load, loads
 from pathlib import Path
+from re import escape
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import pytest
@@ -22,6 +23,7 @@ from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
 from pyatlan.errors import (
+    ERROR_CODE_FOR_HTTP_STATUS,
     ApiError,
     AtlanError,
     ErrorCode,
@@ -1827,6 +1829,68 @@ def test_atlan_call_api_server_error_messages(
         client.asset.save(glossary)
 
 
+@pytest.mark.parametrize(
+    "test_error_msg",
+    [
+        """
+    {
+        "errorCode": 1234,
+        "errorMessage": "something went wrong",
+        "causes": [
+            {
+                "errorType": "testException",
+                "errorMessage": "test error message",
+                "location": "Test.Class.TestException"
+            }
+        ],
+        "errorId": "95d80a45999cabc"
+    }
+    """
+    ],
+)
+@patch.object(AtlanClient, "_session")
+def test_atlan_call_api_server_error_messages_with_causes(
+    mock_session,
+    client: AtlanClient,
+    test_error_msg,
+):
+    ERROR_CODE_FOR_HTTP_STATUS.update(
+        {ErrorCode.ERROR_PASSTHROUGH.http_error_code: ErrorCode.ERROR_PASSTHROUGH}
+    )
+    STATUS_CODES = set(ERROR_CODE_FOR_HTTP_STATUS.keys())
+    # For "NOT_FOUND (404)" errors, no error cause is returned by the backend,
+    # so we'll exclude that from the test cases:
+    STATUS_CODES.remove(ErrorCode.NOT_FOUND_PASSTHROUGH.http_error_code)
+
+    for code in STATUS_CODES:
+        error = ERROR_CODE_FOR_HTTP_STATUS.get(code)
+        mock_response = Mock()
+        mock_response.status_code = code
+        mock_response.text = test_error_msg
+        mock_session.request.return_value = mock_response
+        test_error = loads(test_error_msg)
+        error_code = test_error.get("errorCode")
+        error_message = test_error.get("errorMessage")
+        error_cause = test_error.get("causes")[0]
+        glossary = AtlasGlossary.creator(name="test-glossary")
+        error_cause = (
+            "ErrorType: testException, "
+            "Message: test error message, "
+            "Location: Test.Class.TestException (errorId: 95d80a45999cabc) "
+        )
+        assert error and error_code and error_message and error_cause
+        error_info = error.error_message.format(error_code, error_message, error_cause)
+
+        with pytest.raises(
+            AtlanError,
+            match=escape(
+                f"ATLAN-PYTHON-{code}-000 {error_info}"
+                "Suggestion: Check the details of the server's message to correct your request."
+            ),
+        ):
+            client.asset.save(glossary)
+
+
 class TestBatch:
     def test_init(self, mock_atlan_client):
         sut = Batch(client=mock_atlan_client, max_size=10)
@@ -1891,7 +1955,7 @@ class TestBatch:
             assert unsaved.name == saved.name
 
         exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
-            "bad", "stuff"
+            "bad", "stuff", ""
         )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
             mock_atlan_client.asset.save.side_effect = exception
@@ -1942,7 +2006,7 @@ class TestBatch:
         self, custom_metadata_handling, mock_atlan_client
     ):
         exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
-            "bad", "stuff"
+            "bad", "stuff", ""
         )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
             mock_atlan_client.asset.save.side_effect = exception

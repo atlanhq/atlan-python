@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Dict, Protocol, Type, TypeVar
+from typing import Dict, List, Protocol, Type, TypeVar
 
 E = TypeVar("E", bound="AtlanError")
 RAISE_GITHUB_ISSUE = (
@@ -17,21 +17,30 @@ class ErrorInfo(Protocol):
     error_id: str
     error_message: str
     user_action: str
+    # Causes underlying the error
+    # if any (provided by the back-end)
+    error_causes: List[str]
+    # Unique identifier for the error
+    # (provided by the back-end)
+    backend_error_id: str
 
 
 class AtlanError(Exception):
-    def __init__(self, error_code: ErrorInfo, *args):
+    def __init__(self, error_code: ErrorInfo, *args, **kwargs):
         try:
             message = error_code.error_message.format(*args)
         except (KeyError, ValueError):
             message = error_code.error_message
         super().__init__(message)
         self.error_code = error_code
+        self.error_code.backend_error_id = kwargs.get("backend_error_id", "")
 
     def __str__(self):
         return (
-            f"{self.error_code.error_id or ''} "
-            f"{super().__str__()} Suggestion: {self.error_code.user_action}"
+            f"{self.error_code.error_id or ''}"
+            f"{' ' if self.error_code.error_id else ''}{super().__str__()}"
+            f"{' (errorId: ' + self.error_code.backend_error_id + ')' if self.error_code.backend_error_id else ''}"
+            f" Suggestion: {self.error_code.user_action}"
         )
 
 
@@ -95,7 +104,7 @@ class ErrorCode(Enum):
     INVALID_REQUEST_PASSTHROUGH = (
         400,
         "ATLAN-PYTHON-400-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with an invalid request {0}: {1} -- caused by: {2}",
         "Check the details of the server's message to correct your request.",
         InvalidRequestError,
     )
@@ -572,7 +581,7 @@ class ErrorCode(Enum):
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with an authentication error {0}: {1} -- caused by: {2}",
         "Check the details of the server's message to correct your request.",
         AuthenticationError,
     )
@@ -616,7 +625,7 @@ class ErrorCode(Enum):
     PERMISSION_PASSTHROUGH = (
         403,
         "ATLAN-PYTHON-403-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with a permission error {0}: {1} -- caused by: {2}",
         "Check the details of the server's message to correct your request.",
         PermissionError,
     )
@@ -637,7 +646,7 @@ class ErrorCode(Enum):
     NOT_FOUND_PASSTHROUGH = (
         404,
         "ATLAN-PYTHON-404-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with a not found error {0}: {1}.",
         "Check the details of the server's message to correct your request.",
         NotFoundError,
     )
@@ -848,7 +857,7 @@ class ErrorCode(Enum):
     CONFLICT_PASSTHROUGH = (
         409,
         "ATLAN-PYTHON-409-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with a conflict {0}: {1} -- caused by: {2}",
         "Check the details of the server's message to correct your request.",
         ConflictError,
     )
@@ -864,14 +873,14 @@ class ErrorCode(Enum):
     RATE_LIMIT_PASSTHROUGH = (
         429,
         "ATLAN-PYTHON-429-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with a rate limit violation {0}: {1} -- caused by: {2}",
         "Check the details of the server's message to correct your request.",
         RateLimitError,
     )
     ERROR_PASSTHROUGH = (
         500,
         "ATLAN-PYTHON-500-000",
-        "Server responded with {0}: {1}.",
+        "Server responded with an error {0}: {1} -- caused by: {2}",
         "Check the details of the server's message to correct your request.",
         ApiError,
     )
@@ -926,8 +935,8 @@ class ErrorCode(Enum):
         self.user_action = user_action
         self.exception_type = exception_type
 
-    def exception_with_parameters(self, *args):
-        return self.exception_type(self, *args)
+    def exception_with_parameters(self, *args, **kwargs):
+        return self.exception_type(self, *args, **kwargs)
 
 
 ERROR_CODE_FOR_HTTP_STATUS: Dict[int, ErrorCode] = {

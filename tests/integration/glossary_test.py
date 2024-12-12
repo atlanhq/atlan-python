@@ -292,8 +292,8 @@ def test_term_failure(
 ):
     with pytest.raises(
         NotFoundError,
-        match="ATLAN-PYTHON-404-000 Server responded with ATLAS-404-00-009: Instance AtlasGlossaryTerm with "
-        "unique attribute *",
+        match="ATLAN-PYTHON-404-000 Server responded with a not found "
+        "error ATLAS-404-00-009: Instance AtlasGlossaryTerm with unique attribute *",
     ):
         client.asset.update_merging_cm(
             AtlasGlossaryTerm.create(
@@ -943,7 +943,7 @@ def test_remove_unrelated_relationship(
         client.asset.save(term)
 
     EXPECTED_ERR = (
-        "ATLAN-PYTHON-404-000 Server responded with ATLAS-409-00-0021: "
+        "ATLAN-PYTHON-404-000 Server responded with a not found error ATLAS-409-00-0021: "
         "relationship AtlasGlossaryRelatedTerm does "
         f"not exist between entities {term2.guid} and {term1.guid}. "
         "Suggestion: Check the details of the server's message to correct your request."
