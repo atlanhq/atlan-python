@@ -389,8 +389,8 @@ def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
 ):
     with pytest.raises(
         NotFoundError,
-        match="ATLAN-PYTHON-404-000 Server responded with ATLAS-404-00-005: Given instance guid 76d54dd6 "
-        "is invalid/not found",
+        match="ATLAN-PYTHON-404-000 Server responded with a not found "
+        "error ATLAS-404-00-005: Given instance guid 76d54dd6 is invalid/not found",
     ):
         client.asset.get_by_guid("76d54dd6", AtlasGlossary)
 

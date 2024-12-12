@@ -2,10 +2,10 @@ import pytest
 
 from pyatlan.model.assets import Application
 from tests.unit.model.constants import (
-    APPLICATION_NAME,
-    APPLICATION_QUALIFIED_NAME,
     APP_CONNECTION_QUALIFIED_NAME,
     APP_CONNECTOR_TYPE,
+    APPLICATION_NAME,
+    APPLICATION_QUALIFIED_NAME,
 )
 
 
