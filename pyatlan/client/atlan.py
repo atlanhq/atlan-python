@@ -422,26 +422,30 @@ class AtlanClient(BaseSettings):
                         "errorMessage", ""
                     ) or error_info.get("message", "")
                     causes = error_info.get("causes", [])
+                    backend_error_id = error_info.get("errorId")
 
                     # Handle the causes and format them for exception
-                    cause_details = []
-                    if causes and isinstance(causes, list):
-                        for cause in causes:
-                            cause_details.append(
-                                f"ErrorType: {cause.get('errorType', 'Unknown')}, "
-                                f"Message: {cause.get('errorMessage', 'No additional information provided')}, "
-                                f"Location: {cause.get('location', 'Unknown location')}"
-                            )
+                    error_cause_details = [
+                        f"ErrorType: {cause.get('errorType', 'Unknown')}, "
+                        f"Message: {cause.get('errorMessage', 'No additional information provided')}, "
+                        f"Location: {cause.get('location', 'Unknown location')}"
+                        for cause in causes
+                    ]
+                    # Join the error cause details into a single string, separated by newlines
+                    error_cause_details_str = (
+                        "\n".join(error_cause_details) if error_cause_details else ""
+                    )
+
                     if error_code and error_message:
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
                             response.status_code, ErrorCode.ERROR_PASSTHROUGH
                         )
-                        cause_details_str = (
-                            "\n".join(cause_details) if cause_details else ""
-                        )
                         # Raise exception with error details and causes
                         raise error.exception_with_parameters(
-                            error_code, error_message, cause_details_str
+                            error_code,
+                            error_message,
+                            error_cause_details_str,
+                            backend_error_id=backend_error_id,
                         )
                 raise AtlanError(
                     SimpleNamespace(
