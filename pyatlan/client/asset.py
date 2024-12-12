@@ -1793,8 +1793,9 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
-    DEFAULT_PAGE_SIZE = 300
-    _MASS_EXTRACT_THRESHOLD = 100000 - DEFAULT_PAGE_SIZE
+    field = DSL.__fields__.get("size")
+    default_size = field.default if field is not None else 0
+    _MASS_EXTRACT_THRESHOLD = 100000 - default_size
 
     def __init__(
         self,
