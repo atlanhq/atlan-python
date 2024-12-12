@@ -99,8 +99,11 @@ class AuditClient:
             count > AuditSearchResults._MASS_EXTRACT_THRESHOLD
             and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
         ):
+            # If there is any user-specified sorting present in the search request
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
+            # Re-fetch the first page results with updated timestamp sorting
+            # for bulk search if count > _MASS_EXTRACT_THRESHOLD (10,000 assets)
             criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
                 criteria.dsl.sort
             )
@@ -110,6 +113,7 @@ class AuditClient:
                 AuditSearchResults._MASS_EXTRACT_THRESHOLD,
             )
             return self.search(criteria)
+
         return AuditSearchResults(
             client=self._client,
             criteria=criteria,

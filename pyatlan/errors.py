@@ -575,7 +575,8 @@ class ErrorCode(Enum):
         400,
         "ATLAN-PYTHON-400-066",
         "Unable to execute audit bulk search with user-defined sorting options.",
-        "Please ensure that no sorting options are included in your search request when performing a bulk search.",
+        "Please ensure that no sorting options are included in your "
+        + "audit search request when performing a bulk search.",
         InvalidRequestError,
     )
     MISSING_NAME = (

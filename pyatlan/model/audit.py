@@ -253,9 +253,9 @@ class AuditSearchResults(Iterable):
         self._entity_audits = entity_audits
         self._count = count
         self._bulk = bulk
-        self._first_record_creation_time = -1
-        self._last_record_creation_time = -1
-        self._processed_entity_ids: Set[str] = set()
+        self._first_record_creation_time = -2
+        self._last_record_creation_time = -2
+        self._processed_entity_keys: Set[str] = set()
 
     @property
     def total_count(self) -> int:
@@ -276,18 +276,22 @@ class AuditSearchResults(Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
         if size:
             self._size = size
 
-        # Used in the "timestamp-based" paging approach
-        # to check if `asset.guid` has already been processed
-        # in a previous page of results.
-        # If it has,then exclude it from the current results;
-        # otherwise, we may encounter duplicate asset records.
-        self._processed_entity_ids.update(
-            entity.entity_id for entity in self._entity_audits
-        )
-        return self._get_next_page() if self._get_next_page() else False
+        if is_bulk_search:
+            # Used in the "timestamp-based" paging approach
+            # to check if audit `entity.event_key` has already been processed
+            # in a previous page of results.
+            # If it has,then exclude it from the current results;
+            # otherwise, we may encounter duplicate audit entity records.
+            self._processed_entity_keys.update(
+                entity.event_key for entity in self._entity_audits
+            )
+        return self._get_next_page() if self._entity_audits else False
 
     def _get_next_page(self):
         """
@@ -339,12 +343,11 @@ class AuditSearchResults(Iterable):
         """
         Removes entities that have already been processed to avoid duplicates.
         """
-        unique_entities = [
+        self._entity_audits = [
             entity
             for entity in self._entity_audits
-            if entity.entity_id not in self._processed_entity_ids
+            if entity.event_key not in self._processed_entity_keys
         ]
-        self._entity_audits = unique_entities
 
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
@@ -361,17 +364,22 @@ class AuditSearchResults(Iterable):
             rewritten_filters.append(
                 self._get_paging_timestamp_query(self._last_record_creation_time)
             )
-
-        if isinstance(query, Bool):
-            rewritten_query = Bool(filter=rewritten_filters, must=query.must)
-        else:
-            # If a Term, Range, etc query type is found
-            # in the DSL, append it to the Bool `filter`.
-            rewritten_filters.append(query)
-            rewritten_query = Bool(filter=rewritten_filters)
-
-        self._criteria.dsl.from_ = 0
-        self._criteria.dsl.query = rewritten_query
+            if isinstance(query, Bool):
+                rewritten_query = Bool(
+                    filter=rewritten_filters,
+                    must=query.must,
+                    must_not=query.must_not,
+                    should=query.should,
+                    boost=query.boost,
+                    minimum_should_match=query.minimum_should_match,
+                )
+            else:
+                # If a Term, Range, etc query type is found
+                # in the DSL, append it to the Bool `filter`.
+                rewritten_filters.append(query)
+                rewritten_query = Bool(filter=rewritten_filters)
+            self._criteria.dsl.from_ = 0
+            self._criteria.dsl.query = rewritten_query
 
     @staticmethod
     def _get_paging_timestamp_query(last_timestamp: int) -> Query:
@@ -386,7 +394,7 @@ class AuditSearchResults(Iterable):
         )
 
     def _update_first_last_record_creation_times(self):
-        if self._entity_audits:
+        if self._entity_audits and len(self._entity_audits) > 1:
             self._first_record_creation_time = self._entity_audits[0].created
             self._last_record_creation_time = self._entity_audits[-1].created
 

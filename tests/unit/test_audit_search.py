@@ -119,7 +119,7 @@ def test_audit_search_pagination(
                 "ATLAN-PYTHON-400-066 Unable to execute "
                 "audit bulk search with user-defined sorting options. "
                 "Suggestion: Please ensure that no sorting options are "
-                "included in your search request when performing a bulk search."
+                "included in your audit search request when performing a bulk search."
             ),
         ):
             client.search(criteria=audit_search_request, bulk=False)
@@ -133,7 +133,7 @@ def test_audit_search_pagination(
                 "ATLAN-PYTHON-400-066 Unable to execute "
                 "audit bulk search with user-defined sorting options. "
                 "Suggestion: Please ensure that no sorting options are "
-                "included in your search request when performing a bulk search."
+                "included in your audit search request when performing a bulk search."
             ),
         ):
             client.search(criteria=audit_search_request, bulk=True)
