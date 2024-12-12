@@ -76,7 +76,7 @@ from pyatlan.model.core import Announcement, AtlanObject
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import AtlanConnectorType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
-from pyatlan.model.lineage import LineageListRequest, LineageRequest, LineageResponse
+from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
@@ -107,7 +107,7 @@ def get_adapter() -> logging.LoggerAdapter:
 LOGGER = get_adapter()
 
 DEFAULT_RETRY = Retry(
-    total=3,
+    total=5,
     backoff_factor=1,
     status_forcelist=[403, 429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
@@ -123,11 +123,7 @@ def log_response(response, *args, **kwargs):
 
 
 def get_session():
-    retry_strategy = DEFAULT_RETRY
-    adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
-    session.mount(HTTPS_PREFIX, adapter)
-    session.mount(HTTP_PREFIX, adapter)
     session.headers.update(
         {
             "x-atlan-agent": "sdk",
@@ -144,6 +140,9 @@ class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
+    connect_timeout: float = 30.0
+    read_timeout: float = 120.0
+    retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
@@ -195,6 +194,10 @@ class AtlanClient(BaseSettings):
                 "authorization": f"Bearer {self.api_key}",
             }
         }
+        session = self._session
+        adapter = HTTPAdapter(max_retries=self.retry)
+        session.mount(HTTPS_PREFIX, adapter)
+        session.mount(HTTP_PREFIX, adapter)
         AtlanClient._default_client = self
 
     @property
@@ -336,16 +339,29 @@ class AtlanClient(BaseSettings):
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
             if binary_data:
                 response = self._session.request(
-                    api.method.value, path, data=binary_data, **params
+                    api.method.value,
+                    path,
+                    data=binary_data,
+                    **params,
+                    timeout=(self.connect_timeout, self.read_timeout),
                 )
             elif api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                 response = self._session.request(
-                    api.method.value, path, **params, stream=True
+                    api.method.value,
+                    path,
+                    **params,
+                    stream=True,
+                    timeout=(self.connect_timeout, self.read_timeout),
                 )
                 if download_file_path:
                     return self._handle_file_download(response.raw, download_file_path)
             else:
-                response = self._session.request(api.method.value, path, **params)
+                response = self._session.request(
+                    api.method.value,
+                    path,
+                    **params,
+                    timeout=(self.connect_timeout, self.read_timeout),
+                )
             if response is not None:
                 LOGGER.debug("HTTP Status: %s", response.status_code)
             if response is None:
@@ -1293,22 +1309,6 @@ class AtlanClient(BaseSettings):
             name=name, connector_type=connector_type, attributes=attributes
         )
 
-    def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
-        """
-        Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
-        Use the get_lineage_list operation instead.
-
-        :param lineage_request: detailing the lineage query, parameters, and so on to run
-        :returns: the results of the lineage request
-        :raises AtlanError: on any API communication issue
-        """
-        warn(
-            "Lineage retrieval using this method is deprecated, please use 'get_lineage_list' instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.asset.get_lineage(lineage_request=lineage_request)
-
     def get_lineage_list(
         self, lineage_request: LineageListRequest
     ) -> LineageListResults:
@@ -1609,7 +1609,11 @@ class AtlanClient(BaseSettings):
 
 @contextlib.contextmanager
 def client_connection(
-    base_url: Optional[HttpUrl] = None, api_key: Optional[str] = None
+    base_url: Optional[HttpUrl] = None,
+    api_key: Optional[str] = None,
+    connect_timeout: float = 30.0,
+    read_timeout: float = 120.0,
+    retry: Retry = DEFAULT_RETRY,
 ) -> Generator[AtlanClient, None, None]:
     """
     Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will
@@ -1622,6 +1626,9 @@ def client_connection(
     tmp_client = AtlanClient(
         base_url=base_url or current_client.base_url,
         api_key=api_key or current_client.api_key,
+        connect_timeout=connect_timeout,
+        read_timeout=read_timeout,
+        retry=retry,
     )
     try:
         yield tmp_client
