@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
+from json import JSONDecodeError, loads
 from typing import Any, ClassVar, Dict, List, Optional
 
-from pydantic.v1 import Field, PrivateAttr
+from pydantic.v1 import Field, PrivateAttr, root_validator
 
 from pyatlan.model.core import AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
@@ -18,6 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     NumericField,
+    TextField,
 )
 from pyatlan.model.lineage_ref import LineageRef
 
@@ -31,6 +33,23 @@ class Referenceable(AtlanObject):
         __pydantic_self__._metadata_proxy = CustomMetadataProxy(
             __pydantic_self__.business_attributes
         )
+
+    @root_validator(pre=True)
+    def parse_custom_attributes(cls, values):
+        if "attributes" in values:
+            attributes = values["attributes"]
+            if "__customAttributes" in attributes:
+                # Pop the __customAttributes from attributes
+                custom_attributes = attributes.pop("__customAttributes")
+                try:
+                    # Try to parse the JSON string if it's a string
+                    if isinstance(custom_attributes, str):
+                        custom_attributes = loads(custom_attributes)
+                    # Add the parsed custom attributes to the Column
+                    values["custom_attributes"] = custom_attributes
+                except JSONDecodeError:
+                    pass
+        return values
 
     def json(self, *args, **kwargs) -> str:
         self.business_attributes = self._metadata_proxy.business_attributes
@@ -221,6 +240,15 @@ class Referenceable(AtlanObject):
         "qualifiedName", "qualifiedName", "qualifiedName.text"
     )
     """Unique fully-qualified name of the asset in Atlan."""
+
+    CUSTOM_ATTRIBUTES: ClassVar[TextField] = TextField(
+        "__customAttributes", "__customAttributes"
+    )
+    """
+    Any source-provided custom information.
+    NOTE: This is NOT the same as custom metadata (user-managed),
+    but is an entirely different area of source-managed custom information.
+    """
 
     type_name: str = Field(
         default="Referenceable",
