@@ -37,6 +37,10 @@ NOW_AS_TIMESTAMP = int(time() * 1000)
 NOW_AS_YYYY_MM_DD = datetime.today().strftime("%Y-%m-%d")
 EXISTING_TAG = "Issue"
 EXISTING_SOURCE_SYNCED_TAG = "Confidential"
+COLUMN_WITH_CUSTOM_ATTRIBUTES = (
+    "default/snowflake/1733440936/ANALYTICS"
+    "/WIDE_WORLD_IMPORTERS/STG_STATE_PROVINCES/LATEST_RECORDED_POPULATION"
+)
 
 VALUES_FOR_TERM_QUERIES = {
     "with_categories": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
@@ -241,6 +245,31 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
     for tag in tables[0].atlan_tags:
         assert str(tag.type_name) in (EXISTING_TAG, EXISTING_SOURCE_SYNCED_TAG)
     _assert_source_tag(tables, EXISTING_SOURCE_SYNCED_TAG, "Not Restricted")
+
+
+def test_search_source_specific_custom_attributes(client: AtlanClient):
+    # Test with get_by_qualified_name()
+    column_qn = COLUMN_WITH_CUSTOM_ATTRIBUTES
+    asset = client.asset.get_by_qualified_name(
+        asset_type=Column,
+        qualified_name=column_qn,
+        min_ext_info=True,
+        ignore_relationships=True,
+    )
+    assert asset and asset.custom_attributes
+
+    # Test with FluentSearch()
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(Column.QUALIFIED_NAME.eq(column_qn))
+        .include_on_results(Column.CUSTOM_ATTRIBUTES)
+        .execute(client=client)
+    )
+    assert results and results.count == 1
+    assert results.current_page() and len(results.current_page()) == 1
+    column = results.current_page()[0]
+    assert isinstance(column, Column) and column and column.custom_attributes
 
 
 def test_search_next_page(client: AtlanClient):
