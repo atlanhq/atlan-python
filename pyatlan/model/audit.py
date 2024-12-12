@@ -69,18 +69,24 @@ class AuditSearchRequest(SearchRequest):
 
     @classmethod
     def by_guid(
-        cls, guid: str, *, size: int = 10, _from: int = 0
+        cls,
+        guid: str,
+        *,
+        size: int = 10,
+        _from: int = 0,
+        sort: Union[SortItem, List[SortItem]] = LATEST_FIRST,
     ) -> "AuditSearchRequest":
         """
         Create an audit search request for the last changes to an asset, by its GUID.
         :param guid: unique identifier of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :param sort: Sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
             query=Bool(filter=[Term(field="entityId", value=guid)]),
-            sort=LATEST_FIRST,
+            sort=sort if LATEST_FIRST else [],
             size=size,
             _from=_from,
         )
@@ -88,18 +94,24 @@ class AuditSearchRequest(SearchRequest):
 
     @classmethod
     def by_user(
-        cls, user: str, *, size: int = 10, _from: int = 0
+        cls,
+        user: str,
+        *,
+        size: int = 10,
+        _from: int = 0,
+        sort: Union[SortItem, List[SortItem]] = LATEST_FIRST,
     ) -> "AuditSearchRequest":
         """
         Create an audit search request for the last changes to an asset, by a given user.
         :param user: the name of the user for which to look for any changes
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :param sort: Sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
             query=Bool(filter=[Term(field="user", value=user)]),
-            sort=LATEST_FIRST,
+            sort=sort if LATEST_FIRST else [],
             size=size,
             _from=_from,
         )
@@ -107,7 +119,13 @@ class AuditSearchRequest(SearchRequest):
 
     @classmethod
     def by_qualified_name(
-        cls, type_name: str, qualified_name: str, *, size: int = 10, _from: int = 0
+        cls,
+        type_name: str,
+        qualified_name: str,
+        *,
+        size: int = 10,
+        _from: int = 0,
+        sort: Union[SortItem, List[SortItem]] = LATEST_FIRST,
     ) -> "AuditSearchRequest":
         """
         Create an audit search request for the last changes to an asset, by its qualifiedName.
@@ -115,6 +133,7 @@ class AuditSearchRequest(SearchRequest):
         :param qualified_name: unique name of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :param sort: Sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
@@ -124,7 +143,7 @@ class AuditSearchRequest(SearchRequest):
                     Term(field="typeName", value=type_name),
                 ]
             ),
-            sort=LATEST_FIRST,
+            sort=sort if LATEST_FIRST else [],
             size=size,
             _from=_from,
         )
@@ -213,7 +232,9 @@ class AuditSearchResults(Iterable):
     Captures the response from a search against Atlan's activity log.
     """
 
-    _MASS_EXTRACT_THRESHOLD = 9700  # Note 10000 - 300 as it is an edge case
+    field = DSL.__fields__.get("size")
+    default_size = field.default if field is not None else 0
+    _MASS_EXTRACT_THRESHOLD = 10000 - default_size
 
     def __init__(
         self,
@@ -233,10 +254,10 @@ class AuditSearchResults(Iterable):
         self._size = size
         self._entity_audits = entity_audits
         self._count = count
-        self._processed_guids: Set[str] = set()
         self._first_record_creation_time = -1
         self._last_record_creation_time = -1
         self._bulk = bulk
+        self._processed_entity_ids: Set[str] = set()
 
     @property
     def total_count(self) -> int:
@@ -252,11 +273,11 @@ class AuditSearchResults(Iterable):
         """
         Indicates whether there is a next page of results.
         """
-        self._start = start or self._start + self._size
+        self._start = start if start is not None else self._start + self._size
         if size:
             self._size = size
 
-        if len(self._entity_audits) + self._start >= self._count:
+        if self._start >= self._count:
             return False
 
         return self._get_next_page()
@@ -265,20 +286,21 @@ class AuditSearchResults(Iterable):
         """
         Fetches the next page of results.
         """
-        if self._count > self._MASS_EXTRACT_THRESHOLD:
-            self._prepare_query_for_timestamp_paging()
-            self._criteria.dsl.from_ = 0
-
+        query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
-        raw_json = self._get_next_page_json()
+        self._criteria.dsl.from_ = self._start
+        is_bulk_search = self._bulk or self._count > self._MASS_EXTRACT_THRESHOLD
 
-        if raw_json:
+        if is_bulk_search:
+            self._prepare_query_for_timestamp_paging(query)
+
+        if raw_json := self._get_next_page_json(is_bulk_search):
             self._count = raw_json.get(TOTAL_COUNT, 0)
-            self._process_entities(raw_json.get(ENTITY_AUDITS, []))
+            self._filter_processed_entities()
             return True
         return False
 
-    def _get_next_page_json(self):
+    def _get_next_page_json(self, is_bulk_search: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
         """
@@ -294,19 +316,35 @@ class AuditSearchResults(Iterable):
             self._entity_audits = parse_obj_as(
                 List[EntityAudit], raw_json[ENTITY_AUDITS]
             )
+            if is_bulk_search:
+                self._update_first_last_record_creation_times()
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
 
-    def _prepare_query_for_timestamp_paging(self):
+    def _filter_processed_entities(self):
         """
-        Adjusts the query to include timestamp filters for bulk extraction.
+        Removes entities that have already been processed to avoid duplicates.
+        """
+        unique_entities = [
+            entity
+            for entity in self._entity_audits
+            if entity.entity_id not in self._processed_entity_ids
+        ]
+        self._processed_entity_ids.update(
+            entity.entity_id for entity in unique_entities
+        )
+        self._entity_audits = unique_entities
+
+    def _prepare_query_for_timestamp_paging(self, query: Query):
+        """
+        Adjusts the query to include timestamp filters for Audit bulk extraction.
         """
         rewritten_filters = []
-        if isinstance(self._criteria.dsl.query, Bool):
-            for filter_ in self._criteria.dsl.query.filter:
+        if isinstance(query, Bool):
+            for filter_ in query.filter:
                 if self._is_paging_timestamp_query(filter_):
                     continue
                 rewritten_filters.append(filter_)
@@ -315,7 +353,15 @@ class AuditSearchResults(Iterable):
             rewritten_filters.append(
                 self._get_paging_timestamp_query(self._last_record_creation_time)
             )
-        self._criteria.dsl.query = Bool(filter=rewritten_filters)
+
+        if isinstance(query, Bool):
+            rewritten_query = Bool(filter=rewritten_filters, must=query.must)
+        else:
+            rewritten_filters.append(query)
+            rewritten_query = Bool(filter=rewritten_filters)
+
+        self._criteria.dsl.from_ = 0
+        self._criteria.dsl.query = rewritten_query
 
     @staticmethod
     def _get_paging_timestamp_query(last_timestamp: int) -> Query:

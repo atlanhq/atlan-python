@@ -107,7 +107,7 @@ def test_audit_search_pagination(
         response, audit_search_paging_json, expected_sorts, bulk=True
     )
     assert mock_logger.call_count == 1
-    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    assert "Audit bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
     mock_api_caller.reset_mock()
 
@@ -140,8 +140,8 @@ def test_audit_search_pagination(
     with pytest.raises(
         InvalidRequestError,
         match=(
-            "ATLAN-PYTHON-400-063 Unable to execute "
-            "bulk search with user-defined sorting options. "
+            "ATLAN-PYTHON-400-066 Unable to execute "
+            "audit bulk search with user-defined sorting options. "
             "Suggestion: Please ensure that no sorting options are "
             "included in your search request when performing a bulk search."
         ),

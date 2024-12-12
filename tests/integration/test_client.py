@@ -576,13 +576,15 @@ def test_glossary_category_remove_announcement(
 
 
 def test_audit_find_by_user(
-    client: AtlanClient, current_user: UserMinimalResponse, audit_info: AuditInfo
+    client: AtlanClient,
+    current_user: UserMinimalResponse,
+    audit_info: AuditInfo,
 ):
     size = 10
     assert current_user.username
 
     results = client.audit.search(
-        AuditSearchRequest.by_user(current_user.username, size=size)
+        AuditSearchRequest.by_user(current_user.username, size=size, sort=[])
     )
     assert results.total_count > 0
     assert size == len(results.current_page())

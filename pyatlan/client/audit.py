@@ -29,9 +29,9 @@ class AuditClient:
         self._client = client
 
     @staticmethod
-    def _prepare_sorts_for_bulk_search(sorts: List[SortItem]) -> List[SortItem]:
+    def _prepare_sorts_for_audit_bulk_search(sorts: List[SortItem]) -> List[SortItem]:
         """
-        Ensures that sorting by creation timestamp is prioritized for bulk searches.
+        Ensures that sorting by creation timestamp is prioritized for Audit bulk searches.
         :param sorts: List of existing sorting options.
         :returns: A modified list of sorting options with creation timestamp as the top priority.
         """
@@ -39,10 +39,10 @@ class AuditClient:
             return AuditSearchResults.sort_by_timestamp_first(sorts)
         return sorts
 
-    def _get_bulk_search_log_message(self, bulk):
+    def _get_audit_bulk_search_log_message(self, bulk):
         return (
             (
-                "Bulk search option is enabled. "
+                "Audit bulk search option is enabled. "
                 if bulk
                 else "Result size (%s) exceeds threshold (%s). "
             )
@@ -53,18 +53,31 @@ class AuditClient:
     def search(self, criteria: AuditSearchRequest, bulk=False) -> AuditSearchResults:
         """
         Search for assets using the provided criteria.
+        `Note:` if the number of results exceeds the predefined threshold
+        (10,000 assets) this will be automatically converted into an audit `bulk` search.
 
         :param criteria: detailing the search query, parameters, and so on to run
-        :param bulk: whether to enable timestamp-based pagination for large datasets.
-        :returns: the results of the search
+        :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
+        for large numbers of results (> `10,000`), defaults to `False`. Note: this will reorder the results
+        (based on creation timestamp) in order to iterate through a large number (more than `10,000`) results.
+        :raises InvalidRequestError:
+
+            - if audit bulk search is enabled (`bulk=True`) and any
+              user-specified sorting options are found in the search request.
+            - if audit bulk search is disabled (`bulk=False`) and the number of results
+              exceeds the predefined threshold (i.e: `10,000` assets)
+              and any user-specified sorting options are found in the search request.
+
         :raises AtlanError: on any API communication issue
+        :returns: the results of the search
         """
         if bulk:
-            print(self._get_bulk_search_log_message(bulk))
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
-            LOGGER.debug(self._get_bulk_search_log_message(bulk))
+                raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
+            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
+                criteria.dsl.sort
+            )
+            LOGGER.debug(self._get_audit_bulk_search_log_message(bulk))
 
         raw_json = self._client._call_api(
             AUDIT_SEARCH,
@@ -87,10 +100,12 @@ class AuditClient:
             and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
         ):
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
+                raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
+            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
+                criteria.dsl.sort
+            )
             LOGGER.debug(
-                self._get_bulk_search_log_message(bulk),
+                self._get_audit_bulk_search_log_message(bulk),
                 count,
                 AuditSearchResults._MASS_EXTRACT_THRESHOLD,
             )
