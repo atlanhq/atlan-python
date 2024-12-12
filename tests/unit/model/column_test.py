@@ -121,7 +121,7 @@ def test_create_when_parent_is_snowflake_dynamic_table():
     assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.order == 1
     assert sut.table_qualified_name == TABLE_QUALIFIED_NAME
-    assert sut.table.qualified_name == TABLE_QUALIFIED_NAME
+    assert sut.snowflake_dynamic_table.qualified_name == TABLE_QUALIFIED_NAME
     assert sut.table_name == TABLE_NAME
 
 

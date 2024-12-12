@@ -1574,7 +1574,7 @@ class Column(SQL):
                 database_qualified_name=database_qualified_name,
             )
 
-            if parent_type in {Table, SnowflakeDynamicTable}:
+            if parent_type == Table:
                 column.table_qualified_name = parent_qualified_name
                 column.table = Table.ref_by_qualified_name(parent_qualified_name)
                 column.table_name = parent_name
@@ -1594,6 +1594,12 @@ class Column(SQL):
                     parent_qualified_name
                 )
                 column.table_name = table_name
+            elif parent_type == SnowflakeDynamicTable:
+                column.table_qualified_name = parent_qualified_name
+                column.snowflake_dynamic_table = (
+                    SnowflakeDynamicTable.ref_by_qualified_name(parent_qualified_name)
+                )
+                column.table_name = parent_name
             else:
                 raise ValueError(
                     "parent_type must be either Table, SnowflakeDynamicTable, View, MaterializeView or TablePartition"
