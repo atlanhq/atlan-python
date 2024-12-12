@@ -117,6 +117,5 @@ class AuditClient:
             size=criteria.dsl.size,
             count=count,
             entity_audits=entity_audits,
-            aggregations=None,
             bulk=bulk,
         )

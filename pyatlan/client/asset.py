@@ -1691,7 +1691,6 @@ class SearchResults(ABC, Iterable):
         self._size = size
         self._assets = assets
         self._processed_guids: Set[str] = set()
-        self._current_guid: Set[str] = set()
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
 
