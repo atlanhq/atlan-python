@@ -1792,9 +1792,8 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
-    field = DSL.__fields__.get("size")
-    default_size = field.default if field is not None else 0
-    _MASS_EXTRACT_THRESHOLD = 100000 - default_size
+    _DEFAULT_SIZE = DSL.__fields__.get("size").default or 300  # type: ignore[union-attr]
+    _MASS_EXTRACT_THRESHOLD = 100000 - _DEFAULT_SIZE
 
     def __init__(
         self,

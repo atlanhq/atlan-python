@@ -232,7 +232,7 @@ class AuditSearchResults(Iterable):
     Captures the response from a search against Atlan's activity log.
     """
 
-    _DEFAULT_SIZE = DSL.__fields__.get("size", 300).default
+    _DEFAULT_SIZE = DSL.__fields__.get("size").default or 300  # type: ignore[union-attr]
     _MASS_EXTRACT_THRESHOLD = 10000 - _DEFAULT_SIZE
 
     def __init__(
