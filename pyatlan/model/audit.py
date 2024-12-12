@@ -232,9 +232,8 @@ class AuditSearchResults(Iterable):
     Captures the response from a search against Atlan's activity log.
     """
 
-    field = DSL.__fields__.get("size")
-    default_size = field.default if field is not None else 0
-    _MASS_EXTRACT_THRESHOLD = 10000 - default_size
+    _DEFAULT_SIZE = DSL.__fields__.get("size", 300).default
+    _MASS_EXTRACT_THRESHOLD = 10000 - _DEFAULT_SIZE
 
     def __init__(
         self,
@@ -244,7 +243,6 @@ class AuditSearchResults(Iterable):
         size: int,
         entity_audits: List[EntityAudit],
         count: int,
-        aggregations: Optional[Any],
         bulk: bool = False,
     ):
         self._client = client
@@ -254,9 +252,9 @@ class AuditSearchResults(Iterable):
         self._size = size
         self._entity_audits = entity_audits
         self._count = count
+        self._bulk = bulk
         self._first_record_creation_time = -1
         self._last_record_creation_time = -1
-        self._bulk = bulk
         self._processed_entity_ids: Set[str] = set()
 
     @property
@@ -266,25 +264,36 @@ class AuditSearchResults(Iterable):
     def current_page(self) -> List[EntityAudit]:
         """
         Retrieve the current page of results.
+
+        :returns: list of assets on the current page of results
         """
         return self._entity_audits
 
     def next_page(self, start=None, size=None) -> bool:
         """
         Indicates whether there is a next page of results.
+
+        :returns: True if there is a next page of results, otherwise False
         """
-        self._start = start if start is not None else self._start + self._size
+        self._start = start or self._start + self._size
         if size:
             self._size = size
 
-        if self._start >= self._count:
-            return False
-
+        # Used in the "timestamp-based" paging approach
+        # to check if `asset.guid` has already been processed
+        # in a previous page of results.
+        # If it has,then exclude it from the current results;
+        # otherwise, we may encounter duplicate asset records.
+        self._processed_entity_ids.update(
+            entity.entity_id for entity in self._entity_audits
+        )
         return self._get_next_page() if self._get_next_page() else False
 
     def _get_next_page(self):
         """
         Fetches the next page of results.
+
+        :returns: True if the next page of results was fetched, False if there was no next page
         """
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
@@ -296,13 +305,14 @@ class AuditSearchResults(Iterable):
 
         if raw_json := self._get_next_page_json(is_bulk_search):
             self._count = raw_json.get(TOTAL_COUNT, 0)
-            self._filter_processed_entities()
             return True
         return False
 
     def _get_next_page_json(self, is_bulk_search: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
+
+        :returns: JSON for the next page of results, as-is
         """
         raw_json = self._client._call_api(
             self._endpoint,
@@ -318,6 +328,7 @@ class AuditSearchResults(Iterable):
             )
             if is_bulk_search:
                 self._update_first_last_record_creation_times()
+                self._filter_processed_entities()
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -333,14 +344,11 @@ class AuditSearchResults(Iterable):
             for entity in self._entity_audits
             if entity.entity_id not in self._processed_entity_ids
         ]
-        self._processed_entity_ids.update(
-            entity.entity_id for entity in unique_entities
-        )
         self._entity_audits = unique_entities
 
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
-        Adjusts the query to include timestamp filters for Audit bulk extraction.
+        Adjusts the query to include timestamp filters for audit bulk extraction.
         """
         rewritten_filters = []
         if isinstance(query, Bool):
@@ -357,6 +365,8 @@ class AuditSearchResults(Iterable):
         if isinstance(query, Bool):
             rewritten_query = Bool(filter=rewritten_filters, must=query.must)
         else:
+            # If a Term, Range, etc query type is found
+            # in the DSL, append it to the Bool `filter`.
             rewritten_filters.append(query)
             rewritten_query = Bool(filter=rewritten_filters)
 
@@ -374,11 +384,6 @@ class AuditSearchResults(Iterable):
             and filter_.field == "created"
             and filter_.gte is not None
         )
-
-    def _process_entities(self, entities):
-        if entities:
-            self._entity_audits = parse_obj_as(List[EntityAudit], entities)
-            self._update_first_last_record_creation_times()
 
     def _update_first_last_record_creation_times(self):
         if self._entity_audits:
@@ -398,7 +403,28 @@ class AuditSearchResults(Iterable):
 
     @staticmethod
     def sort_by_timestamp_first(sorts: List[SortItem]) -> List[SortItem]:
-        return [SortItem("created", order=SortOrder.ASCENDING)] + sorts
+        """
+        Rewrites the sorting options to ensure that
+        sorting by creation time, ascending, is the top
+        priority. Adds this condition if it does not
+        already exist, or moves it up to the top sorting
+        priority if it does already exist in the list.
+
+        :param sorts: list of sorting options
+        :returns: sorting options, making sorting by
+        creation time in ascending order the top priority
+        """
+        creation_asc_sort = [SortItem("created", order=SortOrder.ASCENDING)]
+
+        if not sorts:
+            return creation_asc_sort
+
+        rewritten_sorts = [
+            sort
+            for sort in sorts
+            if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
+        ]
+        return creation_asc_sort + rewritten_sorts
 
     def __iter__(self) -> Generator[EntityAudit, None, None]:
         """
