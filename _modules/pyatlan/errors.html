@@ -525,7 +525,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;AtlanError&quot;</span><span class="p">)</span>
 <span class="n">RAISE_GITHUB_ISSUE</span> <span class="o">=</span> <span class="p">(</span>
@@ -539,23 +539,32 @@
     <span class="n">error_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">user_action</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="c1"># Causes underlying the error</span>
+    <span class="c1"># if any (provided by the back-end)</span>
+    <span class="n">error_causes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="c1"># Unique identifier for the error</span>
+    <span class="c1"># (provided by the back-end)</span>
+    <span class="n">backend_error_id</span><span class="p">:</span> <span class="nb">str</span>
 
 
 <div class="viewcode-block" id="AtlanError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.AtlanError">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlanError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="n">error_code</span><span class="o">.</span><span class="n">error_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="n">message</span> <span class="o">=</span> <span class="n">error_code</span><span class="o">.</span><span class="n">error_message</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">error_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">backend_error_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;backend_error_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">error_id</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2"> Suggestion: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">user_action</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">error_id</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">error_id</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; (errorId: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">backend_error_id</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;)&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">backend_error_id</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; Suggestion: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">user_action</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -647,7 +656,7 @@
     <span class="n">INVALID_REQUEST_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">400</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-400-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with an invalid request </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1124,7 +1133,7 @@
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with an authentication error </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">AuthenticationError</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1168,7 +1177,7 @@
     <span class="n">PERMISSION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">403</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-403-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with a permission error </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="ne">PermissionError</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1189,7 +1198,7 @@
     <span class="n">NOT_FOUND_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">404</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-404-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with a not found error </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">NotFoundError</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1400,7 +1409,7 @@
     <span class="n">CONFLICT_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">409</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-409-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with a conflict </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">ConflictError</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1416,14 +1425,14 @@
     <span class="n">RATE_LIMIT_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">429</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-429-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with a rate limit violation </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">RateLimitError</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">ERROR_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">500</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-500-000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Server responded with </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Server responded with an error </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">ApiError</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1478,8 +1487,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">user_action</span> <span class="o">=</span> <span class="n">user_action</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exception_type</span> <span class="o">=</span> <span class="n">exception_type</span>
 
-    <span class="k">def</span> <span class="nf">exception_with_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">exception_with_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ErrorCode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
