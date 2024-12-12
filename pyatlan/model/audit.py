@@ -81,7 +81,7 @@ class AuditSearchRequest(SearchRequest):
         :param guid: unique identifier of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
-        :param sort: Sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
+        :param sort: sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
@@ -106,7 +106,7 @@ class AuditSearchRequest(SearchRequest):
         :param user: the name of the user for which to look for any changes
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
-        :param sort: Sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
+        :param sort: sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
@@ -133,7 +133,7 @@ class AuditSearchRequest(SearchRequest):
         :param qualified_name: unique name of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
-        :param sort: Sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
+        :param sort: sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
@@ -280,7 +280,7 @@ class AuditSearchResults(Iterable):
         if self._start >= self._count:
             return False
 
-        return self._get_next_page()
+        return self._get_next_page() if self._get_next_page() else False
 
     def _get_next_page(self):
         """

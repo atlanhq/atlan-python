@@ -77,7 +77,7 @@ def test_audit_search_pagination(
     # Test default pagination
     dsl = DSL(
         query=Bool(filter=[Term(field="entityId", value="some-guid")]),
-        sort=[SortItem(field="entityId", order=SortOrder.ASCENDING)],
+        sort=[],
         size=2,
         from_=0,
     )

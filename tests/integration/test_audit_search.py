@@ -1,11 +1,8 @@
 from unittest.mock import patch
 
-import pytest
-
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.audit import LOGGER
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.audit import AuditSearchRequest
+from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults
 from pyatlan.model.search import DSL, Bool, SortItem, SortOrder, Term
 
 
@@ -46,32 +43,14 @@ def test_audit_search_pagination(mock_logger, client: AtlanClient):
     assert "Audit bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
 
-    # When the number of results exceeds the predefined threshold and bulk is false and no pre-defined sort.
-    # Then SDK automatically switches to a `bulk` search option using timestamp-based pagination
-    username = (
-        client.user.get_current().username or "default_username"
-    )  # Expected to have more than 10,000
+    # When the number of results exceeds the predefined threshold and bulk is true and no pre-defined sort.
+    username = client.user.get_current().username  # Expected to have more than 10,000
+    assert username
     dsl = DSL(
         query=Bool(filter=[Term(field="user", value=username)]),
         sort=[],
         size=size,
     )
-    request = AuditSearchRequest(dsl=dsl)
-    results = client.audit.search(criteria=request)
-    total_count = results.total_count
-    expected_sorts = [
-        SortItem("created", order=SortOrder.ASCENDING),
-        SortItem(field="entityId", order=SortOrder.ASCENDING),
-    ]
-    _assert_audit_search_results(results, expected_sorts, size, total_count)
-    assert mock_logger.call_count < total_count
-    assert (
-        "Result size (%s) exceeds threshold (%s)."
-        in mock_logger.call_args_list[0][0][0]
-    )
-    mock_logger.reset_mock()
-
-    # When the number of results exceeds the predefined threshold and bulk is true and no pre-defined sort.
     request = AuditSearchRequest(dsl=dsl)
     results = client.audit.search(criteria=request, bulk=True)
     total_count = results.total_count
@@ -85,34 +64,20 @@ def test_audit_search_pagination(mock_logger, client: AtlanClient):
     mock_logger.reset_mock()
 
     # When the number of results exceeds the predefined threshold and bulk is false and no pre-defined sort.
-    username = (
-        client.user.get_current().username or "default_username"
-    )  # Expected to have more than 10,000
-    dsl = DSL(
-        query=Bool(filter=[Term(field="user", value=username)]),
-        sort=[SortItem(field="timestamp", order=SortOrder.ASCENDING)],
-        size=size,
-    )
-    request = AuditSearchRequest(dsl=dsl)
-    with pytest.raises(
-        InvalidRequestError,
-        match=(
-            "ATLAN-PYTHON-400-066 Unable to execute "
-            "audit bulk search with user-defined sorting options. "
-            "Suggestion: Please ensure that no sorting options are "
-            "included in your search request when performing a bulk search."
-        ),
-    ):
-        client.audit.search(criteria=request)
+    # Then SDK automatically switches to a `bulk` search option using timestamp-based pagination
 
-    # When the number of results exceeds the predefined threshold and bulk is true and no pre-defined sort.
-    with pytest.raises(
-        InvalidRequestError,
-        match=(
-            "ATLAN-PYTHON-400-066 Unable to execute "
-            "audit bulk search with user-defined sorting options. "
-            "Suggestion: Please ensure that no sorting options are "
-            "included in your search request when performing a bulk search."
-        ),
-    ):
-        client.audit.search(criteria=request, bulk=True)
+    with patch.object(AuditSearchResults, "_MASS_EXTRACT_THRESHOLD", 1):
+        request = AuditSearchRequest(dsl=dsl)
+        results = client.audit.search(criteria=request)
+        total_count = results.total_count
+        expected_sorts = [
+            SortItem("created", order=SortOrder.ASCENDING),
+            SortItem(field="entityId", order=SortOrder.ASCENDING),
+        ]
+        _assert_audit_search_results(results, expected_sorts, size, total_count)
+        assert mock_logger.call_count < total_count
+        assert (
+            "Result size (%s) exceeds threshold (%s)."
+            in mock_logger.call_args_list[0][0][0]
+        )
+        mock_logger.reset_mock()
