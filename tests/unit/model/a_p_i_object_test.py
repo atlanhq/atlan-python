@@ -4,8 +4,8 @@ from pyatlan.model.assets import APIObject
 from tests.unit.model.constants import (
     API_CONNECTION_QUALIFIED_NAME,
     API_CONNECTOR_TYPE,
-    API_OBJECT_QUALIFIED_NAME,
     API_OBJECT_NAME,
+    API_OBJECT_QUALIFIED_NAME,
 )
 
 
