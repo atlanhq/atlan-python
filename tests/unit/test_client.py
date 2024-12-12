@@ -1858,6 +1858,9 @@ def test_atlan_call_api_server_error_messages_with_causes(
         {ErrorCode.ERROR_PASSTHROUGH.http_error_code: ErrorCode.ERROR_PASSTHROUGH}
     )
     STATUS_CODES = set(ERROR_CODE_FOR_HTTP_STATUS.keys())
+    # For "NOT_FOUND (404)" errors, no error cause is returned by the backend,
+    # so we'll exclude that from the test cases:
+    STATUS_CODES.remove(ErrorCode.NOT_FOUND_PASSTHROUGH.http_error_code)
 
     for code in STATUS_CODES:
         error = ERROR_CODE_FOR_HTTP_STATUS.get(code)

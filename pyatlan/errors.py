@@ -646,7 +646,7 @@ class ErrorCode(Enum):
     NOT_FOUND_PASSTHROUGH = (
         404,
         "ATLAN-PYTHON-404-000",
-        "Server responded with a not found error {0}: {1} -- caused by: {2}",
+        "Server responded with a not found error {0}: {1}.",
         "Check the details of the server's message to correct your request.",
         NotFoundError,
     )
