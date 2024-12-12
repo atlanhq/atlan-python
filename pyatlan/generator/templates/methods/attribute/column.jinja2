@@ -58,7 +58,7 @@
                 database_qualified_name=database_qualified_name,
             )
 
-            if parent_type == Table:
+            if parent_type in {Table, SnowflakeDynamicTable}:
                 column.table_qualified_name = parent_qualified_name
                 column.table = Table.ref_by_qualified_name(parent_qualified_name)
                 column.table_name = parent_name
@@ -80,6 +80,6 @@
                 column.table_name = table_name
             else:
                 raise ValueError(
-                    "parent_type must be either Table, View, MaterializeView or TablePartition"
+                    "parent_type must be either Table, SnowflakeDynamicTable, View, MaterializeView or TablePartition"
                 )
             return column

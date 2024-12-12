@@ -1,6 +1,12 @@
 import pytest
 
-from pyatlan.model.assets import Column, MaterialisedView, Table, View
+from pyatlan.model.assets import (
+    Column,
+    MaterialisedView,
+    SnowflakeDynamicTable,
+    Table,
+    View,
+)
 from tests.unit.model.constants import (
     COLUMN_NAME,
     CONNECTION_QUALIFIED_NAME,
@@ -59,7 +65,7 @@ from tests.unit.model.constants import (
             TABLE_QUALIFIED_NAME,
             Column,
             1,
-            "parent_type must be either Table, View, MaterializeView or TablePartition",
+            "parent_type must be either Table, SnowflakeDynamicTable, View, MaterializeView or TablePartition",
         ),
     ],
 )
@@ -80,6 +86,28 @@ def test_create_when_parent_is_table():
         name=COLUMN_NAME,
         parent_qualified_name=TABLE_QUALIFIED_NAME,
         parent_type=Table,
+        order=1,
+    )
+
+    assert sut.name == COLUMN_NAME
+    assert sut.qualified_name == TABLE_COLUMN_QUALIFIED_NAME
+    assert sut.connector_name == CONNECTOR_TYPE
+    assert sut.schema_name == SCHEMA_NAME
+    assert sut.schema_qualified_name == SCHEMA_QUALIFIED_NAME
+    assert sut.database_name == DATABASE_NAME
+    assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
+    assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
+    assert sut.order == 1
+    assert sut.table_qualified_name == TABLE_QUALIFIED_NAME
+    assert sut.table.qualified_name == TABLE_QUALIFIED_NAME
+    assert sut.table_name == TABLE_NAME
+
+
+def test_create_when_parent_is_snowflake_dynamic_table():
+    sut = Column.create(
+        name=COLUMN_NAME,
+        parent_qualified_name=TABLE_QUALIFIED_NAME,
+        parent_type=SnowflakeDynamicTable,
         order=1,
     )
 

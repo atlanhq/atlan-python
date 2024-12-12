@@ -4,8 +4,8 @@ from pyatlan.model.assets import APIQuery
 from tests.unit.model.constants import (
     API_CONNECTION_QUALIFIED_NAME,
     API_CONNECTOR_TYPE,
-    API_QUERY_QUALIFIED_NAME,
     API_QUERY_NAME,
+    API_QUERY_QUALIFIED_NAME,
     API_QUERY_REFERENCE_OBJECT_QN,
 )
 
