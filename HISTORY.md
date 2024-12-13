@@ -1,3 +1,52 @@
+## 3.0.0 (December 13, 2024)
+
+### New features
+
+- Added a new connector type (`BIGID`).
+- Added support for the following options in `Batch` operations:
+  - `update_only`: bool (default: `False`)
+  - `track`: bool (default: `False`)
+  - `case_insensitive`: bool (default: `False`)
+  - `table_view_agnostic`: bool (default: `False`)
+  - `creation_handling`: `AssetCreationHandling` (default: `AssetCreationHandling.FULL`)
+- Added default timeouts (`read`, `connect`) to `AtlanClient`:
+  - Total retries: 5
+  - `AtlanClient.connect_timeout`: float (default: 30.0 seconds)
+  - `AtlanClient.read_timeout`: float (default: 120.0 seconds)
+- Added support for a new `parent_type` (`SnowflakeDynamicTable`) in `Column.creator()`.
+- Added exposure for source-specific custom attributes (e.g: `Asset.custom_attributes`).
+- Added handling for `error_cause` and `backend_error_id` in `ErrorInfo`.
+
+### Bug fixes
+
+- Fixed the generator to correctly handle the naming of the `Asset.DOMAIN_GUIDS` keyword search field.
+- Fixed an issue where search pages (`IndexSearchResults` and `AuditSearchResults`) could overrun when the total results are just under the `_MASS_EXTRACT_THRESHOLD`.
+- Fixed an issue with timestamp paging returning incomplete results when searching with a small page size (e.g: `2`) and assets with the same creation time.
+
+### QOL improvements
+
+- Generated the latest typedef models.
+- Added the `@init_guid` decorator to the `updater()` method of assets to ensure that GUIDs are properly initialized and resolved in batch operations.
+- Removed `type_name` validation from `Table`, `View`, and `Materialised View` to make them configurable when running `Batch` operations with `table_view_agnostic=True`.
+- Removed deprecated `AssetClient.get_lineage()` integration tests.
+- Updated integration test asset constants to align with the new tenant setup.
+
+### Deprecated features
+
+- Removed the deprecated `AssetClient.get_lineage()` method, which is slower and will no longer receive enhancements. Use the `AssetClient.get_lineage_list()` operation instead.
+
+### Breaking changes
+
+- `Batch` now accepts `AtlanClient` as the first parameter, replacing the previous use of `AssetClient`.
+
+- Introduced a new pagination approach in `AuditClient.search()` called **audit bulk search** (disabled by default). The SDK switches to this search operation automatically if results exceed a predefined threshold (e.g: `10,000` results). Alternatively, users can enable bulk search explicitly by setting `bulk=True` in `AuditClient.search()`. This breaking change affects searches that return more than `10,000` results — either the results will now be sorted differently or an error will be thrown.
+
+- `AuditClient.search()` method will now raise an `InvalidRequestError` exception in the following scenarios:
+  - when bulk search is enabled (`bulk=True`) and any user-specified sorting options are included in the search request.
+  - when bulk search is disabled (`bulk=False`), the number of results exceeds the predefined threshold (e.g: `10,000` assets), and any user-specified sorting options are found in the search request.
+
+  _This is because the audit bulk search approach ignores user-specified sorting and instead reorders results based on the creation timestamps of assets to handle large volumes of assets efficiently._
+
 ## 2.7.0 (December 4, 2024)
 
 ### QOL improvements
