@@ -1859,7 +1859,7 @@ class IndexSearchResults(SearchResults, Iterable):
             # Always ensure that the offset is set to the length of the processed assets
             # instead of the default (start + size), as the default may skip some assets
             # and result in incomplete results (less than the approximate count)
-            self._criteria.dsl.from_ = len(self._processed_guids)
+            self._criteria.dsl.from_ = len(self._processed_guids)  # type: ignore[attr-defined]
 
     def next_page(self, start=None, size=None) -> bool:
         """

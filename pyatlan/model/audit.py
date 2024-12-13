@@ -303,7 +303,9 @@ class AuditSearchResults(Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
         self._criteria.dsl.from_ = self._start
-        is_bulk_search = self._bulk or self._count > self._MASS_EXTRACT_THRESHOLD
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
 
         if is_bulk_search:
             self._prepare_query_for_timestamp_paging(query)
