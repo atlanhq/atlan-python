@@ -2055,7 +2055,7 @@ class Batch:
         """
         Create a new batch of assets to be bulk-saved.
 
-        :param client: AssetClient to use
+        :param client: AtlanClient to use
         :param max_size: maximum size of each batch
             that should be processed (per API call)
         :param replace_atlan_tags: if True, all Atlan tags on an existing
