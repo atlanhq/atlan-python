@@ -295,7 +295,11 @@ def test_search_next_page(client: AtlanClient):
 def _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, bulk=False):
     assert results.count > size
     assert len(results.current_page()) == size
-    assert results.count == TOTAL_ASSETS
+    counter = 0
+    for term in results:
+        assert term
+        counter += 1
+    assert counter == TOTAL_ASSETS
     assert results
     assert results._bulk is bulk
     assert results.aggregations is None
