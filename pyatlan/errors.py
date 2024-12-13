@@ -571,6 +571,14 @@ class ErrorCode(Enum):
         "You must provide an ID when attempting to retrieve or update an object.",
         InvalidRequestError,
     )
+    UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS = (
+        400,
+        "ATLAN-PYTHON-400-066",
+        "Unable to execute audit bulk search with user-defined sorting options.",
+        "Please ensure that no sorting options are included in your "
+        + "audit search request when performing a bulk search.",
+        InvalidRequestError,
+    )
     MISSING_NAME = (
         400,
         "ATLAN-PYTHON-400-065",

@@ -1,0 +1,25 @@
+{
+  "totalCount": 2,
+  "entityAudits": [
+      {
+          "entity_qualified_name": "sample_entity_1",
+          "type_name": "AtlasGlossaryTerm",
+          "entity_id": "guid_1",
+          "timestamp": 1733491479782,
+          "created": 1733491480576,
+          "user": "user1",
+          "action": "ENTITY_CREATE",
+          "eventKey": "guid_1:1733491479782"
+      },
+      {
+          "entity_qualified_name": "sample_entity_2",
+          "type_name": "AtlasGlossaryTerm",
+          "entity_id": "guid_2",
+          "timestamp": 1733491479783,
+          "created": 1733491480577,
+          "user": "user2",
+          "action": "ENTITY_UPDATE",
+          "eventKey": "guid_2:1733491479783"
+      }
+  ]
+}

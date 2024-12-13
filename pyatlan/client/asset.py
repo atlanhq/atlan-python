@@ -1691,7 +1691,6 @@ class SearchResults(ABC, Iterable):
         self._size = size
         self._assets = assets
         self._processed_guids: Set[str] = set()
-        self._current_guid: Set[str] = set()
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
 
@@ -1793,9 +1792,8 @@ class IndexSearchResults(SearchResults, Iterable):
     query.
     """
 
-    field = DSL.__fields__.get("size")
-    default_size = field.default if field is not None else 0
-    _MASS_EXTRACT_THRESHOLD = 100000 - default_size
+    _DEFAULT_SIZE = DSL.__fields__.get("size").default or 300  # type: ignore[union-attr]
+    _MASS_EXTRACT_THRESHOLD = 100000 - _DEFAULT_SIZE
 
     def __init__(
         self,

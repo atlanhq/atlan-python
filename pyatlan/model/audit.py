@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Generator, Iterable, List, Optional, Union
+from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as, root_validator
 
@@ -15,6 +15,7 @@ from pyatlan.model.search import (
     DSL,
     Bool,
     Query,
+    Range,
     SearchRequest,
     SortItem,
     SortOrder,
@@ -68,18 +69,24 @@ class AuditSearchRequest(SearchRequest):
 
     @classmethod
     def by_guid(
-        cls, guid: str, *, size: int = 10, _from: int = 0
+        cls,
+        guid: str,
+        *,
+        size: int = 10,
+        _from: int = 0,
+        sort: Union[SortItem, List[SortItem]] = LATEST_FIRST,
     ) -> "AuditSearchRequest":
         """
         Create an audit search request for the last changes to an asset, by its GUID.
         :param guid: unique identifier of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :param sort: sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
             query=Bool(filter=[Term(field="entityId", value=guid)]),
-            sort=LATEST_FIRST,
+            sort=sort if LATEST_FIRST else [],
             size=size,
             _from=_from,
         )
@@ -87,18 +94,24 @@ class AuditSearchRequest(SearchRequest):
 
     @classmethod
     def by_user(
-        cls, user: str, *, size: int = 10, _from: int = 0
+        cls,
+        user: str,
+        *,
+        size: int = 10,
+        _from: int = 0,
+        sort: Union[SortItem, List[SortItem]] = LATEST_FIRST,
     ) -> "AuditSearchRequest":
         """
         Create an audit search request for the last changes to an asset, by a given user.
         :param user: the name of the user for which to look for any changes
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :param sort: sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
             query=Bool(filter=[Term(field="user", value=user)]),
-            sort=LATEST_FIRST,
+            sort=sort if LATEST_FIRST else [],
             size=size,
             _from=_from,
         )
@@ -106,7 +119,13 @@ class AuditSearchRequest(SearchRequest):
 
     @classmethod
     def by_qualified_name(
-        cls, type_name: str, qualified_name: str, *, size: int = 10, _from: int = 0
+        cls,
+        type_name: str,
+        qualified_name: str,
+        *,
+        size: int = 10,
+        _from: int = 0,
+        sort: Union[SortItem, List[SortItem]] = LATEST_FIRST,
     ) -> "AuditSearchRequest":
         """
         Create an audit search request for the last changes to an asset, by its qualifiedName.
@@ -114,6 +133,7 @@ class AuditSearchRequest(SearchRequest):
         :param qualified_name: unique name of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
         :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :param sort: sorting criteria for the results. Defaults to LATEST_FIRST(sorting by "created" in desc order).
         :returns: an AuditSearchRequest that can be used to perform the search
         """
         dsl = DSL(
@@ -123,7 +143,7 @@ class AuditSearchRequest(SearchRequest):
                     Term(field="typeName", value=type_name),
                 ]
             ),
-            sort=LATEST_FIRST,
+            sort=sort if LATEST_FIRST else [],
             size=size,
             _from=_from,
         )
@@ -208,7 +228,12 @@ class EntityAudit(AtlanObject):
 
 
 class AuditSearchResults(Iterable):
-    """Captures the response from a search against Atlan's activity log."""
+    """
+    Captures the response from a search against Atlan's activity log.
+    """
+
+    _DEFAULT_SIZE = DSL.__fields__.get("size").default or 300  # type: ignore[union-attr]
+    _MASS_EXTRACT_THRESHOLD = 10000 - _DEFAULT_SIZE
 
     def __init__(
         self,
@@ -218,7 +243,7 @@ class AuditSearchResults(Iterable):
         size: int,
         entity_audits: List[EntityAudit],
         count: int,
-        aggregations: Optional[Any],
+        bulk: bool = False,
     ):
         self._client = client
         self._endpoint = AUDIT_SEARCH
@@ -227,6 +252,11 @@ class AuditSearchResults(Iterable):
         self._size = size
         self._entity_audits = entity_audits
         self._count = count
+        self._approximate_count = count
+        self._bulk = bulk
+        self._first_record_creation_time = -2
+        self._last_record_creation_time = -2
+        self._processed_entity_keys: Set[str] = set()
 
     @property
     def total_count(self) -> int:
@@ -247,8 +277,21 @@ class AuditSearchResults(Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
         if size:
             self._size = size
+
+        if is_bulk_search:
+            # Used in the "timestamp-based" paging approach
+            # to check if audit `entity.event_key` has already been processed
+            # in a previous page of results.
+            # If it has,then exclude it from the current results;
+            # otherwise, we may encounter duplicate audit entity records.
+            self._processed_entity_keys.update(
+                entity.event_key for entity in self._entity_audits
+            )
         return self._get_next_page() if self._entity_audits else False
 
     def _get_next_page(self):
@@ -257,14 +300,20 @@ class AuditSearchResults(Iterable):
 
         :returns: True if the next page of results was fetched, False if there was no next page
         """
-        self._criteria.dsl.from_ = self._start
+        query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
-        if raw_json := self._get_next_page_json():
-            self._count = raw_json[TOTAL_COUNT] if TOTAL_COUNT in raw_json else 0
+        self._criteria.dsl.from_ = self._start
+        is_bulk_search = self._bulk or self._count > self._MASS_EXTRACT_THRESHOLD
+
+        if is_bulk_search:
+            self._prepare_query_for_timestamp_paging(query)
+
+        if raw_json := self._get_next_page_json(is_bulk_search):
+            self._count = raw_json.get(TOTAL_COUNT, 0)
             return True
         return False
 
-    def _get_next_page_json(self):
+    def _get_next_page_json(self, is_bulk_search: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
 
@@ -277,22 +326,119 @@ class AuditSearchResults(Iterable):
         if ENTITY_AUDITS not in raw_json or not raw_json[ENTITY_AUDITS]:
             self._entity_audits = []
             return None
+
         try:
             self._entity_audits = parse_obj_as(
                 List[EntityAudit], raw_json[ENTITY_AUDITS]
             )
+            if is_bulk_search:
+                self._update_first_last_record_creation_times()
+                self._filter_processed_entities()
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
 
+    def _filter_processed_entities(self):
+        """
+        Removes entities that have already been processed to avoid duplicates.
+        """
+        self._entity_audits = [
+            entity
+            for entity in self._entity_audits
+            if entity.event_key not in self._processed_entity_keys
+        ]
+
+    def _prepare_query_for_timestamp_paging(self, query: Query):
+        """
+        Adjusts the query to include timestamp filters for audit bulk extraction.
+        """
+        rewritten_filters = []
+        if isinstance(query, Bool):
+            for filter_ in query.filter:
+                if self._is_paging_timestamp_query(filter_):
+                    continue
+                rewritten_filters.append(filter_)
+
+        if self._first_record_creation_time != self._last_record_creation_time:
+            rewritten_filters.append(
+                self._get_paging_timestamp_query(self._last_record_creation_time)
+            )
+            if isinstance(query, Bool):
+                rewritten_query = Bool(
+                    filter=rewritten_filters,
+                    must=query.must,
+                    must_not=query.must_not,
+                    should=query.should,
+                    boost=query.boost,
+                    minimum_should_match=query.minimum_should_match,
+                )
+            else:
+                # If a Term, Range, etc query type is found
+                # in the DSL, append it to the Bool `filter`.
+                rewritten_filters.append(query)
+                rewritten_query = Bool(filter=rewritten_filters)
+            self._criteria.dsl.from_ = 0
+            self._criteria.dsl.query = rewritten_query
+
+    @staticmethod
+    def _get_paging_timestamp_query(last_timestamp: int) -> Query:
+        return Range(field="created", gte=last_timestamp)
+
+    @staticmethod
+    def _is_paging_timestamp_query(filter_: Query) -> bool:
+        return (
+            isinstance(filter_, Range)
+            and filter_.field == "created"
+            and filter_.gte is not None
+        )
+
+    def _update_first_last_record_creation_times(self):
+        if self._entity_audits and len(self._entity_audits) > 1:
+            self._first_record_creation_time = self._entity_audits[0].created
+            self._last_record_creation_time = self._entity_audits[-1].created
+
+    @staticmethod
+    def presorted_by_timestamp(sorts: Optional[List[SortItem]]) -> bool:
+        """
+        Checks if the sorting options prioritize creation time in ascending order.
+        :param sorts: List of sorting options or None.
+        :returns: True if sorting is already prioritized by creation time, False otherwise.
+        """
+        if sorts and isinstance(sorts[0], SortItem):
+            return sorts[0].field == "created" and sorts[0].order == SortOrder.ASCENDING
+        return False
+
+    @staticmethod
+    def sort_by_timestamp_first(sorts: List[SortItem]) -> List[SortItem]:
+        """
+        Rewrites the sorting options to ensure that
+        sorting by creation time, ascending, is the top
+        priority. Adds this condition if it does not
+        already exist, or moves it up to the top sorting
+        priority if it does already exist in the list.
+
+        :param sorts: list of sorting options
+        :returns: sorting options, making sorting by
+        creation time in ascending order the top priority
+        """
+        creation_asc_sort = [SortItem("created", order=SortOrder.ASCENDING)]
+
+        if not sorts:
+            return creation_asc_sort
+
+        rewritten_sorts = [
+            sort
+            for sort in sorts
+            if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
+        ]
+        return creation_asc_sort + rewritten_sorts
+
     def __iter__(self) -> Generator[EntityAudit, None, None]:
         """
         Iterates through the results, lazily-fetching each next page until there
         are no more results.
-
-        :returns: an iterable form of each result, across all pages
         """
         while True:
             yield from self.current_page()
