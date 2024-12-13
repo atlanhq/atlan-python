@@ -252,6 +252,7 @@ class AuditSearchResults(Iterable):
         self._size = size
         self._entity_audits = entity_audits
         self._count = count
+        self._approximate_count = count
         self._bulk = bulk
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
