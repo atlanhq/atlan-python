@@ -1711,12 +1711,6 @@ class SearchResults(ABC, Iterable):
         self._start = start or self._start + self._size
         if size:
             self._size = size
-        # Used in the "timestamp-based" paging approach
-        # to check if `asset.guid` has already been processed
-        # in a previous page of results.
-        # If it has,then exclude it from the current results;
-        # otherwise, we may encounter duplicate asset records.
-        self._processed_guids.update(asset.guid for asset in self._assets)
         return self._get_next_page() if self._assets else False
 
     @abc.abstractmethod
@@ -1851,6 +1845,42 @@ class IndexSearchResults(SearchResults, Iterable):
                 rewritten_query = Bool(filter=rewritten_filters)
             self._criteria.dsl.from_ = 0  # type: ignore[attr-defined]
             self._criteria.dsl.query = rewritten_query  # type: ignore[attr-defined]
+        else:
+            # Ensure that when switching to offset-based paging, if the first and last record timestamps are the same,
+            # we do not include a created timestamp filter (ie: Range(field='__timestamp', gte=VALUE)) in the query.
+            # Instead, ensure the search runs with only SortItem(field='__timestamp', order=<SortOrder.ASCENDING>).
+            # Failing to do so can lead to incomplete results (less than the approximate count) when running the search
+            # with a small page size.
+            if isinstance(query, Bool):
+                for filter_ in query.filter:
+                    if self.is_paging_timestamp_query(filter_):
+                        query.filter.remove(filter_)
+
+            # Always ensure that the offset is set to the length of the processed assets
+            # instead of the default (start + size), as the default may skip some assets
+            # and result in incomplete results (less than the approximate count)
+            self._criteria.dsl.from_ = len(self._processed_guids)  # type: ignore[attr-defined]
+
+    def next_page(self, start=None, size=None) -> bool:
+        """
+        Indicates whether there is a next page of results.
+
+        :returns: True if there is a next page of results, otherwise False
+        """
+        self._start = start or self._start + self._size
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
+        if size:
+            self._size = size
+        if is_bulk_search:
+            # Used in the "timestamp-based" paging approach
+            # to check if `asset.guid` has already been processed
+            # in a previous page of results.
+            # If it has,then exclude it from the current results;
+            # otherwise, we may encounter duplicate asset records.
+            self._processed_guids.update(asset.guid for asset in self._assets)
+        return self._get_next_page() if self._assets else False
 
     def _get_next_page(self):
         """

@@ -303,7 +303,9 @@ class AuditSearchResults(Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
         self._criteria.dsl.from_ = self._start
-        is_bulk_search = self._bulk or self._count > self._MASS_EXTRACT_THRESHOLD
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
 
         if is_bulk_search:
             self._prepare_query_for_timestamp_paging(query)
@@ -381,6 +383,21 @@ class AuditSearchResults(Iterable):
                 rewritten_query = Bool(filter=rewritten_filters)
             self._criteria.dsl.from_ = 0
             self._criteria.dsl.query = rewritten_query
+        else:
+            # Ensure that when switching to offset-based paging, if the first and last record timestamps are the same,
+            # we do not include a created timestamp filter (ie: Range(field='__timestamp', gte=VALUE)) in the query.
+            # Instead, ensure the search runs with only SortItem(field='__timestamp', order=<SortOrder.ASCENDING>).
+            # Failing to do so can lead to incomplete results (less than the approximate count) when running the search
+            # with a small page size.
+            if isinstance(query, Bool):
+                for filter_ in query.filter:
+                    if self._is_paging_timestamp_query(filter_):
+                        query.filter.remove(filter_)
+
+            # Always ensure that the offset is set to the length of the processed assets
+            # instead of the default (start + size), as the default may skip some assets
+            # and result in incomplete results (less than the approximate count)
+            self._criteria.dsl.from_ = len(self._processed_entity_keys)
 
     @staticmethod
     def _get_paging_timestamp_query(last_timestamp: int) -> Query:
@@ -403,7 +420,7 @@ class AuditSearchResults(Iterable):
     def presorted_by_timestamp(sorts: Optional[List[SortItem]]) -> bool:
         """
         Checks if the sorting options prioritize creation time in ascending order.
-        :param sorts: List of sorting options or None.
+        :param sorts: list of sorting options or None.
         :returns: True if sorting is already prioritized by creation time, False otherwise.
         """
         if sorts and isinstance(sorts[0], SortItem):
@@ -439,6 +456,8 @@ class AuditSearchResults(Iterable):
         """
         Iterates through the results, lazily-fetching each next page until there
         are no more results.
+
+        returns: an iterable form of each result, across all pages
         """
         while True:
             yield from self.current_page()
