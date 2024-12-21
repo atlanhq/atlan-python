@@ -119,7 +119,6 @@ class SearchLogClient:
         :raises AtlanError: on any API communication issue
         :returns: the results of the search
         """
-        # import ipdb; ipdb.set_trace()
         if bulk:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
