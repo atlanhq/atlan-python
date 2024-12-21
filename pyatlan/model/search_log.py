@@ -585,8 +585,8 @@ class SearchLogResults(Iterable):
         rewritten_sorts = [
             sort
             for sort in sorts
-            # Added a condition to disable TimeStamp sorting when bulk search for logs is enabled,
-            # as sorting is already handled based on createdAt in this case.
+            # Added a condition to disable "timestamp" sorting when bulk search for logs is enabled,
+            # as sorting is already handled based on "createdAt" in this case.
             if (
                 (not sort.field)
                 or (sort.field != Asset.CREATE_TIME.internal_field_name)

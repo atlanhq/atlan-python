@@ -1,0 +1,79 @@
+{
+    "approximateCount": 2,
+    "logs": [
+      {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "host": "fieldtec34.atlan.com",
+        "ipAddress": "10.159.1.190",
+        "userName": "aryaman",
+        "entityGuidsAll": ["2be6f58d-fd8a-44fe-a43e-f97b150cd1dd"],
+        "entityQFNamesAll": ["W7YoLhzkzLnaqWpLg2k5M@LwP6giikgVbDg1lDyiZzx"],
+        "entityGuidsAllowed": ["2be6f58d-fd8a-44fe-a43e-f97b150cd1dd"],
+        "entityQFNamesAllowed": ["W7YoLhzkzLnaqWpLg2k5M@LwP6giikgVbDg1lDyiZzx"],
+        "entityTypeNamesAll": ["AtlasGlossaryTerm"],
+        "entityTypeNamesAllowed": ["AtlasGlossaryTerm"],
+        "utmTags": ["project_webapp", "action_asset_viewed", "asset_type_atlasglossaryterm", "page_glossary", "ui_profile"],
+        "hasResult": true,
+        "resultsCount": 1,
+        "responseTime": 63,
+        "createdAt": 1733492035914,
+        "timestamp": 1733492035849,
+        "failed": false,
+        "request.dsl": {
+          "from": 0,
+          "size": 1,
+          "query": {
+            "bool": {
+              "filter": {
+                "bool": {
+                  "must": {"term": {"__guid": "2be6f58d-fd8a-44fe-a43e-f97b150cd1dd"}},
+                  "must_not": [{"term": {"isPartial": "true"}}]
+                }
+              }
+            }
+          },
+          "sort": []
+        },
+        "request.dslText": "{\"from\":0,\"size\":1,\"query\":{\"bool\":{\"filter\":{\"bool\":{\"must\":{\"term\":{\"__guid\":\"2be6f58d-fd8a-44fe-a43e-f97b150cd1dd\"}},\"must_not\":[{\"term\":{\"isPartial\":\"true\"}}]}}}},\"sort\":[]}",
+        "request.attributes": ["metricTimestampColumn", "termType", "glossaryType"],
+        "request.relationAttributes": ["outputs", "inputs"]
+      },
+      {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "host": "fieldtec34.atlan.com",
+        "ipAddress": "10.159.1.191",
+        "userName": "raj",
+        "entityGuidsAll": ["2be6f58d-fd8a-44fe-a43e-f97b150cd1de"],
+        "entityQFNamesAll": ["L4YoPiykzWmaqWpLg4k7N@LwP6giikgVbDg1lDyiZzx"],
+        "entityGuidsAllowed": ["2be6f58d-fd8a-44fe-a43e-f97b150cd1de"],
+        "entityQFNamesAllowed": ["L4YoPiykzWmaqWpLg4k7N@LwP6giikgVbDg1lDyiZzx"],
+        "entityTypeNamesAll": ["AtlasGlossaryTerm"],
+        "entityTypeNamesAllowed": ["AtlasGlossaryTerm"],
+        "utmTags": ["project_webapp", "action_asset_viewed", "asset_type_atlasglossaryterm", "page_glossary", "ui_profile"],
+        "hasResult": true,
+        "resultsCount": 1,
+        "responseTime": 99,
+        "createdAt": 1733492069057,
+        "timestamp": 1733492068957,
+        "failed": false,
+        "request.dsl": {
+          "from": 0,
+          "size": 1,
+          "query": {
+            "bool": {
+              "filter": {
+                "bool": {
+                  "must": {"term": {"__guid": "2be6f58d-fd8a-44fe-a43e-f97b150cd1de"}},
+                  "must_not": [{"term": {"isPartial": "true"}}]
+                }
+              }
+            }
+          },
+          "sort": []
+        },
+        "request.dslText": "{\"from\":0,\"size\":1,\"query\":{\"bool\":{\"filter\":{\"bool\":{\"must\":{\"term\":{\"__guid\":\"2be6f58d-fd8a-44fe-a43e-f97b150cd1de\"}},\"must_not\":[{\"term\":{\"isPartial\":\"true\"}}]}}}},\"sort\":[]}",
+        "request.attributes": ["metricTimestampColumn", "termType", "glossaryType"],
+        "request.relationAttributes": ["outputs", "inputs"]
+      }
+    ]
+  }

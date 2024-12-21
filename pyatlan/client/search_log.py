@@ -77,7 +77,7 @@ class SearchLogClient:
         sorts: List[SortItem],
     ) -> List[SortItem]:
         """
-        Ensures that sorting by creation timestamp is prioritized for Search Log bulk searches.
+        Ensures that sorting by creation timestamp is prioritized for search Log bulk searches.
         :param sorts: List of existing sorting options.
         :returns: A modified list of sorting options with creation timestamp as the top priority.
         """
@@ -88,7 +88,7 @@ class SearchLogClient:
     def _get_search_log_bulk_search_log_message(self, bulk):
         return (
             (
-                "Search Log bulk search option is enabled. "
+                "Search log bulk search option is enabled. "
                 if bulk
                 else "Result size (%s) exceeds threshold (%s). "
             )
@@ -119,6 +119,7 @@ class SearchLogClient:
         :raises AtlanError: on any API communication issue
         :returns: the results of the search
         """
+        # import ipdb; ipdb.set_trace()
         if bulk:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
