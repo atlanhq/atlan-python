@@ -89,7 +89,7 @@ class AssetMutationResponse(AtlanObject):
 
 
 class AccessTokenResponse(AtlanObject):
-    access_token: Optional[str]
+    access_token: str
     expires_in: Optional[int]
     refresh_expires_in: Optional[int]
     refresh_token: Optional[str]

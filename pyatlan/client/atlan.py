@@ -146,7 +146,7 @@ class AtlanClient(BaseSettings):
     retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
-    _401_retry: bool = PrivateAttr(default=False)
+    _has_retried_for_401: bool = PrivateAttr(default=False)
     _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
@@ -369,9 +369,8 @@ class AtlanClient(BaseSettings):
                 LOGGER.debug("HTTP Status: %s", response.status_code)
             if response is None:
                 return None
-            # import ipdb; ipdb.set_trace()
             if response.status_code == api.expected_status:
-                self._401_retry = False
+                self._has_retried_for_401 = False
                 try:
                     if (
                         response.content is None
@@ -446,27 +445,24 @@ class AtlanClient(BaseSettings):
                         "\n".join(error_cause_details) if error_cause_details else ""
                     )
 
-                    # Retry authentication on an authentication failure (token could have expired)
+                    # Retry with impersonation (if _user_id is present)
+                    # on authentication failure (token may have expired)
                     # import ipdb; ipdb.set_trace()
                     if (
                         self._user_id
-                        and not self._401_retry
+                        and not self._has_retried_for_401
                         and response.status_code
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
                         try:
-                            new_token = self.get_default_client().impersonate.user(
-                                user_id=self._user_id
+                            return self._handle_401_token_refresh(
+                                api,
+                                path,
+                                params,
+                                binary_data=binary_data,
+                                download_file_path=download_file_path,
+                                text_response=text_response,
                             )
-                            self.api_key = new_token
-                            params["headers"][
-                                "authorization"
-                            ] = f"Bearer {self.api_key}"
-                            self._request_params["headers"][
-                                "authorization"
-                            ] = f"Bearer {self.api_key}"
-                            self._401_retry = True
-                            return self._call_api_internal(api, path, params)
                         except Exception as e:
                             LOGGER.debug(
                                 "Attempt to impersonate user %s failed, not retrying. Error: %s",
@@ -583,6 +579,29 @@ class AtlanClient(BaseSettings):
             else:
                 params["data"] = json.dumps(request_obj)
         return params
+
+    def _handle_401_token_refresh(
+        self,
+        api,
+        path,
+        params,
+        binary_data=None,
+        download_file_path=None,
+        text_response=False,
+    ):
+        new_token = self.get_default_client().impersonate.user(user_id=self._user_id)
+        self.api_key = new_token
+        self._has_retried_for_401 = True
+        params["headers"]["authorization"] = f"Bearer {self.api_key}"
+        self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
+        return self._call_api_internal(
+            api,
+            path,
+            params,
+            binary_data=binary_data,
+            download_file_path=download_file_path,
+            text_response=text_response,
+        )
 
     @validate_arguments
     def upload_image(self, file, filename: str) -> AtlanImage:
