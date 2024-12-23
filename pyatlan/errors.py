@@ -590,7 +590,9 @@ class ErrorCode(Enum):
         401,
         "ATLAN-PYTHON-401-000",
         "Server responded with an authentication error {0}: {1} -- caused by: {2}",
-        "Check the details of the server's message to correct your request.",
+        "Your API or bearer token is either invalid or has expired, or you are "
+        + "attempting to access a URL you are not authorized to access. "
+        + "Ensure you are using a valid token, or try obtaining a new token and try again.",
         AuthenticationError,
     )
     NO_API_TOKEN = (

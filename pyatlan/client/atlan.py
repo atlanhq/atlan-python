@@ -118,7 +118,8 @@ VERSION = read_text("pyatlan", "version.txt").strip()
 
 
 def log_response(response, *args, **kwargs):
-    LOGGER.debug("HTTP Status: %s", response.status_code)
+    # NOTE:
+    # LOGGER.debug("HTTP Status: %s", response.status_code)
     LOGGER.debug("URL: %s", response.request.url)
 
 
@@ -145,6 +146,8 @@ class AtlanClient(BaseSettings):
     retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
+    _401_retry: bool = PrivateAttr(default=False)
+    _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
     _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
@@ -366,7 +369,9 @@ class AtlanClient(BaseSettings):
                 LOGGER.debug("HTTP Status: %s", response.status_code)
             if response is None:
                 return None
+            # import ipdb; ipdb.set_trace()
             if response.status_code == api.expected_status:
+                self._401_retry = False
                 try:
                     if (
                         response.content is None
@@ -377,12 +382,14 @@ class AtlanClient(BaseSettings):
                         return None
                     events = []
                     if LOGGER.isEnabledFor(logging.DEBUG):
-                        LOGGER.debug(
-                            "<== __call_api(%s,%s), result = %s",
-                            vars(api),
-                            params,
-                            response,
-                        )
+                        pass
+                        # NOTE:
+                        # LOGGER.debug(
+                        #     "<== __call_api(%s,%s), result = %s",
+                        #     vars(api),
+                        #     params,
+                        #     response,
+                        # )
                     if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                         for line in response.iter_lines(decode_unicode=True):
                             if not line:
@@ -396,7 +403,8 @@ class AtlanClient(BaseSettings):
                         response_ = response.text
                     else:
                         response_ = events if events else response.json()
-                    LOGGER.debug(response_)
+                    # NOTE:
+                    # LOGGER.debug(response_)
                     return response_
                 except (
                     requests.exceptions.JSONDecodeError,
@@ -415,8 +423,10 @@ class AtlanClient(BaseSettings):
             else:
                 with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                     error_info = json.loads(response.text)
-                    error_code = error_info.get("errorCode", 0) or error_info.get(
-                        "code", 0
+                    error_code = (
+                        error_info.get("errorCode", 0)
+                        or error_info.get("code", 0)
+                        or error_info.get("status")
                     )
                     error_message = error_info.get(
                         "errorMessage", ""
@@ -435,6 +445,34 @@ class AtlanClient(BaseSettings):
                     error_cause_details_str = (
                         "\n".join(error_cause_details) if error_cause_details else ""
                     )
+
+                    # Retry authentication on an authentication failure (token could have expired)
+                    # import ipdb; ipdb.set_trace()
+                    if (
+                        self._user_id
+                        and not self._401_retry
+                        and response.status_code
+                        == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
+                    ):
+                        try:
+                            new_token = self.get_default_client().impersonate.user(
+                                user_id=self._user_id
+                            )
+                            self.api_key = new_token
+                            params["headers"][
+                                "authorization"
+                            ] = f"Bearer {self.api_key}"
+                            self._request_params["headers"][
+                                "authorization"
+                            ] = f"Bearer {self.api_key}"
+                            self._401_retry = True
+                            return self._call_api_internal(api, path, params)
+                        except Exception as e:
+                            LOGGER.debug(
+                                "Attempt to impersonate user %s failed, not retrying. Error: %s",
+                                self._user_id,
+                                e,
+                            )
 
                     if error_code and error_message:
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
