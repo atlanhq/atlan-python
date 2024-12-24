@@ -134,6 +134,18 @@ GET_TOKEN = API(
     consumes=APPLICATION_ENCODED_FORM,
     produces=APPLICATION_ENCODED_FORM,
 )
+GET_CLIENT_SECRET = API(
+    "/auth/admin/realms/default/clients/{client_guid}/client-secret",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.IMPERSONATION,
+)
+GET_KEYCLOAK_USER = API(
+    "/auth/admin/realms/default/users",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.IMPERSONATION,
+)
 
 ENTITY_API = "entity/"
 PREFIX_ATTR = "attr:"

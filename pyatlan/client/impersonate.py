@@ -3,10 +3,10 @@
 
 import logging
 import os
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import GET_TOKEN
+from pyatlan.client.constants import GET_CLIENT_SECRET, GET_KEYCLOAK_USER, GET_TOKEN
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.response import AccessTokenResponse
 
@@ -94,3 +94,51 @@ class ImpersonationClient:
             return AccessTokenResponse(**raw_json).access_token
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_ESCALATE.exception_with_parameters() from atlan_err
+
+    def get_client_secret(self, client_guid: str) -> Optional[str]:
+        """
+        Retrieves the client secret associated with the given client GUID
+
+        :param client_guid: GUID of the client whose secret is to be retrieved
+        :returns: client secret if available, otherwise `None`
+        :raises:
+            - AtlanError: If an API error occurs.
+            - InvalidRequestError: If the provided GUID is invalid or retrieval fails.
+        """
+        try:
+            raw_json = self._client._call_api(
+                GET_CLIENT_SECRET.format_path({"client_guid": client_guid})
+            )
+            return raw_json and raw_json.get("value")
+        except AtlanError as e:
+            raise ErrorCode.UNABLE_TO_RETRIEVE_CLIENT_SECRET.exception_with_parameters(
+                client_guid
+            ) from e
+
+    def get_user_id(self, username: str) -> Optional[str]:
+        """
+        Retrieves the user ID from Keycloak for the specified username.
+        This method is particularly useful for impersonating API tokens.
+
+        :param username: username of the user whose ID needs to be retrieved.
+
+        :raises:
+            - AtlanError: If an API error occurs.
+            - InvalidRequestError: If an error occurs while fetching the user ID from Keycloak.
+        """
+        try:
+            raw_json = self._client._call_api(
+                GET_KEYCLOAK_USER.format_path_with_params(),
+                query_params={"username": username or " "},
+            )
+            return (
+                raw_json
+                and isinstance(raw_json, list)
+                and len(raw_json) >= 1
+                and raw_json[0].get("id")
+                or None
+            )
+        except AtlanError as e:
+            raise ErrorCode.UNABLE_TO_RETRIEVE_USER_GUID.exception_with_parameters(
+                username
+            ) from e

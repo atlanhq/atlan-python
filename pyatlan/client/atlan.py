@@ -118,8 +118,7 @@ VERSION = read_text("pyatlan", "version.txt").strip()
 
 
 def log_response(response, *args, **kwargs):
-    # NOTE:
-    # LOGGER.debug("HTTP Status: %s", response.status_code)
+    LOGGER.debug("HTTP Status: %s", response.status_code)
     LOGGER.debug("URL: %s", response.request.url)
 
 
@@ -381,14 +380,12 @@ class AtlanClient(BaseSettings):
                         return None
                     events = []
                     if LOGGER.isEnabledFor(logging.DEBUG):
-                        pass
-                        # NOTE:
-                        # LOGGER.debug(
-                        #     "<== __call_api(%s,%s), result = %s",
-                        #     vars(api),
-                        #     params,
-                        #     response,
-                        # )
+                        LOGGER.debug(
+                            "<== __call_api(%s,%s), result = %s",
+                            vars(api),
+                            params,
+                            response,
+                        )
                     if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                         for line in response.iter_lines(decode_unicode=True):
                             if not line:
@@ -402,8 +399,7 @@ class AtlanClient(BaseSettings):
                         response_ = response.text
                     else:
                         response_ = events if events else response.json()
-                    # NOTE:
-                    # LOGGER.debug(response_)
+                    LOGGER.debug(response_)
                     return response_
                 except (
                     requests.exceptions.JSONDecodeError,
@@ -589,6 +585,14 @@ class AtlanClient(BaseSettings):
         download_file_path=None,
         text_response=False,
     ):
+        """
+        Handles token refresh and retries the API request upon a 401 Unauthorized response.
+        1. Impersonates the user (if a user ID is available) to fetch a new token.
+        2. Updates the authorization header with the refreshed token.
+        3. Retries the API request with the new token.
+
+        returns: HTTP response received after retrying the request with the refreshed token
+        """
         new_token = self.get_default_client().impersonate.user(user_id=self._user_id)
         self.api_key = new_token
         self._has_retried_for_401 = True
