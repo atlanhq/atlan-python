@@ -1,3 +1,35 @@
+## 3.1.0 (December 26, 2024)
+
+### New features
+
+- Added support for automatic token refresh and retrying API requests upon receiving a `401` (Unauthorized) response.
+
+  To enable this feature, the following constants must be configured:
+
+  **1. Environment variables:**
+  For regenerating the bearer access token:
+  - `CLIENT_ID` (string)
+  - `CLIENT_SECRET` (string)
+
+  **2. Update `AtlanClient` field:**
+  - `_user_id` (string, default: `None`): The unique identifier (GUID) of the user that the client impersonates.
+
+  **Example:**
+  ```python
+  client = AtlanClient()
+  client._user_id = "962c8f78-98a7-908f-9ec2-9e5b7ee7a09f"
+  ```
+
+### Breaking changes
+
+- Introduced a new pagination approach in `SearchLogClient.search()` called **search log bulk search** (disabled by default). The SDK switches to this search operation automatically if results exceed a predefined threshold (e.g: `10,000` results). Alternatively, users can enable bulk search explicitly by setting `bulk=True` in `SearchLogClient.search()`. This breaking change affects searches that return more than `10,000` results — either the results will now be sorted differently or an error will be thrown.
+
+- `SearchLogClient.search()` method will now raise an `InvalidRequestError` exception in the following scenarios:
+  - when bulk search is enabled (`bulk=True`) and any user-specified sorting options are included in the search request.
+  - when bulk search is disabled (`bulk=False`), the number of results exceeds the predefined threshold (e.g: `10,000` assets), and any user-specified sorting options are found in the search request.
+
+  _This is because the bulk search approach for search logs ignores user-specified sorting and instead reorders results by the `createdAt` timestamps of log entries to efficiently handle large volumes of search logs._
+
 ## 3.0.0 (December 13, 2024)
 
 ### New features
