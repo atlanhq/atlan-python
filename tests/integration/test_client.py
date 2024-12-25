@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 from pydantic.v1 import StrictStr
 
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
 from pyatlan.client.audit import LOGGER as AUDIT_LOGGER
 from pyatlan.client.search_log import LOGGER as SEARCH_LOG_LOGGER
 from pyatlan.client.search_log import (
@@ -15,7 +15,8 @@ from pyatlan.client.search_log import (
     SearchLogResults,
     SearchLogViewResults,
 )
-from pyatlan.errors import NotFoundError
+from pyatlan.errors import AuthenticationError, NotFoundError
+from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -34,11 +35,12 @@ from pyatlan.model.enums import (
     SortOrder,
     UTMTags,
 )
-from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, SortItem, Term
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
+from tests.integration.requests_test import delete_token
 
 CLASSIFICATION_NAME = "Issue"
 SL_SORT_BY_TIMESTAMP = SortItem(field="timestamp", order=SortOrder.ASCENDING)
@@ -48,6 +50,28 @@ SL_SORT_BY_QUALIFIED_NAME = SortItem(
 )
 AUDIT_SORT_BY_GUID = SortItem(field="entityId", order=SortOrder.ASCENDING)
 AUDIT_SORT_BY_LATEST = SortItem("created", order=SortOrder.DESCENDING)
+MODULE_NAME = TestId.make_unique("Client")
+
+
+@pytest.fixture(scope="module")
+def expired_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+    token = None
+    try:
+        token = client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
+        time.sleep(5)
+        yield token
+    finally:
+        delete_token(client, token)
+
+
+@pytest.fixture(scope="module")
+def argo_fake_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+    token = None
+    try:
+        token = client.token.create(f"{MODULE_NAME}-fake-argo")
+        yield token
+    finally:
+        delete_token(client, token)
 
 
 @dataclass()
@@ -1094,3 +1118,79 @@ def test_search_log_default_sorting(client: AtlanClient, sl_glossary: AtlasGloss
     assert sort_options[0].field == SL_SORT_BY_GUID.field
     assert sort_options[1].field == SL_SORT_BY_QUALIFIED_NAME.field
     assert sort_options[2].field == SL_SORT_BY_TIMESTAMP.field
+
+
+def test_client_401_token_refresh(
+    client: AtlanClient, expired_token: ApiToken, argo_fake_token: ApiToken, monkeypatch
+):
+    # Use a smaller retry count to speed up test execution
+    DEFAULT_RETRY.total = 1
+
+    # Retrieve required client information before updating the client with invalid API tokens
+    assert argo_fake_token and argo_fake_token.guid
+    argo_client_secret = client.impersonate.get_client_secret(
+        client_guid=argo_fake_token.guid
+    )
+
+    # Retrieve the user ID associated with the expired token's username
+    # Since user credentials for API tokens cannot be retrieved directly, use the existing username
+    expired_token_user_id = client.impersonate.get_user_id(
+        username=expired_token.username
+    )
+
+    # Initialize the client with an expired/invalid token (results in 401 Unauthorized errors)
+    assert (
+        expired_token
+        and expired_token.attributes
+        and expired_token.attributes.access_token
+    )
+    client = AtlanClient(
+        api_key=expired_token.attributes.access_token, retry=DEFAULT_RETRY
+    )
+    expired_api_token = expired_token.attributes.access_token
+
+    # Case 1: No user_id (default)
+    # Verify that the client raises an authentication error when no user ID is provided
+    assert client._user_client is None
+    with pytest.raises(
+        AuthenticationError,
+        match="Server responded with an authentication error 401",
+    ):
+        FluentSearch().where(CompoundQuery.active_assets()).where(
+            CompoundQuery.asset_type(AtlasGlossary)
+        ).page_size(100).execute(client=client)
+
+    # Case 2: Invalid user_id
+    # Test that providing an invalid user ID results in the same authentication error
+    client._user_id = "invalid-user-id"
+    with pytest.raises(
+        AuthenticationError,
+        match="Server responded with an authentication error 401",
+    ):
+        FluentSearch().where(CompoundQuery.active_assets()).where(
+            CompoundQuery.asset_type(AtlasGlossary)
+        ).page_size(100).execute(client=client)
+
+    # Case 3: Valid user_id associated with the expired token
+    # This should trigger a retry, refresh the token
+    # and use the new bearer token for subsequent requests
+    # Set up a fake Argo client ID and client secret for impersonation
+    monkeypatch.setenv("CLIENT_ID", argo_fake_token.client_id)
+    monkeypatch.setenv("CLIENT_SECRET", argo_client_secret)
+
+    # Configure the client with the user ID
+    # of the expired token to ensure token refresh is possible
+    client._user_id = expired_token_user_id
+
+    # Verify that the API key is updated after the retry and the request succeeds
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .execute(client=client)
+    )
+
+    # Confirm the API key has been updated and results are returned
+    assert client.api_key != expired_api_token
+    assert results and results.count >= 1

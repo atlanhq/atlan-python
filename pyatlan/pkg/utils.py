@@ -25,19 +25,21 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
     user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
         api_key = api_token
     elif user_id:
         LOGGER.info("No API token found, attempting to impersonate user: %s", user_id)
-        api_key = AtlanClient(base_url=base_url, api_key="").impersonate.user(
-            user_id=user_id
-        )
+        client = AtlanClient(base_url=base_url, api_key="", _user_id=user_id)
+        api_key = client.impersonate.user(user_id=user_id)
     else:
         LOGGER.info(
             "No API token or impersonation user, attempting short-lived escalation."
         )
-        api_key = AtlanClient(base_url=base_url, api_key="").impersonate.escalate()
+        client = AtlanClient(base_url=base_url, api_key="")
+        api_key = client.impersonate.escalate()
+
     return AtlanClient(base_url=base_url, api_key=api_key)
 
 

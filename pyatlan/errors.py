@@ -589,16 +589,32 @@ class ErrorCode(Enum):
     )
     MISSING_NAME = (
         400,
-        "ATLAN-PYTHON-400-065",
+        "ATLAN-PYTHON-400-067",
         "No name instance was provided when attempting to retrieve an object.",
         "You must provide the name of the object when attempting to retrieve one.",
+        InvalidRequestError,
+    )
+    UNABLE_TO_RETRIEVE_CLIENT_SECRET = (
+        400,
+        "ATLAN-PYTHON-400-068",
+        "Unable to fetch the client secret for GUID: {0}",
+        "Ensure the client GUID provided is correct and valid.",
+        InvalidRequestError,
+    )
+    UNABLE_TO_RETRIEVE_USER_GUID = (
+        400,
+        "ATLAN-PYTHON-400-069",
+        "Unable to fetch the GUID for the user: {0}",
+        "Ensure the provided username is correct and valid.",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
         "Server responded with an authentication error {0}: {1} -- caused by: {2}",
-        "Check the details of the server's message to correct your request.",
+        "Your API or bearer token is either invalid or has expired, or you are "
+        + "attempting to access a URL you are not authorized to access. "
+        + "Ensure you are using a valid token, or try obtaining a new token and try again.",
         AuthenticationError,
     )
     NO_API_TOKEN = (

@@ -90,10 +90,10 @@ class AssetMutationResponse(AtlanObject):
 
 class AccessTokenResponse(AtlanObject):
     access_token: str
-    expires_in: int
-    refresh_expires_in: int
-    refresh_token: str
-    token_type: str
-    not_before_policy: Optional[int] = Field(default=None)
-    session_state: str
-    scope: str
+    expires_in: Optional[int]
+    refresh_expires_in: Optional[int]
+    refresh_token: Optional[str]
+    token_type: Optional[str]
+    not_before_policy: Optional[int]
+    session_state: Optional[str]
+    scope: Optional[str]
