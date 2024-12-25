@@ -121,7 +121,7 @@ class ImpersonationClient:
         This method is particularly useful for impersonating API tokens.
 
         :param username: username of the user whose ID needs to be retrieved.
-
+        :returns: Keycloak user ID
         :raises:
             - AtlanError: If an API error occurs.
             - InvalidRequestError: If an error occurs while fetching the user ID from Keycloak.
