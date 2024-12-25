@@ -145,6 +145,8 @@ class AtlanClient(BaseSettings):
     retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
+    _has_retried_for_401: bool = PrivateAttr(default=False)
+    _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
     _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
@@ -367,6 +369,7 @@ class AtlanClient(BaseSettings):
             if response is None:
                 return None
             if response.status_code == api.expected_status:
+                self._has_retried_for_401 = False
                 try:
                     if (
                         response.content is None
@@ -415,8 +418,10 @@ class AtlanClient(BaseSettings):
             else:
                 with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                     error_info = json.loads(response.text)
-                    error_code = error_info.get("errorCode", 0) or error_info.get(
-                        "code", 0
+                    error_code = (
+                        error_info.get("errorCode", 0)
+                        or error_info.get("code", 0)
+                        or error_info.get("status")
                     )
                     error_message = error_info.get(
                         "errorMessage", ""
@@ -435,6 +440,30 @@ class AtlanClient(BaseSettings):
                     error_cause_details_str = (
                         "\n".join(error_cause_details) if error_cause_details else ""
                     )
+
+                    # Retry with impersonation (if _user_id is present)
+                    # on authentication failure (token may have expired)
+                    if (
+                        self._user_id
+                        and not self._has_retried_for_401
+                        and response.status_code
+                        == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
+                    ):
+                        try:
+                            return self._handle_401_token_refresh(
+                                api,
+                                path,
+                                params,
+                                binary_data=binary_data,
+                                download_file_path=download_file_path,
+                                text_response=text_response,
+                            )
+                        except Exception as e:
+                            LOGGER.debug(
+                                "Attempt to impersonate user %s failed, not retrying. Error: %s",
+                                self._user_id,
+                                e,
+                            )
 
                     if error_code and error_message:
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
@@ -545,6 +574,37 @@ class AtlanClient(BaseSettings):
             else:
                 params["data"] = json.dumps(request_obj)
         return params
+
+    def _handle_401_token_refresh(
+        self,
+        api,
+        path,
+        params,
+        binary_data=None,
+        download_file_path=None,
+        text_response=False,
+    ):
+        """
+        Handles token refresh and retries the API request upon a 401 Unauthorized response.
+        1. Impersonates the user (if a user ID is available) to fetch a new token.
+        2. Updates the authorization header with the refreshed token.
+        3. Retries the API request with the new token.
+
+        returns: HTTP response received after retrying the request with the refreshed token
+        """
+        new_token = self.get_default_client().impersonate.user(user_id=self._user_id)
+        self.api_key = new_token
+        self._has_retried_for_401 = True
+        params["headers"]["authorization"] = f"Bearer {self.api_key}"
+        self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
+        return self._call_api_internal(
+            api,
+            path,
+            params,
+            binary_data=binary_data,
+            download_file_path=download_file_path,
+            text_response=text_response,
+        )
 
     @validate_arguments
     def upload_image(self, file, filename: str) -> AtlanImage:
