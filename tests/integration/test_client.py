@@ -7,7 +7,8 @@ import pytest
 from pydantic.v1 import StrictStr
 
 from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
-from pyatlan.client.audit import LOGGER
+from pyatlan.client.audit import LOGGER as AUDIT_LOGGER
+from pyatlan.client.search_log import LOGGER as SEARCH_LOG_LOGGER
 from pyatlan.client.search_log import (
     AssetViews,
     SearchLogRequest,
@@ -634,7 +635,7 @@ def _assert_audit_search_results(results, expected_sorts, size, total_count):
 
 
 @pytest.mark.order(after="test_audit_find_by_user")
-@patch.object(LOGGER, "debug")
+@patch.object(AUDIT_LOGGER, "debug")
 def test_audit_search_pagination(
     mock_logger, audit_info: AuditInfo, client: AtlanClient
 ):
@@ -944,6 +945,119 @@ def test_search_log_views_by_guid(
         pytest.fail("Failed to retrieve asset detailed log entries")
     assert response.count == 0
     assert len(response.current_page()) == 0
+
+
+@pytest.fixture(scope="module")
+def generate_search_logs(client: AtlanClient, sl_glossary: AtlasGlossary):
+    log_count = 5
+
+    for _ in range(log_count):
+        _view_test_glossary_by_search(client, sl_glossary)
+        time.sleep(1)
+
+    request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=20)
+    response = client.search_log.search(request)
+    assert (
+        response.count >= log_count
+    ), f"Expected at least {log_count} logs, but got {response.count}."
+
+
+def _assert_search_log_results(
+    results, expected_sorts, size, TOTAL_LOG_ENTRIES, bulk=False
+):
+    assert results.count > size
+    assert len(results.current_page()) == size
+    counter = 0
+    for log in results:
+        assert log
+        counter += 1
+    assert counter == TOTAL_LOG_ENTRIES
+    assert results
+    assert results._bulk is bulk
+    assert results._criteria.dsl.sort == expected_sorts
+
+
+@patch.object(SEARCH_LOG_LOGGER, "debug")
+def test_search_log_pagination(
+    mock_logger, generate_search_logs, sl_glossary: AtlasGlossary, client: AtlanClient
+):
+    size = 2
+    # Test search logs by GUID with default offset-based pagination
+    search_log_request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=size,
+        exclude_users=[],
+    )
+
+    results = client.search_log.search(criteria=search_log_request, bulk=False)
+    TOTAL_LOG_ENTRIES = results.count
+
+    expected_sorts = [
+        SortItem(field="timestamp", order=SortOrder.ASCENDING),
+        SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
+    ]
+    _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES)
+
+    # Test search logs by GUID with `bulk` option using timestamp-based pagination
+    search_log_request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=size,
+        exclude_users=[],
+    )
+    results = client.search_log.search(criteria=search_log_request, bulk=True)
+    expected_sorts = [
+        SortItem(field="createdAt", order=SortOrder.ASCENDING),
+        SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
+    ]
+    _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES, True)
+    assert mock_logger.call_count == 1
+    assert (
+        "Search log bulk search option is enabled."
+        in mock_logger.call_args_list[0][0][0]
+    )
+    mock_logger.reset_mock()
+
+    # When the number of results exceeds the predefined threshold and bulk=True
+    with patch.object(SearchLogResults, "_MASS_EXTRACT_THRESHOLD", -1):
+        search_log_request = SearchLogRequest.views_by_guid(
+            guid=sl_glossary.guid,
+            size=size,
+            exclude_users=[],
+        )
+        results = client.search_log.search(criteria=search_log_request, bulk=True)
+        expected_sorts = [
+            SortItem(field="createdAt", order=SortOrder.ASCENDING),
+            SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
+        ]
+        _assert_search_log_results(
+            results, expected_sorts, size, TOTAL_LOG_ENTRIES, True
+        )
+        assert mock_logger.call_count < TOTAL_LOG_ENTRIES
+        assert (
+            "Search log bulk search option is enabled."
+            in mock_logger.call_args_list[0][0][0]
+        )
+        mock_logger.reset_mock()
+
+    # When results exceed threshold and bulk=False, SDK auto-switches to bulk search
+    with patch.object(SearchLogResults, "_MASS_EXTRACT_THRESHOLD", -1):
+        search_log_request = SearchLogRequest.views_by_guid(
+            guid=sl_glossary.guid,
+            size=size,
+            exclude_users=[],
+        )
+        results = client.search_log.search(criteria=search_log_request, bulk=False)
+        expected_sorts = [
+            SortItem(field="createdAt", order=SortOrder.ASCENDING),
+            SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
+        ]
+        _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES)
+        assert mock_logger.call_count < TOTAL_LOG_ENTRIES
+        assert (
+            "Result size (%s) exceeds threshold (%s)."
+            in mock_logger.call_args_list[0][0][0]
+        )
+        mock_logger.reset_mock()
 
 
 def test_search_log_default_sorting(client: AtlanClient, sl_glossary: AtlasGlossary):

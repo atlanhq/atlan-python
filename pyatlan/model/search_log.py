@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Generator, Iterable, List, Optional
+from typing import Any, Dict, Generator, Iterable, List, Optional, Set
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as
 
@@ -9,18 +9,22 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import SEARCH_LOG
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
+from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import UTMTags
 from pyatlan.model.search import (
     DSL,
     Bool,
     Query,
+    Range,
     SearchRequest,
     SortItem,
     SortOrder,
     Term,
     Terms,
 )
+
+BY_TIMESTAMP = [SortItem("timestamp", order=SortOrder.ASCENDING)]
 
 
 class SearchLogRequest(SearchRequest):
@@ -65,7 +69,6 @@ class SearchLogRequest(SearchRequest):
         sort = sort or []
         query_filter = query_filter or []
         exclude_users = exclude_users or []
-        BY_TIMESTAMP = [SortItem("timestamp", order=SortOrder.ASCENDING)]
         return dict(
             size=size,
             from_=from_,
@@ -362,6 +365,9 @@ class SearchLogViewResults:
 class SearchLogResults(Iterable):
     """Captures the response from a search against Atlan's recent search logs."""
 
+    _DEFAULT_SIZE = DSL.__fields__.get("size").default or 300  # type: ignore[union-attr]
+    _MASS_EXTRACT_THRESHOLD = 10000 - _DEFAULT_SIZE
+
     def __init__(
         self,
         client: ApiCaller,
@@ -371,15 +377,21 @@ class SearchLogResults(Iterable):
         count: int,
         log_entries: List[SearchLogEntry],
         aggregations: Dict[str, Aggregation],
+        bulk: bool = False,
     ):
         self._client = client
         self._endpoint = SEARCH_LOG
         self._criteria = criteria
         self._start = start
         self._size = size
-        self._count = count
         self._log_entries = log_entries
+        self._count = count
+        self._approximate_count = count
         self._aggregations = aggregations
+        self._bulk = bulk
+        self._first_record_creation_time = -2
+        self._last_record_creation_time = -2
+        self._processed_log_entries: Set[str] = set()
 
     @property
     def count(self) -> int:
@@ -393,6 +405,16 @@ class SearchLogResults(Iterable):
         """
         return self._log_entries
 
+    def _get_sl_unique_key(self, entity: SearchLogEntry) -> str:
+        """
+        Returns a unique key for a `SearchLogEntry`
+        by combining the `entity_guids_all[0]` with the timestamp.
+
+        NOTE: This is necessary because the search log API
+        does not provide a unique identifier for logs
+        """
+        return f"{entity.entity_guids_all[0]}:{entity.timestamp}"
+
     def next_page(self, start=None, size=None) -> bool:
         """
         Indicates whether there is a next page of results.
@@ -400,8 +422,21 @@ class SearchLogResults(Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
         if size:
             self._size = size
+
+        if is_bulk_search:
+            # Used in the "timestamp-based" paging approach
+            # to check if search log with the unique key "_get_sl_unique_key()"
+            # has already been processed in a previous page of results.
+            # If it has, then exclude it from the current results;
+            # otherwise, we may encounter duplicate search log records.
+            self._processed_log_entries.update(
+                self._get_sl_unique_key(entity) for entity in self._log_entries
+            )
         return self._get_next_page() if self._log_entries else False
 
     def _get_next_page(self):
@@ -410,14 +445,21 @@ class SearchLogResults(Iterable):
 
         :returns: True if the next page of results was fetched, False if there was no next page
         """
+        query = self._criteria.dsl.query
         self._criteria.dsl.from_ = self._start
         self._criteria.dsl.size = self._size
-        if raw_json := self._get_next_page_json():
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
+        if is_bulk_search:
+            self._prepare_query_for_timestamp_paging(query)
+
+        if raw_json := self._get_next_page_json(is_bulk_search):
             self._count = raw_json.get("approximateCount", 0)
             return True
         return False
 
-    def _get_next_page_json(self):
+    def _get_next_page_json(self, is_bulk_search: bool = False):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
 
@@ -427,16 +469,137 @@ class SearchLogResults(Iterable):
             self._endpoint,
             request_obj=self._criteria,
         )
+
         if "logs" not in raw_json or not raw_json["logs"]:
             self._log_entries = []
             return None
         try:
             self._log_entries = parse_obj_as(List[SearchLogEntry], raw_json["logs"])
+            if is_bulk_search:
+                self._update_first_last_record_creation_times()
+                self._filter_processed_entities()
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)
             ) from err
+
+    def _filter_processed_entities(self):
+        """
+        Removes entities that have already been processed to avoid duplicates.
+        """
+        self._log_entries = [
+            entity
+            for entity in self._log_entries
+            if self._get_sl_unique_key(entity) not in self._processed_log_entries
+        ]
+
+    def _prepare_query_for_timestamp_paging(self, query: Query):
+        """
+        Adjusts the query to include timestamp filters for search log bulk extraction.
+        """
+        rewritten_filters = []
+        if isinstance(query, Bool):
+            for filter_ in query.filter:
+                if self._is_paging_timestamp_query(filter_):
+                    continue
+                rewritten_filters.append(filter_)
+
+        if self._first_record_creation_time != self._last_record_creation_time:
+            rewritten_filters.append(
+                self._get_paging_timestamp_query(self._last_record_creation_time)
+            )
+            if isinstance(query, Bool):
+                rewritten_query = Bool(
+                    filter=rewritten_filters,
+                    must=query.must,
+                    must_not=query.must_not,
+                    should=query.should,
+                    boost=query.boost,
+                    minimum_should_match=query.minimum_should_match,
+                )
+            else:
+                # If a Term, Range, etc query type is found
+                # in the DSL, append it to the Bool `filter`.
+                rewritten_filters.append(query)
+                rewritten_query = Bool(filter=rewritten_filters)
+            self._criteria.dsl.from_ = 0
+            self._criteria.dsl.query = rewritten_query
+        else:
+            # Ensure that when switching to offset-based paging, if the first and last record timestamps are the same,
+            # we do not include a created timestamp filter (ie: Range(field='__timestamp', gte=VALUE)) in the query.
+            # Instead, ensure the search runs with only SortItem(field='__timestamp', order=<SortOrder.ASCENDING>).
+            # Failing to do so can lead to incomplete results (less than the approximate count) when running the search
+            # with a small page size.
+            if isinstance(query, Bool):
+                for filter_ in query.filter:
+                    if self._is_paging_timestamp_query(filter_):
+                        query.filter.remove(filter_)
+
+            # Always ensure that the offset is set to the length of the processed assets
+            # instead of the default (start + size), as the default may skip some assets
+            # and result in incomplete results (less than the approximate count)
+            self._criteria.dsl.from_ = len(self._processed_log_entries)
+
+    @staticmethod
+    def _get_paging_timestamp_query(last_timestamp: int) -> Query:
+        return Range(field="createdAt", gte=last_timestamp)
+
+    @staticmethod
+    def _is_paging_timestamp_query(filter_: Query) -> bool:
+        return (
+            isinstance(filter_, Range)
+            and filter_.field == "createdAt"
+            and filter_.gte is not None
+        )
+
+    def _update_first_last_record_creation_times(self):
+        if self._log_entries and len(self._log_entries) > 1:
+            self._first_record_creation_time = self._log_entries[0].created_at
+            self._last_record_creation_time = self._log_entries[-1].created_at
+
+    @staticmethod
+    def presorted_by_timestamp(sorts: Optional[List[SortItem]]) -> bool:
+        """
+        Checks if the sorting options prioritize creation time in ascending order.
+        :param sorts: list of sorting options or None.
+        :returns: True if sorting is already prioritized by creation time, False otherwise.
+        """
+        if sorts and isinstance(sorts[0], SortItem):
+            return (
+                sorts[0].field == "createdAt" and sorts[0].order == SortOrder.ASCENDING
+            )
+        return False
+
+    @staticmethod
+    def sort_by_timestamp_first(sorts: List[SortItem]) -> List[SortItem]:
+        """
+        Rewrites the sorting options to ensure that
+        sorting by creation time, ascending, is the top
+        priority. Adds this condition if it does not
+        already exist, or moves it up to the top sorting
+        priority if it does already exist in the list.
+
+        :param sorts: list of sorting options
+        :returns: sorting options, making sorting by
+        creation time in ascending order the top priority
+        """
+        creation_asc_sort = [SortItem("createdAt", order=SortOrder.ASCENDING)]
+        if not sorts:
+            return creation_asc_sort
+
+        rewritten_sorts = [
+            sort
+            for sort in sorts
+            # Added a condition to disable "timestamp" sorting when bulk search for logs is enabled,
+            # as sorting is already handled based on "createdAt" in this case.
+            if (
+                (not sort.field)
+                or (sort.field != Asset.CREATE_TIME.internal_field_name)
+            )
+            and (sort not in BY_TIMESTAMP)
+        ]
+        return creation_asc_sort + rewritten_sorts
 
     def __iter__(self) -> Generator[SearchLogEntry, None, None]:
         """
