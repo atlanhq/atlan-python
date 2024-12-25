@@ -1133,16 +1133,32 @@
     <span class="p">)</span>
     <span class="n">MISSING_NAME</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">400</span><span class="p">,</span>
-        <span class="s2">&quot;ATLAN-PYTHON-400-065&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-067&quot;</span><span class="p">,</span>
         <span class="s2">&quot;No name instance was provided when attempting to retrieve an object.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;You must provide the name of the object when attempting to retrieve one.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNABLE_TO_RETRIEVE_CLIENT_SECRET</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-068&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to fetch the client secret for GUID: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ensure the client GUID provided is correct and valid.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNABLE_TO_RETRIEVE_USER_GUID</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-069&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to fetch the GUID for the user: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ensure the provided username is correct and valid.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Server responded with an authentication error </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> -- caused by: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Your API or bearer token is either invalid or has expired, or you are &quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;attempting to access a URL you are not authorized to access. &quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;Ensure you are using a valid token, or try obtaining a new token and try again.&quot;</span><span class="p">,</span>
         <span class="n">AuthenticationError</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">NO_API_TOKEN</span> <span class="o">=</span> <span class="p">(</span>
