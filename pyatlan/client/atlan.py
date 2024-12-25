@@ -443,7 +443,6 @@ class AtlanClient(BaseSettings):
 
                     # Retry with impersonation (if _user_id is present)
                     # on authentication failure (token may have expired)
-                    # import ipdb; ipdb.set_trace()
                     if (
                         self._user_id
                         and not self._has_retried_for_401

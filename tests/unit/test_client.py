@@ -1885,7 +1885,7 @@ def test_atlan_call_api_server_error_messages_with_causes(
             AtlanError,
             match=escape(
                 f"ATLAN-PYTHON-{code}-000 {error_info}"
-                "Suggestion: Check the details of the server's message to correct your request."
+                f"Suggestion: {error.user_action}"
             ),
         ):
             client.asset.save(glossary)
