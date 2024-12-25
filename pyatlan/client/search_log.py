@@ -73,19 +73,20 @@ class SearchLogClient:
         return self._client._call_api(SEARCH_LOG, request_obj=criteria)
 
     @staticmethod
-    def _prepare_sorts_for_search_log_bulk_search(
+    def _prepare_sorts_for_sl_bulk_search(
         sorts: List[SortItem],
     ) -> List[SortItem]:
         """
-        Ensures that sorting by creation timestamp is prioritized for search Log bulk searches.
-        :param sorts: List of existing sorting options.
-        :returns: A modified list of sorting options with creation timestamp as the top priority.
+        Ensures that sorting by creation timestamp is prioritized for search log bulk searches.
+
+        :param sorts: list of existing sorting options.
+        :returns: a modified list of sorting options with creation timestamp as the top priority.
         """
         if not SearchLogResults.presorted_by_timestamp(sorts):
             return SearchLogResults.sort_by_timestamp_first(sorts)
         return sorts
 
-    def _get_search_log_bulk_search_log_message(self, bulk):
+    def _get_bulk_search_log_message(self, bulk):
         return (
             (
                 "Search log bulk search option is enabled. "
@@ -100,12 +101,12 @@ class SearchLogClient:
         self, criteria: SearchLogRequest, bulk=False
     ) -> Union[SearchLogViewResults, SearchLogResults]:
         """
-        Search for assets using the provided criteria.
+        Search for search logs using the provided criteria.
         `Note:` if the number of results exceeds the predefined threshold
-        (10,000 assets) this will be automatically converted into an search log `bulk` search.
+        (10,000 search logs) this will be automatically converted into an search log `bulk` search.
 
         :param criteria: detailing the search query, parameters, and so on to run
-        :param bulk: whether to run the search to retrieve assets that match the supplied criteria,
+        :param bulk: whether to run the search to retrieve search logs that match the supplied criteria,
         for large numbers of results (> `10,000`), defaults to `False`. Note: this will reorder the results
         (based on creation timestamp) in order to iterate through a large number (more than `10,000`) results.
         :raises InvalidRequestError:
@@ -122,10 +123,10 @@ class SearchLogClient:
         if bulk:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_search_log_bulk_search(
+            criteria.dsl.sort = self._prepare_sorts_for_sl_bulk_search(
                 criteria.dsl.sort
             )
-            LOGGER.debug(self._get_search_log_bulk_search_log_message(bulk))
+            LOGGER.debug(self._get_bulk_search_log_message(bulk))
         user_views = []
         asset_views = []
         log_entries = []
@@ -190,11 +191,11 @@ class SearchLogClient:
         ):
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_search_log_bulk_search(
+            criteria.dsl.sort = self._prepare_sorts_for_sl_bulk_search(
                 criteria.dsl.sort
             )
             LOGGER.debug(
-                self._get_search_log_bulk_search_log_message(bulk),
+                self._get_bulk_search_log_message(bulk),
                 count,
                 SearchLogResults._MASS_EXTRACT_THRESHOLD,
             )

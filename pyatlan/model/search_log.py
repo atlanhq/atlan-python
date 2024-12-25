@@ -391,7 +391,7 @@ class SearchLogResults(Iterable):
         self._bulk = bulk
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
-        self._processed_entity_keys: Set[str] = set()
+        self._processed_log_entries: Set[str] = set()
 
     @property
     def count(self) -> int:
@@ -405,9 +405,14 @@ class SearchLogResults(Iterable):
         """
         return self._log_entries
 
-    # Generating a unique key by combining entity_guids_all[0] with the timestamp to differentiate between logs.
-    # This is necessary as the API call lacks a unique identifier.
-    def _generate_unique_key(self, entity: SearchLogEntry) -> str:
+    def _get_sl_unique_key(self, entity: SearchLogEntry) -> str:
+        """
+        Returns a unique key for a `SearchLogEntry`
+        by combining the `entity_guids_all[0]` with the timestamp.
+
+        NOTE: This is necessary because the search log API
+        does not provide a unique identifier for logs
+        """
         return f"{entity.entity_guids_all[0]}:{entity.timestamp}"
 
     def next_page(self, start=None, size=None) -> bool:
@@ -425,12 +430,12 @@ class SearchLogResults(Iterable):
 
         if is_bulk_search:
             # Used in the "timestamp-based" paging approach
-            # to check if search log with the unique key "_generate_unique_key()" has already been processed
-            # in a previous page of results.
-            # If it has,then exclude it from the current results;
-            # otherwise, we may encounter duplicate search log entity records.
-            self._processed_entity_keys.update(
-                self._generate_unique_key(entity) for entity in self._log_entries
+            # to check if search log with the unique key "_get_sl_unique_key()"
+            # has already been processed in a previous page of results.
+            # If it has, then exclude it from the current results;
+            # otherwise, we may encounter duplicate search log records.
+            self._processed_log_entries.update(
+                self._get_sl_unique_key(entity) for entity in self._log_entries
             )
         return self._get_next_page() if self._log_entries else False
 
@@ -464,6 +469,7 @@ class SearchLogResults(Iterable):
             self._endpoint,
             request_obj=self._criteria,
         )
+
         if "logs" not in raw_json or not raw_json["logs"]:
             self._log_entries = []
             return None
@@ -485,7 +491,7 @@ class SearchLogResults(Iterable):
         self._log_entries = [
             entity
             for entity in self._log_entries
-            if self._generate_unique_key(entity) not in self._processed_entity_keys
+            if self._get_sl_unique_key(entity) not in self._processed_log_entries
         ]
 
     def _prepare_query_for_timestamp_paging(self, query: Query):
@@ -533,7 +539,7 @@ class SearchLogResults(Iterable):
             # Always ensure that the offset is set to the length of the processed assets
             # instead of the default (start + size), as the default may skip some assets
             # and result in incomplete results (less than the approximate count)
-            self._criteria.dsl.from_ = len(self._processed_entity_keys)
+            self._criteria.dsl.from_ = len(self._processed_log_entries)
 
     @staticmethod
     def _get_paging_timestamp_query(last_timestamp: int) -> Query:
