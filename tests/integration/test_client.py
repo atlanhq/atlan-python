@@ -923,9 +923,9 @@ def test_search_log_views_by_guid(
     assert len(response.current_page()) == 0
 
 
-@pytest.mark.order(before="test_search_log_pagination")
-def test_generate_search_logs(client: AtlanClient, sl_glossary: AtlasGlossary):
-    log_count = 10
+@pytest.fixture(scope="module")
+def generate_search_logs(client: AtlanClient, sl_glossary: AtlasGlossary):
+    log_count = 5
 
     for _ in range(log_count):
         _view_test_glossary_by_search(client, sl_glossary)
@@ -938,17 +938,24 @@ def test_generate_search_logs(client: AtlanClient, sl_glossary: AtlasGlossary):
     ), f"Expected at least {log_count} logs, but got {response.count}."
 
 
-def _assert_search_log_results(results, expected_sorts, size, total_count):
+def _assert_search_log_results(
+    results, expected_sorts, size, TOTAL_LOG_ENTRIES, bulk=False
+):
     assert results.count > size
     assert len(results.current_page()) == size
-    assert results.count == total_count
+    counter = 0
+    for log in results:
+        assert log
+        counter += 1
+    assert counter == TOTAL_LOG_ENTRIES
+    assert results
+    assert results._bulk is bulk
     assert results._criteria.dsl.sort == expected_sorts
 
 
-@pytest.mark.order(after="test_search_log_views_by_guid")
 @patch.object(SEARCH_LOG_LOGGER, "debug")
 def test_search_log_pagination(
-    mock_logger, sl_glossary: AtlasGlossary, client: AtlanClient
+    mock_logger, generate_search_logs, sl_glossary: AtlasGlossary, client: AtlanClient
 ):
     size = 2
     # Test search logs by GUID with default offset-based pagination
@@ -957,22 +964,28 @@ def test_search_log_pagination(
         size=size,
         exclude_users=[],
     )
+
     results = client.search_log.search(criteria=search_log_request, bulk=False)
-    total_count = results.count
+    TOTAL_LOG_ENTRIES = results.count
+
     expected_sorts = [
         SortItem(field="timestamp", order=SortOrder.ASCENDING),
         SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
     ]
-    _assert_search_log_results(results, expected_sorts, size, total_count)
+    _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES)
 
     # Test search logs by GUID with `bulk` option using timestamp-based pagination
+    search_log_request = SearchLogRequest.views_by_guid(
+        guid=sl_glossary.guid,
+        size=size,
+        exclude_users=[],
+    )
     results = client.search_log.search(criteria=search_log_request, bulk=True)
-    total_count = results.count
     expected_sorts = [
         SortItem(field="createdAt", order=SortOrder.ASCENDING),
         SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
     ]
-    _assert_search_log_results(results, expected_sorts, size, total_count)
+    _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES, True)
     assert mock_logger.call_count == 1
     assert (
         "Search log bulk search option is enabled."
@@ -988,13 +1001,14 @@ def test_search_log_pagination(
             exclude_users=[],
         )
         results = client.search_log.search(criteria=search_log_request, bulk=True)
-        total_count = results.count
         expected_sorts = [
             SortItem(field="createdAt", order=SortOrder.ASCENDING),
             SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
         ]
-        _assert_search_log_results(results, expected_sorts, size, total_count)
-        assert mock_logger.call_count < total_count
+        _assert_search_log_results(
+            results, expected_sorts, size, TOTAL_LOG_ENTRIES, True
+        )
+        assert mock_logger.call_count < TOTAL_LOG_ENTRIES
         assert (
             "Search log bulk search option is enabled."
             in mock_logger.call_args_list[0][0][0]
@@ -1009,13 +1023,12 @@ def test_search_log_pagination(
             exclude_users=[],
         )
         results = client.search_log.search(criteria=search_log_request, bulk=False)
-        total_count = results.count
         expected_sorts = [
             SortItem(field="createdAt", order=SortOrder.ASCENDING),
             SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
         ]
-        _assert_search_log_results(results, expected_sorts, size, total_count)
-        assert mock_logger.call_count < total_count
+        _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES)
+        assert mock_logger.call_count < TOTAL_LOG_ENTRIES
         assert (
             "Result size (%s) exceeds threshold (%s)."
             in mock_logger.call_args_list[0][0][0]

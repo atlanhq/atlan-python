@@ -36,16 +36,16 @@ def search_logs_json():
 
 
 def _assert_search_log_results(results, response_json, sorts, bulk=False):
-    for i, log in enumerate(results.current_page()):
-        assert log.user_name == response_json["logs"][i]["userName"]
-        assert log.user_agent == response_json["logs"][i]["userAgent"]
-        assert log.ip_address == response_json["logs"][i]["ipAddress"]
-        assert log.host == response_json["logs"][i]["host"]
+    for log in results:
+        assert log.user_name == response_json["logs"][0]["userName"]
+        assert log.user_agent == response_json["logs"][0]["userAgent"]
+        assert log.ip_address == response_json["logs"][0]["ipAddress"]
+        assert log.host == response_json["logs"][0]["host"]
         expected_timestamp = datetime.fromtimestamp(
-            response_json["logs"][i]["timestamp"] / 1000, tz=timezone.utc
+            response_json["logs"][0]["timestamp"] / 1000, tz=timezone.utc
         )
         assert log.timestamp == expected_timestamp
-        assert log.entity_guids_all == response_json["logs"][i]["entityGuidsAll"]
+        assert log.entity_guids_all == response_json["logs"][0]["entityGuidsAll"]
 
     assert results.count == response_json["approximateCount"]
     assert results._bulk == bulk
@@ -58,7 +58,7 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
     mock_api_caller._call_api.side_effect = [search_logs_json, search_logs_json, {}]
 
     # Test default pagination
-    search_log_request = SearchLogRequest.views_by_guid(  #
+    search_log_request = SearchLogRequest.views_by_guid(
         guid="some-guid",
         size=2,
         exclude_users=["atlansupport"],
@@ -71,11 +71,12 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
     ]
 
     _assert_search_log_results(response, search_logs_json, expected_sorts)
-    assert mock_api_caller._call_api.call_count == 1
-    mock_logger.reset_mock()
+    assert mock_api_caller._call_api.call_count == 3
+    assert mock_logger.call_count == 0
     mock_api_caller.reset_mock()
 
     # Test bulk pagination
+    mock_api_caller._call_api.side_effect = [search_logs_json, search_logs_json, {}]
     response = client.search(criteria=search_log_request, bulk=True)
     expected_sorts = [
         SortItem(field="createdAt", order=SortOrder.ASCENDING),
@@ -83,6 +84,14 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
     ]
 
     _assert_search_log_results(response, search_logs_json, expected_sorts, bulk=True)
+    # The call count will be 2 because both
+    # log entries are processed in the first API call.
+    # In the second API call, self._log_entries
+    # becomes 0, which breaks the pagination.
+    # This differs from offset-based pagination
+    # where an additional API call is needed
+    # to verify if the results are empty
+    assert mock_api_caller._call_api.call_count == 2
     assert mock_logger.call_count == 1
     assert (
         "Search log bulk search option is enabled."
@@ -94,13 +103,16 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
     # Test automatic bulk search conversion when exceeding threshold
     with patch.object(SearchLogResults, "_MASS_EXTRACT_THRESHOLD", -1):
         mock_api_caller._call_api.side_effect = [
+            # Extra call to re-fetch the first page
+            # results with updated timestamp sorting
+            search_logs_json,
             search_logs_json,
             search_logs_json,
             {},
         ]
         search_log_request = SearchLogRequest.views_by_guid(  #
             guid="some-guid",
-            size=2,
+            size=1,
             exclude_users=["atlansupport"],
         )
         response = client.search(criteria=search_log_request)
@@ -108,6 +120,7 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
             response, search_logs_json, expected_sorts, bulk=False
         )
         assert mock_logger.call_count == 1
+        assert mock_api_caller._call_api.call_count == 3
         assert (
             "Result size (%s) exceeds threshold (%s)"
             in mock_logger.call_args_list[0][0][0]
