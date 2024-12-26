@@ -112,6 +112,10 @@ DEFAULT_RETRY = Retry(
     status_forcelist=[403, 429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
     raise_on_status=False,
+    # When response.status is in `status_forcelist`
+    # and the "Retry-After" header is present, the retry mechanism
+    # will use the header's value to delay the next API call.
+    respect_retry_after_header=True,
 )
 
 VERSION = read_text("pyatlan", "version.txt").strip()
