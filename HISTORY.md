@@ -1,3 +1,9 @@
+## 3.1.1 (December 26, 2024)
+
+### Bug fixes
+
+- Fixed a `ValidationError` caused by the private field (`_user_id`) in the `AtlanClient` constructor.
+
 ## 3.1.0 (December 26, 2024)
 
 ### New features
