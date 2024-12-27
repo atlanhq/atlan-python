@@ -22,7 +22,7 @@ def test_create_with_missing_parameters_raise_value_error(
 ):
     with pytest.raises(ValueError, match=message):
         AnaplanLineItem.creator(
-            name=name, connection_qualified_name=module_qualified_name
+            name=name, module_qualified_name=module_qualified_name
         )
 
 
