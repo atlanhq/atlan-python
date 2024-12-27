@@ -11,18 +11,18 @@ from tests.unit.model.constants import (
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, message",
+    "name, model_qualified_name, message",
     [
         (None, "connection/name", "name is required"),
-        (ANAPLAN_MODULE_NAME, None, "connection_qualified_name is required"),
+        (ANAPLAN_MODULE_NAME, None, "model_qualified_name is required"),
     ],
 )
 def test_create_with_missing_parameters_raise_value_error(
-    name: str, connection_qualified_name: str, message: str
+    name: str, model_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        AnaplanModule.create(
-            name=name, connection_qualified_name=connection_qualified_name
+        AnaplanModule.creator(
+            name=name, model_qualified_name=model_qualified_name
         )
 
 
