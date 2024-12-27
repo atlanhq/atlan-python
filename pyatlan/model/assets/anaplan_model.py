@@ -4,17 +4,57 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .anaplan import Anaplan
 
 
 class AnaplanModel(Anaplan):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        workspace_qualified_name: str,
+    ) -> AnaplanModel: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        workspace_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> AnaplanModel: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        workspace_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> AnaplanModel:
+        validate_required_fields(
+            ["name", "workspace_qualified_name"], [name, workspace_qualified_name]
+        )
+        attributes = AnaplanModel.Attributes.create(
+            name=name,
+            workspace_qualified_name=workspace_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="AnaplanModel", allow_mutation=False)
 
@@ -124,6 +164,42 @@ class AnaplanModel(Anaplan):
         anaplan_dimensions: Optional[List[AnaplanDimension]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            workspace_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> AnaplanModel.Attributes:
+            validate_required_fields(
+                ["name", "workspace_qualified_name"],
+                [name, workspace_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    workspace_qualified_name, "workspace_qualified_name", 4
+                )
+
+            workspace_name = workspace_qualified_name.split("/")[3]
+
+            return AnaplanModel.Attributes(
+                name=name,
+                qualified_name=f"{workspace_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                connector_name=connector_name,
+                anaplan_workspace_qualified_name=workspace_qualified_name,
+                anaplan_workspace_name=workspace_name,
+                anaplan_workspace=AnaplanWorkspace.ref_by_qualified_name(
+                    workspace_qualified_name
+                ),
+            )
 
     attributes: AnaplanModel.Attributes = Field(
         default_factory=lambda: AnaplanModel.Attributes(),

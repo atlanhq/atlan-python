@@ -8,13 +8,26 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import NumericField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .anaplan import Anaplan
 
 
 class AnaplanWorkspace(Anaplan):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str, connection_qualified_name: str) -> AnaplanWorkspace:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = AnaplanWorkspace.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="AnaplanWorkspace", allow_mutation=False)
 
@@ -107,6 +120,23 @@ class AnaplanWorkspace(Anaplan):
         anaplan_models: Optional[List[AnaplanModel]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> AnaplanWorkspace.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return AnaplanWorkspace.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: AnaplanWorkspace.Attributes = Field(
         default_factory=lambda: AnaplanWorkspace.Attributes(),
