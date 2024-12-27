@@ -1,0 +1,38 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        workspace_qualified_name: str,
+    ) -> AnaplanModel: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        workspace_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> AnaplanModel: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        workspace_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> AnaplanModel:
+        validate_required_fields(
+            ["name", "workspace_qualified_name"], [name, workspace_qualified_name]
+        )
+        attributes = AnaplanModel.Attributes.create(
+            name=name,
+            workspace_qualified_name=workspace_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)

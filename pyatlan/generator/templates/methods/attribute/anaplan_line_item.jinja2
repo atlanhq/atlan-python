@@ -1,0 +1,41 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            module_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> AnaplanLineItem.Attributes:
+            validate_required_fields(
+                ["name", "module_qualified_name"],
+                [name, module_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    module_qualified_name, "module_qualified_name", 6
+                )
+
+            fields = module_qualified_name.split("/")
+            workspace_name = fields[3]
+            model_name = fields[4]
+            module_name = fields[5]
+
+            return AnaplanLineItem.Attributes(
+                name=name,
+                qualified_name=f"{module_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                connector_name=connector_name,
+                anaplan_workspace_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                anaplan_workspace_name=workspace_name,
+                anaplan_model_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
+                anaplan_model_name=model_name,
+                anaplan_module_qualified_name=module_qualified_name,
+                anaplan_module_name=module_name,
+                anaplan_module=AnaplanModule.ref_by_qualified_name(module_qualified_name),
+            )

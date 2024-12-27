@@ -8,13 +8,26 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .anaplan import Anaplan
 
 
 class AnaplanApp(Anaplan):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str, connection_qualified_name: str) -> AnaplanApp:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = AnaplanApp.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="AnaplanApp", allow_mutation=False)
 
@@ -52,6 +65,23 @@ class AnaplanApp(Anaplan):
         anaplan_pages: Optional[List[AnaplanPage]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> AnaplanApp.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return AnaplanApp.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: AnaplanApp.Attributes = Field(
         default_factory=lambda: AnaplanApp.Attributes(),

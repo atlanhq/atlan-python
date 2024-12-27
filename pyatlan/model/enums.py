@@ -337,6 +337,7 @@ class AtlanConnectorType(str, Enum):
     IBM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
     APP = ("app", AtlanConnectionCategory.APP)
     BIGID = ("bigid", AtlanConnectionCategory.SAAS)
+    ANAPLAN = ("anaplan", AtlanConnectionCategory.BI)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):

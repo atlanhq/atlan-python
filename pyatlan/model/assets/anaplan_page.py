@@ -4,17 +4,57 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .anaplan import Anaplan
 
 
 class AnaplanPage(Anaplan):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        app_qualified_name: str,
+    ) -> AnaplanPage: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        app_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> AnaplanPage: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        app_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> AnaplanPage:
+        validate_required_fields(
+            ["name", "app_qualified_name"], [name, app_qualified_name]
+        )
+        attributes = AnaplanPage.Attributes.create(
+            name=name,
+            app_qualified_name=app_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="AnaplanPage", allow_mutation=False)
 
@@ -133,6 +173,37 @@ class AnaplanPage(Anaplan):
         anaplan_app: Optional[AnaplanApp] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            app_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> AnaplanPage.Attributes:
+            validate_required_fields(
+                ["name", "app_qualified_name"],
+                [name, app_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    app_qualified_name, "app_qualified_name", 4
+                )
+
+            return AnaplanPage.Attributes(
+                name=name,
+                qualified_name=f"{app_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                connector_name=connector_name,
+                anaplan_app_qualified_name=app_qualified_name,
+                anaplan_app=AnaplanApp.ref_by_qualified_name(app_qualified_name),
+            )
 
     attributes: AnaplanPage.Attributes = Field(
         default_factory=lambda: AnaplanPage.Attributes(),
