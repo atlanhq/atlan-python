@@ -21,9 +21,7 @@ def test_create_with_missing_parameters_raise_value_error(
     name: str, app_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        AnaplanPage.creator(
-            name=name, app_qualified_name=app_qualified_name
-        )
+        AnaplanPage.creator(name=name, app_qualified_name=app_qualified_name)
 
 
 def test_create():
