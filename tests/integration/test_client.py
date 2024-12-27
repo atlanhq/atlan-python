@@ -118,6 +118,15 @@ def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
 
 
 @pytest.fixture(scope="module")
+def audit_glossary(client: AtlanClient) -> Generator[AtlasGlossary, None, None]:
+    created_glossary = create_glossary(
+        client, TestId.make_unique("test-audit-glossary")
+    )
+    yield created_glossary
+    delete_asset(client, guid=created_glossary.guid, asset_type=AtlasGlossary)
+
+
+@pytest.fixture(scope="module")
 def sl_glossary(
     client: AtlanClient,
 ) -> Generator[AtlasGlossary, None, None]:
@@ -626,41 +635,79 @@ def test_audit_find_by_user(
     assert audit_entity != audit_entity_next_page
 
 
-def _assert_audit_search_results(results, expected_sorts, size, total_count):
+@pytest.fixture(scope="module")
+def generate_audit_entries(client: AtlanClient, audit_glossary: AtlasGlossary):
+    log_count = 5
+    for i in range(log_count):
+        updater = AtlasGlossary.updater(
+            qualified_name=audit_glossary.qualified_name,
+            name=audit_glossary.name,
+        )
+        updater.description = f"Updated description {i+1}"
+        client.asset.save(updater)
+        time.sleep(1)
+
+    request = AuditSearchRequest.by_guid(guid=audit_glossary.guid, size=log_count)
+    response = client.audit.search(request)
+    assert (
+        response.total_count >= log_count
+    ), f"Expected at least {log_count} logs, but got {response.total_count}."
+
+
+def _assert_audit_search_results(
+    results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, bulk=False
+):
     assert results.total_count > size
     assert len(results.current_page()) == size
-    assert results.total_count == total_count
+    counter = 0
+    for audit in results:
+        assert audit
+        counter += 1
+    assert counter == TOTAL_AUDIT_ENTRIES
     assert results
+    assert results._bulk is bulk
     assert results._criteria.dsl.sort == expected_sorts
 
 
 @pytest.mark.order(after="test_audit_find_by_user")
 @patch.object(AUDIT_LOGGER, "debug")
 def test_audit_search_pagination(
-    mock_logger, audit_info: AuditInfo, client: AtlanClient
+    mock_logger,
+    audit_glossary: AtlasGlossary,
+    generate_audit_entries,
+    client: AtlanClient,
 ):
     size = 2
 
     # Test audit search by GUID with default offset-based pagination
     dsl = DSL(
-        query=Bool(filter=[Term(field="entityId", value=audit_info.guid)]),
+        query=Bool(filter=[Term(field="entityId", value=audit_glossary.guid)]),
         sort=[],
         size=size,
     )
     request = AuditSearchRequest(dsl=dsl)
     results = client.audit.search(criteria=request, bulk=False)
-    total_count = results.total_count
+    TOTAL_AUDIT_ENTRIES = results.total_count
     expected_sorts = [SortItem(field="entityId", order=SortOrder.ASCENDING)]
-    _assert_audit_search_results(results, expected_sorts, size, total_count)
+    _assert_audit_search_results(
+        results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, False
+    )
 
     # Test audit search by guid with `bulk` option using timestamp-based pagination
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value=audit_glossary.guid)]),
+        sort=[],
+        size=size,
+    )
+    request = AuditSearchRequest(dsl=dsl)
     results = client.audit.search(criteria=request, bulk=True)
-    total_count = results.total_count
     expected_sorts = [
         SortItem("created", order=SortOrder.ASCENDING),
         SortItem(field="entityId", order=SortOrder.ASCENDING),
     ]
-    _assert_audit_search_results(results, expected_sorts, size, total_count)
+    _assert_audit_search_results(
+        results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, True
+    )
     assert mock_logger.call_count == 1
     assert "Audit bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
@@ -668,22 +715,21 @@ def test_audit_search_pagination(
     # When the number of results exceeds the predefined
     # threshold and bulk is true and no pre-defined sort.
     with patch.object(AuditSearchResults, "_MASS_EXTRACT_THRESHOLD", -1):
-        username = client.user.get_current().username
-        assert username
         dsl = DSL(
-            query=Bool(filter=[Term(field="user", value=username)]),
+            query=Bool(filter=[Term(field="entityId", value=audit_glossary.guid)]),
             sort=[],
             size=size,
         )
         request = AuditSearchRequest(dsl=dsl)
         results = client.audit.search(criteria=request, bulk=True)
-        total_count = results.total_count
         expected_sorts = [
             SortItem("created", order=SortOrder.ASCENDING),
             SortItem(field="entityId", order=SortOrder.ASCENDING),
         ]
-        _assert_audit_search_results(results, expected_sorts, size, total_count)
-        assert mock_logger.call_count < total_count
+        _assert_audit_search_results(
+            results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, True
+        )
+        assert mock_logger.call_count < TOTAL_AUDIT_ENTRIES
         assert (
             "Audit bulk search option is enabled."
             in mock_logger.call_args_list[0][0][0]
@@ -693,15 +739,22 @@ def test_audit_search_pagination(
     # When the number of results exceeds the predefined threshold and bulk is `False` and no pre-defined sort.
     # Then SDK automatically switches to a `bulk` search option using timestamp-based pagination
     with patch.object(AuditSearchResults, "_MASS_EXTRACT_THRESHOLD", -1):
+        dsl = DSL(
+            query=Bool(filter=[Term(field="entityId", value=audit_glossary.guid)]),
+            sort=[],
+            size=size,
+        )
         request = AuditSearchRequest(dsl=dsl)
         results = client.audit.search(criteria=request, bulk=False)
-        total_count = results.total_count
+        results.total_count
         expected_sorts = [
             SortItem("created", order=SortOrder.ASCENDING),
             SortItem(field="entityId", order=SortOrder.ASCENDING),
         ]
-        _assert_audit_search_results(results, expected_sorts, size, total_count)
-        assert mock_logger.call_count < total_count
+        _assert_audit_search_results(
+            results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, False
+        )
+        assert mock_logger.call_count < TOTAL_AUDIT_ENTRIES
         assert (
             "Result size (%s) exceeds threshold (%s)."
             in mock_logger.call_args_list[0][0][0]

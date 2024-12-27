@@ -212,6 +212,7 @@ class AtlanConnectorType(str, Enum):
     LOOKER = ("looker", AtlanConnectionCategory.BI)
     METABASE = ("metabase", AtlanConnectionCategory.BI)
     SALESFORCE = ("salesforce", AtlanConnectionCategory.SAAS)
+    DATAVERSE = ("dataverse", AtlanConnectionCategory.SAAS)
     MYSQL = ("mysql", AtlanConnectionCategory.WAREHOUSE)
     MSSQL = ("mssql", AtlanConnectionCategory.WAREHOUSE)
     S3 = ("s3", AtlanConnectionCategory.OBJECT_STORE)
@@ -2206,6 +2207,7 @@ class WorkflowPackage(str, Enum):
     REDSHIFT = "atlan-redshift"
     REDSHIFT_MINER = "atlan-redshift-miner"
     SALESFORCE = "atlan-salesforce"
+    DATAVERSE = "atlan-dataverse"
     SAP_HANA = "atlan-sap-hana"
     SCHEMA_REGISTRY_CONFLUENT = "atlan-schema-registry-confluent"
     SIGMA = "atlan-sigma"
