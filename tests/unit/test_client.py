@@ -1555,7 +1555,9 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [get_by_guid_json]
 
-    response = client.get_by_guid(guid="test-table-guid-123", ignore_relationships=False)
+    response = client.get_by_guid(
+        guid="test-table-guid-123", ignore_relationships=False
+    )
 
     assert response
     assert isinstance(response, Table)

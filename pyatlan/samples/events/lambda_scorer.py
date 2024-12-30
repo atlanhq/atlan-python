@@ -209,7 +209,9 @@ class LambdaScorer(AtlanEventHandler):
             s_readme = 0
             readme = asset.readme
             if readme and readme.guid:
-                readme = client.asset.get_by_guid(readme.guid, asset_type=Readme, ignore_relationships=False)
+                readme = client.asset.get_by_guid(
+                    readme.guid, asset_type=Readme, ignore_relationships=False
+                )
                 if description := readme.description:
                     if len(description) > 1000:
                         s_readme = 20
