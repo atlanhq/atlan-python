@@ -192,7 +192,7 @@ def test_retrieve_data_studio_asset_data_source(
     data_studio_asset_data_source: DataStudioAsset,
 ):
     b = client.asset.get_by_guid(
-        data_studio_asset_data_source.guid, asset_type=DataStudioAsset
+        data_studio_asset_data_source.guid, asset_type=DataStudioAsset, ignore_relationships=False
     )
     assert b
     assert not b.is_incomplete
@@ -261,7 +261,7 @@ def test_read_deleted_data_studio_asset_data_source(
     data_studio_asset_data_source: DataStudioAsset,
 ):
     deleted = client.asset.get_by_guid(
-        data_studio_asset_data_source.guid, asset_type=DataStudioAsset
+        data_studio_asset_data_source.guid, asset_type=DataStudioAsset, ignore_relationships=False
     )
     assert deleted
     assert deleted.guid == data_studio_asset_data_source.guid
@@ -283,7 +283,7 @@ def test_restore_data_studio_asset_data_source(
     assert data_studio_asset_data_source.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=DataStudioAsset,
-        qualified_name=data_studio_asset_data_source.qualified_name,
+        qualified_name=data_studio_asset_data_source.qualified_name, ignore_relationships=False
     )
     assert restored
     assert restored.guid == data_studio_asset_data_source.guid

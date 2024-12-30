@@ -701,13 +701,13 @@ def test_restore_lineage(
     )
     to_restore.status = EntityStatus.ACTIVE
     client.asset.save(to_restore)
-    restored = client.asset.get_by_guid(lineage_start.guid, asset_type=Process)
+    restored = client.asset.get_by_guid(lineage_start.guid, asset_type=Process, ignore_relationships=False)
     assert restored
     count = 0
     # TODO: replace with exponential back-off and jitter
     while restored.status == EntityStatus.DELETED:
         time.sleep(2)
-        restored = client.asset.get_by_guid(lineage_start.guid, asset_type=Process)
+        restored = client.asset.get_by_guid(lineage_start.guid, asset_type=Process, ignore_relationships=False)
         count += 1
     assert restored.guid == lineage_start.guid
     assert restored.qualified_name == lineage_start.qualified_name
