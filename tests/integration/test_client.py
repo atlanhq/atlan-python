@@ -438,7 +438,6 @@ def test_get_by_guid_ignore_relationships(client:AtlanClient, glossary: AtlasGlo
     result = client.asset.get_by_guid(
         guid=glossary.guid, ignore_relationships=True
     )
-    print(result.relationship_attributes)
     assert result.guid == glossary.guid
 
 def test_get_by_guid_with_attributes(client:AtlanClient, glossary: AtlasGlossary):
