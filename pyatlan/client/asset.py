@@ -814,7 +814,7 @@ class AssetClient:
         if not asset_type.can_be_archived():
             return False
         existing = self.get_by_qualified_name(
-            asset_type=asset_type, qualified_name=qualified_name
+            asset_type=asset_type, qualified_name=qualified_name, ignore_relationships=False
         )
         if not existing:
             # Nothing to restore, so cannot be restored
@@ -1379,10 +1379,10 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
+            asset = self.get_by_guid(guid=guid, asset_type=asset_type, ignore_relationships=False)
         elif qualified_name:
             asset = self.get_by_qualified_name(
-                qualified_name=qualified_name, asset_type=asset_type
+                qualified_name=qualified_name, asset_type=asset_type, ignore_relationships=False
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
@@ -1417,10 +1417,10 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
+            asset = self.get_by_guid(guid=guid, asset_type=asset_type, ignore_relationships=False)
         elif qualified_name:
             asset = self.get_by_qualified_name(
-                qualified_name=qualified_name, asset_type=asset_type
+                qualified_name=qualified_name, asset_type=asset_type, ignore_relationships=False
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()

@@ -108,7 +108,7 @@ def test_retrieve_application(
     connection: Connection,
     application: Application,
 ):
-    b = client.asset.get_by_guid(application.guid, asset_type=Application)
+    b = client.asset.get_by_guid(application.guid, asset_type=Application, ignore_relationships=False)
     assert b
     assert not b.is_incomplete
     assert b.guid == application.guid
@@ -176,7 +176,7 @@ def test_read_deleted_application(
     connection: Connection,
     application: Application,
 ):
-    deleted = client.asset.get_by_guid(application.guid, asset_type=Application)
+    deleted = client.asset.get_by_guid(application.guid, asset_type=Application, ignore_relationships=False)
     assert deleted
     assert deleted.guid == application.guid
     assert deleted.qualified_name == application.qualified_name
@@ -198,6 +198,7 @@ def test_restore_application(
     restored = client.asset.get_by_qualified_name(
         asset_type=Application,
         qualified_name=application.qualified_name,
+        ignore_relationships=False
     )
     assert restored
     assert restored.guid == application.guid

@@ -170,7 +170,7 @@ def test_retrieve_persona(
 ):
     assert persona.qualified_name
     one = client.asset.get_by_qualified_name(
-        qualified_name=persona.qualified_name, asset_type=Persona
+        qualified_name=persona.qualified_name, asset_type=Persona, ignore_relationships=False
     )
     assert one
     assert one.guid == persona.guid
@@ -187,7 +187,7 @@ def test_retrieve_persona(
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
-        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy)
+        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False)
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat

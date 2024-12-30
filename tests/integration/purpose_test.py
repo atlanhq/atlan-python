@@ -133,7 +133,7 @@ def test_purpose(client: AtlanClient, purpose: Purpose, atlan_tag_name: AtlanTag
     assert purpose.name == MODULE_NAME
     assert purpose.display_name == MODULE_NAME
     assert purpose.qualified_name != MODULE_NAME
-    purpose = client.asset.get_by_guid(guid=purpose.guid, asset_type=Purpose)
+    purpose = client.asset.get_by_guid(guid=purpose.guid, asset_type=Purpose, ignore_relationships=False)
     assert purpose.purpose_atlan_tags
     assert [atlan_tag_name] == purpose.purpose_atlan_tags
 
@@ -226,7 +226,7 @@ def test_retrieve_purpose(
 ):
     assert purpose.qualified_name
     one = client.asset.get_by_qualified_name(
-        qualified_name=purpose.qualified_name, asset_type=Purpose
+        qualified_name=purpose.qualified_name, asset_type=Purpose, ignore_relationships=False
     )
     assert one
     assert one.guid == purpose.guid
@@ -244,7 +244,7 @@ def test_retrieve_purpose(
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
-        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy)
+        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False)
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat

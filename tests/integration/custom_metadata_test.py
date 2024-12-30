@@ -888,7 +888,7 @@ def test_update_replacing_cm(
     assert t.qualified_name == term.qualified_name
     assert term.qualified_name
     x = client.asset.get_by_qualified_name(
-        qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm
+        qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm, ignore_relationships=False
     )
     assert x
     assert not x.is_incomplete

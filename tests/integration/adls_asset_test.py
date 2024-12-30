@@ -249,7 +249,7 @@ def test_retrieve_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    b = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject)
+    b = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject, ignore_relationships=False)
     assert b
     assert not b.is_incomplete
     assert b.guid == adls_object.guid
@@ -319,7 +319,7 @@ def test_read_deleted_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    deleted = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject)
+    deleted = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject, ignore_relationships=False)
     assert deleted
     assert deleted.guid == adls_object.guid
     assert deleted.qualified_name == adls_object.qualified_name
@@ -339,7 +339,7 @@ def test_restore_object(
     )
     assert adls_object.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=ADLSObject, qualified_name=adls_object.qualified_name
+        asset_type=ADLSObject, qualified_name=adls_object.qualified_name, ignore_relationships=False
     )
     assert restored
     assert restored.guid == adls_object.guid

@@ -181,7 +181,7 @@ def _assert_update_bucket(client, bucket, with_name=False):
 
 
 def _assert_retrieve_bucket(client, bucket, s3object, with_name=False):
-    b = client.asset.get_by_guid(bucket.guid, asset_type=S3Bucket)
+    b = client.asset.get_by_guid(bucket.guid, asset_type=S3Bucket, ignore_relationships=False)
     assert b
     assert not b.is_incomplete
     assert b.guid == bucket.guid
@@ -244,7 +244,7 @@ def _assert_delete_object(client, s3object):
 
 
 def _assert_read_delete_object(client, s3object):
-    deleted = client.asset.get_by_guid(s3object.guid, asset_type=S3Object)
+    deleted = client.asset.get_by_guid(s3object.guid, asset_type=S3Object, ignore_relationships=False)
     assert deleted
     assert deleted.guid == s3object.guid
     assert deleted.qualified_name == s3object.qualified_name
@@ -258,7 +258,7 @@ def _assert_restore_object(client, s3object):
     )
     assert s3object.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=S3Object, qualified_name=s3object.qualified_name
+        asset_type=S3Object, qualified_name=s3object.qualified_name, ignore_relationships=False
     )
     assert restored
     assert restored.guid == s3object.guid
