@@ -42,6 +42,7 @@ def collection(client: AtlanClient) -> Generator[Collection, None, None]:
 def folder(
     client: AtlanClient, collection: Collection
 ) -> Generator[Folder, None, None]:
+    assert collection and collection.qualified_name
     folder = Folder.creator(
         name=FOLDER_NAME, collection_qualified_name=collection.qualified_name
     )
@@ -59,6 +60,7 @@ def folder(
 
 @pytest.fixture(scope="module")
 def sub_folder(client: AtlanClient, folder: Folder) -> Generator[Folder, None, None]:
+    assert folder and folder.qualified_name
     sub = Folder.creator(
         name=SUB_FOLDER_NAME, parent_folder_qualified_name=folder.qualified_name
     )
@@ -79,7 +81,7 @@ def query(client: AtlanClient, folder: Folder) -> Generator[Query, None, None]:
     connection = client.find_connections_by_name(
         name=CONNECTION_NAME, connector_type=AtlanConnectorType.SNOWFLAKE
     )
-    assert connection and len(connection) == 1
+    assert connection and len(connection) == 1 and connection[0].qualified_name
     results = (
         FluentSearch()
         .select()
@@ -90,7 +92,8 @@ def query(client: AtlanClient, folder: Folder) -> Generator[Query, None, None]:
     )
     assert results and len(results.current_page()) == 1
     schema = results.current_page()[0]
-    assert schema
+    assert schema and schema.qualified_name
+    assert folder and folder.qualified_name
     to_create = Query.creator(
         name=QUERY_NAME, parent_folder_qualified_name=folder.qualified_name
     )
@@ -195,9 +198,9 @@ def test_delete_query(
 @pytest.mark.order(after="test_delete_query")
 def test_read_deleted_query(
     client: AtlanClient,
-    query: query,
+    query: Query,
 ):
-    deleted = client.asset.get_by_guid(query.guid, asset_type=Query)
+    deleted = client.asset.get_by_guid(guid=query.guid, asset_type=Query)
     assert deleted
     assert deleted.status == EntityStatus.DELETED
     assert deleted.guid == query.guid
