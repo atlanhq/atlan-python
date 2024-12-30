@@ -196,10 +196,14 @@ class TestSchema:
         response = upsert(schema)
         assert (schemas := response.assets_created(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.asset.get_by_guid(schemas[0].guid, Schema, ignore_relationships=False)
+        schema = client.asset.get_by_guid(
+            schemas[0].guid, Schema, ignore_relationships=False
+        )
         assert (databases := response.assets_updated(asset_type=Database))
         assert len(databases) == 1
-        database = client.asset.get_by_guid(databases[0].guid, Database, ignore_relationships=False)
+        database = client.asset.get_by_guid(
+            databases[0].guid, Database, ignore_relationships=False
+        )
         assert database.attributes.schemas
         schemas = database.attributes.schemas
         assert len(schemas) == 1
@@ -227,10 +231,14 @@ class TestSchema:
         response = upsert(schema)
         assert (schemas := response.assets_created(asset_type=Schema))
         assert len(schemas) == 1
-        overload_schema = client.asset.get_by_guid(schemas[0].guid, Schema, ignore_relationships=False)
+        overload_schema = client.asset.get_by_guid(
+            schemas[0].guid, Schema, ignore_relationships=False
+        )
         assert (databases := response.assets_updated(asset_type=Database))
         assert len(databases) == 1
-        database = client.asset.get_by_guid(databases[0].guid, Database, ignore_relationships=False)
+        database = client.asset.get_by_guid(
+            databases[0].guid, Database, ignore_relationships=False
+        )
         assert database.attributes.schemas
         schemas = database.attributes.schemas
         assert len(schemas) == 2
@@ -299,10 +307,14 @@ class TestTable:
         response = upsert(table)
         assert (tables := response.assets_created(asset_type=Table))
         assert len(tables) == 1
-        table = client.asset.get_by_guid(guid=tables[0].guid, asset_type=Table, ignore_relationships=False)
+        table = client.asset.get_by_guid(
+            guid=tables[0].guid, asset_type=Table, ignore_relationships=False
+        )
         assert (schemas := response.assets_updated(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.asset.get_by_guid(guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False)
+        schema = client.asset.get_by_guid(
+            guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
+        )
         assert schema.attributes.tables
         tables = schema.attributes.tables
         assert len(tables) == 1
@@ -335,10 +347,14 @@ class TestTable:
         response = upsert(table)
         assert (tables := response.assets_created(asset_type=Table))
         assert len(tables) == 1
-        overload_table = client.asset.get_by_guid(guid=tables[0].guid, asset_type=Table, ignore_relationships=False)
+        overload_table = client.asset.get_by_guid(
+            guid=tables[0].guid, asset_type=Table, ignore_relationships=False
+        )
         assert (schemas := response.assets_updated(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.asset.get_by_guid(guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False)
+        schema = client.asset.get_by_guid(
+            guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
+        )
         assert schema.attributes.tables
         tables = schema.attributes.tables
         assert len(tables) == 2
@@ -395,7 +411,9 @@ class TestTable:
         popularity_insight: PopularityInsights,
     ):
         assert TestTable.table
-        asset = client.asset.get_by_guid(guid=TestTable.table.guid, asset_type=Table, ignore_relationships=False)
+        asset = client.asset.get_by_guid(
+            guid=TestTable.table.guid, asset_type=Table, ignore_relationships=False
+        )
         assert asset.source_read_recent_user_record_list
         asset_popularity = asset.source_read_recent_user_record_list[0]
         self.verify_popularity(asset_popularity, popularity_insight)
@@ -551,8 +569,12 @@ class TestColumn:
         response = client.asset.save(column)
         assert (columns := response.assets_created(asset_type=Column))
         assert len(columns) == 1
-        column = client.asset.get_by_guid(asset_type=Column, guid=columns[0].guid, ignore_relationships=False)
-        table = client.asset.get_by_guid(asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False)
+        column = client.asset.get_by_guid(
+            asset_type=Column, guid=columns[0].guid, ignore_relationships=False
+        )
+        table = client.asset.get_by_guid(
+            asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
+        )
         assert table.attributes.columns
         columns = table.attributes.columns
         assert len(columns) == 1
@@ -626,7 +648,9 @@ class TestColumn:
         overload_column = client.asset.get_by_guid(
             asset_type=Column, guid=columns[0].guid, ignore_relationships=False
         )
-        table = client.asset.get_by_guid(asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False)
+        table = client.asset.get_by_guid(
+            asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
+        )
         assert table.attributes.columns
         columns = table.attributes.columns
 
@@ -692,7 +716,9 @@ class TestReadme:
         assert len(reaadmes) == 1
         assert (columns := response.assets_updated(asset_type=Column))
         assert len(columns) == 1
-        readme = client.asset.get_by_guid(guid=reaadmes[0].guid, asset_type=Readme, ignore_relationships=False)
+        readme = client.asset.get_by_guid(
+            guid=reaadmes[0].guid, asset_type=Readme, ignore_relationships=False
+        )
         assert readme.description == self.CONTENT
         TestReadme.readme = readme
 

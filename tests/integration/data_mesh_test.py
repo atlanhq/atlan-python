@@ -141,7 +141,9 @@ def test_update_domain(client: AtlanClient, domain: DataDomain):
 
 @pytest.mark.order(after="test_update_domain")
 def test_retrieve_domain(client: AtlanClient, domain: DataDomain):
-    test_domain = client.asset.get_by_guid(domain.guid, asset_type=DataDomain, ignore_relationships=False)
+    test_domain = client.asset.get_by_guid(
+        domain.guid, asset_type=DataDomain, ignore_relationships=False
+    )
     assert test_domain
     assert test_domain.guid == domain.guid
     assert test_domain.qualified_name == domain.qualified_name
@@ -193,7 +195,9 @@ def test_update_sub_domain(client: AtlanClient, sub_domain: DataDomain):
 
 @pytest.mark.order(after="test_update_sub_domain")
 def test_retrieve_sub_domain(client: AtlanClient, sub_domain: DataDomain):
-    test_sub_domain = client.asset.get_by_guid(sub_domain.guid, asset_type=DataDomain, ignore_relationships=False)
+    test_sub_domain = client.asset.get_by_guid(
+        sub_domain.guid, asset_type=DataDomain, ignore_relationships=False
+    )
     assert test_sub_domain
     assert test_sub_domain.guid == sub_domain.guid
     assert test_sub_domain.qualified_name == sub_domain.qualified_name
@@ -339,12 +343,16 @@ def test_contract(
     client: AtlanClient, table: Table, product: DataProduct, contract: DataContract
 ):
     assert product and product.guid
-    product = client.asset.get_by_guid(guid=product.guid, asset_type=DataProduct, ignore_relationships=False)
+    product = client.asset.get_by_guid(
+        guid=product.guid, asset_type=DataProduct, ignore_relationships=False
+    )
     assert product and product.output_ports and len(product.output_ports)
     table_asset = product.output_ports[0]
     assert table and table.guid
     assert table.guid == table_asset.guid
-    table = client.asset.get_by_guid(guid=table_asset.guid, asset_type=Table, ignore_relationships=False)
+    table = client.asset.get_by_guid(
+        guid=table_asset.guid, asset_type=Table, ignore_relationships=False
+    )
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
@@ -360,7 +368,9 @@ def test_update_contract(
     client: AtlanClient, table: Table, updated_contract: DataContract
 ):
     assert table and table.guid
-    table = client.asset.get_by_guid(guid=table.guid, asset_type=Table, ignore_relationships=False)
+    table = client.asset.get_by_guid(
+        guid=table.guid, asset_type=Table, ignore_relationships=False
+    )
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
@@ -436,7 +446,9 @@ def test_update_product(
 
 @pytest.mark.order(after="test_update_product")
 def test_retrieve_product(client: AtlanClient, product: DataProduct):
-    test_product = client.asset.get_by_guid(product.guid, asset_type=DataProduct, ignore_relationships=False)
+    test_product = client.asset.get_by_guid(
+        product.guid, asset_type=DataProduct, ignore_relationships=False
+    )
     assert test_product
     assert test_product.guid == product.guid
     assert test_product.qualified_name == product.qualified_name

@@ -187,7 +187,9 @@ def test_update_api_path(
 def test_retrieve_api_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
-    b = client.asset.get_by_guid(api_path.guid, asset_type=APIPath, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        api_path.guid, asset_type=APIPath, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == api_path.guid
@@ -250,7 +252,9 @@ def test_delete_api_path(
 def test_read_deleted_api_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
-    deleted = client.asset.get_by_guid(api_path.guid, asset_type=APIPath, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        api_path.guid, asset_type=APIPath, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == api_path.guid
     assert deleted.qualified_name == api_path.qualified_name
@@ -267,7 +271,9 @@ def test_restore_path(
     )
     assert api_path.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=APIPath, qualified_name=api_path.qualified_name, ignore_relationships=False
+        asset_type=APIPath,
+        qualified_name=api_path.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == api_path.guid
@@ -365,7 +371,9 @@ def test_update_api_object(
 def test_retrieve_api_object(
     client: AtlanClient, connection: Connection, api_object_overload: APIObject
 ):
-    b = client.asset.get_by_guid(api_object_overload.guid, asset_type=APIObject, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        api_object_overload.guid, asset_type=APIObject, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == api_object_overload.guid
@@ -398,7 +406,9 @@ def test_delete_api_object(
 def test_read_deleted_api_object(
     client: AtlanClient, connection: Connection, api_object_overload: APIObject
 ):
-    deleted = client.asset.get_by_guid(api_object_overload.guid, asset_type=APIObject, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        api_object_overload.guid, asset_type=APIObject, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == api_object_overload.guid
     assert deleted.qualified_name == api_object_overload.qualified_name
@@ -415,7 +425,9 @@ def test_restore_object(
     )
     assert api_object_overload.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=APIObject, qualified_name=api_object_overload.qualified_name, ignore_relationships=False
+        asset_type=APIObject,
+        qualified_name=api_object_overload.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == api_object_overload.guid
@@ -597,7 +609,9 @@ def test_update_api_query(
 def test_retrieve_api_query(
     client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
 ):
-    b = client.asset.get_by_guid(api_query_overload_3.guid, asset_type=APIQuery, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        api_query_overload_3.guid, asset_type=APIQuery, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == api_query_overload_3.guid
@@ -630,7 +644,9 @@ def test_delete_api_query(
 def test_read_deleted_api_query(
     client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
 ):
-    deleted = client.asset.get_by_guid(api_query_overload_3.guid, asset_type=APIQuery, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        api_query_overload_3.guid, asset_type=APIQuery, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == api_query_overload_3.guid
     assert deleted.qualified_name == api_query_overload_3.qualified_name
@@ -647,7 +663,9 @@ def test_restore_query(
     )
     assert api_query_overload_3.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=APIQuery, qualified_name=api_query_overload_3.qualified_name, ignore_relationships=False
+        asset_type=APIQuery,
+        qualified_name=api_query_overload_3.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == api_query_overload_3.guid
@@ -989,7 +1007,9 @@ def test_retrieve_api_field(
     api_field_parent_query_overload: APIField,
 ):
     b = client.asset.get_by_guid(
-        api_field_parent_query_overload.guid, asset_type=APIField, ignore_relationships=False
+        api_field_parent_query_overload.guid,
+        asset_type=APIField,
+        ignore_relationships=False,
     )
     assert b
     assert not b.is_incomplete
@@ -1031,7 +1051,9 @@ def test_read_deleted_api_field(
     api_field_parent_query_overload: APIField,
 ):
     deleted = client.asset.get_by_guid(
-        api_field_parent_query_overload.guid, asset_type=APIField, ignore_relationships=False
+        api_field_parent_query_overload.guid,
+        asset_type=APIField,
+        ignore_relationships=False,
     )
     assert deleted
     assert deleted.guid == api_field_parent_query_overload.guid
@@ -1053,7 +1075,8 @@ def test_restore_field(
     assert api_field_parent_query_overload.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=APIField,
-        qualified_name=api_field_parent_query_overload.qualified_name, ignore_relationships=False
+        qualified_name=api_field_parent_query_overload.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == api_field_parent_query_overload.guid

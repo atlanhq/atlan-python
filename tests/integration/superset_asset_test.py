@@ -274,7 +274,11 @@ def test_retrieve_superset_dashboard(
     client: AtlanClient,
     superset_dashboard: SupersetDashboard,
 ):
-    b = client.asset.get_by_guid(superset_dashboard.guid, asset_type=SupersetDashboard, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        superset_dashboard.guid,
+        asset_type=SupersetDashboard,
+        ignore_relationships=False,
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == superset_dashboard.guid
@@ -343,7 +347,9 @@ def test_restore_dashboard(
     )
     assert superset_dashboard.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=SupersetDashboard, qualified_name=superset_dashboard.qualified_name, ignore_relationships=False
+        asset_type=SupersetDashboard,
+        qualified_name=superset_dashboard.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == superset_dashboard.guid

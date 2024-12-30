@@ -335,7 +335,9 @@ def test_retrieve_preset_dashboard(
     client: AtlanClient,
     preset_dashboard: PresetDashboard,
 ):
-    b = client.asset.get_by_guid(preset_dashboard.guid, asset_type=PresetDashboard, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        preset_dashboard.guid, asset_type=PresetDashboard, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == preset_dashboard.guid
@@ -404,7 +406,9 @@ def test_restore_dashboard(
     )
     assert preset_dashboard.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=PresetDashboard, qualified_name=preset_dashboard.qualified_name, ignore_relationships=False
+        asset_type=PresetDashboard,
+        qualified_name=preset_dashboard.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == preset_dashboard.guid

@@ -164,7 +164,9 @@ def test_retrieve_gcs_object(
     gcs_bucket: GCSBucket,
     gcs_object: GCSObject,
 ):
-    b = client.asset.get_by_guid(gcs_object.guid, asset_type=GCSObject, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        gcs_object.guid, asset_type=GCSObject, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == gcs_object.guid
@@ -235,7 +237,9 @@ def test_read_deleted_gcs_object(
     gcs_bucket: GCSBucket,
     gcs_object: GCSObject,
 ):
-    deleted = client.asset.get_by_guid(gcs_object.guid, asset_type=GCSObject, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        gcs_object.guid, asset_type=GCSObject, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == gcs_object.guid
     assert deleted.qualified_name == gcs_object.qualified_name
@@ -255,7 +259,9 @@ def test_restore_object(
     )
     assert gcs_object.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=GCSObject, qualified_name=gcs_object.qualified_name, ignore_relationships=False
+        asset_type=GCSObject,
+        qualified_name=gcs_object.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == gcs_object.guid
