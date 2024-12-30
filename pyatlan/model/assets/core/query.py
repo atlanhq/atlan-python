@@ -22,8 +22,6 @@ from .s_q_l import SQL
 class Query(SQL):
     """Description"""
 
-    type_name: str = Field(default="Query", allow_mutation=False)
-
     @overload
     @classmethod
     def creator(
@@ -62,6 +60,8 @@ class Query(SQL):
                 parent_folder_qualified_name=parent_folder_qualified_name,
             )
         )
+
+    type_name: str = Field(default="Query", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):

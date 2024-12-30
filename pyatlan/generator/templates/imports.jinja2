@@ -3,8 +3,8 @@ from __future__ import annotations
 import hashlib
 import sys
 import uuid
-from json import loads
-from json.decoder import JSONDecodeError
+from uuid import uuid4
+from json import JSONDecodeError, loads
 from datetime import datetime
 from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar, TYPE_CHECKING, cast, overload, Union
@@ -14,7 +14,7 @@ from urllib.parse import quote, unquote
 
 from pydantic.v1 import Field, PrivateAttr, StrictStr, root_validator, validator
 
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, AtlanTagName, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
@@ -116,3 +116,4 @@ from pyatlan.utils import (
 from pyatlan.model.data_mesh import DataProductsAssetsDSL
 from pyatlan.model.contract import DataContractSpec
 from pyatlan.model.lineage_ref import LineageRef
+from pyatlan.client.atlan import AtlanClient

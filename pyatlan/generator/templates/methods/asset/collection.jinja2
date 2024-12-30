@@ -5,7 +5,7 @@
         validate_required_fields(["client", "name"], [client, name])
         return cls(attributes=Collection.Attributes.creator(client=client, name=name))
 
-   @classmethod
+    @classmethod
     def _generate_qualified_name(cls, client: AtlanClient):
         """
         Generate a unique Collection name.

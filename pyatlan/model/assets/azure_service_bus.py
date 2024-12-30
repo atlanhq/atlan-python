@@ -43,10 +43,17 @@ class AzureServiceBus(EventStore):
     """
     Simple name of the AzureServiceBus Namespace in which this asset exists.
     """
+    AZURE_SERVICE_BUS_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "azureServiceBusSchemaQualifiedName", "azureServiceBusSchemaQualifiedName"
+    )
+    """
+    Unique name of the AzureServiceBus Schema in which this asset exists.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "azure_service_bus_namespace_qualified_name",
         "azure_service_bus_namespace_name",
+        "azure_service_bus_schema_qualified_name",
     ]
 
     @property
@@ -85,11 +92,32 @@ class AzureServiceBus(EventStore):
             azure_service_bus_namespace_name
         )
 
+    @property
+    def azure_service_bus_schema_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_schema_qualified_name
+        )
+
+    @azure_service_bus_schema_qualified_name.setter
+    def azure_service_bus_schema_qualified_name(
+        self, azure_service_bus_schema_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.azure_service_bus_schema_qualified_name = (
+            azure_service_bus_schema_qualified_name
+        )
+
     class Attributes(EventStore.Attributes):
         azure_service_bus_namespace_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         azure_service_bus_namespace_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        azure_service_bus_schema_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
 
