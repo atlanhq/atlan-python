@@ -357,7 +357,9 @@ class AssetClient:
         qualified_name: str,
         asset_type: Type[A],
         min_ext_info: bool = False,
-        ignore_relationships: bool = False,
+        ignore_relationships: bool = True,
+        attributes: Optional[List[str]] = None,
+        relationships_attributes: Optional[List[str]] = None,
     ) -> A:
         """
         Retrieves an asset by its qualified_name.
@@ -366,29 +368,88 @@ class AssetClient:
         :param asset_type: type of asset to be retrieved ( must be the actual asset type not a super type)
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
+        :param attributes: a specific list of attributes to retrieve for the asset
+        :param relationships_attributes: a specific list of relationships attributes to retrieve for the asset
         :returns: the requested asset
         :raises NotFoundError: if the asset does not exist
         :raises AtlanError: on any API communication issue
         """
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+
         query_params = {
             "attr:qualifiedName": qualified_name,
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-        raw_json = self._client._call_api(
-            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
-            query_params,
-        )
-        if raw_json["entity"]["typeName"] != asset_type.__name__:
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                asset_type.__name__, qualified_name
+        if (
+            (not attributes or not len(attributes))
+            and (not relationships_attributes or not len(relationships_attributes))
+            and (min_ext_info or not ignore_relationships)
+        ):
+            raw_json = self._client._call_api(
+                GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
+                    asset_type.__name__
+                ),
+                query_params,
             )
-        asset = self._handle_relationships(raw_json)
-        if not isinstance(asset, asset_type):
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                asset_type.__name__, qualified_name
+            if raw_json["entity"]["typeName"] != asset_type.__name__:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    asset_type.__name__, qualified_name
+                )
+            asset = self._handle_relationships(raw_json)
+            if not isinstance(asset, asset_type):
+                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    asset_type.__name__, qualified_name
+                )
+            return asset
+
+        elif (attributes and len(attributes)) or (
+            relationships_attributes and len(relationships_attributes)
+        ):
+            client = AtlanClient.get_default_client()
+            search = (
+                FluentSearch()
+                .select()
+                .where(CompoundQuery.active_assets())
+                .where(Asset.QUALIFIED_NAME.eq(qualified_name))
             )
-        return asset
+            if attributes:
+                for attribute in attributes:
+                    search = search.include_on_results(attribute)
+            if relationships_attributes:
+                for relation_attribute in relationships_attributes:
+                    search = search.include_on_relations(relation_attribute)
+            results = search.execute(client=client)
+            if results and results.current_page():
+                first_result = results.current_page()[0]
+                if isinstance(first_result, asset_type):
+                    return first_result
+                else:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
+                )
+        else:
+            raw_json = self._client._call_api(
+                GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
+                    asset_type.__name__
+                ),
+                query_params,
+            )
+            if raw_json["entity"]["typeName"] != asset_type.__name__:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    asset_type.__name__, qualified_name
+                )
+            asset = self._handle_relationships(raw_json)
+            if not isinstance(asset, asset_type):
+                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    asset_type.__name__, qualified_name
+                )
+            return asset
 
     @validate_arguments
     def get_by_guid(
@@ -396,7 +457,9 @@ class AssetClient:
         guid: str,
         asset_type: Type[A] = Asset,  # type: ignore[assignment]
         min_ext_info: bool = False,
-        ignore_relationships: bool = False,
+        ignore_relationships: bool = True,
+        attributes: Optional[List[str]] = None,
+        relationships_attributes: Optional[List[str]] = None,
     ) -> A:
         """
         Retrieves an asset by its GUID.
@@ -406,24 +469,72 @@ class AssetClient:
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :returns: the requested asset
+        :param attributes: a specific list of attributes to retrieve for the asset
+        :param relationships_attributes: a specific list of relationships attributes to retrieve for the asset
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-
-        raw_json = self._client._call_api(
-            GET_ENTITY_BY_GUID.format_path_with_params(guid),
-            query_params,
-        )
-        asset = self._handle_relationships(raw_json)
-        if not isinstance(asset, asset_type):
-            raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                guid, asset_type.__name__
+        if (
+            (not attributes or not len(attributes))
+            and (not relationships_attributes or not len(relationships_attributes))
+            and (min_ext_info or not ignore_relationships)
+        ):
+            raw_json = self._client._call_api(
+                GET_ENTITY_BY_GUID.format_path_with_params(guid),
+                query_params,
             )
-        return asset
+            asset = self._handle_relationships(raw_json)
+            if not isinstance(asset, asset_type):
+                raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                    guid, asset_type.__name__
+                )
+            return asset
+
+        elif (attributes and len(attributes)) or (
+            relationships_attributes and len(relationships_attributes)
+        ):
+            client = AtlanClient.get_default_client()
+            search = (
+                FluentSearch()
+                .select()
+                .where(CompoundQuery.active_assets())
+                .where(Asset.GUID.eq(guid))
+            )
+            if attributes:
+                for attribute in attributes:
+                    search = search.include_on_results(attribute)
+            if relationships_attributes:
+                for relation_attribute in relationships_attributes:
+                    search = search.include_on_relations(relation_attribute)
+            results = search.execute(client=client)
+            if results and results.current_page():
+                first_result = results.current_page()[0]
+                if isinstance(first_result, asset_type):
+                    return first_result
+                else:
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                        guid, asset_type.__name__
+                    )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
+        else:
+            raw_json = self._client._call_api(
+                GET_ENTITY_BY_GUID.format_path_with_params(guid),
+                query_params,
+            )
+            asset = self._handle_relationships(raw_json)
+            if not isinstance(asset, asset_type):
+                raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                    guid, asset_type.__name__
+                )
+            return asset
 
     def _handle_relationships(self, raw_json):
         if (
