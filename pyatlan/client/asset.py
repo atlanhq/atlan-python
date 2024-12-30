@@ -411,11 +411,9 @@ class AssetClient:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
                     qualified_name, asset_type.__name__
                 )
-            
+
         raw_json = self._client._call_api(
-            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
-                asset_type.__name__
-            ),
+            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
             query_params,
         )
         if raw_json["entity"]["typeName"] != asset_type.__name__:
