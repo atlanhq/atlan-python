@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
@@ -14,6 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
 
@@ -22,6 +23,45 @@ class Query(SQL):
     """Description"""
 
     type_name: str = Field(default="Query", allow_mutation=False)
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        collection_qualified_name: str,
+    ) -> Query: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        collection_qualified_name: str,
+        parent_folder_qualified_name: str,
+    ) -> Query: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        collection_qualified_name: str,
+        parent_folder_qualified_name: Optional[str] = None,
+    ) -> Query:
+        validate_required_fields(
+            ["name", "collection_qualified_name"], [name, collection_qualified_name]
+        )
+        return Query(
+            attributes=Query.Attributes.creator(
+                name=name,
+                collection_qualified_name=collection_qualified_name,
+                parent_folder_qualified_name=parent_folder_qualified_name,
+            )
+        )
 
     @validator("type_name")
     def validate_type_name(cls, v):
@@ -358,6 +398,39 @@ class Query(SQL):
         views: Optional[List[View]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            collection_qualified_name: str,
+            parent_folder_qualified_name: Optional[str] = None,
+        ) -> Query.Attributes:
+            from pyatlan.model.assets import Collection, Folder
+
+            validate_required_fields(
+                ["name", "collection_qualified_name"], [name, collection_qualified_name]
+            )
+
+            if not parent_folder_qualified_name:
+                qualified_name = f"{collection_qualified_name}/{name}"
+                parent_qn = collection_qualified_name
+                parent = Collection.ref_by_qualified_name(collection_qualified_name)
+
+            else:
+                qualified_name = f"{parent_folder_qualified_name}/{name}"
+                parent_qn = parent_folder_qualified_name
+                parent = Folder.ref_by_qualified_name(parent_folder_qualified_name)  # type: ignore[assignment]
+
+            return Query.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                collection_qualified_name=collection_qualified_name,
+                parent=parent,
+                parent_qualified_name=parent_qn,
+            )
 
     attributes: Query.Attributes = Field(
         default_factory=lambda: Query.Attributes(),
