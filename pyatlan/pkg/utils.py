@@ -14,16 +14,16 @@ LOGGER = logging.getLogger(__name__)
 
 # Try to import OpenTelemetry libraries
 try:
-    from opentelemetry.exporter.otlp.proto.grpc._log_exporter import (
-        OTLPLogExporter,  # type:ignore
+    from opentelemetry.exporter.otlp.proto.grpc._log_exporter import (  # type:ignore
+        OTLPLogExporter,
     )
     from opentelemetry.sdk._logs import (  # type:ignore
         LogData,
         LoggerProvider,
         LoggingHandler,
     )
-    from opentelemetry.sdk._logs._internal.export import (
-        BatchLogRecordProcessor,  # type:ignore
+    from opentelemetry.sdk._logs._internal.export import (  # type:ignore
+        BatchLogRecordProcessor,
     )
     from opentelemetry.sdk.resources import Resource  # type:ignore
 
@@ -170,6 +170,18 @@ def validate_connector_and_connection(v):
 
 
 def has_handler(logger: logging.Logger, handler_class) -> bool:
+    """
+    Checks if a logger or its ancestor has a handler of a specific class. The function
+    iterates through the logger's handlers and optionally ascends the logger hierarchy,
+    checking each logger's handlers for an instance of the specified handler class.
+
+    Args:
+        logger (logging.Logger): The logger to inspect for the handler.
+        handler_class: The class of the handler to look for.
+
+    Returns:
+        bool: True if the handler of the specified class is found, False otherwise.
+    """
     c: Optional[logging.Logger] = logger
     while c:
         for hdlr in c.handlers:
