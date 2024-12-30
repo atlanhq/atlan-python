@@ -54,7 +54,7 @@
         if collection_qualified_name == parent_qualified_name:
             parent = Collection.ref_by_qualified_name(collection_qualified_name)
         else:
-            parent = Folder.ref_by_qualified_name(parent_qualified_name)
+            parent = Folder.ref_by_qualified_name(parent_qualified_name)  # type: ignore[assignment]
 
         query = Query(
             attributes=Query.Attributes(qualified_name=qualified_name, name=name)

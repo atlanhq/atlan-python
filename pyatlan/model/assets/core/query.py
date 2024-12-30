@@ -80,7 +80,7 @@ class Query(SQL):
         if collection_qualified_name == parent_qualified_name:
             parent = Collection.ref_by_qualified_name(collection_qualified_name)
         else:
-            parent = Folder.ref_by_qualified_name(parent_qualified_name)
+            parent = Folder.ref_by_qualified_name(parent_qualified_name)  # type: ignore[assignment]
 
         query = Query(
             attributes=Query.Attributes(qualified_name=qualified_name, name=name)
@@ -474,7 +474,9 @@ class Query(SQL):
             if not parent_folder_qualified_name:
                 qualified_name = f"{collection_qualified_name}/{name}"
                 parent_qn = collection_qualified_name
-                parent = Collection.ref_by_qualified_name(collection_qualified_name)
+                parent = Collection.ref_by_qualified_name(
+                    collection_qualified_name or ""
+                )
 
             else:
                 tokens = parent_folder_qualified_name.split("/")

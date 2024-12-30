@@ -156,7 +156,9 @@ class Folder(Namespace):
             if not parent_folder_qualified_name:
                 qualified_name = f"{collection_qualified_name}/{name}"
                 parent_qn = collection_qualified_name
-                parent = Collection.ref_by_qualified_name(collection_qualified_name)
+                parent = Collection.ref_by_qualified_name(
+                    collection_qualified_name or ""
+                )
 
             else:
                 tokens = parent_folder_qualified_name.split("/")
