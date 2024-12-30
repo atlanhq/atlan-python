@@ -7,6 +7,7 @@ import pytest
 from pydantic.v1 import StrictStr
 
 from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
+from pyatlan.client.asset import AssetClient
 from pyatlan.client.audit import LOGGER as AUDIT_LOGGER
 from pyatlan.client.search_log import LOGGER as SEARCH_LOG_LOGGER
 from pyatlan.client.search_log import (
@@ -432,6 +433,35 @@ def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not
         match=f"ATLAN-PYTHON-404-002 Asset with GUID {guid} is not of the type requested: Table.",
     ):
         client.asset.get_by_guid(guid, Table, ignore_relationships=False)
+
+def test_get_by_guid_ignore_relationships(client:AtlanClient, glossary: AtlasGlossary):
+    result = client.asset.get_by_guid(
+        guid=glossary.guid, ignore_relationships=True
+    )
+    print(result.relationship_attributes)
+    assert result.guid == glossary.guid
+
+def test_get_by_guid_with_attributes(client:AtlanClient, glossary: AtlasGlossary):
+    attributes = ["name", "qualified_name"]
+
+    result = client.asset.get_by_guid(
+        guid=glossary.guid,
+        attributes=attributes
+    )
+    assert result.guid == glossary.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.qualified_name is not None
+    assert result.attributes.name is not None
+
+def test_get_by_QN_with_attributes(client: AtlanClient, glossary: AtlasGlossary):
+    qualified_name = glossary.qualified_name or ""
+    result = client.asset.get_by_qualified_name(
+        qualified_name=qualified_name, asset_type=AtlasGlossary, ignore_relationships=True, attributes=["name", "qualified_name"]
+    )
+    assert result.qualified_name == glossary.qualified_name
+    assert hasattr(result, "attributes")
+    assert result.attributes.qualified_name is not None
+    assert result.attributes.name is not None
 
 
 def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
