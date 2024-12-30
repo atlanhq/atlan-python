@@ -17,8 +17,6 @@ from .namespace import Namespace
 class Folder(Namespace):
     """Description"""
 
-    type_name: str = Field(default="Folder", allow_mutation=False)
-
     @overload
     @classmethod
     def creator(
@@ -57,6 +55,8 @@ class Folder(Namespace):
                 parent_folder_qualified_name=parent_folder_qualified_name,
             )
         )
+
+    type_name: str = Field(default="Folder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
