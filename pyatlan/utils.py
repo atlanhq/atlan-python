@@ -336,6 +336,7 @@ class AuthorizationFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         if isinstance(record.args, dict) and "access_token" in record.args:
+            record.args = record.args.copy()
             record.args["access_token"] = "***REDACTED***"  # noqa: S105
         elif record.args and hasattr(record.args, "__iter__"):
             for arg in record.args:
