@@ -118,11 +118,11 @@ def test_anaplan_app(
 
 @pytest.fixture(scope="module")
 def anaplan_page(
-    client: AtlanClient, app: AnaplanApp
+    client: AtlanClient, anaplan_app: AnaplanApp
 ) -> Generator[AnaplanPage, None, None]:
-    assert app.qualified_name
+    assert anaplan_app.qualified_name
     to_create = AnaplanPage.creator(
-        name=ANAPLAN_PAGE_NAME, app_qualified_name=app.qualified_name
+        name=ANAPLAN_PAGE_NAME, app_qualified_name=anaplan_app.qualified_name
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanPage)[0]
@@ -145,13 +145,13 @@ def test_anaplan_page(
 
 @pytest.fixture(scope="module")
 def anaplan_page_overload(
-    client: AtlanClient, connection: Connection, app: AnaplanApp
+    client: AtlanClient, connection: Connection, anaplan_app: AnaplanApp
 ) -> Generator[AnaplanPage, None, None]:
     assert connection.qualified_name
-    assert app.qualified_name
+    assert anaplan_app.qualified_name
     to_create = AnaplanPage.creator(
         name=ANAPLAN_PAGE_NAME_OVERLOAD,
-        app_qualified_name=app.qualified_name,
+        app_qualified_name=anaplan_app.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -176,11 +176,12 @@ def test_overload_anaplan_page(
 
 @pytest.fixture(scope="module")
 def anaplan_model(
-    client: AtlanClient, workspace: AnaplanWorkspace
+    client: AtlanClient, anaplan_workspace: AnaplanWorkspace
 ) -> Generator[AnaplanModel, None, None]:
-    assert workspace.qualified_name
+    assert anaplan_workspace.qualified_name
     to_create = AnaplanModel.creator(
-        name=ANAPLAN_MODEL_NAME, workspace_qualified_name=workspace.qualified_name
+        name=ANAPLAN_MODEL_NAME,
+        workspace_qualified_name=anaplan_workspace.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanModel)[0]
@@ -206,13 +207,13 @@ def test_anaplan_model(
 
 @pytest.fixture(scope="module")
 def anaplan_model_overload(
-    client: AtlanClient, connection: Connection, workspace: AnaplanWorkspace
+    client: AtlanClient, connection: Connection, anaplan_workspace: AnaplanWorkspace
 ) -> Generator[AnaplanModel, None, None]:
     assert connection.qualified_name
-    assert workspace.qualified_name
+    assert anaplan_workspace.qualified_name
     to_create = AnaplanModel.creator(
         name=ANAPLAN_MODEL_NAME_OVERLOAD,
-        workspace_qualified_name=workspace.qualified_name,
+        workspace_qualified_name=anaplan_workspace.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -239,11 +240,11 @@ def test_overload_anaplan_model(
 
 @pytest.fixture(scope="module")
 def anaplan_module(
-    client: AtlanClient, model: AnaplanModel
+    client: AtlanClient, anaplan_model: AnaplanModel
 ) -> Generator[AnaplanModule, None, None]:
-    assert model.qualified_name
+    assert anaplan_model.qualified_name
     to_create = AnaplanModule.creator(
-        name=ANAPLAN_MODULE_NAME, model_qualified_name=model.qualified_name
+        name=ANAPLAN_MODULE_NAME, model_qualified_name=anaplan_model.qualified_name
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanModule)[0]
@@ -267,13 +268,13 @@ def test_anaplan_module(
 
 @pytest.fixture(scope="module")
 def anaplan_module_overload(
-    client: AtlanClient, connection: Connection, model: AnaplanModel
+    client: AtlanClient, connection: Connection, anaplan_model: AnaplanModel
 ) -> Generator[AnaplanModule, None, None]:
     assert connection.qualified_name
-    assert model.qualified_name
+    assert anaplan_model.qualified_name
     to_create = AnaplanModule.creator(
         name=ANAPLAN_MODULE_NAME_OVERLOAD,
-        model_qualified_name=model.qualified_name,
+        model_qualified_name=anaplan_model.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -300,11 +301,11 @@ def test_overload_anaplan_module(
 
 @pytest.fixture(scope="module")
 def anaplan_list(
-    client: AtlanClient, model: AnaplanModel
+    client: AtlanClient, anaplan_model: AnaplanModel
 ) -> Generator[AnaplanList, None, None]:
-    assert model.qualified_name
+    assert anaplan_model.qualified_name
     to_create = AnaplanList.creator(
-        name=ANAPLAN_LIST_NAME, model_qualified_name=model.qualified_name
+        name=ANAPLAN_LIST_NAME, model_qualified_name=anaplan_model.qualified_name
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanList)[0]
@@ -328,13 +329,13 @@ def test_anaplan_list(
 
 @pytest.fixture(scope="module")
 def anaplan_list_overload(
-    client: AtlanClient, connection: Connection, model: AnaplanModel
+    client: AtlanClient, connection: Connection, anaplan_model: AnaplanModel
 ) -> Generator[AnaplanList, None, None]:
     assert connection.qualified_name
-    assert model.qualified_name
+    assert anaplan_model.qualified_name
     to_create = AnaplanList.creator(
         name=ANAPLAN_LIST_NAME_OVERLOAD,
-        model_qualified_name=model.qualified_name,
+        model_qualified_name=anaplan_model.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -359,11 +360,11 @@ def test_overload_anaplan_list(
 
 @pytest.fixture(scope="module")
 def anaplan_dimension(
-    client: AtlanClient, model: AnaplanModel
+    client: AtlanClient, anaplan_model: AnaplanModel
 ) -> Generator[AnaplanDimension, None, None]:
-    assert model.qualified_name
+    assert anaplan_model.qualified_name
     to_create = AnaplanDimension.creator(
-        name=ANAPLAN_DIMENSION_NAME, model_qualified_name=model.qualified_name
+        name=ANAPLAN_DIMENSION_NAME, model_qualified_name=anaplan_model.qualified_name
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanDimension)[0]
@@ -389,13 +390,13 @@ def test_anaplan_dimension(
 
 @pytest.fixture(scope="module")
 def anaplan_dimension_overload(
-    client: AtlanClient, connection: Connection, model: AnaplanModel
+    client: AtlanClient, connection: Connection, anaplan_model: AnaplanModel
 ) -> Generator[AnaplanDimension, None, None]:
     assert connection.qualified_name
-    assert model.qualified_name
+    assert anaplan_model.qualified_name
     to_create = AnaplanDimension.creator(
         name=ANAPLAN_DIMENSION_NAME_OVERLOAD,
-        model_qualified_name=model.qualified_name,
+        model_qualified_name=anaplan_model.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -422,11 +423,11 @@ def test_overload_anaplan_dimension(
 
 @pytest.fixture(scope="module")
 def anaplan_lineitem(
-    client: AtlanClient, module: AnaplanModule
+    client: AtlanClient, anaplan_module: AnaplanModule
 ) -> Generator[AnaplanLineItem, None, None]:
-    assert module.qualified_name
+    assert anaplan_module.qualified_name
     to_create = AnaplanLineItem.creator(
-        name=ANAPLAN_LINEITEM_NAME, module_qualified_name=module.qualified_name
+        name=ANAPLAN_LINEITEM_NAME, module_qualified_name=anaplan_module.qualified_name
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanLineItem)[0]
@@ -452,13 +453,13 @@ def test_anaplan_lineitem(
 
 @pytest.fixture(scope="module")
 def anaplan_lineitem_overload(
-    client: AtlanClient, connection: Connection, module: AnaplanModule
+    client: AtlanClient, connection: Connection, anaplan_module: AnaplanModule
 ) -> Generator[AnaplanLineItem, None, None]:
     assert connection.qualified_name
-    assert module.qualified_name
+    assert anaplan_module.qualified_name
     to_create = AnaplanLineItem.creator(
         name=ANAPLAN_LINEITEM_NAME_OVERLOAD,
-        module_qualified_name=module.qualified_name,
+        module_qualified_name=anaplan_module.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -485,11 +486,11 @@ def test_overload_anaplan_lineitem(
 
 @pytest.fixture(scope="module")
 def anaplan_view(
-    client: AtlanClient, module: AnaplanModule
+    client: AtlanClient, anaplan_module: AnaplanModule
 ) -> Generator[AnaplanView, None, None]:
-    assert module.qualified_name
+    assert anaplan_module.qualified_name
     to_create = AnaplanView.creator(
-        name=ANAPLAN_VIEW_NAME, module_qualified_name=module.qualified_name
+        name=ANAPLAN_VIEW_NAME, module_qualified_name=anaplan_module.qualified_name
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanView)[0]
@@ -513,13 +514,13 @@ def test_anaplan_view(
 
 @pytest.fixture(scope="module")
 def anaplan_view_overload(
-    client: AtlanClient, connection: Connection, module: AnaplanModule
+    client: AtlanClient, connection: Connection, anaplan_module: AnaplanModule
 ) -> Generator[AnaplanView, None, None]:
     assert connection.qualified_name
-    assert module.qualified_name
+    assert anaplan_module.qualified_name
     to_create = AnaplanView.creator(
         name=ANAPLAN_VIEW_NAME_OVERLOAD,
-        module_qualified_name=module.qualified_name,
+        module_qualified_name=anaplan_module.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
