@@ -193,14 +193,28 @@ def has_handler(logger: logging.Logger, handler_class) -> bool:
 
 def add_otel_handler(
     logger: logging.Logger, level: Union[int, str], resource: dict
-) -> None:
+) -> Optional[logging.Handler]:
     """
-    Adds an OpenTelemetry handler to the logger if not already present.
+    Adds an OpenTelemetry logging handler to the provided logger if the necessary
+    OpenTelemetry imports are available and the handler is not already present.
+    This function uses the provided logging level and resource configuration for
+    setting up the OpenTelemetry handler. The handler is set up with a custom
+    formatter for log messages. This function also makes use of workflow-specific
+    environment variables to enrich the resource data with workflow node
+    information if available.
 
-    Args:
-        logger (logging.Logger): The logger to which the handler will be added.
-        level (int | str): The logging level.
-        resource (dict): A dictionary of resource attributes to be associated with the logger.
+    Parameters:
+    logger (logging.Logger): The logger instance to which the OpenTelemetry
+        handler will be added.
+    level (Union[int, str]): The logging level to be set for the OpenTelemetry
+        handler, such as logging.INFO or logging.DEBUG.
+    resource (dict): A dictionary representing the OpenTelemetry resource
+        configuration. Additional resource attributes may be dynamically added
+        inside the function.
+
+    Returns:
+    Optional[logging.Logger]: The created OpenTelemetry handler if successfully
+        added; otherwise, None.
     """
     if OTEL_IMPORTS_AVAILABLE and not has_handler(logger, LoggingHandler):
         if workflow_node_name := os.getenv("OTEL_WF_NODE_NAME", ""):
@@ -221,3 +235,5 @@ def add_otel_handler(
         otel_handler.setFormatter(formatter)
         logger.addHandler(otel_handler)
         logger.info("OpenTelemetry handler with formatter added to the logger.")
+        return otel_handler
+    return None
