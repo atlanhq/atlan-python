@@ -337,12 +337,11 @@ class AuthorizationFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         if record.args and hasattr(record.args, "__iter__"):
             for arg in record.args:
-                if (
-                    isinstance(arg, dict)
-                    and "headers" in arg
-                    and "authorization" in arg["headers"]
-                ):
-                    arg["headers"]["authorization"] = "***REDACTED***"
+                if isinstance(arg, dict):
+                    if "headers" in arg and "authorization" in arg["headers"]:
+                        arg["headers"]["authorization"] = "***REDACTED***"
+                    elif "access_token" in arg:
+                        arg["access_token"] = "***REDACTED***"  # noqa: S105
 
         return True
 
