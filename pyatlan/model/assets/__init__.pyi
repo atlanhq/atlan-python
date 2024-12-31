@@ -144,6 +144,7 @@ __all__ = [
     "Preset",
     "Mode",
     "Sigma",
+    "Anaplan",
     "Tableau",
     "Looker",
     "Domo",
@@ -198,6 +199,15 @@ __all__ = [
     "SigmaDataElementField",
     "SigmaPage",
     "SigmaDataElement",
+    "AnaplanPage",
+    "AnaplanList",
+    "AnaplanLineItem",
+    "AnaplanWorkspace",
+    "AnaplanModule",
+    "AnaplanModel",
+    "AnaplanApp",
+    "AnaplanDimension",
+    "AnaplanView",
     "TableauWorkbook",
     "TableauDatasourceField",
     "TableauCalculatedField",
@@ -307,6 +317,16 @@ from .a_p_i_path import APIPath
 from .a_p_i_query import APIQuery
 from .a_p_i_spec import APISpec
 from .a_w_s import AWS
+from .anaplan import Anaplan
+from .anaplan_app import AnaplanApp
+from .anaplan_dimension import AnaplanDimension
+from .anaplan_line_item import AnaplanLineItem
+from .anaplan_list import AnaplanList
+from .anaplan_model import AnaplanModel
+from .anaplan_module import AnaplanModule
+from .anaplan_page import AnaplanPage
+from .anaplan_view import AnaplanView
+from .anaplan_workspace import AnaplanWorkspace
 from .auth_service import AuthService
 from .azure import Azure
 from .azure_event_hub import AzureEventHub
