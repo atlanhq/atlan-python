@@ -16,11 +16,8 @@
 ### QOL improvements
 
 - Generated the latest typedef models.
+- Upgraded `jinja2` from `3.1.4` to `3.1.5` to address a security vulnerability.
 - Fixed pagination assertions in `AuditSearch` unit tests and integration tests.
-
-### Bug fixes
-
-- Fixed a `ValidationError` caused by the private field (`_user_id`) in the `AtlanClient` constructor.
 
 ## 3.1.1 (December 26, 2024)
 
