@@ -77,7 +77,16 @@
     QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "qualifiedName", "qualifiedName", "qualifiedName.text"
     )
+
     """Unique fully-qualified name of the asset in Atlan."""
+    CUSTOM_ATTRIBUTES: ClassVar[TextField] = TextField(
+        "__customAttributes", "__customAttributes"
+    )
+    """
+    Any source-provided custom information.
+    NOTE: This is NOT the same as custom metadata (user-managed),
+    but is an entirely different area of source-managed custom information.
+    """
 
     type_name: str = Field(default="Referenceable", description='Name of the type definition that defines this instance.'
     )

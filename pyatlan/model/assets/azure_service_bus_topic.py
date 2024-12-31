@@ -29,6 +29,12 @@ class AzureServiceBusTopic(AzureServiceBus):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    AZURE_SERVICE_BUS_SCHEMAS: ClassVar[RelationField] = RelationField(
+        "azureServiceBusSchemas"
+    )
+    """
+    TBC
+    """
     AZURE_SERVICE_BUS_NAMESPACE: ClassVar[RelationField] = RelationField(
         "azureServiceBusNamespace"
     )
@@ -37,8 +43,25 @@ class AzureServiceBusTopic(AzureServiceBus):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "azure_service_bus_schemas",
         "azure_service_bus_namespace",
     ]
+
+    @property
+    def azure_service_bus_schemas(self) -> Optional[List[AzureServiceBusSchema]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_schemas
+        )
+
+    @azure_service_bus_schemas.setter
+    def azure_service_bus_schemas(
+        self, azure_service_bus_schemas: Optional[List[AzureServiceBusSchema]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.azure_service_bus_schemas = azure_service_bus_schemas
 
     @property
     def azure_service_bus_namespace(self) -> Optional[AzureServiceBusNamespace]:
@@ -57,6 +80,9 @@ class AzureServiceBusTopic(AzureServiceBus):
         self.attributes.azure_service_bus_namespace = azure_service_bus_namespace
 
     class Attributes(AzureServiceBus.Attributes):
+        azure_service_bus_schemas: Optional[List[AzureServiceBusSchema]] = Field(
+            default=None, description=""
+        )  # relationship
         azure_service_bus_namespace: Optional[AzureServiceBusNamespace] = Field(
             default=None, description=""
         )  # relationship
@@ -72,5 +98,6 @@ class AzureServiceBusTopic(AzureServiceBus):
 
 
 from .azure_service_bus_namespace import AzureServiceBusNamespace  # noqa
+from .azure_service_bus_schema import AzureServiceBusSchema  # noqa
 
 AzureServiceBusTopic.Attributes.update_forward_refs()

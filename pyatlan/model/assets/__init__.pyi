@@ -164,6 +164,7 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
+    "BigqueryTag",
     "Kafka",
     "AzureServiceBus",
     "DynamoDB",
@@ -286,6 +287,7 @@ __all__ = [
     "KafkaTopic",
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
+    "AzureServiceBusSchema",
     "AzureServiceBusTopic",
     "QlikStream",
     "DynamoDBLocalSecondaryIndex",
@@ -311,8 +313,10 @@ from .azure_event_hub import AzureEventHub
 from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
 from .azure_service_bus import AzureServiceBus
 from .azure_service_bus_namespace import AzureServiceBusNamespace
+from .azure_service_bus_schema import AzureServiceBusSchema
 from .azure_service_bus_topic import AzureServiceBusTopic
 from .badge import Badge
+from .bigquery_tag import BigqueryTag
 from .business_policy import BusinessPolicy
 from .business_policy_exception import BusinessPolicyException
 from .business_policy_incident import BusinessPolicyIncident
