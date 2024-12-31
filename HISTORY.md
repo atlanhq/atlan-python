@@ -1,3 +1,24 @@
+## 3.1.2 (December 31, 2024)
+
+### New features
+
+- Enabled the use of the `Retry-After` header for handling rate-limit retries.
+- Added support for [OpenTelemetry](https://opentelemetry.io) logging in custom packages.
+- Added `creator()` methods for Insights assets (`Collection`, `Folder`, `Query`).
+- Added support for the following new connector types:
+  - ANAPLAN
+  - AWS_ECS
+  - AWS_BATCH
+  - AWS_LAMBDA
+  - AWS_SAGEMAKER
+  - DATAVERSE
+
+### QOL improvements
+
+- Generated the latest typedef models.
+- Upgraded `jinja2` from `3.1.4` to `3.1.5` to address a security vulnerability.
+- Fixed pagination assertions in `AuditSearch` unit tests and integration tests.
+
 ## 3.1.1 (December 26, 2024)
 
 ### Bug fixes
