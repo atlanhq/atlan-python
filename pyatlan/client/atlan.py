@@ -403,7 +403,7 @@ class AtlanClient(BaseSettings):
                         response_ = response.text
                     else:
                         response_ = events if events else response.json()
-                    LOGGER.debug(response_)
+                    LOGGER.debug("response: %s", response_)
                     return response_
                 except (
                     requests.exceptions.JSONDecodeError,
