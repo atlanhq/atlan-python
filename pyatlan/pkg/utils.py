@@ -203,8 +203,7 @@ def add_otel_handler(
         resource (dict): A dictionary of resource attributes to be associated with the logger.
     """
     if OTEL_IMPORTS_AVAILABLE and not has_handler(logger, LoggingHandler):
-        workflow_node_name = os.getenv("OTEL_WF_NODE_NAME", "")
-        if workflow_node_name:
+        if workflow_node_name := os.getenv("OTEL_WF_NODE_NAME", ""):
             resource["k8s.workflow.node.name"] = workflow_node_name
         logger_provider = LoggerProvider(Resource.create(resource))
         otel_log_exporter = OTLPLogExporter(
