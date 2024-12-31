@@ -220,4 +220,4 @@ def add_otel_handler(
         )
         otel_handler.setFormatter(formatter)
         logger.addHandler(otel_handler)
-        logger.info("OpenTelemetry handler added to the logger.")
+        logger.info("OpenTelemetry handler with formatter added to the logger.")
