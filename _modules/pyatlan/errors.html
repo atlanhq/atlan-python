@@ -192,10 +192,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../asset/azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/azureservicebus.html">AzureServiceBus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/azureservicebusnamespace.html">AzureServiceBusNamespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asset/azureservicebusschema.html">AzureServiceBusSchema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/azureservicebustopic.html">AzureServiceBusTopic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asset/bigquerytag.html">BigqueryTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/businesspolicy.html">BusinessPolicy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/businesspolicyexception.html">BusinessPolicyException</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/businesspolicyincident.html">BusinessPolicyIncident</a></li>
@@ -1158,6 +1160,13 @@
         <span class="s2">&quot;ATLAN-PYTHON-400-069&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Unable to fetch the GUID for the user: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Ensure the provided username is correct and valid.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">UNABLE_TO_GENERATE_QN</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-070&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unable to generate qualifiedName for </span><span class="si">{0}</span><span class="s2">, Error: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
