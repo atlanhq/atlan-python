@@ -338,6 +338,10 @@ class AtlanConnectorType(str, Enum):
     APP = ("app", AtlanConnectionCategory.APP)
     BIGID = ("bigid", AtlanConnectionCategory.SAAS)
     ANAPLAN = ("anaplan", AtlanConnectionCategory.BI)
+    AWS_BATCH = ("aws-batch", AtlanConnectionCategory.ELT)
+    AWS_ECS = ("aws-ecs", AtlanConnectionCategory.ELT)
+    AWS_LAMBDA = ("aws-lambda", AtlanConnectionCategory.ELT)
+    AWS_SAGEMAKER = ("aws-sagemaker", AtlanConnectionCategory.ELT)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):

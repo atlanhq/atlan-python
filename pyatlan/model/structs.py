@@ -164,6 +164,7 @@ class SourceTagAttachment(AtlanObject):
     is_source_tag_synced: Optional[bool] = Field(default=None, description="")
     source_tag_sync_timestamp: Optional[datetime] = Field(default=None, description="")
     source_tag_sync_error: Optional[str] = Field(default=None, description="")
+    source_tag_type: Optional[str] = Field(default=None, description="")
 
     @classmethod
     def by_name(

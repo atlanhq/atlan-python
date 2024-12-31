@@ -4,8 +4,7 @@
 
 from __future__ import annotations
 
-from json import loads
-from json.decoder import JSONDecodeError
+from json import JSONDecodeError, loads
 from typing import ClassVar, List, Optional, Union, overload
 
 from pydantic.v1 import Field, validator

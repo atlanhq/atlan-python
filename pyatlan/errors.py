@@ -608,6 +608,13 @@ class ErrorCode(Enum):
         "Ensure the provided username is correct and valid.",
         InvalidRequestError,
     )
+    UNABLE_TO_GENERATE_QN = (
+        400,
+        "ATLAN-PYTHON-400-070",
+        "Unable to generate qualifiedName for {0}, Error: {1}",
+        "Check the details of the server's message to correct your request.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

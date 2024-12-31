@@ -54,10 +54,12 @@ You can interact with all of the following different kinds of assets:
     asset/azureeventhubconsumergroup
     asset/azureservicebus
     asset/azureservicebusnamespace
+    asset/azureservicebusschema
     asset/azureservicebustopic
     asset/bi
     asset/biprocess
     asset/badge
+    asset/bigquerytag
     asset/businesspolicy
     asset/businesspolicyexception
     asset/businesspolicyincident
