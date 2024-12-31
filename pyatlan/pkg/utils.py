@@ -215,5 +215,9 @@ def add_otel_handler(
 
         otel_handler = LoggingHandler(level=level, logger_provider=logger_provider)
         otel_handler.setLevel(level)
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        otel_handler.setFormatter(formatter)
         logger.addHandler(otel_handler)
         logger.info("OpenTelemetry handler added to the logger.")
