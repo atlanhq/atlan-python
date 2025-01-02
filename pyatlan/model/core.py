@@ -395,7 +395,9 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         replace_attributes = []
         exclude_attributes = set()
 
-        attribute_name, attribute_value = attribute, getattr(asset, attribute, None)
+        # Updated to use `asset.attribute` instead of `asset` to align with the API.
+        # This change ensures the correct value is retrieved regardless of the naming conventions.
+        attribute_name, attribute_value = attribute, getattr(asset.attributes, attribute, None)
 
         # Process list of relationship attributes
         if attribute_value and isinstance(attribute_value, list):
