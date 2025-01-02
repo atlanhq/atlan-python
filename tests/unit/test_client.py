@@ -304,7 +304,7 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
             == table
         )
     mock_method.assert_called_once_with(
-        guid=guid, asset_type=asset_type, ignore_relationships=True
+        guid=guid, asset_type=asset_type, ignore_relationships=False
     )
 
 
