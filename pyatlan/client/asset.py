@@ -1342,15 +1342,13 @@ class AssetClient:
             asset = self.get_by_guid(
                 guid=guid,
                 asset_type=asset_type,
-                # Sending minimal attributes, so relationships are excluded
-                ignore_relationships=True,
+                ignore_relationships=False,
             )
         elif qualified_name:
             asset = self.get_by_qualified_name(
                 qualified_name=qualified_name,
                 asset_type=asset_type,
-                # Sending minimal attributes, so relationships are excluded
-                ignore_relationships=True,
+                ignore_relationships=False,
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
