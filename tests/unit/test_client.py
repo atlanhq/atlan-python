@@ -303,7 +303,7 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
             client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
             == table
         )
-    mock_method.assert_called_once_with(guid=guid, asset_type=asset_type)
+    mock_method.assert_called_once_with(guid=guid, asset_type=asset_type, ignore_relationships=True)
 
 
 def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_terms():
