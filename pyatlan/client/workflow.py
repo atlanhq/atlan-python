@@ -24,7 +24,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
-from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term
+from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Regexp, Term
 from pyatlan.model.workflow import (
     ReRunRequest,
     ScheduleQueriesSearchRequest,
@@ -85,10 +85,11 @@ class WorkflowClient:
         :raises ValidationError: If the provided prefix is invalid workflow package
         :raises AtlanError: on any API communication issue
         """
+        regex = prefix.value.replace("-", "[-]") + "[-][0-9]{10}"
         query = Bool(
             filter=[
                 NestedQuery(
-                    query=Prefix(field="metadata.name.keyword", value=prefix.value),
+                    query=Regexp(field="metadata.name.keyword", value=regex),
                     path="metadata",
                 )
             ]
