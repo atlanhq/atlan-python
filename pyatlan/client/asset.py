@@ -358,8 +358,8 @@ class AssetClient:
         asset_type: Type[A],
         min_ext_info: bool = False,
         ignore_relationships: bool = True,
-        attributes: Optional[List[str]] = None,
-        relationships_attributes: Optional[List[str]] = None,
+        attributes: Optional[Union[List[str], List[AtlanField]]] = None,
+        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None
     ) -> A:
         """
         Retrieves an asset by its qualified_name.
@@ -389,15 +389,12 @@ class AssetClient:
             search = (
                 FluentSearch()
                 .select()
-                .where(CompoundQuery.active_assets())
                 .where(Asset.QUALIFIED_NAME.eq(qualified_name))
             )
-            if attributes:
-                for attribute in attributes:
-                    search = search.include_on_results(attribute)
-            if relationships_attributes:
-                for relation_attribute in relationships_attributes:
-                    search = search.include_on_relations(relation_attribute)
+            for attribute in attributes:
+                search = search.include_on_results(attribute)
+            for relation_attribute in relationships_attributes:
+                search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
                 first_result = results.current_page()[0]
@@ -434,8 +431,8 @@ class AssetClient:
         asset_type: Type[A] = Asset,  # type: ignore[assignment]
         min_ext_info: bool = False,
         ignore_relationships: bool = True,
-        attributes: Optional[List[str]] = None,
-        relationships_attributes: Optional[List[str]] = None,
+        attributes: Optional[Union[List[str], List[AtlanField]]] = None,
+        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None
     ) -> A:
         """
         Retrieves an asset by its GUID.
@@ -464,15 +461,12 @@ class AssetClient:
             search = (
                 FluentSearch()
                 .select()
-                .where(CompoundQuery.active_assets())
                 .where(Asset.GUID.eq(guid))
             )
-            if attributes:
-                for attribute in attributes:
-                    search = search.include_on_results(attribute)
-            if relationships_attributes:
-                for relation_attribute in relationships_attributes:
-                    search = search.include_on_relations(relation_attribute)
+            for attribute in attributes:
+                search = search.include_on_results(attribute)
+            for relation_attribute in relationships_attributes:
+                search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
                 first_result = results.current_page()[0]
