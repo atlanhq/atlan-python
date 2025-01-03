@@ -422,7 +422,9 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
                     {to_camel_case(attribute_name): append_attributes}
                 )
             if replace_attributes:
-                setattr(asset, attribute_name, replace_attributes)
+                # Updated to use `asset.attribute` instead of `asset` to align with the API.
+                # This change ensures the correct value is retrieved regardless of the naming conventions.
+                setattr(asset.attributes, attribute_name, replace_attributes)
 
             # If 'remove', 'append', or both attributes are present and there are no 'replace' attributes,
             # add the attribute to the set to exclude it from the bulk request payload.
