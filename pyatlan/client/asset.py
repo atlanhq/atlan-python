@@ -359,7 +359,7 @@ class AssetClient:
         min_ext_info: bool = False,
         ignore_relationships: bool = True,
         attributes: Optional[Union[List[str], List[AtlanField]]] = None,
-        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None
+        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
     ) -> A:
         """
         Retrieves an asset by its qualified_name.
@@ -375,7 +375,7 @@ class AssetClient:
         :raises AtlanError: on any API communication issue
         """
         from pyatlan.client.atlan import AtlanClient
-        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+        from pyatlan.model.fluent_search import FluentSearch
 
         query_params = {
             "attr:qualifiedName": qualified_name,
@@ -387,13 +387,13 @@ class AssetClient:
         ):
             client = AtlanClient.get_default_client()
             search = (
-                FluentSearch()
-                .select()
-                .where(Asset.QUALIFIED_NAME.eq(qualified_name))
+                FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
             )
-            for attribute in attributes:
+            for attribute in attributes:  # type: ignore[union-attr]
                 search = search.include_on_results(attribute)
-            for relation_attribute in relationships_attributes:
+            for (
+                relation_attribute
+            ) in relationships_attributes:  # type: ignore[union-attr]
                 search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
@@ -432,7 +432,7 @@ class AssetClient:
         min_ext_info: bool = False,
         ignore_relationships: bool = True,
         attributes: Optional[Union[List[str], List[AtlanField]]] = None,
-        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None
+        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
     ) -> A:
         """
         Retrieves an asset by its GUID.
@@ -448,7 +448,7 @@ class AssetClient:
         :raises AtlanError: on any API communication issue
         """
         from pyatlan.client.atlan import AtlanClient
-        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+        from pyatlan.model.fluent_search import FluentSearch
 
         query_params = {
             "minExtInfo": min_ext_info,
@@ -458,14 +458,10 @@ class AssetClient:
             relationships_attributes and len(relationships_attributes)
         ):
             client = AtlanClient.get_default_client()
-            search = (
-                FluentSearch()
-                .select()
-                .where(Asset.GUID.eq(guid))
-            )
-            for attribute in attributes:
+            search = FluentSearch().select().where(Asset.GUID.eq(guid))
+            for attribute in attributes:  # type: ignore[union-attr]
                 search = search.include_on_results(attribute)
-            for relation_attribute in relationships_attributes:
+            for relation_attribute in relationships_attributes:  # type: ignore[union-attr]
                 search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
