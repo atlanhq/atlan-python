@@ -145,7 +145,9 @@ def test_update_event_hub_assets(
 
 
 def _retrieve_event_hub_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type)
+    retrieved = client.asset.get_by_guid(
+        asset.guid, asset_type=asset_type, ignore_relationships=False
+    )
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid
@@ -191,7 +193,9 @@ def test_read_deleted_event_hub_consumer_group(
     consumer_group: AzureEventHubConsumerGroup,
 ):
     deleted = client.asset.get_by_guid(
-        consumer_group.guid, asset_type=AzureEventHubConsumerGroup
+        consumer_group.guid,
+        asset_type=AzureEventHubConsumerGroup,
+        ignore_relationships=False,
     )
     assert deleted
     assert deleted.status == EntityStatus.DELETED
@@ -213,6 +217,7 @@ def test_restore_event_hub_consumer_group(
     restored = client.asset.get_by_qualified_name(
         asset_type=AzureEventHubConsumerGroup,
         qualified_name=consumer_group.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == consumer_group.guid

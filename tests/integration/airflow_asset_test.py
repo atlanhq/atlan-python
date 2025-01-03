@@ -170,7 +170,9 @@ def test_update_airflow_assets(
 
 
 def _retrieve_airflow_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type)
+    retrieved = client.asset.get_by_guid(
+        asset.guid, asset_type=asset_type, ignore_relationships=False
+    )
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid
@@ -215,7 +217,9 @@ def test_read_deleted_airflow_task(
     client: AtlanClient,
     airflow_task: AirflowTask,
 ):
-    deleted = client.asset.get_by_guid(airflow_task.guid, asset_type=AirflowTask)
+    deleted = client.asset.get_by_guid(
+        airflow_task.guid, asset_type=AirflowTask, ignore_relationships=False
+    )
     assert deleted
     assert deleted.status == EntityStatus.DELETED
     assert deleted.guid == airflow_task.guid
@@ -233,7 +237,9 @@ def test_restore_airflow_task(
     )
     assert airflow_task.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=AirflowTask, qualified_name=airflow_task.qualified_name
+        asset_type=AirflowTask,
+        qualified_name=airflow_task.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == airflow_task.guid

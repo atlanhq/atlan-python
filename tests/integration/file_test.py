@@ -112,7 +112,7 @@ def test_read_file(
     connection: Connection,
     file: File,
 ):
-    r = client.asset.get_by_guid(file.guid, asset_type=File)
+    r = client.asset.get_by_guid(file.guid, asset_type=File, ignore_relationships=False)
     assert r
     assert r.guid == file.guid
     assert r.qualified_name == file.qualified_name

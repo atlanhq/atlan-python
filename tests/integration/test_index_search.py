@@ -196,7 +196,9 @@ def test_search_source_synced_assets(client: AtlanClient):
 def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
     # Make sure no tags are assigned initially
     assert table.guid
-    table = client.asset.get_by_guid(guid=table.guid, asset_type=Table)
+    table = client.asset.get_by_guid(
+        guid=table.guid, asset_type=Table, ignore_relationships=False
+    )
     assert not table.atlan_tags
     assert table.name and table.qualified_name
 

@@ -143,7 +143,9 @@ def test_update_kafka_assets(
 
 
 def _retrieve_kafka_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type)
+    retrieved = client.asset.get_by_guid(
+        asset.guid, asset_type=asset_type, ignore_relationships=False
+    )
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid
@@ -189,7 +191,7 @@ def test_read_deleted_kafka_consumer_group(
     consumer_group: KafkaConsumerGroup,
 ):
     deleted = client.asset.get_by_guid(
-        consumer_group.guid, asset_type=KafkaConsumerGroup
+        consumer_group.guid, asset_type=KafkaConsumerGroup, ignore_relationships=False
     )
     assert deleted
     assert deleted.status == EntityStatus.DELETED
@@ -208,7 +210,9 @@ def test_restore_kafka_consumer_group(
     )
     assert consumer_group.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=KafkaConsumerGroup, qualified_name=consumer_group.qualified_name
+        asset_type=KafkaConsumerGroup,
+        qualified_name=consumer_group.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == consumer_group.guid
