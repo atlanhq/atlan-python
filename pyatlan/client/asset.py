@@ -1339,40 +1339,42 @@ class AssetClient:
         """
         from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-
+        client = AtlanClient.get_default_client()
+        search = (
+                FluentSearch()
+                .select()
+            )
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            client = AtlanClient.get_default_client()
-            search = (
-                FluentSearch()
-                .select()
-                .where(CompoundQuery.active_assets())
-                .where(Asset.GUID.eq(guid))
-                .execute(client=client)
-            )
-            if search and search.current_page():
-                first_result = search.current_page()[0]
-                if not isinstance(first_result, asset_type):
+            search = search.where(Asset.GUID.eq(guid))
+        elif qualified_name:
+            search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
+        else:
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
+    
+        results = search.execute(client=client)
+        if results and results.current_page():
+            first_result = results.current_page()[0]
+            if not isinstance(first_result, asset_type):
+                if guid is None:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+                else:
                     raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
                         guid, asset_type.__name__
                     )
-                qualified_name = first_result.qualified_name
-                name = first_result.name
-                updated_asset = asset_type.updater(
-                    qualified_name=qualified_name, name=name
+        else:
+            if guid is None:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
                 )
-
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-
-        elif qualified_name:
-            name = qualified_name.split("/")[-1]
-            updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
-
-        else:
-            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-
+        qualified_name = first_result.qualified_name
+        name = first_result.name
+        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
         for i, term in enumerate(terms):
             if hasattr(term, "guid") and term.guid:
                 terms[i] = AtlasGlossaryTerm.ref_by_guid(
@@ -1408,40 +1410,42 @@ class AssetClient:
         """
         from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-
+        client = AtlanClient.get_default_client()
+        search = (
+                FluentSearch()
+                .select()
+            )
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            client = AtlanClient.get_default_client()
-            search = (
-                FluentSearch()
-                .select()
-                .where(CompoundQuery.active_assets())
-                .where(Asset.GUID.eq(guid))
-                .execute(client=client)
-            )
-            if search and search.current_page():
-                first_result = search.current_page()[0]
-                if not isinstance(first_result, asset_type):
+            search = search.where(Asset.GUID.eq(guid))
+        elif qualified_name:
+            search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
+        else:
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
+    
+        results = search.execute(client=client)
+        if results and results.current_page():
+            first_result = results.current_page()[0]
+            if not isinstance(first_result, asset_type):
+                if guid is None:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+                else:
                     raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
                         guid, asset_type.__name__
                     )
-                qualified_name = first_result.qualified_name
-                name = first_result.name
-                updated_asset = asset_type.updater(
-                    qualified_name=qualified_name, name=name
+        else:
+            if guid is None:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
                 )
-
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-
-        elif qualified_name:
-            name = qualified_name.split("/")[-1]
-            updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
-
-        else:
-            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-
+        qualified_name = first_result.qualified_name
+        name = first_result.name
+        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
         for i, term in enumerate(terms):
             if hasattr(term, "guid") and term.guid:
                 terms[i] = AtlasGlossaryTerm.ref_by_guid(
@@ -1479,40 +1483,42 @@ class AssetClient:
         """
         from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-
+        client = AtlanClient.get_default_client()
+        search = (
+                FluentSearch()
+                .select()
+            )
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            client = AtlanClient.get_default_client()
-            search = (
-                FluentSearch()
-                .select()
-                .where(CompoundQuery.active_assets())
-                .where(Asset.GUID.eq(guid))
-                .execute(client=client)
-            )
-            if search and search.current_page():
-                first_result = search.current_page()[0]
-                if not isinstance(first_result, asset_type):
+            search = search.where(Asset.GUID.eq(guid))
+        elif qualified_name:
+            search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
+        else:
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
+    
+        results = search.execute(client=client)
+        if results and results.current_page():
+            first_result = results.current_page()[0]
+            if not isinstance(first_result, asset_type):
+                if guid is None:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+                else:
                     raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
                         guid, asset_type.__name__
                     )
-                qualified_name = first_result.qualified_name
-                name = first_result.name
-                updated_asset = asset_type.updater(
-                    qualified_name=qualified_name, name=name
+        else:
+            if guid is None:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
                 )
-
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-
-        elif qualified_name:
-            name = qualified_name.split("/")[-1]
-            updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
-
-        else:
-            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-
+        qualified_name = first_result.qualified_name
+        name = first_result.name
+        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
         for i, term in enumerate(terms):
             if hasattr(term, "guid") and term.guid:
                 terms[i] = AtlasGlossaryTerm.ref_by_guid(
