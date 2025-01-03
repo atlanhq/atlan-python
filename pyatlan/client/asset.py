@@ -1338,12 +1338,10 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the appended terms)
         """
         from pyatlan.client.atlan import AtlanClient
-        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+        from pyatlan.model.fluent_search import FluentSearch
+
         client = AtlanClient.get_default_client()
-        search = (
-                FluentSearch()
-                .select()
-            )
+        search = FluentSearch().select()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1352,7 +1350,7 @@ class AssetClient:
             search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-    
+
         results = search.execute(client=client)
         if results and results.current_page():
             first_result = results.current_page()[0]
@@ -1409,12 +1407,10 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the replaced terms)
         """
         from pyatlan.client.atlan import AtlanClient
-        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+        from pyatlan.model.fluent_search import FluentSearch
+
         client = AtlanClient.get_default_client()
-        search = (
-                FluentSearch()
-                .select()
-            )
+        search = FluentSearch().select()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1423,7 +1419,7 @@ class AssetClient:
             search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-    
+
         results = search.execute(client=client)
         if results and results.current_page():
             first_result = results.current_page()[0]
@@ -1482,12 +1478,10 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
         """
         from pyatlan.client.atlan import AtlanClient
-        from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+        from pyatlan.model.fluent_search import FluentSearch
+
         client = AtlanClient.get_default_client()
-        search = (
-                FluentSearch()
-                .select()
-            )
+        search = FluentSearch().select()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1496,7 +1490,7 @@ class AssetClient:
             search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-    
+
         results = search.execute(client=client)
         if results and results.current_page():
             first_result = results.current_page()[0]
