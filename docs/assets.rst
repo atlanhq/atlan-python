@@ -29,6 +29,16 @@ You can interact with all of the following different kinds of assets:
     asset/airflow
     asset/airflowdag
     asset/airflowtask
+    asset/anaplan
+    asset/anaplanapp
+    asset/anaplandimension
+    asset/anaplanlineitem
+    asset/anaplanlist
+    asset/anaplanmodel
+    asset/anaplanmodule
+    asset/anaplanpage
+    asset/anaplanview
+    asset/anaplanworkspace
     asset/anomalo
     asset/anomalocheck
     asset/app
@@ -44,10 +54,12 @@ You can interact with all of the following different kinds of assets:
     asset/azureeventhubconsumergroup
     asset/azureservicebus
     asset/azureservicebusnamespace
+    asset/azureservicebusschema
     asset/azureservicebustopic
     asset/bi
     asset/biprocess
     asset/badge
+    asset/bigquerytag
     asset/businesspolicy
     asset/businesspolicyexception
     asset/businesspolicyincident

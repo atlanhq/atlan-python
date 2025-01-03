@@ -5,17 +5,44 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from uuid import uuid4
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.enums import IconType
 from pyatlan.model.fields.atlan_fields import KeywordField, TextField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .core.namespace import Namespace
 
 
 class Collection(Namespace):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, client: AtlanClient, name: str) -> Collection:
+        validate_required_fields(["client", "name"], [client, name])
+        return cls(attributes=Collection.Attributes.creator(client=client, name=name))
+
+    @classmethod
+    def _generate_qualified_name(cls, client: AtlanClient):
+        """
+        Generate a unique Collection name.
+
+        :param client: connectivity to the Atlan tenant
+        as the user who will own the Collection
+        :returns: a unique name for the Collection
+        """
+        try:
+            username = client.user.get_current().username
+            return f"default/collection/{username}/{uuid4()}"
+        except AtlanError as e:
+            raise ErrorCode.UNABLE_TO_GENERATE_QN.exception_with_parameters(
+                cls.__name__, e
+            ) from e
 
     type_name: str = Field(default="Collection", allow_mutation=False)
 
@@ -67,6 +94,20 @@ class Collection(Namespace):
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(default=None, description="")
         icon_type: Optional[IconType] = Field(default=None, description="")
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            client: AtlanClient,
+            name: str,
+        ) -> Collection.Attributes:
+            validate_required_fields(["name"], [name])
+            return Collection.Attributes(
+                name=name,
+                qualified_name=Collection._generate_qualified_name(client),
+            )
 
     attributes: Collection.Attributes = Field(
         default_factory=lambda: Collection.Attributes(),

@@ -144,6 +144,7 @@ __all__ = [
     "Preset",
     "Mode",
     "Sigma",
+    "Anaplan",
     "Tableau",
     "Looker",
     "Domo",
@@ -164,6 +165,7 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
+    "BigqueryTag",
     "Kafka",
     "AzureServiceBus",
     "DynamoDB",
@@ -197,6 +199,15 @@ __all__ = [
     "SigmaDataElementField",
     "SigmaPage",
     "SigmaDataElement",
+    "AnaplanPage",
+    "AnaplanList",
+    "AnaplanLineItem",
+    "AnaplanWorkspace",
+    "AnaplanModule",
+    "AnaplanModel",
+    "AnaplanApp",
+    "AnaplanDimension",
+    "AnaplanView",
     "TableauWorkbook",
     "TableauDatasourceField",
     "TableauCalculatedField",
@@ -286,6 +297,7 @@ __all__ = [
     "KafkaTopic",
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
+    "AzureServiceBusSchema",
     "AzureServiceBusTopic",
     "QlikStream",
     "DynamoDBLocalSecondaryIndex",
@@ -305,14 +317,26 @@ from .a_p_i_path import APIPath
 from .a_p_i_query import APIQuery
 from .a_p_i_spec import APISpec
 from .a_w_s import AWS
+from .anaplan import Anaplan
+from .anaplan_app import AnaplanApp
+from .anaplan_dimension import AnaplanDimension
+from .anaplan_line_item import AnaplanLineItem
+from .anaplan_list import AnaplanList
+from .anaplan_model import AnaplanModel
+from .anaplan_module import AnaplanModule
+from .anaplan_page import AnaplanPage
+from .anaplan_view import AnaplanView
+from .anaplan_workspace import AnaplanWorkspace
 from .auth_service import AuthService
 from .azure import Azure
 from .azure_event_hub import AzureEventHub
 from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
 from .azure_service_bus import AzureServiceBus
 from .azure_service_bus_namespace import AzureServiceBusNamespace
+from .azure_service_bus_schema import AzureServiceBusSchema
 from .azure_service_bus_topic import AzureServiceBusTopic
 from .badge import Badge
+from .bigquery_tag import BigqueryTag
 from .business_policy import BusinessPolicy
 from .business_policy_exception import BusinessPolicyException
 from .business_policy_incident import BusinessPolicyIncident

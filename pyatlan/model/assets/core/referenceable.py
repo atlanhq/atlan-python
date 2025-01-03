@@ -239,8 +239,8 @@ class Referenceable(AtlanObject):
     QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "qualifiedName", "qualifiedName", "qualifiedName.text"
     )
-    """Unique fully-qualified name of the asset in Atlan."""
 
+    """Unique fully-qualified name of the asset in Atlan."""
     CUSTOM_ATTRIBUTES: ClassVar[TextField] = TextField(
         "__customAttributes", "__customAttributes"
     )
