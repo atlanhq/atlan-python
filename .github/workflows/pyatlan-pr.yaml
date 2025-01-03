@@ -5,7 +5,35 @@ on:
   workflow_dispatch:
 
 jobs:
+  vulnerability-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+            # Since we used pytest for dev
+            # ("py" -> library is in maintenance mode)
+            # We can ignore this vulnerability here
+            # Reference: https://github.com/pytest-dev/py
+            ignore-vulns: |
+              PYSEC-2022-42969
+            summary: true
+            vulnerability-service: osv
+            inputs: requirements.txt requirements-dev.txt
+
   qa-checks-and-unit-tests:
+    needs: [vulnerability-scan]
     runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.distribute-integration-test-files.outputs.files }}
@@ -50,7 +78,7 @@ jobs:
           echo "files=$json_files" >> $GITHUB_OUTPUT
 
   integration-tests:
-    needs: [qa-checks-and-unit-tests]
+    needs: [vulnerability-scan, qa-checks-and-unit-tests]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
