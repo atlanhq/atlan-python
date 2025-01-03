@@ -1341,17 +1341,25 @@ class AssetClient:
         from pyatlan.model.fluent_search import FluentSearch
 
         client = AtlanClient.get_default_client()
-        search = FluentSearch().select()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            search = search.where(Asset.GUID.eq(guid))
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.GUID.eq(guid))
+                .execute(client=client)
+            )
         elif qualified_name:
-            search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
+                .execute(client=client)
+            )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
 
-        results = search.execute(client=client)
         if results and results.current_page():
             first_result = results.current_page()[0]
             if not isinstance(first_result, asset_type):
@@ -1410,17 +1418,25 @@ class AssetClient:
         from pyatlan.model.fluent_search import FluentSearch
 
         client = AtlanClient.get_default_client()
-        search = FluentSearch().select()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            search = search.where(Asset.GUID.eq(guid))
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.GUID.eq(guid))
+                .execute(client=client)
+            )
         elif qualified_name:
-            search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
+                .execute(client=client)
+            )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
 
-        results = search.execute(client=client)
         if results and results.current_page():
             first_result = results.current_page()[0]
             if not isinstance(first_result, asset_type):
@@ -1481,17 +1497,25 @@ class AssetClient:
         from pyatlan.model.fluent_search import FluentSearch
 
         client = AtlanClient.get_default_client()
-        search = FluentSearch().select()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            search = search.where(Asset.GUID.eq(guid))
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.GUID.eq(guid))
+                .execute(client=client)
+            )
         elif qualified_name:
-            search = search.where(Asset.QUALIFIED_NAME.eq(qualified_name))
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
+                .execute(client=client)
+            )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
 
-        results = search.execute(client=client)
         if results and results.current_page():
             first_result = results.current_page()[0]
             if not isinstance(first_result, asset_type):
