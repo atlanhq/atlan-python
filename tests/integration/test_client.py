@@ -95,7 +95,7 @@ def announcement():
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def database(
     client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
