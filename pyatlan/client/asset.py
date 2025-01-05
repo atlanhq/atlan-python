@@ -351,7 +351,7 @@ class AssetClient:
             allow_multiple=True,
         )
 
-    @validate_arguments
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_qualified_name(
         self,
         qualified_name: str,
@@ -424,7 +424,7 @@ class AssetClient:
             )
         return asset
 
-    @validate_arguments
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_guid(
         self,
         guid: str,
