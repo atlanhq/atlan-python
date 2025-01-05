@@ -278,8 +278,8 @@ def test_append_terms_invalid_parameters_raises_error(
             Table,
             [AtlasGlossaryTerm()],
             [],
-            "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist. "
-            "Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
+            "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist."
+            " Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
             NotFoundError,
         ),
         (
@@ -299,7 +299,7 @@ def test_append_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             ["DifferentTypeAsset"],
             "ATLAN-PYTHON-404-014 The Table asset could not be found by name: default/abc."
-            "Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
+            " Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
             NotFoundError,
         ),
         (
@@ -309,7 +309,7 @@ def test_append_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             ["DifferentTypeAsset"],
             "ATLAN-PYTHON-404-002 Asset with GUID 123 is not of the type requested: Table."
-            "Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
+            " Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
             NotFoundError,
         ),
     ],
@@ -380,7 +380,7 @@ def test_replace_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             [],
             "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist."
-            "Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
+            " Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
             NotFoundError,
         ),
         (
@@ -390,7 +390,7 @@ def test_replace_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             [],
             "ATLAN-PYTHON-404-001 Asset with GUID nonexistent_guid does not exist."
-            "Suggestion: Verify the GUID of the asset you are trying to retrieve.",
+            " Suggestion: Verify the GUID of the asset you are trying to retrieve.",
             NotFoundError,
         ),
         (
@@ -400,7 +400,7 @@ def test_replace_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             ["DifferentTypeAsset"],
             "ATLAN-PYTHON-404-014 The Table asset could not be found by name: default/abc."
-            "Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
+            " Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
             NotFoundError,
         ),
         (
@@ -410,7 +410,7 @@ def test_replace_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             ["DifferentTypeAsset"],
             "ATLAN-PYTHON-404-002 Asset with GUID 123 is not of the type requested: Table."
-            "Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
+            " Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
             NotFoundError,
         ),
     ],
@@ -481,7 +481,7 @@ def test_remove_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             [],
             "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist."
-            "Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
+            " Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
             NotFoundError,
         ),
         (
@@ -491,7 +491,7 @@ def test_remove_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             [],
             "ATLAN-PYTHON-404-001 Asset with GUID nonexistent_guid does not exist."
-            "Suggestion: Verify the GUID of the asset you are trying to retrieve.",
+            " Suggestion: Verify the GUID of the asset you are trying to retrieve.",
             NotFoundError,
         ),
         (
@@ -501,7 +501,7 @@ def test_remove_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             ["DifferentTypeAsset"],
             "ATLAN-PYTHON-404-014 The Table asset could not be found by name: default/abc."
-            "Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
+            " Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
             NotFoundError,
         ),
         (
@@ -511,7 +511,7 @@ def test_remove_terms_invalid_parameters_raises_error(
             [AtlasGlossaryTerm()],
             ["DifferentTypeAsset"],
             "ATLAN-PYTHON-404-002 Asset with GUID 123 is not of the type requested: Table."
-            "Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
+            " Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
             NotFoundError,
         ),
     ],
