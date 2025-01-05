@@ -389,11 +389,9 @@ class AssetClient:
             search = (
                 FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
             )
-            for attribute in attributes:  # type: ignore[union-attr]
+            for attribute in attributes or []:  # type: ignore[union-attr]
                 search = search.include_on_results(attribute)
-            for (
-                relation_attribute
-            ) in relationships_attributes:  # type: ignore[union-attr]
+            for relation_attribute in relationships_attributes or []:  # type: ignore[union-attr]
                 search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
@@ -459,9 +457,9 @@ class AssetClient:
         ):
             client = AtlanClient.get_default_client()
             search = FluentSearch().select().where(Asset.GUID.eq(guid))
-            for attribute in attributes:  # type: ignore[union-attr]
+            for attribute in attributes or []:  # type: ignore[union-attr]
                 search = search.include_on_results(attribute)
-            for relation_attribute in relationships_attributes:  # type: ignore[union-attr]
+            for relation_attribute in relationships_attributes or []:  # type: ignore[union-attr]
                 search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
