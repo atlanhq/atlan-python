@@ -44,7 +44,13 @@ class S3Object(S3):
                 "s3_bucket_name",
                 "s3_bucket_qualified_name",
             ],
-            [name, connection_qualified_name, aws_arn,s3_bucket_name,s3_bucket_qualified_name],
+            [
+                name,
+                connection_qualified_name,
+                aws_arn,
+                s3_bucket_name,
+                s3_bucket_qualified_name,
+            ],
         )
         attributes = S3Object.Attributes.create(
             name=name,
@@ -101,7 +107,13 @@ class S3Object(S3):
                 "s3_bucket_name",
                 "s3_bucket_qualified_name",
             ],
-            [name, connection_qualified_name, prefix, s3_bucket_name, s3_bucket_qualified_name],
+            [
+                name,
+                connection_qualified_name,
+                prefix,
+                s3_bucket_name,
+                s3_bucket_qualified_name,
+            ],
         )
         attributes = S3Object.Attributes.create_with_prefix(
             name=name,
@@ -351,7 +363,13 @@ class S3Object(S3):
                     "s3_bucket_name",
                     "s3_bucket_qualified_name",
                 ],
-                [name, connection_qualified_name, aws_arn, s3_bucket_name, s3_bucket_qualified_name],
+                [
+                    name,
+                    connection_qualified_name,
+                    aws_arn,
+                    s3_bucket_name,
+                    s3_bucket_qualified_name,
+                ],
             )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
@@ -370,7 +388,7 @@ class S3Object(S3):
                 connection_qualified_name=connection_qualified_name,
                 qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
-                s3_bucket_name= s3_bucket_name,
+                s3_bucket_name=s3_bucket_name,
                 s3_bucket_qualified_name=s3_bucket_qualified_name,
                 bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
             )
@@ -394,7 +412,13 @@ class S3Object(S3):
                     "s3_bucket_name",
                     "s3_bucket_qualified_name",
                 ],
-                [name, connection_qualified_name, prefix, s3_bucket_name, s3_bucket_qualified_name],
+                [
+                    name,
+                    connection_qualified_name,
+                    prefix,
+                    s3_bucket_name,
+                    s3_bucket_qualified_name,
+                ],
             )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:

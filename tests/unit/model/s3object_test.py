@@ -138,7 +138,12 @@ from tests.unit.model.constants import (
     ],
 )
 def test_create_without_required_parameters_raises_validation_error(
-    name, connection_qualified_name, aws_arn, s3_bucket_name, s3_bucket_qualified_name, msg
+    name,
+    connection_qualified_name,
+    aws_arn,
+    s3_bucket_name,
+    s3_bucket_qualified_name,
+    msg,
 ):
     with pytest.raises(ValueError, match=msg):
         S3Object.create(
@@ -276,7 +281,12 @@ def test_create_without_required_parameters_raises_validation_error(
     ],
 )
 def test_create_with_prefix_without_required_parameters_raises_validation_error(
-    name, connection_qualified_name, prefix, s3_bucket_name, s3_bucket_qualified_name, msg
+    name,
+    connection_qualified_name,
+    prefix,
+    s3_bucket_name,
+    s3_bucket_qualified_name,
+    msg,
 ):
     with pytest.raises(ValueError, match=msg):
         S3Object.create_with_prefix(
