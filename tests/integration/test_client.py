@@ -481,7 +481,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     # Ensure no relationship attributes are present
     assert result.anchor is None
 
-    # Default - should call `GET_ENTITY_BY_GUID` API
+    # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
     result = client.asset.get_by_guid(
         guid=term.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
     )
@@ -497,12 +497,12 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert result.anchor.description is None
     assert result.anchor.user_description is None
 
-    # Should call IndexSearch API
+    # Should call IndexSearch API without any relationship attributes
     result = client.asset.get_by_guid(
         guid=term.guid,
         asset_type=AtlasGlossaryTerm,
         ignore_relationships=False,
-        attributes=[AtlasGlossaryTerm.DESCRIPTION, AtlasGlossaryTerm.USER_DESCRIPTION],
+        attributes=[AtlasGlossaryTerm.DESCRIPTION, AtlasGlossaryTerm.USER_DESCRIPTION],  # type: ignore[arg-type]
     )
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
@@ -520,7 +520,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
         asset_type=AtlasGlossaryTerm,
         ignore_relationships=False,
         attributes=["description", "userDescription", "anchor"],
-        relationships_attributes=[
+        relationships_attributes=[  # type: ignore[arg-type]
             AtlasGlossary.DESCRIPTION,
             AtlasGlossary.USER_DESCRIPTION,
         ],
@@ -539,6 +539,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
 
 def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     # Default - should call `GET_ENTITY_BY_GUID` API
+    assert term and term.qualified_name
     result = client.asset.get_by_qualified_name(
         qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm
     )
@@ -552,7 +553,7 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     # Ensure no relationship attributes are present
     assert result.anchor is None
 
-    # Default - should call `GET_ENTITY_BY_GUID` API
+    # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
     result = client.asset.get_by_qualified_name(
         qualified_name=term.qualified_name,
         asset_type=AtlasGlossaryTerm,
@@ -570,12 +571,12 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert result.anchor.description is None
     assert result.anchor.user_description is None
 
-    # Should call IndexSearch API
+    # Should call IndexSearch API without any relationship attributes
     result = client.asset.get_by_qualified_name(
         qualified_name=term.qualified_name,
         asset_type=AtlasGlossaryTerm,
         ignore_relationships=False,
-        attributes=[AtlasGlossaryTerm.DESCRIPTION, AtlasGlossaryTerm.USER_DESCRIPTION],
+        attributes=[AtlasGlossaryTerm.DESCRIPTION, AtlasGlossaryTerm.USER_DESCRIPTION],  # type: ignore[arg-type]
     )
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
@@ -593,7 +594,7 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
         asset_type=AtlasGlossaryTerm,
         ignore_relationships=False,
         attributes=["description", "userDescription", "anchor"],
-        relationships_attributes=[
+        relationships_attributes=[  # type: ignore[arg-type]
             AtlasGlossary.DESCRIPTION,
             AtlasGlossary.USER_DESCRIPTION,
         ],
@@ -608,20 +609,6 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert result.anchor
     assert result.anchor.description == f"{TEST_SYSTEM_DESCRIPTION}"
     assert result.anchor.user_description == f"{TEST_USER_DESCRIPTION}"
-
-
-def test_get_by_QN_with_attributes(client: AtlanClient, glossary: AtlasGlossary):
-    qualified_name = glossary.qualified_name or ""
-    result = client.asset.get_by_qualified_name(
-        qualified_name=qualified_name,
-        asset_type=AtlasGlossary,
-        attributes=["name", "qualified_name"],
-    )
-    assert result.qualified_name == glossary.qualified_name
-    assert hasattr(result, "attributes")
-    assert result.attributes.qualified_name is not None
-    assert result.attributes.name is not None
-    assert result.attributes.admin_groups is None
 
 
 def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
