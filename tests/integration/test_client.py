@@ -264,8 +264,11 @@ def _test_remove_announcement(
 
 
 def test_append_terms_with_guid(
-    client: AtlanClient, term1: AtlasGlossaryTerm, database: Database
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             guid=database.guid, asset_type=Database, terms=[term1]
@@ -284,6 +287,7 @@ def test_append_terms_with_qualified_name(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term1]
@@ -302,6 +306,7 @@ def test_append_terms_using_ref_by_guid_for_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -323,6 +328,7 @@ def test_replace_a_term(
     term2: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -359,6 +365,7 @@ def test_replace_all_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -391,6 +398,7 @@ def test_remove_term(
     term2: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -469,6 +477,7 @@ def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not
 
 
 def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
+    time.sleep(5)
     # Default - should call `GET_ENTITY_BY_GUID` API
     result = client.asset.get_by_guid(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert isinstance(result, AtlasGlossaryTerm)
@@ -538,6 +547,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
 
 
 def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
+    time.sleep(5)
     # Default - should call `GET_ENTITY_BY_GUID` API
     assert term and term.qualified_name
     result = client.asset.get_by_qualified_name(
