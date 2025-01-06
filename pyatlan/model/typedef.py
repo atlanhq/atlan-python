@@ -487,8 +487,10 @@ class AttributeDef(AtlanObject):
             super().__setattr__(name, value)
             if self._attr_def and name == "multi_value_select":
                 self._attr_def.cardinality = Cardinality.SET
-                if "array<" not in str(self._attr_def.type_name):
-                    self._attr_def.type_name = f"array<{str(self._attr_def.type_name)}>"
+                if self._attr_def.type_name and "array<" not in str(
+                    self._attr_def.type_name
+                ):
+                    self._attr_def.type_name = f"array<{self._attr_def.type_name}>"
 
         @staticmethod
         def create(
