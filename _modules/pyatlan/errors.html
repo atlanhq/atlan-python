@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>pyatlan.errors - pyatlan documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
@@ -534,10 +534,10 @@
           <h1>Source code for pyatlan.errors</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;AtlanError&quot;</span><span class="p">)</span>
 <span class="n">RAISE_GITHUB_ISSUE</span> <span class="o">=</span> <span class="p">(</span>
@@ -546,7 +546,7 @@
 <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ErrorInfo</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ErrorInfo</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="n">http_error_code</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">error_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span>
@@ -561,8 +561,8 @@
 
 <div class="viewcode-block" id="AtlanError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.AtlanError">[docs]</a>
-<span class="k">class</span> <span class="nc">AtlanError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtlanError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="n">error_code</span><span class="o">.</span><span class="n">error_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
@@ -571,7 +571,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">error_code</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">backend_error_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;backend_error_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">error_id</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">error_code</span><span class="o">.</span><span class="n">error_id</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -583,7 +583,7 @@
 
 <div class="viewcode-block" id="ApiConnectionError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.ApiConnectionError">[docs]</a>
-<span class="k">class</span> <span class="nc">ApiConnectionError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ApiConnectionError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs when there is an intermittent issue with the API, such as a network outage or an inability</span>
 <span class="sd">    to connect due to an incorrect URL.&quot;&quot;&quot;</span></div>
 
@@ -591,7 +591,7 @@
 
 <div class="viewcode-block" id="NotFoundError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.NotFoundError">[docs]</a>
-<span class="k">class</span> <span class="nc">NotFoundError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NotFoundError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs if a requested object does not exist. For example, trying to retrieve an asset</span>
 <span class="sd">    that does not exist.&quot;&quot;&quot;</span></div>
 
@@ -599,7 +599,7 @@
 
 <div class="viewcode-block" id="InvalidRequestError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.InvalidRequestError">[docs]</a>
-<span class="k">class</span> <span class="nc">InvalidRequestError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidRequestError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs if the request being attempted is not valid for some reason, such as containing insufficient</span>
 <span class="sd">    * parameters or incorrect values for those parameters.&quot;&quot;&quot;</span></div>
 
@@ -607,7 +607,7 @@
 
 <div class="viewcode-block" id="ApiError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.ApiError">[docs]</a>
-<span class="k">class</span> <span class="nc">ApiError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ApiError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs when the SDK receives a response that indicates a problem, but that the SDK currently has no</span>
 <span class="sd">    other way of interpreting. Basically, this is a catch-all for errors that do not fit any more specific exception.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
@@ -616,14 +616,14 @@
 
 <div class="viewcode-block" id="AuthenticationError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.AuthenticationError">[docs]</a>
-<span class="k">class</span> <span class="nc">AuthenticationError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AuthenticationError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs when there is a problem with the API token configured in the SDK.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="PermissionError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.PermissionError">[docs]</a>
-<span class="k">class</span> <span class="nc">PermissionError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PermissionError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs if the API token configured for the SDK does not have permission to access or carry out the</span>
 <span class="sd">    requested operation on a given object. These can be temporary in nature, as there is some asynchronous processing</span>
 <span class="sd">    that occurs when permissions are granted.&quot;&quot;&quot;</span></div>
@@ -632,7 +632,7 @@
 
 <div class="viewcode-block" id="ConflictError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.ConflictError">[docs]</a>
-<span class="k">class</span> <span class="nc">ConflictError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConflictError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs if the operation being attempted hits a conflict within Atlan. For example, trying to create</span>
 <span class="sd">    an object that already exists.&quot;&quot;&quot;</span></div>
 
@@ -640,7 +640,7 @@
 
 <div class="viewcode-block" id="RateLimitError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.RateLimitError">[docs]</a>
-<span class="k">class</span> <span class="nc">RateLimitError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RateLimitError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs when no further requests are being accepted from the IP address on which the SDK is running.</span>
 <span class="sd">    By default, Atlan allows 1800 requests per minute. If your use of the SDK exceed this, you will begin to see</span>
 <span class="sd">    these exceptions.&quot;&quot;&quot;</span></div>
@@ -649,13 +649,13 @@
 
 <div class="viewcode-block" id="LogicError">
 <a class="viewcode-back" href="../../exceptions.html#pyatlan.errors.LogicError">[docs]</a>
-<span class="k">class</span> <span class="nc">LogicError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogicError</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error that occurs when an unexpected logic problem arises. If these are ever experienced, they should be</span>
 <span class="sd">    immediately reported against the SDK as bugs.&quot;&quot;&quot;</span></div>
 
 
 
-<span class="k">class</span> <span class="nc">ErrorCode</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ErrorCode</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">CONNECTION_ERROR</span> <span class="o">=</span> <span class="p">(</span>
         <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON--1-001&quot;</span><span class="p">,</span>
@@ -1524,7 +1524,7 @@
         <span class="n">ApiError</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">http_error_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">error_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1538,7 +1538,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">user_action</span> <span class="o">=</span> <span class="n">user_action</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exception_type</span> <span class="o">=</span> <span class="n">exception_type</span>
 
-    <span class="k">def</span> <span class="nf">exception_with_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exception_with_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
