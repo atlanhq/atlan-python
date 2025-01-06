@@ -446,8 +446,6 @@ class AssetClient:
         :param attributes: a specific list of attributes to retrieve for the asset
         :param related_attributes: a specific list of relationships attributes to retrieve for the asset
         :returns: the requested asset
-        :param attributes: a specific list of attributes to retrieve for the asset
-        :param relationships_attributes: a specific list of relationships attributes to retrieve for the asset
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
