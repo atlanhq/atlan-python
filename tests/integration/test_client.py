@@ -467,6 +467,7 @@ def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not
     ):
         client.asset.get_by_guid(guid, Table, ignore_relationships=False)
 
+
 def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     # Default - should call `GET_ENTITY_BY_GUID` API
     result = client.asset.get_by_guid(guid=term.guid, asset_type=AtlasGlossaryTerm)
@@ -608,7 +609,6 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert result.anchor
     assert result.anchor.description == f"{TEST_SYSTEM_DESCRIPTION}"
     assert result.anchor.user_description == f"{TEST_USER_DESCRIPTION}"
->>>>>>> main
 
 
 def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
