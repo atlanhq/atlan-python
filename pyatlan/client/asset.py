@@ -439,9 +439,9 @@ class AssetClient:
         :param asset_type: type of asset to be retrieved, defaults to `Asset`
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
-        :returns: the requested asset
         :param attributes: a specific list of attributes to retrieve for the asset
         :param relationships_attributes: a specific list of relationships attributes to retrieve for the asset
+        :returns: the requested asset
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
