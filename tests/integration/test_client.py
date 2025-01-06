@@ -474,8 +474,8 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
@@ -488,8 +488,8 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor
@@ -507,8 +507,8 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
@@ -520,7 +520,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
         asset_type=AtlasGlossaryTerm,
         ignore_relationships=False,
         attributes=["description", "userDescription", "anchor"],
-        relationships_attributes=[  # type: ignore[arg-type]
+        related_attributes=[  # type: ignore[arg-type]
             AtlasGlossary.DESCRIPTION,
             AtlasGlossary.USER_DESCRIPTION,
         ],
@@ -528,8 +528,8 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor
@@ -546,8 +546,8 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
@@ -562,8 +562,8 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor
@@ -581,8 +581,8 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
@@ -594,7 +594,7 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
         asset_type=AtlasGlossaryTerm,
         ignore_relationships=False,
         attributes=["description", "userDescription", "anchor"],
-        relationships_attributes=[  # type: ignore[arg-type]
+        related_attributes=[  # type: ignore[arg-type]
             AtlasGlossary.DESCRIPTION,
             AtlasGlossary.USER_DESCRIPTION,
         ],
@@ -602,8 +602,8 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
-    assert result.attributes.name is not None
-    assert result.attributes.qualified_name is not None
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor

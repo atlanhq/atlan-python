@@ -359,7 +359,7 @@ class AssetClient:
         min_ext_info: bool = False,
         ignore_relationships: bool = True,
         attributes: Optional[Union[List[str], List[AtlanField]]] = None,
-        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
+        related_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
     ) -> A:
         """
         Retrieves an asset by its qualified_name.
@@ -369,7 +369,7 @@ class AssetClient:
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :param attributes: a specific list of attributes to retrieve for the asset
-        :param relationships_attributes: a specific list of relationships attributes to retrieve for the asset
+        :param related_attributes: a specific list of relationships attributes to retrieve for the asset
         :returns: the requested asset
         :raises NotFoundError: if the asset does not exist
         :raises AtlanError: on any API communication issue
@@ -383,10 +383,10 @@ class AssetClient:
             "ignoreRelationships": ignore_relationships,
         }
         attributes = attributes or []
-        relationships_attributes = relationships_attributes or []
+        related_attributes = related_attributes or []
 
         if (attributes and len(attributes)) or (
-            relationships_attributes and len(relationships_attributes)
+            related_attributes and len(related_attributes)
         ):
             client = AtlanClient.get_default_client()
             search = (
@@ -394,7 +394,7 @@ class AssetClient:
             )
             for attribute in attributes:
                 search = search.include_on_results(attribute)
-            for relation_attribute in relationships_attributes:
+            for relation_attribute in related_attributes:
                 search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
@@ -433,7 +433,7 @@ class AssetClient:
         min_ext_info: bool = False,
         ignore_relationships: bool = True,
         attributes: Optional[Union[List[str], List[AtlanField]]] = None,
-        relationships_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
+        related_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
     ) -> A:
         """
         Retrieves an asset by its GUID.
@@ -443,7 +443,7 @@ class AssetClient:
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :param attributes: a specific list of attributes to retrieve for the asset
-        :param relationships_attributes: a specific list of relationships attributes to retrieve for the asset
+        :param related_attributes: a specific list of relationships attributes to retrieve for the asset
         :returns: the requested asset
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
@@ -456,16 +456,16 @@ class AssetClient:
             "ignoreRelationships": ignore_relationships,
         }
         attributes = attributes or []
-        relationships_attributes = relationships_attributes or []
+        related_attributes = related_attributes or []
 
         if (attributes and len(attributes)) or (
-            relationships_attributes and len(relationships_attributes)
+            related_attributes and len(related_attributes)
         ):
             client = AtlanClient.get_default_client()
             search = FluentSearch().select().where(Asset.GUID.eq(guid))
             for attribute in attributes:
                 search = search.include_on_results(attribute)
-            for relation_attribute in relationships_attributes:
+            for relation_attribute in related_attributes:
                 search = search.include_on_relations(relation_attribute)
             results = search.execute(client=client)
             if results and results.current_page():
