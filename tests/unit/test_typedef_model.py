@@ -97,7 +97,9 @@ def check_attribute(model: object, attribute_name: str, source: dict):
         value = type(attribute)(value)
         assert attribute == value
     else:
-        assert getattr(model, attribute_name) is None
+        # Since "options" are now initialized with a default factory
+        if attribute_name != "options":
+            assert getattr(model, attribute_name) is None
 
 
 def check_has_attributes(type_def: TypeDef, type_def_json: dict):
@@ -358,6 +360,9 @@ class TestAttributeDef:
         self, attribute, value, sut: AttributeDef
     ):
         sut = AttributeDef()
+        # Explicitly setting "None" since options
+        # are now initialized with a default factory
+        sut.options = None
 
         with pytest.raises(
             InvalidRequestError,
