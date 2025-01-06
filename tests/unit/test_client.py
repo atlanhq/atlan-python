@@ -39,6 +39,7 @@ from pyatlan.model.assets import (
     DataDomain,
     DataProduct,
     Table,
+    View,
 )
 from pyatlan.model.core import Announcement, BulkRequest
 from pyatlan.model.enums import (
@@ -1555,7 +1556,9 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [get_by_guid_json]
 
-    response = client.get_by_guid(guid="test-table-guid-123")
+    response = client.get_by_guid(
+        guid="test-table-guid-123", ignore_relationships=False
+    )
 
     assert response
     assert isinstance(response, Table)
@@ -2362,3 +2365,97 @@ def test_get_all_sorting(group_client, mock_api_caller):
     query_params = mock_api_caller._call_api.call_args.kwargs["query_params"]
     assert query_params["sort"] == "alias"
     mock_api_caller.reset_mock()
+
+
+def test_get_by_guid_asset_not_found_fluent_search():
+    guid = "123"
+    asset_type = Table
+
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        mock_execute.return_value.current_page.return_value = []
+
+        client = AssetClient(client=ApiCaller)
+        with pytest.raises(
+            ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid).__class__
+        ):
+            client.get_by_guid(
+                guid=guid,
+                asset_type=asset_type,
+                attributes=["name"],
+                related_attributes=["owner"],
+            )
+
+        mock_execute.assert_called_once()
+
+
+def test_get_by_guid_type_mismatch_fluent_search():
+    guid = "123"
+    expected_asset_type = Table
+    returned_asset_type = View
+
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        mock_execute.return_value.current_page.return_value = [returned_asset_type()]
+
+        client = AssetClient(client=ApiCaller)
+
+        with pytest.raises(
+            ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                guid, expected_asset_type.__name__
+            ).__class__
+        ):
+            client.get_by_guid(
+                guid=guid,
+                asset_type=expected_asset_type,
+                attributes=["name"],
+                related_attributes=["owner"],
+            )
+
+        mock_execute.assert_called_once()
+
+
+def test_get_by_qualified_name_type_mismatch():
+    qualified_name = "example_qualified_name"
+    expected_asset_type = Table
+    returned_asset_type = View
+
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        mock_execute.return_value.current_page.return_value = [returned_asset_type()]
+
+        client = AssetClient(client=ApiCaller)
+
+        with pytest.raises(
+            ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                expected_asset_type.__name__, qualified_name
+            ).__class__
+        ):
+            client.get_by_qualified_name(
+                qualified_name=qualified_name,
+                asset_type=expected_asset_type,
+                attributes=["name"],
+                related_attributes=["owner"],
+            )
+        mock_execute.assert_called_once()
+
+
+def test_get_by_qualified_name_asset_not_found():
+    qualified_name = "example_qualified_name"
+    asset_type = Table
+
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        mock_execute.return_value.current_page.return_value = []
+
+        client = AssetClient(client=ApiCaller)
+
+        with pytest.raises(
+            ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                qualified_name, asset_type.__name__
+            ).__class__
+        ):
+            client.get_by_qualified_name(
+                qualified_name=qualified_name,
+                asset_type=asset_type,
+                attributes=["name"],
+                related_attributes=["owner"],
+            )
+
+        mock_execute.assert_called_once()

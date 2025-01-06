@@ -33,7 +33,9 @@ def retrieve_and_check_assets(
     leftovers = []
     for one in to_check:
         try:
-            candidate = client.asset.get_by_guid(one.guid, asset_type=type(one))
+            candidate = client.asset.get_by_guid(
+                one.guid, asset_type=type(one), ignore_relationships=False
+            )
             if candidate and candidate.status == EntityStatus.ACTIVE:
                 leftovers.append(candidate)
         except NotFoundError:
