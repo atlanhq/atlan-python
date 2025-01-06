@@ -90,6 +90,7 @@ def s3object(
         name=OBJECT_NAME,
         connection_qualified_name=connection.qualified_name,
         aws_arn=OBJECT_ARN,
+        s3_bucket_name=bucket.name,
         s3_bucket_qualified_name=bucket.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -110,6 +111,7 @@ def s3object_with_name(
         name=OBJECT_NAME,
         connection_qualified_name=connection.qualified_name,
         prefix=OBJECT_PREFIX,
+        s3_bucket_name=bucket_with_name.name,
         s3_bucket_qualified_name=bucket_with_name.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -136,6 +138,7 @@ def _assert_object(s3object, bucket, with_name=False):
     assert s3object.qualified_name
     assert s3object.name == OBJECT_NAME
     assert s3object.connector_name == AtlanConnectorType.S3.value
+    assert s3object.s3_bucket_name == bucket.name
     assert s3object.s3_bucket_qualified_name == bucket.qualified_name
     if with_name:
         assert s3object.aws_arn is None
