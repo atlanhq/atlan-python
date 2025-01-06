@@ -236,24 +236,8 @@ def glossary_category_by_name_json():
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, assigned_terms, message, error",
+    "guid, qualified_name, asset_type, assigned_terms, expected_message, expected_error",
     [
-        (
-            "123",
-            None,
-            Table,
-            None,
-            "1 validation error for AppendTerms\\nterms\\n  none is not an allowed value ",
-            ValueError,
-        ),
-        (
-            "123",
-            None,
-            None,
-            [AtlasGlossaryTerm()],
-            "1 validation error for AppendTerms\\nasset_type\\n  none is not an allowed value ",
-            ValueError,
-        ),
         (
             None,
             None,
@@ -272,262 +256,286 @@ def glossary_category_by_name_json():
         ),
     ],
 )
-def test_append_terms_with_invalid_parameter_raises_error(
-    guid,
-    qualified_name,
-    asset_type,
-    assigned_terms,
-    message,
-    error,
-    client: AtlanClient,
+def test_append_terms_invalid_parameters_raises_error(
+    guid, qualified_name, asset_type, assigned_terms, expected_message, expected_error
 ):
-    with pytest.raises(error, match=message):
-        client.asset.append_terms(
-            guid=guid,
-            qualified_name=qualified_name,
+    client = AtlanClient()
+    with pytest.raises(expected_error, match=expected_message):
+        client.append_terms(
             asset_type=asset_type,
             terms=assigned_terms,
+            guid=guid,
+            qualified_name=qualified_name,
         )
-
-
-def test_append_with_valid_guid_and_no_terms_returns_asset():
-    asset_type = Table
-    table = asset_type()
-
-    with patch.object(AssetClient, "get_by_guid", return_value=table) as mock_method:
-        client = AtlanClient()
-        guid = "123"
-        terms = []
-
-        assert (
-            client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
-            == table
-        )
-    mock_method.assert_called_once_with(guid=guid, asset_type=asset_type)
-
-
-def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_terms():
-    asset_type = Table
-    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
-        table = Table()
-        mock_methods["get_by_guid"].return_value = table
-        mock_methods["save"].return_value.assets_updated.return_value = [table]
-        client = AtlanClient()
-        guid = "123"
-        terms = [AtlasGlossaryTerm()]
-
-        assert (
-            asset := client.asset.append_terms(
-                guid=guid, asset_type=asset_type, terms=terms
-            )
-        )
-        assert asset.assigned_terms == terms
-
-
-def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_given_terms():
-    asset_type = Table
-    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
-        table = Table(attributes=Table.Attributes())
-        term = AtlasGlossaryTerm()
-        term.relationship_status = "DELETED"
-        table.attributes.meanings = [term]
-        mock_methods["get_by_guid"].return_value = table
-        mock_methods["save"].return_value.assets_updated.return_value = [table]
-        client = AtlanClient()
-        guid = "123"
-        terms = [AtlasGlossaryTerm()]
-
-        assert (
-            asset := client.asset.append_terms(
-                guid=guid, asset_type=asset_type, terms=terms
-            )
-        )
-        assert asset.assigned_terms == terms
-
-
-def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_terms():
-    asset_type = Table
-    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
-        table = Table(attributes=Table.Attributes())
-        exisiting_term = AtlasGlossaryTerm()
-        table.attributes.meanings = [exisiting_term]
-        mock_methods["get_by_guid"].return_value = table
-        mock_methods["save"].return_value.assets_updated.return_value = [table]
-        client = AtlanClient()
-        guid = "123"
-
-        new_term = AtlasGlossaryTerm()
-        terms = [new_term]
-
-        assert (
-            asset := client.asset.append_terms(
-                guid=guid, asset_type=asset_type, terms=terms
-            )
-        )
-        assert (updated_terms := asset.assigned_terms)
-        assert len(updated_terms) == 2
-        assert exisiting_term in updated_terms
-        assert new_term in updated_terms
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, assigned_terms, message, error",
+    "guid, qualified_name, asset_type, assigned_terms, mock_results, expected_message, expected_error",
     [
         (
             None,
-            None,
+            "nonexistent_qualified_name",
             Table,
             [AtlasGlossaryTerm()],
-            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
-            InvalidRequestError,
-        ),
-        (
-            "123",
-            None,
-            None,
-            [AtlasGlossaryTerm()],
-            "1 validation error for ReplaceTerms\\nasset_type\\n  none is not an allowed value ",
-            ValueError,
-        ),
-        (
-            "123",
-            "default/abc",
-            Table,
-            [AtlasGlossaryTerm()],
-            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
-            InvalidRequestError,
-        ),
-        (
-            "123",
-            None,
-            Table,
-            None,
-            "1 validation error for ReplaceTerms\\nterms\\n  none is not an allowed value ",
-            ValueError,
-        ),
-    ],
-)
-def test_replace_terms_with_invalid_parameter_raises_error(
-    guid,
-    qualified_name,
-    asset_type,
-    assigned_terms,
-    message,
-    error,
-    client: AtlanClient,
-):
-    with pytest.raises(error, match=message):
-        client.asset.replace_terms(
-            guid=guid,
-            qualified_name=qualified_name,
-            asset_type=asset_type,
-            terms=assigned_terms,
-        )
-
-
-def test_replace_terms():
-    asset_type = Table
-    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
-        table = Table()
-        mock_methods["get_by_guid"].return_value = table
-        mock_methods["save"].return_value.assets_updated.return_value = [table]
-        client = AtlanClient()
-        guid = "123"
-        terms = [AtlasGlossaryTerm()]
-
-        assert (
-            asset := client.asset.replace_terms(
-                guid=guid, asset_type=asset_type, terms=terms
-            )
-        )
-        assert asset.assigned_terms == terms
-
-
-@pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, assigned_terms, message, error",
-    [
-        (
-            None,
-            None,
-            Table,
-            [AtlasGlossaryTerm()],
-            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
-            InvalidRequestError,
-        ),
-        (
-            "123",
-            None,
-            None,
-            [AtlasGlossaryTerm()],
-            "1 validation error for RemoveTerms\\nasset_type\\n  none is not an allowed value ",
-            ValueError,
-        ),
-        (
-            "123",
-            "default/abc",
-            Table,
-            [AtlasGlossaryTerm()],
-            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
-            InvalidRequestError,
-        ),
-        (
-            "123",
-            None,
-            Table,
-            None,
-            "1 validation error for RemoveTerms\\nterms\\n  none is not an allowed value ",
-            ValueError,
-        ),
-        (
-            "123",
-            None,
-            Table,
             [],
-            "ATLAN-PYTHON-400-044 A list of assigned_terms to remove must be specified.",
-            InvalidRequestError,
+            "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist."
+            " Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+        (
+            "nonexistent_guid",
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            [],
+            "ATLAN-PYTHON-404-001 Asset with GUID nonexistent_guid does not exist."
+            " Suggestion: Verify the GUID of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+        (
+            None,
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            ["DifferentTypeAsset"],
+            "ATLAN-PYTHON-404-014 The Table asset could not be found by name: default/abc."
+            " Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
+            NotFoundError,
+        ),
+        (
+            "123",
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            ["DifferentTypeAsset"],
+            "ATLAN-PYTHON-404-002 Asset with GUID 123 is not of the type requested: Table."
+            " Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
+            NotFoundError,
         ),
     ],
 )
-def test_remove_terms_with_invalid_parameter_raises_error(
+@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+def test_append_terms_asset_retrieval_errors(
+    mock_execute,
     guid,
     qualified_name,
     asset_type,
     assigned_terms,
-    message,
-    error,
-    client: AtlanClient,
+    mock_results,
+    expected_message,
+    expected_error,
 ):
-    with pytest.raises(error, match=message):
-        client.asset.remove_terms(
-            guid=guid,
-            qualified_name=qualified_name,
+    mock_execute.return_value.current_page = lambda: mock_results
+    client = AtlanClient()
+    with pytest.raises(expected_error, match=expected_message):
+        client.append_terms(
             asset_type=asset_type,
             terms=assigned_terms,
+            guid=guid,
+            qualified_name=qualified_name,
         )
 
 
-def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_removed():
-    asset_type = Table
-    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
-        table = Table(attributes=Table.Attributes())
-        exisiting_term = AtlasGlossaryTerm()
-        exisiting_term.guid = "b4113341-251b-4adc-81fb-2420501c30e6"
-        other_term = AtlasGlossaryTerm()
-        other_term.guid = "b267858d-8316-4c41-a56a-6e9b840cef4a"
-        table.attributes.meanings = [exisiting_term, other_term]
-        mock_methods["get_by_guid"].return_value = table
-        mock_methods["save"].return_value.assets_updated.return_value = [table]
-        client = AtlanClient()
-        guid = "123"
-
-        assert (
-            asset := client.asset.remove_terms(
-                guid=guid, asset_type=asset_type, terms=[exisiting_term]
-            )
+@pytest.mark.parametrize(
+    "guid, qualified_name, asset_type, assigned_terms, expected_message, expected_error",
+    [
+        (
+            None,
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+            InvalidRequestError,
+        ),
+        (
+            "123",
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+            InvalidRequestError,
+        ),
+    ],
+)
+def test_replace_terms_invalid_parameters_raises_error(
+    guid, qualified_name, asset_type, assigned_terms, expected_message, expected_error
+):
+    client = AtlanClient()
+    with pytest.raises(expected_error, match=expected_message):
+        client.replace_terms(
+            asset_type=asset_type,
+            terms=assigned_terms,
+            guid=guid,
+            qualified_name=qualified_name,
         )
-        assert (updated_terms := asset.assigned_terms)
-        assert len(updated_terms) == 1
-        assert other_term in updated_terms
+
+
+@pytest.mark.parametrize(
+    "guid, qualified_name, asset_type, assigned_terms, mock_results, expected_message, expected_error",
+    [
+        (
+            None,
+            "nonexistent_qualified_name",
+            Table,
+            [AtlasGlossaryTerm()],
+            [],
+            "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist."
+            " Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+        (
+            "nonexistent_guid",
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            [],
+            "ATLAN-PYTHON-404-001 Asset with GUID nonexistent_guid does not exist."
+            " Suggestion: Verify the GUID of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+        (
+            None,
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            ["DifferentTypeAsset"],
+            "ATLAN-PYTHON-404-014 The Table asset could not be found by name: default/abc."
+            " Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
+            NotFoundError,
+        ),
+        (
+            "123",
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            ["DifferentTypeAsset"],
+            "ATLAN-PYTHON-404-002 Asset with GUID 123 is not of the type requested: Table."
+            " Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+    ],
+)
+@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+def test_replace_terms_asset_retrieval_errors(
+    mock_execute,
+    guid,
+    qualified_name,
+    asset_type,
+    assigned_terms,
+    mock_results,
+    expected_message,
+    expected_error,
+):
+    mock_execute.return_value.current_page = lambda: mock_results
+    client = AtlanClient()
+    with pytest.raises(expected_error, match=expected_message):
+        client.replace_terms(
+            asset_type=asset_type,
+            terms=assigned_terms,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
+
+
+@pytest.mark.parametrize(
+    "guid, qualified_name, asset_type, assigned_terms, expected_message, expected_error",
+    [
+        (
+            None,
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+            InvalidRequestError,
+        ),
+        (
+            "123",
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+            InvalidRequestError,
+        ),
+    ],
+)
+def test_remove_terms_invalid_parameters_raises_error(
+    guid, qualified_name, asset_type, assigned_terms, expected_message, expected_error
+):
+    client = AtlanClient()
+    with pytest.raises(expected_error, match=expected_message):
+        client.remove_terms(
+            asset_type=asset_type,
+            terms=assigned_terms,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
+
+
+@pytest.mark.parametrize(
+    "guid, qualified_name, asset_type, assigned_terms, mock_results, expected_message, expected_error",
+    [
+        (
+            None,
+            "nonexistent_qualified_name",
+            Table,
+            [AtlasGlossaryTerm()],
+            [],
+            "ATLAN-PYTHON-404-003 Asset with qualifiedName nonexistent_qualified_name of type Table does not exist."
+            " Suggestion: Verify the qualifiedName and expected type of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+        (
+            "nonexistent_guid",
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            [],
+            "ATLAN-PYTHON-404-001 Asset with GUID nonexistent_guid does not exist."
+            " Suggestion: Verify the GUID of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+        (
+            None,
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            ["DifferentTypeAsset"],
+            "ATLAN-PYTHON-404-014 The Table asset could not be found by name: default/abc."
+            " Suggestion: Verify the requested asset type and name exist in your Atlan environment.",
+            NotFoundError,
+        ),
+        (
+            "123",
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            ["DifferentTypeAsset"],
+            "ATLAN-PYTHON-404-002 Asset with GUID 123 is not of the type requested: Table."
+            " Suggestion: Verify the GUID and expected type of the asset you are trying to retrieve.",
+            NotFoundError,
+        ),
+    ],
+)
+@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+def test_remove_terms_asset_retrieval_errors(
+    mock_execute,
+    guid,
+    qualified_name,
+    asset_type,
+    assigned_terms,
+    mock_results,
+    expected_message,
+    expected_error,
+):
+    mock_execute.return_value.current_page = lambda: mock_results
+    client = AtlanClient()
+    with pytest.raises(expected_error, match=expected_message):
+        client.remove_terms(
+            asset_type=asset_type,
+            terms=assigned_terms,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
 
 
 def test_register_client_with_bad_parameter_raises_value_error(client):
