@@ -129,7 +129,7 @@ def announcement():
     )
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def database(
     client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
@@ -467,34 +467,6 @@ def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not
     ):
         client.asset.get_by_guid(guid, Table, ignore_relationships=False)
 
-
-<<<<<<< HEAD
-def test_get_by_guid_with_attributes(client: AtlanClient, glossary: AtlasGlossary):
-    attributes = ["name", "qualified_name"]
-
-    result = client.asset.get_by_guid(
-        guid=glossary.guid, asset_type=AtlasGlossary, attributes=attributes
-    )
-    assert result.guid == glossary.guid
-    assert hasattr(result, "attributes")
-    assert result.attributes.qualified_name is not None
-    assert result.attributes.name is not None
-    assert result.attributes.admin_groups is None
-
-
-def test_get_by_QN_with_attributes(client: AtlanClient, glossary: AtlasGlossary):
-    qualified_name = glossary.qualified_name or ""
-    result = client.asset.get_by_qualified_name(
-        qualified_name=qualified_name,
-        asset_type=AtlasGlossary,
-        attributes=["name", "qualified_name"],
-    )
-    assert result.qualified_name == glossary.qualified_name
-    assert hasattr(result, "attributes")
-    assert result.attributes.qualified_name is not None
-    assert result.attributes.name is not None
-    assert result.attributes.admin_groups is None
-=======
 def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     # Default - should call `GET_ENTITY_BY_GUID` API
     result = client.asset.get_by_guid(guid=term.guid, asset_type=AtlasGlossaryTerm)
