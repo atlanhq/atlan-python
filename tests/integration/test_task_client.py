@@ -46,7 +46,7 @@ def snowflake_column(
         restrict_lineage_propagation=True,
     )
     snowflake_column = client.asset.get_by_qualified_name(
-        snowflake_column_qn, asset_type=Column
+        snowflake_column_qn, asset_type=Column, ignore_relationships=False
     )
     yield snowflake_column
 
