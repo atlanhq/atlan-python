@@ -2390,7 +2390,7 @@ def test_get_by_guid_asset_not_found_fluent_search():
                 guid=guid,
                 asset_type=asset_type,
                 attributes=["name"],
-                relationships_attributes=["owner"],
+                related_attributes=["owner"],
             )
 
         mock_execute.assert_called_once()
@@ -2415,7 +2415,7 @@ def test_get_by_guid_type_mismatch_fluent_search():
                 guid=guid,
                 asset_type=expected_asset_type,
                 attributes=["name"],
-                relationships_attributes=["owner"],
+                related_attributes=["owner"],
             )
 
         mock_execute.assert_called_once()
@@ -2440,7 +2440,7 @@ def test_get_by_qualified_name_type_mismatch():
                 qualified_name=qualified_name,
                 asset_type=expected_asset_type,
                 attributes=["name"],
-                relationships_attributes=["owner"],
+                related_attributes=["owner"],
             )
         mock_execute.assert_called_once()
 
@@ -2463,7 +2463,7 @@ def test_get_by_qualified_name_asset_not_found():
                 qualified_name=qualified_name,
                 asset_type=asset_type,
                 attributes=["name"],
-                relationships_attributes=["owner"],
+                related_attributes=["owner"],
             )
 
         mock_execute.assert_called_once()

@@ -23,6 +23,7 @@ from pyatlan.model.enums import (
     AtlanTypeCategory,
     BadgeComparisonOperator,
     BadgeConditionColor,
+    Cardinality,
     EntityStatus,
 )
 from pyatlan.model.fields.atlan_fields import CustomMetadataField
@@ -224,6 +225,12 @@ def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs)
 def cm_raci(
     client: AtlanClient,
 ) -> Generator[CustomMetadataDef, None, None]:
+    TEST_MULTI_VALUE_USING_SETTER = AttributeDef.create(
+        display_name=CM_ATTR_RACI_INFORMED,
+        attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
+    )
+    assert TEST_MULTI_VALUE_USING_SETTER and TEST_MULTI_VALUE_USING_SETTER.options
+    TEST_MULTI_VALUE_USING_SETTER.options.multi_value_select = True
     attribute_defs = [
         AttributeDef.create(
             display_name=CM_ATTR_RACI_RESPONSIBLE,
@@ -239,11 +246,7 @@ def cm_raci(
             attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
             multi_valued=True,
         ),
-        AttributeDef.create(
-            display_name=CM_ATTR_RACI_INFORMED,
-            attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
-            multi_valued=True,
-        ),
+        TEST_MULTI_VALUE_USING_SETTER,
         AttributeDef.create(
             display_name=CM_ATTR_RACI_EXTRA,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
@@ -280,6 +283,7 @@ def test_cm_raci(
     assert one.name != CM_ATTR_RACI_RESPONSIBLE
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
+    assert one.cardinality == Cardinality.SET
     assert one.options.multi_value_select
     one = attributes[1]
     assert one.display_name == CM_ATTR_RACI_ACCOUNTABLE
@@ -292,12 +296,14 @@ def test_cm_raci(
     assert one.name != CM_ATTR_RACI_CONSULTED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
+    assert one.cardinality == Cardinality.SET
     assert one.options.multi_value_select
     one = attributes[3]
     assert one.display_name == CM_ATTR_RACI_INFORMED
     assert one.name != CM_ATTR_RACI_INFORMED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
+    assert one.cardinality == Cardinality.SET
     assert one.options.multi_value_select
     one = attributes[4]
     assert one.display_name == CM_ATTR_RACI_EXTRA
@@ -1017,6 +1023,7 @@ def _validate_raci_structure(
     assert one.options
     assert "Database" in one.applicable_asset_types
     assert not one.is_archived()
+    assert one.cardinality == Cardinality.SET
     assert one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.USERS.value
     one = attributes[1]
@@ -1035,6 +1042,7 @@ def _validate_raci_structure(
     assert one.options
     assert "Column" in one.applicable_asset_types
     assert not one.is_archived()
+    assert one.cardinality == Cardinality.SET
     assert one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.GROUPS.value
     one = attributes[3]
@@ -1044,6 +1052,7 @@ def _validate_raci_structure(
     assert one.options
     assert "MaterialisedView" in one.applicable_asset_types
     assert not one.is_archived()
+    assert one.cardinality == Cardinality.SET
     assert one.options.multi_value_select
     assert one.options.custom_type == AtlanCustomAttributePrimitiveType.GROUPS.value
     if total_expected > 5:
