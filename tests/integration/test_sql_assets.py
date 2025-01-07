@@ -12,6 +12,7 @@ from pyatlan.model.assets import (
     Column,
     Connection,
     Database,
+    Procedure,
     Readme,
     Schema,
     Table,
@@ -545,6 +546,98 @@ class TestView:
         assert TestView.view
         view = TestView.view.trim_to_required()
         response = upsert(view)
+        assert response.mutated_entities is None
+
+
+@pytest.mark.order(after="TestView")
+class TestProcedure:
+    procedure: Optional[Procedure] = None
+    _DEFINITION = """
+    BEGIN
+    insert into `atlanhq.testing_lineage.INSTACART_ALCOHOL_ORDER_TIME_copy`
+    select * from `atlanhq.testing_lineage.INSTACART_ALCOHOL_ORDER_TIME`;
+    END
+    """
+
+    def test_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        procedure_name = TestId.make_unique("My_Procedure")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
+        procedure = Procedure.creator(
+            name=procedure_name,
+            definition=self._DEFINITION,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+        )
+        response = upsert(procedure)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Procedure)
+        assert response.guid_assignments
+        procedure = response.mutated_entities.CREATE[0]
+        TestProcedure.procedure = procedure
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        procedure_name = TestId.make_unique("My_Procedure_Overload")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        procedure = Procedure.creator(
+            name=procedure_name,
+            definition=self._DEFINITION,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(procedure)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Procedure)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_creator")
+    def test_updater(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestProcedure.procedure
+        procedure = TestProcedure.procedure
+        assert procedure.qualified_name
+        assert procedure.name
+        assert procedure.definition
+        description = f"{procedure.description} more stuff"
+        procedure = Procedure.updater(
+            qualified_name=procedure.qualified_name,
+            name=procedure.name,
+            definition=procedure.definition,
+        )
+        procedure.description = description
+        response = upsert(procedure)
+        verify_asset_updated(response, Procedure)
+
+    @pytest.mark.order(after="test_creator")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestProcedure.procedure
+        procedure = TestProcedure.procedure.trim_to_required()
+        response = upsert(procedure)
         assert response.mutated_entities is None
 
 
