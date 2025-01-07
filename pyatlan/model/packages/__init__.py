@@ -7,6 +7,7 @@ from .connection_delete import ConnectionDelete
 from .dbt_crawler import DbtCrawler
 from .dynamo_d_b_crawler import DynamoDBCrawler
 from .glue_crawler import GlueCrawler
+from .mongodb_crawler import MongoDBCrawler
 from .postgres_crawler import PostgresCrawler
 from .powerbi_crawler import PowerBICrawler
 from .relational_assets_builder import RelationalAssetsBuilder
@@ -28,8 +29,9 @@ __all__ = [
     "SQLServerCrawler",
     "SigmaCrawler",
     "SnowflakeCrawler",
-    "SnowflakeMiner",
+    "MongoDBCrawler",
     "TableauCrawler",
+    "SnowflakeMiner",
     "AssetImport",
     "AssetExportBasic",
     "RelationalAssetsBuilder",
