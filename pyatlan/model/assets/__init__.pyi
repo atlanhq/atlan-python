@@ -63,8 +63,8 @@ __all__ = [
     "Column",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "Database",
     "CalculationView",
+    "Database",
     "Procedure",
     "SnowflakeTag",
     "CosmosMongoDB",
@@ -158,6 +158,7 @@ __all__ = [
     "Cognos",
     "Superset",
     "Qlik",
+    "Dataverse",
     "Cognite",
     "Salesforce",
     "ReadmeTemplate",
@@ -282,6 +283,8 @@ __all__ = [
     "QlikChart",
     "QlikDataset",
     "QlikSheet",
+    "DataverseAttribute",
+    "DataverseEntity",
     "CogniteEvent",
     "CogniteAsset",
     "CogniteSequence",
@@ -474,6 +477,9 @@ from .cube_hierarchy import CubeHierarchy
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
+from .dataverse import Dataverse
+from .dataverse_attribute import DataverseAttribute
+from .dataverse_entity import DataverseEntity
 from .dbt_column_process import DbtColumnProcess
 from .dbt_process import DbtProcess
 from .dbt_tag import DbtTag

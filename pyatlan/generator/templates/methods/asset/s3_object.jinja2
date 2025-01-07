@@ -7,6 +7,7 @@
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
+        s3_bucket_name: str,
         s3_bucket_qualified_name: str,
     ) -> S3Object:
         validate_required_fields(
@@ -14,14 +15,22 @@
                 "name",
                 "connection_qualified_name",
                 "aws_arn",
+                "s3_bucket_name",
                 "s3_bucket_qualified_name",
             ],
-            [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
+            [
+                name,
+                connection_qualified_name,
+                aws_arn,
+                s3_bucket_name,
+                s3_bucket_qualified_name,
+            ],
         )
         attributes = S3Object.Attributes.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
+            s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
@@ -34,6 +43,7 @@
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
+        s3_bucket_name: str,
         s3_bucket_qualified_name: str,
     ) -> S3Object:
         warn(
@@ -48,6 +58,7 @@
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
+            s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
 
@@ -59,6 +70,7 @@
         name: str,
         connection_qualified_name: str,
         prefix: str,
+        s3_bucket_name: str,
         s3_bucket_qualified_name: str,
     ) -> S3Object:
         validate_required_fields(
@@ -66,14 +78,22 @@
                 "name",
                 "connection_qualified_name",
                 "prefix",
+                "s3_bucket_name",
                 "s3_bucket_qualified_name",
             ],
-            [name, connection_qualified_name, prefix, s3_bucket_qualified_name],
+            [
+                name,
+                connection_qualified_name,
+                prefix,
+                s3_bucket_name,
+                s3_bucket_qualified_name,
+            ],
         )
         attributes = S3Object.Attributes.create_with_prefix(
             name=name,
             connection_qualified_name=connection_qualified_name,
             prefix=prefix,
+            s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)

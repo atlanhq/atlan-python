@@ -8,10 +8,10 @@ from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import RelationField, TextField
 from pyatlan.utils import init_guid, validate_required_fields
 
-from ...enums import AtlanConnectorType
 from .s_q_l import SQL
 
 

@@ -1,0 +1,50 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            definition: str,
+            schema_qualified_name: Optional[str] = None,
+            schema_name: Optional[str] = None,
+            database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> Procedure.Attributes:
+            validate_required_fields(
+                ["name", "definition", "schema_qualified_name"],
+                [name, definition, schema_qualified_name],
+            )
+            assert schema_qualified_name  # noqa: S101
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    schema_qualified_name, "schema_qualified_name", 5
+                )
+
+            fields = schema_qualified_name.split("/")
+            qualified_name = f"{schema_qualified_name}/_procedures_/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database_name = database_name or fields[3]
+            schema_name = schema_name or fields[4]
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+
+            return Procedure.Attributes(
+                name=name,
+                definition=definition,
+                qualified_name=qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                schema_name=schema_name,
+                schema_qualified_name=schema_qualified_name,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+            )
