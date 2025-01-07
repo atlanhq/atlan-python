@@ -1,3 +1,55 @@
+## 4.0.0 (January 7, 2025)
+
+### New Features
+
+- Added support for the `MongoDBCrawler` workflow package.
+- Added `creator()` and `updater()` methods for the `Procedure` asset.
+
+### Bug Fixes
+
+- Fixed `WorkflowClient.find_by_type()` method to use regular expressions.
+- Fixed `AttributeDef.cardinality` and `AttributeDef.type_name` handling for the new `multi_value_select` attribute option.
+- Fixed issues with the `AssetClient.append_terms()`, `remove_terms()`, and `replace_terms()` methods:
+  - These methods now use `SaveSemantic.APPEND/REPLACE/REMOVE`, which is more optimized and faster than the previous approach that required full asset retrieval with relationships for updates.
+- Fixed `S3Object.create_with_prefix()` and `creator()` to ensure the `s3_bucket_name` field is correctly set.
+
+### Breaking Changes
+
+- The default behavior of `AssetClient.get_by_guid()` and `AssetClient.get_by_qualified_name()` has changed:
+
+  - By default, these methods now ignore relationships during asset retrieval (`ignore_relationships: bool = True`). Previously, this was set to `False`.
+  - This change is intentional, aiming to prevent users from retrieving more information than necessary, thereby reducing the overall runtime of requests.
+  - Users can now use the `attributes` and `related_attributes` optional parameters to specify the exact details required for each search result. This ensures precise and efficient searches. See:
+  [Advanced Examples - Read](https://developer.atlan.com/snippets/advanced-examples/read).
+
+  ```python
+  # In this example, we are retrieving the "userDescription" attribute
+  # for both the glossary and its terms (related attribute).
+  # You can also retrieve other attributes as illustrated below:
+
+  glossary = client.asset.get_by_guid(
+        guid="b4113341-251b-4adc-81fb-2420501c30e6",
+        asset_type=AtlasGlossary,
+        min_ext_info=False,
+        ignore_relationships=True,
+        attributes=[AtlasGlossary.USER_DESCRIPTION, AtlasGlossary.TERMS],
+        related_attributes=[AtlasGlossaryTerm.USER_DESCRIPTION]
+    )
+
+  glossary = client.asset.get_by_qualified_name(
+      asset_type=AtlasGlossary,
+      qualified_name="pXkf3RUvsIOIG8xnn0W3O",
+      min_ext_info=False,
+      ignore_relationships=True,
+      attributes=[AtlasGlossary.USER_DESCRIPTION, AtlasGlossary.TERMS],
+      related_attributes=[AtlasGlossaryTerm.USER_DESCRIPTION]
+  )
+  ```
+
+### QOL Improvements
+
+- Added an [OSV](https://osv.dev) vulnerability-scan workflow job to GitHub Actions.
+
 ## 3.1.2 (December 31, 2024)
 
 ### New features
