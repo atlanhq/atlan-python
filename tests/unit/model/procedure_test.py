@@ -39,7 +39,7 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 def test_creator():
-    sut = Procedure.create(
+    sut = Procedure.creator(
         name=PROCEDURE_NAME,
         definition=DEFINITION,
         schema_qualified_name=SCHEMA_QUALIFIED_NAME,
