@@ -105,6 +105,9 @@ You can interact with all of the following different kinds of assets:
     asset/datastudioasset
     asset/database
     asset/databricksunitycatalogtag
+    asset/dataverse
+    asset/dataverseattribute
+    asset/dataverseentity
     asset/dbt
     asset/dbtcolumnprocess
     asset/dbtmetric
