@@ -66,6 +66,26 @@ class Procedure(SQL):
         )
         return cls(attributes=attributes)
 
+    @classmethod
+    @init_guid
+    def updater(cls, *, name: str, qualified_name: str, definition: str) -> Procedure:
+        validate_required_fields(
+            ["name", "qualified_name", "definition"],
+            [name, qualified_name, definition],
+        )
+        procedure = Procedure(
+            attributes=Procedure.Attributes(qualified_name=qualified_name, name=name)
+        )
+        procedure.definition = definition
+        return procedure
+
+    def trim_to_required(self: Procedure) -> Procedure:
+        return self.updater(
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
+            definition=self.definition or "",
+        )
+
     type_name: str = Field(default="Procedure", allow_mutation=False)
 
     @validator("type_name")
