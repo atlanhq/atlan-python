@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
@@ -104,32 +104,34 @@ class MongoDBCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def include(self, assets: dict) -> MongoDBCrawler:
+    def include(self, assets: List[str]) -> MongoDBCrawler:
         """
         Defines the filter for assets to include when crawling.
 
-        :param assets: dict where keys are database names, and values are lists of collections.
+        :param assets: list of databases names to include when crawling
         :returns: crawler, set to include only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
-        include_assets = assets or {}
+        assets = assets or []
+        include_assets: Dict[str, List[str]] = {asset: [] for asset in assets}
         to_include = self.build_hierarchical_filter(include_assets)
         self._parameters.append(
             dict(dict(name="include-filter", value=to_include or "{}"))
         )
         return self
 
-    def exclude(self, assets: dict) -> MongoDBCrawler:
+    def exclude(self, assets: List[str]) -> MongoDBCrawler:
         """
         Defines the filter for assets to exclude when crawling.
 
-        :param assets: dict where keys are database names, and values are lists of collections.
+        :param assets: list of databases names to exclude when crawling
         :returns: crawler, set to exclude only those assets specified
         :raises InvalidRequestException: In the unlikely
         event the provided filter cannot be translated
         """
-        exclude_assets = assets or {}
+        assets = assets or []
+        exclude_assets: Dict[str, List[str]] = {asset: [] for asset in assets}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
         self._parameters.append(dict(name="exclude-filter", value=to_exclude or "{}"))
         return self

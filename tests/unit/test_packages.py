@@ -638,8 +638,8 @@ def test_mongodb_package(mock_package_env):
             auth_db="test-auth-db",
             is_ssl=False,
         )
-        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets={"test-exlcude": ["test-asset-1", "test-asset-2"]})
+        .include(assets=["test-asset-1", "test-asset-2"])
+        .exclude(assets=["test-asset-1", "test-asset-2"])
         .exclude_regex(regex="TEST*")
         .to_workflow()
     )

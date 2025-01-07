@@ -52,11 +52,11 @@
                   },
                   {
                     "name": "include-filter",
-                    "value": "{\"^test-include$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
+                    "value": "{\"^test-asset-1$\": [], \"^test-asset-2$\": []}"
                   },
                   {
                     "name": "exclude-filter",
-                    "value": "{\"^test-exlcude$\": [\"^test-asset-1$\", \"^test-asset-2$\"]}"
+                    "value": "{\"^test-asset-1$\": [], \"^test-asset-2$\": []}"
                   },
                   {
                     "name": "temp-table-regex",
