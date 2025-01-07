@@ -16,6 +16,7 @@ from pyatlan.model.packages import (
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
+    MongoDBCrawler,
     PostgresCrawler,
     PowerBICrawler,
     RelationalAssetsBuilder,
@@ -72,6 +73,7 @@ ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS = "asset_export_basic_enriched_gcs.json"
 RELATIONAL_ASSETS_BUILDER_S3 = "relational_assets_builder_s3.json"
 RELATIONAL_ASSETS_BUILDER_ADLS = "relational_assets_builder_adls.json"
 RELATIONAL_ASSETS_BUILDER_GCS = "relational_assets_builder_gcs.json"
+MONGODB_BASIC = "mongodb_basic.json"
 
 
 class NonSerializable:
@@ -619,6 +621,31 @@ def test_postgres_package(mock_package_env):
 
     request_json = loads(postgres_s3_offline.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(POSTGRES_S3_OFFLINE)
+
+
+def test_mongodb_package(mock_package_env):
+    mongodb_basic = (
+        MongoDBCrawler(
+            connection_name="test-sdk-mongodb",
+            admin_roles=["admin-guid-1234"],
+        )
+        .direct(hostname="test-hostname", port=1234)
+        .basic_auth(
+            username="test-user",
+            password="test-pass",
+            native_host="test-native-host",
+            default_db="test-default-db",
+            auth_db="test-auth-db",
+            is_ssl=False,
+        )
+        .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
+        .exclude(assets={"test-exlcude": ["test-asset-1", "test-asset-2"]})
+        .exclude_regex(regex="TEST*")
+        .to_workflow()
+    )
+
+    request_json = loads(mongodb_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(MONGODB_BASIC)
 
 
 def test_connection_delete_package(mock_package_env):

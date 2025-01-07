@@ -2217,6 +2217,7 @@ class WorkflowPackage(str, Enum):
     SIGMA = "atlan-sigma"
     SNOWFLAKE = "atlan-snowflake"
     SNOWFLAKE_MINER = "atlan-snowflake-miner"
+    MONGODB = "atlan-mongodb"
     SODA = "atlan-soda"
     SYNAPSE = "atlan-synapse"
     TABLEAU = "atlan-tableau"
