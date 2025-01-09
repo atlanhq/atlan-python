@@ -64,7 +64,8 @@ def dataverse_attribute(
 ) -> Generator[DataverseAttribute, None, None]:
     assert dataverse_entity.qualified_name
     to_create = DataverseAttribute.creator(
-        name=DATAVERSE_ATTRIBUTE_NAME, dataverse_entity_qualified_name=dataverse_entity.qualified_name
+        name=DATAVERSE_ATTRIBUTE_NAME,
+        dataverse_entity_qualified_name=dataverse_entity.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataverseAttribute)[0]
@@ -73,14 +74,17 @@ def dataverse_attribute(
 
 
 def test_dataverse_attribute(
-    client: AtlanClient, dataverse_entity: DataverseEntity, dataverse_attribute: DataverseAttribute
+    client: AtlanClient,
+    dataverse_entity: DataverseEntity,
+    dataverse_attribute: DataverseAttribute,
 ):
     assert dataverse_attribute
     assert dataverse_attribute.guid
     assert dataverse_attribute.qualified_name
     assert dataverse_attribute.name == DATAVERSE_ATTRIBUTE_NAME
     assert (
-        dataverse_attribute.connection_qualified_name == dataverse_entity.connection_qualified_name
+        dataverse_attribute.connection_qualified_name
+        == dataverse_entity.connection_qualified_name
     )
     assert dataverse_attribute.connector_name == AtlanConnectorType.DATAVERSE.value
 
@@ -103,7 +107,9 @@ def dataverse_attribute_overload(
 
 
 def test_overload_dataverse_attribute(
-    client: AtlanClient, dataverse_entity: DataverseEntity, dataverse_attribute_overload: DataverseAttribute
+    client: AtlanClient,
+    dataverse_entity: DataverseEntity,
+    dataverse_attribute_overload: DataverseAttribute,
 ):
     assert dataverse_attribute_overload
     assert dataverse_attribute_overload.guid
@@ -113,4 +119,7 @@ def test_overload_dataverse_attribute(
         dataverse_attribute_overload.connection_qualified_name
         == dataverse_entity.connection_qualified_name
     )
-    assert dataverse_attribute_overload.connector_name == AtlanConnectorType.DATAVERSE.value
+    assert (
+        dataverse_attribute_overload.connector_name
+        == AtlanConnectorType.DATAVERSE.value
+    )

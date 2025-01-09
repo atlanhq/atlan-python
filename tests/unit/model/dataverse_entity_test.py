@@ -5,7 +5,7 @@ from tests.unit.model.constants import (
     DATAVERSE_ENTITY_NAME,
     DATAVERSE_ENTITY_QUALIFIED_NAME,
     DATAVERSE_CONNECTOR_TYPE,
-    DATAVERSE_CONNECTION_QUALIFIED_NAME
+    DATAVERSE_CONNECTION_QUALIFIED_NAME,
 )
 
 
@@ -48,7 +48,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        DataverseEntity.create_for_modification(qualified_name=qualified_name, name=name)
+        DataverseEntity.create_for_modification(
+            qualified_name=qualified_name, name=name
+        )
 
 
 def test_create_for_modification():

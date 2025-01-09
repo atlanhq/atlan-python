@@ -530,7 +530,6 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[DataverseEntity]": DataverseEntity(),
     "Optional[List[DataverseAttribute]]": [DataverseAttribute()],
     "List[str]": [],
-
 }
 
 
