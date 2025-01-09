@@ -4,18 +4,16 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Dict, List, Optional, overload
+from typing import ClassVar, List, Optional, overload
 from pydantic.v1 import Field, validator
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
-from warnings import warn
 from .dataverse import Dataverse
 
 
 class DataverseAttribute(Dataverse):
     """Description"""
-
 
     @overload
     @classmethod
@@ -55,24 +53,6 @@ class DataverseAttribute(Dataverse):
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
-
-    # @classmethod
-    # @init_guid
-    # def create(
-    #     cls, *, name: str, dataverse_entity_qualified_name: str
-    # ) -> DataverseAttribute:
-    #     warn(
-    #         (
-    #             "This method is deprecated, please use 'creator' "
-    #             "instead, which offers identical functionality."
-    #         ),
-    #         DeprecationWarning,
-    #         stacklevel=2,
-    #     )
-    #     return cls.creator(
-    #         name=name,
-    #         dataverse_entity_qualified_name=dataverse_entity_qualified_name,
-    #     )
 
     type_name: str = Field(default="DataverseAttribute", allow_mutation=False)
 

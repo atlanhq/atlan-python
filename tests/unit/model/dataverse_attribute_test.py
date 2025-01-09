@@ -10,6 +10,7 @@ from tests.unit.model.constants import (
     DATAVERSE_CONNECTION_QUALIFIED_NAME
 )
 
+
 @pytest.mark.parametrize(
     "name, entity_qualified_name, message",
     [

@@ -10,7 +10,6 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
-from warnings import warn
 from .dataverse import Dataverse
 
 
@@ -29,21 +28,6 @@ class DataverseEntity(Dataverse):
             connection_qualified_name=connection_qualified_name,
         )
         return cls(attributes=attributes)
-
-    # @classmethod
-    # @init_guid
-    # def create(cls, *, name: str, connection_qualified_name: str) -> DataverseEntity:
-    #     warn(
-    #         (
-    #             "This method is deprecated, please use 'creator' "
-    #             "instead, which offers identical functionality."
-    #         ),
-    #         DeprecationWarning,
-    #         stacklevel=2,
-    #     )
-    #     return cls.creator(
-    #         name=name, connection_qualified_name=connection_qualified_name
-    #     )
 
     type_name: str = Field(default="DataverseEntity", allow_mutation=False)
 
@@ -148,7 +132,6 @@ class DataverseEntity(Dataverse):
                     connection_qualified_name
                 ),
             )
-
 
     attributes: DataverseEntity.Attributes = Field(
         default_factory=lambda: DataverseEntity.Attributes(),
