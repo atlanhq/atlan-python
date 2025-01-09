@@ -4,17 +4,75 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
-
+from typing import ClassVar, Dict, List, Optional, overload
 from pydantic.v1 import Field, validator
-
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
-
+from pyatlan.utils import init_guid, validate_required_fields
+from warnings import warn
 from .dataverse import Dataverse
 
 
 class DataverseAttribute(Dataverse):
     """Description"""
+
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        dataverse_entity_qualified_name: str,
+    ) -> DataverseAttribute: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        dataverse_entity_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> DataverseAttribute: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        dataverse_entity_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> DataverseAttribute:
+        validate_required_fields(
+            ["name", "dataverse_entity_qualified_name"],
+            [name, dataverse_entity_qualified_name],
+        )
+        attributes = DataverseAttribute.Attributes.create(
+            name=name,
+            dataverse_entity_qualified_name=dataverse_entity_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    # @classmethod
+    # @init_guid
+    # def create(
+    #     cls, *, name: str, dataverse_entity_qualified_name: str
+    # ) -> DataverseAttribute:
+    #     warn(
+    #         (
+    #             "This method is deprecated, please use 'creator' "
+    #             "instead, which offers identical functionality."
+    #         ),
+    #         DeprecationWarning,
+    #         stacklevel=2,
+    #     )
+    #     return cls.creator(
+    #         name=name,
+    #         dataverse_entity_qualified_name=dataverse_entity_qualified_name,
+    #     )
 
     type_name: str = Field(default="DataverseAttribute", allow_mutation=False)
 
@@ -187,6 +245,41 @@ class DataverseAttribute(Dataverse):
         dataverse_entity: Optional[DataverseEntity] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            dataverse_entity_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> DataverseAttribute.Attributes:
+            validate_required_fields(
+                ["name", "dataverse_entity_qualified_name"],
+                [name, dataverse_entity_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    dataverse_entity_qualified_name,
+                    "dataverse_entity_qualified_name",
+                    4,
+                )
+
+            return DataverseAttribute.Attributes(
+                name=name,
+                dataverse_entity_qualified_name=dataverse_entity_qualified_name,
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                qualified_name=f"{dataverse_entity_qualified_name}/{name}",
+                connector_name=connector_name,
+                dataverse_entity=DataverseEntity.ref_by_qualified_name(
+                    dataverse_entity_qualified_name
+                ),
+            )
 
     attributes: DataverseAttribute.Attributes = Field(
         default_factory=lambda: DataverseAttribute.Attributes(),

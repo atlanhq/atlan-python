@@ -7,14 +7,43 @@ from __future__ import annotations
 from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
-
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
-
+from pyatlan.utils import init_guid, validate_required_fields
+from warnings import warn
 from .dataverse import Dataverse
 
 
 class DataverseEntity(Dataverse):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str, connection_qualified_name: str) -> DataverseEntity:
+        validate_required_fields(
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
+        )
+        attributes = DataverseEntity.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    # @classmethod
+    # @init_guid
+    # def create(cls, *, name: str, connection_qualified_name: str) -> DataverseEntity:
+    #     warn(
+    #         (
+    #             "This method is deprecated, please use 'creator' "
+    #             "instead, which offers identical functionality."
+    #         ),
+    #         DeprecationWarning,
+    #         stacklevel=2,
+    #     )
+    #     return cls.creator(
+    #         name=name, connection_qualified_name=connection_qualified_name
+    #     )
 
     type_name: str = Field(default="DataverseEntity", allow_mutation=False)
 
@@ -101,6 +130,25 @@ class DataverseEntity(Dataverse):
         dataverse_attributes: Optional[List[DataverseAttribute]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> DataverseEntity.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"],
+                [name, connection_qualified_name],
+            )
+            return DataverseEntity.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
+
 
     attributes: DataverseEntity.Attributes = Field(
         default_factory=lambda: DataverseEntity.Attributes(),
