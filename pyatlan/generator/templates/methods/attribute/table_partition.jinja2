@@ -27,9 +27,9 @@
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     table_qualified_name, "table_qualified_name", 6
                 )
-            
+
             fields = table_qualified_name.split("/")
-             
+
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
@@ -39,8 +39,7 @@
                 or f"{connection_qualified_name}/{database_name}"
             )
             schema_qualified_name = (
-                schema_qualified_name
-                or  f"{connection_qualified_name}/{database_name}"
+                schema_qualified_name or f"{connection_qualified_name}/{database_name}"
             )
 
             qualified_name = f"{schema_qualified_name}/{name}"
