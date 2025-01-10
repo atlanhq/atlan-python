@@ -356,7 +356,7 @@ class DatabricksCrawler(AbstractCrawler):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "lake,crawler",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6328311007377-How-to-crawl-Databricks",  # noqa
+                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6328311007377",
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
