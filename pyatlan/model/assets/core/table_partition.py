@@ -4,10 +4,11 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -15,12 +16,82 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
 
 
 class TablePartition(SQL):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        table_qualified_name: str,
+    ) -> TablePartition: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        schema_name: str,
+        schema_qualified_name: str,
+        table_name: str,
+        table_qualified_name: str,
+    ) -> TablePartition: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
+        table_name: Optional[str] = None,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        attributes = TablePartition.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            schema_name=schema_name,
+            schema_qualified_name=schema_qualified_name,
+            table_name=table_name,
+            table_qualified_name=table_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def updater(cls, *, name: str, qualified_name: str) -> TablePartition:
+        validate_required_fields(
+            ["name", "qualified_name"],
+            [name, qualified_name],
+        )
+        table_partition = TablePartition(
+            attributes=TablePartition.Attributes(
+                qualified_name=qualified_name, name=name
+            )
+        )
+        return table_partition
+
+    def trim_to_required(self: TablePartition) -> TablePartition:
+        return self.updater(
+            qualified_name=self.qualified_name or "", name=self.name or ""
+        )
 
     type_name: str = Field(default="TablePartition", allow_mutation=False)
 
@@ -389,6 +460,65 @@ class TablePartition(SQL):
         parent_table_partition: Optional[TablePartition] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: Optional[str] = None,
+            database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
+            schema_name: Optional[str] = None,
+            schema_qualified_name: Optional[str] = None,
+            table_name: Optional[str] = None,
+            table_qualified_name: str,
+        ) -> TablePartition.Attributes:
+            validate_required_fields(
+                ["name", "table_qualified_name"],
+                [name, table_qualified_name],
+            )
+            assert table_qualified_name  # noqa: S101
+            table_qualified_name
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    table_qualified_name, "table_qualified_name", 6
+                )
+            
+            fields = table_qualified_name.split("/")
+             
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database_name = database_name or fields[3]
+            schema_name = schema_name or fields[4]
+            table_name = table_name or fields[5]
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+            schema_qualified_name = (
+                schema_qualified_name
+                or  f"{connection_qualified_name}/{database_name}"
+            )
+
+            qualified_name = f"{schema_qualified_name}/{name}"
+
+            return TablePartition.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                schema_name=schema_name,
+                schema_qualified_name=schema_qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                table_name=table_name,
+                table_qualified_name=table_qualified_name,
+            )
 
     attributes: TablePartition.Attributes = Field(
         default_factory=lambda: TablePartition.Attributes(),

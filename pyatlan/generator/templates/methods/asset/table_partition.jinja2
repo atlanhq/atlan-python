@@ -1,0 +1,69 @@
+    
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        table_qualified_name: str,
+    ) -> TablePartition: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        schema_name: str,
+        schema_qualified_name: str,
+        table_name: str,
+        table_qualified_name: str,
+    ) -> TablePartition: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
+        table_name: Optional[str] = None,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        attributes = TablePartition.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            schema_name=schema_name,
+            schema_qualified_name=schema_qualified_name,
+            table_name=table_name,
+            table_qualified_name=table_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def updater(cls, *, name: str, qualified_name: str) -> TablePartition:
+        validate_required_fields(
+            ["name", "qualified_name"],
+            [name, qualified_name],
+        )
+        table_partition = TablePartition(
+            attributes=TablePartition.Attributes(
+                qualified_name=qualified_name, name=name
+            )
+        )
+        return table_partition
+
+    def trim_to_required(self: TablePartition) -> TablePartition:
+        return self.updater(
+            qualified_name=self.qualified_name or "", name=self.name or ""
+        )
