@@ -61,10 +61,10 @@ __all__ = [
     "Function",
     "TablePartition",
     "Column",
-    "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "CalculationView",
+    "DatabricksUnityCatalogTag",
     "Database",
+    "CalculationView",
     "Procedure",
     "SnowflakeTag",
     "CosmosMongoDB",
@@ -129,6 +129,7 @@ __all__ = [
     "ObjectStore",
     "SaaS",
     "MultiDimensionalDataset",
+    "Custom",
     "EventStore",
     "NoSQL",
     "Insight",
@@ -166,6 +167,7 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
+    "CustomEntity",
     "BigqueryTag",
     "Kafka",
     "AzureServiceBus",
@@ -474,6 +476,8 @@ from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
+from .custom import Custom
+from .custom_entity import CustomEntity
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset

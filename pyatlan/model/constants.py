@@ -42,6 +42,7 @@ AssetTypes = Set[
         "Column",
         "ColumnProcess",
         "Connection",
+        "CustomEntity",
         "DataStudioAsset",
         "Database",
         "DbtColumnProcess",
