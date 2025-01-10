@@ -3,7 +3,7 @@ from __future__ import annotations
 from json import dumps
 from typing import Dict, List, Optional
 
-from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
+from pyatlan.model.enums import WorkflowPackage
 from pyatlan.model.packages.base.miner import AbstractMiner
 from pyatlan.model.workflow import WorkflowMetadata
 
@@ -19,7 +19,6 @@ class SnowflakeMiner(AbstractMiner):
     _NAME = "snowflake"
     _PACKAGE_NAME = "@atlan/snowflake-miner"
     _PACKAGE_PREFIX = WorkflowPackage.SNOWFLAKE_MINER.value
-    _CONNECTOR_TYPE = AtlanConnectorType.SNOWFLAKE
     _PACKAGE_ICON = "https://docs.snowflake.com/en/_images/logo-snowflake-sans-text.png"
     _PACKAGE_LOGO = "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg"  # noqa
 
