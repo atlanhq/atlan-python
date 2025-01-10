@@ -641,6 +641,7 @@ class TestProcedure:
         response = upsert(procedure)
         assert response.mutated_entities is None
 
+
 @pytest.mark.order(after="TestView")
 class TestTablePartition:
     table_partition: Optional[TablePartition] = None
@@ -683,7 +684,7 @@ class TestTablePartition:
         assert TestTable.table is not None
         assert TestTable.table.name
         assert TestTable.table.qualified_name
- 
+
         table_partition = TablePartition.creator(
             name=table_partition_name,
             connection_qualified_name=TestConnection.connection.qualified_name,
@@ -726,6 +727,7 @@ class TestTablePartition:
         table_partition = TestTablePartition.table_partition.trim_to_required()
         response = upsert(table_partition)
         assert response.mutated_entities is None
+
 
 @pytest.mark.order(after="TestView")
 class TestColumn:
