@@ -13,6 +13,7 @@ from tests.unit.model.constants import (
     TABLE_QUALIFIED_NAME,
 )
 
+
 @pytest.mark.parametrize(
     "name, table_qualified_name, message",
     [
@@ -26,7 +27,7 @@ def test_create_with_missing_parameters_raise_value_error(
     with pytest.raises(ValueError, match=message):
         TablePartition.creator(
             name=name,
-            table_qualified_name = table_qualified_name,
+            table_qualified_name=table_qualified_name,
         )
 
 
@@ -40,14 +41,13 @@ def test_creator():
     assert partition.database_name == DATABASE_NAME
     assert partition.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert partition.database_qualified_name == DATABASE_QUALIFIED_NAME
-    assert (
-        partition.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/{TABLE_PARTITION_NAME}"
-    )
+    assert partition.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/{TABLE_PARTITION_NAME}"
     assert partition.schema_qualified_name == SCHEMA_QUALIFIED_NAME
     assert partition.schema_name == SCHEMA_NAME
     assert partition.connector_name == CONNECTOR_TYPE
     assert partition.table_name == TABLE_NAME
     assert partition.table_qualified_name == TABLE_QUALIFIED_NAME
+
 
 def test_overload_creator():
     partition = TablePartition.creator(
@@ -65,9 +65,7 @@ def test_overload_creator():
     assert partition.database_name == DATABASE_NAME
     assert partition.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert partition.database_qualified_name == DATABASE_QUALIFIED_NAME
-    assert (
-        partition.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/{TABLE_PARTITION_NAME}"
-    )
+    assert partition.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/{TABLE_PARTITION_NAME}"
     assert partition.schema_qualified_name == SCHEMA_QUALIFIED_NAME
     assert partition.schema_name == SCHEMA_NAME
     assert partition.connector_name == CONNECTOR_TYPE
