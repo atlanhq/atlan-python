@@ -185,7 +185,7 @@ class MongoDBCrawler(AbstractCrawler):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "nosql,crawler",
                 "orchestration.atlan.com/dependentPackage": "",
-                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6037440864145",
+                "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/7841931946639-How-to-crawl-MongoDB",  # noqa
                 "orchestration.atlan.com/emoji": "\U0001f680",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
