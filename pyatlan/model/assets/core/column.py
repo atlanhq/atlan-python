@@ -1589,11 +1589,11 @@ class Column(SQL):
                 )
                 column.view_name = parent_name
             elif parent_type == TablePartition:
-                column.table_qualified_name = table_qualified_name
+                column.table_qualified_name = parent_qualified_name
                 column.table_partition = TablePartition.ref_by_qualified_name(
                     parent_qualified_name
                 )
-                column.table_name = table_name
+                column.table_name = parent_name
             elif parent_type == SnowflakeDynamicTable:
                 column.table_qualified_name = parent_qualified_name
                 column.snowflake_dynamic_table = (
