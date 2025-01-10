@@ -480,7 +480,6 @@ class TablePartition(SQL):
                 [name, table_qualified_name],
             )
             assert table_qualified_name  # noqa: S101
-            table_qualified_name
             if connection_qualified_name:
                 connector_name = AtlanConnectorType.get_connector_name(
                     connection_qualified_name
@@ -501,7 +500,7 @@ class TablePartition(SQL):
                 or f"{connection_qualified_name}/{database_name}"
             )
             schema_qualified_name = (
-                schema_qualified_name or f"{connection_qualified_name}/{database_name}"
+                schema_qualified_name or f"{database_qualified_name}/{schema_name}"
             )
 
             qualified_name = f"{schema_qualified_name}/{name}"
