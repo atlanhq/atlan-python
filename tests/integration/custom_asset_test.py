@@ -3,9 +3,7 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import (
-    Connection, CustomEntity
-)
+from pyatlan.model.assets import Connection, CustomEntity
 from pyatlan.model.enums import (
     AtlanConnectorType,
     EntityStatus,

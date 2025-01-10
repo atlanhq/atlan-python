@@ -140,7 +140,6 @@ class CustomEntity(Custom):
             default=None, description=""
         )  # relationship
 
-
         @classmethod
         @init_guid
         def create(
@@ -157,7 +156,6 @@ class CustomEntity(Custom):
                     connection_qualified_name
                 ),
             )
-
 
     attributes: CustomEntity.Attributes = Field(
         default_factory=lambda: CustomEntity.Attributes(),
