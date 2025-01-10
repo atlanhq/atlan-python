@@ -13,6 +13,7 @@ from pyatlan.model.packages import (
     BigQueryCrawler,
     ConfluentKafkaCrawler,
     ConnectionDelete,
+    DatabricksCrawler,
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
@@ -74,6 +75,11 @@ RELATIONAL_ASSETS_BUILDER_S3 = "relational_assets_builder_s3.json"
 RELATIONAL_ASSETS_BUILDER_ADLS = "relational_assets_builder_adls.json"
 RELATIONAL_ASSETS_BUILDER_GCS = "relational_assets_builder_gcs.json"
 MONGODB_BASIC = "mongodb_basic.json"
+DATABRICKS_BASIC_JDBC = "databricks_basic_jdbc.json"
+DATABRICKS_BASIC_REST = "databricks_basic_rest.json"
+DATABRICKS_AWS = "databricks_aws.json"
+DATABRICKS_AZURE = "databricks_azure.json"
+DATABRICKS_OFFLINE = "databricks_offline.json"
 
 
 class NonSerializable:
@@ -662,6 +668,133 @@ def test_connection_delete_package(mock_package_env):
     ).to_workflow()
     request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONNECTION_DELETE_SOFT)
+
+
+def test_databricks_crawler(mock_package_env):
+    databricks_basic_jdbc = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .basic_auth(
+            personal_access_token="test-pat",
+            http_path="test-http-path",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.JDBC)
+        .include(assets={"test-include": ["ti1", "ti2"]})
+        .exclude(assets={"test-exclude": ["te1", "te2"]})
+        .exclude_regex(regex="TEST*")
+        .enable_view_lineage(False)
+        .enable_source_level_filtering(True)
+        .to_workflow()
+    )
+    request_json = loads(databricks_basic_jdbc.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_BASIC_JDBC)
+
+    databricks_basic_rest = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .basic_auth(
+            personal_access_token="test-pat",
+            http_path="test-http-path",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.REST)
+        .include_for_rest_api(assets=["ti1", "ti2"])
+        .exclude_for_rest_api(assets=["te1", "te2"])
+        .sql_warehouse(warehouse_ids=["3d939b0cc668be06", "9a289b0cc838ce62"])
+        .import_tags(True)
+        .enable_source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(databricks_basic_rest.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_BASIC_REST)
+
+    databricks_aws = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .aws_service(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.REST)
+        .include_for_rest_api(assets=["ti1", "ti2"])
+        .exclude_for_rest_api(assets=["te1", "te2"])
+        .sql_warehouse(warehouse_ids=["3d939b0cc668be06", "9a289b0cc838ce62"])
+        .import_tags(True)
+        .enable_source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(databricks_aws.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_AWS)
+
+    databricks_azure = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .azure_service(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.REST)
+        .include_for_rest_api(assets=["ti1", "ti2"])
+        .exclude_for_rest_api(assets=["te1", "te2"])
+        .sql_warehouse(warehouse_ids=["3d939b0cc668be06", "9a289b0cc838ce62"])
+        .import_tags(True)
+        .enable_source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(databricks_azure.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_AZURE)
+
+    databricks_offline = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .s3(
+            bucket_name="test-bucket",
+            bucket_prefix="test-prefix",
+            bucket_region="test-region",
+        )
+        .to_workflow()
+    )
+    request_json = loads(databricks_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_OFFLINE)
 
 
 def test_asset_import(mock_package_env):

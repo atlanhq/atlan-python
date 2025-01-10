@@ -1,0 +1,130 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "lake,crawler",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6328311007377-How-to-crawl-Databricks",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://assets.atlan.com/assets/databricks.svg",
+        "orchestration.atlan.com/logo": "https://assets.atlan.com/assets/databricks.svg",
+        "orchestration.atlan.com/marketplaceLink": "https://packages.atlan.com/-/web/detail/@atlan/databricks",
+        "orchestration.atlan.com/name": "Databricks Assets",
+        "package.argoproj.io/author": "Atlan",
+        "package.argoproj.io/description": "Package to crawl databricks assets and publish to Atlan for discovery",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@atlan/databricks",
+        "package.argoproj.io/keywords": "[\"databricks\",\"lake\",\"connector\",\"crawler\"]",
+        "package.argoproj.io/name": "@atlan/databricks",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "atlan-databricks-default-databricks-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "databricks",
+        "orchestration.atlan.com/sourceCategory": "lake",
+        "orchestration.atlan.com/type": "connector",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-ratlans-l-a-s-hdatabricks",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/default-databricks-123456": "true",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "atlan-databricks-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "extraction-method",
+                      "value": "direct"
+                    },
+                    {
+                      "name": "extract-strategy",
+                      "value": "rest"
+                    },
+                    {
+                      "name": "include-filter-rest",
+                      "value": "{\"ti1\": {}, \"ti2\": {}}"
+                    },
+                    {
+                      "name": "exclude-filter-rest",
+                      "value": "{\"te1\": {}, \"te2\": {}}"
+                    },
+                    {
+                      "name": "sql-warehouse",
+                      "value": "{\"3d939b0cc668be06\": {}, \"9a289b0cc838ce62\": {}}"
+                    },
+                    {
+                      "name": "enable-tag-sync",
+                      "value": true
+                    },
+                    {
+                      "name": "use-source-schema-filtering",
+                      "value": "false"
+                    },
+                    {
+                      "name": "credentials-fetch-strategy",
+                      "value": "credential_guid"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "advanced-config-strategy",
+                      "value": "custom"
+                    },
+                    {
+                      "name": "connection",
+                      "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/databricks/123456\", \"name\": \"test-databricks-basic\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"databricks\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"lake\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://assets.atlan.com/assets/databricks.svg\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "atlan-databricks",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@atlan/databricks"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "name": "default-databricks-123456-0",
+          "host": "test-hostname",
+          "port": 443,
+          "authType": "basic",
+          "connectorType": "dual",
+          "username": "",
+          "password": "test-pat",
+          "extra": {
+            "__http_path": "test-http-path"
+          },
+          "connectorConfigName": "atlan-connectors-databricks"
+        }
+      }
+    ]
+}
