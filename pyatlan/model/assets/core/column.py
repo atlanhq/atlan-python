@@ -37,7 +37,16 @@ class Column(SQL):
         parent_qualified_name: str,
         parent_type: type,
         order: int,
-    ) -> Column: ...
+    ) -> Column:
+        """
+        Builds the minimal object necessary to create a Column.
+
+        :param name: name of the Column
+        :param parent_qualified_name: unique name of the table / view / materialized view in which this Column exists
+        :param parent_type: type of parent (table, view, materialized view), should be a TYPE_NAME static string
+        :param order: the order the Column appears within its parent (the Column's position)
+        :returns: the minimal request necessary to create the Column
+        """
 
     @overload
     @classmethod
@@ -56,7 +65,24 @@ class Column(SQL):
         table_name: str,
         table_qualified_name: str,
         connection_qualified_name: str,
-    ) -> Column: ...
+    ) -> Column:
+        """
+        Builds the minimal object necessary to create a Column.
+
+        :param name: name of the Column
+        :param parent_qualified_name: unique name of the table / view / materialized view in which this Column exists
+        :param parent_type: type of parent (table, view, materialized view), should be a TYPE_NAME static string
+        :param order: the order the Column appears within its parent (the Column's position)
+        :param parent_name: simple name of the table / view / materialized view in which the Column should be created
+        :param database_name: simple name of the database in which the Column should be created
+        :param database_qualified_name: unique name of the database in which the Column should be created
+        :param schema_name: simple name of the schema in which the Column should be created
+        :param schema_qualified_name: unique name of the schema in which the Column should be created
+        :param table_name: (deprecated - unused)
+        :param table_qualified_name: (deprecated - unused)
+        :param connection_qualified_name: unique name of the connection in which the Column should be created
+        :returns: the minimal request necessary to create the Column
+        """
 
     @classmethod
     @init_guid
@@ -76,6 +102,23 @@ class Column(SQL):
         table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column:
+        """
+        Builds the minimal object necessary to create a Column.
+
+        :param name: name of the Column
+        :param parent_qualified_name: unique name of the table / view / materialized view in which this Column exists
+        :param parent_type: type of parent (table, view, materialized view), should be a TYPE_NAME static string
+        :param order: the order the Column appears within its parent (the Column's position)
+        :param parent_name: simple name of the table / view / materialized view in which the Column should be created
+        :param database_name: simple name of the database in which the Column should be created
+        :param database_qualified_name: unique name of the database in which the Column should be created
+        :param schema_name: simple name of the schema in which the Column should be created
+        :param schema_qualified_name: unique name of the schema in which the Column should be created
+        :param table_name: (deprecated - unused)
+        :param table_qualified_name: (deprecated - unused)
+        :param connection_qualified_name: unique name of the connection in which the Column should be created
+        :returns: the minimal request necessary to create the Column
+        """
         return Column(
             attributes=Column.Attributes.create(
                 name=name,
@@ -1533,6 +1576,23 @@ class Column(SQL):
             table_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> Column.Attributes:
+            """
+            Builds the minimal object necessary to create a Column.
+
+            :param name: name of the Column
+            :param parent_qualified_name: unique name of the table / view / materialized view in which this Column exists
+            :param parent_type: type of parent (table, view, materialized view), should be a TYPE_NAME static string
+            :param order: the order the Column appears within its parent (the Column's position)
+            :param parent_name: simple name of the table / view / materialized view in which the Column should be created
+            :param database_name: simple name of the database in which the Column should be created
+            :param database_qualified_name: unique name of the database in which the Column should be created
+            :param schema_name: simple name of the schema in which the Column should be created
+            :param schema_qualified_name: unique name of the schema in which the Column should be created
+            :param table_name: (deprecated - unused)
+            :param table_qualified_name: (deprecated - unused)
+            :param connection_qualified_name: unique name of the connection in which the Column should be created
+            :returns: the minimal request necessary to create the Column
+            """
             validate_required_fields(
                 ["name", "parent_qualified_name", "parent_type", "order"],
                 [name, parent_qualified_name, parent_type, order],
