@@ -1580,10 +1580,10 @@ class Column(SQL):
             Builds the minimal object necessary to create a Column.
 
             :param name: name of the Column
-            :param parent_qualified_name: unique name of the table / view / materialized view in which this Column exists
+            :param parent_qualified_name: unique name of the table / view / materialized view in which this Column exist
             :param parent_type: type of parent (table, view, materialized view), should be a TYPE_NAME static string
             :param order: the order the Column appears within its parent (the Column's position)
-            :param parent_name: simple name of the table / view / materialized view in which the Column should be created
+            :param parent_name: simple name of the table / view / materialized view in which the Column is created
             :param database_name: simple name of the database in which the Column should be created
             :param database_qualified_name: unique name of the database in which the Column should be created
             :param schema_name: simple name of the schema in which the Column should be created
