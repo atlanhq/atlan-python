@@ -31,7 +31,14 @@ class TablePartition(SQL):
         *,
         name: str,
         table_qualified_name: str,
-    ) -> TablePartition: ...
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the table partition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
 
     @overload
     @classmethod
@@ -46,7 +53,20 @@ class TablePartition(SQL):
         schema_qualified_name: str,
         table_name: str,
         table_qualified_name: str,
-    ) -> TablePartition: ...
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the TablePartition
+        :param connection_qualified_name: unique name of the connection in which to create the TablePartition
+        :param database_name: simple name of the Database in which to create the TablePartition
+        :param database_qualified_name: unique name of the Database in which to create the TablePartition
+        :param schema_name: simple name of the Schema in which to create the TablePartition
+        :param schema_qualified_name: unique name of the Schema in which to create the TablePartition
+        :param table_name: simple name of the Table in which to create the TablePartition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
 
     @classmethod
     @init_guid
