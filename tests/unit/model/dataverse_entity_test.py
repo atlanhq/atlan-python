@@ -44,7 +44,7 @@ def test_creator():
         (DATAVERSE_ENTITY_NAME, None, "name is required"),
     ],
 )
-def test_updater_modification_with_invalid_parameter_raises_value_error(
+def test_updater_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
