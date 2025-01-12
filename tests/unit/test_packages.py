@@ -14,6 +14,7 @@ from pyatlan.model.packages import (
     ConfluentKafkaCrawler,
     ConnectionDelete,
     DatabricksCrawler,
+    DatabricksMiner,
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
@@ -80,6 +81,13 @@ DATABRICKS_BASIC_REST = "databricks_basic_rest.json"
 DATABRICKS_AWS = "databricks_aws.json"
 DATABRICKS_AZURE = "databricks_azure.json"
 DATABRICKS_OFFLINE = "databricks_offline.json"
+DATABRICKS_MINER_REST = "databricks_miner_rest.json"
+DATABRICKS_MINER_OFFLINE = "databricks_miner_offline.json"
+DATABRICKS_MINER_SYSTEM_TABLE = "databricks_miner_system_table.json"
+DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
+DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
+    "databricks_miner_popularity_system_table.json"
+)
 
 
 class NonSerializable:
@@ -481,6 +489,69 @@ def test_snowflake_miner_package(mock_package_env):
         snowflake_miner_s3_offline.json(by_alias=True, exclude_none=True)
     )
     assert request_json == load_json(SNOWFLAKE_MINER_S3_OFFLINE)
+
+
+def test_databricks_miner_package(mock_package_env):
+    databricks_miner_rest = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .to_workflow()
+    )
+    request_json = loads(databricks_miner_rest.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_MINER_REST)
+
+    databricks_miner_offline = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .offline(bucket_name="test-bucket", bucket_prefix="test-prefix")
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_offline.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_MINER_OFFLINE)
+
+    databricks_miner_system_table = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .system_table(warehouse_id="test-warehouse-id")
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_system_table.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_MINER_SYSTEM_TABLE)
+
+    databricks_miner_popularity_rest = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .popularity_configuration(
+            start_date="1234567890",
+            window_days=10,
+            excluded_users=["test-user-1", "test-user-2"],
+        )
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_popularity_rest.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_MINER_POPULARITY_REST)
+
+    databricks_miner_popularity_system_table = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .popularity_configuration(
+            start_date="1234567890",
+            window_days=10,
+            excluded_users=["test-user-1", "test-user-2"],
+            warehouse_id="test-warehouse-id",
+            extraction_method=DatabricksMiner.ExtractionMethod.SYSTEM_TABLE,
+        )
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_popularity_system_table.json(by_alias=True, exclude_none=True)
+    )
+
+    assert request_json == load_json(DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE)
 
 
 def test_big_query_package(mock_package_env):

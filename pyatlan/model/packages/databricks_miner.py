@@ -33,6 +33,15 @@ class DatabricksMiner(AbstractMiner):
     ):
         self._advanced_config = False
         super().__init__(connection_qualified_name=connection_qualified_name)
+        self._parameters.append(dict(name="calculate-popularity", value=False))
+        self._parameters.append(dict(name="popularity-window-days", value=30))
+        self._parameters.append(dict(name="miner-start-time-epoch", value=0))
+        self._parameters.append(
+            dict(
+                name="extraction-method-popularity",
+                value=self.ExtractionMethod.REST_API.value,
+            )
+        )
 
     def rest_api(self):
         """
@@ -85,7 +94,6 @@ class DatabricksMiner(AbstractMiner):
     def popularity_configuration(
         self,
         start_date: str,
-        fetch_query_history: bool = False,
         extraction_method: DatabricksMiner.ExtractionMethod = ExtractionMethod.REST_API,
         window_days: Optional[int] = None,
         excluded_users: Optional[List[str]] = None,
@@ -99,8 +107,6 @@ class DatabricksMiner(AbstractMiner):
 
         :param start_date: epoch timestamp from which queries will be fetched
         for calculating popularity. This does not affect lineage generation.
-        :param fetch_query_history: flag indicating whether to fetch query history
-        and calculate popularity metrics. Defaults to `False`.
         :param extraction_method: method used to fetch popularity data. Defaults to
         `ExtractionMethod.REST_API`. Required if `fetch_query_history` is `True`.
         :param window_days: (Optional) number of days to consider for calculating popularity metrics.
@@ -110,31 +116,25 @@ class DatabricksMiner(AbstractMiner):
         :returns: miner, configured with popularity settings.
         """
         excluded_users = excluded_users or []
+        config_map = {
+            "calculate-popularity": True,
+            "extraction-method-popularity": extraction_method.value,
+            "miner-start-time-epoch": start_date,
+            "popularity-window-days": window_days,
+        }
+        for param in self._parameters:
+            if param["name"] in config_map:
+                param["value"] = config_map[param["name"]]
         self._parameters.append(
-            dict(name="calculate-popularity", value=fetch_query_history)
+            dict(name="popularity-exclude-user-config", value=dumps(excluded_users))
         )
-        if fetch_query_history:
+        if extraction_method == self.ExtractionMethod.SYSTEM_TABLE:
             self._parameters.append(
-                dict(name="extraction-method-popularity", value=extraction_method.value)
+                dict(name="sql-warehouse-popularity", value=warehouse_id)
             )
-            self._parameters.append(
-                dict(name="miner-start-time-epoch", value=start_date)
-            )
-            self._parameters.append(
-                dict(name="popularity-exclude-user-config", value=dumps(excluded_users))
-            )
-            self._add_optional_params({"popularity-window-days": window_days})
-            if extraction_method == self.ExtractionMethod.SYSTEM_TABLE:
-                self._parameters.append(
-                    dict(name="sql-warehouse-popularity", value=warehouse_id)
-                )
         return self
 
-    def _set_required_metadata_params(self):
-        pass
-
     def _get_metadata(self) -> WorkflowMetadata:
-        self._set_required_metadata_params()
         return WorkflowMetadata(
             labels={
                 "orchestration.atlan.com/certified": "true",
