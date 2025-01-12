@@ -5,10 +5,13 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional, overload
+
 from pydantic.v1 import Field, validator
+
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
+
 from .dataverse import Dataverse
 
 
@@ -47,7 +50,7 @@ class DataverseAttribute(Dataverse):
             ["name", "dataverse_entity_qualified_name"],
             [name, dataverse_entity_qualified_name],
         )
-        attributes = DataverseAttribute.Attributes.create(
+        attributes = DataverseAttribute.Attributes.creator(
             name=name,
             dataverse_entity_qualified_name=dataverse_entity_qualified_name,
             connection_qualified_name=connection_qualified_name,
@@ -228,7 +231,7 @@ class DataverseAttribute(Dataverse):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls,
             *,
             name: str,
