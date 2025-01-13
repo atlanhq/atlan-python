@@ -54,6 +54,8 @@ _complete_type_list: AssetTypes = {
     "Connection",
     "CustomEntity",
     "DataStudioAsset",
+    "DataverseAttribute",
+    "DataverseEntity",
     "Database",
     "DbtColumnProcess",
     "DbtMetric",

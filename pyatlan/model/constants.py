@@ -44,6 +44,8 @@ AssetTypes = Set[
         "Connection",
         "CustomEntity",
         "DataStudioAsset",
+        "DataverseAttribute",
+        "DataverseEntity",
         "Database",
         "DbtColumnProcess",
         "DbtMetric",

@@ -46,6 +46,8 @@ from pyatlan.model.assets import (
     ColumnProcess,
     CustomEntity,
     Database,
+    DataverseAttribute,
+    DataverseEntity,
     DbtMetric,
     DbtModel,
     DbtModelColumn,
@@ -527,6 +529,8 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[MatillionJob]": MatillionJob(),
     "Optional[List[LookerFolder]]": [LookerFolder()],
     "Optional[List[AtlanTagName]]": [],
+    "Optional[DataverseEntity]": DataverseEntity(),
+    "Optional[List[DataverseAttribute]]": [DataverseAttribute()],
     "List[str]": [],
 }
 
