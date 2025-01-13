@@ -61,10 +61,10 @@ __all__ = [
     "Function",
     "TablePartition",
     "Column",
-    "SnowflakeStream",
     "DatabricksUnityCatalogTag",
-    "Database",
+    "SnowflakeStream",
     "CalculationView",
+    "Database",
     "Procedure",
     "SnowflakeTag",
     "CosmosMongoDB",
@@ -101,6 +101,7 @@ __all__ = [
     "PowerBIDashboard",
     "PowerBIDataflow",
     "PowerBIPage",
+    "PowerBIDataflowEntityColumn",
     "SnowflakeDynamicTable",
     "MongoDBCollection",
     "DynamoDBSecondaryIndex",
@@ -440,6 +441,7 @@ from .core.power_b_i import PowerBI
 from .core.power_b_i_column import PowerBIColumn
 from .core.power_b_i_dashboard import PowerBIDashboard
 from .core.power_b_i_dataflow import PowerBIDataflow
+from .core.power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn
 from .core.power_b_i_dataset import PowerBIDataset
 from .core.power_b_i_datasource import PowerBIDatasource
 from .core.power_b_i_measure import PowerBIMeasure

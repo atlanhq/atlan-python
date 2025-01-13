@@ -78,11 +78,13 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
-class Histogram(AtlanObject):
+class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
 class Action(AtlanObject):
@@ -94,13 +96,11 @@ class Action(AtlanObject):
     task_action_display_text: Optional[str] = Field(default=None, description="")
 
 
-class KafkaTopicConsumption(AtlanObject):
+class Histogram(AtlanObject):
     """Description"""
 
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
 
 
 class ColumnValueFrequencyMap(AtlanObject):
@@ -323,6 +323,13 @@ class AwsTag(AtlanObject):
     aws_tag_value: str = Field(description="")
 
 
+class GoogleTag(AtlanObject):
+    """Description"""
+
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
+
+
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
@@ -332,13 +339,6 @@ class DbtMetricFilter(AtlanObject):
     dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
-
-
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -402,11 +402,11 @@ MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Histogram.update_forward_refs()
+KafkaTopicConsumption.update_forward_refs()
 
 Action.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
+Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
@@ -424,9 +424,9 @@ AuthPolicyCondition.update_forward_refs()
 
 AwsTag.update_forward_refs()
 
-DbtMetricFilter.update_forward_refs()
-
 GoogleTag.update_forward_refs()
+
+DbtMetricFilter.update_forward_refs()
 
 AuthPolicyValiditySchedule.update_forward_refs()
 

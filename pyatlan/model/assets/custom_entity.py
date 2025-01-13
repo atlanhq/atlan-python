@@ -5,10 +5,12 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
-from pyatlan.model.enums import AtlanConnectorType
+
 from pydantic.v1 import Field, validator
-from pyatlan.utils import init_guid, validate_required_fields
+
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .custom import Custom
 
