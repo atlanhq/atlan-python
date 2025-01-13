@@ -52,6 +52,7 @@ _complete_type_list: AssetTypes = {
     "Column",
     "ColumnProcess",
     "Connection",
+    "CustomEntity",
     "DataStudioAsset",
     "DataverseAttribute",
     "DataverseEntity",
