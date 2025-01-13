@@ -1,10 +1,10 @@
 from typing import Generator
 
 import pytest
-from pyatlan.model.core import Announcement
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Connection, CustomEntity
+from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
@@ -63,6 +63,7 @@ def test_custom_entity(
     assert custom_entity.connection_qualified_name == connection.qualified_name
     assert custom_entity.connector_name == AtlanConnectorType.CUSTOM.value
 
+
 @pytest.mark.order(after="test_custom_entity")
 def test_delete_custom_entity(
     client: AtlanClient,
@@ -101,6 +102,7 @@ def test_restore_custom_entity(
     assert restored.qualified_name == custom_entity.qualified_name
     assert restored.status == EntityStatus.ACTIVE
 
+
 def _update_cert_and_annoucement(client, asset, asset_type):
     assert asset.name
     assert asset.qualified_name
@@ -131,11 +133,13 @@ def _update_cert_and_annoucement(client, asset, asset_type):
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
+
 def test_update_custom_assets(
     client: AtlanClient,
     custom_entity: CustomEntity,
 ):
     _update_cert_and_annoucement(client, custom_entity, CustomEntity)
+
 
 def _retrieve_custom_assets(client, asset, asset_type):
     retrieved = client.asset.get_by_guid(
@@ -146,9 +150,10 @@ def _retrieve_custom_assets(client, asset, asset_type):
     assert retrieved.guid == asset.guid
     assert retrieved.qualified_name == asset.qualified_name
     assert retrieved.name == asset.name
-    assert retrieved.connector_name == AtlanConnectorType.DATAVERSE
+    assert retrieved.connector_name == AtlanConnectorType.CUSTOM
     assert retrieved.certificate_status == CERTIFICATE_STATUS
     assert retrieved.certificate_status_message == CERTIFICATE_MESSAGE
+
 
 @pytest.mark.order(after="test_update_custom_assets")
 def test_retrieve_custom_assets(
