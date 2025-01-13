@@ -81,29 +81,3 @@
             table_qualified_name=table_qualified_name,
         )
         return cls(attributes=attributes)
-
-    @classmethod
-    @init_guid
-    def updater(cls, *, name: str, qualified_name: str) -> TablePartition:
-        """
-        Builds the minimal object necessary to update a table partition.
-
-        :param name: name of the table partition
-        :param qualified_name: unique name of the table partition
-        :returns: the minimal request necessary to update the table partition
-        """
-        validate_required_fields(
-            ["name", "qualified_name"],
-            [name, qualified_name],
-        )
-        table_partition = TablePartition(
-            attributes=TablePartition.Attributes(
-                qualified_name=qualified_name, name=name
-            )
-        )
-        return table_partition
-
-    def trim_to_required(self: TablePartition) -> TablePartition:
-        return self.updater(
-            qualified_name=self.qualified_name or "", name=self.name or ""
-        )
