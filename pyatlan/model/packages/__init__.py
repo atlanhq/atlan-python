@@ -4,6 +4,8 @@ from .asset_import import AssetImport
 from .big_query_crawler import BigQueryCrawler
 from .confluent_kafka_crawler import ConfluentKafkaCrawler
 from .connection_delete import ConnectionDelete
+from .databricks_crawler import DatabricksCrawler
+from .databricks_miner import DatabricksMiner
 from .dbt_crawler import DbtCrawler
 from .dynamo_d_b_crawler import DynamoDBCrawler
 from .glue_crawler import GlueCrawler
@@ -23,6 +25,8 @@ __all__ = [
     "ConnectionDelete",
     "DbtCrawler",
     "DynamoDBCrawler",
+    "DatabricksCrawler",
+    "DatabricksMiner",
     "GlueCrawler",
     "PostgresCrawler",
     "PowerBICrawler",
