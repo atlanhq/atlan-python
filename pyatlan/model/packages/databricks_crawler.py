@@ -151,6 +151,7 @@ class DatabricksCrawler(AbstractCrawler):
 
         :param client_id: client ID for Azure service principal
         :param client_secret: client secret for your Azure service principal
+        :param tenant_id: tenant ID (directory ID) for Azure service principal
         :returns: crawler, set up to use Azure service principal
         """
         local_creds = {

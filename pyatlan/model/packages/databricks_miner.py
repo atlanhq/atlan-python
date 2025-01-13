@@ -107,8 +107,8 @@ class DatabricksMiner(AbstractMiner):
 
         :param start_date: epoch timestamp from which queries will be fetched
         for calculating popularity. This does not affect lineage generation.
-        :param extraction_method: method used to fetch popularity data. Defaults to
-        `ExtractionMethod.REST_API`. Required if `fetch_query_history` is `True`.
+        :param extraction_method: method used to fetch popularity data.
+        Defaults to `ExtractionMethod.REST_API`.
         :param window_days: (Optional) number of days to consider for calculating popularity metrics.
         :param excluded_users: (Optional) list of usernames to exclude from usage metrics calculations.
         :param warehouse_id: (Optional) unique identifier of the SQL warehouse to use for
