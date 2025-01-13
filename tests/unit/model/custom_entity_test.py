@@ -16,16 +16,16 @@ from tests.unit.model.constants import (
         (CUSTOM_ENTITY_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
+def test_creator_with_missing_parameters_raise_value_error(
     name: str, connection_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        CustomEntity.create(
+        CustomEntity.creator(
             name=name, connection_qualified_name=connection_qualified_name
         )
 
 
-def test_create():
+def test_creator():
     sut = CustomEntity.creator(
         name=CUSTOM_ENTITY_NAME,
         connection_qualified_name=CUSTOM_CONNECTION_QUALIFIED_NAME,
@@ -44,15 +44,15 @@ def test_create():
         (CUSTOM_ENTITY_NAME, None, "name is required"),
     ],
 )
-def test_create_for_modification_with_invalid_parameter_raises_value_error(
+def test_updater_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        CustomEntity.create_for_modification(qualified_name=qualified_name, name=name)
+        CustomEntity.updater(qualified_name=qualified_name, name=name)
 
 
-def test_create_for_modification():
-    sut = CustomEntity.create_for_modification(
+def test_updater():
+    sut = CustomEntity.updater(
         qualified_name=CUSTOM_ENTITY_QUALIFIED_NAME, name=CUSTOM_ENTITY_NAME
     )
 
@@ -61,7 +61,7 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-    sut = CustomEntity.create_for_modification(
+    sut = CustomEntity.updater(
         name=CUSTOM_ENTITY_NAME, qualified_name=CUSTOM_ENTITY_QUALIFIED_NAME
     ).trim_to_required()
 

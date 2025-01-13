@@ -22,7 +22,7 @@ class CustomEntity(Custom):
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = CustomEntity.Attributes.create(
+        attributes = CustomEntity.Attributes.creator(
             name=name, connection_qualified_name=connection_qualified_name
         )
         return cls(attributes=attributes)
@@ -142,7 +142,7 @@ class CustomEntity(Custom):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls, *, name: str, connection_qualified_name: str
         ) -> CustomEntity.Attributes:
             validate_required_fields(
