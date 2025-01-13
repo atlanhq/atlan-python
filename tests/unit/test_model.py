@@ -44,7 +44,10 @@ from pyatlan.model.assets import (
     AuthPolicy,
     Column,
     ColumnProcess,
+    CustomEntity,
     Database,
+    DataverseAttribute,
+    DataverseEntity,
     DbtMetric,
     DbtModel,
     DbtModelColumn,
@@ -383,6 +386,7 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[SupersetDashboard]": SupersetDashboard(),
     "Optional[List[SupersetChart]]": [SupersetChart()],
     "Optional[List[SupersetDataset]]": [SupersetDataset()],
+    "Optional[CustomEntity]": CustomEntity(),
     "Optional[List[ModeCollection]]": [ModeCollection()],
     "Optional[List[ModeQuery]]": [ModeQuery()],
     "Optional[List[ModeChart]]": [ModeChart()],
@@ -525,6 +529,8 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[MatillionJob]": MatillionJob(),
     "Optional[List[LookerFolder]]": [LookerFolder()],
     "Optional[List[AtlanTagName]]": [],
+    "Optional[DataverseEntity]": DataverseEntity(),
+    "Optional[List[DataverseAttribute]]": [DataverseAttribute()],
     "List[str]": [],
 }
 

@@ -101,6 +101,7 @@ __all__ = [
     "PowerBIDashboard",
     "PowerBIDataflow",
     "PowerBIPage",
+    "PowerBIDataflowEntityColumn",
     "SnowflakeDynamicTable",
     "MongoDBCollection",
     "DynamoDBSecondaryIndex",
@@ -129,6 +130,7 @@ __all__ = [
     "ObjectStore",
     "SaaS",
     "MultiDimensionalDataset",
+    "Custom",
     "EventStore",
     "NoSQL",
     "Insight",
@@ -166,6 +168,7 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
+    "CustomEntity",
     "BigqueryTag",
     "Kafka",
     "AzureServiceBus",
@@ -438,6 +441,7 @@ from .core.power_b_i import PowerBI
 from .core.power_b_i_column import PowerBIColumn
 from .core.power_b_i_dashboard import PowerBIDashboard
 from .core.power_b_i_dataflow import PowerBIDataflow
+from .core.power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn
 from .core.power_b_i_dataset import PowerBIDataset
 from .core.power_b_i_datasource import PowerBIDatasource
 from .core.power_b_i_measure import PowerBIMeasure
@@ -474,6 +478,8 @@ from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
+from .custom import Custom
+from .custom_entity import CustomEntity
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset

@@ -95,6 +95,8 @@ You can interact with all of the following different kinds of assets:
     asset/cubedimension
     asset/cubefield
     asset/cubehierarchy
+    asset/custom
+    asset/customentity
     asset/datacontract
     asset/datadomain
     asset/datamesh
@@ -204,6 +206,7 @@ You can interact with all of the following different kinds of assets:
     asset/powerbicolumn
     asset/powerbidashboard
     asset/powerbidataflow
+    asset/powerbidataflowentitycolumn
     asset/powerbidataset
     asset/powerbidatasource
     asset/powerbimeasure

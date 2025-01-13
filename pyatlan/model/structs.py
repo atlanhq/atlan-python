@@ -110,13 +110,6 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(default=None, description="")
 
 
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
-
-
 class SourceTagAttachment(AtlanObject):
     """Description"""
 
@@ -261,6 +254,13 @@ class SourceTagAttachment(AtlanObject):
         )
 
 
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
+
+
 class BadgeCondition(AtlanObject):
     """Description"""
 
@@ -295,18 +295,18 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(default=None, description="")
 
 
-class AzureTag(AtlanObject):
-    """Description"""
-
-    azure_tag_key: str = Field(description="")
-    azure_tag_value: str = Field(description="")
-
-
 class StarredDetails(AtlanObject):
     """Description"""
 
     asset_starred_by: Optional[str] = Field(default=None, description="")
     asset_starred_at: Optional[datetime] = Field(default=None, description="")
+
+
+class AzureTag(AtlanObject):
+    """Description"""
+
+    azure_tag_key: str = Field(description="")
+    azure_tag_value: str = Field(description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -410,15 +410,15 @@ Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachmentValue.update_forward_refs()
-
 SourceTagAttachment.update_forward_refs()
+
+SourceTagAttachmentValue.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
-AzureTag.update_forward_refs()
-
 StarredDetails.update_forward_refs()
+
+AzureTag.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 

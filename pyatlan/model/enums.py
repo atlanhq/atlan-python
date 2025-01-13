@@ -137,6 +137,7 @@ class AtlanConnectionCategory(str, Enum):
     DATA_QUALITY = "data-quality"
     SCHEMA_REGISTRY = "schema-registry"
     APP = "app"
+    CUSTOM = "custom"
 
 
 class AtlanConnectorType(str, Enum):
@@ -342,6 +343,7 @@ class AtlanConnectorType(str, Enum):
     AWS_ECS = ("aws-ecs", AtlanConnectionCategory.ELT)
     AWS_LAMBDA = ("aws-lambda", AtlanConnectionCategory.ELT)
     AWS_SAGEMAKER = ("aws-sagemaker", AtlanConnectionCategory.ELT)
+    CUSTOM = ("custom", AtlanConnectionCategory.CUSTOM)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
