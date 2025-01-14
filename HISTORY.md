@@ -1,3 +1,9 @@
+## 3.1.3 (January 14, 2025)
+
+### Bug Fixes
+
+- Fixed `_user_id` handling issue in `pyatlan.pkg.utils.get_client()`.
+
 ## 3.1.2 (December 31, 2024)
 
 ### New features
