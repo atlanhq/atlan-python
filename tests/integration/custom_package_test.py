@@ -6,9 +6,10 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.pkg.models import CustomPackage, generate
 from pyatlan.pkg.ui import UIConfig, UIStep
-from pyatlan.pkg.utils import set_package_headers
+from pyatlan.pkg.utils import get_client, set_package_headers
 from pyatlan.pkg.widgets import TextInput
 
 
@@ -21,6 +22,9 @@ def mock_pkg_env():
             "X_ATLAN_AGENT_ID": "agent_id_value",
             "X_ATLAN_AGENT_PACKAGE_NAME": "package_name_value",
             "X_ATLAN_AGENT_WORKFLOW_ID": "workflow_id_value",
+            "X_ATLAN_AGENT_WORKFLOW_ID": "workflow_id_value",
+            "CLIENT_ID": "client_id_value",
+            "CLIENT_SECRET": "client_secret_value",
         },
         clear=True,
     ):
@@ -104,3 +108,16 @@ def test_set_package_headers(client: AtlanClient, mock_pkg_env):
     }
     mock_client.update_headers.assert_called_once_with(expected_headers)
     assert updated_client == mock_client
+
+
+@patch.object(ImpersonationClient, "user", return_value="some-api-key")
+def test_get_client_user_id_handling(
+    mock_impersonate_client,
+    mock_pkg_env,
+    client: AtlanClient,
+):
+    updated_client = get_client(impersonate_user_id="test-user-id")
+    assert updated_client
+    assert updated_client.base_url
+    assert updated_client.api_key == "some-api-key"
+    assert updated_client._user_id == "test-user-id"
