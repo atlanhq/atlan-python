@@ -91,6 +91,25 @@ class AbstractCrawler(AbstractPackage):
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
     @staticmethod
+    def build_flat_hierarchical_filter(raw_filter: Optional[list]) -> str:
+        """
+        Build an exact match flat filter from the provided list of database names.
+
+        :param raw_filter: list of databases names to exclude when crawling
+        :returns: an exact-match filter map string, usable in crawlers include / exclude filters
+        :raises InvalidRequestException: In the unlikely event the provided filter cannot be translated
+        """
+        to_include: Dict[str, Any] = {}
+        if not raw_filter:
+            return ""
+        try:
+            for db_name in raw_filter:
+                to_include[f"{db_name}"] = {}
+            return dumps(to_include)
+        except (AttributeError, TypeError):
+            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
+
+    @staticmethod
     def build_flat_filter(raw_filter: Optional[list]) -> str:
         """
         Build a filter from the provided list of object names / IDs.
