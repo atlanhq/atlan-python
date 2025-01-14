@@ -1,3 +1,22 @@
+## 4.0.1 (January 14, 2025)
+
+### New Features
+
+- Added a new connector type (`CUSTOM`).
+- Added support for the `DatabricksCrawler` and `DatabricksMiner` workflow packages.
+- Added the `creator()` method for the following assets:
+  - `Custom`
+  - `Dataverse`
+  - `TablePartition`
+
+### Bug Fixes
+
+- Fixed `_user_id` handling issue in `pyatlan.pkg.utils.get_client()`.
+
+### QOL Improvements
+
+- Enhanced test coverage with additional unit tests for the `append_terms`, `replace_terms`, and `remove_terms` methods.
+
 ## 4.0.0 (January 7, 2025)
 
 ### New Features
