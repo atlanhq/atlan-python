@@ -82,7 +82,6 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
     elif user_id:
         LOGGER.info("No API token found, attempting to impersonate user: %s", user_id)
         client = AtlanClient(base_url=base_url, api_key="")
-        client._user_id = user_id
         api_key = client.impersonate.user(user_id=user_id)
     else:
         LOGGER.info(
@@ -91,7 +90,10 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
         client = AtlanClient(base_url=base_url, api_key="")
         api_key = client.impersonate.escalate()
 
-    return AtlanClient(base_url=base_url, api_key=api_key)
+    client = AtlanClient(base_url=base_url, api_key=api_key)
+    if user_id:
+        client._user_id = user_id
+    return client
 
 
 def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
