@@ -8,7 +8,18 @@
         parent_qualified_name: str,
         parent_type: type,
         order: int,
-    ) -> Column: ...
+    ) -> Column:
+        """
+        Builds the minimal object necessary to create a Column.
+
+        :param name: name of the Column
+        :param parent_qualified_name: unique name of the table / view / materialized view
+        / table partition / snowflake dynamic table in which this Column exists
+        :param parent_type: type of parent (table, view, materialized view,
+        table partition, snowflake dynamic table), should be a TYPE_NAME static string
+        :param order: the order the Column appears within its parent (the Column's position)
+        :returns: the minimal request necessary to create the Column
+        """
 
     @overload
     @classmethod
@@ -27,7 +38,27 @@
         table_name: str,
         table_qualified_name: str,
         connection_qualified_name: str,
-    ) -> Column: ...
+    ) -> Column:
+        """
+        Builds the minimal object necessary to create a Column.
+
+        :param name: name of the Column
+        :param parent_qualified_name: unique name of the table / view / materialized view
+        / table partition / snowflake dynamic table in which this Column exist
+        :param parent_type: type of parent (table, view, materialized view,
+        table partition, snowflake dynamic table), should be a TYPE_NAME static string
+        :param order: the order the Column appears within its parent (the Column's position)
+        :param parent_name: simple name of the table / view / materialized view / table partition
+        / snowflake dynamic table in which the Column should be created
+        :param database_name: simple name of the database in which the Column should be created
+        :param database_qualified_name: unique name of the database in which the Column should be created
+        :param schema_name: simple name of the schema in which the Column should be created
+        :param schema_qualified_name: unique name of the schema in which the Column should be created
+        :param table_name: (deprecated - unused)
+        :param table_qualified_name: (deprecated - unused)
+        :param connection_qualified_name: unique name of the connection in which the Column should be created
+        :returns: the minimal request necessary to create the Column
+        """
 
     @classmethod
     @init_guid
@@ -47,6 +78,40 @@
         table_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Column:
+        """
+        Builds the minimal object necessary to create a Column.
+
+        :param name: name of the Column
+        :param parent_qualified_name: unique name of the table / view / materialized view
+        / table partition / snowflake dynamic table in which this Column exists
+        :param parent_type: type of parent (table, view, materialized view,
+        table partition, snowflake dynamic table), should be a TYPE_NAME static string
+        :param order: the order the Column appears within its parent (the Column's position)
+        :param parent_name: simple name of the table / view / materialized view / table partition
+        / snowflake dynamic table in which the Column should be created
+        :param database_name: simple name of the database in which the Column should be created
+        :param database_qualified_name: unique name of the database in which the Column should be created
+        :param schema_name: simple name of the schema in which the Column should be created
+        :param schema_qualified_name: unique name of the schema in which the Column should be created
+        :param table_name: (deprecated - unused)
+        :param table_qualified_name: (deprecated - unused)
+        :param connection_qualified_name: unique name of the connection in which the Column should be created
+        :returns: the minimal request necessary to create the Column
+        """
+        if table_name:
+            warn(
+                ("`table_name` is deprecated, please use `parent_name` instead"),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        if table_qualified_name:
+            warn(
+                (
+                    "`table_qualified_name` is deprecated, please use `parent_qualified_name` instead"
+                ),
+                DeprecationWarning,
+                stacklevel=2,
+            )
         return Column(
             attributes=Column.Attributes.create(
                 name=name,

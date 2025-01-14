@@ -1,0 +1,83 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the table partition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        schema_name: str,
+        schema_qualified_name: str,
+        table_name: str,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the TablePartition
+        :param connection_qualified_name: unique name of the connection in which to create the TablePartition
+        :param database_name: simple name of the Database in which to create the TablePartition
+        :param database_qualified_name: unique name of the Database in which to create the TablePartition
+        :param schema_name: simple name of the Schema in which to create the TablePartition
+        :param schema_qualified_name: unique name of the Schema in which to create the TablePartition
+        :param table_name: simple name of the Table in which to create the TablePartition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
+        table_name: Optional[str] = None,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the TablePartition
+        :param connection_qualified_name: unique name of the connection in which to create the TablePartition
+        :param database_name: simple name of the Database in which to create the TablePartition
+        :param database_qualified_name: unique name of the Database in which to create the TablePartition
+        :param schema_name: simple name of the Schema in which to create the TablePartition
+        :param schema_qualified_name: unique name of the Schema in which to create the TablePartition
+        :param table_name: simple name of the Table in which to create the TablePartition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
+        attributes = TablePartition.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            schema_name=schema_name,
+            schema_qualified_name=schema_qualified_name,
+            table_name=table_name,
+            table_qualified_name=table_qualified_name,
+        )
+        return cls(attributes=attributes)

@@ -16,6 +16,7 @@ from pyatlan.model.assets import (
     Readme,
     Schema,
     Table,
+    TablePartition,
     View,
 )
 from pyatlan.model.contract import DataContractSpec
@@ -638,6 +639,93 @@ class TestProcedure:
         assert TestProcedure.procedure
         procedure = TestProcedure.procedure.trim_to_required()
         response = upsert(procedure)
+        assert response.mutated_entities is None
+
+
+@pytest.mark.order(after="TestView")
+class TestTablePartition:
+    table_partition: Optional[TablePartition] = None
+
+    def test_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_partition_name = TestId.make_unique("My_Table_Partition")
+        assert TestTable.table is not None
+        assert TestTable.table.qualified_name
+        table_partition = TablePartition.creator(
+            name=table_partition_name,
+            table_qualified_name=TestTable.table.qualified_name,
+        )
+        response = upsert(table_partition)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], TablePartition)
+        assert response.guid_assignments
+        table_partition = response.mutated_entities.CREATE[0]
+        TestTablePartition.table_partition = table_partition
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_partition_name = TestId.make_unique("My_Table_Partition_Overload")
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestTable.table is not None
+        assert TestTable.table.name
+        assert TestTable.table.qualified_name
+
+        table_partition = TablePartition.creator(
+            name=table_partition_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            table_name=TestTable.table.name,
+            table_qualified_name=TestTable.table.qualified_name,
+        )
+        response = upsert(table_partition)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], TablePartition)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_creator")
+    def test_updater(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTablePartition.table_partition
+        table_partition = TestTablePartition.table_partition
+        assert table_partition.qualified_name
+        assert table_partition.name
+        description = f"{table_partition.description} more stuff"
+        table_partition = TablePartition.updater(
+            qualified_name=table_partition.qualified_name,
+            name=table_partition.name,
+        )
+        table_partition.description = description
+        response = upsert(table_partition)
+        verify_asset_updated(response, TablePartition)
+
+    @pytest.mark.order(after="test_creator")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTablePartition.table_partition
+        table_partition = TestTablePartition.table_partition.trim_to_required()
+        response = upsert(table_partition)
         assert response.mutated_entities is None
 
 
