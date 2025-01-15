@@ -106,7 +106,7 @@ class OpenLineageClient:
             self._client._call_api(
                 request_obj=request,
                 api=OPEN_LINEAGE_SEND_EVENT_API.format_path(
-                    {"connector_type": connector_type}
+                    {"connector_type": connector_type.value}
                 ),
                 text_response=True,
             )
