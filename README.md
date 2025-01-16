@@ -12,9 +12,6 @@ This repository houses the code for a Python SDK to interact with [Atlan](https:
 [https://developer.atlan.com/getting-started/python-sdk/](https://developer.atlan.com/getting-started/python-sdk/)
 
 
-Here's the equivalent setup and development guide tailored for a Python SDK:  
-
----
 
 ## Installing for Development
 
