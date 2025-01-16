@@ -11,21 +11,17 @@ from pyatlan.model.open_lineage.job import OpenLineageJob
 from pyatlan.model.open_lineage.run import OpenLineageRun
 
 client = AtlanClient()
-
-
 @pytest.fixture(scope="module")
-def setup_connection():
+def connection():
     admin_role_guid = RoleCache.get_id_for_name("$admin")
     connection = client.open_lineage.create_connection(
         name="my-test", admin_roles=[admin_role_guid]
     )
-
     yield connection
-
     client.asset.purge_by_guid(guid=connection.guid)
 
 
-def test_open_lineage_integration(setup_connection):
+def test_open_lineage_integration(connection: Connection):
     connection = setup_connection
 
     assert connection is not None
@@ -78,7 +74,7 @@ def test_open_lineage_integration(setup_connection):
     assert start.event_type == OpenLineageEventType.START
     assert complete.event_type == OpenLineageEventType.COMPLETE
     time.sleep(15)
-    qualified_name_jobs = f"{connection.qualified_name}/{job.name}"
+   job_qualified_name = f"{connection.qualified_name}/{job.name}"
     job_asset = client.asset.get_by_qualified_name(
         qualified_name=qualified_name_jobs, asset_type=SparkJob
     )

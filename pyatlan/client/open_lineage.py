@@ -27,10 +27,10 @@ class OpenLineageClient:
 
     def _create_credential(self, connector_name: str) -> CredentialResponse:
         """
-        Creates a credential for the specified connector.
+        Creates an OpenLineage credential for the specified connector.
+
         :param connector_name: of the connection that should be OpenLineage event
         :return: details of the created credential
-
         """
         body = {
             "authType": "atlan_api_key",
@@ -70,7 +70,6 @@ class OpenLineageClient:
         :param admin_roles: list of admin roles to associate with this connection
         :param admin_groups:list of admin groups to associate with this connection
         :return: details of the connection created
-
         """
         from pyatlan.client.atlan import AtlanClient
 
@@ -86,7 +85,7 @@ class OpenLineageClient:
             admin_roles=admin_roles,
         )
 
-        connection.default_credential_guid = guid
+        connection.default_credential_guid = response.id
         response = client.asset.save(connection)  # type: ignore
         return connection
 
