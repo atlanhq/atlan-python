@@ -4,12 +4,11 @@ import pytest
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import Connection, SparkJob
+from pyatlan.model.assets import SparkJob
 from pyatlan.model.enums import OpenLineageEventType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.open_lineage.job import OpenLineageJob
 from pyatlan.model.open_lineage.run import OpenLineageRun
-from tests.integration.lineage_test import delete_asset
 
 client = AtlanClient()
 
@@ -23,7 +22,7 @@ def setup_connection():
 
     yield connection
 
-    delete_asset(client, asset_type=Connection, guid=connection.guid)
+    client.asset.purge_by_guid(guid=connection.guid)
 
 
 def test_open_lineage_integration(setup_connection):
