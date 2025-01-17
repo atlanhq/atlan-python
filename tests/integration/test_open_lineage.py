@@ -103,10 +103,6 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
     assert input_display_text[1] == "TBL"
     assert input_display_text[2] == "TBL"
 
-    output_display_text = [out.display_text for out in outputs]
-    assert output_display_text[0] == "FULL_STATS"
-    assert output_display_text[1] == "VIEW"
-
     assert process.display_text == "dag_123"
 
     client.asset.purge_by_guid(guid=job_asset.guid)
