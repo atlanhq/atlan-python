@@ -4,34 +4,38 @@ import pytest
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import SparkJob
+from pyatlan.model.assets import Connection, SparkJob
 from pyatlan.model.enums import OpenLineageEventType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.open_lineage.job import OpenLineageJob
 from pyatlan.model.open_lineage.run import OpenLineageRun
+from tests.integration.client import TestId, delete_asset
 
-client = AtlanClient()
+CONNECTION_NAME = TestId.make_unique("OpenLineage")
+print(CONNECTION_NAME)
+
+
 @pytest.fixture(scope="module")
-def connection():
-    admin_role_guid = RoleCache.get_id_for_name("$admin")
-    connection = client.open_lineage.create_connection(
-        name="my-test", admin_roles=[admin_role_guid]
+def connection(client: AtlanClient):
+    admin_role_guid = str(RoleCache.get_id_for_name("$admin"))
+
+    c = client.open_lineage.create_connection(
+        name=CONNECTION_NAME, admin_roles=[admin_role_guid]
     )
-    yield connection
-    client.asset.purge_by_guid(guid=connection.guid)
+    guid = c.guid
+    yield c
+    delete_asset(client, asset_type=Connection, guid=guid)
 
 
-def test_open_lineage_integration(connection: Connection):
-    connection = setup_connection
+def test_open_lineage_integration(connection: Connection, client: AtlanClient):
 
     assert connection is not None
-    assert connection.name == "my-test"
-
+    assert connection.name == CONNECTION_NAME
     namespace = "snowflake://abc123.snowflakecomputing.com"
     producer = "https://your.orchestrator/unique/id/123"
-    time.sleep(5)
+
     job = OpenLineageJob.creator(
-        connection_name="my-test", job_name="dag_123", producer=producer
+        connection_name=CONNECTION_NAME, job_name="dag_123", producer=producer
     )
     run = OpenLineageRun.creator(job=job)
 
@@ -70,14 +74,40 @@ def test_open_lineage_integration(connection: Connection):
         run=run, event_type=OpenLineageEventType.COMPLETE
     )
     complete.emit()
-
+    assert job
     assert start.event_type == OpenLineageEventType.START
     assert complete.event_type == OpenLineageEventType.COMPLETE
+
+    # Awaiting the creation and storage of the Job asset in the backend
     time.sleep(15)
-   job_qualified_name = f"{connection.qualified_name}/{job.name}"
+
+    job_qualified_name = f"{connection.qualified_name}/{job.name}"
     job_asset = client.asset.get_by_qualified_name(
-        qualified_name=qualified_name_jobs, asset_type=SparkJob
+        qualified_name=job_qualified_name,
+        asset_type=SparkJob,
+        ignore_relationships=False,
     )
+
     assert job_asset
     assert job_asset.name == job.name
+
+    inputs = job_asset.inputs
+    outputs = job_asset.outputs
+    process = job_asset.process
+
+    assert inputs
+    assert outputs
+    assert process
+
+    input_display_text = [inp.display_text for inp in inputs]
+    assert input_display_text[0] == "RUN_STATS"
+    assert input_display_text[1] == "TBL"
+    assert input_display_text[2] == "TBL"
+
+    output_display_text = [out.display_text for out in outputs]
+    assert output_display_text[0] == "FULL_STATS"
+    assert output_display_text[1] == "VIEW"
+
+    assert process.display_text == "dag_123"
+
     client.asset.purge_by_guid(guid=job_asset.guid)

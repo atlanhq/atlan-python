@@ -76,7 +76,6 @@ class OpenLineageClient:
         client = AtlanClient.get_default_client()
 
         response = self._create_credential(connector_name=connector_type.value)
-        guid = response.id
         connection = Connection.creator(
             name=name,
             connector_type=connector_type,
