@@ -12,8 +12,6 @@ from pyatlan.model.open_lineage.run import OpenLineageRun
 from tests.integration.client import TestId, delete_asset
 
 CONNECTION_NAME = TestId.make_unique("OpenLineage")
-print(CONNECTION_NAME)
-
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient):
@@ -25,7 +23,6 @@ def connection(client: AtlanClient):
     guid = c.guid
     yield c
     delete_asset(client, asset_type=Connection, guid=guid)
-
 
 def test_open_lineage_integration(connection: Connection, client: AtlanClient):
 
