@@ -13,6 +13,7 @@ from tests.integration.client import TestId, delete_asset
 
 CONNECTION_NAME = TestId.make_unique("OpenLineage")
 
+
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient):
     admin_role_guid = str(RoleCache.get_id_for_name("$admin"))
@@ -23,6 +24,7 @@ def connection(client: AtlanClient):
     guid = c.guid
     yield c
     delete_asset(client, asset_type=Connection, guid=guid)
+
 
 def test_open_lineage_integration(connection: Connection, client: AtlanClient):
 
