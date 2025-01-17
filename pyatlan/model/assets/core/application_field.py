@@ -4,17 +4,57 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .app import App
 
 
 class ApplicationField(App):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        application_qualified_name: str,
+    ) -> ApplicationField: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        application_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> ApplicationField: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        application_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> ApplicationField:
+        validate_required_fields(
+            ["name", "application_qualified_name"], [name, application_qualified_name]
+        )
+        attributes = ApplicationField.Attributes.create(
+            name=name,
+            application_qualified_name=application_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="ApplicationField", allow_mutation=False)
 
@@ -78,6 +118,38 @@ class ApplicationField(App):
         application_field_owned_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            application_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> ApplicationField.Attributes:
+            validate_required_fields(
+                ["name", "application_qualified_name"],
+                [name, application_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    application_qualified_name, "application_qualified_name", 4
+                )
+
+            return ApplicationField.Attributes(
+                name=name,
+                qualified_name=f"{application_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                connector_name=connector_name,
+                parent_application=Application.ref_by_qualified_name(
+                    application_qualified_name
+                ),
+            )
 
     attributes: ApplicationField.Attributes = Field(
         default_factory=lambda: ApplicationField.Attributes(),
