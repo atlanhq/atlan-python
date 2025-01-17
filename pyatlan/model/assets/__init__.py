@@ -208,8 +208,6 @@ __PYATLAN_ASSETS__ = {
     "sigma_data_element_field": ["SigmaDataElementField"],
     "sigma_page": ["SigmaPage"],
     "sigma_data_element": ["SigmaDataElement"],
-    "application": ["Application"],
-    "application_field": ["ApplicationField"],
     "anaplan_page": ["AnaplanPage"],
     "anaplan_list": ["AnaplanList"],
     "anaplan_line_item": ["AnaplanLineItem"],
