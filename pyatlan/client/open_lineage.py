@@ -11,6 +11,7 @@ from pyatlan.model.assets import Connection
 from pyatlan.model.credential import CredentialResponse
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
+from pyatlan.model.response import AssetMutationResponse
 
 
 class OpenLineageClient:
@@ -60,7 +61,7 @@ class OpenLineageClient:
         admin_users: Optional[List[str]] = None,
         admin_roles: Optional[List[str]] = None,
         admin_groups: Optional[List[str]] = None,
-    ) -> Connection:
+    ) -> AssetMutationResponse:
         """
         Creates a connection for OpenLineage.
 
@@ -85,8 +86,7 @@ class OpenLineageClient:
         )
 
         connection.default_credential_guid = response.id
-        response = client.asset.save(connection)  # type: ignore
-        return connection
+        return client.asset.save(connection)
 
     @validate_arguments
     def send(

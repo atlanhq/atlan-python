@@ -17,14 +17,16 @@ MODULE_NAME = TestId.make_unique("OL")
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient):
-    admin_role_guid = str(RoleCache.get_id_for_name("$admin"))
-
-    c = client.open_lineage.create_connection(
+    admin_role_guid = RoleCache.get_id_for_name("$admin")
+    assert admin_role_guid
+    response = client.open_lineage.create_connection(
         name=MODULE_NAME, admin_roles=[admin_role_guid]
     )
-    guid = c.guid
-    yield c
-    delete_asset(client, asset_type=Connection, guid=guid)
+    result = response.assets_created(asset_type=Connection)[0]
+    yield client.asset.get_by_guid(
+        result.guid, asset_type=Connection, ignore_relationships=False
+    )
+    delete_asset(client, asset_type=Connection, guid=result.guid)
 
 
 def test_open_lineage_integration(connection: Connection, client: AtlanClient):
@@ -123,6 +125,5 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
         process.get("uniqueAttributes", {}).get("qualifiedName")
         == f"{connection.qualified_name}/dag_123/process"
     )
-
     delete_asset(client, asset_type=Process, guid=process.get("guid"))
     delete_asset(client, asset_type=SparkJob, guid=job_asset.detail.guid)
