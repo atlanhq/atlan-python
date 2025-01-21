@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import sys
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
 
 from pydantic.v1 import parse_obj_as, parse_raw_as
@@ -239,3 +240,14 @@ def add_otel_handler(
         logger.info("OpenTelemetry handler with formatter added to the logger.")
         return otel_handler
     return None
+
+
+def handle_uncaught_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        # Ignore KeyboardInterrupt so a console python program can exit with Ctrl + C.
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    LOGGER.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+
+sys.excepthook = handle_uncaught_exception
