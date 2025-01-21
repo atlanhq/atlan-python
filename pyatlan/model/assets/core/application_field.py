@@ -69,7 +69,7 @@ class ApplicationField(App):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PARENT_APPLICATION: ClassVar[RelationField] = RelationField("parentApplication")
+    APPLICATION_PARENT: ClassVar[RelationField] = RelationField("applicationParent")
     """
     TBC
     """
@@ -81,19 +81,19 @@ class ApplicationField(App):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "parent_application",
+        "application_parent",
         "application_field_owned_assets",
     ]
 
     @property
-    def parent_application(self) -> Optional[Application]:
-        return None if self.attributes is None else self.attributes.parent_application
+    def application_parent(self) -> Optional[Application]:
+        return None if self.attributes is None else self.attributes.application_parent
 
-    @parent_application.setter
-    def parent_application(self, parent_application: Optional[Application]):
+    @application_parent.setter
+    def application_parent(self, application_parent: Optional[Application]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.parent_application = parent_application
+        self.attributes.application_parent = application_parent
 
     @property
     def application_field_owned_assets(self) -> Optional[List[Asset]]:
@@ -112,7 +112,7 @@ class ApplicationField(App):
         self.attributes.application_field_owned_assets = application_field_owned_assets
 
     class Attributes(App.Attributes):
-        parent_application: Optional[Application] = Field(
+        application_parent: Optional[Application] = Field(
             default=None, description=""
         )  # relationship
         application_field_owned_assets: Optional[List[Asset]] = Field(
@@ -146,7 +146,7 @@ class ApplicationField(App):
                 qualified_name=f"{application_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 connector_name=connector_name,
-                parent_application=Application.ref_by_qualified_name(
+                application_parent=Application.ref_by_qualified_name(
                     application_qualified_name
                 ),
             )

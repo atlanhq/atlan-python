@@ -48,31 +48,23 @@ class Application(App):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    APPLICATION_FIELDS: ClassVar[RelationField] = RelationField("applicationFields")
-    """
-    TBC
-    """
     APPLICATION_OWNED_ASSETS: ClassVar[RelationField] = RelationField(
         "applicationOwnedAssets"
     )
     """
     TBC
     """
+    APPLICATION_CHILD_FIELDS: ClassVar[RelationField] = RelationField(
+        "applicationChildFields"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "application_fields",
         "application_owned_assets",
+        "application_child_fields",
     ]
-
-    @property
-    def application_fields(self) -> Optional[List[ApplicationField]]:
-        return None if self.attributes is None else self.attributes.application_fields
-
-    @application_fields.setter
-    def application_fields(self, application_fields: Optional[List[ApplicationField]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.application_fields = application_fields
 
     @property
     def application_owned_assets(self) -> Optional[List[Asset]]:
@@ -88,11 +80,27 @@ class Application(App):
             self.attributes = self.Attributes()
         self.attributes.application_owned_assets = application_owned_assets
 
+    @property
+    def application_child_fields(self) -> Optional[List[ApplicationField]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_child_fields
+        )
+
+    @application_child_fields.setter
+    def application_child_fields(
+        self, application_child_fields: Optional[List[ApplicationField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_child_fields = application_child_fields
+
     class Attributes(App.Attributes):
-        application_fields: Optional[List[ApplicationField]] = Field(
+        application_owned_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
-        application_owned_assets: Optional[List[Asset]] = Field(
+        application_child_fields: Optional[List[ApplicationField]] = Field(
             default=None, description=""
         )  # relationship
 
