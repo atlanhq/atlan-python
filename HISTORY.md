@@ -1,3 +1,19 @@
+## 4.0.2 (January 22, 2025)
+
+### New Features
+
+- Added the ability to the custom package logger to log unhandled exceptions.
+- Added support for creating `OpenLineage` connections (`OpenLineageClient.create_connection()`).
+
+### Bug Fixes
+
+- Fixed handling of deleted `AtlanTagName`s in `Purpose` asset deserialization. Previously, a `ValueError` was raised.
+
+### QOL Improvements
+
+- Added an "Installing for development" section to the `README.md`.
+- Removed `pyatlan-codeql.yaml` in favor of using the organization-level CodeQL workflow to avoid configuration conflicts and failures.
+
 ## 4.0.1 (January 14, 2025)
 
 ### New Features
