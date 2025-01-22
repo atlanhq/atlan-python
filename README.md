@@ -41,7 +41,7 @@ To get started developing the SDK:
 
 4. Install the required dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install -e . && pip install -r requirements-dev.txt
    ```
 
 ### Code Formatting
