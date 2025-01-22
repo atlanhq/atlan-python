@@ -84,7 +84,7 @@ class AtlanTagName:
         if display_text := AtlanTagCache.get_name_for_id(data):
             return AtlanTagName(display_text)
         else:
-            raise ValueError(f"{data} is not a valid AtlanTag")
+            return cls.get_deleted_sentinel()
 
     @staticmethod
     def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
@@ -237,11 +237,7 @@ class AtlanTag(AtlanObject):
     def type_name_is_tag_name(cls, value):
         if isinstance(value, AtlanTagName):
             return value
-        try:
-            value = AtlanTagName._convert_to_display_text(value)
-        except ValueError:
-            value = AtlanTagName.get_deleted_sentinel()
-        return value
+        return AtlanTagName._convert_to_display_text(value)
 
     def __init__(self, *args, **kwargs):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
