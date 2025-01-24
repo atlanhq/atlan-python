@@ -1,0 +1,38 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        application_qualified_name: str,
+    ) -> ApplicationField: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        application_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> ApplicationField: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        application_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> ApplicationField:
+        validate_required_fields(
+            ["name", "application_qualified_name"], [name, application_qualified_name]
+        )
+        attributes = ApplicationField.Attributes.create(
+            name=name,
+            application_qualified_name=application_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)

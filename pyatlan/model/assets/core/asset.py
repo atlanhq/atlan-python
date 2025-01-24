@@ -1090,6 +1090,12 @@ class Asset(Referenceable):
     """
     Qualified name of the Application that contains this asset.
     """
+    APPLICATION_FIELD_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationFieldQualifiedName", "applicationFieldQualifiedName"
+    )
+    """
+    Qualified name of the ApplicationField that contains this asset.
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1126,6 +1132,10 @@ class Asset(Referenceable):
     TBC
     """
     README: ClassVar[RelationField] = RelationField("readme")
+    """
+    TBC
+    """
+    APPLICATION_FIELD: ClassVar[RelationField] = RelationField("applicationField")
     """
     TBC
     """
@@ -1313,6 +1323,7 @@ class Asset(Referenceable):
         "domain_g_u_i_ds",
         "non_compliant_asset_policy_g_u_i_ds",
         "application_qualified_name",
+        "application_field_qualified_name",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -1320,6 +1331,7 @@ class Asset(Referenceable):
         "output_port_data_products",
         "user_def_relationship_from",
         "readme",
+        "application_field",
         "data_contract_latest",
         "assigned_terms",
         "mc_monitors",
@@ -3250,6 +3262,24 @@ class Asset(Referenceable):
         self.attributes.application_qualified_name = application_qualified_name
 
     @property
+    def application_field_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_field_qualified_name
+        )
+
+    @application_field_qualified_name.setter
+    def application_field_qualified_name(
+        self, application_field_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_field_qualified_name = (
+            application_field_qualified_name
+        )
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -3348,6 +3378,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.readme = readme
+
+    @property
+    def application_field(self) -> Optional[ApplicationField]:
+        return None if self.attributes is None else self.attributes.application_field
+
+    @application_field.setter
+    def application_field(self, application_field: Optional[ApplicationField]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_field = application_field
 
     @property
     def data_contract_latest(self) -> Optional[DataContract]:
@@ -3718,6 +3758,9 @@ class Asset(Referenceable):
             default=None, description=""
         )
         application_qualified_name: Optional[str] = Field(default=None, description="")
+        application_field_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
@@ -3737,6 +3780,9 @@ class Asset(Referenceable):
             default=None, description=""
         )  # relationship
         readme: Optional[Readme] = Field(default=None, description="")  # relationship
+        application_field: Optional[ApplicationField] = Field(
+            default=None, description=""
+        )  # relationship
         data_contract_latest: Optional[DataContract] = Field(
             default=None, description=""
         )  # relationship
@@ -3799,6 +3845,7 @@ class Asset(Referenceable):
 
 from .anomalo_check import AnomaloCheck  # noqa
 from .application import Application  # noqa
+from .application_field import ApplicationField  # noqa
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
 from .data_contract import DataContract  # noqa
 from .data_product import DataProduct  # noqa

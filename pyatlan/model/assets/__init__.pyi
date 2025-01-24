@@ -36,6 +36,7 @@ __all__ = [
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
+    "ApplicationField",
     "Application",
     "AdfDataflow",
     "AdfDataset",
@@ -380,6 +381,7 @@ from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.app import App
 from .core.application import Application
+from .core.application_field import ApplicationField
 from .core.asset import Asset
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory

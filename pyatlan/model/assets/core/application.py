@@ -54,9 +54,16 @@ class Application(App):
     """
     TBC
     """
+    APPLICATION_CHILD_FIELDS: ClassVar[RelationField] = RelationField(
+        "applicationChildFields"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "application_owned_assets",
+        "application_child_fields",
     ]
 
     @property
@@ -73,8 +80,27 @@ class Application(App):
             self.attributes = self.Attributes()
         self.attributes.application_owned_assets = application_owned_assets
 
+    @property
+    def application_child_fields(self) -> Optional[List[ApplicationField]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_child_fields
+        )
+
+    @application_child_fields.setter
+    def application_child_fields(
+        self, application_child_fields: Optional[List[ApplicationField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_child_fields = application_child_fields
+
     class Attributes(App.Attributes):
         application_owned_assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+        application_child_fields: Optional[List[ApplicationField]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -108,4 +134,5 @@ class Application(App):
     )
 
 
+from .application_field import ApplicationField  # noqa
 from .asset import Asset  # noqa

@@ -43,6 +43,7 @@ You can interact with all of the following different kinds of assets:
     asset/anomalocheck
     asset/app
     asset/application
+    asset/applicationfield
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
