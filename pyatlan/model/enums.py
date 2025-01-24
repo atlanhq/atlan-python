@@ -2230,6 +2230,8 @@ class WorkflowPackage(str, Enum):
     ASSET_IMPORT = "csa-asset-import"
     ASSET_EXPORT_BASIC = "csa-asset-export-basic"
     RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
+    LINEAGE_BUILDER = "csa-lineage-builder"
+    LINEAGE_GENERATOR = "csa-lineage-generator"
 
 
 class AssetInputHandling(str, Enum):
