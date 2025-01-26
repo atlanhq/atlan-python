@@ -1,0 +1,144 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "python,utility",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://solutions.atlan.com/lineage-generator/",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "https://assets.atlan.com/assets/add-lineage.svg",
+        "orchestration.atlan.com/logo": "https://assets.atlan.com/assets/add-lineage.svg",
+        "orchestration.atlan.com/name": "Lineage Generator (no transformations)",
+        "package.argoproj.io/author": "Atlan CSA",
+        "package.argoproj.io/description": "Package to generate lineage between two systems - no transformations involved.",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@csa/lineage-generator",
+        "package.argoproj.io/keywords": "[\"python\",\"utility\", \"custom-package\"]",
+        "package.argoproj.io/name": "@csa/lineage-generator",
+        "package.argoproj.io/parent": ".",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "csa-lineage-generator-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "lineage-generator",
+        "orchestration.atlan.com/sourceCategory": "utility",
+        "orchestration.atlan.com/type": "custom",
+        "orchestration.atlan.com/preview": "true",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-rcsas-l-a-s-hlineage-generator",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "csa-lineage-generator-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "source-asset-type",
+                      "value": "MongoDB Collection"
+                    },
+                    {
+                      "name": "source-qualified-name-prefix",
+                      "value": "mongo/qn"
+                    },
+                    {
+                      "name": "target-asset-type",
+                      "value": "View"
+                    },
+                    {
+                      "name": "target-qualified-name-prefix",
+                      "value": "view/qn"
+                    },
+                    {
+                      "name": "case-sensitive",
+                      "value": "yes"
+                    },
+                    {
+                      "name": "match-on-schema",
+                      "value": "yes"
+                    },
+                    {
+                      "name": "output-option",
+                      "value": "delete"
+                    },
+                    {
+                      "name": "child-lineage",
+                      "value": "yes"
+                    },
+                    {
+                      "name": "regex-match",
+                      "value": "t1"
+                    },
+                    {
+                      "name": "regex-replace",
+                      "value": "t2"
+                    },
+                    {
+                      "name": "regex-match-schema",
+                      "value": "t3"
+                    },
+                    {
+                      "name": "regex-replace-schema",
+                      "value": "t4"
+                    },
+                    {
+                      "name": "regex-match-schema-name",
+                      "value": "t5"
+                    },
+                    {
+                      "name": "regex-replace-schema-name",
+                      "value": "t6"
+                    },
+                    {
+                      "name": "name-prefix",
+                      "value": "t7"
+                    },
+                    {
+                      "name": "name-suffix",
+                      "value": "t8"
+                    },
+                    {
+                      "name": "file-advanced-separator",
+                      "value": "t9"
+                    },
+                    {
+                      "name": "file-advanced-positions",
+                      "value": "10"
+                    },
+                    {
+                      "name": "connection-qualified-name",
+                      "value": "test/qn"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "csa-lineage-generator",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@csa/lineage-generator"
+        }
+      }
+    },
+    "payload": []
+}

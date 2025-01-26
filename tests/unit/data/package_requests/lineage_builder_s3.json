@@ -1,0 +1,120 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "kotlin,utility",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://solutions.atlan.com/lineage-builder/",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "http://assets.atlan.com/assets/ph-tree-structure-light.svg",
+        "orchestration.atlan.com/logo": "http://assets.atlan.com/assets/ph-tree-structure-light.svg",
+        "orchestration.atlan.com/name": "Lineage Builder",
+        "package.argoproj.io/author": "Atlan CSA",
+        "package.argoproj.io/description": "Build lineage from a CSV file.",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@csa/lineage-builder",
+        "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",
+        "package.argoproj.io/name": "@csa/lineage-builder",
+        "package.argoproj.io/parent": ".",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "csa-lineage-builder-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "lineage-builder",
+        "orchestration.atlan.com/sourceCategory": "utility",
+        "orchestration.atlan.com/type": "custom",
+        "orchestration.atlan.com/preview": "true",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-rcsas-l-a-s-hlineage-builder",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "csa-lineage-builder-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "lineage_prefix",
+                      "value": "text-prefix"
+                    },
+                    {
+                      "name": "lineage_key",
+                      "value": "test-object-key"
+                    },
+                    {
+                      "name": "lineage_import_type",
+                      "value": "CLOUD"
+                    },
+                    {
+                      "name": "cloud_source",
+                      "value": "{{credentialGuid}}"
+                    },
+                    {
+                      "name": "lineage_upsert_semantic",
+                      "value": "upsert"
+                    },
+                    {
+                      "name": "lineage_fail_on_errors",
+                      "value": true
+                    },
+                    {
+                      "name": "lineage_case_sensitive",
+                      "value": false
+                    },
+                    {
+                      "name": "field_separator",
+                      "value": ","
+                    },
+                    {
+                      "name": "batch_size",
+                      "value": 25
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "csa-lineage-builder",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@csa/lineage-builder"
+        }
+      }
+    },
+    "payload": [
+      {
+        "parameter": "credentialGuid",
+        "type": "credential",
+        "body": {
+          "name": "csa-lineage-builder-123456-0",
+          "authType": "s3",
+          "username": "test-access-key",
+          "password": "test-secret-key",
+          "extra": {
+            "region": "test-region",
+            "s3_bucket": "test-bucket"
+          },
+          "connectorConfigName": "csa-connectors-objectstore"
+        }
+      }
+    ]
+}
