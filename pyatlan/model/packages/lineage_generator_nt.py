@@ -83,6 +83,7 @@ class LineageGenerator(AbstractCustomPackage):
         process_connection_qn: Optional[str] = None,
     ) -> LineageGenerator:
         """
+        Set up the lineage generator with the specified configuration.
 
         :param source_asset_type: type name of the lineage input assets (sources).
         :param source_qualified_name: qualified name prefix of the lineage input assets (sources).
@@ -92,7 +93,7 @@ class LineageGenerator(AbstractCustomPackage):
         :param match_on_schema: whether to include the schema name to match source and target assets, default: `False`.
         If one of `"Source asset type"` or `"Target asset type"`
         is not a relational type (`Table`, `View`, `Materialized View`,
-        `Calculation View` or `Column`) or a Mongo DB Collection the option is ignored, default: `False`
+        `Calculation View` or `Column`) or a `MongoDB Collection` the option is ignored, default: `False`
         :param output_type: default to `Preview` lineage
             - `Preview` lineage: to generate a csv with the lineage preview.
             - `Generate` lineage: to generate the lineage on Atlan.
@@ -131,7 +132,7 @@ class LineageGenerator(AbstractCustomPackage):
         :param process_connection_qn (optional): connection for the process assets.
         If blank the process assets will be assigned to the source assets connection.
 
-        :returns: package, set up lineager generator with the specified configuration.
+        :returns: package, set up lineage generator with the specified configuration.
         """
         params = {
             "source-asset-type": source_asset_type.value,

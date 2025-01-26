@@ -24,8 +24,7 @@ class LineageBuilder(AbstractCustomPackage):
         object_key: str,
     ) -> LineageBuilder:
         """
-        Set up the package to import
-        metadata directly from the object store.
+        Set up the package to retrieve the lineage file from cloud object storage.
 
         :param prefix: directory (path) within the object store from
             which to retrieve the file containing asset metadata
@@ -139,7 +138,7 @@ class LineageBuilder(AbstractCustomPackage):
         batch_size: Optional[int] = None,
     ) -> LineageBuilder:
         """
-        Set up package to import assets with advanced configuration.
+        Set up the lineage builder with the specified options.
 
         :param input_handling: specifies whether to allow the creation
             of new assets from the input CSV (full or partial assets)
