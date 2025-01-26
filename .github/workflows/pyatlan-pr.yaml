@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        # Specify version as a string
+        # https://github.com/actions/setup-python/issues/160"
+        python-version: ["3.8", "3.12", "3.13"]
 
     steps:
       - name: Checkout code
@@ -39,7 +41,9 @@ jobs:
       files: ${{ steps.distribute-integration-test-files.outputs.files }}
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        # Specify version as a string
+        # https://github.com/actions/setup-python/issues/160"
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - name: Checkout code
@@ -94,7 +98,9 @@ jobs:
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          # Specify version as a string
+          # https://github.com/actions/setup-python/issues/160"
+          python-version: "3.9"
 
       - name: Install dependencies
         run: |

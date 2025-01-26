@@ -2151,21 +2151,21 @@ class TestBatch:
         assert [table_3, table_4] == failure.failed_assets
         assert exception == failure.failure_reason
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
-            mock_atlan_client.asset.save.has_calls(
+            mock_atlan_client.asset.save.assert_has_calls(
                 [
                     call([table_1, table_2], replace_atlan_tags=False),
                     call([table_3, table_4], replace_atlan_tags=False),
                 ]
             )
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
-            mock_atlan_client.asset.save_replacing_cm.has_calls(
+            mock_atlan_client.asset.save_replacing_cm.assert_has_calls(
                 [
                     call([table_1, table_2], replace_atlan_tags=False),
                     call([table_3, table_4], replace_atlan_tags=False),
                 ]
             )
         else:
-            mock_atlan_client.asset.save_merging_cm.has_calls(
+            mock_atlan_client.asset.save_merging_cm.assert_has_calls(
                 [
                     call([table_1, table_2], replace_atlan_tags=False),
                     call([table_3, table_4], replace_atlan_tags=False),

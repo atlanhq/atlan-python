@@ -131,7 +131,7 @@ class AbstractAssetCache(ABC):
                 qualified_name,
                 AtlanConnectorType._get_connector_type_from_qualified_name(
                     qualified_name
-                ),
+                ).value,
             )
         return self._get_by_guid(guid=guid, allow_refresh=False)
 

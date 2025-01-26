@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2024 Atlan Pte. Ltd.
 
-import imghdr
+import imghdr  # type: ignore[import-not-found]
 import os
 from pathlib import Path
 

@@ -116,6 +116,6 @@ class OpenLineageClient:
                 )
             ):
                 raise ErrorCode.OPENLINEAGE_NOT_CONFIGURED.exception_with_parameters(
-                    connector_type
+                    connector_type.value
                 ) from e
             raise e

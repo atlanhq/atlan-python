@@ -238,7 +238,7 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     mock_api_caller._call_api.return_value = raw_json
 
     assert client.find_by_type(prefix=WorkflowPackage.FIVETRAN) == []
-    mock_api_caller._call_api.called_once()
+    mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
@@ -256,7 +256,7 @@ def test_find_by_id(
         client.find_by_id(id="atlan-snowflake-miner-1714638976")
         == search_response.hits.hits[0]
     )
-    mock_api_caller._call_api.called_once()
+    mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
@@ -274,7 +274,7 @@ def test_find_run_by_id(
         client.find_run_by_id(id="atlan-snowflake-miner-1714638976-mzdza")
         == search_response.hits.hits[0]
     )
-    mock_api_caller._call_api.called_once()
+    mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_RUN_SEARCH
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest

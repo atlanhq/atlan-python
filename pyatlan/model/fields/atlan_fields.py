@@ -903,7 +903,7 @@ class LineageFilterFieldCM(LineageFilterField):
                 self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN
             ):
                 raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                    AtlanComparisonOperator.EQ,
+                    AtlanComparisonOperator.EQ.value,
                     f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
                 )
             return LineageFilter(
@@ -977,7 +977,7 @@ class LineageFilterFieldCM(LineageFilterField):
                 self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN
             ):
                 raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                    AtlanComparisonOperator.NEQ,
+                    AtlanComparisonOperator.NEQ.value,
                     f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
                 )
             return LineageFilter(
@@ -1228,7 +1228,7 @@ class LineageFilterFieldCM(LineageFilterField):
             self._cm_field.attribute_def.type_name or "", ComparisonCategory.NUMBER
         ):
             raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                comparison_operator,
+                comparison_operator.value,
                 f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
             )
         return LineageFilter(
@@ -1246,7 +1246,7 @@ class LineageFilterFieldCM(LineageFilterField):
             self._cm_field.attribute_def.type_name or "", ComparisonCategory.STRING
         ):
             raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                comparison_operator,
+                comparison_operator.value,
                 f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
             )
         return LineageFilter(
