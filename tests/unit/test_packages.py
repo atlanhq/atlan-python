@@ -8,6 +8,7 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets.core import Asset
 from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan.model.packages import (
+    APITokenConnectionAdmin,
     AssetExportBasic,
     AssetImport,
     BigQueryCrawler,
@@ -88,6 +89,7 @@ DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
 DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
     "databricks_miner_popularity_system_table.json"
 )
+API_TOKEN_CONNECTION_ADMIN = "api_token_connection_admin.json"
 
 
 class NonSerializable:
@@ -1395,6 +1397,19 @@ def test_relational_assets_builder(mock_package_env):
         relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
     )
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
+
+
+def test_api_token_connection_admin(mock_package_env):
+    token_connection_admin = (
+        APITokenConnectionAdmin()
+        .config(
+            connection_qualified_name="default/snowflake/1234567890",
+            api_token_guid="92588c67-5ddf-4a45-8b5c-dd92f4b84e99",
+        )
+        .to_workflow()
+    )
+    request_json = loads(token_connection_admin.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(API_TOKEN_CONNECTION_ADMIN)
 
 
 @pytest.mark.parametrize(
