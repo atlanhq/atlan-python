@@ -2227,11 +2227,13 @@ class WorkflowPackage(str, Enum):
     TERADATA_MINER = "atlan-teradata-miner"
     THOUGHTSPOT = "atlan-thoughtspot"
     TRINO = "atlan-trino"
+    # CSA packages
     ASSET_IMPORT = "csa-asset-import"
     ASSET_EXPORT_BASIC = "csa-asset-export-basic"
     RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
     LINEAGE_BUILDER = "csa-lineage-builder"
     LINEAGE_GENERATOR = "csa-lineage-generator"
+    API_TOKEN_CONNECTION_ADMIN = "csa-api-token-connection-admin"  # noqa: S105
 
 
 class AssetInputHandling(str, Enum):

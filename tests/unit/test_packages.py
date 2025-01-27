@@ -8,6 +8,7 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets.core import Asset
 from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan.model.packages import (
+    APITokenConnectionAdmin,
     AssetExportBasic,
     AssetImport,
     BigQueryCrawler,
@@ -98,6 +99,7 @@ LINEAGE_BUILDER_GCS = "lineage_builder_gcs.json"
 LINEAGE_BUILDER_ADLS = "lineage_builder_adls.json"
 LINEAGE_GENERATOR_DEFAULT = "lineage_generator_default.json"
 LINEAGE_GENERATOR_FULL = "lineage_generator_full.json"
+API_TOKEN_CONNECTION_ADMIN = "api_token_connection_admin.json"
 
 
 class NonSerializable:
@@ -1552,6 +1554,19 @@ def test_lineage_generator_nt(mock_package_env):
 
     request_json = loads(lineage_generator_full.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(LINEAGE_GENERATOR_FULL)
+
+
+def test_api_token_connection_admin(mock_package_env):
+    token_connection_admin = (
+        APITokenConnectionAdmin()
+        .config(
+            connection_qualified_name="default/snowflake/1234567890",
+            api_token_guid="92588c67-5ddf-4a45-8b5c-dd92f4b84e99",
+        )
+        .to_workflow()
+    )
+    request_json = loads(token_connection_admin.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(API_TOKEN_CONNECTION_ADMIN)
 
 
 @pytest.mark.parametrize(
