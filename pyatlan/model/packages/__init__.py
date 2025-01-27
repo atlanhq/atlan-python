@@ -10,6 +10,7 @@ from .dbt_crawler import DbtCrawler
 from .dynamo_d_b_crawler import DynamoDBCrawler
 from .glue_crawler import GlueCrawler
 from .mongodb_crawler import MongoDBCrawler
+from .oracle_crawler import OracleCrawler
 from .postgres_crawler import PostgresCrawler
 from .powerbi_crawler import PowerBICrawler
 from .relational_assets_builder import RelationalAssetsBuilder
@@ -39,4 +40,5 @@ __all__ = [
     "AssetImport",
     "AssetExportBasic",
     "RelationalAssetsBuilder",
+    "OracleCrawler",
 ]
