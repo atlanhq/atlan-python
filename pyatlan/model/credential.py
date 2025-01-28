@@ -22,12 +22,10 @@ class Credential(AtlanObject):
     )
     auth_type: Optional[str] = Field(
         default=None,
-        alias="authType",
         description="Authentication mechanism represented by the credential.",
     )
     connector_type: Optional[str] = Field(
         default=None,
-        alias="connectorType",
         description="Type of connector used by the credential.",
     )
     username: Optional[str] = Field(
@@ -55,14 +53,12 @@ class Credential(AtlanObject):
     )
     connector_config_name: Optional[str] = Field(
         default=None,
-        alias="connectorConfigName",
         description="Name of the connector configuration responsible for managing the credential.",
     )
     metadata: Optional[Dict[str, Any]] = Field(default=None, description="TBD")
     level: Optional[Union[Dict[str, Any], str]] = Field(default=None, description="TBD")
     connector_name: Optional[str] = Field(
         default=None,
-        alias="connector",
         description="Name of the connector used by the credential",
     )
 
