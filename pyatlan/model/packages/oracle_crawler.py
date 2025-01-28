@@ -57,6 +57,22 @@ class OracleCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
+    def s3(self, bucket_name: str, bucket_prefix: str) -> OracleCrawler:
+        """
+        Set up the crawler to fetch metadata directly from the S3 bucket.
+
+        :param bucket_name: name of the S3 bucket containing the extracted metadata files
+        :param bucket_prefix: prefix within the S3 bucket where the extracted metadata files are located
+        :returns: crawler, configured to fetch metadata directly from the S3 bucket
+        """
+        self._parameters.append(dict(name="extraction-method", value="s3"))
+        self._parameters.append(dict(name="metadata-s3-bucket", value=bucket_name))
+        self._parameters.append(dict(name="metadata-s3-prefix", value=bucket_prefix))
+        # Advanced configuration defaults
+        self.jdbc_internal_methods(enable=True)
+        self.source_level_filtering(enable=False)
+        return self
+
     def direct(
         self,
         hostname: str,
@@ -92,7 +108,7 @@ class OracleCrawler(AbstractCrawler):
         :param username: through which to access Oracle
         :param password: through which to access Oracle
         :param sid: SID (system identifier) of the Oracle instance
-        :param database: database name to crawl
+        :param database_name: database name to crawl
         :returns: crawler, set up to use basic authentication
         """
         local_creds = {

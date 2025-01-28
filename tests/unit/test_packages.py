@@ -90,6 +90,7 @@ DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
     "databricks_miner_popularity_system_table.json"
 )
 ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
+ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
 
 
 class NonSerializable:
@@ -1423,6 +1424,19 @@ def test_oracle_crawler(mock_package_env):
     )
     request_json = loads(oracle_crawler_basic.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(ORACLE_CRAWLER_BASIC)
+
+    oracle_crawler_offline = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .s3(bucket_name="test-bucket", bucket_prefix="test-prefix")
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
 
 
 @pytest.mark.parametrize(
