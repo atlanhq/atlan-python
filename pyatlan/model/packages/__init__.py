@@ -9,6 +9,8 @@ from .databricks_miner import DatabricksMiner
 from .dbt_crawler import DbtCrawler
 from .dynamo_d_b_crawler import DynamoDBCrawler
 from .glue_crawler import GlueCrawler
+from .lineage_builder import LineageBuilder
+from .lineage_generator_nt import LineageGenerator
 from .mongodb_crawler import MongoDBCrawler
 from .oracle_crawler import OracleCrawler
 from .postgres_crawler import PostgresCrawler
@@ -41,4 +43,6 @@ __all__ = [
     "AssetExportBasic",
     "RelationalAssetsBuilder",
     "OracleCrawler",
+    "LineageBuilder",
+    "LineageGenerator",
 ]

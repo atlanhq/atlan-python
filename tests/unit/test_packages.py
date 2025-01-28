@@ -18,6 +18,8 @@ from pyatlan.model.packages import (
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
+    LineageBuilder,
+    LineageGenerator,
     MongoDBCrawler,
     OracleCrawler,
     PostgresCrawler,
@@ -91,6 +93,11 @@ DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
 )
 ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
 ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
+LINEAGE_BUILDER_S3 = "lineage_builder_s3.json"
+LINEAGE_BUILDER_GCS = "lineage_builder_gcs.json"
+LINEAGE_BUILDER_ADLS = "lineage_builder_adls.json"
+LINEAGE_GENERATOR_DEFAULT = "lineage_generator_default.json"
+LINEAGE_GENERATOR_FULL = "lineage_generator_full.json"
 
 
 class NonSerializable:
@@ -1437,6 +1444,114 @@ def test_oracle_crawler(mock_package_env):
     )
     request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
+
+
+def test_lineage_builder(mock_package_env):
+    lineage_builder_s3 = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            region="test-region",
+            bucket="test-bucket",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_s3.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_S3)
+
+    lineage_builder_gcs = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .gcs(
+            project_id="test-project-id",
+            service_account_json="test-service-account-json",
+            bucket="test-bucket",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_GCS)
+
+    lineage_builder_adls = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-account-name",
+            container="test-container",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_adls.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_ADLS)
+
+
+def test_lineage_generator_nt(mock_package_env):
+    lineage_generator_default = (
+        LineageGenerator().config(
+            source_asset_type=LineageGenerator.SourceAssetType.MongoDBCollection,
+            source_qualified_name="mongo/qn",
+            target_asset_type=LineageGenerator.TargetAssetType.View,
+            target_qualified_name="view/qn",
+        )
+    ).to_workflow()
+
+    request_json = loads(
+        lineage_generator_default.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(LINEAGE_GENERATOR_DEFAULT)
+
+    lineage_generator_full = (
+        LineageGenerator().config(
+            source_asset_type=LineageGenerator.SourceAssetType.MongoDBCollection,
+            source_qualified_name="mongo/qn",
+            target_asset_type=LineageGenerator.TargetAssetType.View,
+            target_qualified_name="view/qn",
+            case_sensitive_match=True,
+            match_on_schema=True,
+            output_type=LineageGenerator.OutputType.DELETE,
+            generate_on_child_assets=True,
+            regex_match="t1",
+            regex_replace="t2",
+            regex_match_schema="t3",
+            regex_replace_schema="t4",
+            regex_match_schema_name="t5",
+            regex_replace_schema_name="t6",
+            match_prefix="t7",
+            match_suffix="t8",
+            file_advanced_seperator="t9",
+            file_advanced_position="10",
+            process_connection_qn="test/qn",
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_generator_full.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_GENERATOR_FULL)
 
 
 @pytest.mark.parametrize(
