@@ -12,6 +12,7 @@ from .glue_crawler import GlueCrawler
 from .lineage_builder import LineageBuilder
 from .lineage_generator_nt import LineageGenerator
 from .mongodb_crawler import MongoDBCrawler
+from .oracle_crawler import OracleCrawler
 from .postgres_crawler import PostgresCrawler
 from .powerbi_crawler import PowerBICrawler
 from .relational_assets_builder import RelationalAssetsBuilder
@@ -41,6 +42,7 @@ __all__ = [
     "AssetImport",
     "AssetExportBasic",
     "RelationalAssetsBuilder",
+    "OracleCrawler",
     "LineageBuilder",
     "LineageGenerator",
 ]

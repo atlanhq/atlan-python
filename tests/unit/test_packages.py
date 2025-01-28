@@ -21,6 +21,7 @@ from pyatlan.model.packages import (
     LineageBuilder,
     LineageGenerator,
     MongoDBCrawler,
+    OracleCrawler,
     PostgresCrawler,
     PowerBICrawler,
     RelationalAssetsBuilder,
@@ -90,6 +91,8 @@ DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
 DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
     "databricks_miner_popularity_system_table.json"
 )
+ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
+ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
 LINEAGE_BUILDER_S3 = "lineage_builder_s3.json"
 LINEAGE_BUILDER_GCS = "lineage_builder_gcs.json"
 LINEAGE_BUILDER_ADLS = "lineage_builder_adls.json"
@@ -1402,6 +1405,45 @@ def test_relational_assets_builder(mock_package_env):
         relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
     )
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
+
+
+def test_oracle_crawler(mock_package_env):
+    oracle_crawler_basic = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .direct(hostname="test-hostname", port=1234)
+        .basic_auth(
+            username="test-username",
+            password="test-password",
+            sid="test-sid",
+            database_name="test-db",
+        )
+        .include(assets={"t1": ["t11", "t12", "t13"]})
+        .exclude(assets={"t2": ["t21", "t22", "t23"]})
+        .exclude_regex("TEST*")
+        .jdbc_internal_methods(True)
+        .source_level_filtering(True)
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_BASIC)
+
+    oracle_crawler_offline = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .s3(bucket_name="test-bucket", bucket_prefix="test-prefix")
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
 
 
 def test_lineage_builder(mock_package_env):
