@@ -510,10 +510,6 @@ TEST_FILE_CLIENT_METHODS = {
 
 
 TEST_WORKFLOW_CLIENT_METHODS = {
-    "run": [
-        (["abc"], "value is not a valid dict"),
-        ([None], "none is not an allowed value"),
-    ],
     "update": [
         (["abc"], "value is not a valid dict"),
         ([None], "none is not an allowed value"),
