@@ -294,3 +294,46 @@ def test_cred_get_all_no_results(mock_api_caller):
     assert isinstance(result, CredentialListResponse)
     assert result.records == []
     assert len(result.records) == 0
+
+
+@pytest.mark.parametrize(
+    "credential_data",
+    [
+        (
+            Credential(
+                name="test-name",
+                description="test-desc",
+                connector_config_name="test-ccn",
+                connector_name="test-conn",
+                connector_type="test-ct",
+                auth_type="test-at",
+                host="test-host",
+                port=123,
+                username="test-username",
+                extra={"some": "value"},
+            )
+        ),
+    ],
+)
+def test_creator_success(
+    credential_data,
+    credential_response: CredentialResponse,
+    mock_api_caller,
+    client: CredentialClient,
+):
+
+    mock_api_caller._call_api.return_value = credential_response.dict()
+    client = CredentialClient(mock_api_caller)
+
+    response = client.creator(credential=credential_data)
+
+    assert isinstance(response, CredentialResponse)
+    assert credential_data.name == response.name
+    assert credential_data.description == response.description
+    assert credential_data.port == response.port
+    assert credential_data.auth_type == response.auth_type
+    assert credential_data.connector_type == response.connector_type
+    assert credential_data.connector_config_name == response.connector_config_name
+    assert credential_data.username == response.username
+    assert credential_data.extras == response.extras
+    assert response.level is None
