@@ -144,8 +144,8 @@ class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
-    connect_timeout: float = 30.0
-    read_timeout: float = 120.0
+    connect_timeout: float = 30.0  # 30 secs
+    read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
