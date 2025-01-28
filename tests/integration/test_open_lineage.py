@@ -78,7 +78,7 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
     assert complete.event_type == OpenLineageEventType.COMPLETE
 
     # Awaiting the creation and storage of the Job asset in the backend
-    time.sleep(30)
+    time.sleep(60)
 
     job_qualified_name = f"{connection.qualified_name}/{job.name}"
 
@@ -90,6 +90,7 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
             qualified_name=job_qualified_name,
         )
     )
+    print(results)
     assert results and results.current_page() and len(results.current_page()) > 0
     job_asset = results.current_page()[0]
     assert (
