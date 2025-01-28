@@ -304,7 +304,7 @@ def test_cred_get_all_no_results(mock_api_caller):
                 name="test-name",
                 description="test-desc",
                 connector_config_name="test-ccn",
-                connector_name="test-conn",
+                connector="test-conn",
                 connector_type="test-ct",
                 auth_type="test-at",
                 host="test-host",

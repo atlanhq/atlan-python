@@ -57,7 +57,7 @@ class Credential(AtlanObject):
     )
     metadata: Optional[Dict[str, Any]] = Field(default=None, description="TBD")
     level: Optional[Union[Dict[str, Any], str]] = Field(default=None, description="TBD")
-    connector_name: Optional[str] = Field(
+    connector: Optional[str] = Field(
         default=None,
         description="Name of the connector used by the credential",
     )

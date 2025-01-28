@@ -8,10 +8,10 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import OPEN_LINEAGE_SEND_EVENT_API
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.assets import Connection
+from pyatlan.model.credential import Credential
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.credential import Credential
 
 
 class OpenLineageClient:
@@ -54,7 +54,7 @@ class OpenLineageClient:
         create_credential.name = (
             f"default-{connector_type.value}-{int(utils.get_epoch_timestamp())}-0"
         )
-        create_credential.connector_name = str(connector_type.value)
+        create_credential.connector = str(connector_type.value)
         create_credential.connector_config_name = (
             f"atlan-connectors-{connector_type.value}"
         )

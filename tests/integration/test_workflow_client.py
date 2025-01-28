@@ -5,9 +5,11 @@ from typing import Generator
 
 import pytest
 
+from pyatlan import utils
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.model.assets import Connection
+from pyatlan.model.credential import Credential
 from pyatlan.model.enums import AtlanConnectorType, AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.packages.snowflake_miner import SnowflakeMiner
 from pyatlan.model.workflow import WorkflowResponse, WorkflowSchedule
@@ -271,6 +273,36 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
     _assert_remove_schedule(response, workflow)
 
 
+def test_create_credentials(client: AtlanClient):
+    create_credentials = Credential()
+    credentials_name = f"default-spark-{int(utils.get_epoch_timestamp())}-0"
+    create_credentials.name = credentials_name
+    create_credentials.auth_type = "atlan_api_key"
+    create_credentials.connector_config_name = "atlan-connectors-spark"
+    create_credentials.connector = "spark"
+    create_credentials.username = "test-username"
+    create_credentials.password = "12345"
+    create_credentials.connector_type = "event"
+    create_credentials.host = "test-host"
+    create_credentials.port = 123
+
+    credentials = client.credentials.creator(create_credentials)
+    assert credentials
+    assert credentials.id
+    reterieved_creds = client.credentials.get(guid=credentials.id)
+    assert reterieved_creds.auth_type == "atlan_api_key"
+    assert reterieved_creds.name == credentials_name
+    assert reterieved_creds.connector_config_name == "atlan-connectors-spark"
+    assert reterieved_creds.connector == "spark"
+    assert reterieved_creds.username == "test-username"
+    assert create_credentials.connector_type == "event"
+    assert create_credentials.host == "test-host"
+    assert create_credentials.port == 123
+    assert create_credentials.extras is None
+    assert create_credentials.level is None
+    assert create_credentials.metadata is None
+    
+    
 def test_get_all_credentials(client: AtlanClient):
     credentials = client.credentials.get_all()
     assert credentials, "Expected credentials but found None"
