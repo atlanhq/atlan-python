@@ -131,6 +131,10 @@ class ApiToken(AtlanObject):
 
 
 class ApiTokenRequest(AtlanObject):
+    # The value was previously set to 13 years (409968000 secs).
+    # It has been reverted to 5 years due to an integer overflow issue in Keycloak.
+    # https://github.com/keycloak/keycloak/issues/19671
+    _MAX_VALIDITY: int = 157680000  # 5 years in seconds
     display_name: Optional[str] = Field(
         default=None,
         description="Human-readable name provided when creating the token.",
@@ -151,11 +155,13 @@ class ApiTokenRequest(AtlanObject):
 
     @root_validator(pre=True)
     def set_max_validity(cls, values):
-        if "validitySeconds" in values and values["validitySeconds"]:
-            if values["validitySeconds"] < 0:
-                values["validitySeconds"] = 409968000
+        if "validity_seconds" in values and values["validity_seconds"]:
+            if values["validity_seconds"] < 0:
+                values["validity_seconds"] = cls._MAX_VALIDITY
             else:
-                values["validitySeconds"] = min(values["validitySeconds"], 409968000)
+                values["validity_seconds"] = min(
+                    values["validity_seconds"], cls._MAX_VALIDITY
+                )
         if "personas" in values and not values["personas"]:
             values["personas"] = set()
         return values
