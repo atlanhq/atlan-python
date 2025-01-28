@@ -9,6 +9,7 @@ from pyatlan.client.constants import (
     GET_CREDENTIAL_BY_GUID,
     TEST_CREDENTIAL,
     UPDATE_CREDENTIAL_BY_GUID,
+    CREATE_CREDENTIALS,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
@@ -33,6 +34,15 @@ class CredentialClient:
                 "client", "ApiCaller"
             )
         self._client = client
+
+    @validate_arguments
+    def creator(self, credential: Credential) -> CredentialResponse:
+        raw_json = self._client._call_api(
+            api=CREATE_CREDENTIALS.format_path_with_params(),
+            query_params={"testCredential": "true"},
+            request_obj=credential,
+        )
+        return CredentialResponse(**raw_json)
 
     @validate_arguments
     def get(self, guid: str) -> CredentialResponse:
