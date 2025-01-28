@@ -52,8 +52,8 @@ class Connection(Asset, type_name="Connection"):
         attr.admin_users = set() if admin_users is None else set(admin_users)
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
-        attr.host = set() if host is None else set(host)
-        attr.port = set() if port is None else set(port)
+        attr.host = host
+        attr.port = port
         return cls(attributes=attr)
 
     @classmethod
