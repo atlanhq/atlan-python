@@ -186,6 +186,33 @@ def test_workflow_rerun_invalid_request_error(client, workflow):
         client.rerun(workflow)
 
 
+@pytest.mark.parametrize("workflow, workflow_schedule", [[None, 123], [123, "123"]])
+def test_workflow_run_invalid_request_error(client, workflow, workflow_schedule):
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-048 Invalid parameter type for workflow should be Workflow or str. "
+            "Suggestion: Check that you have used the correct type of parameter."
+        ),
+    ):
+        client.run(workflow)
+
+    valid_workflow = Workflow(
+        metadata=WorkflowMetadata(name="name", namespace="namespace"),
+        spec=WorkflowSpec(),
+        payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
+    )  # type: ignore[call-arg]
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=(
+            "ATLAN-PYTHON-400-048 Invalid parameter type for workflow_schedule should be WorkflowSchedule or None. "
+            "Suggestion: Check that you have used the correct type of parameter."
+        ),
+    ):
+        client.run(valid_workflow, workflow_schedule)
+
+
 @pytest.mark.parametrize(
     "workflow, schedule",
     [
@@ -412,6 +439,25 @@ def test_run_when_given_workflow(
     mock_api_caller.reset_mock()
 
 
+def test_run_when_given_workflow_json(
+    client: WorkflowClient,
+    mock_api_caller,
+    workflow_response: WorkflowResponse,
+):
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+    workflow_json = r"""
+    {
+        "metadata": {"name": "name", "namespace": "namespace"},
+        "spec": {},
+        "payload": [{"parameter": "test-param", "type": "test-type", "body": {}}]
+    }
+    """
+    response = client.run(workflow_json)
+    assert response == workflow_response
+    assert mock_api_caller._call_api.call_count == 1
+    mock_api_caller.reset_mock()
+
+
 def test_run_when_given_workflow_with_schedule(
     client: WorkflowClient,
     schedule: WorkflowSchedule,
@@ -429,6 +475,26 @@ def test_run_when_given_workflow_with_schedule(
         ),  # type: ignore[call-arg]
         workflow_schedule=schedule,
     )
+    assert response == workflow_response
+    assert mock_api_caller._call_api.call_count == 1
+    mock_api_caller.reset_mock()
+
+
+def test_run_when_given_workflow_json_with_schedule(
+    client: WorkflowClient,
+    schedule: WorkflowSchedule,
+    mock_api_caller,
+    workflow_response: WorkflowResponse,
+):
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+    workflow_json = r"""
+    {
+        "metadata": {"name": "name", "namespace": "namespace"},
+        "spec": {},
+        "payload": [{"parameter": "test-param", "type": "test-type", "body": {}}]
+    }
+    """
+    response = client.run(workflow_json, workflow_schedule=schedule)
     assert response == workflow_response
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
