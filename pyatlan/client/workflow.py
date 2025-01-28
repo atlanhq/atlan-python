@@ -245,7 +245,7 @@ class WorkflowClient:
                 detail = results[0].source
             else:
                 raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow
+                    workflow.value
                 )
         elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
