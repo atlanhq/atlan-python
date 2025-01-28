@@ -1,4 +1,5 @@
 # flake8: noqa
+from .api_token_connection_admin import APITokenConnectionAdmin
 from .asset_export_basic import AssetExportBasic
 from .asset_import import AssetImport
 from .big_query_crawler import BigQueryCrawler
@@ -45,4 +46,5 @@ __all__ = [
     "OracleCrawler",
     "LineageBuilder",
     "LineageGenerator",
+    "APITokenConnectionAdmin",
 ]
