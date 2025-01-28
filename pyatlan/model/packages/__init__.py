@@ -1,4 +1,5 @@
 # flake8: noqa
+from .api_token_connection_admin import APITokenConnectionAdmin
 from .asset_export_basic import AssetExportBasic
 from .asset_import import AssetImport
 from .big_query_crawler import BigQueryCrawler
@@ -9,7 +10,10 @@ from .databricks_miner import DatabricksMiner
 from .dbt_crawler import DbtCrawler
 from .dynamo_d_b_crawler import DynamoDBCrawler
 from .glue_crawler import GlueCrawler
+from .lineage_builder import LineageBuilder
+from .lineage_generator_nt import LineageGenerator
 from .mongodb_crawler import MongoDBCrawler
+from .oracle_crawler import OracleCrawler
 from .postgres_crawler import PostgresCrawler
 from .powerbi_crawler import PowerBICrawler
 from .relational_assets_builder import RelationalAssetsBuilder
@@ -39,4 +43,8 @@ __all__ = [
     "AssetImport",
     "AssetExportBasic",
     "RelationalAssetsBuilder",
+    "OracleCrawler",
+    "LineageBuilder",
+    "LineageGenerator",
+    "APITokenConnectionAdmin",
 ]
