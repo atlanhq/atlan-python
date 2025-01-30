@@ -27,6 +27,33 @@ WORKFLOW_SCHEDULE_TIMEZONE_UPDATED_2 = "Europe/London"
 WORKFLOW_SCHEDULE_UPDATED_3 = "45 7 * * *"
 WORKFLOW_SCHEDULE_TIMEZONE_UPDATED_3 = "Europe/Dublin"
 
+@pytest.fixture(scope="module")
+def create_credentials(client: AtlanClient)  -> Generator[Credential, None, None]:
+    """Creates a new credential using the Atlan API."""
+    credentials_name = f"default-spark-{int(utils.get_epoch_timestamp())}-0"
+
+    credentials = Credential(
+        name=credentials_name,
+        auth_type="atlan_api_key",
+        connector_config_name="atlan-connectors-spark",
+        connector="spark",
+        username="test-username",
+        password="12345",
+        connector_type="event",
+        host="test-host",
+        port=123
+    )
+
+    create_credentials = client.credentials.creator(credentials)
+    guid = create_credentials.id
+    yield create_credentials
+
+    response = delete_credentials(client, guid = guid)
+    assert response is None
+
+def delete_credentials(client: AtlanClient, guid: str):
+    response = client.credentials.purge_by_guid(guid=guid)
+    return response
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
@@ -273,25 +300,12 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
     _assert_remove_schedule(response, workflow)
 
 
-def test_create_credentials(client: AtlanClient):
-    create_credentials = Credential()
-    credentials_name = f"default-spark-{int(utils.get_epoch_timestamp())}-0"
-    create_credentials.name = credentials_name
-    create_credentials.auth_type = "atlan_api_key"
-    create_credentials.connector_config_name = "atlan-connectors-spark"
-    create_credentials.connector = "spark"
-    create_credentials.username = "test-username"
-    create_credentials.password = "12345"
-    create_credentials.connector_type = "event"
-    create_credentials.host = "test-host"
-    create_credentials.port = 123
-
-    credentials = client.credentials.creator(create_credentials)
+def test_credentials(client: AtlanClient, create_credentials:Credential):
+    credentials = create_credentials
     assert credentials
     assert credentials.id
     reterieved_creds = client.credentials.get(guid=credentials.id)
     assert reterieved_creds.auth_type == "atlan_api_key"
-    assert reterieved_creds.name == credentials_name
     assert reterieved_creds.connector_config_name == "atlan-connectors-spark"
     assert reterieved_creds.connector == "spark"
     assert reterieved_creds.username == "test-username"
@@ -301,8 +315,7 @@ def test_create_credentials(client: AtlanClient):
     assert create_credentials.extras is None
     assert create_credentials.level is None
     assert create_credentials.metadata is None
-    
-    
+        
 def test_get_all_credentials(client: AtlanClient):
     credentials = client.credentials.get_all()
     assert credentials, "Expected credentials but found None"

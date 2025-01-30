@@ -10,6 +10,7 @@ from pyatlan.client.constants import (
     TEST_CREDENTIAL,
     UPDATE_CREDENTIAL_BY_GUID,
     CREATE_CREDENTIALS,
+    DELETE_CREDENTIALS_BY_GUID,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
@@ -37,6 +38,13 @@ class CredentialClient:
 
     @validate_arguments
     def creator(self, credential: Credential) -> CredentialResponse:
+        """
+        Create a new credential.
+
+        :param credential: provide full details of the credential's to be created.
+        :returns: A CredentialResponse instance.
+        :raises ValidationError: If the provided `credential` is invalid.
+        """
         raw_json = self._client._call_api(
             api=CREATE_CREDENTIALS.format_path_with_params(),
             query_params={"testCredential": "true"},
@@ -97,6 +105,22 @@ class CredentialClient:
                 "API response did not contain the expected 'records' key",
             )
         return CredentialListResponse(records=raw_json.get("records") or [])
+    
+    @validate_arguments
+    def purge_by_guid(self, guid: str) -> CredentialResponse:
+        """
+        Hard-deletes (purges) credential by their unique identifier (GUID).
+        This operation is irreversible.
+
+        :param guid: unique identifier(s) (GUIDs) of credential to hard-delete
+        :returns: details of the hard-deleted asset(s)
+        :raises AtlanError: on any API communication issue
+        """
+        raw_json = self._client._call_api(
+            DELETE_CREDENTIALS_BY_GUID.format_path({"credential_guid": guid})
+        )
+
+        return raw_json
 
     @validate_arguments
     def test(self, credential: Credential) -> CredentialTestResponse:
