@@ -5,10 +5,10 @@ from pydantic.v1 import validate_arguments
 
 from pyatlan import utils
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import CREATE_OL_CREDENTIALS, OPEN_LINEAGE_SEND_EVENT_API
+from pyatlan.client.constants import OPEN_LINEAGE_SEND_EVENT_API
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.assets import Connection
-from pyatlan.model.credential import CredentialResponse
+from pyatlan.model.credential import Credential
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.response import AssetMutationResponse
@@ -25,33 +25,6 @@ class OpenLineageClient:
                 "client", "ApiCaller"
             )
         self._client = client
-
-    def _create_credential(self, connector_name: str) -> CredentialResponse:
-        """
-        Creates an OpenLineage credential for the specified connector.
-
-        :param connector_name: of the connection that should be OpenLineage event
-        :return: details of the created credential
-        """
-        body = {
-            "authType": "atlan_api_key",
-            "name": f"default-{connector_name}-{int(utils.get_epoch_timestamp())}-0",
-            "connectorConfigName": f"atlan-connectors-{connector_name}",
-            "connector": f"{connector_name}",
-            "connectorType": "event",
-            "extra": {
-                "events.enable-partial-assets": True,
-                "events.enabled": True,
-                "events.topic": f"openlineage_{connector_name}",
-                "events.urlPath": f"/events/openlineage/{connector_name}/api/v1/lineage",
-            },
-        }
-        raw_json = self._client._call_api(
-            api=CREATE_OL_CREDENTIALS.format_path_with_params(),
-            query_params={"testCredential": "true"},
-            request_obj=body,
-        )
-        return CredentialResponse(**raw_json)
 
     @validate_arguments
     def create_connection(
@@ -76,7 +49,23 @@ class OpenLineageClient:
 
         client = AtlanClient.get_default_client()
 
-        response = self._create_credential(connector_name=connector_type.value)
+        create_credential = Credential()
+        create_credential.auth_type = "atlan_api_key"
+        create_credential.name = (
+            f"default-{connector_type.value}-{int(utils.get_epoch_timestamp())}-0"
+        )
+        create_credential.connector = str(connector_type.value)
+        create_credential.connector_config_name = (
+            f"atlan-connectors-{connector_type.value}"
+        )
+        create_credential.connector_type = "event"
+        create_credential.extras = {
+            "events.enable-partial-assets": True,
+            "events.enabled": True,
+            "events.topic": f"openlineage_{connector_type.value}",
+            "events.urlPath": f"/events/openlineage/{connector_type.value}/api/v1/lineage",
+        }
+        response = client.credentials.creator(credential=create_credential)
         connection = Connection.creator(
             name=name,
             connector_type=connector_type,

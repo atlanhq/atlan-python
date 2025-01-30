@@ -35,6 +35,8 @@ class Connection(Asset, type_name="Connection"):
         admin_users: Optional[List[str]] = None,
         admin_groups: Optional[List[str]] = None,
         admin_roles: Optional[List[str]] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
     ) -> Connection:
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
@@ -50,6 +52,8 @@ class Connection(Asset, type_name="Connection"):
         attr.admin_users = set() if admin_users is None else set(admin_users)
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
+        attr.host = host
+        attr.port = port
         return cls(attributes=attr)
 
     @classmethod

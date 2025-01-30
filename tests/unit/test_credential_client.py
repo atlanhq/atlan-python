@@ -24,12 +24,20 @@ TEST_INVALID_CREDENTIALS = (
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
 )
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
+    "1 validation error for PurgeByGuid\n"
+    "guid\n  str type expected (type=type_error.str)"
+)
 TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
     "1 validation error for Test\ncredential\n  "
     "value is not a valid dict (type=type_error.dict)"
 )
 TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = (
     "1 validation error for TestAndUpdate\ncredential\n  "
+    "value is not a valid dict (type=type_error.dict)"
+)
+TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
+    "1 validation error for Creator\ncredential\n  "
     "value is not a valid dict (type=type_error.dict)"
 )
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
@@ -294,3 +302,72 @@ def test_cred_get_all_no_results(mock_api_caller):
     assert isinstance(result, CredentialListResponse)
     assert result.records == []
     assert len(result.records) == 0
+
+
+@pytest.mark.parametrize("create_credentials", ["invalid_cred", 123])
+def test_cred_creator_wrong_params_raises_validation_error(
+    create_credentials, client: CredentialClient
+):
+    with pytest.raises(ValidationError) as err:
+        client.creator(credential=create_credentials)
+    assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR == str(err.value)
+
+
+@pytest.mark.parametrize(
+    "credential_data",
+    [
+        (
+            Credential(
+                name="test-name",
+                description="test-desc",
+                connector_config_name="test-ccn",
+                connector="test-conn",
+                connector_type="test-ct",
+                auth_type="test-at",
+                host="test-host",
+                port=123,
+                username="test-username",
+                extra={"some": "value"},
+            )
+        ),
+    ],
+)
+def test_creator_success(
+    credential_data,
+    credential_response: CredentialResponse,
+    mock_api_caller,
+    client: CredentialClient,
+):
+
+    mock_api_caller._call_api.return_value = credential_response.dict()
+    client = CredentialClient(mock_api_caller)
+
+    response = client.creator(credential=credential_data)
+
+    assert isinstance(response, CredentialResponse)
+    assert credential_data.name == response.name
+    assert credential_data.description == response.description
+    assert credential_data.port == response.port
+    assert credential_data.auth_type == response.auth_type
+    assert credential_data.connector_type == response.connector_type
+    assert credential_data.connector_config_name == response.connector_config_name
+    assert credential_data.username == response.username
+    assert credential_data.extras == response.extras
+    assert response.level is None
+
+
+@pytest.mark.parametrize("test_guid", [[123], set(), dict()])
+def test_cred_purge_by_guid_wrong_params_raises_validation_error(
+    test_guid, client: CredentialClient
+):
+    with pytest.raises(ValidationError) as err:
+        client.purge_by_guid(guid=test_guid)
+    assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR == str(err.value)
+
+
+def test_cred_purge_by_guid_when_given_guid(
+    client: CredentialClient,
+    mock_api_caller,
+):
+    mock_api_caller._call_api.return_value = None
+    assert client.purge_by_guid(guid="test-id") is None
