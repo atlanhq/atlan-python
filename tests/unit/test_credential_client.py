@@ -25,7 +25,7 @@ TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
 )
 TEST_INVALID_GUID_DELETE_VALIDATION_ERR = (
-    "1 validation error for PurgeByGuid\nguid\n  str type expected (type=type_error.str)"
+    "1 validation error for PurgeByGuid\nguid\n str type expected (type=type_error.str)"
 )
 TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
     "1 validation error for Test\ncredential\n  "
@@ -42,7 +42,6 @@ TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
 )
-
 
 
 @pytest.fixture()
@@ -303,6 +302,7 @@ def test_cred_get_all_no_results(mock_api_caller):
     assert result.records == []
     assert len(result.records) == 0
 
+
 @pytest.mark.parametrize("create_credentials", ["invalid_cred", 123])
 def test_cred_creator_wrong_params_raises_validation_error(
     create_credentials, client: CredentialClient
@@ -310,6 +310,7 @@ def test_cred_creator_wrong_params_raises_validation_error(
     with pytest.raises(ValidationError) as err:
         client.creator(credential=create_credentials)
     assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR == str(err.value)
+
 
 @pytest.mark.parametrize(
     "credential_data",
@@ -353,6 +354,7 @@ def test_creator_success(
     assert credential_data.extras == response.extras
     assert response.level is None
 
+
 @pytest.mark.parametrize("test_guid", [[123], set(), dict()])
 def test_cred_purge_by_guid_wrong_params_raises_validation_error(
     test_guid, client: CredentialClient
@@ -361,9 +363,10 @@ def test_cred_purge_by_guid_wrong_params_raises_validation_error(
         client.purge_by_guid(guid=test_guid)
     assert TEST_INVALID_GUID_DELETE_VALIDATION_ERR == str(err.value)
 
+
 def test_cred_purge_by_guid_when_given_guid(
     client: CredentialClient,
     mock_api_caller,
 ):
     mock_api_caller._call_api.return_value = None
-    assert client.purge_by_guid(guid="test-id") == None
+    assert client.purge_by_guid(guid="test-id") is None

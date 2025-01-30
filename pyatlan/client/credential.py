@@ -105,7 +105,7 @@ class CredentialClient:
                 "API response did not contain the expected 'records' key",
             )
         return CredentialListResponse(records=raw_json.get("records") or [])
-    
+
     @validate_arguments
     def purge_by_guid(self, guid: str) -> CredentialResponse:
         """
