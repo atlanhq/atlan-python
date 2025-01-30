@@ -24,8 +24,9 @@ TEST_INVALID_CREDENTIALS = (
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
 )
-TEST_INVALID_GUID_DELETE_VALIDATION_ERR = (
-    "1 validation error for PurgeByGuid\nguid\n str type expected (type=type_error.str)"
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
+    "1 validation error for PurgeByGuid\n"
+    "guid\n  str type expected (type=type_error.str)"
 )
 TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
     "1 validation error for Test\ncredential\n  "
@@ -361,7 +362,7 @@ def test_cred_purge_by_guid_wrong_params_raises_validation_error(
 ):
     with pytest.raises(ValidationError) as err:
         client.purge_by_guid(guid=test_guid)
-    assert TEST_INVALID_GUID_DELETE_VALIDATION_ERR == str(err.value)
+    assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR == str(err.value)
 
 
 def test_cred_purge_by_guid_when_given_guid(
