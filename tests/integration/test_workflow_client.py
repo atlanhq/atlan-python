@@ -9,7 +9,7 @@ from pyatlan import utils
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.model.assets import Connection
-from pyatlan.model.credential import Credential
+from pyatlan.model.credential import Credential, CredentialResponse
 from pyatlan.model.enums import AtlanConnectorType, AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.packages.snowflake_miner import SnowflakeMiner
 from pyatlan.model.workflow import WorkflowResponse, WorkflowSchedule
@@ -29,7 +29,9 @@ WORKFLOW_SCHEDULE_TIMEZONE_UPDATED_3 = "Europe/Dublin"
 
 
 @pytest.fixture(scope="module")
-def create_credentials(client: AtlanClient) -> Generator[Credential, None, None]:
+def create_credentials(
+    client: AtlanClient,
+) -> Generator[CredentialResponse, None, None]:
     """Creates a new credential using the Atlan API."""
     credentials_name = f"default-spark-{int(utils.get_epoch_timestamp())}-0"
 
@@ -47,6 +49,9 @@ def create_credentials(client: AtlanClient) -> Generator[Credential, None, None]
 
     create_credentials = client.credentials.creator(credentials)
     guid = create_credentials.id
+    if guid is None:
+        raise ValueError("Failed to retrieve GUID from created credentials.")
+
     yield create_credentials
 
     response = delete_credentials(client, guid=guid)
