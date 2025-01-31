@@ -1,3 +1,44 @@
+## 4.1.0 (January 28, 2025)
+
+### New Features
+
+- Added support for the following workflow packages:
+
+  **Connectors**
+  - OracleCrawler
+
+  **Utils**
+  - LineageBuilder
+  - LineageGenerator
+  - APITokenConnectionAdmin
+
+- Extended the `WorkflowClient.run()` method to accept raw workflow `JSON` strings.
+- Added support for creating `OpenLineage` connections via `OpenLineageClient.create_connection()`.
+
+### Bug Fixes
+
+- Updated the maximum API token Time-to-Expire (TTE) to `5` years. Previously, the value was set to `13` years (`409,968,000` seconds), which was reverted to `5` years due to an integer overflow issue in Keycloak. For more details, see [Keycloak Issue #19671](https://github.com/keycloak/keycloak/issues/19671).
+
+### QOL Improvements
+
+- Increased the default read timeout for `AtlanClient` to `900` seconds (`15` minutes).
+
+## 4.0.2 (January 22, 2025)
+
+### New Features
+
+- Added the ability to the custom package logger to log unhandled exceptions.
+- Added support for creating `OpenLineage` connections (`OpenLineageClient.create_connection()`).
+
+### Bug Fixes
+
+- Fixed handling of deleted `AtlanTagName`s in `Purpose` asset deserialization. Previously, a `ValueError` was raised.
+
+### QOL Improvements
+
+- Added an "Installing for development" section to the `README.md`.
+- Removed `pyatlan-codeql.yaml` in favor of using the organization-level CodeQL workflow to avoid configuration conflicts and failures.
+
 ## 4.0.1 (January 14, 2025)
 
 ### New Features
