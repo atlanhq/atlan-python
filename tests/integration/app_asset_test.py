@@ -239,6 +239,10 @@ def test_application_field(
         == application.connection_qualified_name
     )
     assert application_field.connector_name == AtlanConnectorType.APP.value
+    assert (
+        application_field.application_parent_qualified_name
+        == application.qualified_name
+    )
 
 
 @pytest.fixture(scope="module")
@@ -273,3 +277,7 @@ def test_overload_application_field(
         == connection.qualified_name
     )
     assert application_field_overload.connector_name == AtlanConnectorType.APP.value
+    assert (
+        application_field_overload.application_parent_qualified_name
+        == application.qualified_name
+    )

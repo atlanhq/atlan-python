@@ -9,7 +9,7 @@ from typing import ClassVar, List, Optional, overload
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .app import App
@@ -69,6 +69,13 @@ class ApplicationField(App):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    APPLICATION_PARENT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "applicationParentQualifiedName", "applicationParentQualifiedName"
+    )
+    """
+    Unique name of the parent Application asset that contains this ApplicationField asset.
+    """
+
     APPLICATION_PARENT: ClassVar[RelationField] = RelationField("applicationParent")
     """
     TBC
@@ -81,9 +88,28 @@ class ApplicationField(App):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "application_parent_qualified_name",
         "application_parent",
         "application_field_owned_assets",
     ]
+
+    @property
+    def application_parent_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_parent_qualified_name
+        )
+
+    @application_parent_qualified_name.setter
+    def application_parent_qualified_name(
+        self, application_parent_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.application_parent_qualified_name = (
+            application_parent_qualified_name
+        )
 
     @property
     def application_parent(self) -> Optional[Application]:
@@ -112,6 +138,9 @@ class ApplicationField(App):
         self.attributes.application_field_owned_assets = application_field_owned_assets
 
     class Attributes(App.Attributes):
+        application_parent_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         application_parent: Optional[Application] = Field(
             default=None, description=""
         )  # relationship
@@ -146,6 +175,7 @@ class ApplicationField(App):
                 qualified_name=f"{application_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 connector_name=connector_name,
+                application_parent_qualified_name=application_qualified_name,
                 application_parent=Application.ref_by_qualified_name(
                     application_qualified_name
                 ),
