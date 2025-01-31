@@ -17,7 +17,7 @@ from tests.unit.model.constants import (
         (APPLICATION_FIELD_NAME, None, "application_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
+def test_creator_with_missing_parameters_raise_value_error(
     name: str, application_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
@@ -26,7 +26,7 @@ def test_create_with_missing_parameters_raise_value_error(
         )
 
 
-def test_create():
+def test_creator():
     sut = ApplicationField.creator(
         name=APPLICATION_FIELD_NAME,
         application_qualified_name=APPLICATION_QUALIFIED_NAME,
@@ -45,17 +45,15 @@ def test_create():
         (APPLICATION_FIELD_NAME, None, "name is required"),
     ],
 )
-def test_create_for_modification_with_invalid_parameter_raises_value_error(
+def test_updater_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        ApplicationField.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        ApplicationField.updater(qualified_name=qualified_name, name=name)
 
 
-def test_create_for_modification():
-    sut = ApplicationField.create_for_modification(
+def test_updater():
+    sut = ApplicationField.updater(
         qualified_name=APPLICATION_FIELD_QUALIFIED_NAME,
         name=APPLICATION_FIELD_NAME,
     )
@@ -65,7 +63,7 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-    sut = ApplicationField.create_for_modification(
+    sut = ApplicationField.updater(
         name=APPLICATION_FIELD_NAME,
         qualified_name=APPLICATION_FIELD_QUALIFIED_NAME,
     ).trim_to_required()
