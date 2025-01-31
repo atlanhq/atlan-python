@@ -42,6 +42,19 @@ class AtlanObject(BaseModel):
         return values
 
 
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -58,33 +71,11 @@ class DbtJobRun(AtlanObject):
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class AwsCloudWatchMetric(AtlanObject):
     """Description"""
 
     aws_cloud_watch_metric_name: str = Field(description="")
     aws_cloud_watch_metric_scope: str = Field(description="")
-
-
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
 class Action(AtlanObject):
@@ -103,11 +94,61 @@ class Histogram(AtlanObject):
     frequencies: Set[float] = Field(description="")
 
 
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
+
+
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional[str] = Field(default=None, description="")
     column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class BadgeCondition(AtlanObject):
+    """Description"""
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        badge_condition_operator: BadgeComparisonOperator,
+        badge_condition_value: str,
+        badge_condition_colorhex: Union[BadgeConditionColor, str],
+    ) -> "BadgeCondition":
+        validate_required_fields(
+            [
+                "badge_condition_operator",
+                "badge_condition_value",
+                "badge_condition_colorhex",
+            ],
+            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
+        )
+        return cls(
+            badge_condition_operator=badge_condition_operator.value,
+            badge_condition_value=badge_condition_value,
+            badge_condition_colorhex=(
+                badge_condition_colorhex.value
+                if isinstance(badge_condition_colorhex, BadgeConditionColor)
+                else badge_condition_colorhex
+            ),
+        )
+
+    badge_condition_operator: Optional[str] = Field(default=None, description="")
+    badge_condition_value: Optional[str] = Field(default=None, description="")
+    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class SourceTagAttachment(AtlanObject):
@@ -254,45 +295,11 @@ class SourceTagAttachment(AtlanObject):
         )
 
 
-class SourceTagAttachmentValue(AtlanObject):
+class AzureTag(AtlanObject):
     """Description"""
 
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
-
-
-class BadgeCondition(AtlanObject):
-    """Description"""
-
-    @classmethod
-    def create(
-        cls,
-        *,
-        badge_condition_operator: BadgeComparisonOperator,
-        badge_condition_value: str,
-        badge_condition_colorhex: Union[BadgeConditionColor, str],
-    ) -> "BadgeCondition":
-        validate_required_fields(
-            [
-                "badge_condition_operator",
-                "badge_condition_value",
-                "badge_condition_colorhex",
-            ],
-            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
-        )
-        return cls(
-            badge_condition_operator=badge_condition_operator.value,
-            badge_condition_value=badge_condition_value,
-            badge_condition_colorhex=(
-                badge_condition_colorhex.value
-                if isinstance(badge_condition_colorhex, BadgeConditionColor)
-                else badge_condition_colorhex
-            ),
-        )
-
-    badge_condition_operator: Optional[str] = Field(default=None, description="")
-    badge_condition_value: Optional[str] = Field(default=None, description="")
-    badge_condition_colorhex: Optional[str] = Field(default=None, description="")
+    azure_tag_key: str = Field(description="")
+    azure_tag_value: str = Field(description="")
 
 
 class StarredDetails(AtlanObject):
@@ -300,13 +307,6 @@ class StarredDetails(AtlanObject):
 
     asset_starred_by: Optional[str] = Field(default=None, description="")
     asset_starred_at: Optional[datetime] = Field(default=None, description="")
-
-
-class AzureTag(AtlanObject):
-    """Description"""
-
-    azure_tag_key: str = Field(description="")
-    azure_tag_value: str = Field(description="")
 
 
 class AuthPolicyCondition(AtlanObject):
@@ -339,6 +339,18 @@ class DbtMetricFilter(AtlanObject):
     dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
+
+
+class BusinessPolicyRule(AtlanObject):
+    """Description"""
+
+    bpr_id: Optional[str] = Field(default=None, description="")
+    bpr_name: Optional[str] = Field(default=None, description="")
+    bpr_sequence: Optional[str] = Field(default=None, description="")
+    bpr_operand: Optional[str] = Field(default=None, description="")
+    bpr_operator: Optional[str] = Field(default=None, description="")
+    bpr_value: Optional[Set[str]] = Field(default=None, description="")
+    bpr_query: Optional[str] = Field(default=None, description="")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -396,29 +408,29 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-DbtJobRun.update_forward_refs()
-
 MCRuleSchedule.update_forward_refs()
 
-AwsCloudWatchMetric.update_forward_refs()
+DbtJobRun.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
+AwsCloudWatchMetric.update_forward_refs()
 
 Action.update_forward_refs()
 
 Histogram.update_forward_refs()
 
+KafkaTopicConsumption.update_forward_refs()
+
 ColumnValueFrequencyMap.update_forward_refs()
-
-SourceTagAttachment.update_forward_refs()
-
-SourceTagAttachmentValue.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
-StarredDetails.update_forward_refs()
+SourceTagAttachmentValue.update_forward_refs()
+
+SourceTagAttachment.update_forward_refs()
 
 AzureTag.update_forward_refs()
+
+StarredDetails.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 
@@ -427,6 +439,8 @@ AwsTag.update_forward_refs()
 GoogleTag.update_forward_refs()
 
 DbtMetricFilter.update_forward_refs()
+
+BusinessPolicyRule.update_forward_refs()
 
 AuthPolicyValiditySchedule.update_forward_refs()
 

@@ -34,8 +34,10 @@ class PowerBITable(PowerBI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "workspaceQualifiedName",
+        "workspaceQualifiedName.keyword",
+        "workspaceQualifiedName",
     )
     """
     Unique name of the workspace in which this table exists.

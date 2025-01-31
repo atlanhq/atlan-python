@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -42,6 +42,12 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
     )
     """
     Type of the workflow from which this run was created.
+    """
+    WORKFLOW_RUN_ACTION_CHOICES: ClassVar[KeywordField] = KeywordField(
+        "workflowRunActionChoices", "workflowRunActionChoices"
+    )
+    """
+    List of workflow run action choices.
     """
     WORKFLOW_RUN_ON_ASSET_GUID: ClassVar[KeywordField] = KeywordField(
         "workflowRunOnAssetGuid", "workflowRunOnAssetGuid"
@@ -95,6 +101,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
     _convenience_properties: ClassVar[List[str]] = [
         "workflow_run_workflow_guid",
         "workflow_run_type",
+        "workflow_run_action_choices",
         "workflow_run_on_asset_guid",
         "workflow_run_comment",
         "workflow_run_config",
@@ -128,6 +135,22 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.workflow_run_type = workflow_run_type
+
+    @property
+    def workflow_run_action_choices(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workflow_run_action_choices
+        )
+
+    @workflow_run_action_choices.setter
+    def workflow_run_action_choices(
+        self, workflow_run_action_choices: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workflow_run_action_choices = workflow_run_action_choices
 
     @property
     def workflow_run_on_asset_guid(self) -> Optional[str]:
@@ -224,6 +247,9 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
     class Attributes(Asset.Attributes):
         workflow_run_workflow_guid: Optional[str] = Field(default=None, description="")
         workflow_run_type: Optional[WorkflowRunType] = Field(
+            default=None, description=""
+        )
+        workflow_run_action_choices: Optional[Set[str]] = Field(
             default=None, description=""
         )
         workflow_run_on_asset_guid: Optional[str] = Field(default=None, description="")
