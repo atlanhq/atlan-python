@@ -15,6 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.model.structs import BusinessPolicyRule
 
 from .core.asset import Asset
 
@@ -89,6 +90,12 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
     """
     Selected approval workflow id for business policy
     """
+    BUSINESS_POLICY_RULES: ClassVar[KeywordField] = KeywordField(
+        "businessPolicyRules", "businessPolicyRules"
+    )
+    """
+    List of rules applied to this business policy.
+    """
 
     EXCEPTIONS_FOR_BUSINESS_POLICY: ClassVar[RelationField] = RelationField(
         "exceptionsForBusinessPolicy"
@@ -113,6 +120,7 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
         "business_policy_filter_d_s_l",
         "business_policy_base_parent_guid",
         "business_policy_selected_approval_w_f",
+        "business_policy_rules",
         "exceptions_for_business_policy",
         "related_business_policies",
     ]
@@ -256,6 +264,20 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
         )
 
     @property
+    def business_policy_rules(self) -> Optional[List[BusinessPolicyRule]]:
+        return (
+            None if self.attributes is None else self.attributes.business_policy_rules
+        )
+
+    @business_policy_rules.setter
+    def business_policy_rules(
+        self, business_policy_rules: Optional[List[BusinessPolicyRule]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.business_policy_rules = business_policy_rules
+
+    @property
     def exceptions_for_business_policy(self) -> Optional[List[BusinessPolicyException]]:
         return (
             None
@@ -309,6 +331,9 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
             default=None, description=""
         )
         business_policy_selected_approval_w_f: Optional[str] = Field(
+            default=None, description=""
+        )
+        business_policy_rules: Optional[List[BusinessPolicyRule]] = Field(
             default=None, description=""
         )
         exceptions_for_business_policy: Optional[List[BusinessPolicyException]] = Field(

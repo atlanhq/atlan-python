@@ -1,0 +1,31 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            application_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> ApplicationField.Attributes:
+            validate_required_fields(
+                ["name", "application_qualified_name"],
+                [name, application_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    application_qualified_name, "application_qualified_name", 4
+                )
+
+            return ApplicationField.Attributes(
+                name=name,
+                qualified_name=f"{application_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                connector_name=connector_name,
+                application_parent_qualified_name=application_qualified_name,
+                application_parent=Application.ref_by_qualified_name(application_qualified_name),
+            )

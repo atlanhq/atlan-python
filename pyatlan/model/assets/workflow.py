@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -40,6 +40,12 @@ class Workflow(Asset, type_name="Workflow"):
     WORKFLOW_TYPE: ClassVar[KeywordField] = KeywordField("workflowType", "workflowType")
     """
     Type of the workflow.
+    """
+    WORKFLOW_ACTION_CHOICES: ClassVar[KeywordField] = KeywordField(
+        "workflowActionChoices", "workflowActionChoices"
+    )
+    """
+    List of workflow action choices.
     """
     WORKFLOW_CONFIG: ClassVar[TextField] = TextField("workflowConfig", "workflowConfig")
     """
@@ -79,6 +85,7 @@ class Workflow(Asset, type_name="Workflow"):
     _convenience_properties: ClassVar[List[str]] = [
         "workflow_template_guid",
         "workflow_type",
+        "workflow_action_choices",
         "workflow_config",
         "workflow_status",
         "workflow_run_expires_in",
@@ -108,6 +115,18 @@ class Workflow(Asset, type_name="Workflow"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.workflow_type = workflow_type
+
+    @property
+    def workflow_action_choices(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.workflow_action_choices
+        )
+
+    @workflow_action_choices.setter
+    def workflow_action_choices(self, workflow_action_choices: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workflow_action_choices = workflow_action_choices
 
     @property
     def workflow_config(self) -> Optional[str]:
@@ -174,6 +193,9 @@ class Workflow(Asset, type_name="Workflow"):
     class Attributes(Asset.Attributes):
         workflow_template_guid: Optional[str] = Field(default=None, description="")
         workflow_type: Optional[WorkflowType] = Field(default=None, description="")
+        workflow_action_choices: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         workflow_config: Optional[str] = Field(default=None, description="")
         workflow_status: Optional[WorkflowStatus] = Field(default=None, description="")
         workflow_run_expires_in: Optional[str] = Field(default=None, description="")

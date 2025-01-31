@@ -11,6 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
+    KeywordTextField,
     RelationField,
     TextField,
 )
@@ -40,8 +41,8 @@ class TableauDatasource(Tableau):
     """
     Unique name of the site in which this datasource exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "projectQualifiedName", "projectQualifiedName"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "projectQualifiedName", "projectQualifiedName.keyword", "projectQualifiedName"
     )
     """
     Unique name of the project in which this datasource exists.

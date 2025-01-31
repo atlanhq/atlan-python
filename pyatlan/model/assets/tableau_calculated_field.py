@@ -40,8 +40,8 @@ class TableauCalculatedField(Tableau):
     """
     Unique name of the site in which this calculated field exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "projectQualifiedName", "projectQualifiedName"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "projectQualifiedName", "projectQualifiedName.keyword", "projectQualifiedName"
     )
     """
     Unique name of the project in which this calculated field exists.
