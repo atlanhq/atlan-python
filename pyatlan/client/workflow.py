@@ -245,7 +245,7 @@ class WorkflowClient:
                 detail = results[0].source
             else:
                 raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow
+                    workflow.value
                 )
         elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
@@ -323,9 +323,20 @@ class WorkflowClient:
         )
         return WorkflowRunResponse(**raw_json)
 
-    @validate_arguments
+    @overload
     def run(
         self, workflow: Workflow, workflow_schedule: Optional[WorkflowSchedule] = None
+    ) -> WorkflowResponse: ...
+
+    @overload
+    def run(
+        self, workflow: str, workflow_schedule: Optional[WorkflowSchedule] = None
+    ) -> WorkflowResponse: ...
+
+    def run(
+        self,
+        workflow: Union[Workflow, str],
+        workflow_schedule: Optional[WorkflowSchedule] = None,
     ) -> WorkflowResponse:
         """
         Run the Atlan workflow with a specific configuration.
@@ -335,7 +346,7 @@ class WorkflowClient:
         Running the workflow multiple times with the same configuration may lead to duplicate assets.
         Consider using the "rerun()" method instead to re-execute an existing workflow.
 
-        :param workflow: The workflow to run.
+        :param workflow: workflow object to run or a raw workflow JSON string.
         :param workflow_schedule: (Optional) a WorkflowSchedule object containing:
             - A cron schedule expression, e.g: `5 4 * * *`.
             - The time zone for the cron schedule, e.g: `Europe/Paris`.
@@ -344,6 +355,14 @@ class WorkflowClient:
         :raises ValidationError: If the provided `workflow` is invalid.
         :raises AtlanError: on any API communication issue.
         """
+        validate_type(name="workflow", _type=(Workflow, str), value=workflow)
+        validate_type(
+            name="workflow_schedule",
+            _type=(WorkflowSchedule, None),
+            value=workflow_schedule,
+        )
+        if isinstance(workflow, str):
+            workflow = Workflow.parse_raw(workflow)
         if workflow_schedule:
             self._add_schedule(workflow, workflow_schedule)
         raw_json = self._client._call_api(

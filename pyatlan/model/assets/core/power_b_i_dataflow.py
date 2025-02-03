@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+    TextField,
+)
 
 from .power_b_i import PowerBI
 
@@ -29,8 +34,10 @@ class PowerBIDataflow(PowerBI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "workspaceQualifiedName",
+        "workspaceQualifiedName.keyword",
+        "workspaceQualifiedName",
     )
     """
     Unique name of the workspace in which this dataflow exists.

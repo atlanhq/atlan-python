@@ -8,6 +8,7 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets.core import Asset
 from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan.model.packages import (
+    APITokenConnectionAdmin,
     AssetExportBasic,
     AssetImport,
     BigQueryCrawler,
@@ -18,7 +19,10 @@ from pyatlan.model.packages import (
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
+    LineageBuilder,
+    LineageGenerator,
     MongoDBCrawler,
+    OracleCrawler,
     PostgresCrawler,
     PowerBICrawler,
     RelationalAssetsBuilder,
@@ -88,6 +92,14 @@ DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
 DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
     "databricks_miner_popularity_system_table.json"
 )
+ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
+ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
+LINEAGE_BUILDER_S3 = "lineage_builder_s3.json"
+LINEAGE_BUILDER_GCS = "lineage_builder_gcs.json"
+LINEAGE_BUILDER_ADLS = "lineage_builder_adls.json"
+LINEAGE_GENERATOR_DEFAULT = "lineage_generator_default.json"
+LINEAGE_GENERATOR_FULL = "lineage_generator_full.json"
+API_TOKEN_CONNECTION_ADMIN = "api_token_connection_admin.json"
 
 
 class NonSerializable:
@@ -1395,6 +1407,166 @@ def test_relational_assets_builder(mock_package_env):
         relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
     )
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
+
+
+def test_oracle_crawler(mock_package_env):
+    oracle_crawler_basic = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .direct(hostname="test-hostname", port=1234)
+        .basic_auth(
+            username="test-username",
+            password="test-password",
+            sid="test-sid",
+            database_name="test-db",
+        )
+        .include(assets={"t1": ["t11", "t12", "t13"]})
+        .exclude(assets={"t2": ["t21", "t22", "t23"]})
+        .exclude_regex("TEST*")
+        .jdbc_internal_methods(True)
+        .source_level_filtering(True)
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_BASIC)
+
+    oracle_crawler_offline = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .s3(bucket_name="test-bucket", bucket_prefix="test-prefix")
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
+
+
+def test_lineage_builder(mock_package_env):
+    lineage_builder_s3 = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            region="test-region",
+            bucket="test-bucket",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_s3.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_S3)
+
+    lineage_builder_gcs = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .gcs(
+            project_id="test-project-id",
+            service_account_json="test-service-account-json",
+            bucket="test-bucket",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_GCS)
+
+    lineage_builder_adls = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-account-name",
+            container="test-container",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_adls.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_ADLS)
+
+
+def test_lineage_generator_nt(mock_package_env):
+    lineage_generator_default = (
+        LineageGenerator().config(
+            source_asset_type=LineageGenerator.SourceAssetType.MongoDBCollection,
+            source_qualified_name="mongo/qn",
+            target_asset_type=LineageGenerator.TargetAssetType.View,
+            target_qualified_name="view/qn",
+        )
+    ).to_workflow()
+
+    request_json = loads(
+        lineage_generator_default.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(LINEAGE_GENERATOR_DEFAULT)
+
+    lineage_generator_full = (
+        LineageGenerator().config(
+            source_asset_type=LineageGenerator.SourceAssetType.MongoDBCollection,
+            source_qualified_name="mongo/qn",
+            target_asset_type=LineageGenerator.TargetAssetType.View,
+            target_qualified_name="view/qn",
+            case_sensitive_match=True,
+            match_on_schema=True,
+            output_type=LineageGenerator.OutputType.DELETE,
+            generate_on_child_assets=True,
+            regex_match="t1",
+            regex_replace="t2",
+            regex_match_schema="t3",
+            regex_replace_schema="t4",
+            regex_match_schema_name="t5",
+            regex_replace_schema_name="t6",
+            match_prefix="t7",
+            match_suffix="t8",
+            file_advanced_seperator="t9",
+            file_advanced_position="10",
+            process_connection_qn="test/qn",
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_generator_full.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_GENERATOR_FULL)
+
+
+def test_api_token_connection_admin(mock_package_env):
+    token_connection_admin = (
+        APITokenConnectionAdmin()
+        .config(
+            connection_qualified_name="default/snowflake/1234567890",
+            api_token_guid="92588c67-5ddf-4a45-8b5c-dd92f4b84e99",
+        )
+        .to_workflow()
+    )
+    request_json = loads(token_connection_admin.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(API_TOKEN_CONNECTION_ADMIN)
 
 
 @pytest.mark.parametrize(

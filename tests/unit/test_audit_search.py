@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pyatlan.client.audit import LOGGER, AuditClient
+from pyatlan.client.common import ApiCaller
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults
 from pyatlan.model.enums import SortOrder
@@ -24,7 +25,7 @@ def set_env(monkeypatch):
 
 @pytest.fixture(scope="module")
 def mock_api_caller():
-    return Mock()
+    return Mock(spec=ApiCaller)
 
 
 @pytest.fixture()

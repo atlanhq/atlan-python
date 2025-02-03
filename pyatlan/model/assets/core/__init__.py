@@ -16,6 +16,7 @@ from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
 from .app import App
 from .application import Application
+from .application_field import ApplicationField
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -147,6 +148,7 @@ Fivetran.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
+ApplicationField.Attributes.update_forward_refs(**localns)
 Application.Attributes.update_forward_refs(**localns)
 AdfDataflow.Attributes.update_forward_refs(**localns)
 AdfDataset.Attributes.update_forward_refs(**localns)
@@ -174,8 +176,8 @@ TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 CosmosMongoDB.Attributes.update_forward_refs(**localns)
