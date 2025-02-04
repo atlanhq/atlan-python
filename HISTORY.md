@@ -1,3 +1,16 @@
+## 4.1.1 (February 4, 2024)
+
+### New Features
+
+- Added support for `ApplicationField.creator()`.
+- Added support for `CredentialClient.creator()`.
+- Added support for optional parameters (`host` and `port`) in `Connection.creator()`.
+
+### QOL Improvements
+
+- Generated the latest typedef models.
+- Refactored `OpenLineageClient.create_connection()` to use the new `CredentialClient.creator()`.
+
 ## 4.1.0 (January 28, 2025)
 
 ### New Features
@@ -13,7 +26,6 @@
   - APITokenConnectionAdmin
 
 - Extended the `WorkflowClient.run()` method to accept raw workflow `JSON` strings.
-- Added support for creating `OpenLineage` connections via `OpenLineageClient.create_connection()`.
 
 ### Bug Fixes
 
@@ -21,6 +33,7 @@
 
 ### QOL Improvements
 
+- Added support for Python `3.10`, `3.11`, `3.12` and `3.13`.
 - Increased the default read timeout for `AtlanClient` to `900` seconds (`15` minutes).
 
 ## 4.0.2 (January 22, 2025)
