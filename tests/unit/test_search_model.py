@@ -290,7 +290,7 @@ def test_index_search_request():
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": [], '
-        '"requestMetadata": {"saveSearchLog": true, "utmTags": ["project_sdk_python"]}}'
+        '"requestMetadata": {"saveSearchLog": false, "utmTags": ["project_sdk_python"]}}'
     )
 
 

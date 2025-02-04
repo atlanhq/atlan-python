@@ -1968,7 +1968,9 @@ class IndexSearchRequest(SearchRequest):
 
     request_metadata: Optional[Metadata] = Field(
         default_factory=lambda: IndexSearchRequest.Metadata(
-            save_search_log=True,
+            # Set this to `False` to prevent the frequent
+            # Out of memory (OOM) issue in Metastore pods.
+            save_search_log=False,
             utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
         ),
     )
