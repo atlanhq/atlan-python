@@ -9,6 +9,7 @@
 ### QOL Improvements
 
 - Generated the latest typedef models.
+- Changed the default setting for tracking `IndexSearch` logs (`save_search_log=False`) to prevent the frequent Out of Memory (OOM) issue in Metastore pods.
 - Refactored `OpenLineageClient.create_connection()` to use the new `CredentialClient.creator()`.
 
 ## 4.1.0 (January 28, 2025)
