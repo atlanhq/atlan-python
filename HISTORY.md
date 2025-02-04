@@ -1,4 +1,4 @@
-## 4.1.1 (February 4, 2024)
+## 4.2.0 (February 4, 2024)
 
 ### New Features
 
@@ -6,10 +6,13 @@
 - Added support for `CredentialClient.creator()`.
 - Added support for optional parameters (`host` and `port`) in `Connection.creator()`.
 
+### Breaking Changes
+
+- Changed the default setting for tracking `IndexSearch` logs (`save_search_log=False`). Previously, it was set to `True`, which was causing frequent Out of Memory (OOM) issues in Metastore pods.
+
 ### QOL Improvements
 
 - Generated the latest typedef models.
-- Changed the default setting for tracking `IndexSearch` logs (`save_search_log=False`) to prevent the frequent Out of Memory (OOM) issue in Metastore pods.
 - Refactored `OpenLineageClient.create_connection()` to use the new `CredentialClient.creator()`.
 
 ## 4.1.0 (January 28, 2025)
