@@ -11,7 +11,7 @@
         "utmTags": [
           "project_sdk_python"
         ],
-        "saveSearchLog": true
+        "saveSearchLog":false
       },
       "async": {
         "isCallAsync": false,
@@ -63,7 +63,7 @@
       "allowDeletedRelations": false,
       "accessControlExclusive": false,
       "query": "{\"from\":0,\"size\":10,\"aggregations\":{},\"track_total_hits\":true,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"__state\":{\"value\":\"ACTIVE\",\"case_insensitive\":false}}},{\"term\":{\"__typeName.keyword\":{\"value\":\"AtlasGlossaryTerm\",\"case_insensitive\":false}}}]}},\"sort\":[{\"__timestamp\":{\"order\":\"asc\"}},{\"__guid\":{\"order\":\"asc\"}}]}",
-      "saveSearchLog": true,
+      "saveSearchLog":false,
       "callAsync": false,
       "utmTags": [
         "project_sdk_python"
