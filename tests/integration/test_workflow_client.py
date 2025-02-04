@@ -5,9 +5,11 @@ from typing import Generator
 
 import pytest
 
+from pyatlan import utils
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.model.assets import Connection
+from pyatlan.model.credential import Credential, CredentialResponse
 from pyatlan.model.enums import AtlanConnectorType, AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.packages.snowflake_miner import SnowflakeMiner
 from pyatlan.model.workflow import WorkflowResponse, WorkflowSchedule
@@ -24,6 +26,41 @@ WORKFLOW_SCHEDULE_UPDATED_2 = "45 6 * * *"
 WORKFLOW_SCHEDULE_TIMEZONE_UPDATED_2 = "Europe/London"
 WORKFLOW_SCHEDULE_UPDATED_3 = "45 7 * * *"
 WORKFLOW_SCHEDULE_TIMEZONE_UPDATED_3 = "Europe/Dublin"
+
+
+@pytest.fixture(scope="module")
+def create_credentials(
+    client: AtlanClient,
+) -> Generator[CredentialResponse, None, None]:
+    """Creates a new credential using the Atlan API."""
+    credentials_name = f"default-spark-{int(utils.get_epoch_timestamp())}-0"
+
+    credentials = Credential(
+        name=credentials_name,
+        auth_type="atlan_api_key",
+        connector_config_name="atlan-connectors-spark",
+        connector="spark",
+        username="test-username",
+        password="12345",
+        connector_type="event",
+        host="test-host",
+        port=123,
+    )
+
+    create_credentials = client.credentials.creator(credentials)
+    guid = create_credentials.id
+    if guid is None:
+        raise ValueError("Failed to retrieve GUID from created credentials.")
+
+    yield create_credentials
+
+    response = delete_credentials(client, guid=guid)
+    assert response is None
+
+
+def delete_credentials(client: AtlanClient, guid: str):
+    response = client.credentials.purge_by_guid(guid=guid)
+    return response
 
 
 @pytest.fixture(scope="module")
@@ -269,6 +306,23 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
     # Now remove the scheduled run
     response = client.workflow.remove_schedule(workflow)
     _assert_remove_schedule(response, workflow)
+
+
+def test_credentials(client: AtlanClient, create_credentials: Credential):
+    credentials = create_credentials
+    assert credentials
+    assert credentials.id
+    reterieved_creds = client.credentials.get(guid=credentials.id)
+    assert reterieved_creds.auth_type == "atlan_api_key"
+    assert reterieved_creds.connector_config_name == "atlan-connectors-spark"
+    assert reterieved_creds.connector == "spark"
+    assert reterieved_creds.username == "test-username"
+    assert create_credentials.connector_type == "event"
+    assert create_credentials.host == "test-host"
+    assert create_credentials.port == 123
+    assert create_credentials.extras is None
+    assert create_credentials.level is None
+    assert create_credentials.metadata is None
 
 
 def test_get_all_credentials(client: AtlanClient):
