@@ -44,7 +44,7 @@ class CredentialClient:
         Create a new credential.
 
         :param credential: provide full details of the credential's to be created.
-        :param test: Whether to validate the credentials (True) or skip validation (False) before creation.
+        :param test: whether to validate the credentials (True) or skip validation (False) before creation.
         :returns: A CredentialResponse instance.
         :raises ValidationError: If the provided `credential` is invalid.
         """
