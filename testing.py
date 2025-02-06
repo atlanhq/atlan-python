@@ -1,12 +1,12 @@
 # from pyatlan.cache.role_cache import RoleCache
 # from pyatlan.client.atlan import AtlanClient
-# from pyatlan.model.assets import Connection, QuickSightDataset, Schema, Table, View, MaterialisedView, Column, 
+# from pyatlan.model.assets import Connection, QuickSightDataset, Schema, Table, View, MaterialisedView, Column,
 # from pyatlan.model.enums import AtlanConnectorType, QuickSightFolderType
 # from pyatlan.model.enums import QuickSightDatasetImportMode
 
 # client = AtlanClient()
-# # database = QuickSightDataset.creator( # 
-# #     name="qs_folder_test1", # 
+# # database = QuickSightDataset.creator( #
+# #     name="qs_folder_test1", #
 # #     connection_qualified_name="default/quicksight/1738057453",
 # #     quick_sight_id="123455",
 # #     quick_sight_dataset_import_mode= QuickSightDatasetImportMode.SPICE,
@@ -18,8 +18,8 @@
 
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.credential import Credential
 from pyatlan.model.assets import Connection
+
 client = AtlanClient()
 
 # create_credential = Credential()
@@ -50,6 +50,8 @@ client = AtlanClient()
 # response = client.asset.save(connection)
 # print(response)
 
-connection = client.asset.get_by_qualified_name(qualified_name="default/snowflake/1738006457",asset_type=Connection)
+connection = client.asset.get_by_qualified_name(
+    qualified_name="default/snowflake/1738006457", asset_type=Connection
+)
 # print(connection)
 print(connection.default_credential_guid)

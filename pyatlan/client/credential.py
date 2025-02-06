@@ -5,12 +5,12 @@ from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
+    CREATE_CREDENTIALS,
+    DELETE_CREDENTIALS_BY_GUID,
     GET_ALL_CREDENTIALS,
     GET_CREDENTIAL_BY_GUID,
     TEST_CREDENTIAL,
     UPDATE_CREDENTIAL_BY_GUID,
-    CREATE_CREDENTIALS,
-    DELETE_CREDENTIALS_BY_GUID,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
@@ -37,7 +37,9 @@ class CredentialClient:
         self._client = client
 
     @validate_arguments
-    def creator(self, credential: Credential, test: Optional[bool] = True) -> CredentialResponse:
+    def creator(
+        self, credential: Credential, test: Optional[bool] = True
+    ) -> CredentialResponse:
         """
         Create a new credential.
 
