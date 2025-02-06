@@ -37,7 +37,7 @@ class CredentialClient:
         self._client = client
 
     @validate_arguments
-    def creator(self, credential: Credential) -> CredentialResponse:
+    def creator(self, credential: Credential, test: Optional[bool] = True) -> CredentialResponse:
         """
         Create a new credential.
 
@@ -47,7 +47,7 @@ class CredentialClient:
         """
         raw_json = self._client._call_api(
             api=CREATE_CREDENTIALS.format_path_with_params(),
-            query_params={"testCredential": "true"},
+            query_params={"testCredential": f"{test}"},
             request_obj=credential,
         )
         return CredentialResponse(**raw_json)
