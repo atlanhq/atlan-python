@@ -214,6 +214,7 @@ __PYATLAN_ASSETS__ = {
     "anaplan_module": ["AnaplanModule"],
     "anaplan_model": ["AnaplanModel"],
     "anaplan_app": ["AnaplanApp"],
+    "anaplan_system_dimension": ["AnaplanSystemDimension"],
     "anaplan_dimension": ["AnaplanDimension"],
     "anaplan_view": ["AnaplanView"],
     "tableau_workbook": ["TableauWorkbook"],

@@ -37,6 +37,7 @@ You can interact with all of the following different kinds of assets:
     asset/anaplanmodel
     asset/anaplanmodule
     asset/anaplanpage
+    asset/anaplansystemdimension
     asset/anaplanview
     asset/anaplanworkspace
     asset/anomalo
