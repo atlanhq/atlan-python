@@ -494,16 +494,10 @@ class ADLSObject(ADLS):
 
     @property
     def adls_container_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_name
-        )
+        return None if self.attributes is None else self.attributes.adls_container_name
 
     @adls_container_name.setter
-    def adls_container_name(
-            self, adls_container_name: Optional[str]
-    ):
+    def adls_container_name(self, adls_container_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_container_name = adls_container_name
@@ -558,9 +552,7 @@ class ADLSObject(ADLS):
         adls_container_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        adls_container_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        adls_container_name: Optional[str] = Field(default=None, description="")
         adls_container: Optional[ADLSContainer] = Field(
             default=None, description=""
         )  # relationship
@@ -594,7 +586,7 @@ class ADLSObject(ADLS):
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
-                adls_container_name=adls_container_qualified_name.split('/')[-1],
+                adls_container_name=adls_container_qualified_name.split("/")[-1],
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
@@ -602,7 +594,7 @@ class ADLSObject(ADLS):
                     adls_container_qualified_name
                 ),
                 adls_account_qualified_name=adls_account_qualified_name,
-                adls_account_name=adls_account_qualified_name.split('/')[-1],
+                adls_account_name=adls_account_qualified_name.split("/")[-1],
             )
 
     attributes: ADLSObject.Attributes = Field(

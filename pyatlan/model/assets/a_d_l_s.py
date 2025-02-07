@@ -94,11 +94,7 @@ class ADLS(ObjectStore):
 
     @property
     def adls_account_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_name
-        )
+        return None if self.attributes is None else self.attributes.adls_account_name
 
     @adls_account_name.setter
     def adls_account_name(self, adls_account_name: Optional[str]):

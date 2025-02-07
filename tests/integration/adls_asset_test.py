@@ -186,10 +186,7 @@ def test_overload_adls_object(
         adls_object_overload.adls_container_qualified_name
         == adls_container_overload.qualified_name
     )
-    assert (
-            adls_object_overload.adls_container_name
-            == adls_container_overload.name
-    )
+    assert adls_object_overload.adls_container_name == adls_container_overload.name
     assert adls_object_overload.name == OBJECT_NAME_OVERLOAD
     assert adls_object_overload.connector_name == AtlanConnectorType.ADLS.value
     assert adls_container_overload.qualified_name
@@ -197,10 +194,7 @@ def test_overload_adls_object(
         adls_object_overload.adls_account_qualified_name
         == get_parent_qualified_name(adls_container_overload.qualified_name)
     )
-    assert (
-            adls_object_overload.adls_account_name
-            == adls_account.name
-    )
+    assert adls_object_overload.adls_account_name == adls_account.name
 
 
 def test_adls_object(
@@ -220,10 +214,7 @@ def test_adls_object(
     assert adls_object.adls_account_qualified_name == get_parent_qualified_name(
         adls_container.qualified_name
     )
-    assert (
-            adls_object.adls_account_name
-            == adls_account.name
-    )
+    assert adls_object.adls_account_name == adls_account.name
 
 
 def test_update_adls_object(
