@@ -55,7 +55,8 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 def test_create_for_modification():
     sut = AnaplanSystemDimension.create_for_modification(
-        qualified_name=ANAPLAN_SYSTEM_DIMENSION_QUALIFIED_NAME, name=ANAPLAN_SYSTEM_DIMENSION_NAME
+        qualified_name=ANAPLAN_SYSTEM_DIMENSION_QUALIFIED_NAME,
+        name=ANAPLAN_SYSTEM_DIMENSION_NAME,
     )
 
     assert sut.qualified_name == ANAPLAN_SYSTEM_DIMENSION_QUALIFIED_NAME
@@ -64,7 +65,8 @@ def test_create_for_modification():
 
 def test_trim_to_required():
     sut = AnaplanSystemDimension.create_for_modification(
-        name=ANAPLAN_SYSTEM_DIMENSION_NAME, qualified_name=ANAPLAN_SYSTEM_DIMENSION_QUALIFIED_NAME
+        name=ANAPLAN_SYSTEM_DIMENSION_NAME,
+        qualified_name=ANAPLAN_SYSTEM_DIMENSION_QUALIFIED_NAME,
     ).trim_to_required()
 
     assert sut.name == ANAPLAN_SYSTEM_DIMENSION_NAME

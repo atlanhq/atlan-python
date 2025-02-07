@@ -99,7 +99,8 @@ def anaplan_system_dimension(
 ) -> Generator[AnaplanSystemDimension, None, None]:
     assert connection.qualified_name
     to_create = AnaplanSystemDimension.creator(
-        name=ANAPLAN_SYSTEM_DIMENSION_NAME, connection_qualified_name=connection.qualified_name
+        name=ANAPLAN_SYSTEM_DIMENSION_NAME,
+        connection_qualified_name=connection.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanSystemDimension)[0]
@@ -108,13 +109,17 @@ def anaplan_system_dimension(
 
 
 def test_anaplan_system_dimension(
-    client: AtlanClient, connection: Connection, anaplan_system_dimension: AnaplanSystemDimension
+    client: AtlanClient,
+    connection: Connection,
+    anaplan_system_dimension: AnaplanSystemDimension,
 ):
     assert anaplan_system_dimension
     assert anaplan_system_dimension.guid
     assert anaplan_system_dimension.qualified_name
     assert anaplan_system_dimension.name == ANAPLAN_SYSTEM_DIMENSION_NAME
-    assert anaplan_system_dimension.connection_qualified_name == connection.qualified_name
+    assert (
+        anaplan_system_dimension.connection_qualified_name == connection.qualified_name
+    )
     assert anaplan_system_dimension.connector_name == AtlanConnectorType.ANAPLAN.value
 
 

@@ -63,7 +63,7 @@ class AnaplanSystemDimension(Anaplan):
                     connection_qualified_name
                 ),
             )
-    
+
     attributes: AnaplanSystemDimension.Attributes = Field(
         default_factory=lambda: AnaplanSystemDimension.Attributes(),
         description=(
