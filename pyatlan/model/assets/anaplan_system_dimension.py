@@ -19,7 +19,9 @@ class AnaplanSystemDimension(Anaplan):
 
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, connection_qualified_name: str) -> AnaplanSystemDimension:
+    def creator(
+        cls, *, name: str, connection_qualified_name: str
+    ) -> AnaplanSystemDimension:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
@@ -27,7 +29,7 @@ class AnaplanSystemDimension(Anaplan):
             name=name, connection_qualified_name=connection_qualified_name
         )
         return cls(attributes=attributes)
-    
+
     type_name: str = Field(default="AnaplanSystemDimension", allow_mutation=False)
 
     @validator("type_name")
