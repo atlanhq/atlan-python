@@ -310,6 +310,7 @@ class ADLSContainer(ADLS):
                     adls_account_qualified_name
                 ),
                 adls_account_qualified_name=adls_account_qualified_name,
+                adls_account_name=adls_account_qualified_name.split('/')[-1],
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
             )

@@ -558,6 +558,9 @@ class ADLSObject(ADLS):
         adls_container_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        adls_container_name: Optional[str] = Field(
+            default=None, description=""
+        )
         adls_container: Optional[ADLSContainer] = Field(
             default=None, description=""
         )  # relationship
@@ -591,6 +594,7 @@ class ADLSObject(ADLS):
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
+                adls_container_name=adls_container_qualified_name.split('/')[-1],
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
@@ -598,6 +602,7 @@ class ADLSObject(ADLS):
                     adls_container_qualified_name
                 ),
                 adls_account_qualified_name=adls_account_qualified_name,
+                adls_account_name=adls_account_qualified_name.split('/')[-1],
             )
 
     attributes: ADLSObject.Attributes = Field(
